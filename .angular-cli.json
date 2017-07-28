@@ -19,6 +19,7 @@
       "testTsconfig": "tsconfig.spec.json",
       "prefix": "app",
       "styles": [
+        "../node_modules/ngx-prx-styleguide/styles.css",
         "styles.css"
       ],
       "scripts": [],

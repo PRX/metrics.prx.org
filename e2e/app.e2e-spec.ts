@@ -1,14 +1,14 @@
-import { Metrics.Prx.OrgPage } from './app.po';
+import { MetricsPrxOrgPage } from './app.po';
 
 describe('metrics.prx.org App', () => {
-  let page: Metrics.Prx.OrgPage;
+  let page: MetricsPrxOrgPage;
 
   beforeEach(() => {
-    page = new Metrics.Prx.OrgPage();
+    page = new MetricsPrxOrgPage();
   });
 
-  it('should display welcome message', () => {
+  it('should display PRX in header', () => {
     page.navigateTo();
-    expect(page.getParagraphText()).toEqual('Welcome to app!');
+    expect(page.getParagraphText()).toEqual('PRX');
   });
 });

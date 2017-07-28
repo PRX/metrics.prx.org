@@ -1,16 +1,32 @@
+import { NgModule, ErrorHandler } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { AuthModule } from 'ngx-prx-styleguide';
 
 import { AppComponent } from './app.component';
+import { routing, routingProviders, routingComponents } from './app.routing';
+
+import { ErrorService } from './error';
+import { CoreModule } from './core';
+import { SharedModule } from './shared';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    routingComponents
   ],
   imports: [
-    BrowserModule
+    BrowserModule,
+    CoreModule,
+    AuthModule,
+    SharedModule,
+    routing
   ],
-  providers: [],
+  providers: [
+    {provide: ErrorHandler, useClass: ErrorService},
+    routingProviders
+  ],
   bootstrap: [AppComponent]
 })
+
 export class AppModule { }
+

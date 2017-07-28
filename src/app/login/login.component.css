@@ -1,0 +1,22 @@
+/*
+ * Login page (mostly an iframe)
+ */
+.login {
+  width: 100%;
+  max-width: 300px;
+  margin: 0 auto;
+  text-align: center;
+}
+h1 {
+  font-size: 40px;
+  line-height: 60px;
+  margin-top: 20px;
+}
+p {
+  font-size: 14px;
+  display: inline-block;
+  padding: 2px 8px;
+}
+p.error {
+  background: rgba(255, 0, 0, 0.2);
+}

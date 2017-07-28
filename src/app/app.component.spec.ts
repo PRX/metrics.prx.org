@@ -1,32 +1,60 @@
-import { TestBed, async } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
+import { DebugElement } from '@angular/core';
+import { RouterTestingModule } from '@angular/router/testing';
+import { Subject } from 'rxjs/Subject';
 
+import { AuthModule, AuthService, ModalModule, ModalService } from 'ngx-prx-styleguide';
+import { CoreModule, CmsService } from './core';
+import { SharedModule } from './shared';
 import { AppComponent } from './app.component';
 
 describe('AppComponent', () => {
+  let comp: AppComponent;
+  let fix: ComponentFixture<AppComponent>;
+  let de: DebugElement;
+  let el: HTMLElement;
+
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [
         AppComponent
       ],
-    }).compileComponents();
+      imports: [
+        CoreModule,
+        AuthModule,
+        ModalModule,
+        RouterTestingModule,
+        SharedModule
+      ]
+    }).compileComponents().then(() => {
+      fix = TestBed.createComponent(AppComponent);
+      comp = fix.componentInstance;
+      fix.detectChanges();
+      de = fix.debugElement;
+      el = de.nativeElement;
+    });
   }));
 
   it('should create the app', async(() => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.debugElement.componentInstance;
-    expect(app).toBeTruthy();
+    expect(comp).toBeTruthy();
   }));
 
-  it(`should have as title 'app'`, async(() => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.debugElement.componentInstance;
-    expect(app.title).toEqual('app');
+  it(`should only show header links when logged in`, async(() => {
+    comp.loggedIn = true;
+    fix.detectChanges();
+    expect(de.queryAll(By.css('prx-navitem')).length).toEqual(2);
+    comp.loggedIn = false;
+    fix.detectChanges();
+    expect(de.query(By.css('prx-navitem'))).toBeNull();
   }));
 
-  it('should render title in a h1 tag', async(() => {
-    const fixture = TestBed.createComponent(AppComponent);
-    fixture.detectChanges();
-    const compiled = fixture.debugElement.nativeElement;
-    expect(compiled.querySelector('h1').textContent).toContain('Welcome to app!');
+  it('should show user info when logged in', async(() => {
+    comp.loggedIn = true;
+    fix.detectChanges();
+    expect(de.query(By.css('prx-navuser'))).toBeTruthy();
+    comp.loggedIn = false;
+    fix.detectChanges();
+    expect(de.query(By.css('prx-navuser'))).toBeNull();
   }));
 });

@@ -1,29 +1,67 @@
 # metrics.prx.org
 PRX Metrics Frontend App
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 1.2.5.
+This app is used to view podcast metrics.
 
-## Development server
+# Install
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+## API and Backend Dependencies
 
-## Code scaffolding
+### Use defaults
+To set-up environment custom values, start with these defaults in your `.env` file:
+``` sh
+cp env-example .env
+vim .env
+```
+Metrics will connect to id-staging.prx.org, cms-staging.prx.tech, and your local Castle server.
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|module`.
+### Use local `cms`
+To run cms locally, change the `CMS_HOST` in `.env` to `CMS_HOST=cms.prx.dev`.
 
-## Build
+###  Use local `id`
+To run id locally, change the `AUTH_HOST` in `.env` to `AUTH_HOST=id.prx.dev`.
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `-prod` flag for a production build.
+Next, you will need to create a client application set up, this is easiest to do from the prx.org console:
+``` ruby
+# start a console for prx.org
+cd prx.org
+./script/console
 
-## Running unit tests
+# in the console, save a new client application
+client = ClientApplication.create(
+  :url => "http://metrics.prx.dev",
+  :callback_url => "http://metrics.prx.dev/assets/callback.html",
+  :support_url => "http://metrics.prx.dev",
+  :image_url => "http://s3.amazonaws.com/production.mediajoint.prx.org/public/comatose_files/4625/prx-logo_large.png",
+  :description => "metrics.prx.dev",
+  :template_name => "prx_beta",
+  :user_id =>8,
+  :name => "metrics.prx.dev",
+  :auto_grant =>true
+)
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+# get the client.key and set it as AUTH_CLIENT_ID
+puts "Add this to .env"
+puts "AUTH_CLIENT_ID=#{client.key}"
+```
 
-## Running end-to-end tests
+Enter in the client id in `.env`, setting `AUTH_CLIENT_ID` to the value from above.
 
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
-Before running the tests make sure you are serving the app via `ng serve`.
+## Local Install
 
-## Further help
+Make sure you're running the node version in `.nvmrc`, and you're off!
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+``` sh
+# install dependencies (https://yarnpkg.com/en/docs/install)
+yarn install
+
+# setup pow proxy (see http://pow.cx/)
+echo 4202 > ~/.pow/metrics.prx
+
+# dev server
+npm start
+open http://metrics.prx.dev
+
+# run tests in Chrome
+npm test
+```

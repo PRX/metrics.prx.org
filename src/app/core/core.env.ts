@@ -6,7 +6,7 @@ const DEFAULTS = {
   CMS_HOST: 'cms.prx.org',
   CMS_TTL: 1, // 1 second
   AUTH_HOST: 'id.prx.org',
-  AUTH_CLIENT_ID: 'rWeO7frPqkxmAR378PBlVwEQ0uf4F5u3Fwx8rv1D', // TODO: need a client id for metrics
+  AUTH_CLIENT_ID: 'ea0e04f7c85a8d4826dcf2747126a53a95014f51',
   CASTLE_HOST: 'castle.prx.org'
 };
 

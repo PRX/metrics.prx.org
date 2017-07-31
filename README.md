@@ -28,7 +28,7 @@ cd prx.org
 ./script/console
 
 # in the console, save a new client application
-client = ClientApplication.create(
+client = Client.create(
   :url => "http://metrics.prx.dev",
   :callback_url => "http://metrics.prx.dev/assets/callback.html",
   :support_url => "http://metrics.prx.dev",
@@ -39,6 +39,9 @@ client = ClientApplication.create(
   :name => "metrics.prx.dev",
   :auto_grant =>true
 )
+client.key = SecureRandom.hex(40)[0..39]
+client.secret = SecureRandom.hex(40)[0..39]
+client.save
 
 # get the client.key and set it as AUTH_CLIENT_ID
 puts "Add this to .env"

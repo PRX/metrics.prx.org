@@ -21,11 +21,14 @@ To run cms locally, change the `CMS_HOST` in `.env` to `CMS_HOST=cms.prx.dev`.
 ###  Use local `id`
 To run id locally, change the `AUTH_HOST` in `.env` to `AUTH_HOST=id.prx.dev`.
 
-Next, you will need to create a client application set up, this is easiest to do from the prx.org console:
+### AUTH_CLIENT_ID for environment
+Next, you will need to create a client application set up, this is easiest to do from the ID console:
 ``` ruby
-# start a console for prx.org
-cd prx.org
-./script/console
+ssh to an instance running ID
+# connect to ID's docker container
+docker exec -it <container_id> /bin/ash
+# start a console for ID
+./bin/application console
 
 # in the console, save a new client application
 client = Client.create(

@@ -4,11 +4,11 @@
 LOCAL_ENV=true
 
 # prx api
-CMS_HOST=cms-staging.prx.tech
+CMS_HOST=cms.staging.prx.tech
 CMS_TTL=
 
 # prx auth
-AUTH_HOST=id-staging.prx.tech
+AUTH_HOST=id.staging.prx.tech
 # for metrics.prx.dev
 AUTH_CLIENT_ID=ea0e04f7c85a8d4826dcf2747126a53a95014f51
 

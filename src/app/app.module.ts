@@ -9,6 +9,8 @@ import { ErrorService } from './error';
 import { CoreModule } from './core';
 import { SharedModule } from './shared';
 
+import { DownloadsModule } from './downloads/downloads.module';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -19,7 +21,8 @@ import { SharedModule } from './shared';
     CoreModule,
     AuthModule,
     SharedModule,
-    routing
+    routing,
+    DownloadsModule
   ],
   providers: [
     {provide: ErrorHandler, useClass: ErrorService},

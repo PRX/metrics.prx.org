@@ -4,4 +4,5 @@ export interface SeriesModel {
   doc: HalDoc;
   id: number;
   title: string;
+  feederUrl?: string;
 }

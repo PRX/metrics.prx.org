@@ -28,9 +28,19 @@ export class DownloadsComponent implements OnInit {
         });
 
         if (this.series.length > 0) {
+          this.getSeriesPodcastDistribution(this.series[0]);
           this.getEpisodes(this.series[0]);
         }
       });
+    });
+  }
+
+  getSeriesPodcastDistribution(series: SeriesModel) {
+    series.doc.followItems('prx:distributions').subscribe((distros: HalDoc[]) => {
+      const podcasts = distros.filter((doc => doc['kind'] === 'podcast'));
+      if (podcasts && podcasts.length > 0) {
+        series.feederUrl = podcasts[0]['url']; // TODO: am I supposed to get the feeder id from this url?
+      }
     });
   }
 
@@ -44,11 +54,21 @@ export class DownloadsComponent implements OnInit {
         return {
           doc,
           id: doc['id'],
-          guid: doc['guid'],
           title: doc['title'],
           publishedAt: doc['publishedAt'] ? new Date(doc['publishedAt']) : null
         };
       });
+
+      this.episodes.forEach(this.getEpisodePodcastDistribution);
+    });
+  }
+
+  getEpisodePodcastDistribution(episode: EpisodeModel) {
+    episode.doc.followItems('prx:distributions').subscribe((distros: HalDoc[]) => {
+      const podcasts = distros.filter((doc => doc['kind'] === 'episode'));
+      if (podcasts && podcasts.length > 0) {
+        episode.feederUrl = podcasts[0]['url'];
+      }
     });
   }
 }

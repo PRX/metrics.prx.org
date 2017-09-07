@@ -1,74 +1,100 @@
-import { Component, OnInit } from '@angular/core';
-import { CmsService } from '../core';
-import { HalDoc } from 'ngx-prx-styleguide';
-
-import { EpisodeModel, SeriesModel } from '../shared';
+import { Component, Input, OnChanges, OnInit } from '@angular/core';
+import { Store } from '@ngrx/store';
+import { Observable } from 'rxjs/Observable';
+import { CastleService } from '../core';
+import { EpisodeModel, PodcastModel, EpisodeMetricsModel, PodcastMetricsModel, INTERVAL_DAILY } from '../shared';
+import { castlePodcastMetrics, castleEpisodeMetrics } from '../ngrx/actions/castle.action.creator';
 
 @Component({
   selector: 'metrics-downloads',
   template: `
   `
 })
-export class DownloadsComponent implements OnInit {
-
-  series: SeriesModel[];
+export class DownloadsComponent implements OnChanges, OnInit {
+  @Input() podcast: PodcastModel;
+  episodeStore: Observable<EpisodeModel[]>;
   episodes: EpisodeModel[];
+  podcastMetricsStore: Observable<PodcastMetricsModel[]>;
+  podcastMetrics: PodcastMetricsModel[];
+  episodeMetricsStore: Observable<EpisodeMetricsModel[]>;
+  episodeMetrics: EpisodeMetricsModel[];
+  error: string;
 
-  constructor(private cms: CmsService) {}
+  constructor(private castle: CastleService, private store: Store<any>) {
+    this.episodeStore = store.select('episode');
+    this.podcastMetricsStore = store.select('podcastMetrics');
+    this.episodeMetricsStore = store.select('episodeMetrics');
+  }
 
   ngOnInit() {
-    this.cms.auth.subscribe(auth => {
-      auth.followItems('prx:series', {filters: 'v4'}).subscribe((series: HalDoc[]) => {
-        this.series = series.map(doc => {
-          return {
-            doc,
-            id: doc['id'],
-            title: doc['title']
-          };
-        });
+    this.episodeStore.subscribe((episodes: EpisodeModel[]) => {
+      if (this.podcast) {
+        this.episodes = episodes.filter((e: EpisodeModel) => e.seriesId === this.podcast.seriesId);
+      }
+    });
+    this.podcastMetricsStore.subscribe((podcastMetrics: PodcastMetricsModel[]) => {
+      if (this.podcast) {
+        this.podcastMetrics = podcastMetrics.filter((p: PodcastMetricsModel) => p.seriesId === this.podcast.seriesId);
+      }
+    });
+    this.episodeMetricsStore.subscribe((episodeMetrics: EpisodeMetricsModel[]) => {
+      if (this.podcast) {
+        this.episodeMetrics = episodeMetrics.filter((e: EpisodeMetricsModel) => e.seriesId === this.podcast.seriesId);
+      }
+    });
+  }
 
-        if (this.series.length > 0) {
-          this.getSeriesPodcastDistribution(this.series[0]);
-          this.getEpisodes(this.series[0]);
+  ngOnChanges() {
+    if (this.podcast && this.podcast.episodeIds && this.podcast.episodeIds.length > 0) {
+      this.castle.followList('prx:podcast-downloads', {
+        id: this.podcast.feederId,
+        from: '2017-08-27', // TODO
+        to: '2017-09-08',
+        interval: INTERVAL_DAILY.value
+      }).subscribe(
+        metrics => this.setPodcastMetrics(metrics),
+        err => {
+          if (err.name === 'HalHttpError' && err.status === 401) {
+            this.error = 'An error occurred while requesting podcast metrics on ' + this.podcast.title;
+            console.error(err);
+          } else {
+            this.error = this.podcast.title + ' podcast has no download metrics.';
+          }
         }
+      );
+    }
+
+    if (this.podcast && this.episodes) {
+      this.episodes.forEach((episode: EpisodeModel) => {
+        this.castle.followList('prx:episode-downloads', {
+          guid: episode.guid,
+          from: '2017-08-27', // TODO
+          to: '2017-09-08',
+          interval: INTERVAL_DAILY.value
+        }).subscribe(
+          metrics => this.setEpisodeMetrics(episode, metrics),
+          err => {
+            if (err.name === 'HalHttpError' && err.status === 401) {
+              this.error = 'An error occurred while requesting episode metrics on' + episode.title;
+              console.error(err);
+            } else {
+              this.error = episode.title + ' episode has no download metrics.';
+            }
+          }
+        );
       });
-    });
+    }
   }
 
-  getSeriesPodcastDistribution(series: SeriesModel) {
-    series.doc.followItems('prx:distributions').subscribe((distros: HalDoc[]) => {
-      const podcasts = distros.filter((doc => doc['kind'] === 'podcast'));
-      if (podcasts && podcasts.length > 0) {
-        series.feederUrl = podcasts[0]['url']; // TODO: am I supposed to get the feeder id from this url?
-      }
-    });
+  setPodcastMetrics(metrics: any) {
+    if (metrics && metrics.length > 0 && metrics[0]['downloads'] && metrics[0]['downloads'].length > 0) {
+      this.store.dispatch(castlePodcastMetrics(this.podcast, INTERVAL_DAILY, 'downloads', metrics[0]['downloads']));
+    }
   }
 
-  getEpisodes(series: SeriesModel) {
-    series.doc.followItems('prx:stories', {
-      per: series.doc.count('prx:stories'),
-      filters: 'v4',
-      sorts: 'released_at: desc, published_at: desc'
-    }).subscribe((episodes: HalDoc[]) => {
-      this.episodes = episodes.map(doc => {
-        return {
-          doc,
-          id: doc['id'],
-          title: doc['title'],
-          publishedAt: doc['publishedAt'] ? new Date(doc['publishedAt']) : null
-        };
-      });
-
-      this.episodes.forEach(this.getEpisodePodcastDistribution);
-    });
-  }
-
-  getEpisodePodcastDistribution(episode: EpisodeModel) {
-    episode.doc.followItems('prx:distributions').subscribe((distros: HalDoc[]) => {
-      const podcasts = distros.filter((doc => doc['kind'] === 'episode'));
-      if (podcasts && podcasts.length > 0) {
-        episode.feederUrl = podcasts[0]['url'];
-      }
-    });
+  setEpisodeMetrics(episode: EpisodeModel, metrics: any) {
+    if (metrics && metrics.length > 0 && metrics[0]['downloads'] && metrics[0]['downloads'].length > 0) {
+      this.store.dispatch(castleEpisodeMetrics(this.podcast, episode, INTERVAL_DAILY, 'downloads', metrics[0]['downloads']));
+    }
   }
 }

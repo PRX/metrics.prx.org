@@ -1,8 +1,10 @@
 import { HalDoc } from 'ngx-prx-styleguide';
 
-export interface SeriesModel {
+export interface PodcastModel {
   doc: HalDoc;
-  id: number;
+  seriesId: number;
   title: string;
   feederUrl?: string;
+  feederId?: string;
+  episodeIds?: number[];
 }

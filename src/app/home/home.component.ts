@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
 import { CmsService } from '../core';
+import { Env } from '../core/core.env';
 import { HalDoc } from 'ngx-prx-styleguide';
 import { EpisodeModel, PodcastModel } from '../shared';
 import { cmsPodcastFeed, cmsEpisodeGuid } from '../ngrx/actions/cms.action.creator';
@@ -36,9 +37,10 @@ export class HomeComponent implements OnInit {
     this.podcastStore.subscribe((state: PodcastModel[]) => {
       this.podcasts = state;
 
-      // for now, just select the first podcast if it has episodes
-      if (this.podcasts.length > 0 && this.podcasts[0].episodeIds && this.podcasts[0].episodeIds.length > 0) {
-        this.selectedPodcast = this.podcasts[0];
+      if (this.podcasts.length > 0) {
+        this.selectedPodcast = this.podcasts.find((p: PodcastModel) => {
+          return p.feederId === Env.CASTLE_TEST_PODCAST.toString() && p.episodeIds && p.episodeIds.length > 0;
+        });
       }
     });
   }

@@ -4,8 +4,9 @@ import { Observable } from 'rxjs/Observable';
 import { CmsService } from '../core';
 import { Env } from '../core/core.env';
 import { HalDoc } from 'ngx-prx-styleguide';
-import { EpisodeModel, PodcastModel } from '../shared';
+import { EpisodeModel, PodcastModel, FilterModel } from '../shared';
 import { cmsPodcastFeed, cmsEpisodeGuid } from '../ngrx/actions/cms.action.creator';
+import { castleFilter } from '../ngrx/actions/castle.action.creator';
 
 @Component({
   selector: 'metrics-home',
@@ -15,11 +16,12 @@ import { cmsPodcastFeed, cmsEpisodeGuid } from '../ngrx/actions/cms.action.creat
 export class HomeComponent implements OnInit {
   podcastStore: Observable<PodcastModel[]>;
   podcasts: PodcastModel[];
-  selectedPodcast: PodcastModel;
-  episodesRequested = false;
+  filterStore: Observable<FilterModel[]>;
+  filter: FilterModel;
 
   constructor(private cms: CmsService, private store: Store<any>) {
     this.podcastStore = store.select('podcast');
+    this.filterStore = store.select('filter');
   }
 
   ngOnInit() {
@@ -39,13 +41,20 @@ export class HomeComponent implements OnInit {
       this.podcasts = state;
 
       if (this.podcasts.length > 0) {
-        this.selectedPodcast = this.podcasts.find((p: PodcastModel) => {
+        const selectedPodcast = this.podcasts.find((p: PodcastModel) => {
           return p.feederId === Env.CASTLE_TEST_PODCAST.toString();
         });
-        if (this.selectedPodcast && !this.episodesRequested) {
-          this.episodesRequested = true;
-          this.getEpisodes(this.selectedPodcast);
+        if (selectedPodcast &&
+          (!this.filter || (this.filter && this.filter.podcast && selectedPodcast.seriesId !== this.filter.podcast.seriesId))) {
+          this.store.dispatch(castleFilter({podcast: selectedPodcast}));
         }
+      }
+    });
+
+    this.filterStore.subscribe((state: FilterModel) => {
+      if (state.podcast && (!this.filter || state.podcast.seriesId !== this.filter.podcast.seriesId)) {
+        this.getEpisodes(state.podcast);
+        this.filter = state;
       }
     });
   }

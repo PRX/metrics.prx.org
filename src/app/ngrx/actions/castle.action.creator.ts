@@ -1,5 +1,5 @@
 import ActionTypes from './action.types';
-import { EpisodeModel, PodcastModel, IntervalModel } from '../../shared';
+import { EpisodeModel, PodcastModel, IntervalModel, FilterModel } from '../../shared';
 
 export const castlePodcastMetrics = (podcast: PodcastModel, interval: IntervalModel, metricsType, metrics: any[][]) => {
   return {
@@ -26,3 +26,13 @@ export const castleEpisodeMetrics = (podcast: PodcastModel, episode: EpisodeMode
     }
   };
 };
+
+export const castleFilter = (filter: FilterModel) => {
+  return {
+    type: ActionTypes.CASTLE_FILTER,
+    payload: {
+      filter
+    }
+  };
+};
+

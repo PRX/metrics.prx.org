@@ -14,6 +14,7 @@ import { PodcastReducer } from './ngrx/reducers/podcast.reducer';
 import { EpisodeReducer } from './ngrx/reducers/episode.reducer';
 import { PodcastMetricsReducer } from './ngrx/reducers/podcast-metrics.reducer';
 import { EpisodeMetricsReducer } from './ngrx/reducers/episode-metrics.reducer';
+import { FilterReducer } from './ngrx/reducers/filter.reducer';
 
 import { DownloadsModule } from './downloads/downloads.module';
 
@@ -31,7 +32,8 @@ import { DownloadsModule } from './downloads/downloads.module';
       podcast: PodcastReducer,
       episode: EpisodeReducer,
       podcastMetrics: PodcastMetricsReducer,
-      episodeMetrics: EpisodeMetricsReducer
+      episodeMetrics: EpisodeMetricsReducer,
+      filter: FilterReducer
     }),
     routing,
     DownloadsModule

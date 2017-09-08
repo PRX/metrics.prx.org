@@ -1,1 +1,1 @@
-<metrics-downloads [podcast]="selectedPodcast"></metrics-downloads>
+<metrics-downloads *ngIf="filter" [podcast]="filter.podcast"></metrics-downloads>

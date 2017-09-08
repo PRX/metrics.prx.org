@@ -3,10 +3,12 @@ import { CommonModule } from '@angular/common';
 
 import { SharedModule } from '../shared';
 import { DownloadsComponent } from './downloads.component';
+import { DownloadsChartComponent } from './downloads-chart.component';
 
 @NgModule({
   declarations: [
-    DownloadsComponent
+    DownloadsComponent,
+    DownloadsChartComponent
   ],
   imports: [
     CommonModule,

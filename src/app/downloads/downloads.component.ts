@@ -8,9 +8,11 @@ import { castlePodcastMetrics, castleEpisodeMetrics } from '../ngrx/actions/cast
 @Component({
   selector: 'metrics-downloads',
   template: `
+    <prx-spinner *ngIf="isLoading"></prx-spinner>
+    <p class="error" *ngIf="error">{{error}}</p>
   `
 })
-export class DownloadsComponent implements OnChanges, OnInit {
+export class DownloadsComponent implements OnChanges/*, OnInit*/ {
   @Input() podcast: PodcastModel;
   episodeStore: Observable<EpisodeModel[]>;
   episodes: EpisodeModel[];
@@ -18,34 +20,42 @@ export class DownloadsComponent implements OnChanges, OnInit {
   podcastMetrics: PodcastMetricsModel[];
   episodeMetricsStore: Observable<EpisodeMetricsModel[]>;
   episodeMetrics: EpisodeMetricsModel[];
+  isLoading = true;
   error: string;
 
-  constructor(private castle: CastleService, private store: Store<any>) {
-    this.episodeStore = store.select('episode');
-    this.podcastMetricsStore = store.select('podcastMetrics');
-    this.episodeMetricsStore = store.select('episodeMetrics');
-  }
-
-  ngOnInit() {
-    this.episodeStore.subscribe((episodes: EpisodeModel[]) => {
-      if (this.podcast) {
-        this.episodes = episodes.filter((e: EpisodeModel) => e.seriesId === this.podcast.seriesId);
-      }
-    });
-    this.podcastMetricsStore.subscribe((podcastMetrics: PodcastMetricsModel[]) => {
-      if (this.podcast) {
-        this.podcastMetrics = podcastMetrics.filter((p: PodcastMetricsModel) => p.seriesId === this.podcast.seriesId);
-      }
-    });
-    this.episodeMetricsStore.subscribe((episodeMetrics: EpisodeMetricsModel[]) => {
-      if (this.podcast) {
-        this.episodeMetrics = episodeMetrics.filter((e: EpisodeMetricsModel) => e.seriesId === this.podcast.seriesId);
-      }
-    });
-  }
+  constructor(private castle: CastleService, private store: Store<any>) {}
 
   ngOnChanges() {
     if (this.podcast && this.podcast.episodeIds && this.podcast.episodeIds.length > 0) {
+      // normally would select store in constructor and subscribe in ngOnInit,
+      // but we don't want to even look at these stores until we have the selected podcast
+      if (!this.episodeStore) {
+        this.episodeStore = this.store.select('episode');
+        this.episodeStore.subscribe((episodes: EpisodeModel[]) => {
+          if (this.podcast) {
+            this.episodes = episodes.filter((e: EpisodeModel) => e.seriesId === this.podcast.seriesId);
+          }
+        });
+      }
+
+      if (!this.podcastMetricsStore) {
+        this.podcastMetricsStore = this.store.select('podcastMetrics');
+        this.podcastMetricsStore.subscribe((podcastMetrics: PodcastMetricsModel[]) => {
+          if (this.podcast) {
+            this.podcastMetrics = podcastMetrics.filter((p: PodcastMetricsModel) => p.seriesId === this.podcast.seriesId);
+          }
+        });
+      }
+
+      if (!this.episodeMetricsStore) {
+        this.episodeMetricsStore = this.store.select('episodeMetrics');
+        this.episodeMetricsStore.subscribe((episodeMetrics: EpisodeMetricsModel[]) => {
+          if (this.podcast) {
+            this.episodeMetrics = episodeMetrics.filter((e: EpisodeMetricsModel) => e.seriesId === this.podcast.seriesId);
+          }
+        });
+      }
+
       this.castle.followList('prx:podcast-downloads', {
         id: this.podcast.feederId,
         from: '2017-08-27', // TODO
@@ -54,6 +64,7 @@ export class DownloadsComponent implements OnChanges, OnInit {
       }).subscribe(
         metrics => this.setPodcastMetrics(metrics),
         err => {
+          this.isLoading = false;
           if (err.name === 'HalHttpError' && err.status === 401) {
             this.error = 'An error occurred while requesting podcast metrics on ' + this.podcast.title;
             console.error(err);
@@ -65,7 +76,7 @@ export class DownloadsComponent implements OnChanges, OnInit {
     }
 
     if (this.podcast && this.episodes) {
-      this.episodes.forEach((episode: EpisodeModel) => {
+      this.episodes.slice(0, 5).forEach((episode: EpisodeModel) => {
         this.castle.followList('prx:episode-downloads', {
           guid: episode.guid,
           from: '2017-08-27', // TODO
@@ -74,6 +85,7 @@ export class DownloadsComponent implements OnChanges, OnInit {
         }).subscribe(
           metrics => this.setEpisodeMetrics(episode, metrics),
           err => {
+            this.isLoading = false;
             if (err.name === 'HalHttpError' && err.status === 401) {
               this.error = 'An error occurred while requesting episode metrics on' + episode.title;
               console.error(err);
@@ -87,13 +99,14 @@ export class DownloadsComponent implements OnChanges, OnInit {
   }
 
   setPodcastMetrics(metrics: any) {
-    if (metrics && metrics.length > 0 && metrics[0]['downloads'] && metrics[0]['downloads'].length > 0) {
+    if (metrics && metrics.length > 0 && metrics[0]['downloads']) {
       this.store.dispatch(castlePodcastMetrics(this.podcast, INTERVAL_DAILY, 'downloads', metrics[0]['downloads']));
     }
   }
 
   setEpisodeMetrics(episode: EpisodeModel, metrics: any) {
-    if (metrics && metrics.length > 0 && metrics[0]['downloads'] && metrics[0]['downloads'].length > 0) {
+    this.isLoading = false;
+    if (metrics && metrics.length > 0 && metrics[0]['downloads']) {
       this.store.dispatch(castleEpisodeMetrics(this.podcast, episode, INTERVAL_DAILY, 'downloads', metrics[0]['downloads']));
     }
   }

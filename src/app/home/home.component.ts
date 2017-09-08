@@ -16,6 +16,7 @@ export class HomeComponent implements OnInit {
   podcastStore: Observable<PodcastModel[]>;
   podcasts: PodcastModel[];
   selectedPodcast: PodcastModel;
+  episodesRequested = false;
 
   constructor(private cms: CmsService, private store: Store<any>) {
     this.podcastStore = store.select('podcast');
@@ -39,8 +40,12 @@ export class HomeComponent implements OnInit {
 
       if (this.podcasts.length > 0) {
         this.selectedPodcast = this.podcasts.find((p: PodcastModel) => {
-          return p.feederId === Env.CASTLE_TEST_PODCAST.toString() && p.episodeIds && p.episodeIds.length > 0;
+          return p.feederId === Env.CASTLE_TEST_PODCAST.toString();
         });
+        if (this.selectedPodcast && !this.episodesRequested) {
+          this.episodesRequested = true;
+          this.getEpisodes(this.selectedPodcast);
+        }
       }
     });
   }
@@ -55,7 +60,6 @@ export class HomeComponent implements OnInit {
           podcast.feederId = urlParts[urlParts.length - 1];
 
           this.store.dispatch(cmsPodcastFeed(podcast));
-          this.getEpisodes(podcast);
         }
       }
     });

@@ -12,7 +12,7 @@ export function FilterReducer(state: FilterModel = initialState, action: Action)
         newState.podcast = action.payload.filter.podcast;
       }
       if (action.payload.filter.episodes) {
-        newState.episodes = action.payload.filter.episodes;
+        newState.episodes = [...action.payload.filter.episodes];
       }
       if (action.payload.filter.beginDate) {
         newState.beginDate = action.payload.filter.beginDate;
@@ -23,6 +23,7 @@ export function FilterReducer(state: FilterModel = initialState, action: Action)
       if (action.payload.filter.interval) {
         newState.interval = action.payload.filter.interval;
       }
+      console.log('FilterReducer', action.type, newState);
       return newState;
     default:
       return state;

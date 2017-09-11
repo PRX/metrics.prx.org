@@ -29,11 +29,11 @@ import { DownloadsModule } from './downloads/downloads.module';
     AuthModule,
     SharedModule,
     StoreModule.provideStore({
+      filter: FilterReducer,
       podcast: PodcastReducer,
       episode: EpisodeReducer,
       podcastMetrics: PodcastMetricsReducer,
-      episodeMetrics: EpisodeMetricsReducer,
-      filter: FilterReducer
+      episodeMetrics: EpisodeMetricsReducer
     }),
     routing,
     DownloadsModule

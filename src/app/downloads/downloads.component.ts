@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
 import { CastleService } from '../core';
-import { EpisodeModel, PodcastModel, EpisodeMetricsModel, PodcastMetricsModel, INTERVAL_DAILY, FilterModel } from '../shared';
+import { EpisodeModel, EpisodeMetricsModel, PodcastMetricsModel, INTERVAL_DAILY, FilterModel } from '../shared';
 import { castlePodcastMetrics, castleEpisodeMetrics, castleFilter } from '../ngrx/actions/castle.action.creator';
 
 @Component({
@@ -10,10 +10,10 @@ import { castlePodcastMetrics, castleEpisodeMetrics, castleFilter } from '../ngr
   template: `
     <prx-spinner *ngIf="isLoading"></prx-spinner>
     <p class="error" *ngIf="error">{{error}}</p>
+    <metrics-downloads-chart *ngIf="podcastMetrics && podcastMetrics.length > 0"></metrics-downloads-chart>
   `
 })
 export class DownloadsComponent implements OnInit {
-  @Input() podcast: PodcastModel;
   episodeStore: Observable<EpisodeModel[]>;
   allEpisodes: EpisodeModel[];
   podcastMetricsStore: Observable<PodcastMetricsModel[]>;
@@ -22,6 +22,7 @@ export class DownloadsComponent implements OnInit {
   episodeMetrics: EpisodeMetricsModel[];
   filterStore: Observable<FilterModel>;
   filter: FilterModel;
+  // TODO: move the spinner up to start it when making CMS requests
   isLoading = true;
   error: string;
 
@@ -49,7 +50,7 @@ export class DownloadsComponent implements OnInit {
           this.episodeStore.subscribe((episodes: EpisodeModel[]) => {
             this.allEpisodes = episodes.filter((e: EpisodeModel) => e.seriesId === state.podcast.seriesId);
             if (this.allEpisodes.length > 0) {
-              this.store.dispatch(castleFilter({episodes: this.allEpisodes.slice(0, 5)}));
+              this.store.dispatch(castleFilter({episodes: this.allEpisodes.length > 5 ? this.allEpisodes.slice(0, 5) : this.allEpisodes}));
             }
           });
         }
@@ -57,14 +58,17 @@ export class DownloadsComponent implements OnInit {
         if (!this.podcastMetricsStore) {
           this.podcastMetricsStore = this.store.select('podcastMetrics');
           this.podcastMetricsStore.subscribe((podcastMetrics: PodcastMetricsModel[]) => {
+            // TODO: figure out selectors with ngrx so I can put this filtering in a common selector
             this.podcastMetrics = podcastMetrics.filter((p: PodcastMetricsModel) => p.seriesId === state.podcast.seriesId);
           });
         }
 
-        if (!this.episodeMetricsStore) {
+        if (state.episodes && !this.episodeMetricsStore) {
           this.episodeMetricsStore = this.store.select('episodeMetrics');
           this.episodeMetricsStore.subscribe((episodeMetrics: EpisodeMetricsModel[]) => {
-            this.episodeMetrics = episodeMetrics.filter((e: EpisodeMetricsModel) => e.seriesId === state.podcast.seriesId);
+            this.episodeMetrics = episodeMetrics.filter((e: EpisodeMetricsModel) => {
+              return e.seriesId === state.podcast.seriesId && state.episodes.map(ep => ep.id).indexOf(e.id) !== -1;
+            });
           });
         }
       }
@@ -134,14 +138,14 @@ export class DownloadsComponent implements OnInit {
 
   setPodcastMetrics(metrics: any) {
     if (metrics && metrics.length > 0 && metrics[0]['downloads']) {
-      this.store.dispatch(castlePodcastMetrics(this.podcast, INTERVAL_DAILY, 'downloads', metrics[0]['downloads']));
+      this.store.dispatch(castlePodcastMetrics(this.filter.podcast, INTERVAL_DAILY, 'downloads', metrics[0]['downloads']));
     }
   }
 
   setEpisodeMetrics(episode: EpisodeModel, metrics: any) {
     this.isLoading = false;
     if (metrics && metrics.length > 0 && metrics[0]['downloads']) {
-      this.store.dispatch(castleEpisodeMetrics(this.podcast, episode, INTERVAL_DAILY, 'downloads', metrics[0]['downloads']));
+      this.store.dispatch(castleEpisodeMetrics(this.filter.podcast, episode, INTERVAL_DAILY, 'downloads', metrics[0]['downloads']));
     }
   }
 }

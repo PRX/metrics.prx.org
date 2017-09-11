@@ -2,17 +2,19 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { AuthGuard, DeactivateGuard, UnauthGuard,
-  ImageModule, SpinnerModule } from 'ngx-prx-styleguide';
+  ChartsModule, ImageModule, SpinnerModule } from 'ngx-prx-styleguide';
 
 @NgModule({
   declarations: [],
   exports: [
     CommonModule,
+    ChartsModule,
     ImageModule,
     SpinnerModule
   ],
   imports: [
     CommonModule,
+    ChartsModule,
     ImageModule,
     SpinnerModule
   ],

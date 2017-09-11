@@ -9,9 +9,11 @@ export function EpisodeReducer(state: EpisodeModel[] = initialState, action: Act
   switch (action.type) {
     case ActionTypes.CMS_EPISODE_GUID:
       const { doc, id, title, publishedAt, feederUrl, guid } = action.payload.episode;
-      epIdx = state.findIndex(e => e.seriesId === action.payload.podcast.seriesId && e.guid === action.payload.episode.guid);
+      const seriesId = action.payload.podcast.seriesId;
+
+      epIdx = state.findIndex(e => e.seriesId === seriesId && e.id === id);
       if (epIdx > -1) {
-        episode = Object.assign({}, state[epIdx], {seriesId: action.payload.series.id}, {doc, id, title, publishedAt, feederUrl, guid});
+        episode = Object.assign({}, state[epIdx], {doc, id, seriesId, title, publishedAt, feederUrl, guid});
         newState = [...state.slice(0, epIdx), episode, ...state.slice(epIdx + 1)];
       } else {
         episode = Object.assign({}, action.payload.episode);

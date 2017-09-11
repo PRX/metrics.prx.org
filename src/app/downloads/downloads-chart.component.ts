@@ -91,10 +91,12 @@ export class DownloadsChartComponent {
   }
 
   mapEpisodeData(episode: EpisodeModel, metrics: any[][]): TimeseriesChartModel {
+    // this color is temporary and will be re-applied after sorting of the totals
     return { data: this.mapData(metrics), label: episode.title, color: '#000044' };
   }
 
   mapPodcastData(episode: PodcastModel, metrics: any[][]): TimeseriesChartModel {
+    // TODO this color does not stick on the podcast line because of the empty/sparse data sets
     return { data: this.mapData(metrics), label: episode.title, color: '#a3a3a3' };
   }
 }

@@ -145,7 +145,7 @@ export class DownloadsComponent implements OnInit {
   setEpisodeMetrics(episode: EpisodeModel, metrics: any) {
     this.isLoading = false;
     if (metrics && metrics.length > 0 && metrics[0]['downloads']) {
-      this.store.dispatch(castleEpisodeMetrics(this.filter.podcast, episode, INTERVAL_DAILY, 'downloads', metrics[0]['downloads']));
+      this.store.dispatch(castleEpisodeMetrics(episode, INTERVAL_DAILY, 'downloads', metrics[0]['downloads']));
     }
   }
 }

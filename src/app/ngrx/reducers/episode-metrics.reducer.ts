@@ -11,8 +11,7 @@ export function EpisodeMetricsReducer(state: EpisodeMetricsModel[] = initialStat
       const metricsProperty = action.payload.interval.key
         + action.payload.metricsType.charAt(0).toUpperCase()
         + action.payload.metricsType.slice(1);
-      const { id, guid } = action.payload.episode;
-      const seriesId = action.payload.podcast.seriesId;
+      const { id, seriesId, guid } = action.payload.episode;
 
       epIdx = state.findIndex(e => e.seriesId === seriesId && e.id === id);
       if (epIdx > -1) {

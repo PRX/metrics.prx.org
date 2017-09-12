@@ -10,11 +10,6 @@ describe('EpisodeMetricsReducer', () => {
         {
           doc: undefined,
           seriesId: 37800,
-          title: 'Pet Talks Daily'
-        },
-        {
-          doc: undefined,
-          seriesId: 37800,
           id: 123,
           publishedAt: new Date(),
           title: 'A Pet Talk Episode',
@@ -37,11 +32,6 @@ describe('EpisodeMetricsReducer', () => {
   it('should update existing episode metrics keyed by seriesId and episode id', () => {
     newState = EpisodeMetricsReducer(newState,
       castleEpisodeMetrics(
-        {
-          doc: undefined,
-          seriesId: 37800,
-          title: 'Pet Talks Daily'
-        },
         {
           doc: undefined,
           seriesId: 37800,
@@ -79,11 +69,6 @@ describe('EpisodeMetricsReducer', () => {
   it ('should add new episode metrics', () => {
     newState = EpisodeMetricsReducer(newState,
       castleEpisodeMetrics(
-        {
-          doc: undefined,
-          seriesId: 37800,
-          title: 'Pet Talks Daily'
-        },
         {
           doc: undefined,
           seriesId: 37800,

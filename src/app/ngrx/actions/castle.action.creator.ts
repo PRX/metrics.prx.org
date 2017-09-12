@@ -13,12 +13,10 @@ export const castlePodcastMetrics = (podcast: PodcastModel, interval: IntervalMo
   };
 };
 
-export const castleEpisodeMetrics = (podcast: PodcastModel, episode: EpisodeModel,
-                                     interval: IntervalModel, metricsType, metrics: any[][]) => {
+export const castleEpisodeMetrics = (episode: EpisodeModel, interval: IntervalModel, metricsType, metrics: any[][]) => {
   return {
     type: ActionTypes.CASTLE_EPISODE_METRICS,
     payload: {
-      podcast,
       episode,
       interval,
       metricsType,

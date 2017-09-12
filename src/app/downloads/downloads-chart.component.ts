@@ -21,6 +21,7 @@ export class DownloadsChartComponent {
   episodeChartData: TimeseriesChartModel[];
   podcastChartData: TimeseriesChartModel;
   chartData: TimeseriesChartModel[];
+  // TODO: expand color support for more datasets
   colors = ['#000044', '#2C2C68', '#59598C', '#8686B0', '#B3B3D4'];
 
   constructor(private store: Store<any>) {

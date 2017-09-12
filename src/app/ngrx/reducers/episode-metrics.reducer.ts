@@ -11,17 +11,16 @@ export function EpisodeMetricsReducer(state: EpisodeMetricsModel[] = initialStat
       const metricsProperty = action.payload.interval.key
         + action.payload.metricsType.charAt(0).toUpperCase()
         + action.payload.metricsType.slice(1);
-      epIdx = state.findIndex(e => e.seriesId === action.payload.podcast.seriesId && e.id === action.payload.episode.id);
+      const { id, guid } = action.payload.episode;
+      const seriesId = action.payload.podcast.seriesId;
+
+      epIdx = state.findIndex(e => e.seriesId === seriesId && e.id === id);
       if (epIdx > -1) {
         episode = Object.assign({}, state[epIdx]);
         episode[metricsProperty] = action.payload.metrics;
         newState = [...state.slice(0, epIdx), episode, ...state.slice(epIdx + 1)];
       } else {
-        episode = {
-          seriesId: action.payload.podcast.seriesId,
-          id: action.payload.episode.id,
-          guid: action.payload.episode.guid
-        };
+        episode = { seriesId, id, guid };
         episode[metricsProperty] = action.payload.metrics;
         newState = [episode, ...state];
       }

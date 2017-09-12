@@ -55,7 +55,7 @@ describe('EpisodeReducer', () => {
         seriesId: 37800,
         id: 1234,
         publishedAt: new Date(),
-        title: 'A new Pet Talk Episode',
+        title: 'A New Pet Talk Episode',
         guid: 'hijklmno'
       }));
     expect(newState.filter(p => p.seriesId === 37800).length).toEqual(2);

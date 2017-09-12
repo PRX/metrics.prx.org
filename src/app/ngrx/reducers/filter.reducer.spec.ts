@@ -51,4 +51,13 @@ describe('FilterReducer', () => {
       castleFilter({interval: INTERVAL_HOURLY}));
     expect(newState.interval.key).toEqual('hourly');
   });
+
+  it ('should retain other fields when updating', () => {
+    expect(newState.interval.key).toEqual('daily');
+    expect(newState.podcast.seriesId).toEqual(37800);
+    newState = FilterReducer(newState,
+      castleFilter({interval: INTERVAL_HOURLY}));
+    expect(newState.interval.key).toEqual('hourly');
+    expect(newState.podcast.seriesId).toEqual(37800);
+  });
 });

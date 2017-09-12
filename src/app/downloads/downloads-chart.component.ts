@@ -8,7 +8,7 @@ import { TimeseriesChartModel, TimeseriesDatumModel } from 'ngx-prx-styleguide';
 @Component({
   selector: 'metrics-downloads-chart',
   template: `
-    <prx-timeseries-chart type="line" [datasets]="chartData" formatX="%m/%d"></prx-timeseries-chart>
+    <prx-timeseries-chart type="area" stacked="true" [datasets]="chartData" formatX="%m/%d"></prx-timeseries-chart>
   `
 })
 export class DownloadsChartComponent {
@@ -37,9 +37,13 @@ export class DownloadsChartComponent {
           this.podcastMetricsStore.subscribe((podcastMetrics: PodcastMetricsModel[]) => {
             this.podcastMetrics = podcastMetrics.filter((p: PodcastMetricsModel) => p.seriesId === this.filter.podcast.seriesId);
             if (this.podcastMetrics.length > 0) {
-              this.podcastChartData = this.mapPodcastData(this.filter.podcast, this.podcastMetrics[0][metricsProperty]);
-              this.chartData = this.episodeChartData && this.episodeChartData.length > 0 ?
-                [...this.episodeChartData, this.podcastChartData] : [this.podcastChartData];
+              this.podcastChartData = this.mapPodcastData(this.filter.podcast, this.podcastMetrics[0][metricsProperty + 'Others']);
+              if (this.episodeChartData && this.episodeChartData.length > 0) {
+                // TODO: subtract episode from podcast data
+                this.chartData = [...this.episodeChartData, this.podcastChartData];
+              } else {
+                this.chartData = [this.podcastChartData];
+              }
             }
           });
         }
@@ -49,6 +53,7 @@ export class DownloadsChartComponent {
             this.episodeMetricsStore = this.store.select('episodeMetrics');
             this.episodeMetricsStore.subscribe((episodeMetrics: EpisodeMetricsModel[]) => {
               this.episodeMetrics = episodeMetrics.filter((e: EpisodeMetricsModel) => {
+                // TODO: the hell is e/ep c'mon better names
                 return e.seriesId === this.filter.podcast.seriesId &&
                   this.filter.episodes && this.filter.episodes.map(ep => ep.id).indexOf(e.id) !== -1;
               });
@@ -71,12 +76,18 @@ export class DownloadsChartComponent {
                   return getTotal(b.data) - getTotal(a.data);
                 });
                 // set the colors now that they are ordered
+                // TODO: can colors be optional to allow C3 to select colors
+                // TODO: chart component should not include color in C3 config when dataset is empty
                 for (let i = 0; i < this.episodeChartData.length; i++) {
                   this.episodeChartData[i].color = this.colors[i];
                 }
-                // TODO: subtract episode data from podcast data
                 // TODO: sparse datasets need to be populated with zeroes for missing datetime entries
-                this.chartData = this.podcastChartData ? [...this.episodeChartData, this.podcastChartData] : [...this.episodeChartData];
+                if (this.podcastChartData) {
+                  // TODO: subtract episode data from podcast data
+                  this.chartData = [...this.episodeChartData, this.podcastChartData];
+                } else {
+                  this.chartData = [...this.episodeChartData];
+                }
               }
             });
           }

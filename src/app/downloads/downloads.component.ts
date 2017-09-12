@@ -138,14 +138,14 @@ export class DownloadsComponent implements OnInit {
 
   setPodcastMetrics(metrics: any) {
     if (metrics && metrics.length > 0 && metrics[0]['downloads']) {
-      this.store.dispatch(castlePodcastMetrics(this.filter.podcast, INTERVAL_DAILY, 'downloads', metrics[0]['downloads']));
+      this.store.dispatch(castlePodcastMetrics(this.filter.podcast, this.filter, 'downloads', metrics[0]['downloads']));
     }
   }
 
   setEpisodeMetrics(episode: EpisodeModel, metrics: any) {
     this.isLoading = false;
     if (metrics && metrics.length > 0 && metrics[0]['downloads']) {
-      this.store.dispatch(castleEpisodeMetrics(episode, INTERVAL_DAILY, 'downloads', metrics[0]['downloads']));
+      this.store.dispatch(castleEpisodeMetrics(episode, this.filter, 'downloads', metrics[0]['downloads']));
     }
   }
 }

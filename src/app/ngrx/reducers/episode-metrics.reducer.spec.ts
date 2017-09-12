@@ -48,7 +48,7 @@ describe('EpisodeMetricsReducer', () => {
           id: 123,
           publishedAt: new Date(),
           title: 'A Pet Talk Episode',
-          guid: 'abcdefg'
+          guid: 'gfedcba'
         },
         INTERVAL_DAILY,
         'downloads',
@@ -71,7 +71,7 @@ describe('EpisodeMetricsReducer', () => {
     expect(newState.length).toEqual(1);
     expect(newState[0].id).toEqual(123);
     expect(newState[0].seriesId).toEqual(37800);
-    expect(newState[0].guid).toEqual('abcdefg');
+    expect(newState[0].guid).toEqual('gfedcba');
     expect(newState[0].dailyDownloads.length).toEqual(12);
     expect(newState[0].dailyDownloads[0][1]).toEqual(52522);
   });

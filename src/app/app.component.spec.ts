@@ -2,12 +2,18 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { DebugElement } from '@angular/core';
 import { RouterTestingModule } from '@angular/router/testing';
-import { Subject } from 'rxjs/Subject';
+import { StoreModule } from '@ngrx/store';
 
-import { AuthModule, AuthService, ModalModule, ModalService } from 'ngx-prx-styleguide';
-import { CoreModule, CmsService } from './core';
+import { AuthModule, ModalModule } from 'ngx-prx-styleguide';
+import { CoreModule } from './core';
 import { SharedModule } from './shared';
 import { AppComponent } from './app.component';
+
+import { PodcastReducer } from './ngrx/reducers/podcast.reducer';
+import { EpisodeReducer } from './ngrx/reducers/episode.reducer';
+import { PodcastMetricsReducer } from './ngrx/reducers/podcast-metrics.reducer';
+import { EpisodeMetricsReducer } from './ngrx/reducers/episode-metrics.reducer';
+import { FilterReducer } from './ngrx/reducers/filter.reducer';
 
 describe('AppComponent', () => {
   let comp: AppComponent;
@@ -25,7 +31,14 @@ describe('AppComponent', () => {
         AuthModule,
         ModalModule,
         RouterTestingModule,
-        SharedModule
+        SharedModule,
+        StoreModule.provideStore({
+          filter: FilterReducer,
+          podcast: PodcastReducer,
+          episode: EpisodeReducer,
+          podcastMetrics: PodcastMetricsReducer,
+          episodeMetrics: EpisodeMetricsReducer
+        })
       ]
     }).compileComponents().then(() => {
       fix = TestBed.createComponent(AppComponent);

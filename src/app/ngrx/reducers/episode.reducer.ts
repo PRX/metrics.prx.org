@@ -30,7 +30,7 @@ export function EpisodeReducer(state: EpisodeModel[] = initialState, action: Act
         }
       });
 
-      console.log('EpisodeReducer', action.type, newState);
+      // console.log('EpisodeReducer', action.type, newState);
       return newState;
     default:
       return state;

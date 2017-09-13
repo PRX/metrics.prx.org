@@ -29,7 +29,7 @@ export function PodcastMetricsReducer(state: PodcastMetricsModel[] = initialStat
         podcast.episodeIdsNotInOthers = [];
         newState = [podcast, ...state];
       }
-      console.log('PodcastMetricsReducer', action.type, newState);
+      // console.log('PodcastMetricsReducer', action.type, newState);
       return newState;
     case ActionTypes.CASTLE_EPISODE_METRICS:
       metricsProperty = action.payload.filter.interval.key
@@ -55,6 +55,7 @@ export function PodcastMetricsReducer(state: PodcastMetricsModel[] = initialStat
         // TODO: but then again, maybe this should revert back the total podcast dataset when episodes are not in filter
         // --> will deal with this when I get to episode selection
       }
+      // console.log('PodcastMetricsReducer', action.type, newState);
       return newState;
     default:
       return state;

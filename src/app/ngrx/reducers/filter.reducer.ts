@@ -23,7 +23,7 @@ export function FilterReducer(state: FilterModel = initialState, action: Action)
       if (action.payload.filter.interval) {
         newState.interval = action.payload.filter.interval;
       }
-      console.log('FilterReducer', action.type, newState);
+      // console.log('FilterReducer', action.type, newState);
       return newState;
     default:
       return state;

@@ -21,7 +21,7 @@ export function PodcastReducer(state: PodcastModel[] = initialState, action: Act
       } else {
         newState = [action.payload.podcast, ...state];
       }
-      console.log('PodcastReducer', action.type, newState);
+      // console.log('PodcastReducer', action.type, newState);
       return newState;
     case ActionTypes.CMS_EPISODE_GUID:
       podcastIdx = state.findIndex(p => p.seriesId === action.payload.podcast.seriesId);
@@ -45,7 +45,7 @@ export function PodcastReducer(state: PodcastModel[] = initialState, action: Act
           episodeIds: [action.payload.episode.id]
         }, ...state];
       }
-      console.log('PodcastReducer', action.type, newState);
+      // console.log('PodcastReducer', action.type, newState);
       return newState;
     default:
       return state;

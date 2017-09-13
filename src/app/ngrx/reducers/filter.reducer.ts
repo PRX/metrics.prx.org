@@ -1,6 +1,6 @@
 import { Action } from '@ngrx/store';
 import ActionTypes from '../actions/action.types';
-import { FilterModel } from '../../shared';
+import { FilterModel } from '../model';
 
 const initialState = {};
 

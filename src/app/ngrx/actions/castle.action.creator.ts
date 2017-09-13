@@ -1,7 +1,7 @@
 import ActionTypes from './action.types';
-import { EpisodeModel, PodcastModel, FilterModel } from '../../shared';
+import { EpisodeModel, PodcastModel, FilterModel, MetricsType } from '../model';
 
-export const castlePodcastMetrics = (podcast: PodcastModel, filter: FilterModel, metricsType, metrics: any[][]) => {
+export const castlePodcastMetrics = (podcast: PodcastModel, filter: FilterModel, metricsType: MetricsType, metrics: any[][]) => {
   return {
     type: ActionTypes.CASTLE_PODCAST_METRICS,
     payload: {
@@ -13,7 +13,7 @@ export const castlePodcastMetrics = (podcast: PodcastModel, filter: FilterModel,
   };
 };
 
-export const castleEpisodeMetrics = (episode: EpisodeModel, filter: FilterModel, metricsType, metrics: any[][]) => {
+export const castleEpisodeMetrics = (episode: EpisodeModel, filter: FilterModel, metricsType: MetricsType, metrics: any[][]) => {
   return {
     type: ActionTypes.CASTLE_EPISODE_METRICS,
     payload: {

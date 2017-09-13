@@ -4,7 +4,7 @@ import { Observable } from 'rxjs/Observable';
 import { CmsService } from '../core';
 import { Env } from '../core/core.env';
 import { HalDoc } from 'ngx-prx-styleguide';
-import { EpisodeModel, PodcastModel, FilterModel } from '../shared';
+import { EpisodeModel, PodcastModel, FilterModel } from '../ngrx/model';
 import { cmsPodcastFeed, cmsEpisodeGuid } from '../ngrx/actions/cms.action.creator';
 import { castleFilter } from '../ngrx/actions/castle.action.creator';
 
@@ -41,9 +41,14 @@ export class HomeComponent implements OnInit {
       this.podcasts = state;
 
       if (this.podcasts.length > 0) {
-        const selectedPodcast = this.podcasts.find((p: PodcastModel) => {
-          return p.feederId === Env.CASTLE_TEST_PODCAST.toString();
-        });
+        let selectedPodcast;
+        if (Env.CASTLE_TEST_PODCAST) {
+          selectedPodcast = this.podcasts.find((p: PodcastModel) => {
+            return p.feederId === Env.CASTLE_TEST_PODCAST.toString();
+          });
+        } else {
+          selectedPodcast = this.podcasts;
+        }
         if (selectedPodcast &&
           (!this.filter || (this.filter && this.filter.podcast && selectedPodcast.seriesId !== this.filter.podcast.seriesId))) {
           this.store.dispatch(castleFilter({podcast: selectedPodcast}));

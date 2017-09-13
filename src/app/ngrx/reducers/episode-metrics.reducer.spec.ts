@@ -1,5 +1,5 @@
 import { castleEpisodeMetrics } from '../actions/castle.action.creator';
-import { INTERVAL_DAILY } from '../../shared/model/metrics.model';
+import { INTERVAL_DAILY } from '../model';
 import { EpisodeMetricsReducer } from './episode-metrics.reducer';
 
 describe('EpisodeMetricsReducer', () => {

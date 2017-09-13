@@ -1,10 +1,12 @@
-import { FilterModel } from '../../shared/model/filter.model';
-import { INTERVAL_DAILY, INTERVAL_HOURLY, INTERVAL_15MIN } from '../../shared/model/metrics.model';
+import { FilterModel } from '../model/filter.model';
+import { INTERVAL_DAILY, INTERVAL_HOURLY, INTERVAL_15MIN } from '../model';
 
 export const unsparseDataset = (filter: FilterModel, dataset: any[][]) => {
   // yes, this is generating dates here which might be concerning, but it is still a deterministic/pure function
   const unsparsed = [];
-  const datetime = new Date(filter.beginDate.valueOf()); // TODO: probably need to normalize this to the interval, if daily begin at 0:0:0
+  // TODO: probably need to normalize this to the interval, if daily begin at 0:0:0
+  // --> datetime controls
+  const datetime = new Date(filter.beginDate.valueOf());
   while (datetime.valueOf() <= filter.endDate.valueOf()) {
     const data = dataset.find(d => new Date(d[0]).valueOf() === datetime.valueOf());
     if (data) {

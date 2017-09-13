@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
 import { CastleService } from '../core';
-import { EpisodeModel, EpisodeMetricsModel, PodcastMetricsModel, INTERVAL_DAILY, FilterModel } from '../shared';
+import { EpisodeModel, EpisodeMetricsModel, PodcastMetricsModel, INTERVAL_DAILY, FilterModel } from '../ngrx/model';
 import { castlePodcastMetrics, castleEpisodeMetrics, castleFilter } from '../ngrx/actions/castle.action.creator';
 
 @Component({
@@ -31,9 +31,12 @@ export class DownloadsComponent implements OnInit {
   }
 
   ngOnInit() {
+    const today = new Date();
+    const utcEndDate = new Date(Date.UTC(today.getFullYear(), today.getMonth(), today.getDate(), 23, 59, 59, 999));
+    const utcBeginDate = new Date(utcEndDate.valueOf() - (14 * 24 * 60 * 60 * 1000) + 1);// 14 days prior at 0:0:0
     this.filter = {
-      beginDate: new Date('2017-08-27'),
-      endDate: new Date('2017-09-08'),
+      beginDate: utcBeginDate,
+      endDate: utcEndDate,
       interval: INTERVAL_DAILY
     };
     this.store.dispatch(castleFilter(this.filter));

@@ -1,6 +1,6 @@
 import { Action } from '@ngrx/store';
 import ActionTypes from '../actions/action.types';
-import { EpisodeModel } from '../../shared';
+import { EpisodeModel } from '../model';
 
 const initialState = [];
 

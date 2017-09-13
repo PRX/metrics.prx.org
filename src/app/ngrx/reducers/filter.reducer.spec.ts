@@ -1,5 +1,5 @@
 import { castleFilter } from '../actions/castle.action.creator';
-import { INTERVAL_DAILY, INTERVAL_HOURLY } from '../../shared/model/metrics.model';
+import { INTERVAL_DAILY, INTERVAL_HOURLY } from '../model';
 import { FilterReducer } from './filter.reducer';
 
 describe('FilterReducer', () => {

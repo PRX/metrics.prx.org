@@ -1,6 +1,6 @@
 import { Action } from '@ngrx/store';
 import ActionTypes from '../actions/action.types';
-import { EpisodeMetricsModel } from '../../shared';
+import { EpisodeMetricsModel } from '../model';
 import { unsparseDataset } from './metrics.util';
 
 const initialState = [];

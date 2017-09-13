@@ -1,5 +1,5 @@
 import ActionTypes from './action.types';
-import { EpisodeModel, PodcastModel } from '../../shared';
+import { EpisodeModel, PodcastModel } from '../model';
 
 export const cmsPodcastFeed = (podcast: PodcastModel) => {
   return {

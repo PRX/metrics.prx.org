@@ -17,6 +17,7 @@ export function PodcastMetricsReducer(state: PodcastMetricsModel[] = initialStat
         podcast = Object.assign({}, state[podcastIdx]);
         podcast[metricsProperty] = unsparseDataset(action.payload.filter, action.payload.metrics);
         podcast[metricsProperty + 'Others'] = [...podcast[metricsProperty]];
+        podcast.episodeIdsNotInOthers = [];
         newState = [...state.slice(0, podcastIdx), podcast, ...state.slice(podcastIdx + 1)];
       } else {
         podcast = {
@@ -25,6 +26,7 @@ export function PodcastMetricsReducer(state: PodcastMetricsModel[] = initialStat
         };
         podcast[metricsProperty] = unsparseDataset(action.payload.filter, action.payload.metrics);
         podcast[metricsProperty + 'Others'] = [...podcast[metricsProperty]];
+        podcast.episodeIdsNotInOthers = [];
         newState = [podcast, ...state];
       }
       console.log('PodcastMetricsReducer', action.type, newState);
@@ -35,16 +37,23 @@ export function PodcastMetricsReducer(state: PodcastMetricsModel[] = initialStat
         + action.payload.metricsType.slice(1);
       podcastIdx = state.findIndex(p => p.seriesId === action.payload.episode.seriesId);
       if (podcastIdx > -1 &&
-        action.payload.filter.episodes &&
-        action.payload.filter.episodes.map(e => e.id).indexOf(action.payload.episode.id) !== -1 &&
-        action.payload.metrics.length > 0) {
+        action.payload.filter.episodes && // filter has episodes
+        action.payload.filter.episodes.map(e => e.id).indexOf(action.payload.episode.id) !== -1 && // episode in filter
+        state[podcastIdx].episodeIdsNotInOthers.indexOf(action.payload.episode.id) === -1 && // episode not already subtracted
+        action.payload.metrics.length > 0) {// has metrics
         podcast = Object.assign({}, state[podcastIdx]);
         podcast[metricsProperty + 'Others'] = subtractDataset(podcast[metricsProperty + 'Others'],
           unsparseDataset(action.payload.filter, action.payload.metrics));
+        if (podcast.episodeIdsNotInOthers) {
+          podcast.episodeIdsNotInOthers.push(action.payload.episode.id);
+        } else {
+          podcast.episodeIdsNotInOthers = [action.payload.episode.id];
+        }
         newState = [...state.slice(0, podcastIdx), podcast, ...state.slice(podcastIdx + 1)];
       } else {
         newState = state; // no change
         // TODO: but then again, maybe this should revert back the total podcast dataset when episodes are not in filter
+        // --> will deal with this when I get to episode selection
       }
       return newState;
     default:

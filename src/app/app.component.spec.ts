@@ -3,9 +3,10 @@ import { By } from '@angular/platform-browser';
 import { DebugElement } from '@angular/core';
 import { RouterTestingModule } from '@angular/router/testing';
 import { StoreModule } from '@ngrx/store';
+import { Subject } from 'rxjs/Subject';
 
-import { AuthModule, ModalModule } from 'ngx-prx-styleguide';
-import { CoreModule } from './core';
+import { AuthModule, AuthService, ModalModule, MockHalService } from 'ngx-prx-styleguide';
+import { CoreModule, CmsService } from './core';
 import { SharedModule } from './shared';
 import { AppComponent } from './app.component';
 
@@ -20,8 +21,20 @@ describe('AppComponent', () => {
   let fix: ComponentFixture<AppComponent>;
   let de: DebugElement;
   let el: HTMLElement;
+  let auth;
+  let cms;
+  let authToken;
+  let refreshToken;
+  let cmsToken: string = null;
 
   beforeEach(async(() => {
+    cms = new MockHalService();
+    authToken = new Subject<string>();
+    refreshToken = new Subject<boolean>();
+    auth = cms.mock('prx:authorization', {});
+    auth.mockItems('prx:series', []);
+    auth.mockItems('prx:stories', []);
+
     TestBed.configureTestingModule({
       declarations: [
         AppComponent
@@ -39,6 +52,19 @@ describe('AppComponent', () => {
           podcastMetrics: PodcastMetricsReducer,
           episodeMetrics: EpisodeMetricsReducer
         })
+      ],
+      providers: [
+        {provide: AuthService, useValue: {
+          config: () => {},
+          url: () => '',
+          token: authToken,
+          refresh: refreshToken
+        }},
+        {provide: CmsService, useValue: {
+          setToken: token => cmsToken = token,
+          account: new Subject<any>(),
+          individualAccount: new Subject<any>()
+        }}
       ]
     }).compileComponents().then(() => {
       fix = TestBed.createComponent(AppComponent);
@@ -70,4 +96,11 @@ describe('AppComponent', () => {
     fix.detectChanges();
     expect(de.query(By.css('prx-navuser'))).toBeNull();
   }));
+
+  it('should load series and call CMS action', () => {
+    // authToken.next('fake-token');
+    auth.mockItems('prx:series', [
+      {seriesId: 37800, title: 'Pet Talks Daily'},
+      {seriesId: 37801, title: 'Totally Not Pet Talks Daily'}]);
+  });
 });

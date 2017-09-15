@@ -61,6 +61,7 @@ export class DownloadsChartComponent {
                   const episode = this.filter.episodes.find(e => e.seriesId === episodeData.seriesId && e.id === episodeData.id);
                   return this.mapEpisodeData(episode, episodeData[metricsProperty]);
                 });
+                // TODO: can't really hide this sort by total and getting colors in here, will also need it for the table
                 // sort these episodes by their data total for the stacked chart
                 this.episodeChartData.sort((a: TimeseriesChartModel, b: TimeseriesChartModel) => {
                   const getTotal = (data: TimeseriesDatumModel[]) => {

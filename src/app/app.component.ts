@@ -30,7 +30,7 @@ export class AppComponent implements OnInit {
   constructor(
     private auth: AuthService,
     private cms: CmsService,
-    private store: Store<any>
+    public store: Store<any>
   ) {
     auth.token.subscribe(token => {
       this.loadAccount(token);
@@ -40,7 +40,6 @@ export class AppComponent implements OnInit {
     });
 
     this.podcastStore = store.select('podcast');
-    this.filterStore = store.select('filter');
   }
 
   ngOnInit() {
@@ -54,7 +53,7 @@ export class AppComponent implements OnInit {
             return p.feederId === Env.CASTLE_TEST_PODCAST.toString();
           });
         } else {
-          selectedPodcast = this.podcasts;
+          selectedPodcast = this.podcasts && this.podcasts.length ? this.podcasts[0] : null;
         }
         if (selectedPodcast &&
           (!this.filter || (this.filter && this.filter.podcast && selectedPodcast.seriesId !== this.filter.podcast.seriesId))) {
@@ -63,12 +62,15 @@ export class AppComponent implements OnInit {
       }
     });
 
-    this.filterStore.subscribe((state: FilterModel) => {
-      if (state.podcast && (!this.filter || state.podcast.seriesId !== this.filter.podcast.seriesId)) {
-        this.getEpisodes(state.podcast);
-        this.filter = state;
-      }
-    });
+    if (!this.filterStore) {
+      this.filterStore = this.store.select('filter');
+      this.filterStore.subscribe((state: FilterModel) => {
+        if (state.podcast && (!this.filter || state.podcast.seriesId !== this.filter.podcast.seriesId)) {
+          this.filter = state;
+          this.getEpisodes(this.filter.podcast);
+        }
+      });
+    }
   }
 
   loadAccount(token: string) {

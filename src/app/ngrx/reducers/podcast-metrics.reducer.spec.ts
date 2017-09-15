@@ -76,32 +76,6 @@ describe('PodcastMetricsReducer', () => {
     expect(newState.length).toEqual(2);
   });
 
-  it('should unsparse metrics data according to filter', () => {
-    newState = PodcastMetricsReducer(newState,
-      castlePodcastMetrics(
-        podcast,
-        filter,
-        'downloads',
-        [
-          ['2017-08-27T00:00:00Z', 52522],
-          ['2017-08-28T00:00:00Z', 162900],
-          ['2017-08-30T00:00:00Z', 52522],
-          ['2017-08-31T00:00:00Z', 162900],
-          ['2017-09-01T00:00:00Z', 46858],
-          ['2017-09-02T00:00:00Z', 52522],
-          ['2017-09-03T00:00:00Z', 162900],
-          ['2017-09-05T00:00:00Z', 52522],
-          ['2017-09-06T00:00:00Z', 162900],
-          ['2017-09-07T00:00:00Z', 46858]
-        ]
-      )
-    );
-    expect(newState.length).toEqual(1);
-    expect(newState[0].seriesId).toEqual(37800);
-    expect(newState[0].dailyDownloads.length).toEqual(12);
-    expect(newState[0].dailyDownloads[2][1]).toEqual(0);
-  });
-
   it('should subtract episode data from "All Others" podcast data according to filter', () => {
     const episode = {
       doc: undefined,

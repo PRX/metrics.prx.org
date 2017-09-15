@@ -1,7 +1,7 @@
 import { Action } from '@ngrx/store';
 import ActionTypes from '../actions/action.types';
 import { PodcastMetricsModel } from '../model';
-import { unsparseDataset, subtractDataset } from './metrics.util';
+import { subtractDataset } from './metrics.util';
 
 const initialState = [];
 
@@ -15,7 +15,7 @@ export function PodcastMetricsReducer(state: PodcastMetricsModel[] = initialStat
       podcastIdx = state.findIndex(p => p.seriesId === action.payload.podcast.seriesId);
       if (podcastIdx > -1) {
         podcast = Object.assign({}, state[podcastIdx]);
-        podcast[metricsProperty] = unsparseDataset(action.payload.filter, action.payload.metrics);
+        podcast[metricsProperty] = action.payload.metrics;
         podcast[metricsProperty + 'Others'] = [...podcast[metricsProperty]];
         podcast.episodeIdsNotInOthers = [];
         newState = [...state.slice(0, podcastIdx), podcast, ...state.slice(podcastIdx + 1)];
@@ -24,7 +24,7 @@ export function PodcastMetricsReducer(state: PodcastMetricsModel[] = initialStat
           seriesId: action.payload.podcast.seriesId,
           feederId: action.payload.podcast.feederId
         };
-        podcast[metricsProperty] = unsparseDataset(action.payload.filter, action.payload.metrics);
+        podcast[metricsProperty] = action.payload.metrics;
         podcast[metricsProperty + 'Others'] = [...podcast[metricsProperty]];
         podcast.episodeIdsNotInOthers = [];
         newState = [podcast, ...state];
@@ -42,8 +42,7 @@ export function PodcastMetricsReducer(state: PodcastMetricsModel[] = initialStat
         state[podcastIdx].episodeIdsNotInOthers.indexOf(action.payload.episode.id) === -1 && // episode not already subtracted
         action.payload.metrics.length > 0) {// has metrics
         podcast = Object.assign({}, state[podcastIdx]);
-        podcast[metricsProperty + 'Others'] = subtractDataset(podcast[metricsProperty + 'Others'],
-          unsparseDataset(action.payload.filter, action.payload.metrics));
+        podcast[metricsProperty + 'Others'] = subtractDataset(podcast[metricsProperty + 'Others'], action.payload.metrics);
         if (podcast.episodeIdsNotInOthers) {
           podcast.episodeIdsNotInOthers.push(action.payload.episode.id);
         } else {

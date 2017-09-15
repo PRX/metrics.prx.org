@@ -88,7 +88,7 @@ export class DownloadsComponent implements OnInit {
       }
 
       if (changedFilter && this.filter.podcast) {
-        this.castle.follow('prx:podcast-downloads', {
+        this.castle.followList('prx:podcast-downloads', {
           id: this.filter.podcast.feederId,
           from: this.filter.beginDate.toISOString(),
           to: this.filter.endDate.toISOString(),
@@ -116,7 +116,7 @@ export class DownloadsComponent implements OnInit {
 
       if (changedFilter && this.filter.episodes) {
         this.filter.episodes.forEach((episode: EpisodeModel) => {
-          this.castle.follow('prx:episode-downloads', {
+          this.castle.followList('prx:episode-downloads', {
             guid: episode.guid,
             from: this.filter.beginDate.toISOString(),
             to: this.filter.endDate.toISOString(),
@@ -139,15 +139,15 @@ export class DownloadsComponent implements OnInit {
   }
 
   setPodcastMetrics(metrics: any) {
-    if (metrics && metrics['downloads']) {
-      this.store.dispatch(castlePodcastMetrics(this.filter.podcast, this.filter, 'downloads', metrics['downloads']));
+    if (metrics && metrics.length && metrics[0]['downloads']) {
+      this.store.dispatch(castlePodcastMetrics(this.filter.podcast, this.filter, 'downloads', metrics[0]['downloads']));
     }
   }
 
   setEpisodeMetrics(episode: EpisodeModel, metrics: any) {
     this.isLoading = false;
-    if (metrics && metrics['downloads']) {
-      this.store.dispatch(castleEpisodeMetrics(episode, this.filter, 'downloads', metrics['downloads']));
+    if (metrics && metrics.length && metrics[0]['downloads']) {
+      this.store.dispatch(castleEpisodeMetrics(episode, this.filter, 'downloads', metrics[0]['downloads']));
     }
   }
 }

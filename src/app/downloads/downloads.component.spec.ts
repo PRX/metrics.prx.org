@@ -41,8 +41,8 @@ describe('DownloadsComponent', () => {
 
   beforeEach(async(() => {
     castle = new MockHalService();
-    castle.root.mock('prx:podcast-downloads', {downloads});
-    castle.root.mock('prx:episode-downloads', {downloads});
+    castle.root.mockList('prx:podcast-downloads', [{downloads}]);
+    castle.root.mockList('prx:episode-downloads', [{downloads}]);
 
     spyOn(CastleActions, 'castlePodcastMetrics').and.callThrough();
     spyOn(CastleActions, 'castleEpisodeMetrics').and.callThrough();

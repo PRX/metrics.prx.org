@@ -25,7 +25,7 @@ export class DownloadsChartComponent {
   // --> episode selection
   colors = ['#000044', '#2C2C68', '#59598C', '#8686B0', '#B3B3D4'];
 
-  constructor(private store: Store<any>) {
+  constructor(public store: Store<any>) {
     this.filterStore = store.select('filter');
 
     this.filterStore.subscribe((state: FilterModel) => {

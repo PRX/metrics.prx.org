@@ -8,7 +8,7 @@ import { TimeseriesChartModel, TimeseriesDatumModel } from 'ngx-prx-styleguide';
 @Component({
   selector: 'metrics-downloads-chart',
   template: `
-    <prx-timeseries-chart type="area" stacked="true" [datasets]="chartData" formatX="%m/%d"></prx-timeseries-chart>
+    <prx-timeseries-chart type="area" stacked="true" [datasets]="chartData" [formatX]="dateFormat"></prx-timeseries-chart>
   `
 })
 export class DownloadsChartComponent {
@@ -108,5 +108,27 @@ export class DownloadsChartComponent {
 
   mapPodcastData(podcast: PodcastModel, metrics: any[][]): TimeseriesChartModel {
     return { data: this.mapData(metrics), label: podcast.title, color: '#a3a3a3' };
+  }
+
+  dateFormat(date: Date) {
+    const dayOfWeek = (day: number): string => {
+      switch (day) {
+        case 0:
+          return 'Sun';
+        case 1:
+          return 'Mon';
+        case 2:
+          return 'Tue';
+        case 3:
+          return 'Wed';
+        case 4:
+          return 'Thu';
+        case 5:
+          return 'Fri';
+        case 6:
+          return 'Sat';
+      }
+    };
+    return dayOfWeek(date.getUTCDay()) + ' ' + (date.getUTCMonth() + 1) + '/' + date.getUTCDate();
   }
 }

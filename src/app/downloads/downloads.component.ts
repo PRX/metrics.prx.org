@@ -28,6 +28,7 @@ export class DownloadsComponent implements OnInit {
   isEpisodeLoading = true;
   error: string;
 
+
   constructor(private castle: CastleService, public store: Store<any>) {
     this.filterStore = store.select('filter');
   }

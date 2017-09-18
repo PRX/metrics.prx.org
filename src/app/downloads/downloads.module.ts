@@ -4,11 +4,13 @@ import { CommonModule } from '@angular/common';
 import { SharedModule } from '../shared';
 import { DownloadsComponent } from './downloads.component';
 import { DownloadsChartComponent } from './downloads-chart.component';
+import { DownloadsDaterangeComponent } from './downloads-daterange';
 
 @NgModule({
   declarations: [
     DownloadsComponent,
-    DownloadsChartComponent
+    DownloadsChartComponent,
+    DownloadsDaterangeComponent
   ],
   imports: [
     CommonModule,

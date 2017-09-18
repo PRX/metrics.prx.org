@@ -7,6 +7,6 @@ import { Component } from '@angular/core';
   `
 })
 export class HomeComponent {
-  // eventually this will have Tabs+TabService (or whatever else we use because of the mobile requirement),
+  // eventually this will have Tabs+TabService (or whatever else we use because Tab uses BaseModel plus we have mobile requirements),
   //  but right now it does nothing but a place to point the router and put downloads
 }

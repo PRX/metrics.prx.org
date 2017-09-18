@@ -30,6 +30,7 @@ export class DownloadsComponent implements OnInit {
   }
 
   ngOnInit() {
+    // dispatch some default values for the dates and interval
     const today = new Date();
     const utcEndDate = new Date(Date.UTC(today.getFullYear(), today.getMonth(), today.getDate(), 23, 59, 59, 999));
     const utcBeginDate = new Date(utcEndDate.valueOf() - (14 * 24 * 60 * 60 * 1000) + 1);// 14 days prior at 0:0:0

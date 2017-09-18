@@ -40,6 +40,7 @@ export class AppComponent implements OnInit {
     });
 
     this.podcastStore = store.select('podcast');
+    this.filterStore = this.store.select('filter');
   }
 
   ngOnInit() {
@@ -62,15 +63,12 @@ export class AppComponent implements OnInit {
       }
     });
 
-    if (!this.filterStore) {
-      this.filterStore = this.store.select('filter');
-      this.filterStore.subscribe((state: FilterModel) => {
-        if (state.podcast && (!this.filter || state.podcast.seriesId !== this.filter.podcast.seriesId)) {
-          this.filter = state;
-          this.getEpisodes(this.filter.podcast);
-        }
-      });
-    }
+    this.filterStore.subscribe((state: FilterModel) => {
+      if (state.podcast && (!this.filter || state.podcast.seriesId !== this.filter.podcast.seriesId)) {
+        this.filter = state;
+        this.getEpisodes(this.filter.podcast);
+      }
+    });
   }
 
   loadAccount(token: string) {

@@ -106,7 +106,7 @@ export class DownloadsChartComponent {
     return { data: this.mapData(metrics), label: episode.title, color: '#000044' };
   }
 
-  mapPodcastData(episode: PodcastModel, metrics: any[][]): TimeseriesChartModel {
-    return { data: this.mapData(metrics), label: episode.title, color: '#a3a3a3' };
+  mapPodcastData(podcast: PodcastModel, metrics: any[][]): TimeseriesChartModel {
+    return { data: this.mapData(metrics), label: podcast.title, color: '#a3a3a3' };
   }
 }

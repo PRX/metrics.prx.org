@@ -40,7 +40,7 @@ export class AppComponent implements OnInit {
     });
 
     this.podcastStore = store.select('podcast');
-    this.filterStore = this.store.select('filter');
+    this.filterStore = store.select('filter');
   }
 
   ngOnInit() {
@@ -54,7 +54,7 @@ export class AppComponent implements OnInit {
             return p.feederId === Env.CASTLE_TEST_PODCAST.toString();
           });
         } else {
-          selectedPodcast = this.podcasts && this.podcasts.length ? this.podcasts[0] : null;
+          selectedPodcast = this.podcasts[0];
         }
         if (selectedPodcast &&
           (!this.filter || (this.filter && this.filter.podcast && selectedPodcast.seriesId !== this.filter.podcast.seriesId))) {
@@ -101,7 +101,7 @@ export class AppComponent implements OnInit {
     podcast.doc.followItems('prx:distributions').subscribe((distros: HalDoc[]) => {
       const podcasts = distros.filter((doc => doc['kind'] === 'podcast'));
       if (podcasts && podcasts.length > 0) {
-        podcast.feederUrl = podcasts[0]['url']; // TODO: am I supposed to get the feeder id from this url?
+        podcast.feederUrl = podcasts[0]['url'];
         const urlParts = podcast.feederUrl.split('/');
         if (urlParts.length > 1) {
           podcast.feederId = urlParts[urlParts.length - 1];

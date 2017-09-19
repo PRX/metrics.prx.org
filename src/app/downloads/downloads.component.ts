@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
 import { CastleService } from '../core';
@@ -8,10 +8,11 @@ import { castlePodcastMetrics, castleEpisodeMetrics, castleFilter } from '../ngr
 @Component({
   selector: 'metrics-downloads',
   template: `
-    <prx-spinner *ngIf="isLoading"></prx-spinner>
-    <p class="error" *ngIf="error">{{error}}</p>
+    <prx-spinner *ngIf="isPodcastLoading || isEpisodeLoading"></prx-spinner>
     <metrics-downloads-chart *ngIf="podcastMetrics && podcastMetrics.length > 0"></metrics-downloads-chart>
-  `
+    <p class="error" *ngIf="error">{{error}}</p>
+  `,
+  styleUrls: ['downloads.component.css']
 })
 export class DownloadsComponent implements OnInit {
   episodeStore: Observable<EpisodeModel[]>;
@@ -22,7 +23,8 @@ export class DownloadsComponent implements OnInit {
   episodeMetrics: EpisodeMetricsModel[];
   filterStore: Observable<FilterModel>;
   filter: FilterModel;
-  isLoading = true;
+  isPodcastLoading = true;
+  isEpisodeLoading = true;
   error: string;
 
   constructor(private castle: CastleService, public store: Store<any>) {
@@ -43,7 +45,7 @@ export class DownloadsComponent implements OnInit {
 
     this.filterStore.subscribe((state: FilterModel) => {
       let changedFilter = false;
-      if (state.podcast && (!this.filter.podcast ||  this.filter.podcast.seriesId !== state.podcast.seriesId)) {
+      if (this.isPodcastChanged(state)) {
         this.filter.podcast = state.podcast;
         changedFilter = true;
 
@@ -75,80 +77,111 @@ export class DownloadsComponent implements OnInit {
           });
         }
       }
-      if (state.beginDate && (!this.filter.beginDate || this.filter.beginDate.valueOf() !== state.beginDate.valueOf())) {
+      if (this.isBeginDateChanged(state)) {
         this.filter.beginDate = state.beginDate;
         changedFilter = true;
       }
-      if (state.endDate && (!this.filter.endDate || this.filter.endDate.valueOf() !== state.endDate.valueOf())) {
+      if (this.isEndDateChanged(state)) {
         this.filter.endDate = state.endDate;
         changedFilter = true;
       }
-      if (state.interval && (!this.filter.interval || this.filter.interval.value !== state.interval.value)) {
+      if (this.isIntervalChanged(state)) {
         this.filter.interval = state.interval;
         changedFilter = true;
       }
 
       if (changedFilter && this.filter.podcast) {
-        this.castle.followList('prx:podcast-downloads', {
-          id: this.filter.podcast.feederId,
-          from: this.filter.beginDate.toISOString(),
-          to: this.filter.endDate.toISOString(),
-          interval: this.filter.interval.value
-        }).subscribe(
-          metrics => this.setPodcastMetrics(metrics),
-          err => {
-            this.isLoading = false;
-            if (err.name === 'HalHttpError' && err.status === 401) {
-              this.error = 'An error occurred while requesting podcast metrics on ' + this.filter.podcast.title;
-              console.error(err);
-            } else {
-              this.error = this.filter.podcast.title + ' podcast has no download metrics.';
-            }
-          }
-        );
+        this.getPodcastMetrics();
       }
 
-      if (state.episodes &&
-        (!this.filter.episodes ||
-          !state.episodes.map(e => e.id).every(id => this.filter.episodes.map(e => e.id).indexOf(id) !== -1))) {
+      if (this.isEpisodesChanged(state)) {
         this.filter.episodes = state.episodes;
         changedFilter = true;
       }
 
       if (changedFilter && this.filter.episodes) {
-        this.filter.episodes.forEach((episode: EpisodeModel) => {
-          this.castle.followList('prx:episode-downloads', {
-            guid: episode.guid,
-            from: this.filter.beginDate.toISOString(),
-            to: this.filter.endDate.toISOString(),
-            interval: this.filter.interval.value
-          }).subscribe(
-            metrics => this.setEpisodeMetrics(episode, metrics),
-            err => {
-              this.isLoading = false;
-              if (err.name === 'HalHttpError' && err.status === 401) {
-                this.error = 'An error occurred while requesting episode metrics on' + episode.title;
-                console.error(err);
-              } else {
-                this.error = episode.title + ' episode has no download metrics.';
-              }
-            }
-          );
-        });
+        this.getEpisodeMetrics();
       }
     });
   }
 
+  getPodcastMetrics() {
+    this.isPodcastLoading = true;
+    this.castle.followList('prx:podcast-downloads', {
+      id: this.filter.podcast.feederId,
+      from: this.filter.beginDate.toISOString(),
+      to: this.filter.endDate.toISOString(),
+      interval: this.filter.interval.value
+    }).subscribe(
+      metrics => this.setPodcastMetrics(metrics),
+      err => {
+        this.isPodcastLoading = false;
+        if (err.name === 'HalHttpError' && err.status === 401) {
+          this.error = 'An error occurred while requesting podcast metrics on ' + this.filter.podcast.title;
+          console.error(err);
+        } else {
+          this.error = this.filter.podcast.title + ' podcast has no download metrics.';
+        }
+      }
+    );
+  }
+
   setPodcastMetrics(metrics: any) {
+    this.isPodcastLoading = false;
     if (metrics && metrics.length && metrics[0]['downloads']) {
       this.store.dispatch(castlePodcastMetrics(this.filter.podcast, this.filter, 'downloads', metrics[0]['downloads']));
     }
   }
 
+  getEpisodeMetrics() {
+    this.isEpisodeLoading = true;
+    this.filter.episodes.forEach((episode: EpisodeModel) => {
+      this.castle.followList('prx:episode-downloads', {
+        guid: episode.guid,
+        from: this.filter.beginDate.toISOString(),
+        to: this.filter.endDate.toISOString(),
+        interval: this.filter.interval.value
+      }).subscribe(
+        metrics => this.setEpisodeMetrics(episode, metrics),
+        err => {
+          this.isEpisodeLoading = false;
+          if (err.name === 'HalHttpError' && err.status === 401) {
+            this.error = 'An error occurred while requesting episode metrics on' + episode.title;
+            console.error(err);
+          } else {
+            this.error = episode.title + ' episode has no download metrics.';
+          }
+        }
+      );
+    });
+  }
+
   setEpisodeMetrics(episode: EpisodeModel, metrics: any) {
-    this.isLoading = false;
+    this.isEpisodeLoading = false;
     if (metrics && metrics.length && metrics[0]['downloads']) {
       this.store.dispatch(castleEpisodeMetrics(episode, this.filter, 'downloads', metrics[0]['downloads']));
     }
+  }
+
+  isPodcastChanged(state: FilterModel): boolean {
+    return state.podcast && (!this.filter.podcast ||  this.filter.podcast.seriesId !== state.podcast.seriesId);
+  }
+
+  isEpisodesChanged(state: FilterModel): boolean {
+    return state.episodes &&
+      (!this.filter.episodes ||
+      !state.episodes.map(e => e.id).every(id => this.filter.episodes.map(e => e.id).indexOf(id) !== -1));
+  }
+
+  isBeginDateChanged(state: FilterModel): boolean {
+    return state.beginDate && (!this.filter.beginDate || this.filter.beginDate.valueOf() !== state.beginDate.valueOf());
+  }
+
+  isEndDateChanged(state: FilterModel): boolean {
+    return state.endDate && (!this.filter.endDate || this.filter.endDate.valueOf() !== state.endDate.valueOf());
+  }
+
+  isIntervalChanged(state: FilterModel): boolean {
+    return state.interval && (!this.filter.interval || this.filter.interval.value !== state.interval.value);
   }
 }

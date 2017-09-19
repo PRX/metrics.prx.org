@@ -7,13 +7,20 @@ import { castleFilter } from '../ngrx/actions/castle.action.creator';
 @Component({
   selector: 'metrics-downloads-daterange',
   template: `
-    From:
-    <prx-datepicker [date]="filter.beginDate" (dateChange)="onBeginDateChange($event)"></prx-datepicker>
-    <prx-timepicker [date]="filter.beginDate" (timeChange)="onBeginDateChange($event)"></prx-timepicker>
-    Through:
-    <prx-datepicker [date]="filter.endDate" (dateChange)="onEndDateChange($event)"></prx-datepicker>
-    <prx-timepicker [date]="filter.endDate" (timeChange)="onEndDateChange($event)"></prx-timepicker>
-  `
+    <div>
+      From:
+      <prx-datepicker [date]="filter.beginDate" (dateChange)="onBeginDateChange($event)"></prx-datepicker>
+      <prx-timepicker [date]="filter.beginDate" (timeChange)="onBeginDateChange($event)"></prx-timepicker>
+      {{ filter.beginDate.toUTCString() }}
+    </div>
+    <div>
+      Through:
+      <prx-datepicker [date]="filter.endDate" (dateChange)="onEndDateChange($event)"></prx-datepicker>
+      <prx-timepicker [date]="filter.endDate" (timeChange)="onEndDateChange($event)"></prx-timepicker>
+      {{ filter.endDate.toUTCString() }}
+    </div>
+  `,
+  styleUrls: ['downloads-daterange.component.css']
 })
 export class DownloadsDaterangeComponent implements OnInit {
   filterStore: Observable<FilterModel>;

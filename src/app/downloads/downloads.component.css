@@ -1,3 +1,7 @@
 prx-spinner >>> .spinner::before, prx-spinner >>> .spinner::after {
   z-index: 999;
 }
+.controls {
+  display: flex;
+  flex-direction: column;
+}

@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { Observable } from 'rxjs/Observable';
+import { Subscription } from 'rxjs/Subscription';
 import { CastleService } from '../core';
 import { EpisodeModel, EpisodeMetricsModel, PodcastMetricsModel, INTERVAL_DAILY, FilterModel } from '../ngrx/model';
 import { castlePodcastMetrics, castleEpisodeMetrics, castleFilter } from '../ngrx/actions/castle.action.creator';
@@ -19,14 +19,14 @@ import { castlePodcastMetrics, castleEpisodeMetrics, castleFilter } from '../ngr
   `,
   styleUrls: ['downloads.component.css']
 })
-export class DownloadsComponent implements OnInit {
-  episodeStore: Observable<EpisodeModel[]>;
+export class DownloadsComponent implements OnInit, OnDestroy {
+  episodeStoreSub: Subscription;
   allEpisodes: EpisodeModel[];
-  podcastMetricsStore: Observable<PodcastMetricsModel[]>;
+  podcastMetricsStoreSub: Subscription;
   podcastMetrics: PodcastMetricsModel[];
-  episodeMetricsStore: Observable<EpisodeMetricsModel[]>;
+  episodeMetricsStoreSub: Subscription;
   episodeMetrics: EpisodeMetricsModel[];
-  filterStore: Observable<FilterModel>;
+  filterStoreSub: Subscription;
   filter: FilterModel;
   isPodcastLoading = true;
   isEpisodeLoading = true;
@@ -34,31 +34,20 @@ export class DownloadsComponent implements OnInit {
 
 
   constructor(private castle: CastleService, public store: Store<any>) {
-    this.filterStore = store.select('filter');
   }
 
   ngOnInit() {
-    // dispatch some default values for the dates and interval
-    const today = new Date();
-    const utcEndDate = new Date(Date.UTC(today.getFullYear(), today.getMonth(), today.getDate(), 23, 59, 59, 999));
-    const utcBeginDate = new Date(utcEndDate.valueOf() - (14 * 24 * 60 * 60 * 1000) + 1);// 14 days prior at 0:0:0
-    this.filter = {
-      beginDate: utcBeginDate,
-      endDate: utcEndDate,
-      interval: INTERVAL_DAILY
-    };
-    this.store.dispatch(castleFilter(this.filter));
+    this.setDefaultFilter();
 
-    this.filterStore.subscribe((state: FilterModel) => {
+    this.filterStoreSub = this.store.select('filter').subscribe((state: FilterModel) => {
       let changedFilter = false;
       if (this.isPodcastChanged(state)) {
         this.filter.podcast = state.podcast;
         changedFilter = true;
 
         // we don't want to even look at these stores until we have the selected podcast
-        if (!this.episodeStore) {
-          this.episodeStore = this.store.select('episode');
-          this.episodeStore.subscribe((episodes: EpisodeModel[]) => {
+        if (!this.episodeStoreSub) {
+          this.episodeStoreSub = this.store.select('episode').subscribe((episodes: EpisodeModel[]) => {
             this.allEpisodes = episodes.filter((e: EpisodeModel) => e.seriesId === state.podcast.seriesId);
             if (this.allEpisodes.length > 0) {
               this.store.dispatch(castleFilter({episodes: this.allEpisodes.length > 5 ? this.allEpisodes.slice(0, 5) : this.allEpisodes}));
@@ -66,17 +55,15 @@ export class DownloadsComponent implements OnInit {
           });
         }
 
-        if (!this.podcastMetricsStore) {
-          this.podcastMetricsStore = this.store.select('podcastMetrics');
-          this.podcastMetricsStore.subscribe((podcastMetrics: PodcastMetricsModel[]) => {
+        if (!this.podcastMetricsStoreSub) {
+          this.podcastMetricsStoreSub = this.store.select('podcastMetrics').subscribe((podcastMetrics: PodcastMetricsModel[]) => {
             // TODO: figure out selectors with ngrx so I can put this filtering in a common selector
             this.podcastMetrics = podcastMetrics.filter((p: PodcastMetricsModel) => p.seriesId === state.podcast.seriesId);
           });
         }
 
-        if (state.episodes && !this.episodeMetricsStore) {
-          this.episodeMetricsStore = this.store.select('episodeMetrics');
-          this.episodeMetricsStore.subscribe((episodeMetrics: EpisodeMetricsModel[]) => {
+        if (state.episodes && !this.episodeMetricsStoreSub) {
+          this.episodeMetricsStoreSub = this.store.select('episodeMetrics').subscribe((episodeMetrics: EpisodeMetricsModel[]) => {
             this.episodeMetrics = episodeMetrics.filter((e: EpisodeMetricsModel) => {
               return e.seriesId === state.podcast.seriesId && state.episodes.map(ep => ep.id).indexOf(e.id) !== -1;
             });
@@ -109,6 +96,26 @@ export class DownloadsComponent implements OnInit {
         this.getEpisodeMetrics();
       }
     });
+  }
+
+  ngOnDestroy() {
+    this.filterStoreSub.unsubscribe();
+    this.episodeStoreSub.unsubscribe();
+    this.podcastMetricsStoreSub.unsubscribe();
+    this.episodeMetricsStoreSub.unsubscribe();
+  }
+
+  setDefaultFilter() {
+    // dispatch some default values for the dates and interval
+    const today = new Date();
+    const utcEndDate = new Date(Date.UTC(today.getFullYear(), today.getMonth(), today.getDate(), 23, 59, 59, 999));
+    const utcBeginDate = new Date(utcEndDate.valueOf() - (14 * 24 * 60 * 60 * 1000) + 1); // 14 days prior at 0:0:0
+    this.filter = {
+      beginDate: utcBeginDate,
+      endDate: utcEndDate,
+      interval: INTERVAL_DAILY
+    };
+    this.store.dispatch(castleFilter(this.filter));
   }
 
   getPodcastMetrics() {

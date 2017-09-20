@@ -26,7 +26,7 @@ const LAST_YEAR = 'Last year';
       When:
       <prx-select single="true" [options]="whenOptions" [selected]="selected" (onSelect)="onWhenChange($event)"></prx-select>
     </div>
-    <button class="btn-link">NEXT &gt;&gt;</button>
+    <button class="btn-link" disabled="{{nextDisabled}}">NEXT &gt;&gt;</button>
   `
 })
 export class CannedRangeComponent implements OnInit, OnDestroy {
@@ -34,6 +34,7 @@ export class CannedRangeComponent implements OnInit, OnDestroy {
   filter: FilterModel;
   whenOptions: any[];
   selected: any[];
+  lastChosenRange: any[];
 
   constructor(public store: Store<any>) {}
 
@@ -122,6 +123,38 @@ export class CannedRangeComponent implements OnInit, OnDestroy {
     if (this.filter.beginDate.valueOf() === beginDate.valueOf() &&
       this.filter.endDate.valueOf() === endDate.valueOf()) {
       this.selected = range;
+      this.setLastChosenRange();
+    }
+  }
+
+  setLastChosenRange() {
+    switch (this.selected[0]) {
+      case TODAY:
+      case YESTERDAY:
+        this.lastChosenRange = [1, 'days'];
+        break;
+      case THIS_WEEK:
+      case LAST_WEEK:
+        this.lastChosenRange =  [1, 'weeks'];
+        break;
+      case TWO_WEEKS:
+      case PRIOR_TWO_WEEKS:
+        this.lastChosenRange = [2, 'weeks'];
+        break;
+      case THIS_MONTH:
+      case LAST_MONTH:
+        this.lastChosenRange = [1, 'months'];
+        break;
+      case THREE_MONTHS:
+      case PRIOR_THREE_MONTHS:
+        this.lastChosenRange = [3, 'months'];
+        break;
+      case THIS_YEAR:
+      case LAST_YEAR:
+        this.lastChosenRange = [1, 'year'];
+        break;
+      default:
+        break;
     }
   }
 
@@ -131,7 +164,23 @@ export class CannedRangeComponent implements OnInit, OnDestroy {
   }
 
   get prevDisabled(): string {
-    if (!this.selected) {
+    if (!this.selected && !this.lastChosenRange) {
+      return 'disabled';
+    } else {
+      return null;
+    }
+  }
+
+  get duration(): number {
+    if (this.filter && this.filter.endDate && this.filter.beginDate) {
+      return this.filter.endDate.valueOf() - this.filter.beginDate.valueOf();
+    } else {
+      return null;
+    }
+  }
+
+  get nextDisabled(): string {
+    if (moment(this.filter.endDate.valueOf()).utc().add(this.duration, 'milliseconds').valueOf() > moment.utc().valueOf()) {
       return 'disabled';
     } else {
       return null;
@@ -139,9 +188,9 @@ export class CannedRangeComponent implements OnInit, OnDestroy {
   }
 
   prev() {
+    let newBeginDate, newEndDate;
     if (this.selected) {
       const { beginDate, endDate } = this.selected[1];
-      let newBeginDate, newEndDate;
       switch (this.selected[0]) {
         case TODAY:
         case YESTERDAY:
@@ -195,9 +244,12 @@ export class CannedRangeComponent implements OnInit, OnDestroy {
         default:
           break;
       }
-      if (newBeginDate && newEndDate) {
-        this.store.dispatch(castleFilter({beginDate: newBeginDate.toDate(), endDate: newEndDate.toDate()}));
-      }
+    } else if (this.lastChosenRange) {
+      newBeginDate = moment(this.filter.beginDate).utc().subtract(this.lastChosenRange[0], this.lastChosenRange[1]);
+      newEndDate = moment(this.filter.endDate).utc().subtract(this.lastChosenRange[0], this.lastChosenRange[1]);
+    }
+    if (newBeginDate && newEndDate) {
+      this.store.dispatch(castleFilter({beginDate: newBeginDate.toDate(), endDate: newEndDate.toDate()}));
     }
   }
 }

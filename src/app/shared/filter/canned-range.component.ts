@@ -1,8 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs/Subscription';
-import { FilterModel } from '../ngrx/model';
-import { castleFilter } from '../ngrx/actions/castle.action.creator';
+import { FilterModel } from '../../ngrx/model';
+import { castleFilter } from '../../ngrx/actions/castle.action.creator';
 import * as moment from 'moment';
 
 const TODAY = 'Today';
@@ -19,7 +19,7 @@ const PRIOR_THREE_MONTHS = 'Prior 3 months';
 const LAST_YEAR = 'Last year';
 
 @Component({
-  selector: 'metrics-downloads-cannedrange',
+  selector: 'metrics-canned-range',
   template: `
     <button class="btn-link" disabled="{{prevDisabled}}" (click)="prev()">&lt;&lt; PREV</button>
     <div>
@@ -29,7 +29,7 @@ const LAST_YEAR = 'Last year';
     <button class="btn-link">NEXT &gt;&gt;</button>
   `
 })
-export class DownloadsCannedrangeComponent implements OnInit, OnDestroy {
+export class CannedRangeComponent implements OnInit, OnDestroy {
   filterStoreSub: Subscription;
   filter: FilterModel;
   whenOptions: any[];

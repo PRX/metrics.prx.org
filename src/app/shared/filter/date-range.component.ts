@@ -1,11 +1,11 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs/Subscription';
-import { FilterModel } from '../ngrx/model';
-import { castleFilter } from '../ngrx/actions/castle.action.creator';
+import { FilterModel } from '../../ngrx/model';
+import { castleFilter } from '../../ngrx/actions/castle.action.creator';
 
 @Component({
-  selector: 'metrics-downloads-daterange',
+  selector: 'metrics-date-range',
   template: `
     <div>
       From:
@@ -20,9 +20,9 @@ import { castleFilter } from '../ngrx/actions/castle.action.creator';
       {{ filter.endDate.toUTCString() }}
     </div>
   `,
-  styleUrls: ['downloads-daterange.component.css']
+  styleUrls: ['date-range.component.css']
 })
-export class DownloadsDaterangeComponent implements OnInit, OnDestroy {
+export class DateRangeComponent implements OnInit, OnDestroy {
   filterStoreSub: Subscription;
   filter: FilterModel;
 

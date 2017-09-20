@@ -8,8 +8,6 @@ import { CoreModule, CastleService } from '../core';
 import { SharedModule } from '../shared';
 import { DownloadsComponent } from './downloads.component';
 import { DownloadsChartComponent } from './downloads-chart.component';
-import { DownloadsCannedrangeComponent } from './downloads-cannedrange.component';
-import { DownloadsDaterangeComponent } from './downloads-daterange.component';
 
 import { PodcastReducer } from '../ngrx/reducers/podcast.reducer';
 import { EpisodeReducer } from '../ngrx/reducers/episode.reducer';
@@ -52,9 +50,7 @@ describe('DownloadsComponent', () => {
     TestBed.configureTestingModule({
       declarations: [
         DownloadsComponent,
-        DownloadsChartComponent,
-        DownloadsCannedrangeComponent,
-        DownloadsDaterangeComponent
+        DownloadsChartComponent
       ],
       imports: [
         CoreModule,

@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { Observable } from 'rxjs/Observable';
+import { Subscription } from 'rxjs/Subscription';
 import { FilterModel } from '../ngrx/model';
 import { castleFilter } from '../ngrx/actions/castle.action.creator';
 import * as moment from 'moment';
@@ -29,21 +29,23 @@ const LAST_YEAR = 'Last year';
     <button class="btn-link">NEXT &gt;&gt;</button>
   `
 })
-export class DownloadsCannedrangeComponent implements OnInit {
-  filterStore: Observable<FilterModel>;
+export class DownloadsCannedrangeComponent implements OnInit, OnDestroy {
+  filterStoreSub: Subscription;
   filter: FilterModel;
   whenOptions: any[];
   selected: any[];
 
-  constructor(public store: Store<any>) {
-    this.filterStore = this.store.select('filter');
-  }
+  constructor(public store: Store<any>) {}
 
   ngOnInit() {
-    this.filterStore.subscribe(state => {
+    this.filterStoreSub = this.store.select('filter').subscribe(state => {
       this.filter = state;
       this.genWhenDates();
     });
+  }
+
+  ngOnDestroy() {
+    this.filterStoreSub.unsubscribe();
   }
 
   genWhenDates() {

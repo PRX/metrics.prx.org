@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { Observable } from 'rxjs/Observable';
+import { Subscription } from 'rxjs/Subscription';
 import { FilterModel } from '../ngrx/model';
 import { castleFilter } from '../ngrx/actions/castle.action.creator';
 
@@ -22,18 +22,20 @@ import { castleFilter } from '../ngrx/actions/castle.action.creator';
   `,
   styleUrls: ['downloads-daterange.component.css']
 })
-export class DownloadsDaterangeComponent implements OnInit {
-  filterStore: Observable<FilterModel>;
+export class DownloadsDaterangeComponent implements OnInit, OnDestroy {
+  filterStoreSub: Subscription;
   filter: FilterModel;
 
-  constructor(public store: Store<any>) {
-    this.filterStore = this.store.select('filter');
-  }
+  constructor(public store: Store<any>) {}
 
   ngOnInit() {
-    this.filterStore.subscribe(state => {
+    this.filterStoreSub = this.store.select('filter').subscribe(state => {
       this.filter = state;
     });
+  }
+
+  ngOnDestroy() {
+    this.filterStoreSub.unsubscribe();
   }
 
   onBeginDateChange(date: Date) {

@@ -35,7 +35,7 @@ export class DownloadsChartComponent implements OnDestroy {
           this.podcastMetricsStoreSub = store.select('podcastMetrics').subscribe((podcastMetrics: PodcastMetricsModel[]) => {
             this.podcastMetrics = podcastMetrics.filter((p: PodcastMetricsModel) => p.seriesId === this.filter.podcast.seriesId);
             if (this.podcastMetrics.length > 0) {
-              this.podcastChartData = this.mapPodcastData(this.filter.podcast, this.podcastMetrics[0][metricsProperty + 'Others']);
+              this.podcastChartData = this.mapPodcastData(this.podcastMetrics[0][metricsProperty + 'Others']);
               if (this.episodeChartData && this.episodeChartData.length > 0) {
                 this.chartData = [...this.episodeChartData, this.podcastChartData];
               } else {
@@ -108,8 +108,9 @@ export class DownloadsChartComponent implements OnDestroy {
     return { data: this.mapData(metrics), label: episode.title, color: '#000044' };
   }
 
-  mapPodcastData(podcast: PodcastModel, metrics: any[][]): TimeseriesChartModel {
-    return { data: this.mapData(metrics), label: podcast.title, color: '#a3a3a3' };
+  mapPodcastData(metrics: any[][]): TimeseriesChartModel {
+    const label = this.episodeChartData ? 'All Other Episodes' : 'All Episodes';
+    return { data: this.mapData(metrics), label, color: '#a3a3a3' };
   }
 
   dateFormat(date: Date) {

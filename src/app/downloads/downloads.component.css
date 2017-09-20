@@ -1,0 +1,3 @@
+prx-spinner >>> .spinner::before, prx-spinner >>> .spinner::after {
+  z-index: 999;
+}

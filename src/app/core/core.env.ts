@@ -33,5 +33,5 @@ export class Env {
   public static get AUTH_HOST():             string { return getVar('AUTH_HOST'); }
   public static get AUTH_CLIENT_ID():        string { return getVar('AUTH_CLIENT_ID'); }
   public static get CASTLE_HOST():           string { return getVar('CASTLE_HOST'); }
-  public static get CASTLE_TEST_EPISODE():   string { return getVar('CASTLE_TEST_EPISODE'); }
+  public static get CASTLE_TEST_PODCAST():   string { return getVar('CASTLE_TEST_PODCAST'); }
 }

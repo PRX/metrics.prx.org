@@ -31,16 +31,7 @@ export class DownloadsComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    // dispatch some default values for the dates and interval
-    const today = new Date();
-    const utcEndDate = new Date(Date.UTC(today.getFullYear(), today.getMonth(), today.getDate(), 23, 59, 59, 999));
-    const utcBeginDate = new Date(utcEndDate.valueOf() - (14 * 24 * 60 * 60 * 1000) + 1);// 14 days prior at 0:0:0
-    this.filter = {
-      beginDate: utcBeginDate,
-      endDate: utcEndDate,
-      interval: INTERVAL_DAILY
-    };
-    this.store.dispatch(castleFilter(this.filter));
+    this.setDefaultFilter();
 
     this.filterStoreSub = this.store.select('filter').subscribe((state: FilterModel) => {
       let changedFilter = false;
@@ -106,6 +97,19 @@ export class DownloadsComponent implements OnInit, OnDestroy {
     this.episodeStoreSub.unsubscribe();
     this.podcastMetricsStoreSub.unsubscribe();
     this.episodeMetricsStoreSub.unsubscribe();
+  }
+
+  setDefaultFilter() {
+    // dispatch some default values for the dates and interval
+    const today = new Date();
+    const utcEndDate = new Date(Date.UTC(today.getFullYear(), today.getMonth(), today.getDate(), 23, 59, 59, 999));
+    const utcBeginDate = new Date(utcEndDate.valueOf() - (14 * 24 * 60 * 60 * 1000) + 1); // 14 days prior at 0:0:0
+    this.filter = {
+      beginDate: utcBeginDate,
+      endDate: utcEndDate,
+      interval: INTERVAL_DAILY
+    };
+    this.store.dispatch(castleFilter(this.filter));
   }
 
   getPodcastMetrics() {

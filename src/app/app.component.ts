@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { Observable } from 'rxjs/Observable';
+import { Subscription } from 'rxjs/Subscription';
 import { AuthService } from 'ngx-prx-styleguide';
 import { CmsService, HalDoc } from './core';
 import { Env } from './core/core.env';
@@ -13,7 +13,7 @@ import { castleFilter } from './ngrx/actions/castle.action.creator';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent implements OnInit {
+export class AppComponent implements OnInit, OnDestroy {
 
   authHost = Env.AUTH_HOST;
   authClient = Env.AUTH_CLIENT_ID;
@@ -22,9 +22,9 @@ export class AppComponent implements OnInit {
   userName: string;
   userImageDoc: HalDoc;
 
-  podcastStore: Observable<PodcastModel[]>;
+  podcastStoreSub: Subscription;
   podcasts: PodcastModel[];
-  filterStore: Observable<FilterModel[]>;
+  filterStoreSub: Subscription;
   filter: FilterModel;
 
   constructor(
@@ -38,13 +38,10 @@ export class AppComponent implements OnInit {
         cms.auth.subscribe((cmsAuth) => this.loadCmsSeries(cmsAuth));
       }
     });
-
-    this.podcastStore = store.select('podcast');
-    this.filterStore = store.select('filter');
   }
 
   ngOnInit() {
-    this.podcastStore.subscribe((state: PodcastModel[]) => {
+    this.podcastStoreSub = this.store.select('podcast').subscribe((state: PodcastModel[]) => {
       this.podcasts = state;
 
       if (this.podcasts.length > 0) {
@@ -63,12 +60,17 @@ export class AppComponent implements OnInit {
       }
     });
 
-    this.filterStore.subscribe((state: FilterModel) => {
+    this.filterStoreSub = this.store.select('filter').subscribe((state: FilterModel) => {
       if (state.podcast && (!this.filter || state.podcast.seriesId !== this.filter.podcast.seriesId)) {
         this.filter = state;
         this.getEpisodes(this.filter.podcast);
       }
     });
+  }
+
+  ngOnDestroy() {
+    this.podcastStoreSub.unsubscribe();
+    this.filterStoreSub.unsubscribe();
   }
 
   loadAccount(token: string) {

@@ -1,6 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { Observable } from 'rxjs/Observable';
+import { Subscription } from 'rxjs/Subscription';
 import * as moment from 'moment';
 import { EpisodeMetricsModel, PodcastMetricsModel, EpisodeModel, PodcastModel, FilterModel } from '../ngrx/model';
 import { TimeseriesChartModel, TimeseriesDatumModel } from 'ngx-prx-styleguide';
@@ -11,12 +11,12 @@ import { TimeseriesChartModel, TimeseriesDatumModel } from 'ngx-prx-styleguide';
     <prx-timeseries-chart type="area" stacked="true" [datasets]="chartData" formatX="%m/%d"></prx-timeseries-chart>
   `
 })
-export class DownloadsChartComponent {
-  filterStore: Observable<FilterModel>;
+export class DownloadsChartComponent implements OnDestroy {
+  filterStoreSub: Subscription;
   filter: FilterModel;
-  podcastMetricsStore: Observable<PodcastMetricsModel[]>;
+  podcastMetricsStoreSub: Subscription;
   podcastMetrics: PodcastMetricsModel[];
-  episodeMetricsStore: Observable<EpisodeMetricsModel[]>;
+  episodeMetricsStoreSub: Subscription;
   episodeMetrics: EpisodeMetricsModel[];
   episodeChartData: TimeseriesChartModel[];
   podcastChartData: TimeseriesChartModel;
@@ -26,16 +26,13 @@ export class DownloadsChartComponent {
   colors = ['#000044', '#2C2C68', '#59598C', '#8686B0', '#B3B3D4'];
 
   constructor(public store: Store<any>) {
-    this.filterStore = store.select('filter');
-
-    this.filterStore.subscribe((state: FilterModel) => {
+    this.filterStoreSub = store.select('filter').subscribe((state: FilterModel) => {
       if (state.podcast) {
         this.filter = state;
         const metricsProperty = this.filter.interval.key + 'Downloads';
 
-        if (!this.podcastMetricsStore) {
-          this.podcastMetricsStore = this.store.select('podcastMetrics');
-          this.podcastMetricsStore.subscribe((podcastMetrics: PodcastMetricsModel[]) => {
+        if (!this.podcastMetricsStoreSub) {
+          this.podcastMetricsStoreSub = store.select('podcastMetrics').subscribe((podcastMetrics: PodcastMetricsModel[]) => {
             this.podcastMetrics = podcastMetrics.filter((p: PodcastMetricsModel) => p.seriesId === this.filter.podcast.seriesId);
             if (this.podcastMetrics.length > 0) {
               this.podcastChartData = this.mapPodcastData(this.filter.podcast, this.podcastMetrics[0][metricsProperty + 'Others']);
@@ -49,9 +46,8 @@ export class DownloadsChartComponent {
         }
 
         if (this.filter.episodes) {
-          if (!this.episodeMetricsStore) {
-            this.episodeMetricsStore = this.store.select('episodeMetrics');
-            this.episodeMetricsStore.subscribe((episodeMetrics: EpisodeMetricsModel[]) => {
+          if (!this.episodeMetricsStoreSub) {
+            this.episodeMetricsStoreSub = store.select('episodeMetrics').subscribe((episodeMetrics: EpisodeMetricsModel[]) => {
               this.episodeMetrics = episodeMetrics.filter((em: EpisodeMetricsModel) => {
                 return em.seriesId === this.filter.podcast.seriesId &&
                   this.filter.episodes && this.filter.episodes.map(ef => ef.id).indexOf(em.id) !== -1;
@@ -93,6 +89,12 @@ export class DownloadsChartComponent {
         }
       }
     });
+  }
+
+  ngOnDestroy() {
+    this.filterStoreSub.unsubscribe();
+    this.podcastMetricsStoreSub.unsubscribe();
+    this.episodeMetricsStoreSub.unsubscribe();
   }
 
   mapData(data: any): TimeseriesDatumModel[] {

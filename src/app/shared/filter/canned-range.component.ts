@@ -182,16 +182,12 @@ export class CannedRangeComponent implements OnInit, OnDestroy {
     }
   }
 
-  get duration(): number {
-    if (this.filter && this.filter.endDate && this.filter.beginDate) {
-      return this.filter.endDate.valueOf() - this.filter.beginDate.valueOf();
-    } else {
-      return null;
-    }
-  }
-
   get nextDisabled(): string {
-    if (moment(this.filter.endDate.valueOf()).utc().add(this.duration, 'milliseconds').valueOf() > moment.utc().valueOf()) {
+    if (!this.filter || !this.lastChosenRange) {
+      return 'disabled';
+    } else if (moment(this.filter.endDate.valueOf()).utc().add(this.lastChosenRange[0], this.lastChosenRange[1]).valueOf() >
+      this.endOfTodayUTC().endOf(this.lastChosenRange[1]).valueOf()) {
+      // disabled if the end date plus the last chosen range is greater than the end of this same period, i.e. week/month/year
       return 'disabled';
     } else {
       return null;
@@ -258,6 +254,59 @@ export class CannedRangeComponent implements OnInit, OnDestroy {
     } else if (this.lastChosenRange) {
       newBeginDate = moment(this.filter.beginDate).utc().subtract(this.lastChosenRange[0], this.lastChosenRange[1]);
       newEndDate = moment(this.filter.endDate).utc().subtract(this.lastChosenRange[0], this.lastChosenRange[1]);
+    }
+    if (newBeginDate && newEndDate) {
+      this.store.dispatch(castleFilter({beginDate: newBeginDate.toDate(), endDate: newEndDate.toDate()}));
+    }
+  }
+
+  next() {
+    let newBeginDate, newEndDate;
+    if (this.selected) {
+      const { beginDate, endDate } = this.selected[1];
+      switch (this.selected[0]) {
+        case TODAY:
+          break;
+        case YESTERDAY:
+          newBeginDate = moment(beginDate.valueOf()).utc().add(1, 'days');
+          newEndDate = moment.min(moment(endDate.valueOf()).utc().add(1, 'days'), this.endOfTodayUTC());
+          break;
+        case THIS_WEEK:
+          break;
+        case LAST_WEEK:
+          newBeginDate = moment(beginDate.valueOf()).utc().add(1, 'weeks');
+          newEndDate = moment.min(moment(endDate.valueOf()).utc().add(1, 'weeks'), this.endOfTodayUTC());
+          break;
+        case TWO_WEEKS:
+          break;
+        case PRIOR_TWO_WEEKS:
+          newBeginDate = moment(beginDate.valueOf()).utc().add(2, 'weeks');
+          newEndDate = moment.min(moment(endDate.valueOf()).utc().add(2, 'weeks'), this.endOfTodayUTC());
+          break;
+        case THIS_MONTH:
+          break;
+        case LAST_MONTH:
+          newBeginDate = moment(beginDate.valueOf()).utc().add(1, 'months');
+          newEndDate = moment.min(moment(endDate.valueOf()).utc().add(1, 'months'), this.endOfTodayUTC());
+          break;
+        case THREE_MONTHS:
+          break;
+        case PRIOR_THREE_MONTHS:
+          newBeginDate = moment(beginDate.valueOf()).utc().add(3, 'months');
+          newEndDate = moment.min(moment(endDate.valueOf()).utc().add(3, 'months'), this.endOfTodayUTC());
+          break;
+        case THIS_YEAR:
+          break;
+        case LAST_YEAR:
+          newBeginDate = moment(beginDate.valueOf()).utc().add(1, 'year');
+          newEndDate = moment.min(moment(endDate.valueOf()).utc().add(1, 'year'), this.endOfTodayUTC());
+          break;
+        default:
+          break;
+      }
+    } else if (this.lastChosenRange) {
+      newBeginDate = moment(this.filter.beginDate).utc().add(this.lastChosenRange[0], this.lastChosenRange[1]);
+      newEndDate = moment(this.filter.endDate).utc().add(this.lastChosenRange[0], this.lastChosenRange[1]);
     }
     if (newBeginDate && newEndDate) {
       this.store.dispatch(castleFilter({beginDate: newBeginDate.toDate(), endDate: newEndDate.toDate()}));

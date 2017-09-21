@@ -25,7 +25,7 @@ const LAST_YEAR = 'Last year';
     <div>
       <span>When:</span>
       <span>
-        <prx-select single="true" [options]="whenOptions" [selected]="selected" (onSelect)="onWhenChange($event)"></prx-select>
+        <prx-select single="true" [options]="whenOptions" [selected]="selection" (onSelect)="onWhenChange($event)"></prx-select>
       </span>
     </div>
     <button class="btn-link" disabled="{{nextDisabled}}" (click)="next()">NEXT&nbsp;&gt;&gt;</button>
@@ -127,6 +127,10 @@ export class CannedRangeComponent implements OnInit, OnDestroy {
     // We don't have back data yet, but users want an All time option,
     //  suppose that would just use the pub date of the very first episode as the begin date
     // this.whenOptions.push(['All time', {beginDate: utcBeginDate.toDate(), endDate: utcEndDate.toDate()}]);
+  }
+
+  get selection(): any {
+    return this.selected && this.selected.length ? this.selected[1] : null;
   }
 
   setSelectedIfFilterIsRange(range) {

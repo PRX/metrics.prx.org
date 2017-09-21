@@ -5,18 +5,18 @@ import { FilterModel } from '../../ngrx/model';
 import { castleFilter } from '../../ngrx/actions/castle.action.creator';
 import * as moment from 'moment';
 
-const TODAY = 'Today';
-const THIS_WEEK = 'This week';
-const TWO_WEEKS = '2 weeks';
-const THIS_MONTH = 'This month';
-const THREE_MONTHS = '3 months';
-const THIS_YEAR = 'This year';
-const YESTERDAY = 'Yesterday';
-const LAST_WEEK = 'Last week';
-const PRIOR_TWO_WEEKS = 'Prior 2 weeks';
-const LAST_MONTH = 'Last month';
-const PRIOR_THREE_MONTHS = 'Prior 3 months';
-const LAST_YEAR = 'Last year';
+export const TODAY = 'Today';
+export const THIS_WEEK = 'This week';
+export const TWO_WEEKS = '2 weeks';
+export const THIS_MONTH = 'This month';
+export const THREE_MONTHS = '3 months';
+export const THIS_YEAR = 'This year';
+export const YESTERDAY = 'Yesterday';
+export const LAST_WEEK = 'Last week';
+export const PRIOR_TWO_WEEKS = 'Prior 2 weeks';
+export const LAST_MONTH = 'Last month';
+export const PRIOR_THREE_MONTHS = 'Prior 3 months';
+export const LAST_YEAR = 'Last year';
 
 @Component({
   selector: 'metrics-canned-range',
@@ -49,7 +49,7 @@ export class CannedRangeComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.filterStoreSub.unsubscribe();
+    if (this.filterStoreSub) { this.filterStoreSub.unsubscribe(); }
   }
 
   endOfTodayUTC() {
@@ -135,7 +135,8 @@ export class CannedRangeComponent implements OnInit, OnDestroy {
 
   setSelectedIfFilterIsRange(range) {
     const { beginDate, endDate } = range[1];
-    if (this.filter.beginDate.valueOf() === beginDate.valueOf() &&
+    if (this.filter.beginDate && this.filter.endDate &&
+      this.filter.beginDate.valueOf() === beginDate.valueOf() &&
       this.filter.endDate.valueOf() === endDate.valueOf()) {
       this.selected = range;
       this.setLastChosenRange();

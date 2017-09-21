@@ -99,10 +99,10 @@ export class DownloadsComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.filterStoreSub.unsubscribe();
-    this.episodeStoreSub.unsubscribe();
-    this.podcastMetricsStoreSub.unsubscribe();
-    this.episodeMetricsStoreSub.unsubscribe();
+    if (this.filterStoreSub) { this.filterStoreSub.unsubscribe(); }
+    if (this.episodeStoreSub) { this.episodeStoreSub.unsubscribe(); }
+    if (this.podcastMetricsStoreSub) { this.podcastMetricsStoreSub.unsubscribe(); }
+    if (this.episodeMetricsStoreSub) { this.episodeMetricsStoreSub.unsubscribe(); }
   }
 
   setDefaultFilter() {

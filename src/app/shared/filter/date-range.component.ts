@@ -39,7 +39,7 @@ export class DateRangeComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.filterStoreSub.unsubscribe();
+    if (this.filterStoreSub) { this.filterStoreSub.unsubscribe(); }
   }
 
   onBeginDateChange(date: Date) {

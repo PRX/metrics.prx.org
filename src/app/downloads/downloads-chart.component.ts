@@ -92,9 +92,9 @@ export class DownloadsChartComponent implements OnDestroy {
   }
 
   ngOnDestroy() {
-    this.filterStoreSub.unsubscribe();
-    this.podcastMetricsStoreSub.unsubscribe();
-    this.episodeMetricsStoreSub.unsubscribe();
+    if (this.filterStoreSub) { this.filterStoreSub.unsubscribe(); }
+    if (this.podcastMetricsStoreSub) { this.podcastMetricsStoreSub.unsubscribe(); }
+    if (this.episodeMetricsStoreSub) { this.episodeMetricsStoreSub.unsubscribe(); }
   }
 
   mapData(data: any): TimeseriesDatumModel[] {

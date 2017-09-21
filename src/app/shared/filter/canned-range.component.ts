@@ -21,13 +21,16 @@ const LAST_YEAR = 'Last year';
 @Component({
   selector: 'metrics-canned-range',
   template: `
-    <button class="btn-link" disabled="{{prevDisabled}}" (click)="prev()">&lt;&lt; PREV</button>
+    <button class="btn-link" disabled="{{prevDisabled}}" (click)="prev()">&lt;&lt;&nbsp;PREV</button>
     <div>
-      When:
-      <prx-select single="true" [options]="whenOptions" [selected]="selected" (onSelect)="onWhenChange($event)"></prx-select>
+      <span>When:</span>
+      <span>
+        <prx-select single="true" [options]="whenOptions" [selected]="selected" (onSelect)="onWhenChange($event)"></prx-select>
+      </span>
     </div>
-    <button class="btn-link" disabled="{{nextDisabled}}">NEXT &gt;&gt;</button>
-  `
+    <button class="btn-link" disabled="{{nextDisabled}}" (click)="next()">NEXT&nbsp;&gt;&gt;</button>
+  `,
+  styleUrls: ['./canned-range.component.css']
 })
 export class CannedRangeComponent implements OnInit, OnDestroy {
   filterStoreSub: Subscription;

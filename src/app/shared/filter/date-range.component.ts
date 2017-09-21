@@ -8,16 +8,20 @@ import { castleFilter } from '../../ngrx/actions/castle.action.creator';
   selector: 'metrics-date-range',
   template: `
     <div>
-      From:
-      <prx-datepicker [date]="filter.beginDate" (dateChange)="onBeginDateChange($event)"></prx-datepicker>
-      <prx-timepicker [date]="filter.beginDate" (timeChange)="onBeginDateChange($event)"></prx-timepicker>
-      {{ filter.beginDate.toUTCString() }}
+      <span>From:</span>
+      <span>
+        <prx-datepicker [date]="filter.beginDate" (dateChange)="onBeginDateChange($event)"></prx-datepicker>
+        <prx-timepicker [date]="filter.beginDate" (timeChange)="onBeginDateChange($event)"></prx-timepicker>
+        {{ filter.beginDate.toUTCString() }}
+      </span>
     </div>
     <div>
-      Through:
-      <prx-datepicker [date]="filter.endDate" (dateChange)="onEndDateChange($event)"></prx-datepicker>
-      <prx-timepicker [date]="filter.endDate" (timeChange)="onEndDateChange($event)"></prx-timepicker>
-      {{ filter.endDate.toUTCString() }}
+      <span>Through:</span>
+      <span>
+        <prx-datepicker [date]="filter.endDate" (dateChange)="onEndDateChange($event)"></prx-datepicker>
+        <prx-timepicker [date]="filter.endDate" (timeChange)="onEndDateChange($event)"></prx-timepicker>
+        {{ filter.endDate.toUTCString() }}
+      </span>
     </div>
   `,
   styleUrls: ['date-range.component.css']

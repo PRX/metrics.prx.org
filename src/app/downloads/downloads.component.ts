@@ -11,7 +11,7 @@ import { castlePodcastMetrics, castleEpisodeMetrics, castleFilter } from '../ngr
     <prx-spinner *ngIf="isPodcastLoading || isEpisodeLoading"></prx-spinner>
     <div class="controls">
       <metrics-canned-range></metrics-canned-range>
-      <div> -OR - </div>
+      <div class="bar"></div>
       <metrics-date-range></metrics-date-range>
     </div>
     <metrics-downloads-chart *ngIf="podcastMetrics && podcastMetrics.length > 0"></metrics-downloads-chart>

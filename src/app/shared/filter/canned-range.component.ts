@@ -52,11 +52,19 @@ export class CannedRangeComponent implements OnInit, OnDestroy {
     this.filterStoreSub.unsubscribe();
   }
 
+  endOfTodayUTC() {
+    return moment().utc().hours(23).minutes(59).seconds(59).milliseconds(999);
+  }
+
+  beginningOfTodayUTC() {
+    return moment().utc().hours(0).minutes(0).seconds(0).milliseconds(0);
+  }
+
   genWhenDates() {
     this.selected = null;
 
-    let utcEndDate = moment().utc().hours(23).minutes(59).seconds(59).milliseconds(999);
-    let utcBeginDate = moment().utc().hours(0).minutes(0).seconds(0).milliseconds(0);
+    let utcEndDate = this.endOfTodayUTC();
+    let utcBeginDate = this.beginningOfTodayUTC();
     const daysIntoWeek = utcEndDate.day();
 
     this.whenOptions = [[TODAY, {beginDate: utcBeginDate.toDate(), endDate: utcEndDate.toDate()}]];
@@ -70,7 +78,7 @@ export class CannedRangeComponent implements OnInit, OnDestroy {
     this.whenOptions.push([TWO_WEEKS, {beginDate: utcBeginDate.toDate(), endDate: utcEndDate.toDate()}]);
     this.setSelectedIfFilterIsRange(this.whenOptions[this.whenOptions.length - 1]);
 
-    utcBeginDate = moment().utc().date(1).hours(0).minutes(0).seconds(0).milliseconds(0);
+    utcBeginDate = this.beginningOfTodayUTC().date(1);
     this.whenOptions.push([THIS_MONTH, {beginDate: utcBeginDate.toDate(), endDate: utcEndDate.toDate()}]);
     this.setSelectedIfFilterIsRange(this.whenOptions[this.whenOptions.length - 1]);
 
@@ -78,41 +86,41 @@ export class CannedRangeComponent implements OnInit, OnDestroy {
     this.whenOptions.push([THREE_MONTHS, {beginDate: utcBeginDate.toDate(), endDate: utcEndDate.toDate()}]);
     this.setSelectedIfFilterIsRange(this.whenOptions[this.whenOptions.length - 1]);
 
-    utcBeginDate = moment().utc().month(0).date(1).hours(0).minutes(0).seconds(0).milliseconds(0);
+    utcBeginDate = this.beginningOfTodayUTC().month(0).date(1);
     this.whenOptions.push([THIS_YEAR, {beginDate: utcBeginDate.toDate(), endDate: utcEndDate.toDate()}]);
     this.setSelectedIfFilterIsRange(this.whenOptions[this.whenOptions.length - 1]);
 
     utcEndDate.subtract(1, 'days');
-    utcBeginDate = moment().utc().subtract(1, 'days').hours(0).minutes(0).seconds(0).milliseconds(0);
+    utcBeginDate = this.beginningOfTodayUTC().subtract(1, 'days');
     this.whenOptions.push([YESTERDAY, {beginDate: utcBeginDate.toDate(), endDate: utcEndDate.toDate()}]);
     this.setSelectedIfFilterIsRange(this.whenOptions[this.whenOptions.length - 1]);
 
-    utcEndDate = moment().utc().subtract(daysIntoWeek + 1, 'days').hours(23).minutes(59).seconds(59).milliseconds(999);
-    utcBeginDate = moment().utc().subtract(daysIntoWeek + 7, 'days').hours(0).minutes(0).seconds(0).milliseconds(0);
+    utcEndDate = this.endOfTodayUTC().subtract(daysIntoWeek + 1, 'days');
+    utcBeginDate = this.beginningOfTodayUTC().subtract(daysIntoWeek + 7, 'days');
     this.whenOptions.push([LAST_WEEK, {beginDate: utcBeginDate.toDate(), endDate: utcEndDate.toDate()}]);
     this.setSelectedIfFilterIsRange(this.whenOptions[this.whenOptions.length - 1]);
 
-    utcEndDate = moment().utc().subtract(daysIntoWeek + 8, 'days').hours(23).minutes(59).seconds(59).milliseconds(999);
-    utcBeginDate = moment().utc().subtract(daysIntoWeek + 21, 'days').hours(0).minutes(0).seconds(0).milliseconds(0);
+    utcEndDate = this.endOfTodayUTC().subtract(daysIntoWeek + 8, 'days');
+    utcBeginDate = this.beginningOfTodayUTC().subtract(daysIntoWeek + 21, 'days');
     this.whenOptions.push([PRIOR_TWO_WEEKS, {beginDate: utcBeginDate.toDate(), endDate: utcEndDate.toDate()}]);
     this.setSelectedIfFilterIsRange(this.whenOptions[this.whenOptions.length - 1]);
 
-    utcEndDate = moment().utc().date(1).hours(23).minutes(59).seconds(59).milliseconds(999).subtract(1, 'days'); // 1st of month - 1 day
-    utcBeginDate = moment().utc().date(1).hours(0).minutes(0).seconds(0).milliseconds(0).subtract(1, 'months'); // 1st of month - 1 month
+    utcEndDate = this.endOfTodayUTC().date(1).subtract(1, 'days'); // 1st of month - 1 day
+    utcBeginDate = this.beginningOfTodayUTC().date(1).subtract(1, 'months'); // 1st of month - 1 month
     this.whenOptions.push([LAST_MONTH, {beginDate: utcBeginDate.toDate(), endDate: utcEndDate.toDate()}]);
     this.setSelectedIfFilterIsRange(this.whenOptions[this.whenOptions.length - 1]);
 
     // first of this month - 1 day and 2 months
-    utcEndDate = moment().utc().date(1).hours(23).minutes(59).seconds(59).milliseconds(999).subtract(1, 'days').subtract(2, 'months');
+    utcEndDate = this.endOfTodayUTC().date(1).subtract(1, 'days').subtract(2, 'months');
     // first of this month - 5 months
-    utcBeginDate = moment().utc().date(1).hours(0).minutes(0).seconds(0).milliseconds(0).subtract(5, 'months');
+    utcBeginDate = this.beginningOfTodayUTC().date(1).subtract(5, 'months');
     this.whenOptions.push([PRIOR_THREE_MONTHS, {beginDate: utcBeginDate.toDate(), endDate: utcEndDate.toDate()}]);
     this.setSelectedIfFilterIsRange(this.whenOptions[this.whenOptions.length - 1]);
 
     // last day of year minus 1 year
-    utcEndDate = moment().utc().month(11).date(31).hours(23).minutes(59).seconds(59).milliseconds(999).subtract(1, 'years');
+    utcEndDate = this.endOfTodayUTC().month(11).date(31).subtract(1, 'years');
     // first day of year minus 1 year
-    utcBeginDate = moment().utc().month(0).date(1).hours(0).minutes(0).seconds(0).milliseconds(0).subtract(1, 'years');
+    utcBeginDate = this.beginningOfTodayUTC().month(0).date(1).subtract(1, 'years');
     this.whenOptions.push([LAST_YEAR, {beginDate: utcBeginDate.toDate(), endDate: utcEndDate.toDate()}]);
     this.setSelectedIfFilterIsRange(this.whenOptions[this.whenOptions.length - 1]);
 

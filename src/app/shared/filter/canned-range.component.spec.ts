@@ -65,7 +65,7 @@ describe('CannedRangeComponent', () => {
 
   it('should disable PREV button if date filter has never matched a valid canned range option', () => {
     filter = {
-      beginDate: comp.beginningOfTodayUTC().subtract(1, 'days').toDate(), // Two days is not a valid option
+      beginDate: comp.beginningOfTodayUTC().add(1, 'hour').toDate(), // not a valid option
       endDate: comp.endOfTodayUTC().toDate(),
       interval: INTERVAL_DAILY
     };

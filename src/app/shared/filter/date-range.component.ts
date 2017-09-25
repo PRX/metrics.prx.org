@@ -10,17 +10,15 @@ import { castleFilter } from '../../ngrx/actions/castle.action.creator';
     <div>
       <span>From:</span>
       <span>
-        <prx-datepicker [date]="filter.beginDate" (dateChange)="onBeginDateChange($event)"></prx-datepicker>
-        <prx-timepicker [date]="filter.beginDate" (timeChange)="onBeginDateChange($event)"></prx-timepicker>
-        {{ filter.beginDate.toUTCString() }}
+        <prx-datepicker [date]="filter.beginDate" UTC="true" (dateChange)="onBeginDateChange($event)"></prx-datepicker>
+        <prx-timepicker [date]="filter.beginDate" UTC="true" (timeChange)="onBeginDateChange($event)"></prx-timepicker>
       </span>
     </div>
     <div>
       <span>Through:</span>
       <span>
-        <prx-datepicker [date]="filter.endDate" (dateChange)="onEndDateChange($event)"></prx-datepicker>
-        <prx-timepicker [date]="filter.endDate" (timeChange)="onEndDateChange($event)"></prx-timepicker>
-        {{ filter.endDate.toUTCString() }}
+        <prx-datepicker [date]="filter.endDate" UTC="true" (dateChange)="onEndDateChange($event)"></prx-datepicker>
+        <prx-timepicker [date]="filter.endDate" UTC="true" (timeChange)="onEndDateChange($event)"></prx-timepicker>
       </span>
     </div>
   `,

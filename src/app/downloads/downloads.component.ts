@@ -10,9 +10,12 @@ import { castlePodcastMetrics, castleEpisodeMetrics, castleFilter } from '../ngr
   template: `
     <prx-spinner *ngIf="isPodcastLoading || isEpisodeLoading"></prx-spinner>
     <div class="controls">
-      <metrics-canned-range></metrics-canned-range>
-      <div class="bar"></div>
-      <metrics-date-range></metrics-date-range>
+      <div class="dates">
+        <metrics-canned-range></metrics-canned-range>
+        <div class="bar"></div>
+        <metrics-date-range></metrics-date-range>
+      </div>
+      <metrics-interval></metrics-interval>
     </div>
     <metrics-downloads-chart *ngIf="podcastMetrics && podcastMetrics.length > 0"></metrics-downloads-chart>
     <p class="error" *ngIf="error">{{error}}</p>

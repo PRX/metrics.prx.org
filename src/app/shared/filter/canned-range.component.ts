@@ -68,65 +68,55 @@ export class CannedRangeComponent implements OnInit, OnDestroy {
     const daysIntoWeek = utcEndDate.day();
 
     this.whenOptions = [[TODAY, {beginDate: utcBeginDate.toDate(), endDate: utcEndDate.toDate()}]];
-    this.setSelectedIfFilterIsRange(this.whenOptions[this.whenOptions.length - 1]);
 
     utcBeginDate.subtract(daysIntoWeek, 'days');
     this.whenOptions.push([THIS_WEEK, {beginDate: utcBeginDate.toDate(), endDate: utcEndDate.toDate()}]);
-    this.setSelectedIfFilterIsRange(this.whenOptions[this.whenOptions.length - 1]);
 
     utcBeginDate.subtract(7, 'days');
     this.whenOptions.push([TWO_WEEKS, {beginDate: utcBeginDate.toDate(), endDate: utcEndDate.toDate()}]);
-    this.setSelectedIfFilterIsRange(this.whenOptions[this.whenOptions.length - 1]);
 
     utcBeginDate = this.beginningOfTodayUTC().date(1);
     this.whenOptions.push([THIS_MONTH, {beginDate: utcBeginDate.toDate(), endDate: utcEndDate.toDate()}]);
-    this.setSelectedIfFilterIsRange(this.whenOptions[this.whenOptions.length - 1]);
 
     utcBeginDate.subtract(2, 'months');
     this.whenOptions.push([THREE_MONTHS, {beginDate: utcBeginDate.toDate(), endDate: utcEndDate.toDate()}]);
-    this.setSelectedIfFilterIsRange(this.whenOptions[this.whenOptions.length - 1]);
 
     utcBeginDate = this.beginningOfTodayUTC().month(0).date(1);
     this.whenOptions.push([THIS_YEAR, {beginDate: utcBeginDate.toDate(), endDate: utcEndDate.toDate()}]);
-    this.setSelectedIfFilterIsRange(this.whenOptions[this.whenOptions.length - 1]);
 
     utcEndDate.subtract(1, 'days');
     utcBeginDate = this.beginningOfTodayUTC().subtract(1, 'days');
     this.whenOptions.push([YESTERDAY, {beginDate: utcBeginDate.toDate(), endDate: utcEndDate.toDate()}]);
-    this.setSelectedIfFilterIsRange(this.whenOptions[this.whenOptions.length - 1]);
 
     utcEndDate = this.endOfTodayUTC().subtract(daysIntoWeek + 1, 'days');
     utcBeginDate = this.beginningOfTodayUTC().subtract(daysIntoWeek + 7, 'days');
     this.whenOptions.push([LAST_WEEK, {beginDate: utcBeginDate.toDate(), endDate: utcEndDate.toDate()}]);
-    this.setSelectedIfFilterIsRange(this.whenOptions[this.whenOptions.length - 1]);
 
     utcEndDate = this.endOfTodayUTC().subtract(daysIntoWeek + 8, 'days');
     utcBeginDate = this.beginningOfTodayUTC().subtract(daysIntoWeek + 21, 'days');
     this.whenOptions.push([PRIOR_TWO_WEEKS, {beginDate: utcBeginDate.toDate(), endDate: utcEndDate.toDate()}]);
-    this.setSelectedIfFilterIsRange(this.whenOptions[this.whenOptions.length - 1]);
 
     utcEndDate = this.endOfTodayUTC().date(1).subtract(1, 'days'); // 1st of month - 1 day
     utcBeginDate = this.beginningOfTodayUTC().date(1).subtract(1, 'months'); // 1st of month - 1 month
     this.whenOptions.push([LAST_MONTH, {beginDate: utcBeginDate.toDate(), endDate: utcEndDate.toDate()}]);
-    this.setSelectedIfFilterIsRange(this.whenOptions[this.whenOptions.length - 1]);
 
     // first of this month - 1 day and 2 months
     utcEndDate = this.endOfTodayUTC().date(1).subtract(1, 'days').subtract(2, 'months');
     // first of this month - 5 months
     utcBeginDate = this.beginningOfTodayUTC().date(1).subtract(5, 'months');
     this.whenOptions.push([PRIOR_THREE_MONTHS, {beginDate: utcBeginDate.toDate(), endDate: utcEndDate.toDate()}]);
-    this.setSelectedIfFilterIsRange(this.whenOptions[this.whenOptions.length - 1]);
 
     // last day of year minus 1 year
     utcEndDate = this.endOfTodayUTC().month(11).date(31).subtract(1, 'years');
     // first day of year minus 1 year
     utcBeginDate = this.beginningOfTodayUTC().month(0).date(1).subtract(1, 'years');
     this.whenOptions.push([LAST_YEAR, {beginDate: utcBeginDate.toDate(), endDate: utcEndDate.toDate()}]);
-    this.setSelectedIfFilterIsRange(this.whenOptions[this.whenOptions.length - 1]);
 
     // We don't have back data yet, but users want an All time option,
     //  suppose that would just use the pub date of the very first episode as the begin date
     // this.whenOptions.push(['All time', {beginDate: utcBeginDate.toDate(), endDate: utcEndDate.toDate()}]);
+
+    this.whenOptions.forEach(this.setSelectedIfFilterIsRange.bind(this));
   }
 
   get selection(): any {

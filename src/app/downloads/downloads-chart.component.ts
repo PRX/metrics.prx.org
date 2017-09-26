@@ -2,8 +2,10 @@ import { Component, OnDestroy } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs/Subscription';
 import * as moment from 'moment';
-import { EpisodeMetricsModel, PodcastMetricsModel, EpisodeModel, PodcastModel, FilterModel } from '../ngrx/model';
+import { EpisodeMetricsModel, PodcastMetricsModel, EpisodeModel, FilterModel } from '../ngrx/model';
+import { subtractDatasets } from '../ngrx/reducers/metrics.util';
 import { TimeseriesChartModel, TimeseriesDatumModel } from 'ngx-prx-styleguide';
+import { mapMetricsToTimeseriesData, subtractTimeseriesDatasets } from '../shared/util/chart.util';
 
 @Component({
   selector: 'metrics-downloads-chart',
@@ -15,7 +17,7 @@ export class DownloadsChartComponent implements OnDestroy {
   filterStoreSub: Subscription;
   filter: FilterModel;
   podcastMetricsStoreSub: Subscription;
-  podcastMetrics: PodcastMetricsModel[];
+  podcastMetrics: PodcastMetricsModel;
   episodeMetricsStoreSub: Subscription;
   episodeMetrics: EpisodeMetricsModel[];
   episodeChartData: TimeseriesChartModel[];
@@ -29,17 +31,16 @@ export class DownloadsChartComponent implements OnDestroy {
     this.filterStoreSub = store.select('filter').subscribe((state: FilterModel) => {
       if (state.podcast) {
         this.filter = state;
-        const metricsProperty = this.filter.interval.key + 'Downloads';
 
         if (!this.podcastMetricsStoreSub) {
           this.podcastMetricsStoreSub = store.select('podcastMetrics').subscribe((podcastMetrics: PodcastMetricsModel[]) => {
-            this.podcastMetrics = podcastMetrics.filter((p: PodcastMetricsModel) => p.seriesId === this.filter.podcast.seriesId);
-            if (this.podcastMetrics.length > 0) {
-              this.podcastChartData = this.mapPodcastData(this.podcastMetrics[0][metricsProperty + 'Others']);
-              if (this.episodeChartData && this.episodeChartData.length > 0) {
-                this.chartData = [...this.episodeChartData, this.podcastChartData];
-              } else {
-                this.chartData = [this.podcastChartData];
+            const data = podcastMetrics.filter((p: PodcastMetricsModel) => p.seriesId === this.filter.podcast.seriesId);
+            if (data.length > 0) {
+              this.podcastMetrics = data[0];
+              const metricsProperty = this.filter.interval.key + 'Downloads';
+              if (this.podcastMetrics[metricsProperty]) {
+                this.podcastChartData = this.mapPodcastData(this.podcastMetrics[metricsProperty]);
+                this.updateChartData();
               }
             }
           });
@@ -48,12 +49,19 @@ export class DownloadsChartComponent implements OnDestroy {
         if (this.filter.episodes) {
           if (!this.episodeMetricsStoreSub) {
             this.episodeMetricsStoreSub = store.select('episodeMetrics').subscribe((episodeMetrics: EpisodeMetricsModel[]) => {
+              const metricsProperty = this.filter.interval.key + 'Downloads';
+              // TODO: filter belongs in a selector
               this.episodeMetrics = episodeMetrics.filter((em: EpisodeMetricsModel) => {
                 return em.seriesId === this.filter.podcast.seriesId &&
-                  this.filter.episodes && this.filter.episodes.map(ef => ef.id).indexOf(em.id) !== -1;
+                  // one of the filtered episodes
+                  this.filter.episodes && this.filter.episodes.map(ef => ef.id).indexOf(em.id) !== -1 &&
+                  // has daily/hourly/etcDownloads
+                  // TODO: limit this metrics array to filter's begin and end date in selector
+                  em[metricsProperty];
               });
               if (this.episodeMetrics && this.episodeMetrics.length > 0) {
-                this.episodeChartData = this.episodeMetrics.map((episodeData: EpisodeMetricsModel) => {
+                this.episodeChartData = this.episodeMetrics
+                  .map((episodeData: EpisodeMetricsModel) => {
                   const episode = this.filter.episodes.find(e => e.seriesId === episodeData.seriesId && e.id === episodeData.id);
                   return this.mapEpisodeData(episode, episodeData[metricsProperty]);
                 });
@@ -72,17 +80,14 @@ export class DownloadsChartComponent implements OnDestroy {
                   return getTotal(b.data) - getTotal(a.data);
                 });
                 // set the colors now that they are ordered
-                // TODO: can colors be optional to allow C3 to select colors
+                // TODO: can colors be optional to allow C3 to select colors?
                 // TODO: chart component should not include color in C3 config when dataset is empty
                 // --> create styleguide tickets
                 for (let i = 0; i < this.episodeChartData.length; i++) {
                   this.episodeChartData[i].color = this.colors[i];
                 }
-                if (this.podcastChartData) {
-                  this.chartData = [...this.episodeChartData, this.podcastChartData];
-                } else {
-                  this.chartData = [...this.episodeChartData];
-                }
+
+                this.updateChartData();
               }
             });
           }
@@ -97,20 +102,29 @@ export class DownloadsChartComponent implements OnDestroy {
     if (this.episodeMetricsStoreSub) { this.episodeMetricsStoreSub.unsubscribe(); }
   }
 
-  mapData(data: any): TimeseriesDatumModel[] {
-    return data.map((datum: any) => {
-      return { value: datum[1], date: moment(datum[0]).valueOf() };
-    });
-  }
-
   mapEpisodeData(episode: EpisodeModel, metrics: any[][]): TimeseriesChartModel {
     // this color is temporary and will be re-applied after sorting of the totals
-    return { data: this.mapData(metrics), label: episode.title, color: '#000044' };
+    return { data: mapMetricsToTimeseriesData(metrics), label: episode.title, color: '#000044' };
   }
 
   mapPodcastData(metrics: any[][]): TimeseriesChartModel {
-    const label = this.episodeChartData ? 'All Other Episodes' : 'All Episodes';
-    return { data: this.mapData(metrics), label, color: '#a3a3a3' };
+    return { data: mapMetricsToTimeseriesData(metrics), label: 'All Episodes', color: '#a3a3a3' };
+  }
+
+  updateChartData() {
+    if (this.podcastChartData && this.podcastChartData.data.length > 0 &&
+      this.episodeChartData && this.episodeChartData.length > 0) {
+      // if we have episodes to combine with podcast total
+      const episodeDatasets = this.episodeChartData.map(m => m.data);
+      const allOtherEpisodesData: TimeseriesChartModel = {
+        data: subtractTimeseriesDatasets(this.podcastChartData.data, episodeDatasets),
+        label: 'All Other Episodes',
+        color: '#a3a3a3'
+      };
+      this.chartData = [...this.episodeChartData, allOtherEpisodesData];
+    } else if (this.podcastChartData && this.podcastChartData.data.length > 0) {
+      this.chartData = [this.podcastChartData];
+    }
   }
 
   dateFormat(date: Date) {

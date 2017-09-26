@@ -51,9 +51,10 @@ export class DownloadsComponent implements OnInit, OnDestroy {
         // we don't want to even look at these stores until we have the selected podcast
         if (!this.episodeStoreSub) {
           this.episodeStoreSub = this.store.select('episode').subscribe((episodes: EpisodeModel[]) => {
-            this.allEpisodes = episodes.filter((e: EpisodeModel) => e.seriesId === state.podcast.seriesId);
-            if (this.allEpisodes.length > 0) {
-              this.store.dispatch(castleFilter({episodes: this.allEpisodes.length > 5 ? this.allEpisodes.slice(0, 5) : this.allEpisodes}));
+            const podcastEpisodes = episodes.filter((e: EpisodeModel) => e.seriesId === state.podcast.seriesId);
+            if (podcastEpisodes) {
+              this.allEpisodes = podcastEpisodes;
+              this.setDefaultEpisodeFilter();
             }
           });
         }
@@ -95,7 +96,7 @@ export class DownloadsComponent implements OnInit, OnDestroy {
         changedFilter = true;
       }
 
-      if (changedFilter && this.filter.episodes) {
+      if (changedFilter && this.filter.episodes && this.filter.episodes.length > 0) {
         this.getEpisodeMetrics();
       }
     });
@@ -119,6 +120,14 @@ export class DownloadsComponent implements OnInit, OnDestroy {
       interval: INTERVAL_DAILY
     };
     this.store.dispatch(castleFilter(this.filter));
+  }
+
+  setDefaultEpisodeFilter() {
+    if (!this.filter.episodes ||
+        this.filter.episodes.length < 5) {
+      // init with the first five (or less) episodes
+      this.store.dispatch(castleFilter({episodes: this.allEpisodes.length > 5 ? this.allEpisodes.slice(0, 5) : this.allEpisodes}));
+    }
   }
 
   getPodcastMetrics() {

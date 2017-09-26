@@ -54,17 +54,18 @@ export class AppComponent implements OnInit, OnDestroy {
           selectedPodcast = this.podcasts[0];
         }
         if (selectedPodcast &&
-          (!this.filter || (this.filter && this.filter.podcast && selectedPodcast.seriesId !== this.filter.podcast.seriesId))) {
+          (!this.filter || !this.filter.podcast ||
+          this.filter.podcast && selectedPodcast.seriesId !== this.filter.podcast.seriesId)) {
           this.store.dispatch(castleFilter({podcast: selectedPodcast}));
         }
       }
     });
 
     this.filterStoreSub = this.store.select('filter').subscribe((state: FilterModel) => {
-      if (state.podcast && (!this.filter || state.podcast.seriesId !== this.filter.podcast.seriesId)) {
-        this.filter = state;
-        this.getEpisodes(this.filter.podcast);
+      if (state.podcast && (!this.filter || !this.filter.podcast || state.podcast.seriesId !== this.filter.podcast.seriesId)) {
+        this.getEpisodes(state.podcast);
       }
+      this.filter = state;
     });
   }
 

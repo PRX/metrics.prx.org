@@ -290,6 +290,10 @@ amdefine@>=0.0.4:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/amdefine/-/amdefine-1.0.1.tgz#4a5282ac164729e93619bcfd3ad151f817ce91f5"
 
+angular-2-dropdown-multiselect@^1.5.4:
+  version "1.5.4"
+  resolved "https://registry.yarnpkg.com/angular-2-dropdown-multiselect/-/angular-2-dropdown-multiselect-1.5.4.tgz#d596745ffdb877e4bc80170d64e8b5c52247926e"
+
 ansi-escapes@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/ansi-escapes/-/ansi-escapes-2.0.0.tgz#5bae52be424878dd9783e8910e3fc2922e83c81b"
@@ -3365,10 +3369,11 @@ newrelic@^2.0.1:
   optionalDependencies:
     "@newrelic/native-metrics" "^2.1.0"
 
-ngx-prx-styleguide@0.0.15:
-  version "0.0.15"
-  resolved "https://registry.yarnpkg.com/ngx-prx-styleguide/-/ngx-prx-styleguide-0.0.15.tgz#02f0704939bc8e9038f19ebfca3ff5f5d383a8f1"
+ngx-prx-styleguide@0.0.16:
+  version "0.0.16"
+  resolved "https://registry.yarnpkg.com/ngx-prx-styleguide/-/ngx-prx-styleguide-0.0.16.tgz#0870701a131180389761192037dc93fb58ddb414"
   dependencies:
+    angular-2-dropdown-multiselect "^1.5.4"
     c3 "^0.4.11"
     pikaday "^1.5.1"
 

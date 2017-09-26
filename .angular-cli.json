@@ -19,6 +19,8 @@
       "prefix": "app",
       "styles": [
         "../node_modules/c3/c3.css",
+        "../node_modules/pikaday/css/pikaday.css",
+        "../node_modules/pikaday/css/triangle.css",
         "../node_modules/ngx-prx-styleguide/styles.css",
         "styles.css"
       ],

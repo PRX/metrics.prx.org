@@ -69,8 +69,8 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.podcastStoreSub.unsubscribe();
-    this.filterStoreSub.unsubscribe();
+    if (this.podcastStoreSub) { this.podcastStoreSub.unsubscribe(); }
+    if (this.filterStoreSub) { this.filterStoreSub.unsubscribe(); }
   }
 
   loadAccount(token: string) {

@@ -8,7 +8,7 @@ import { TimeseriesChartModel, TimeseriesDatumModel } from 'ngx-prx-styleguide';
 @Component({
   selector: 'metrics-downloads-chart',
   template: `
-    <prx-timeseries-chart type="area" stacked="true" [datasets]="chartData" formatX="%m/%d"></prx-timeseries-chart>
+    <prx-timeseries-chart type="area" stacked="true" [datasets]="chartData" [formatX]="dateFormat"></prx-timeseries-chart>
   `
 })
 export class DownloadsChartComponent implements OnDestroy {
@@ -35,7 +35,7 @@ export class DownloadsChartComponent implements OnDestroy {
           this.podcastMetricsStoreSub = store.select('podcastMetrics').subscribe((podcastMetrics: PodcastMetricsModel[]) => {
             this.podcastMetrics = podcastMetrics.filter((p: PodcastMetricsModel) => p.seriesId === this.filter.podcast.seriesId);
             if (this.podcastMetrics.length > 0) {
-              this.podcastChartData = this.mapPodcastData(this.filter.podcast, this.podcastMetrics[0][metricsProperty + 'Others']);
+              this.podcastChartData = this.mapPodcastData(this.podcastMetrics[0][metricsProperty + 'Others']);
               if (this.episodeChartData && this.episodeChartData.length > 0) {
                 this.chartData = [...this.episodeChartData, this.podcastChartData];
               } else {
@@ -92,9 +92,9 @@ export class DownloadsChartComponent implements OnDestroy {
   }
 
   ngOnDestroy() {
-    this.filterStoreSub.unsubscribe();
-    this.podcastMetricsStoreSub.unsubscribe();
-    this.episodeMetricsStoreSub.unsubscribe();
+    if (this.filterStoreSub) { this.filterStoreSub.unsubscribe(); }
+    if (this.podcastMetricsStoreSub) { this.podcastMetricsStoreSub.unsubscribe(); }
+    if (this.episodeMetricsStoreSub) { this.episodeMetricsStoreSub.unsubscribe(); }
   }
 
   mapData(data: any): TimeseriesDatumModel[] {
@@ -108,7 +108,30 @@ export class DownloadsChartComponent implements OnDestroy {
     return { data: this.mapData(metrics), label: episode.title, color: '#000044' };
   }
 
-  mapPodcastData(podcast: PodcastModel, metrics: any[][]): TimeseriesChartModel {
-    return { data: this.mapData(metrics), label: podcast.title, color: '#a3a3a3' };
+  mapPodcastData(metrics: any[][]): TimeseriesChartModel {
+    const label = this.episodeChartData ? 'All Other Episodes' : 'All Episodes';
+    return { data: this.mapData(metrics), label, color: '#a3a3a3' };
+  }
+
+  dateFormat(date: Date) {
+    const dayOfWeek = (day: number): string => {
+      switch (day) {
+        case 0:
+          return 'Sun';
+        case 1:
+          return 'Mon';
+        case 2:
+          return 'Tue';
+        case 3:
+          return 'Wed';
+        case 4:
+          return 'Thu';
+        case 5:
+          return 'Fri';
+        case 6:
+          return 'Sat';
+      }
+    };
+    return dayOfWeek(date.getUTCDay()) + ' ' + (date.getUTCMonth() + 1) + '/' + date.getUTCDate();
   }
 }

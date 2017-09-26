@@ -82,9 +82,9 @@ describe('DownloadsChartComponent', () => {
       el = de.nativeElement;
 
       // call episode and podcast metrics to prime the store
-      comp.store.dispatch(castlePodcastMetrics(podcast, filter, 'downloads', downloads));
-      comp.store.dispatch(castleEpisodeMetrics(episode, filter, 'downloads', downloads));
       comp.store.dispatch(castleFilter(filter));
+      comp.store.dispatch(castleEpisodeMetrics(episode, filter, 'downloads', downloads));
+      comp.store.dispatch(castlePodcastMetrics(podcast, filter, 'downloads', downloads));
     });
   }));
 
@@ -92,7 +92,7 @@ describe('DownloadsChartComponent', () => {
     expect(comp.chartData.length).toBe(2);
     expect(comp.episodeChartData[0].label).toEqual(episode.title);
     expect(comp.episodeChartData[0].data.length).toEqual(downloads.length);
-    expect(comp.podcastChartData.label).toEqual(podcast.title);
+    expect(comp.podcastChartData.label).toEqual('All Other Episodes');
     expect(comp.podcastChartData.data.length).toEqual(downloads.length);
   });
 });

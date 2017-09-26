@@ -9,6 +9,11 @@ import { castlePodcastMetrics, castleEpisodeMetrics, castleFilter } from '../ngr
   selector: 'metrics-downloads',
   template: `
     <prx-spinner *ngIf="isPodcastLoading || isEpisodeLoading"></prx-spinner>
+    <div class="controls">
+      <metrics-canned-range></metrics-canned-range>
+      <div class="bar"></div>
+      <metrics-date-range></metrics-date-range>
+    </div>
     <metrics-downloads-chart *ngIf="podcastMetrics && podcastMetrics.length > 0"></metrics-downloads-chart>
     <p class="error" *ngIf="error">{{error}}</p>
   `,
@@ -26,6 +31,7 @@ export class DownloadsComponent implements OnInit, OnDestroy {
   isPodcastLoading = true;
   isEpisodeLoading = true;
   error: string;
+
 
   constructor(private castle: CastleService, public store: Store<any>) {
   }
@@ -93,10 +99,10 @@ export class DownloadsComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.filterStoreSub.unsubscribe();
-    this.episodeStoreSub.unsubscribe();
-    this.podcastMetricsStoreSub.unsubscribe();
-    this.episodeMetricsStoreSub.unsubscribe();
+    if (this.filterStoreSub) { this.filterStoreSub.unsubscribe(); }
+    if (this.episodeStoreSub) { this.episodeStoreSub.unsubscribe(); }
+    if (this.podcastMetricsStoreSub) { this.podcastMetricsStoreSub.unsubscribe(); }
+    if (this.episodeMetricsStoreSub) { this.episodeMetricsStoreSub.unsubscribe(); }
   }
 
   setDefaultFilter() {

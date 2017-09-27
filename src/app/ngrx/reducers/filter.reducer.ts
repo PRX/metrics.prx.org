@@ -1,10 +1,9 @@
-import { Action } from '@ngrx/store';
-import ActionTypes from '../actions/action.types';
+import { ActionTypes, ActionWithPayload, CastleFilterPayload } from '../actions/action.types';
 import { FilterModel } from '../model';
 
 const initialState = {};
 
-export function FilterReducer(state: FilterModel = initialState, action: Action) {
+export function FilterReducer(state: FilterModel = initialState, action: ActionWithPayload<CastleFilterPayload>) {
   switch (action.type) {
     case ActionTypes.CASTLE_FILTER:
       const newState: FilterModel = Object.assign({}, state);

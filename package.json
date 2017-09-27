@@ -23,8 +23,7 @@
     "@angular/platform-browser": "^4.0.0",
     "@angular/platform-browser-dynamic": "^4.0.0",
     "@angular/router": "^4.0.0",
-    "@ngrx/core": "^1.2.0",
-    "@ngrx/store": "2.2.3",
+    "@ngrx/store": "^4.0.3",
     "connect-gzip-static": "^2.0.1",
     "core-js": "^2.4.1",
     "dotenv": "^4.0.0",
@@ -59,7 +58,7 @@
     "protractor": "~5.1.2",
     "ts-node": "^3.3.0",
     "tslint": "~5.3.2",
-    "typescript": "~2.3.3"
+    "typescript": "^2.5.3"
   },
   "optionalDependencies": {
     "karma-phantomjs-launcher": "^1.0.4"

@@ -29,7 +29,7 @@ describe('CannedRangeComponent', () => {
         RouterTestingModule,
         DatepickerModule,
         SelectModule,
-        StoreModule.provideStore({
+        StoreModule.forRoot({
           filter: FilterReducer
         })
       ]

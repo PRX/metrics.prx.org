@@ -1,10 +1,9 @@
-import { Action } from '@ngrx/store';
-import ActionTypes from '../actions/action.types';
+import { ActionTypes, ActionWithPayload, CastleEpisodeMetricsPayload } from '../actions/action.types';
 import { EpisodeMetricsModel } from '../model';
 
 const initialState = [];
 
-export function EpisodeMetricsReducer(state: EpisodeMetricsModel[] = initialState, action: Action) {
+export function EpisodeMetricsReducer(state: EpisodeMetricsModel[] = initialState, action: ActionWithPayload<CastleEpisodeMetricsPayload>) {
   let epIdx: number, episode: EpisodeMetricsModel, newState: EpisodeMetricsModel[];
   switch (action.type) {
     case ActionTypes.CASTLE_EPISODE_METRICS:

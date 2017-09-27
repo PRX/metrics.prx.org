@@ -25,7 +25,7 @@ describe('DateRangeComponent', () => {
       ],
       imports: [
         DatepickerModule,
-        StoreModule.provideStore({
+        StoreModule.forRoot({
           filter: FilterReducer
         })
       ]

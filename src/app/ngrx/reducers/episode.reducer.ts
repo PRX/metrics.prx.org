@@ -1,10 +1,9 @@
-import { Action } from '@ngrx/store';
-import ActionTypes from '../actions/action.types';
+import { ActionTypes, ActionWithPayload, CmsEpisodeGuidPayload } from '../actions/action.types';
 import { EpisodeModel } from '../model';
 
 const initialState = [];
 
-export function EpisodeReducer(state: EpisodeModel[] = initialState, action: Action) {
+export function EpisodeReducer(state: EpisodeModel[] = initialState, action: ActionWithPayload<CmsEpisodeGuidPayload>) {
   let epIdx: number, episode: EpisodeModel, newState: EpisodeModel[];
   switch (action.type) {
     case ActionTypes.CMS_EPISODE_GUID:

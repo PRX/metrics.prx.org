@@ -25,7 +25,7 @@ describe('HomeComponent', () => {
       imports: [
         SharedModule,
         DownloadsModule,
-        StoreModule.provideStore({
+        StoreModule.forRoot({
           filter: FilterReducer,
           podcast: PodcastReducer,
           episode: EpisodeReducer,

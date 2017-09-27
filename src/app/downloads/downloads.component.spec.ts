@@ -56,7 +56,7 @@ describe('DownloadsComponent', () => {
         CoreModule,
         RouterTestingModule,
         SharedModule,
-        StoreModule.provideStore({
+        StoreModule.forRoot({
           filter: FilterReducer,
           podcast: PodcastReducer,
           episode: EpisodeReducer,

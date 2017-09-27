@@ -28,7 +28,7 @@ import { DownloadsModule } from './downloads/downloads.module';
     CoreModule,
     AuthModule,
     SharedModule,
-    StoreModule.provideStore({
+    StoreModule.forRoot({
       filter: FilterReducer,
       podcast: PodcastReducer,
       episode: EpisodeReducer,

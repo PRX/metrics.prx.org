@@ -22,7 +22,7 @@ describe('DownloadsChartComponent', () => {
   let de: DebugElement;
   let el: HTMLElement;
 
-  const downloads = [
+  const podDownloads = [
     ['2017-08-27T00:00:00Z', 52522],
     ['2017-08-28T00:00:00Z', 162900],
     ['2017-08-29T00:00:00Z', 46858],
@@ -35,6 +35,20 @@ describe('DownloadsChartComponent', () => {
     ['2017-09-05T00:00:00Z', 52522],
     ['2017-09-06T00:00:00Z', 162900],
     ['2017-09-07T00:00:00Z', 46858]
+  ];
+  const epDownloads = [
+    ['2017-08-27T00:00:00Z', 522],
+    ['2017-08-28T00:00:00Z', 900],
+    ['2017-08-29T00:00:00Z', 858],
+    ['2017-08-30T00:00:00Z', 522],
+    ['2017-08-31T00:00:00Z', 900],
+    ['2017-09-01T00:00:00Z', 858],
+    ['2017-09-02T00:00:00Z', 522],
+    ['2017-09-03T00:00:00Z', 900],
+    ['2017-09-04T00:00:00Z', 858],
+    ['2017-09-05T00:00:00Z', 522],
+    ['2017-09-06T00:00:00Z', 900],
+    ['2017-09-07T00:00:00Z', 858]
   ];
   const podcast: PodcastModel = {
     doc: undefined,
@@ -83,16 +97,20 @@ describe('DownloadsChartComponent', () => {
 
       // call episode and podcast metrics to prime the store
       comp.store.dispatch(castleFilter(filter));
-      comp.store.dispatch(castleEpisodeMetrics(episode, filter, 'downloads', downloads));
-      comp.store.dispatch(castlePodcastMetrics(podcast, filter, 'downloads', downloads));
+      comp.store.dispatch(castleEpisodeMetrics(episode, filter, 'downloads', epDownloads));
+      comp.store.dispatch(castlePodcastMetrics(podcast, filter, 'downloads', podDownloads));
     });
   }));
 
   it('should transform podcast and episode data to chart models', () => {
-    expect(comp.chartData.length).toBe(2);
+    expect(comp.podcastChartData.data.length).toEqual(podDownloads.length);
     expect(comp.episodeChartData[0].label).toEqual(episode.title);
-    expect(comp.episodeChartData[0].data.length).toEqual(downloads.length);
-    expect(comp.podcastChartData.label).toEqual('All Other Episodes');
-    expect(comp.podcastChartData.data.length).toEqual(downloads.length);
+    expect(comp.episodeChartData[0].data.length).toEqual(epDownloads.length);
+    expect(comp.chartData.length).toBe(2);
+    expect(comp.chartData[comp.chartData.length - 1].label).toEqual('All Other Episodes');
+  });
+
+  it('should subtract episode data from podcast data for chart display', () => {
+    expect(comp.chartData[comp.chartData.length - 1].data[0].value).toEqual(52000);
   });
 });

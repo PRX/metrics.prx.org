@@ -18,18 +18,33 @@ export class IntervalComponent implements OnInit, OnDestroy {
   intervalOptions: any[];
   selectedInterval: any;
 
-  constructor(public store: Store<any>) {
-    this.intervalOptions = [
-      [INTERVAL_DAILY.name, INTERVAL_DAILY],
-      [INTERVAL_HOURLY.name, INTERVAL_HOURLY],
-      [INTERVAL_15MIN.name, INTERVAL_15MIN]
-    ];
-  }
+  constructor(public store: Store<any>) {}
 
   ngOnInit() {
     this.filterStoreSub = this.store.select('filter').subscribe(state => {
       this.filter = state;
       this.selectedInterval = this.filter.interval;
+      /* API requests limited as follows:
+       10 days at 15m
+       40 days at 1h
+       2.7 years at 1d
+       */
+      if (this.isMoreThanXDays(40)) {
+        this.intervalOptions = [
+          [INTERVAL_DAILY.name, INTERVAL_DAILY]
+        ];
+      } else if (this.isMoreThanXDays(10)) {
+        this.intervalOptions = [
+          [INTERVAL_DAILY.name, INTERVAL_DAILY],
+          [INTERVAL_HOURLY.name, INTERVAL_HOURLY],
+        ];
+      } else {
+        this.intervalOptions = [
+          [INTERVAL_DAILY.name, INTERVAL_DAILY],
+          [INTERVAL_HOURLY.name, INTERVAL_HOURLY],
+          [INTERVAL_15MIN.name, INTERVAL_15MIN]
+        ];
+      }
     });
   }
 
@@ -37,6 +52,10 @@ export class IntervalComponent implements OnInit, OnDestroy {
     if (this.filterStoreSub) {
       this.filterStoreSub.unsubscribe();
     }
+  }
+
+  isMoreThanXDays(x: number): boolean {
+    return this.filter.endDate.valueOf() - this.filter.beginDate.valueOf() > (1000 * 60 * 60 * 24 * x); // x days
   }
 
   onIntervalChange(value: any) {

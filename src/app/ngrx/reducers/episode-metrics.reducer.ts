@@ -22,7 +22,7 @@ export function EpisodeMetricsReducer(state: EpisodeMetricsModel[] = initialStat
         episode[metricsProperty] = action.payload.metrics;
         newState = [episode, ...state];
       }
-      console.log('EpisodeMetricsReducer', action.type, newState);
+      // console.log('EpisodeMetricsReducer', action.type, newState);
       return newState;
     default:
       return state;

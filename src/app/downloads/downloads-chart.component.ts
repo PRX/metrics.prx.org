@@ -2,15 +2,18 @@ import { Component, OnDestroy } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs/Subscription';
 import { TimeseriesChartModel, TimeseriesDatumModel } from 'ngx-prx-styleguide';
-import { EpisodeMetricsModel, PodcastMetricsModel, EpisodeModel, FilterModel } from '../ngrx/model';
+import { EpisodeMetricsModel, PodcastMetricsModel, EpisodeModel, FilterModel,
+  INTERVAL_DAILY, INTERVAL_HOURLY, INTERVAL_15MIN } from '../ngrx/model';
 import { selectFilter, selectPodcastMetrics, selectEpisodeMetrics,
   filterPodcastMetrics, filterEpisodeMetrics, metricsData } from '../ngrx/reducers/reducers';
-import { mapMetricsToTimeseriesData, subtractTimeseriesDatasets } from '../shared/util/chart.util';
+import { mapMetricsToTimeseriesData, subtractTimeseriesDatasets,
+  UTCDateFormat, dailyDateFormat, hourlyDateFormat } from '../shared/util/chart.util';
 
 @Component({
   selector: 'metrics-downloads-chart',
   template: `
-    <prx-timeseries-chart type="area" stacked="true" [datasets]="chartData" [formatX]="dateFormat"></prx-timeseries-chart>
+    <prx-timeseries-chart type="area" stacked="true" [datasets]="chartData" [formatX]="dateFormat()">
+    </prx-timeseries-chart>
   `
 })
 export class DownloadsChartComponent implements OnDestroy {
@@ -118,25 +121,19 @@ export class DownloadsChartComponent implements OnDestroy {
     }
   }
 
-  dateFormat(date: Date) {
-    const dayOfWeek = (day: number): string => {
-      switch (day) {
-        case 0:
-          return 'Sun';
-        case 1:
-          return 'Mon';
-        case 2:
-          return 'Tue';
-        case 3:
-          return 'Wed';
-        case 4:
-          return 'Thu';
-        case 5:
-          return 'Fri';
-        case 6:
-          return 'Sat';
+  dateFormat(): Function {
+    if (this.filter && this.filter.interval) {
+      switch (this.filter.interval.key) {
+        case INTERVAL_DAILY.key:
+          return dailyDateFormat;
+        case INTERVAL_HOURLY.key:
+        case INTERVAL_15MIN.key:
+          return hourlyDateFormat;
+        default:
+          return UTCDateFormat;
       }
-    };
-    return dayOfWeek(date.getUTCDay()) + ' ' + (date.getUTCMonth() + 1) + '/' + date.getUTCDate();
+    } else {
+      return UTCDateFormat;
+    }
   }
 }

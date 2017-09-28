@@ -9,13 +9,13 @@ export function PodcastReducer(state: PodcastModel[] = initialState, action: Act
     case ActionTypes.CMS_PODCAST_FEED:
       podcastIdx = state.findIndex(p => p.seriesId === action.payload.podcast.seriesId);
       if (podcastIdx > -1) {
-        podcast = Object.assign({}, state[podcastIdx], {
+        podcast = {...state[podcastIdx],
           doc: action.payload.podcast.doc,
           seriesId: action.payload.podcast.seriesId,
           title: action.payload.podcast.title,
           feederUrl: action.payload.podcast.feederUrl,
           feederId: action.payload.podcast.feederId
-        });
+        };
         newState = [...state.slice(0, podcastIdx), podcast, ...state.slice(podcastIdx + 1)];
       } else {
         newState = [action.payload.podcast, ...state];

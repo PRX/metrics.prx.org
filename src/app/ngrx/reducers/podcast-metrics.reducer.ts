@@ -12,7 +12,7 @@ export function PodcastMetricsReducer(state: PodcastMetricsModel[] = initialStat
         + action.payload.metricsType.slice(1);
       podcastIdx = state.findIndex(p => p.seriesId === action.payload.podcast.seriesId);
       if (podcastIdx > -1) {
-        podcast = Object.assign({}, state[podcastIdx]);
+        podcast = {...state[podcastIdx]};
         podcast[metricsProperty] = action.payload.metrics;
         newState = [...state.slice(0, podcastIdx), podcast, ...state.slice(podcastIdx + 1)];
       } else {

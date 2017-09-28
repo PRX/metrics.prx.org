@@ -15,11 +15,10 @@ export function EpisodeReducer(state: EpisodeModel[] = initialState, action: Act
 
       epIdx = state.findIndex(e => e.seriesId === seriesId && e.id === id);
       if (epIdx > -1) {
-        episode = Object.assign({}, state[epIdx], {doc, id, seriesId, title, publishedAt, feederUrl, guid});
+        episode = {...state[epIdx], doc, id, seriesId, title, publishedAt, feederUrl, guid};
         newState = [...state.slice(0, epIdx), episode, ...state.slice(epIdx + 1)];
       } else {
-        episode = Object.assign({}, action.payload.episode);
-        episode.seriesId = action.payload.podcast.seriesId;
+        episode = {...action.payload.episode, seriesId: action.payload.podcast.seriesId};
         newState = [episode, ...state];
       }
 

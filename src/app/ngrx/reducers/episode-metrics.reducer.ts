@@ -14,7 +14,7 @@ export function EpisodeMetricsReducer(state: EpisodeMetricsModel[] = initialStat
 
       epIdx = state.findIndex(e => e.seriesId === seriesId && e.id === id);
       if (epIdx > -1) {
-        episode = Object.assign({}, state[epIdx], {guid});
+        episode = {...state[epIdx], guid};
         episode[metricsProperty] = action.payload.metrics;
         newState = [...state.slice(0, epIdx), episode, ...state.slice(epIdx + 1)];
       } else {

@@ -9,17 +9,17 @@ import { selectFilter, selectEpisodes, filterAllPodcastEpisodes } from '../ngrx/
 @Component({
   selector: 'metrics-downloads',
   template: `
-    <prx-spinner *ngIf="isPodcastLoading || isEpisodeLoading"></prx-spinner>
-    <div class="controls">
-      <div class="dates">
-        <metrics-canned-range></metrics-canned-range>
-        <div class="bar"></div>
-        <metrics-date-range></metrics-date-range>
-      </div>
+    <section class="controls">
       <metrics-interval></metrics-interval>
-    </div>
-    <metrics-downloads-chart></metrics-downloads-chart>
-    <p class="error" *ngIf="error">{{error}}</p>
+      <div class="bar"></div>
+      <metrics-canned-range></metrics-canned-range>
+      <metrics-date-range></metrics-date-range>
+    </section>
+    <section class="content">
+      <prx-spinner *ngIf="isPodcastLoading || isEpisodeLoading"></prx-spinner>
+      <metrics-downloads-chart></metrics-downloads-chart>
+      <p class="error" *ngIf="error">{{error}}</p>
+    </section>
   `,
   styleUrls: ['downloads.component.css']
 })

@@ -8,9 +8,12 @@ import { CastleFilterAction } from '../../ngrx/actions';
   selector: 'metrics-interval',
   template: `
     <span>Interval:</span>
-    <prx-select single="true" [options]="intervalOptions" [selected]="selectedInterval" (onSelect)="onIntervalChange($event)"></prx-select>
+    <span>
+      <prx-select single="true" [options]="intervalOptions" [selected]="selectedInterval" (onSelect)="onIntervalChange($event)">
+      </prx-select>
+    </span>
   `,
-  styleUrls: ['date-range.component.css']
+  styleUrls: ['./interval.component.css']
 })
 export class IntervalComponent implements OnInit, OnDestroy {
   filterStoreSub: Subscription;

@@ -1,14 +1,27 @@
+:host {
+  display: flex;
+  padding: 40px 20px 0px 20px;
+}
 prx-spinner >>> .spinner::before, prx-spinner >>> .spinner::after {
   z-index: 999;
 }
-.controls > .dates {
+.controls {
+  flex: 1 1 20%;
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   align-items: center;
+  padding: 10px;
+}
+.content {
+  flex: 4 4 80%;
 }
 .bar {
-  width: 2px;
-  height: 100%;
-  padding: 40px 0;
-  border: 1px solid #676767;
+  width: 75%;
+  padding: 0 40px;
+  margin: 20px 0px;
+  border: 1px solid #a3a3a3;
 }
+hr {
+  margin: 20px 0px;
+}
+

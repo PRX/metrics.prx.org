@@ -47,9 +47,13 @@ export class DownloadsChartComponent implements OnDestroy {
             this.episodeMetricsStoreSub = store.select(selectEpisodeMetrics).subscribe((episodeMetrics: EpisodeMetricsModel[]) => {
               this.episodeMetrics = filterEpisodeMetrics(this.filter, episodeMetrics);
               if (this.episodeMetrics && this.episodeMetrics.length > 0) {
-                this.episodeChartData = this.episodeMetrics.map((metrics: EpisodeMetricsModel) => {
+                this.episodeChartData = [];
+                this.episodeMetrics.forEach((metrics: EpisodeMetricsModel) => {
                   const episode = this.filter.episodes.find(ep => ep.id === metrics.id);
-                  return this.mapEpisodeData(episode, metricsData(this.filter, metrics, 'downloads'));
+                  const data = metricsData(this.filter, metrics, 'downloads');
+                  if (data) {
+                    this.episodeChartData.push(this.mapEpisodeData(episode, data));
+                  }
                 });
                 // TODO: can't really hide this sort by total and getting colors in here, will also need it for the table
                 // sort these episodes by their data total for the stacked chart
@@ -99,7 +103,8 @@ export class DownloadsChartComponent implements OnDestroy {
 
   updateChartData() {
     if (this.podcastChartData && this.podcastChartData.data.length > 0 &&
-      this.episodeChartData && this.episodeChartData.length > 0) {
+      this.episodeChartData && this.episodeChartData.length > 0 &&
+      this.episodeChartData.every(chartData => chartData.data.length === this.podcastChartData.data.length)) {
       // if we have episodes to combine with podcast total
       const episodeDatasets = this.episodeChartData.map(m => m.data);
       const allOtherEpisodesData: TimeseriesChartModel = {

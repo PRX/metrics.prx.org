@@ -1,9 +1,9 @@
-import { ActionTypes, ActionWithPayload, CastleFilterPayload } from '../actions/action.types';
+import { ActionTypes, ActionWithPayload, CastleFilterPayload } from '../actions';
 import { FilterModel } from '../model';
 
 const initialState = {};
 
-export function FilterReducer(state: FilterModel = initialState, action: ActionWithPayload<CastleFilterPayload>) {
+export function FilterReducer(state: FilterModel = initialState, action: ActionWithPayload<CastleFilterPayload>): FilterModel {
   switch (action.type) {
     case ActionTypes.CASTLE_FILTER:
       const newState: FilterModel = Object.assign({}, state);

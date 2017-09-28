@@ -5,10 +5,10 @@ import { StoreModule } from '@ngrx/store';
 import { DatepickerModule } from 'ngx-prx-styleguide';
 import { DateRangeComponent } from './date-range.component';
 
-import { FilterReducer } from '../../ngrx/reducers/filter.reducer';
+import { reducers } from '../../ngrx/reducers/reducers';
 
 import { FilterModel, INTERVAL_DAILY } from '../../ngrx/model';
-import { castleFilter } from '../../ngrx/actions/castle.action.creator';
+import { CastleFilterAction } from '../../ngrx/actions';
 
 describe('DateRangeComponent', () => {
   let comp: DateRangeComponent;
@@ -25,9 +25,7 @@ describe('DateRangeComponent', () => {
       ],
       imports: [
         DatepickerModule,
-        StoreModule.forRoot({
-          filter: FilterReducer
-        })
+        StoreModule.forRoot(reducers)
       ]
     }).compileComponents().then(() => {
       fix = TestBed.createComponent(DateRangeComponent);
@@ -47,7 +45,7 @@ describe('DateRangeComponent', () => {
       endDate: utcEndDate,
       interval: INTERVAL_DAILY
     };
-    comp.store.dispatch(castleFilter(filter));
+    comp.store.dispatch(new CastleFilterAction({filter}));
     expect(comp.filter.beginDate.valueOf()).toEqual(utcBeginDate.valueOf());
     expect(comp.filter.endDate.valueOf()).toEqual(utcEndDate.valueOf());
   });

@@ -6,5 +6,4 @@ export interface PodcastModel {
   title: string;
   feederUrl?: string;
   feederId?: string;
-  episodeIds?: number[];
 }

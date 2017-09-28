@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs/Subscription';
 import { FilterModel } from '../../ngrx/model';
-import { castleFilter } from '../../ngrx/actions/castle.action.creator';
+import { CastleFilterAction } from '../../ngrx/actions';
 
 @Component({
   selector: 'metrics-date-range',
@@ -41,10 +41,10 @@ export class DateRangeComponent implements OnInit, OnDestroy {
   }
 
   onBeginDateChange(date: Date) {
-    this.store.dispatch(castleFilter({beginDate: date}));
+    this.store.dispatch(new CastleFilterAction({filter: {beginDate: date}}));
   }
 
   onEndDateChange(date: Date) {
-    this.store.dispatch(castleFilter({endDate: date}));
+    this.store.dispatch(new CastleFilterAction({filter: {endDate: date}}));
   }
 }

@@ -1,4 +1,4 @@
-import { ActionTypes, ActionWithPayload, CastleEpisodeMetricsPayload } from '../actions/action.types';
+import { ActionTypes, ActionWithPayload, CastleEpisodeMetricsPayload } from '../actions';
 import { EpisodeMetricsModel } from '../model';
 
 const initialState = [];

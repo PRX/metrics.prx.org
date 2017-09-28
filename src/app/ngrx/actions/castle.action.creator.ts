@@ -1,23 +1,38 @@
-import { CastlePodcastMetricsAction, CastleEpisodeMetricsAction, CastleFilterAction } from './action.types';
-import { EpisodeModel, PodcastModel, FilterModel, MetricsType } from '../model';
+import { ActionTypes, ActionWithPayload } from './action.types';
+import { FilterModel, EpisodeModel, PodcastModel, MetricsType } from '../model';
 
-// TODO: action creators are now classes, so I can get rid of these wrappers and just do new XyzAction()
+export interface CastleFilterPayload {
+  filter: FilterModel;
+}
 
-export const castlePodcastMetrics = (podcast: PodcastModel,
-                                     filter: FilterModel,
-                                     metricsType: MetricsType,
-                                     metrics: any[][]): CastlePodcastMetricsAction => {
-  return new CastlePodcastMetricsAction({podcast, filter, metricsType, metrics});
-};
+export class CastleFilterAction implements ActionWithPayload<CastleFilterPayload> {
+  readonly type = ActionTypes.CASTLE_FILTER;
 
-export const castleEpisodeMetrics = (episode: EpisodeModel,
-                                     filter: FilterModel,
-                                     metricsType: MetricsType,
-                                     metrics: any[][]): CastleEpisodeMetricsAction => {
-  return new CastleEpisodeMetricsAction({episode, filter, metricsType, metrics});
-};
+  constructor(public payload: CastleFilterPayload) {}
+}
 
-export const castleFilter = (filter: FilterModel): CastleFilterAction => {
-  return new CastleFilterAction({filter});
-};
+export interface CastlePodcastMetricsPayload {
+  podcast: PodcastModel;
+  filter: FilterModel;
+  metricsType: MetricsType;
+  metrics: any[][];
+}
 
+export class CastlePodcastMetricsAction implements ActionWithPayload<CastlePodcastMetricsPayload> {
+  readonly type = ActionTypes.CASTLE_PODCAST_METRICS;
+
+  constructor(public payload: CastlePodcastMetricsPayload) {}
+}
+
+export interface CastleEpisodeMetricsPayload {
+  episode: EpisodeModel;
+  filter: FilterModel;
+  metricsType: MetricsType;
+  metrics: any[][];
+}
+
+export class CastleEpisodeMetricsAction implements ActionWithPayload<CastleEpisodeMetricsPayload> {
+  readonly type = ActionTypes.CASTLE_EPISODE_METRICS;
+
+  constructor(public payload: CastleEpisodeMetricsPayload) {}
+}

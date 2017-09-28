@@ -10,11 +10,7 @@ import { ErrorService } from './error';
 import { CoreModule } from './core';
 import { SharedModule } from './shared';
 
-import { PodcastReducer } from './ngrx/reducers/podcast.reducer';
-import { EpisodeReducer } from './ngrx/reducers/episode.reducer';
-import { PodcastMetricsReducer } from './ngrx/reducers/podcast-metrics.reducer';
-import { EpisodeMetricsReducer } from './ngrx/reducers/episode-metrics.reducer';
-import { FilterReducer } from './ngrx/reducers/filter.reducer';
+import { reducers } from './ngrx/reducers/reducers';
 
 import { DownloadsModule } from './downloads/downloads.module';
 
@@ -28,13 +24,7 @@ import { DownloadsModule } from './downloads/downloads.module';
     CoreModule,
     AuthModule,
     SharedModule,
-    StoreModule.forRoot({
-      filter: FilterReducer,
-      podcast: PodcastReducer,
-      episode: EpisodeReducer,
-      podcastMetrics: PodcastMetricsReducer,
-      episodeMetrics: EpisodeMetricsReducer
-    }),
+    StoreModule.forRoot(reducers),
     routing,
     DownloadsModule
   ],

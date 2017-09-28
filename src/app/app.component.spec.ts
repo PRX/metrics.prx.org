@@ -11,14 +11,9 @@ import { CoreModule, CmsService } from './core';
 import { SharedModule } from './shared';
 import { AppComponent } from './app.component';
 
-import { PodcastReducer } from './ngrx/reducers/podcast.reducer';
-import { EpisodeReducer } from './ngrx/reducers/episode.reducer';
-import { PodcastMetricsReducer } from './ngrx/reducers/podcast-metrics.reducer';
-import { EpisodeMetricsReducer } from './ngrx/reducers/episode-metrics.reducer';
-import { FilterReducer } from './ngrx/reducers/filter.reducer';
+import { reducers } from './ngrx/reducers/reducers';
 
-import * as CastleActions from './ngrx/actions/castle.action.creator';
-import * as CmsActions from './ngrx/actions/cms.action.creator';
+import { CastleFilterAction, CmsEpisodeGuidAction, CmsPodcastFeedAction } from './ngrx/actions';
 import { PodcastModel, FilterModel, INTERVAL_DAILY } from './ngrx/model/';
 
 describe('AppComponent', () => {
@@ -48,13 +43,7 @@ describe('AppComponent', () => {
         ModalModule,
         RouterTestingModule,
         SharedModule,
-        StoreModule.forRoot({
-          filter: FilterReducer,
-          podcast: PodcastReducer,
-          episode: EpisodeReducer,
-          podcastMetrics: PodcastMetricsReducer,
-          episodeMetrics: EpisodeMetricsReducer
-        })
+        StoreModule.forRoot(reducers)
       ],
       providers: [
         {provide: AuthService, useValue: {
@@ -101,9 +90,10 @@ describe('AppComponent', () => {
     expect(de.query(By.css('prx-navuser'))).toBeNull();
   }));
 
-  it('should load series podcast and episode and call CMS actions', () => {
-    spyOn(CmsActions, 'cmsPodcastFeed').and.callThrough();
-    spyOn(CmsActions, 'cmsEpisodeGuid').and.callThrough();
+  it('should load series podcast and episode and dispatch CMS actions', () => {
+    spyOn(comp, 'getSeriesPodcastDistribution').and.callThrough();
+    spyOn(comp, 'getEpisodePodcastDistribution').and.callThrough();
+    spyOn(comp.store, 'dispatch').and.callThrough();
     const podcast: PodcastModel = {
       doc: auth.mock('prx:series', {seriesId: 37800, title: 'Pet Talks Daily'}),
       seriesId: 37800,
@@ -133,9 +123,11 @@ describe('AppComponent', () => {
       e.mockItems('prx:distributions',
         [{kind: 'episode', url: 'https://feeder.prx.org/api/v1/episodes/42b4ad11-36bd-4f3a-9e92-0de8ad43a515'}]);
     });
-    comp.store.dispatch(CastleActions.castleFilter(filter));
+    comp.store.dispatch(new CastleFilterAction({filter}));
     authToken.next('fake-token');
-    expect(CmsActions.cmsPodcastFeed).toHaveBeenCalled();
-    expect(CmsActions.cmsEpisodeGuid).toHaveBeenCalled();
+    expect(comp.getSeriesPodcastDistribution).toHaveBeenCalled();
+    expect(comp.store.dispatch).toHaveBeenCalledWith(jasmine.any(CmsPodcastFeedAction));
+    expect(comp.getEpisodePodcastDistribution).toHaveBeenCalled();
+    expect(comp.store.dispatch).toHaveBeenCalledWith(jasmine.any(CmsEpisodeGuidAction));
   });
 });

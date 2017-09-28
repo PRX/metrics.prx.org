@@ -9,13 +9,9 @@ import { SharedModule } from '../shared';
 import { DownloadsComponent } from './downloads.component';
 import { DownloadsChartComponent } from './downloads-chart.component';
 
-import { PodcastReducer } from '../ngrx/reducers/podcast.reducer';
-import { EpisodeReducer } from '../ngrx/reducers/episode.reducer';
-import { PodcastMetricsReducer } from '../ngrx/reducers/podcast-metrics.reducer';
-import { EpisodeMetricsReducer } from '../ngrx/reducers/episode-metrics.reducer';
-import { FilterReducer } from '../ngrx/reducers/filter.reducer';
+import { reducers } from '../ngrx/reducers/reducers';
 
-import * as CastleActions from '../ngrx/actions/castle.action.creator';
+import { CastleFilterAction } from '../ngrx/actions';
 
 describe('DownloadsComponent', () => {
   let comp: DownloadsComponent;
@@ -44,9 +40,6 @@ describe('DownloadsComponent', () => {
     castle.root.mockList('prx:podcast-downloads', [{downloads}]);
     castle.root.mockList('prx:episode-downloads', [{downloads}]);
 
-    spyOn(CastleActions, 'castlePodcastMetrics').and.callThrough();
-    spyOn(CastleActions, 'castleEpisodeMetrics').and.callThrough();
-
     TestBed.configureTestingModule({
       declarations: [
         DownloadsComponent,
@@ -56,13 +49,7 @@ describe('DownloadsComponent', () => {
         CoreModule,
         RouterTestingModule,
         SharedModule,
-        StoreModule.forRoot({
-          filter: FilterReducer,
-          podcast: PodcastReducer,
-          episode: EpisodeReducer,
-          podcastMetrics: PodcastMetricsReducer,
-          episodeMetrics: EpisodeMetricsReducer
-        })
+        StoreModule.forRoot(reducers)
       ],
       providers: [
         {provide: CastleService, useValue: castle.root}
@@ -73,27 +60,37 @@ describe('DownloadsComponent', () => {
       fix.detectChanges();
       de = fix.debugElement;
       el = de.nativeElement;
+
+      spyOn(comp, 'setPodcastMetrics').and.callThrough();
+      spyOn(comp, 'setEpisodeMetrics').and.callThrough();
+      spyOn(comp.store, 'dispatch').and.callThrough();
     });
   }));
 
-  it('should load podcast downloads and call CASTLE action', () => {
-    comp.store.dispatch(CastleActions.castleFilter({podcast: {doc: undefined, seriesId: 37800, title: 'Pet Talks Daily'}}));
-    expect(CastleActions.castlePodcastMetrics).toHaveBeenCalled();
+  it('should load podcast downloads and dispatch CASTLE action', () => {
+    comp.store.dispatch(new CastleFilterAction({
+      filter: {podcast: {doc: undefined, seriesId: 37800, title: 'Pet Talks Daily'}}
+    }));
+    expect(comp.setPodcastMetrics).toHaveBeenCalled();
+    expect(comp.store.dispatch).toHaveBeenCalled();
   });
 
   it('should load episode downloads and call CASTLE action', () => {
-    comp.store.dispatch(CastleActions.castleFilter({episodes:
-      [{doc: undefined, id: 123, seriesId: 37800, title: 'A New Pet Talk Episode', publishedAt: new Date()}]}));
-    expect(CastleActions.castleEpisodeMetrics).toHaveBeenCalled();
+    comp.store.dispatch(new CastleFilterAction({
+      filter: {episodes: [{doc: undefined, id: 123, seriesId: 37800, title: 'A New Pet Talk Episode', publishedAt: new Date()}]}}));
+    expect(comp.setEpisodeMetrics).toHaveBeenCalled();
+    expect(comp.store.dispatch).toHaveBeenCalled();
   });
 
   it ('should reload podcast and episode data if filter parameters change', () => {
     const beginDate = new Date(comp.filter.beginDate.valueOf() + 24 * 60 * 60 * 1000);
-    comp.store.dispatch(CastleActions.castleFilter({podcast: {doc: undefined, seriesId: 37800, title: 'Pet Talks Daily'}}));
-    comp.store.dispatch(CastleActions.castleFilter({episodes:
-      [{doc: undefined, id: 123, seriesId: 37800, title: 'A New Pet Talk Episode', publishedAt: new Date()}]}));
-    comp.store.dispatch(CastleActions.castleFilter({beginDate}));
-    expect(CastleActions.castlePodcastMetrics).toHaveBeenCalledTimes(2);
-    expect(CastleActions.castleEpisodeMetrics).toHaveBeenCalledTimes(2);
+    comp.store.dispatch(new CastleFilterAction({
+      filter: {podcast: {doc: undefined, seriesId: 37800, title: 'Pet Talks Daily'}}}));
+    comp.store.dispatch(new CastleFilterAction({
+      filter: {episodes: [{doc: undefined, id: 123, seriesId: 37800, title: 'A New Pet Talk Episode', publishedAt: new Date()}]}}));
+    comp.store.dispatch(new CastleFilterAction({filter: {beginDate}}));
+    expect(comp.setPodcastMetrics).toHaveBeenCalledTimes(2);
+    expect(comp.setEpisodeMetrics).toHaveBeenCalledTimes(2);
+    expect(comp.store.dispatch).toHaveBeenCalledTimes(7);
   });
 });

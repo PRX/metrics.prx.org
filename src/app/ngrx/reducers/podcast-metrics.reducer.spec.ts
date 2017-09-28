@@ -1,4 +1,4 @@
-import { castlePodcastMetrics, castleEpisodeMetrics } from '../actions/castle.action.creator';
+import { CastlePodcastMetricsAction } from '../actions/castle.action.creator';
 import { INTERVAL_DAILY, FilterModel } from '../model';
 import { PodcastMetricsReducer } from './podcast-metrics.reducer';
 
@@ -17,12 +17,12 @@ describe('PodcastMetricsReducer', () => {
   };
   beforeEach(() => {
     newState = PodcastMetricsReducer(undefined,
-      castlePodcastMetrics(
+      new CastlePodcastMetricsAction({
         podcast,
         filter,
-        'downloads',
-        []
-      )
+        metricsType: 'downloads',
+        metrics: []
+      })
     );
   });
 
@@ -33,11 +33,11 @@ describe('PodcastMetricsReducer', () => {
 
   it('should update existing podcast metrics keyed by seriesId', () => {
     newState = PodcastMetricsReducer(newState,
-      castlePodcastMetrics(
+      new CastlePodcastMetricsAction({
         podcast,
         filter,
-        'downloads',
-        [
+        metricsType: 'downloads',
+        metrics: [
           ['2017-08-27T00:00:00Z', 52522],
           ['2017-08-28T00:00:00Z', 162900],
           ['2017-08-29T00:00:00Z', 46858],
@@ -51,7 +51,7 @@ describe('PodcastMetricsReducer', () => {
           ['2017-09-06T00:00:00Z', 162900],
           ['2017-09-07T00:00:00Z', 46858]
         ]
-      )
+      })
     );
     expect(newState.length).toEqual(1);
     expect(newState[0].seriesId).toEqual(37800);
@@ -61,17 +61,17 @@ describe('PodcastMetricsReducer', () => {
 
   it ('should add new podcast metrics', () => {
     newState = PodcastMetricsReducer(newState,
-      castlePodcastMetrics(
-        {
+      new CastlePodcastMetricsAction({
+        podcast: {
           doc: undefined,
           seriesId: 37801,
           feederId: '71',
           title: 'Totally Not Pet Talks Daily'
         },
         filter,
-        'downloads',
-        []
-      )
+        metricsType: 'downloads',
+        metrics: []
+      })
     );
     expect(newState.length).toEqual(2);
   });

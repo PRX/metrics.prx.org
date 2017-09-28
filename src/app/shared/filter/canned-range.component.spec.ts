@@ -7,10 +7,10 @@ import { DatepickerModule, SelectModule } from 'ngx-prx-styleguide';
 import { CannedRangeComponent, TODAY, THIS_WEEK, TWO_WEEKS, THIS_MONTH, THREE_MONTHS, THIS_YEAR,
   YESTERDAY, LAST_WEEK, PRIOR_TWO_WEEKS, LAST_MONTH, PRIOR_THREE_MONTHS, LAST_YEAR } from './canned-range.component';
 
-import { FilterReducer } from '../../ngrx/reducers/filter.reducer';
+import { reducers } from '../../ngrx/reducers/reducers';
 
 import { FilterModel, INTERVAL_DAILY } from '../../ngrx/model';
-import { castleFilter } from '../../ngrx/actions/castle.action.creator';
+import { CastleFilterAction } from '../../ngrx/actions';
 
 describe('CannedRangeComponent', () => {
   let comp: CannedRangeComponent;
@@ -29,9 +29,7 @@ describe('CannedRangeComponent', () => {
         RouterTestingModule,
         DatepickerModule,
         SelectModule,
-        StoreModule.forRoot({
-          filter: FilterReducer
-        })
+        StoreModule.forRoot(reducers)
       ]
     }).compileComponents().then(() => {
       fix = TestBed.createComponent(CannedRangeComponent);
@@ -48,7 +46,7 @@ describe('CannedRangeComponent', () => {
       endDate: comp.endOfTodayUTC().toDate(),
       interval: INTERVAL_DAILY
     };
-    comp.store.dispatch(castleFilter(filter));
+    comp.store.dispatch(new CastleFilterAction({filter}));
     expect(comp.selected[0]).toEqual(TODAY);
   });
 
@@ -58,7 +56,7 @@ describe('CannedRangeComponent', () => {
       endDate: comp.endOfTodayUTC().toDate(),
       interval: INTERVAL_DAILY
     };
-    comp.store.dispatch(castleFilter(filter));
+    comp.store.dispatch(new CastleFilterAction({filter}));
     // nope, you may not NEXT your way into Tomorrow
     expect(comp.nextDisabled).toEqual('disabled');
   });
@@ -69,7 +67,7 @@ describe('CannedRangeComponent', () => {
       endDate: comp.endOfTodayUTC().toDate(),
       interval: INTERVAL_DAILY
     };
-    comp.store.dispatch(castleFilter(filter));
+    comp.store.dispatch(new CastleFilterAction({filter}));
     expect(comp.lastChosenRange).toBe(undefined);
     expect(comp.prevDisabled).toEqual('disabled');
   });
@@ -80,7 +78,7 @@ describe('CannedRangeComponent', () => {
       endDate: comp.endOfTodayUTC().subtract(1, 'days').toDate(),
       interval: INTERVAL_DAILY
     };
-    comp.store.dispatch(castleFilter(filter));
+    comp.store.dispatch(new CastleFilterAction({filter}));
     expect(comp.selected[0]).toEqual(YESTERDAY);
     comp.next();
     expect(comp.selected[0]).toEqual(TODAY);
@@ -94,7 +92,7 @@ describe('CannedRangeComponent', () => {
       endDate: comp.endOfTodayUTC().toDate(),
       interval: INTERVAL_DAILY
     };
-    comp.store.dispatch(castleFilter(filter));
+    comp.store.dispatch(new CastleFilterAction({filter}));
     expect(comp.selected[0]).toEqual(THIS_WEEK);
     comp.prev();
     expect(comp.selected[0]).toEqual(LAST_WEEK);
@@ -110,7 +108,7 @@ describe('CannedRangeComponent', () => {
       endDate: comp.endOfTodayUTC().toDate(),
       interval: INTERVAL_DAILY
     };
-    comp.store.dispatch(castleFilter(filter));
+    comp.store.dispatch(new CastleFilterAction({filter}));
     const option = comp.whenOptions.find(opt => opt[0] === TWO_WEEKS);
     const daysIntoWeek = comp.beginningOfTodayUTC().day();
     expect(option[1].beginDate.valueOf()).toEqual(comp.beginningOfTodayUTC().subtract(daysIntoWeek + 7, 'days').valueOf());
@@ -124,7 +122,7 @@ describe('CannedRangeComponent', () => {
       endDate: comp.endOfTodayUTC().toDate(),
       interval: INTERVAL_DAILY
     };
-    comp.store.dispatch(castleFilter(filter));
+    comp.store.dispatch(new CastleFilterAction({filter}));
     const option = comp.whenOptions.find(opt => opt[0] === THIS_MONTH);
     expect(option[1].beginDate.valueOf()).toEqual(comp.beginningOfTodayUTC().date(1).valueOf());
     expect(option[1].endDate.valueOf()).toBeLessThanOrEqual(comp.endOfTodayUTC().valueOf());
@@ -137,7 +135,7 @@ describe('CannedRangeComponent', () => {
       endDate: comp.endOfTodayUTC().toDate(),
       interval: INTERVAL_DAILY
     };
-    comp.store.dispatch(castleFilter(filter));
+    comp.store.dispatch(new CastleFilterAction({filter}));
     const option = comp.whenOptions.find(opt => opt[0] === THREE_MONTHS);
     expect(option[1].beginDate.valueOf()).toEqual(comp.beginningOfTodayUTC().subtract(2, 'months').date(1).valueOf());
     expect(option[1].endDate.valueOf()).toBeLessThanOrEqual(comp.endOfTodayUTC().valueOf());
@@ -149,7 +147,7 @@ describe('CannedRangeComponent', () => {
       endDate: comp.endOfTodayUTC().month(11).date(31).subtract(1, 'years').toDate(),
       interval: INTERVAL_DAILY
     };
-    comp.store.dispatch(castleFilter(filter));
+    comp.store.dispatch(new CastleFilterAction({filter}));
     expect(comp.selected[0]).toEqual(LAST_YEAR);
     comp.next();
     expect(comp.selected[0]).toEqual(THIS_YEAR);
@@ -163,7 +161,7 @@ describe('CannedRangeComponent', () => {
       endDate: comp.endOfTodayUTC().subtract(daysIntoWeek + 8, 'days').toDate(),
       interval: INTERVAL_DAILY
     };
-    comp.store.dispatch(castleFilter(filter));
+    comp.store.dispatch(new CastleFilterAction({filter}));
     expect(comp.selected[0]).toEqual(PRIOR_TWO_WEEKS);
     comp.next();
     expect(comp.selected[0]).toEqual(TWO_WEEKS);
@@ -176,7 +174,7 @@ describe('CannedRangeComponent', () => {
       endDate: comp.endOfTodayUTC().toDate(),
       interval: INTERVAL_DAILY
     };
-    comp.store.dispatch(castleFilter(filter));
+    comp.store.dispatch(new CastleFilterAction({filter}));
     expect(comp.selected[0]).toEqual(THIS_MONTH);
     comp.prev();
     expect(comp.selected[0]).toEqual(LAST_MONTH);
@@ -190,7 +188,7 @@ describe('CannedRangeComponent', () => {
       endDate: comp.endOfTodayUTC().toDate(),
       interval: INTERVAL_DAILY
     };
-    comp.store.dispatch(castleFilter(filter));
+    comp.store.dispatch(new CastleFilterAction({filter}));
     expect(comp.selected[0]).toEqual(THREE_MONTHS);
     comp.prev();
     expect(comp.selected[0]).toEqual(PRIOR_THREE_MONTHS);

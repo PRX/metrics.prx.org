@@ -1,10 +1,10 @@
 import { Component, OnDestroy } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs/Subscription';
-import * as moment from 'moment';
-import { EpisodeMetricsModel, PodcastMetricsModel, EpisodeModel, FilterModel } from '../ngrx/model';
-import { subtractDatasets } from '../ngrx/reducers/metrics.util';
 import { TimeseriesChartModel, TimeseriesDatumModel } from 'ngx-prx-styleguide';
+import { EpisodeMetricsModel, PodcastMetricsModel, EpisodeModel, FilterModel } from '../ngrx/model';
+import { selectFilter, selectPodcastMetrics, selectEpisodeMetrics,
+  filterPodcastMetrics, filterEpisodeMetrics, metricsData } from '../ngrx/reducers/reducers';
 import { mapMetricsToTimeseriesData, subtractTimeseriesDatasets } from '../shared/util/chart.util';
 
 @Component({
@@ -28,42 +28,28 @@ export class DownloadsChartComponent implements OnDestroy {
   colors = ['#000044', '#2C2C68', '#59598C', '#8686B0', '#B3B3D4'];
 
   constructor(public store: Store<any>) {
-    this.filterStoreSub = store.select('filter').subscribe((state: FilterModel) => {
-      if (state.podcast) {
-        this.filter = state;
+    this.filterStoreSub = store.select(selectFilter).subscribe((newFilter: FilterModel) => {
+      if (newFilter.podcast) {
+        this.filter = newFilter;
 
         if (!this.podcastMetricsStoreSub) {
-          this.podcastMetricsStoreSub = store.select('podcastMetrics').subscribe((podcastMetrics: PodcastMetricsModel[]) => {
-            const data = podcastMetrics.filter((p: PodcastMetricsModel) => p.seriesId === this.filter.podcast.seriesId);
-            if (data.length > 0) {
-              this.podcastMetrics = data[0];
-              const metricsProperty = this.filter.interval.key + 'Downloads';
-              if (this.podcastMetrics[metricsProperty]) {
-                this.podcastChartData = this.mapPodcastData(this.podcastMetrics[metricsProperty]);
-                this.updateChartData();
-              }
+          this.podcastMetricsStoreSub = store.select(selectPodcastMetrics).subscribe((podcastMetrics: PodcastMetricsModel[]) => {
+            this.podcastMetrics = filterPodcastMetrics(this.filter, podcastMetrics);
+            if (this.podcastMetrics) {
+              this.podcastChartData = this.mapPodcastData(metricsData(this.filter, this.podcastMetrics, 'downloads'));
+              this.updateChartData();
             }
           });
         }
 
         if (this.filter.episodes) {
           if (!this.episodeMetricsStoreSub) {
-            this.episodeMetricsStoreSub = store.select('episodeMetrics').subscribe((episodeMetrics: EpisodeMetricsModel[]) => {
-              const metricsProperty = this.filter.interval.key + 'Downloads';
-              // TODO: filter belongs in a selector
-              this.episodeMetrics = episodeMetrics.filter((em: EpisodeMetricsModel) => {
-                return em.seriesId === this.filter.podcast.seriesId &&
-                  // one of the filtered episodes
-                  this.filter.episodes && this.filter.episodes.map(ef => ef.id).indexOf(em.id) !== -1 &&
-                  // has daily/hourly/etcDownloads
-                  // TODO: limit this metrics array to filter's begin and end date in selector
-                  em[metricsProperty];
-              });
+            this.episodeMetricsStoreSub = store.select(selectEpisodeMetrics).subscribe((episodeMetrics: EpisodeMetricsModel[]) => {
+              this.episodeMetrics = filterEpisodeMetrics(this.filter, episodeMetrics);
               if (this.episodeMetrics && this.episodeMetrics.length > 0) {
-                this.episodeChartData = this.episodeMetrics
-                  .map((episodeData: EpisodeMetricsModel) => {
-                  const episode = this.filter.episodes.find(e => e.seriesId === episodeData.seriesId && e.id === episodeData.id);
-                  return this.mapEpisodeData(episode, episodeData[metricsProperty]);
+                this.episodeChartData = this.episodeMetrics.map((metrics: EpisodeMetricsModel) => {
+                  const episode = this.filter.episodes.find(ep => ep.id === metrics.id);
+                  return this.mapEpisodeData(episode, metricsData(this.filter, metrics, 'downloads'));
                 });
                 // TODO: can't really hide this sort by total and getting colors in here, will also need it for the table
                 // sort these episodes by their data total for the stacked chart

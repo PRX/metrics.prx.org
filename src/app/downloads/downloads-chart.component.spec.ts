@@ -6,15 +6,11 @@ import { StoreModule } from '@ngrx/store';
 import { SharedModule } from '../shared';
 import { DownloadsChartComponent } from './downloads-chart.component';
 
-import { PodcastReducer } from '../ngrx/reducers/podcast.reducer';
-import { EpisodeReducer } from '../ngrx/reducers/episode.reducer';
-import { PodcastMetricsReducer } from '../ngrx/reducers/podcast-metrics.reducer';
-import { EpisodeMetricsReducer } from '../ngrx/reducers/episode-metrics.reducer';
-import { FilterReducer } from '../ngrx/reducers/filter.reducer';
+import { reducers } from '../ngrx/reducers/reducers';
 
 import { PodcastModel, EpisodeModel, FilterModel, INTERVAL_DAILY } from '../ngrx/model';
 
-import { castlePodcastMetrics, castleEpisodeMetrics, castleFilter } from '../ngrx/actions/castle.action.creator';
+import { CastlePodcastMetricsAction, CastleEpisodeMetricsAction, CastleFilterAction } from '../ngrx/actions';
 
 describe('DownloadsChartComponent', () => {
   let comp: DownloadsChartComponent;
@@ -80,13 +76,7 @@ describe('DownloadsChartComponent', () => {
       imports: [
         RouterTestingModule,
         SharedModule,
-        StoreModule.forRoot({
-          filter: FilterReducer,
-          podcast: PodcastReducer,
-          episode: EpisodeReducer,
-          podcastMetrics: PodcastMetricsReducer,
-          episodeMetrics: EpisodeMetricsReducer
-        })
+        StoreModule.forRoot(reducers)
       ]
     }).compileComponents().then(() => {
       fix = TestBed.createComponent(DownloadsChartComponent);
@@ -96,9 +86,9 @@ describe('DownloadsChartComponent', () => {
       el = de.nativeElement;
 
       // call episode and podcast metrics to prime the store
-      comp.store.dispatch(castleFilter(filter));
-      comp.store.dispatch(castleEpisodeMetrics(episode, filter, 'downloads', epDownloads));
-      comp.store.dispatch(castlePodcastMetrics(podcast, filter, 'downloads', podDownloads));
+      comp.store.dispatch(new CastleFilterAction({filter}));
+      comp.store.dispatch(new CastleEpisodeMetricsAction({episode, filter, metricsType: 'downloads', metrics: epDownloads}));
+      comp.store.dispatch(new CastlePodcastMetricsAction({podcast, filter, metricsType: 'downloads', metrics: podDownloads}));
     });
   }));
 

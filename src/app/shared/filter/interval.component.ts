@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs/Subscription';
 import { FilterModel, INTERVAL_DAILY, INTERVAL_HOURLY, INTERVAL_15MIN } from '../../ngrx/model';
-import { castleFilter } from '../../ngrx/actions/castle.action.creator';
+import { CastleFilterAction } from '../../ngrx/actions';
 
 @Component({
   selector: 'metrics-interval',
@@ -40,6 +40,6 @@ export class IntervalComponent implements OnInit, OnDestroy {
   }
 
   onIntervalChange(value: any) {
-    this.store.dispatch(castleFilter({interval: value}));
+    this.store.dispatch(new CastleFilterAction({filter: {interval: value}}));
   }
 }

@@ -1,12 +1,24 @@
-import { CmsPodcastFeedAction, CmsEpisodeGuidAction } from './action.types';
+import { ActionTypes, ActionWithPayload } from './action.types';
 import { EpisodeModel, PodcastModel } from '../model';
 
-// TODO: action creators are now classes, so I can get rid of these wrappers and just do new XyzAction()
+export interface CmsPodcastFeedPayload {
+  podcast: PodcastModel;
+}
 
-export const cmsPodcastFeed = (podcast: PodcastModel): CmsPodcastFeedAction => {
-  return new CmsPodcastFeedAction({podcast});
-};
+export class CmsPodcastFeedAction implements ActionWithPayload<CmsPodcastFeedPayload> {
+  readonly type = ActionTypes.CMS_PODCAST_FEED;
 
-export const cmsEpisodeGuid = (podcast: PodcastModel, episode: EpisodeModel): CmsEpisodeGuidAction => {
-  return new CmsEpisodeGuidAction({podcast, episode});
-};
+  constructor(public payload: CmsPodcastFeedPayload) {}
+}
+
+export interface CmsEpisodeGuidPayload {
+  podcast: PodcastModel;
+  episode: EpisodeModel;
+}
+
+export class CmsEpisodeGuidAction implements ActionWithPayload<CmsEpisodeGuidPayload> {
+  readonly type = ActionTypes.CMS_EPISODE_GUID;
+
+  constructor(public payload: CmsEpisodeGuidPayload) {}
+}
+

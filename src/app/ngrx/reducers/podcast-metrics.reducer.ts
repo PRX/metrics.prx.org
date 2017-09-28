@@ -1,4 +1,4 @@
-import { ActionTypes, ActionWithPayload, CastlePodcastMetricsPayload } from '../actions/action.types';
+import { ActionTypes, ActionWithPayload, CastlePodcastMetricsPayload } from '../actions';
 import { PodcastMetricsModel } from '../model';
 
 const initialState = [];

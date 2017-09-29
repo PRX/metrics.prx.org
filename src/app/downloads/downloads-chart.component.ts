@@ -33,6 +33,11 @@ export class DownloadsChartComponent implements OnDestroy {
   constructor(public store: Store<any>) {
     this.filterStoreSub = store.select(selectFilter).subscribe((newFilter: FilterModel) => {
       if (newFilter.podcast) {
+
+        if (this.isPodcastChanged(newFilter)) {
+          // reset episode metrics if the filtered podcast changes
+          this.episodeChartData = [];
+        }
         this.filter = newFilter;
 
         if (!this.podcastMetricsStoreSub) {
@@ -93,6 +98,10 @@ export class DownloadsChartComponent implements OnDestroy {
     if (this.filterStoreSub) { this.filterStoreSub.unsubscribe(); }
     if (this.podcastMetricsStoreSub) { this.podcastMetricsStoreSub.unsubscribe(); }
     if (this.episodeMetricsStoreSub) { this.episodeMetricsStoreSub.unsubscribe(); }
+  }
+
+  isPodcastChanged(state: FilterModel): boolean {
+    return state.podcast && (!this.filter || !this.filter.podcast ||  this.filter.podcast.seriesId !== state.podcast.seriesId);
   }
 
   mapEpisodeData(episode: EpisodeModel, metrics: any[][]): TimeseriesChartModel {

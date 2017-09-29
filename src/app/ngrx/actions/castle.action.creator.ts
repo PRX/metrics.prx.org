@@ -1,36 +1,38 @@
-import ActionTypes from './action.types';
-import { EpisodeModel, PodcastModel, FilterModel, MetricsType } from '../model';
+import { ActionTypes, ActionWithPayload } from './action.types';
+import { FilterModel, EpisodeModel, PodcastModel, MetricsType } from '../model';
 
-export const castlePodcastMetrics = (podcast: PodcastModel, filter: FilterModel, metricsType: MetricsType, metrics: any[][]) => {
-  return {
-    type: ActionTypes.CASTLE_PODCAST_METRICS,
-    payload: {
-      podcast,
-      filter,
-      metricsType,
-      metrics
-    }
-  };
-};
+export interface CastleFilterPayload {
+  filter: FilterModel;
+}
 
-export const castleEpisodeMetrics = (episode: EpisodeModel, filter: FilterModel, metricsType: MetricsType, metrics: any[][]) => {
-  return {
-    type: ActionTypes.CASTLE_EPISODE_METRICS,
-    payload: {
-      episode,
-      filter,
-      metricsType,
-      metrics
-    }
-  };
-};
+export class CastleFilterAction implements ActionWithPayload<CastleFilterPayload> {
+  readonly type = ActionTypes.CASTLE_FILTER;
 
-export const castleFilter = (filter: FilterModel) => {
-  return {
-    type: ActionTypes.CASTLE_FILTER,
-    payload: {
-      filter
-    }
-  };
-};
+  constructor(public payload: CastleFilterPayload) {}
+}
 
+export interface CastlePodcastMetricsPayload {
+  podcast: PodcastModel;
+  filter: FilterModel;
+  metricsType: MetricsType;
+  metrics: any[][];
+}
+
+export class CastlePodcastMetricsAction implements ActionWithPayload<CastlePodcastMetricsPayload> {
+  readonly type = ActionTypes.CASTLE_PODCAST_METRICS;
+
+  constructor(public payload: CastlePodcastMetricsPayload) {}
+}
+
+export interface CastleEpisodeMetricsPayload {
+  episode: EpisodeModel;
+  filter: FilterModel;
+  metricsType: MetricsType;
+  metrics: any[][];
+}
+
+export class CastleEpisodeMetricsAction implements ActionWithPayload<CastleEpisodeMetricsPayload> {
+  readonly type = ActionTypes.CASTLE_EPISODE_METRICS;
+
+  constructor(public payload: CastleEpisodeMetricsPayload) {}
+}

@@ -2,84 +2,68 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs/Subscription';
 import { CastleService } from '../core';
-import { EpisodeModel, EpisodeMetricsModel, PodcastMetricsModel, INTERVAL_DAILY, FilterModel } from '../ngrx/model';
-import { castlePodcastMetrics, castleEpisodeMetrics, castleFilter } from '../ngrx/actions/castle.action.creator';
+import { EpisodeModel, INTERVAL_DAILY, FilterModel } from '../ngrx/model';
+import { CastleFilterAction, CastlePodcastMetricsAction, CastleEpisodeMetricsAction } from '../ngrx/actions';
+import { selectFilter, selectEpisodes, filterAllPodcastEpisodes } from '../ngrx/reducers/reducers';
 
 @Component({
   selector: 'metrics-downloads',
   template: `
-    <prx-spinner *ngIf="isPodcastLoading || isEpisodeLoading"></prx-spinner>
-    <div class="controls">
-      <metrics-canned-range></metrics-canned-range>
+    <section class="controls">
+      <metrics-interval></metrics-interval>
       <div class="bar"></div>
+      <metrics-canned-range></metrics-canned-range>
       <metrics-date-range></metrics-date-range>
-    </div>
-    <metrics-downloads-chart *ngIf="podcastMetrics && podcastMetrics.length > 0"></metrics-downloads-chart>
-    <p class="error" *ngIf="error">{{error}}</p>
+    </section>
+    <section class="content">
+      <prx-spinner *ngIf="isPodcastLoading || isEpisodeLoading"></prx-spinner>
+      <metrics-downloads-chart></metrics-downloads-chart>
+      <p class="error" *ngIf="error">{{error}}</p>
+    </section>
   `,
   styleUrls: ['downloads.component.css']
 })
 export class DownloadsComponent implements OnInit, OnDestroy {
   episodeStoreSub: Subscription;
-  allEpisodes: EpisodeModel[];
-  podcastMetricsStoreSub: Subscription;
-  podcastMetrics: PodcastMetricsModel[];
-  episodeMetricsStoreSub: Subscription;
-  episodeMetrics: EpisodeMetricsModel[];
+  allPodcastEpisodes: EpisodeModel[];
   filterStoreSub: Subscription;
   filter: FilterModel;
   isPodcastLoading = true;
   isEpisodeLoading = true;
   error: string;
 
-
-  constructor(private castle: CastleService, public store: Store<any>) {
-  }
+  constructor(private castle: CastleService, public store: Store<any>) {}
 
   ngOnInit() {
     this.setDefaultFilter();
 
-    this.filterStoreSub = this.store.select('filter').subscribe((state: FilterModel) => {
+    this.filterStoreSub = this.store.select(selectFilter).subscribe((newFilter: FilterModel) => {
       let changedFilter = false;
-      if (this.isPodcastChanged(state)) {
-        this.filter.podcast = state.podcast;
+      if (this.isPodcastChanged(newFilter)) {
+        this.filter.podcast = newFilter.podcast;
         changedFilter = true;
 
-        // we don't want to even look at these stores until we have the selected podcast
+        // we don't want to even look at this store until we have the selected podcast
         if (!this.episodeStoreSub) {
-          this.episodeStoreSub = this.store.select('episode').subscribe((episodes: EpisodeModel[]) => {
-            this.allEpisodes = episodes.filter((e: EpisodeModel) => e.seriesId === state.podcast.seriesId);
-            if (this.allEpisodes.length > 0) {
-              this.store.dispatch(castleFilter({episodes: this.allEpisodes.length > 5 ? this.allEpisodes.slice(0, 5) : this.allEpisodes}));
+          this.episodeStoreSub = this.store.select(selectEpisodes).subscribe((allEpisodes: EpisodeModel[]) => {
+            const episodes = filterAllPodcastEpisodes(this.filter, allEpisodes);
+            if (episodes && episodes.length) {
+              this.allPodcastEpisodes = episodes;
+              this.setDefaultEpisodeFilter();
             }
           });
         }
-
-        if (!this.podcastMetricsStoreSub) {
-          this.podcastMetricsStoreSub = this.store.select('podcastMetrics').subscribe((podcastMetrics: PodcastMetricsModel[]) => {
-            // TODO: figure out selectors with ngrx so I can put this filtering in a common selector
-            this.podcastMetrics = podcastMetrics.filter((p: PodcastMetricsModel) => p.seriesId === state.podcast.seriesId);
-          });
-        }
-
-        if (state.episodes && !this.episodeMetricsStoreSub) {
-          this.episodeMetricsStoreSub = this.store.select('episodeMetrics').subscribe((episodeMetrics: EpisodeMetricsModel[]) => {
-            this.episodeMetrics = episodeMetrics.filter((e: EpisodeMetricsModel) => {
-              return e.seriesId === state.podcast.seriesId && state.episodes.map(ep => ep.id).indexOf(e.id) !== -1;
-            });
-          });
-        }
       }
-      if (this.isBeginDateChanged(state)) {
-        this.filter.beginDate = state.beginDate;
+      if (this.isBeginDateChanged(newFilter)) {
+        this.filter.beginDate = newFilter.beginDate;
         changedFilter = true;
       }
-      if (this.isEndDateChanged(state)) {
-        this.filter.endDate = state.endDate;
+      if (this.isEndDateChanged(newFilter)) {
+        this.filter.endDate = newFilter.endDate;
         changedFilter = true;
       }
-      if (this.isIntervalChanged(state)) {
-        this.filter.interval = state.interval;
+      if (this.isIntervalChanged(newFilter)) {
+        this.filter.interval = newFilter.interval;
         changedFilter = true;
       }
 
@@ -87,12 +71,12 @@ export class DownloadsComponent implements OnInit, OnDestroy {
         this.getPodcastMetrics();
       }
 
-      if (this.isEpisodesChanged(state)) {
-        this.filter.episodes = state.episodes;
+      if (this.isEpisodesChanged(newFilter)) {
+        this.filter.episodes = newFilter.episodes;
         changedFilter = true;
       }
 
-      if (changedFilter && this.filter.episodes) {
+      if (changedFilter && this.filter.episodes && this.filter.episodes.length > 0) {
         this.getEpisodeMetrics();
       }
     });
@@ -101,8 +85,6 @@ export class DownloadsComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     if (this.filterStoreSub) { this.filterStoreSub.unsubscribe(); }
     if (this.episodeStoreSub) { this.episodeStoreSub.unsubscribe(); }
-    if (this.podcastMetricsStoreSub) { this.podcastMetricsStoreSub.unsubscribe(); }
-    if (this.episodeMetricsStoreSub) { this.episodeMetricsStoreSub.unsubscribe(); }
   }
 
   setDefaultFilter() {
@@ -115,7 +97,16 @@ export class DownloadsComponent implements OnInit, OnDestroy {
       endDate: utcEndDate,
       interval: INTERVAL_DAILY
     };
-    this.store.dispatch(castleFilter(this.filter));
+    this.store.dispatch(new CastleFilterAction({filter: this.filter}));
+  }
+
+  setDefaultEpisodeFilter() {
+    if (!this.filter.episodes ||
+        this.filter.episodes.length < 5) {
+      // init with the first five (or less) episodes
+      const episodes = this.allPodcastEpisodes.length > 5 ? this.allPodcastEpisodes.slice(0, 5) : this.allPodcastEpisodes;
+      this.store.dispatch(new CastleFilterAction({filter: {episodes}}));
+    }
   }
 
   getPodcastMetrics() {
@@ -142,7 +133,12 @@ export class DownloadsComponent implements OnInit, OnDestroy {
   setPodcastMetrics(metrics: any) {
     this.isPodcastLoading = false;
     if (metrics && metrics.length && metrics[0]['downloads']) {
-      this.store.dispatch(castlePodcastMetrics(this.filter.podcast, this.filter, 'downloads', metrics[0]['downloads']));
+      this.store.dispatch(new CastlePodcastMetricsAction({
+        podcast: this.filter.podcast,
+        filter: this.filter,
+        metricsType: 'downloads',
+        metrics: metrics[0]['downloads']
+      }));
     }
   }
 
@@ -172,7 +168,12 @@ export class DownloadsComponent implements OnInit, OnDestroy {
   setEpisodeMetrics(episode: EpisodeModel, metrics: any) {
     this.isEpisodeLoading = false;
     if (metrics && metrics.length && metrics[0]['downloads']) {
-      this.store.dispatch(castleEpisodeMetrics(episode, this.filter, 'downloads', metrics[0]['downloads']));
+      this.store.dispatch(new CastleEpisodeMetricsAction({
+        episode,
+        filter: this.filter,
+        metricsType: 'downloads',
+        metrics: metrics[0]['downloads']
+      }));
     }
   }
 

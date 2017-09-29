@@ -1,10 +1,9 @@
-import { Action } from '@ngrx/store';
-import ActionTypes from '../actions/action.types';
+import { ActionTypes, ActionWithPayload, CastleEpisodeMetricsPayload } from '../actions';
 import { EpisodeMetricsModel } from '../model';
 
 const initialState = [];
 
-export function EpisodeMetricsReducer(state: EpisodeMetricsModel[] = initialState, action: Action) {
+export function EpisodeMetricsReducer(state: EpisodeMetricsModel[] = initialState, action: ActionWithPayload<CastleEpisodeMetricsPayload>) {
   let epIdx: number, episode: EpisodeMetricsModel, newState: EpisodeMetricsModel[];
   switch (action.type) {
     case ActionTypes.CASTLE_EPISODE_METRICS:
@@ -15,7 +14,7 @@ export function EpisodeMetricsReducer(state: EpisodeMetricsModel[] = initialStat
 
       epIdx = state.findIndex(e => e.seriesId === seriesId && e.id === id);
       if (epIdx > -1) {
-        episode = Object.assign({}, state[epIdx], {guid});
+        episode = {...state[epIdx], guid};
         episode[metricsProperty] = action.payload.metrics;
         newState = [...state.slice(0, epIdx), episode, ...state.slice(epIdx + 1)];
       } else {

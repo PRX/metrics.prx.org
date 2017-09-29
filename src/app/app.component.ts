@@ -5,8 +5,8 @@ import { AuthService } from 'ngx-prx-styleguide';
 import { CmsService, HalDoc } from './core';
 import { Env } from './core/core.env';
 import { EpisodeModel, PodcastModel, FilterModel } from './ngrx/model';
-import { cmsPodcastFeed, cmsEpisodeGuid } from './ngrx/actions/cms.action.creator';
-import { castleFilter } from './ngrx/actions/castle.action.creator';
+import { CastleFilterAction, CmsPodcastFeedAction, CmsEpisodeGuidAction } from './ngrx/actions';
+import { selectPodcasts, selectFilter } from './ngrx/reducers/reducers';
 
 @Component({
   selector: 'metrics-root',
@@ -41,10 +41,10 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.podcastStoreSub = this.store.select('podcast').subscribe((state: PodcastModel[]) => {
+    this.podcastStoreSub = this.store.select(selectPodcasts).subscribe((state: PodcastModel[]) => {
       this.podcasts = state;
 
-      if (this.podcasts.length > 0) {
+      if (this.podcasts && this.podcasts.length > 0) {
         let selectedPodcast;
         if (Env.CASTLE_TEST_PODCAST) {
           selectedPodcast = this.podcasts.find((p: PodcastModel) => {
@@ -54,17 +54,18 @@ export class AppComponent implements OnInit, OnDestroy {
           selectedPodcast = this.podcasts[0];
         }
         if (selectedPodcast &&
-          (!this.filter || (this.filter && this.filter.podcast && selectedPodcast.seriesId !== this.filter.podcast.seriesId))) {
-          this.store.dispatch(castleFilter({podcast: selectedPodcast}));
+          (!this.filter || !this.filter.podcast ||
+          this.filter.podcast && selectedPodcast.seriesId !== this.filter.podcast.seriesId)) {
+          this.store.dispatch(new CastleFilterAction({filter: {podcast: selectedPodcast}}));
         }
       }
     });
 
-    this.filterStoreSub = this.store.select('filter').subscribe((state: FilterModel) => {
-      if (state.podcast && (!this.filter || state.podcast.seriesId !== this.filter.podcast.seriesId)) {
-        this.filter = state;
-        this.getEpisodes(this.filter.podcast);
+    this.filterStoreSub = this.store.select(selectFilter).subscribe((newFilter: FilterModel) => {
+      if (newFilter.podcast && (!this.filter || !this.filter.podcast || newFilter.podcast.seriesId !== this.filter.podcast.seriesId)) {
+        this.getEpisodes(newFilter.podcast);
       }
+      this.filter = newFilter;
     });
   }
 
@@ -108,7 +109,7 @@ export class AppComponent implements OnInit, OnDestroy {
         if (urlParts.length > 1) {
           podcast.feederId = urlParts[urlParts.length - 1];
 
-          this.store.dispatch(cmsPodcastFeed(podcast));
+          this.store.dispatch(new CmsPodcastFeedAction({podcast}));
         }
       }
     });
@@ -147,7 +148,7 @@ export class AppComponent implements OnInit, OnDestroy {
         if (urlParts.length > 1) {
           episode.guid = urlParts[urlParts.length - 1];
 
-          this.store.dispatch(cmsEpisodeGuid(podcast, episode));
+          this.store.dispatch(new CmsEpisodeGuidAction({podcast, episode}));
         }
       }
     });

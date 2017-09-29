@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs/Subscription';
 import { FilterModel } from '../../ngrx/model';
-import { castleFilter } from '../../ngrx/actions/castle.action.creator';
+import { CastleFilterAction } from '../../ngrx/actions';
 import * as moment from 'moment';
 
 export const TODAY = 'Today';
@@ -166,7 +166,7 @@ export class CannedRangeComponent implements OnInit, OnDestroy {
 
   onWhenChange(val) {
     const { beginDate, endDate } = val;
-    this.store.dispatch(castleFilter({beginDate, endDate}));
+    this.store.dispatch(new CastleFilterAction({filter: {beginDate, endDate}}));
   }
 
   get prevDisabled(): string {
@@ -251,7 +251,7 @@ export class CannedRangeComponent implements OnInit, OnDestroy {
       newEndDate = moment(this.filter.endDate).utc().subtract(this.lastChosenRange[0], this.lastChosenRange[1]);
     }
     if (newBeginDate && newEndDate) {
-      this.store.dispatch(castleFilter({beginDate: newBeginDate.toDate(), endDate: newEndDate.toDate()}));
+      this.store.dispatch(new CastleFilterAction({filter: {beginDate: newBeginDate.toDate(), endDate: newEndDate.toDate()}}));
     }
   }
 
@@ -304,7 +304,7 @@ export class CannedRangeComponent implements OnInit, OnDestroy {
       newEndDate = moment(this.filter.endDate).utc().add(this.lastChosenRange[0], this.lastChosenRange[1]);
     }
     if (newBeginDate && newEndDate) {
-      this.store.dispatch(castleFilter({beginDate: newBeginDate.toDate(), endDate: newEndDate.toDate()}));
+      this.store.dispatch(new CastleFilterAction({filter: {beginDate: newBeginDate.toDate(), endDate: newEndDate.toDate()}}));
     }
   }
 }

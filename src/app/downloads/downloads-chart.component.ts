@@ -1,21 +1,26 @@
 import { Component, OnDestroy } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs/Subscription';
-import * as moment from 'moment';
-import { EpisodeMetricsModel, PodcastMetricsModel, EpisodeModel, PodcastModel, FilterModel } from '../ngrx/model';
 import { TimeseriesChartModel, TimeseriesDatumModel } from 'ngx-prx-styleguide';
+import { EpisodeMetricsModel, PodcastMetricsModel, EpisodeModel, FilterModel,
+  INTERVAL_DAILY, INTERVAL_HOURLY, INTERVAL_15MIN } from '../ngrx/model';
+import { selectFilter, selectPodcastMetrics, selectEpisodeMetrics,
+  filterPodcastMetrics, filterEpisodeMetrics, metricsData } from '../ngrx/reducers/reducers';
+import { mapMetricsToTimeseriesData, subtractTimeseriesDatasets,
+  UTCDateFormat, dailyDateFormat, hourlyDateFormat } from '../shared/util/chart.util';
 
 @Component({
   selector: 'metrics-downloads-chart',
   template: `
-    <prx-timeseries-chart type="area" stacked="true" [datasets]="chartData" [formatX]="dateFormat"></prx-timeseries-chart>
+    <prx-timeseries-chart type="area" stacked="true" [datasets]="chartData" [formatX]="dateFormat()">
+    </prx-timeseries-chart>
   `
 })
 export class DownloadsChartComponent implements OnDestroy {
   filterStoreSub: Subscription;
   filter: FilterModel;
   podcastMetricsStoreSub: Subscription;
-  podcastMetrics: PodcastMetricsModel[];
+  podcastMetrics: PodcastMetricsModel;
   episodeMetricsStoreSub: Subscription;
   episodeMetrics: EpisodeMetricsModel[];
   episodeChartData: TimeseriesChartModel[];
@@ -26,36 +31,37 @@ export class DownloadsChartComponent implements OnDestroy {
   colors = ['#000044', '#2C2C68', '#59598C', '#8686B0', '#B3B3D4'];
 
   constructor(public store: Store<any>) {
-    this.filterStoreSub = store.select('filter').subscribe((state: FilterModel) => {
-      if (state.podcast) {
-        this.filter = state;
-        const metricsProperty = this.filter.interval.key + 'Downloads';
+    this.filterStoreSub = store.select(selectFilter).subscribe((newFilter: FilterModel) => {
+      if (newFilter.podcast) {
+
+        if (this.isPodcastChanged(newFilter)) {
+          // reset episode metrics if the filtered podcast changes
+          this.episodeChartData = [];
+        }
+        this.filter = newFilter;
 
         if (!this.podcastMetricsStoreSub) {
-          this.podcastMetricsStoreSub = store.select('podcastMetrics').subscribe((podcastMetrics: PodcastMetricsModel[]) => {
-            this.podcastMetrics = podcastMetrics.filter((p: PodcastMetricsModel) => p.seriesId === this.filter.podcast.seriesId);
-            if (this.podcastMetrics.length > 0) {
-              this.podcastChartData = this.mapPodcastData(this.podcastMetrics[0][metricsProperty + 'Others']);
-              if (this.episodeChartData && this.episodeChartData.length > 0) {
-                this.chartData = [...this.episodeChartData, this.podcastChartData];
-              } else {
-                this.chartData = [this.podcastChartData];
-              }
+          this.podcastMetricsStoreSub = store.select(selectPodcastMetrics).subscribe((podcastMetrics: PodcastMetricsModel[]) => {
+            this.podcastMetrics = filterPodcastMetrics(this.filter, podcastMetrics);
+            if (this.podcastMetrics) {
+              this.podcastChartData = this.mapPodcastData(metricsData(this.filter, this.podcastMetrics, 'downloads'));
+              this.updateChartData();
             }
           });
         }
 
         if (this.filter.episodes) {
           if (!this.episodeMetricsStoreSub) {
-            this.episodeMetricsStoreSub = store.select('episodeMetrics').subscribe((episodeMetrics: EpisodeMetricsModel[]) => {
-              this.episodeMetrics = episodeMetrics.filter((em: EpisodeMetricsModel) => {
-                return em.seriesId === this.filter.podcast.seriesId &&
-                  this.filter.episodes && this.filter.episodes.map(ef => ef.id).indexOf(em.id) !== -1;
-              });
+            this.episodeMetricsStoreSub = store.select(selectEpisodeMetrics).subscribe((episodeMetrics: EpisodeMetricsModel[]) => {
+              this.episodeMetrics = filterEpisodeMetrics(this.filter, episodeMetrics);
               if (this.episodeMetrics && this.episodeMetrics.length > 0) {
-                this.episodeChartData = this.episodeMetrics.map((episodeData: EpisodeMetricsModel) => {
-                  const episode = this.filter.episodes.find(e => e.seriesId === episodeData.seriesId && e.id === episodeData.id);
-                  return this.mapEpisodeData(episode, episodeData[metricsProperty]);
+                this.episodeChartData = [];
+                this.episodeMetrics.forEach((metrics: EpisodeMetricsModel) => {
+                  const episode = this.filter.episodes.find(ep => ep.id === metrics.id);
+                  const data = metricsData(this.filter, metrics, 'downloads');
+                  if (data) {
+                    this.episodeChartData.push(this.mapEpisodeData(episode, data));
+                  }
                 });
                 // TODO: can't really hide this sort by total and getting colors in here, will also need it for the table
                 // sort these episodes by their data total for the stacked chart
@@ -72,17 +78,14 @@ export class DownloadsChartComponent implements OnDestroy {
                   return getTotal(b.data) - getTotal(a.data);
                 });
                 // set the colors now that they are ordered
-                // TODO: can colors be optional to allow C3 to select colors
+                // TODO: can colors be optional to allow C3 to select colors?
                 // TODO: chart component should not include color in C3 config when dataset is empty
                 // --> create styleguide tickets
                 for (let i = 0; i < this.episodeChartData.length; i++) {
                   this.episodeChartData[i].color = this.colors[i];
                 }
-                if (this.podcastChartData) {
-                  this.chartData = [...this.episodeChartData, this.podcastChartData];
-                } else {
-                  this.chartData = [...this.episodeChartData];
-                }
+
+                this.updateChartData();
               }
             });
           }
@@ -97,41 +100,49 @@ export class DownloadsChartComponent implements OnDestroy {
     if (this.episodeMetricsStoreSub) { this.episodeMetricsStoreSub.unsubscribe(); }
   }
 
-  mapData(data: any): TimeseriesDatumModel[] {
-    return data.map((datum: any) => {
-      return { value: datum[1], date: moment(datum[0]).valueOf() };
-    });
+  isPodcastChanged(state: FilterModel): boolean {
+    return state.podcast && (!this.filter || !this.filter.podcast ||  this.filter.podcast.seriesId !== state.podcast.seriesId);
   }
 
   mapEpisodeData(episode: EpisodeModel, metrics: any[][]): TimeseriesChartModel {
     // this color is temporary and will be re-applied after sorting of the totals
-    return { data: this.mapData(metrics), label: episode.title, color: '#000044' };
+    return { data: mapMetricsToTimeseriesData(metrics), label: episode.title, color: '#000044' };
   }
 
   mapPodcastData(metrics: any[][]): TimeseriesChartModel {
-    const label = this.episodeChartData ? 'All Other Episodes' : 'All Episodes';
-    return { data: this.mapData(metrics), label, color: '#a3a3a3' };
+    return { data: mapMetricsToTimeseriesData(metrics), label: 'All Episodes', color: '#a3a3a3' };
   }
 
-  dateFormat(date: Date) {
-    const dayOfWeek = (day: number): string => {
-      switch (day) {
-        case 0:
-          return 'Sun';
-        case 1:
-          return 'Mon';
-        case 2:
-          return 'Tue';
-        case 3:
-          return 'Wed';
-        case 4:
-          return 'Thu';
-        case 5:
-          return 'Fri';
-        case 6:
-          return 'Sat';
+  updateChartData() {
+    if (this.podcastChartData && this.podcastChartData.data.length > 0 &&
+      this.episodeChartData && this.episodeChartData.length > 0 &&
+      this.episodeChartData.every(chartData => chartData.data.length === this.podcastChartData.data.length)) {
+      // if we have episodes to combine with podcast total
+      const episodeDatasets = this.episodeChartData.map(m => m.data);
+      const allOtherEpisodesData: TimeseriesChartModel = {
+        data: subtractTimeseriesDatasets(this.podcastChartData.data, episodeDatasets),
+        label: 'All Other Episodes',
+        color: '#a3a3a3'
+      };
+      this.chartData = [...this.episodeChartData, allOtherEpisodesData];
+    } else if (this.podcastChartData && this.podcastChartData.data.length > 0) {
+      this.chartData = [this.podcastChartData];
+    }
+  }
+
+  dateFormat(): Function {
+    if (this.filter && this.filter.interval) {
+      switch (this.filter.interval.key) {
+        case INTERVAL_DAILY.key:
+          return dailyDateFormat;
+        case INTERVAL_HOURLY.key:
+        case INTERVAL_15MIN.key:
+          return hourlyDateFormat;
+        default:
+          return UTCDateFormat;
       }
-    };
-    return dayOfWeek(date.getUTCDay()) + ' ' + (date.getUTCMonth() + 1) + '/' + date.getUTCDate();
+    } else {
+      return UTCDateFormat;
+    }
   }
 }

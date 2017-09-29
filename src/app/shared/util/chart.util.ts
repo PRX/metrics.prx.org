@@ -15,11 +15,11 @@ export const subtractTimeseriesDatasets = (from: TimeseriesDatumModel[], dataset
   });
 };
 
-export const UTCDateFormat = (date: Date) => {
+export const UTCDateFormat = (date: Date): string => {
   return date.toUTCString();
 };
 
-export const dailyDateFormat =(date: Date) => {
+export const dailyDateFormat = (date: Date): string => {
   const dayOfWeek = (day: number): string => {
     switch (day) {
       case 0:
@@ -41,7 +41,7 @@ export const dailyDateFormat =(date: Date) => {
   return dayOfWeek(date.getUTCDay()) + ' ' + (date.getUTCMonth() + 1) + '/' + date.getUTCDate();
 };
 
-export const hourlyDateFormat = (date: Date) => {
+export const hourlyDateFormat = (date: Date): string => {
   const minutes = date.getUTCMinutes() < 10 ? '0' + date.getUTCMinutes() : date.getUTCMinutes();
   return (date.getUTCMonth() + 1) + '/' + date.getUTCDate() + ' ' +
     date.getUTCHours() + ':' + minutes;

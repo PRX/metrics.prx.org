@@ -1,4 +1,4 @@
-import { createSelector, createFeatureSelector, ActionReducerMap } from '@ngrx/store';
+import { createFeatureSelector, ActionReducerMap } from '@ngrx/store';
 import { FilterReducer } from './filter.reducer';
 import { PodcastReducer } from './podcast.reducer';
 import { EpisodeReducer } from './episode.reducer';
@@ -34,9 +34,12 @@ export const selectPodcastMetrics = createFeatureSelector<PodcastMetricsModel[]>
 
 export const selectEpisodeMetrics = createFeatureSelector<EpisodeMetricsModel[]>('episodeMetrics');
 
-export const filterPodcasts = (filter: FilterModel, podcasts: PodcastModel[]) => {
+export const filterPodcasts = (filter: FilterModel, podcasts: PodcastModel[]): PodcastModel => {
   if (filter.podcast && podcasts) {
-    return podcasts.filter(p => p.seriesId === filter.podcast.seriesId);
+    const matches = podcasts.filter(p => p.seriesId === filter.podcast.seriesId);
+    if (matches && matches.length) {
+      return matches[0]; // only one entry should match the series id
+    }
   }
 };
 

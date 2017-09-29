@@ -18,7 +18,7 @@ export function PodcastReducer(state: PodcastModel[] = initialState, action: Act
         };
         newState = [...state.slice(0, podcastIdx), podcast, ...state.slice(podcastIdx + 1)];
       } else {
-        newState = [action.payload.podcast, ...state];
+        newState = [...state, action.payload.podcast];
       }
       // console.log('PodcastReducer', action.type, newState);
       return newState;

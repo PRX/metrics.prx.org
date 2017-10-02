@@ -1,7 +1,7 @@
 import { Component, OnDestroy } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs/Subscription';
-import { TimeseriesChartModel, TimeseriesDatumModel } from 'ngx-prx-styleguide';
+import { TimeseriesChartModel } from 'ngx-prx-styleguide';
 import { EpisodeMetricsModel, PodcastMetricsModel, EpisodeModel, FilterModel,
   INTERVAL_DAILY, INTERVAL_HOURLY, INTERVAL_15MIN } from '../ngrx/model';
 import { selectFilter, selectPodcastMetrics, selectEpisodeMetrics } from '../ngrx/reducers/reducers';
@@ -31,47 +31,49 @@ export class DownloadsChartComponent implements OnDestroy {
 
   constructor(public store: Store<any>) {
     this.filterStoreSub = store.select(selectFilter).subscribe((newFilter: FilterModel) => {
-      if (newFilter.podcast) {
+      if (this.isPodcastChanged(newFilter)) {
+        // reset episode metrics if the filtered podcast changes
+        this.episodeChartData = [];
+      }
+      // this bit picks up changes when episodes are removed from the filter
+      if (this.isEpisodesChanged(newFilter)) {
+        this.episodeMetrics = filterEpisodeMetrics(newFilter, this.episodeMetrics, 'downloads');
+        this.buildEpisodeMetrics(newFilter);
+      }
+      this.filter = newFilter;
+    });
 
-        if (this.isPodcastChanged(newFilter)) {
-          // reset episode metrics if the filtered podcast changes
-          this.episodeChartData = [];
-        }
-        this.filter = newFilter;
-
-        if (!this.podcastMetricsStoreSub) {
-          this.podcastMetricsStoreSub = store.select(selectPodcastMetrics).subscribe((podcastMetrics: PodcastMetricsModel[]) => {
-            this.podcastMetrics = filterPodcastMetrics(this.filter, podcastMetrics);
-            if (this.podcastMetrics) {
-              this.podcastChartData = this.mapPodcastData(metricsData(this.filter, this.podcastMetrics, 'downloads'));
-              this.updateChartData();
-            }
-          });
-        }
-
-        if (this.filter.episodes) {
-          if (!this.episodeMetricsStoreSub) {
-            this.episodeMetricsStoreSub = store.select(selectEpisodeMetrics).subscribe((episodeMetrics: EpisodeMetricsModel[]) => {
-              this.episodeMetrics = filterEpisodeMetrics(this.filter, episodeMetrics, 'downloads');
-              if (this.episodeMetrics && this.episodeMetrics.length > 0) {
-                this.episodeChartData = this.episodeMetrics
-                  .sort((a: EpisodeMetricsModel, b: EpisodeMetricsModel) => {
-                    return getTotal(metricsData(this.filter, b, 'downloads')) - getTotal(metricsData(this.filter, a, 'downloads'));
-                  })
-                  .map((metrics: EpisodeMetricsModel, i) => {
-                    const episode = this.filter.episodes.find(ep => ep.id === metrics.id);
-                    // to lighten the color almost up to 75%
-                    const colorPercent = i > 0 ? 75 * i / this.episodeMetrics.length : 0;
-                    return this.mapEpisodeData(episode, metricsData(this.filter, metrics, 'downloads'), colorPercent);
-                  });
-
-                this.updateChartData();
-              }
-            });
-          }
-        }
+    this.podcastMetricsStoreSub = store.select(selectPodcastMetrics).subscribe((podcastMetrics: PodcastMetricsModel[]) => {
+      this.podcastMetrics = filterPodcastMetrics(this.filter, podcastMetrics);
+      if (this.podcastMetrics) {
+        this.podcastChartData = this.mapPodcastData(metricsData(this.filter, this.podcastMetrics, 'downloads'));
+        this.updateChartData();
       }
     });
+
+    if (!this.episodeMetricsStoreSub) {
+      this.episodeMetricsStoreSub = store.select(selectEpisodeMetrics).subscribe((episodeMetrics: EpisodeMetricsModel[]) => {
+        this.episodeMetrics = filterEpisodeMetrics(this.filter, episodeMetrics, 'downloads');
+        this.buildEpisodeMetrics(this.filter);
+      });
+    }
+  }
+
+  buildEpisodeMetrics(filter: FilterModel) {
+    if (this.episodeMetrics) {
+      this.episodeChartData = this.episodeMetrics
+        .sort((a: EpisodeMetricsModel, b: EpisodeMetricsModel) => {
+          return getTotal(metricsData(filter, b, 'downloads')) - getTotal(metricsData(filter, a, 'downloads'));
+        })
+        .map((metrics: EpisodeMetricsModel, i) => {
+          const episode = filter.episodes.find(ep => ep.id === metrics.id);
+          // to lighten the color almost up to 75%
+          const colorPercent = i > 0 ? 75 * i / this.episodeMetrics.length : 0;
+          return this.mapEpisodeData(episode, metricsData(filter, metrics, 'downloads'), colorPercent);
+        });
+
+      this.updateChartData();
+    }
   }
 
   ngOnDestroy() {
@@ -82,6 +84,12 @@ export class DownloadsChartComponent implements OnDestroy {
 
   isPodcastChanged(state: FilterModel): boolean {
     return state.podcast && (!this.filter || !this.filter.podcast ||  this.filter.podcast.seriesId !== state.podcast.seriesId);
+  }
+
+  isEpisodesChanged(state: FilterModel): boolean {
+    return state.episodes && (!this.filter || !this.filter.episodes ||
+      state.episodes.every(episode => this.filter.episodes.map(e => e.id).indexOf(episode.id) !== -1) ||
+      this.filter.episodes.every(episode => state.episodes.map(e => e.id).indexOf(episode.id) !== -1));
   }
 
   mapEpisodeData(episode: EpisodeModel, metrics: any[][], colorPercent: number): TimeseriesChartModel {

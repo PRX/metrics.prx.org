@@ -12,8 +12,7 @@ import { CastleFilterAction } from '../../ngrx/actions';
       <prx-select single="true" [options]="intervalOptions" [selected]="selectedInterval" (onSelect)="onIntervalChange($event)">
       </prx-select>
     </span>
-  `,
-  styleUrls: ['./interval.component.css']
+  `
 })
 export class IntervalComponent implements OnInit, OnDestroy {
   filterStoreSub: Subscription;

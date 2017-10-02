@@ -15,6 +15,8 @@ import { filterAllPodcastEpisodes } from '../shared/util/metrics.util';
       <div class="bar"></div>
       <metrics-canned-range></metrics-canned-range>
       <metrics-date-range></metrics-date-range>
+      <div class="bar"></div>
+      <metrics-episodes></metrics-episodes>
     </section>
     <section class="content">
       <prx-spinner *ngIf="isPodcastLoading || isEpisodeLoading"></prx-spinner>

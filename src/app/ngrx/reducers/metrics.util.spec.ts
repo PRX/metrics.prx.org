@@ -1,8 +1,8 @@
-import { filterPodcasts, filterAllPodcastEpisodes, filterEpisodes,
-  filterPodcastMetrics, metricsData, filterEpisodeMetrics } from './reducers';
 import { INTERVAL_DAILY, INTERVAL_HOURLY } from '../model';
+import { filterPodcasts, filterAllPodcastEpisodes, filterEpisodes,
+  filterPodcastMetrics, filterEpisodeMetrics, metricsData, getTotal } from './metrics.util';
 
-describe('reducer filters', () => {
+describe('metrics util', () => {
   const podcasts = [
     {
       doc: undefined,
@@ -52,6 +52,20 @@ describe('reducer filters', () => {
     endDate: new Date('2017-09-29 23:59:59'),
     interval: INTERVAL_DAILY
   };
+  const metrics = [
+    ['2017-08-27T00:00:00Z', 52522],
+    ['2017-08-28T00:00:00Z', 162900],
+    ['2017-08-29T00:00:00Z', 46858],
+    ['2017-08-30T00:00:00Z', 52522],
+    ['2017-08-31T00:00:00Z', 162900],
+    ['2017-09-01T00:00:00Z', 46858],
+    ['2017-09-02T00:00:00Z', 52522],
+    ['2017-09-03T00:00:00Z', 162900],
+    ['2017-09-04T00:00:00Z', 46858],
+    ['2017-09-05T00:00:00Z', 52522],
+    ['2017-09-06T00:00:00Z', 162900],
+    ['2017-09-07T00:00:00Z', 46858]
+  ];
   const podcastMetrics = [
     {
       seriesId: 37800,
@@ -132,11 +146,15 @@ describe('reducer filters', () => {
   });
 
   it('should get episode metrics matching filter', () => {
-    expect(filterEpisodeMetrics(filter, episodeMetrics).length).toEqual(1);
+    expect(filterEpisodeMetrics(filter, episodeMetrics, 'downloads').length).toEqual(1);
   });
 
   it('should get metrics array according to interval', () => {
     expect(metricsData(filter, podcastMetrics[0], 'downloads').length).toEqual(0);
     expect(metricsData({interval: INTERVAL_HOURLY}, episodeMetrics[0], 'downloads')).toBeUndefined(); // no hourly
+  });
+
+  it('should get total of metrics datapoints', () => {
+    expect(getTotal(metrics)).toEqual(52522 + 162900 + 46858 + 52522 + 162900 + 46858 + 52522 + 162900 + 46858 + 52522 + 162900 + 46858);
   });
 });

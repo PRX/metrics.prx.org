@@ -4,8 +4,8 @@ import { Subscription } from 'rxjs/Subscription';
 import { TimeseriesChartModel, TimeseriesDatumModel } from 'ngx-prx-styleguide';
 import { EpisodeMetricsModel, PodcastMetricsModel, EpisodeModel, FilterModel,
   INTERVAL_DAILY, INTERVAL_HOURLY, INTERVAL_15MIN } from '../ngrx/model';
-import { selectFilter, selectPodcastMetrics, selectEpisodeMetrics,
-  filterPodcastMetrics, filterEpisodeMetrics, metricsData } from '../ngrx/reducers/reducers';
+import { selectFilter, selectPodcastMetrics, selectEpisodeMetrics } from '../ngrx/reducers/reducers';
+import { filterPodcastMetrics, filterEpisodeMetrics, metricsData } from '../ngrx/reducers/metrics.util';
 import { mapMetricsToTimeseriesData, subtractTimeseriesDatasets,
   UTCDateFormat, dailyDateFormat, hourlyDateFormat } from '../shared/util/chart.util';
 
@@ -53,15 +53,11 @@ export class DownloadsChartComponent implements OnDestroy {
         if (this.filter.episodes) {
           if (!this.episodeMetricsStoreSub) {
             this.episodeMetricsStoreSub = store.select(selectEpisodeMetrics).subscribe((episodeMetrics: EpisodeMetricsModel[]) => {
-              this.episodeMetrics = filterEpisodeMetrics(this.filter, episodeMetrics);
+              this.episodeMetrics = filterEpisodeMetrics(this.filter, episodeMetrics, 'downloads');
               if (this.episodeMetrics && this.episodeMetrics.length > 0) {
-                this.episodeChartData = [];
-                this.episodeMetrics.forEach((metrics: EpisodeMetricsModel) => {
+                this.episodeChartData = this.episodeMetrics.map((metrics: EpisodeMetricsModel) => {
                   const episode = this.filter.episodes.find(ep => ep.id === metrics.id);
-                  const data = metricsData(this.filter, metrics, 'downloads');
-                  if (data) {
-                    this.episodeChartData.push(this.mapEpisodeData(episode, data));
-                  }
+                  return this.mapEpisodeData(episode, metricsData(this.filter, metrics, 'downloads'));
                 });
                 // TODO: can't really hide this sort by total and getting colors in here, will also need it for the table
                 // sort these episodes by their data total for the stacked chart

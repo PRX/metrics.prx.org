@@ -48,6 +48,19 @@ export const hourlyDateFormat = (date: Date): string => {
     date.getUTCHours() + ':' + minutes;
 };
 
+export const baseColor = 'rgb(32, 80, 96)';
+export const neutralColor = '#a3a3a3';
+
 export const lightenColor = (color: string, percent: number) => {
   return tinycolor2(color).lighten(percent);
+};
+
+export const generateShades = (length) => {
+  const shades = [];
+  for (let i = 0; i < length; i++) {
+    // to lighten the color almost up to 75%
+    const percent = i > 0 ? 75 * i / length : 0;
+    shades.push(lightenColor(baseColor, percent));
+  }
+  return shades;
 };

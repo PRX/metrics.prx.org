@@ -6,7 +6,7 @@ import { StoreModule } from '@ngrx/store';
 import { SharedModule } from '../shared';
 import { DownloadsChartComponent } from './downloads-chart.component';
 
-import { reducers } from '../ngrx/reducers/reducers';
+import { reducers } from '../ngrx/reducers';
 import { PodcastModel, EpisodeModel, FilterModel, INTERVAL_DAILY } from '../ngrx/model';
 import { CastlePodcastMetricsAction, CastleEpisodeMetricsAction, CastleFilterAction } from '../ngrx/actions';
 

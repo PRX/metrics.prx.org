@@ -7,7 +7,7 @@ import { DatepickerModule, SelectModule } from 'ngx-prx-styleguide';
 import { CannedRangeComponent, TODAY, THIS_WEEK, TWO_WEEKS, THIS_MONTH, THREE_MONTHS, THIS_YEAR,
   YESTERDAY, LAST_WEEK, PRIOR_TWO_WEEKS, LAST_MONTH, PRIOR_THREE_MONTHS, LAST_YEAR } from './canned-range.component';
 
-import { reducers } from '../../ngrx/reducers/reducers';
+import { reducers } from '../../ngrx/reducers';
 
 import { FilterModel, INTERVAL_DAILY } from '../../ngrx/model';
 import { CastleFilterAction } from '../../ngrx/actions';

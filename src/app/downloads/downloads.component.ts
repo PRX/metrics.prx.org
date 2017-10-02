@@ -4,7 +4,7 @@ import { Subscription } from 'rxjs/Subscription';
 import { CastleService } from '../core';
 import { EpisodeModel, INTERVAL_DAILY, FilterModel } from '../ngrx/model';
 import { CastleFilterAction, CastlePodcastMetricsAction, CastleEpisodeMetricsAction } from '../ngrx/actions';
-import { selectFilter, selectEpisodes } from '../ngrx/reducers/reducers';
+import { selectFilter, selectEpisodes } from '../ngrx/reducers';
 import { filterAllPodcastEpisodes } from '../shared/util/metrics.util';
 
 @Component({

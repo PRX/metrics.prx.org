@@ -4,7 +4,7 @@ import { Subscription } from 'rxjs/Subscription';
 import { TimeseriesChartModel } from 'ngx-prx-styleguide';
 import { EpisodeMetricsModel, PodcastMetricsModel, EpisodeModel, FilterModel,
   INTERVAL_DAILY, INTERVAL_HOURLY, INTERVAL_15MIN } from '../ngrx/model';
-import { selectFilter, selectPodcastMetrics, selectEpisodeMetrics } from '../ngrx/reducers/reducers';
+import { selectFilter, selectPodcastMetrics, selectEpisodeMetrics } from '../ngrx/reducers';
 import { filterPodcastMetrics, filterEpisodeMetrics, metricsData, getTotal } from '../shared/util/metrics.util';
 import { mapMetricsToTimeseriesData, subtractTimeseriesDatasets,
   UTCDateFormat, dailyDateFormat, hourlyDateFormat, lightenColor } from '../shared/util/chart.util';

@@ -5,7 +5,7 @@ import { StoreModule } from '@ngrx/store';
 import { SelectModule } from 'ngx-prx-styleguide';
 import { EpisodesComponent } from './episodes.component';
 
-import { reducers } from '../../ngrx/reducers/reducers';
+import { reducers } from '../../ngrx/reducers';
 
 import { CastleFilterAction } from '../../ngrx/actions';
 

@@ -104,10 +104,11 @@ describe('metrics util', () => {
     const emptyFilter = {};
     expect(filterPodcasts(emptyFilter, podcasts)).toBeUndefined();
     const nonMatchingFilter = {
-      podcasts: {
+      podcast: {
         doc: undefined,
         seriesId: 1,
-        feederId: '18'
+        feederId: '18',
+        title: 'Paisley and Polka Dots'
       }
     };
     expect(filterPodcasts(nonMatchingFilter, podcasts)).toBeUndefined();

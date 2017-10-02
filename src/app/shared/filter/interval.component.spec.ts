@@ -5,7 +5,7 @@ import { StoreModule } from '@ngrx/store';
 import { SelectModule } from 'ngx-prx-styleguide';
 import { IntervalComponent } from './interval.component';
 
-import { reducers } from '../../ngrx/reducers/reducers';
+import { reducers } from '../../ngrx/reducers/index';
 
 import { FilterModel, INTERVAL_DAILY } from '../../ngrx/model';
 import { CastleFilterAction } from '../../ngrx/actions';

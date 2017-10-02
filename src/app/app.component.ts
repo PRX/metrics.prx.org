@@ -6,7 +6,7 @@ import { CmsService, HalDoc } from './core';
 import { Env } from './core/core.env';
 import { EpisodeModel, PodcastModel, FilterModel } from './ngrx/model';
 import { CastleFilterAction, CmsPodcastFeedAction, CmsEpisodeGuidAction } from './ngrx/actions';
-import { selectPodcasts, selectFilter } from './ngrx/reducers/reducers';
+import { selectPodcasts, selectFilter } from './ngrx/reducers';
 
 @Component({
   selector: 'metrics-root',

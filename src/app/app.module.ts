@@ -10,7 +10,7 @@ import { ErrorService } from './error';
 import { CoreModule } from './core';
 import { SharedModule } from './shared';
 
-import { reducers } from './ngrx/reducers/reducers';
+import { reducers } from './ngrx/reducers';
 
 import { DownloadsModule } from './downloads/downloads.module';
 

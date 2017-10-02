@@ -5,7 +5,7 @@ import { StoreModule } from '@ngrx/store';
 import { DatepickerModule } from 'ngx-prx-styleguide';
 import { DateRangeComponent } from './date-range.component';
 
-import { reducers } from '../../ngrx/reducers/reducers';
+import { reducers } from '../../ngrx/reducers';
 
 import { FilterModel, INTERVAL_DAILY } from '../../ngrx/model';
 import { CastleFilterAction } from '../../ngrx/actions';

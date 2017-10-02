@@ -1,4 +1,4 @@
-import { PodcastModel, EpisodeModel, FilterModel, MetricsType, PodcastMetricsModel, EpisodeMetricsModel } from '../model';
+import { PodcastModel, EpisodeModel, FilterModel, MetricsType, PodcastMetricsModel, EpisodeMetricsModel } from '../../ngrx/model';
 
 export const filterPodcasts = (filter: FilterModel, podcasts: PodcastModel[]): PodcastModel => {
   if (filter.podcast && podcasts) {

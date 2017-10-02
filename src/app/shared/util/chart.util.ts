@@ -1,5 +1,6 @@
 import * as moment from 'moment';
 import { TimeseriesDatumModel } from 'ngx-prx-styleguide';
+import * as tinycolor2 from 'tinycolor2';
 
 // metrics data is an array of arrays of [datetime string, numeric value]
 export const mapMetricsToTimeseriesData = (data: any[][]): TimeseriesDatumModel[] => {
@@ -45,4 +46,8 @@ export const hourlyDateFormat = (date: Date): string => {
   const minutes = date.getUTCMinutes() < 10 ? '0' + date.getUTCMinutes() : date.getUTCMinutes();
   return (date.getUTCMonth() + 1) + '/' + date.getUTCDate() + ' ' +
     date.getUTCHours() + ':' + minutes;
+};
+
+export const lightenColor = (color: string, percent: number) => {
+  return tinycolor2(color).lighten(percent);
 };

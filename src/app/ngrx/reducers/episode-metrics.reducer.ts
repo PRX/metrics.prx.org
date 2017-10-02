@@ -1,6 +1,6 @@
 import { ActionTypes, ActionWithPayload, CastleEpisodeMetricsPayload } from '../actions';
 import { EpisodeMetricsModel, FilterModel, MetricsType } from '../model';
-import { getTotal } from './metrics.util';
+import { getTotal } from '../../shared/util/metrics.util';
 
 const initialState = [];
 

@@ -5,7 +5,7 @@ import { CastleService } from '../core';
 import { EpisodeModel, INTERVAL_DAILY, FilterModel } from '../ngrx/model';
 import { CastleFilterAction, CastlePodcastMetricsAction, CastleEpisodeMetricsAction } from '../ngrx/actions';
 import { selectFilter, selectEpisodes } from '../ngrx/reducers/reducers';
-import { filterAllPodcastEpisodes } from '../ngrx/reducers/metrics.util';
+import { filterAllPodcastEpisodes } from '../shared/util/metrics.util';
 
 @Component({
   selector: 'metrics-downloads',

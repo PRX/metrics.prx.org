@@ -1,4 +1,4 @@
-import { INTERVAL_DAILY, INTERVAL_HOURLY } from '../model';
+import { INTERVAL_DAILY, INTERVAL_HOURLY } from '../../ngrx/model';
 import { filterPodcasts, filterAllPodcastEpisodes, filterEpisodes,
   filterPodcastMetrics, filterEpisodeMetrics, metricsData, getTotal } from './metrics.util';
 

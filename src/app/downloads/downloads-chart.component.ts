@@ -5,7 +5,7 @@ import { TimeseriesChartModel, TimeseriesDatumModel } from 'ngx-prx-styleguide';
 import { EpisodeMetricsModel, PodcastMetricsModel, EpisodeModel, FilterModel,
   INTERVAL_DAILY, INTERVAL_HOURLY, INTERVAL_15MIN } from '../ngrx/model';
 import { selectFilter, selectPodcastMetrics, selectEpisodeMetrics } from '../ngrx/reducers/reducers';
-import { filterPodcastMetrics, filterEpisodeMetrics, metricsData } from '../ngrx/reducers/metrics.util';
+import { filterPodcastMetrics, filterEpisodeMetrics, metricsData, getTotal } from '../ngrx/reducers/metrics.util';
 import { mapMetricsToTimeseriesData, subtractTimeseriesDatasets,
   UTCDateFormat, dailyDateFormat, hourlyDateFormat } from '../shared/util/chart.util';
 
@@ -55,31 +55,14 @@ export class DownloadsChartComponent implements OnDestroy {
             this.episodeMetricsStoreSub = store.select(selectEpisodeMetrics).subscribe((episodeMetrics: EpisodeMetricsModel[]) => {
               this.episodeMetrics = filterEpisodeMetrics(this.filter, episodeMetrics, 'downloads');
               if (this.episodeMetrics && this.episodeMetrics.length > 0) {
-                this.episodeChartData = this.episodeMetrics.map((metrics: EpisodeMetricsModel) => {
-                  const episode = this.filter.episodes.find(ep => ep.id === metrics.id);
-                  return this.mapEpisodeData(episode, metricsData(this.filter, metrics, 'downloads'));
-                });
-                // TODO: can't really hide this sort by total and getting colors in here, will also need it for the table
-                // sort these episodes by their data total for the stacked chart
-                this.episodeChartData.sort((a: TimeseriesChartModel, b: TimeseriesChartModel) => {
-                  const getTotal = (data: TimeseriesDatumModel[]) => {
-                    if (data.length > 0) {
-                      return data.map(d => d.value).reduce((total: number, value: number) => {
-                        return total + value;
-                      });
-                    } else {
-                      return 0;
-                    }
-                  };
-                  return getTotal(b.data) - getTotal(a.data);
-                });
-                // set the colors now that they are ordered
-                // TODO: can colors be optional to allow C3 to select colors?
-                // TODO: chart component should not include color in C3 config when dataset is empty
-                // --> create styleguide tickets
-                for (let i = 0; i < this.episodeChartData.length; i++) {
-                  this.episodeChartData[i].color = this.colors[i];
-                }
+                this.episodeChartData = this.episodeMetrics
+                  .sort((a: EpisodeMetricsModel, b: EpisodeMetricsModel) => {
+                    return getTotal(metricsData(this.filter, b, 'downloads')) - getTotal(metricsData(this.filter, a, 'downloads'));
+                  })
+                  .map((metrics: EpisodeMetricsModel, i) => {
+                    const episode = this.filter.episodes.find(ep => ep.id === metrics.id);
+                    return this.mapEpisodeData(episode, metricsData(this.filter, metrics, 'downloads'), i);
+                  });
 
                 this.updateChartData();
               }
@@ -100,9 +83,8 @@ export class DownloadsChartComponent implements OnDestroy {
     return state.podcast && (!this.filter || !this.filter.podcast ||  this.filter.podcast.seriesId !== state.podcast.seriesId);
   }
 
-  mapEpisodeData(episode: EpisodeModel, metrics: any[][]): TimeseriesChartModel {
-    // this color is temporary and will be re-applied after sorting of the totals
-    return { data: mapMetricsToTimeseriesData(metrics), label: episode.title, color: '#000044' };
+  mapEpisodeData(episode: EpisodeModel, metrics: any[][], colorIndex: number): TimeseriesChartModel {
+    return { data: mapMetricsToTimeseriesData(metrics), label: episode.title, color: this.colors[colorIndex] };
   }
 
   mapPodcastData(metrics: any[][]): TimeseriesChartModel {

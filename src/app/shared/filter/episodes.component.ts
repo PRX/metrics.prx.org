@@ -10,7 +10,7 @@ import { CastleFilterAction } from '../../ngrx/actions';
   template: `
     <span>Episodes:</span>
     <span>
-      <prx-select [options]="allEpisodeOptions" [selected]="selected" (onSelect)="onEpisodesChange($event)"></prx-select>
+      <prx-select [options]="allEpisodeOptions" [selected]="selected" searchable="true" (onSelect)="onEpisodesChange($event)"></prx-select>
     </span>
   `
 })

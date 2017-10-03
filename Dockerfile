@@ -1,4 +1,4 @@
-FROM mhart/alpine-node:6.9.2
+FROM mhart/alpine-node:8.0.0
 
 MAINTAINER PRX <sysadmin@prx.org>
 LABEL org.prx.app="yes"
@@ -32,7 +32,6 @@ RUN apk --update add curl git && \
   npm install yarn --global && \
   yarn install --no-progress --silent && \
   apk del curl && \
-  npm cache clean && \
   yarn cache clean && \
   rm -rf /usr/share/man /tmp/* /var/tmp/* /var/cache/apk/* /root/.npm /root/.node-gyp
 

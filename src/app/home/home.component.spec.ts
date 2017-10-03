@@ -7,7 +7,7 @@ import { SharedModule } from '../shared';
 import { DownloadsModule } from '../downloads/downloads.module';
 import { HomeComponent } from './home.component';
 
-import { reducers } from '../ngrx/reducers/reducers';
+import { reducers } from '../ngrx/reducers';
 
 describe('HomeComponent', () => {
   let comp: HomeComponent;

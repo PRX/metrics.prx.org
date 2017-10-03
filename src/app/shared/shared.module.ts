@@ -6,12 +6,14 @@ import { AuthGuard, DeactivateGuard, UnauthGuard,
 
 import { CannedRangeComponent } from './filter/canned-range.component';
 import { DateRangeComponent } from './filter/date-range.component';
+import { EpisodesComponent } from './filter/episodes.component';
 import { IntervalComponent } from './filter/interval.component';
 
 @NgModule({
   declarations: [
     CannedRangeComponent,
     DateRangeComponent,
+    EpisodesComponent,
     IntervalComponent
   ],
   exports: [
@@ -23,6 +25,7 @@ import { IntervalComponent } from './filter/interval.component';
     SpinnerModule,
     CannedRangeComponent,
     DateRangeComponent,
+    EpisodesComponent,
     IntervalComponent
   ],
   imports: [

@@ -101,7 +101,7 @@ export class CannedRangeComponent implements OnInit, OnDestroy {
     this.whenOptions.push([LAST_MONTH, {beginDate: utcBeginDate.toDate(), endDate: utcEndDate.toDate()}]);
 
     // first of this month - 1 day and 2 months
-    utcEndDate = this.endOfTodayUTC().date(1).subtract(1, 'days').subtract(2, 'months');
+    utcEndDate = this.endOfTodayUTC().date(1).subtract(2, 'months').subtract(1, 'days');
     // first of this month - 5 months
     utcBeginDate = this.beginningOfTodayUTC().date(1).subtract(5, 'months');
     this.whenOptions.push([PRIOR_THREE_MONTHS, {beginDate: utcBeginDate.toDate(), endDate: utcEndDate.toDate()}]);
@@ -229,7 +229,7 @@ export class CannedRangeComponent implements OnInit, OnDestroy {
           // first of this month - 5 months
           newBeginDate = moment().utc().date(1).hours(0).minutes(0).seconds(0).milliseconds(0).subtract(5, 'months');
           // first of this month - 1 day and 2 months
-          newEndDate = moment().utc().date(1).hours(23).minutes(59).seconds(59).milliseconds(999).subtract(1, 'days').subtract(2, 'months');
+          newEndDate = moment().utc().date(1).hours(23).minutes(59).seconds(59).milliseconds(999).subtract(2, 'months').subtract(1, 'days');
           break;
         case PRIOR_THREE_MONTHS:
           newBeginDate = moment(beginDate.valueOf()).utc().subtract(3, 'months');

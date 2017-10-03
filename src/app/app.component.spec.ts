@@ -11,7 +11,7 @@ import { CoreModule, CmsService } from './core';
 import { SharedModule } from './shared';
 import { AppComponent } from './app.component';
 
-import { reducers } from './ngrx/reducers/reducers';
+import { reducers } from './ngrx/reducers';
 
 import { CastleFilterAction, CmsEpisodeGuidAction, CmsPodcastFeedAction } from './ngrx/actions';
 import { PodcastModel, FilterModel, INTERVAL_DAILY } from './ngrx/model/';

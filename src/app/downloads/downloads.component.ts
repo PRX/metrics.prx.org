@@ -4,7 +4,8 @@ import { Subscription } from 'rxjs/Subscription';
 import { CastleService } from '../core';
 import { EpisodeModel, INTERVAL_DAILY, FilterModel } from '../ngrx/model';
 import { CastleFilterAction, CastlePodcastMetricsAction, CastleEpisodeMetricsAction } from '../ngrx/actions';
-import { selectFilter, selectEpisodes, filterAllPodcastEpisodes } from '../ngrx/reducers/reducers';
+import { selectFilter, selectEpisodes } from '../ngrx/reducers';
+import { filterAllPodcastEpisodes } from '../shared/util/metrics.util';
 
 @Component({
   selector: 'metrics-downloads',
@@ -14,6 +15,8 @@ import { selectFilter, selectEpisodes, filterAllPodcastEpisodes } from '../ngrx/
       <div class="bar"></div>
       <metrics-canned-range></metrics-canned-range>
       <metrics-date-range></metrics-date-range>
+      <div class="bar"></div>
+      <metrics-episodes></metrics-episodes>
     </section>
     <section class="content">
       <prx-spinner *ngIf="isPodcastLoading || isEpisodeLoading"></prx-spinner>

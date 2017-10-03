@@ -9,7 +9,7 @@ import { SharedModule } from '../shared';
 import { DownloadsComponent } from './downloads.component';
 import { DownloadsChartComponent } from './downloads-chart.component';
 
-import { reducers } from '../ngrx/reducers/reducers';
+import { reducers } from '../ngrx/reducers';
 
 import { CastleFilterAction } from '../ngrx/actions';
 

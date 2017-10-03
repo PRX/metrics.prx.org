@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { Subscription } from 'rxjs/subscription';
+import { Subscription } from 'rxjs/Subscription';
 import { selectEpisodeFilter, selectEpisodes } from '../../ngrx/reducers';
 import { EpisodeModel } from '../../ngrx/model';
 import { CastleFilterAction } from '../../ngrx/actions';

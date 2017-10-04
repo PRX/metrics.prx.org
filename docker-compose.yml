@@ -6,7 +6,6 @@ metrics:
     - ./lib:/app/lib
     - ./src:/app/src
     - ./.angular-cli.json:/app/.angular-cli.json
-#    - ./codecov.yml:/app/codecov.yml
     - ./karma.conf.js:/app/karma.conf.js
     - ./newrelic.js:/app/newrelic.js
     - ./package.json:/app/package.json

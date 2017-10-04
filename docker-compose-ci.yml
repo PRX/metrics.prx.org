@@ -1,5 +1,0 @@
-metrics:
-  build: .
-  command: test
-  environment:
-    VIRTUAL_HOST: metrics.prx.docker

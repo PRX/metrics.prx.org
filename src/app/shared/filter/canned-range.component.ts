@@ -176,8 +176,10 @@ export class CannedRangeComponent implements OnInit, OnDestroy {
   }
 
   onWhenChange(val) {
-    const { beginDate, endDate } = val;
-    this.store.dispatch(new CastleFilterAction({filter: {beginDate, endDate}}));
+    if (val && val.beginDate && val.endDate) {
+      const { beginDate, endDate } = val;
+      this.store.dispatch(new CastleFilterAction({filter: {beginDate, endDate}}));
+    }
   }
 
   get prevDisabled(): string {

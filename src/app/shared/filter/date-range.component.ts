@@ -3,7 +3,7 @@ import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs/Subscription';
 import { FilterModel, INTERVAL_DAILY, INTERVAL_HOURLY, INTERVAL_15MIN } from '../../ngrx/model';
 import { CastleFilterAction } from '../../ngrx/actions';
-import { isMoreThanXDays, endOfTodayUTC } from '../../shared/util/date.util';
+import { isMoreThanXDays, endOfTodayUTC } from '../util/date.util';
 
 @Component({
   selector: 'metrics-date-range',

@@ -3,6 +3,7 @@ import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs/Subscription';
 import { FilterModel, INTERVAL_15MIN, INTERVAL_HOURLY, INTERVAL_DAILY } from '../../ngrx/model';
 import { CastleFilterAction } from '../../ngrx/actions';
+import { isMoreThanXDays, beginningOfTodayUTC, endOfTodayUTC } from '../util/date.util';
 import * as moment from 'moment';
 
 export const TODAY = 'Today';
@@ -52,19 +53,11 @@ export class CannedRangeComponent implements OnInit, OnDestroy {
     if (this.filterStoreSub) { this.filterStoreSub.unsubscribe(); }
   }
 
-  endOfTodayUTC() {
-    return moment().utc().hours(23).minutes(59).seconds(59).milliseconds(999);
-  }
-
-  beginningOfTodayUTC() {
-    return moment().utc().hours(0).minutes(0).seconds(0).milliseconds(0);
-  }
-
   genWhenDates() {
     this.selected = null;
 
-    let utcEndDate = this.endOfTodayUTC();
-    let utcBeginDate = this.beginningOfTodayUTC();
+    let utcEndDate = endOfTodayUTC();
+    let utcBeginDate = beginningOfTodayUTC();
     const daysIntoWeek = utcEndDate.day();
 
     this.whenOptions = [[TODAY, {beginDate: utcBeginDate.toDate(), endDate: utcEndDate.toDate()}]];
@@ -74,59 +67,59 @@ export class CannedRangeComponent implements OnInit, OnDestroy {
 
     utcBeginDate.subtract(7, 'days');
     if (this.filter.interval !== INTERVAL_15MIN ||
-      (this.filter.interval === INTERVAL_15MIN && !this.isMoreThanXDays(10, utcBeginDate, utcEndDate))) {
+      (this.filter.interval === INTERVAL_15MIN && !isMoreThanXDays(10, utcBeginDate, utcEndDate))) {
       this.whenOptions.push([TWO_WEEKS, {beginDate: utcBeginDate.toDate(), endDate: utcEndDate.toDate()}]);
     }
 
-    utcBeginDate = this.beginningOfTodayUTC().date(1);
+    utcBeginDate = beginningOfTodayUTC().date(1);
     if (this.filter.interval !== INTERVAL_15MIN ||
-      (this.filter.interval === INTERVAL_15MIN && !this.isMoreThanXDays(10, utcBeginDate, utcEndDate))) {
+      (this.filter.interval === INTERVAL_15MIN && !isMoreThanXDays(10, utcBeginDate, utcEndDate))) {
       this.whenOptions.push([THIS_MONTH, {beginDate: utcBeginDate.toDate(), endDate: utcEndDate.toDate()}]);
     }
 
     utcBeginDate.subtract(2, 'months');
     if (this.filter.interval === INTERVAL_DAILY ||
-      (this.filter.interval === INTERVAL_15MIN && !this.isMoreThanXDays(10, utcBeginDate, utcEndDate)) ||
-      (this.filter.interval === INTERVAL_HOURLY && !this.isMoreThanXDays(40, utcBeginDate, utcEndDate))) {
+      (this.filter.interval === INTERVAL_15MIN && !isMoreThanXDays(10, utcBeginDate, utcEndDate)) ||
+      (this.filter.interval === INTERVAL_HOURLY && !isMoreThanXDays(40, utcBeginDate, utcEndDate))) {
       this.whenOptions.push([THREE_MONTHS, {beginDate: utcBeginDate.toDate(), endDate: utcEndDate.toDate()}]);
     }
 
-    utcBeginDate = this.beginningOfTodayUTC().month(0).date(1);
+    utcBeginDate = beginningOfTodayUTC().month(0).date(1);
     if (this.filter.interval === INTERVAL_DAILY ||
-      (this.filter.interval === INTERVAL_15MIN && !this.isMoreThanXDays(10, utcBeginDate, utcEndDate)) ||
-      (this.filter.interval === INTERVAL_HOURLY && !this.isMoreThanXDays(40, utcBeginDate, utcEndDate))) {
+      (this.filter.interval === INTERVAL_15MIN && !isMoreThanXDays(10, utcBeginDate, utcEndDate)) ||
+      (this.filter.interval === INTERVAL_HOURLY && !isMoreThanXDays(40, utcBeginDate, utcEndDate))) {
       this.whenOptions.push([THIS_YEAR, {beginDate: utcBeginDate.toDate(), endDate: utcEndDate.toDate()}]);
     }
 
     utcEndDate.subtract(1, 'days');
-    utcBeginDate = this.beginningOfTodayUTC().subtract(1, 'days');
+    utcBeginDate = beginningOfTodayUTC().subtract(1, 'days');
     this.whenOptions.push([YESTERDAY, {beginDate: utcBeginDate.toDate(), endDate: utcEndDate.toDate()}]);
 
-    utcEndDate = this.endOfTodayUTC().subtract(daysIntoWeek + 1, 'days');
-    utcBeginDate = this.beginningOfTodayUTC().subtract(daysIntoWeek + 7, 'days');
+    utcEndDate = endOfTodayUTC().subtract(daysIntoWeek + 1, 'days');
+    utcBeginDate = beginningOfTodayUTC().subtract(daysIntoWeek + 7, 'days');
     this.whenOptions.push([LAST_WEEK, {beginDate: utcBeginDate.toDate(), endDate: utcEndDate.toDate()}]);
 
     if (this.filter.interval !== INTERVAL_15MIN) {
-      utcEndDate = this.endOfTodayUTC().subtract(daysIntoWeek + 8, 'days');
-      utcBeginDate = this.beginningOfTodayUTC().subtract(daysIntoWeek + 21, 'days');
+      utcEndDate = endOfTodayUTC().subtract(daysIntoWeek + 8, 'days');
+      utcBeginDate = beginningOfTodayUTC().subtract(daysIntoWeek + 21, 'days');
       this.whenOptions.push([PRIOR_TWO_WEEKS, {beginDate: utcBeginDate.toDate(), endDate: utcEndDate.toDate()}]);
 
-      utcEndDate = this.endOfTodayUTC().date(1).subtract(1, 'days'); // 1st of month - 1 day
-      utcBeginDate = this.beginningOfTodayUTC().date(1).subtract(1, 'months'); // 1st of month - 1 month
+      utcEndDate = endOfTodayUTC().date(1).subtract(1, 'days'); // 1st of month - 1 day
+      utcBeginDate = beginningOfTodayUTC().date(1).subtract(1, 'months'); // 1st of month - 1 month
       this.whenOptions.push([LAST_MONTH, {beginDate: utcBeginDate.toDate(), endDate: utcEndDate.toDate()}]);
     }
 
     if (this.filter.interval !== INTERVAL_15MIN && this.filter.interval !== INTERVAL_HOURLY) {
       // first of this month - 1 day and 2 months
-      utcEndDate = this.endOfTodayUTC().date(1).subtract(2, 'months').subtract(1, 'days');
+      utcEndDate = endOfTodayUTC().date(1).subtract(2, 'months').subtract(1, 'days');
       // first of this month - 5 months
-      utcBeginDate = this.beginningOfTodayUTC().date(1).subtract(5, 'months');
+      utcBeginDate = beginningOfTodayUTC().date(1).subtract(5, 'months');
       this.whenOptions.push([PRIOR_THREE_MONTHS, {beginDate: utcBeginDate.toDate(), endDate: utcEndDate.toDate()}]);
 
       // last day of year minus 1 year
-      utcEndDate = this.endOfTodayUTC().month(11).date(31).subtract(1, 'years');
+      utcEndDate = endOfTodayUTC().month(11).date(31).subtract(1, 'years');
       // first day of year minus 1 year
-      utcBeginDate = this.beginningOfTodayUTC().month(0).date(1).subtract(1, 'years');
+      utcBeginDate = beginningOfTodayUTC().month(0).date(1).subtract(1, 'years');
       this.whenOptions.push([LAST_YEAR, {beginDate: utcBeginDate.toDate(), endDate: utcEndDate.toDate()}]);
     }
 
@@ -135,10 +128,6 @@ export class CannedRangeComponent implements OnInit, OnDestroy {
     // this.whenOptions.push(['All time', {beginDate: utcBeginDate.toDate(), endDate: utcEndDate.toDate()}]);
 
     this.whenOptions.forEach(this.setSelectedIfFilterIsRange.bind(this));
-  }
-
-  isMoreThanXDays(x: number, beginDate, endDate): boolean {
-    return endDate.valueOf() - beginDate.valueOf() > (1000 * 60 * 60 * 24 * x); // x days
   }
 
   get selection(): any {
@@ -203,7 +192,7 @@ export class CannedRangeComponent implements OnInit, OnDestroy {
     if (!this.filter || !this.lastChosenRange) {
       return 'disabled';
     } else if (moment(this.filter.endDate.valueOf()).utc().add(this.lastChosenRange[0], this.lastChosenRange[1]).valueOf() >
-      this.endOfTodayUTC().endOf(this.lastChosenRange[1]).valueOf()) {
+      endOfTodayUTC().endOf(this.lastChosenRange[1]).valueOf()) {
       // disabled if the end date plus the last chosen range is greater than the end of this same period, i.e. week/month/year
       return 'disabled';
     } else {
@@ -286,37 +275,37 @@ export class CannedRangeComponent implements OnInit, OnDestroy {
           break;
         case YESTERDAY:
           newBeginDate = moment(beginDate.valueOf()).utc().add(1, 'days');
-          newEndDate = moment.min(moment(endDate.valueOf()).utc().add(1, 'days'), this.endOfTodayUTC());
+          newEndDate = moment.min(moment(endDate.valueOf()).utc().add(1, 'days'), endOfTodayUTC());
           break;
         case THIS_WEEK:
           break;
         case LAST_WEEK:
           newBeginDate = moment(beginDate.valueOf()).utc().add(1, 'weeks');
-          newEndDate = moment.min(moment(endDate.valueOf()).utc().add(1, 'weeks'), this.endOfTodayUTC());
+          newEndDate = moment.min(moment(endDate.valueOf()).utc().add(1, 'weeks'), endOfTodayUTC());
           break;
         case TWO_WEEKS:
           break;
         case PRIOR_TWO_WEEKS:
           newBeginDate = moment(beginDate.valueOf()).utc().add(2, 'weeks');
-          newEndDate = moment.min(moment(endDate.valueOf()).utc().add(2, 'weeks'), this.endOfTodayUTC());
+          newEndDate = moment.min(moment(endDate.valueOf()).utc().add(2, 'weeks'), endOfTodayUTC());
           break;
         case THIS_MONTH:
           break;
         case LAST_MONTH:
           newBeginDate = moment(beginDate.valueOf()).utc().add(1, 'months');
-          newEndDate = moment.min(moment(endDate.valueOf()).utc().add(1, 'months'), this.endOfTodayUTC());
+          newEndDate = moment.min(moment(endDate.valueOf()).utc().add(1, 'months'), endOfTodayUTC());
           break;
         case THREE_MONTHS:
           break;
         case PRIOR_THREE_MONTHS:
           newBeginDate = moment(beginDate.valueOf()).utc().add(3, 'months');
-          newEndDate = moment.min(moment(endDate.valueOf()).utc().add(3, 'months'), this.endOfTodayUTC());
+          newEndDate = moment.min(moment(endDate.valueOf()).utc().add(3, 'months'), endOfTodayUTC());
           break;
         case THIS_YEAR:
           break;
         case LAST_YEAR:
           newBeginDate = moment(beginDate.valueOf()).utc().add(1, 'year');
-          newEndDate = moment.min(moment(endDate.valueOf()).utc().add(1, 'year'), this.endOfTodayUTC());
+          newEndDate = moment.min(moment(endDate.valueOf()).utc().add(1, 'year'), endOfTodayUTC());
           break;
         default:
           break;

@@ -9,7 +9,7 @@ import { CannedRangeComponent, TODAY, THIS_WEEK, TWO_WEEKS, THIS_MONTH, THREE_MO
 
 import { reducers } from '../../ngrx/reducers';
 
-import { FilterModel, INTERVAL_DAILY } from '../../ngrx/model';
+import { FilterModel, INTERVAL_DAILY, INTERVAL_HOURLY, INTERVAL_15MIN } from '../../ngrx/model';
 import { CastleFilterAction } from '../../ngrx/actions';
 
 describe('CannedRangeComponent', () => {
@@ -194,5 +194,31 @@ describe('CannedRangeComponent', () => {
     expect(comp.selected[0]).toEqual(PRIOR_THREE_MONTHS);
     expect(comp.filter.beginDate.valueOf()).toEqual(comp.beginningOfTodayUTC().subtract(5, 'months').date(1).valueOf());
     expect(comp.filter.endDate.valueOf()).toEqual(comp.endOfTodayUTC().date(1).subtract(2, 'months').subtract(1, 'days').valueOf());
+  });
+
+  it('should not have options more than 10 days apart when interval is 15 minutes', () => {
+    filter = {
+      beginDate: comp.beginningOfTodayUTC().toDate(), // 'TODAY'
+      endDate: comp.endOfTodayUTC().toDate(),
+      interval: INTERVAL_15MIN
+    };
+    comp.store.dispatch(new CastleFilterAction({filter}));
+    expect(comp.whenOptions.find(opt => opt[0] === YESTERDAY)[0]).toEqual(YESTERDAY);
+    expect(comp.whenOptions.find(opt => opt[0] === PRIOR_TWO_WEEKS)).toBeUndefined();
+    expect(comp.whenOptions.find(opt => opt[0] === LAST_MONTH)).toBeUndefined();
+    expect(comp.whenOptions.find(opt => opt[0] === PRIOR_THREE_MONTHS)).toBeUndefined();
+    expect(comp.whenOptions.find(opt => opt[0] === LAST_YEAR)).toBeUndefined();
+  });
+
+  it('should not have options more than 40 days apart when interval is hourly', () => {
+    filter = {
+      beginDate: comp.beginningOfTodayUTC().toDate(), // 'TODAY'
+      endDate: comp.endOfTodayUTC().toDate(),
+      interval: INTERVAL_HOURLY
+    };
+    comp.store.dispatch(new CastleFilterAction({filter}));
+    expect(comp.whenOptions.find(opt => opt[0] === THIS_MONTH)[0]).toEqual(THIS_MONTH);
+    expect(comp.whenOptions.find(opt => opt[0] === PRIOR_THREE_MONTHS)).toBeUndefined();
+    expect(comp.whenOptions.find(opt => opt[0] === LAST_YEAR)).toBeUndefined();
   });
 });

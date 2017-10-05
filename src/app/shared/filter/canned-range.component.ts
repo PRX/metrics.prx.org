@@ -60,53 +60,53 @@ export class CannedRangeComponent implements OnInit, OnDestroy {
     let utcBeginDate = beginningOfTodayUTC();
     const daysIntoWeek = utcEndDate.day();
 
-    this.whenOptions = [[TODAY, {beginDate: utcBeginDate.toDate(), endDate: utcEndDate.toDate()}]];
+    this.whenOptions = [[TODAY, {range: [1, 'days'], beginDate: utcBeginDate.toDate(), endDate: utcEndDate.toDate()}]];
 
     utcBeginDate.subtract(daysIntoWeek, 'days');
-    this.whenOptions.push([THIS_WEEK, {beginDate: utcBeginDate.toDate(), endDate: utcEndDate.toDate()}]);
+    this.whenOptions.push([THIS_WEEK, {range: [1, 'weeks'], beginDate: utcBeginDate.toDate(), endDate: utcEndDate.toDate()}]);
 
     utcBeginDate.subtract(7, 'days');
     if (this.filter.interval !== INTERVAL_15MIN ||
       (this.filter.interval === INTERVAL_15MIN && !isMoreThanXDays(10, utcBeginDate, utcEndDate))) {
-      this.whenOptions.push([TWO_WEEKS, {beginDate: utcBeginDate.toDate(), endDate: utcEndDate.toDate()}]);
+      this.whenOptions.push([TWO_WEEKS, {range: [2, 'weeks'], beginDate: utcBeginDate.toDate(), endDate: utcEndDate.toDate()}]);
     }
 
     utcBeginDate = beginningOfTodayUTC().date(1);
     if (this.filter.interval !== INTERVAL_15MIN ||
       (this.filter.interval === INTERVAL_15MIN && !isMoreThanXDays(10, utcBeginDate, utcEndDate))) {
-      this.whenOptions.push([THIS_MONTH, {beginDate: utcBeginDate.toDate(), endDate: utcEndDate.toDate()}]);
+      this.whenOptions.push([THIS_MONTH, {range: [1, 'months'], beginDate: utcBeginDate.toDate(), endDate: utcEndDate.toDate()}]);
     }
 
     utcBeginDate.subtract(2, 'months');
     if (this.filter.interval === INTERVAL_DAILY ||
       (this.filter.interval === INTERVAL_15MIN && !isMoreThanXDays(10, utcBeginDate, utcEndDate)) ||
       (this.filter.interval === INTERVAL_HOURLY && !isMoreThanXDays(40, utcBeginDate, utcEndDate))) {
-      this.whenOptions.push([THREE_MONTHS, {beginDate: utcBeginDate.toDate(), endDate: utcEndDate.toDate()}]);
+      this.whenOptions.push([THREE_MONTHS, {range: [3, 'months'], beginDate: utcBeginDate.toDate(), endDate: utcEndDate.toDate()}]);
     }
 
     utcBeginDate = beginningOfTodayUTC().month(0).date(1);
     if (this.filter.interval === INTERVAL_DAILY ||
       (this.filter.interval === INTERVAL_15MIN && !isMoreThanXDays(10, utcBeginDate, utcEndDate)) ||
       (this.filter.interval === INTERVAL_HOURLY && !isMoreThanXDays(40, utcBeginDate, utcEndDate))) {
-      this.whenOptions.push([THIS_YEAR, {beginDate: utcBeginDate.toDate(), endDate: utcEndDate.toDate()}]);
+      this.whenOptions.push([THIS_YEAR, {range: [1, 'year'], beginDate: utcBeginDate.toDate(), endDate: utcEndDate.toDate()}]);
     }
 
     utcEndDate.subtract(1, 'days');
     utcBeginDate = beginningOfTodayUTC().subtract(1, 'days');
-    this.whenOptions.push([YESTERDAY, {beginDate: utcBeginDate.toDate(), endDate: utcEndDate.toDate()}]);
+    this.whenOptions.push([YESTERDAY, {range: [1, 'days'], beginDate: utcBeginDate.toDate(), endDate: utcEndDate.toDate()}]);
 
     utcEndDate = endOfTodayUTC().subtract(daysIntoWeek + 1, 'days');
     utcBeginDate = beginningOfTodayUTC().subtract(daysIntoWeek + 7, 'days');
-    this.whenOptions.push([LAST_WEEK, {beginDate: utcBeginDate.toDate(), endDate: utcEndDate.toDate()}]);
+    this.whenOptions.push([LAST_WEEK, {range: [1, 'weeks'], beginDate: utcBeginDate.toDate(), endDate: utcEndDate.toDate()}]);
 
     if (this.filter.interval !== INTERVAL_15MIN) {
       utcEndDate = endOfTodayUTC().subtract(daysIntoWeek + 8, 'days');
       utcBeginDate = beginningOfTodayUTC().subtract(daysIntoWeek + 21, 'days');
-      this.whenOptions.push([PRIOR_TWO_WEEKS, {beginDate: utcBeginDate.toDate(), endDate: utcEndDate.toDate()}]);
+      this.whenOptions.push([PRIOR_TWO_WEEKS, {range: [2, 'weeks'], beginDate: utcBeginDate.toDate(), endDate: utcEndDate.toDate()}]);
 
       utcEndDate = endOfTodayUTC().date(1).subtract(1, 'days'); // 1st of month - 1 day
       utcBeginDate = beginningOfTodayUTC().date(1).subtract(1, 'months'); // 1st of month - 1 month
-      this.whenOptions.push([LAST_MONTH, {beginDate: utcBeginDate.toDate(), endDate: utcEndDate.toDate()}]);
+      this.whenOptions.push([LAST_MONTH, {range: [1, 'months'], beginDate: utcBeginDate.toDate(), endDate: utcEndDate.toDate()}]);
     }
 
     if (this.filter.interval !== INTERVAL_15MIN && this.filter.interval !== INTERVAL_HOURLY) {
@@ -114,13 +114,13 @@ export class CannedRangeComponent implements OnInit, OnDestroy {
       utcEndDate = endOfTodayUTC().date(1).subtract(2, 'months').subtract(1, 'days');
       // first of this month - 5 months
       utcBeginDate = beginningOfTodayUTC().date(1).subtract(5, 'months');
-      this.whenOptions.push([PRIOR_THREE_MONTHS, {beginDate: utcBeginDate.toDate(), endDate: utcEndDate.toDate()}]);
+      this.whenOptions.push([PRIOR_THREE_MONTHS, {range: [3, 'months'], beginDate: utcBeginDate.toDate(), endDate: utcEndDate.toDate()}]);
 
       // last day of year minus 1 year
       utcEndDate = endOfTodayUTC().month(11).date(31).subtract(1, 'years');
       // first day of year minus 1 year
       utcBeginDate = beginningOfTodayUTC().month(0).date(1).subtract(1, 'years');
-      this.whenOptions.push([LAST_YEAR, {beginDate: utcBeginDate.toDate(), endDate: utcEndDate.toDate()}]);
+      this.whenOptions.push([LAST_YEAR, {range: [1, 'year'], beginDate: utcBeginDate.toDate(), endDate: utcEndDate.toDate()}]);
     }
 
     // We don't have back data yet, but users want an All time option,
@@ -135,48 +135,26 @@ export class CannedRangeComponent implements OnInit, OnDestroy {
   }
 
   setSelectedIfFilterIsRange(range) {
+    const namedRange = range[0];
+    // if the 1st of the month or 1st of the year is on a Sunday or it's January and the user selected THIS_YEAR,
+    // the dates might match but that's not what the user selected
+    const misMatchedNamedRanges = this.lastChosenRange &&
+      (this.lastChosenRange[1].indexOf('week') !== -1 && namedRange.indexOf('month') !== -1 ||
+      this.lastChosenRange[1].indexOf('week') !== -1 && namedRange.indexOf('year') !== -1 ||
+      this.lastChosenRange[1].indexOf('month') !== -1 && namedRange.indexOf('week') !== -1 ||
+      this.lastChosenRange[1].indexOf('month') !== -1 && namedRange.indexOf('year') !== -1);
     const { beginDate, endDate } = range[1];
     if (this.filter.beginDate && this.filter.endDate &&
       this.filter.beginDate.valueOf() === beginDate.valueOf() &&
-      this.filter.endDate.valueOf() === endDate.valueOf()) {
+      this.filter.endDate.valueOf() === endDate.valueOf() &&
+      !misMatchedNamedRanges) {
       this.selected = range;
-      this.setLastChosenRange();
-    }
-  }
-
-  setLastChosenRange() {
-    switch (this.selected[0]) {
-      case TODAY:
-      case YESTERDAY:
-        this.lastChosenRange = [1, 'days'];
-        break;
-      case THIS_WEEK:
-      case LAST_WEEK:
-        this.lastChosenRange =  [1, 'weeks'];
-        break;
-      case TWO_WEEKS:
-      case PRIOR_TWO_WEEKS:
-        this.lastChosenRange = [2, 'weeks'];
-        break;
-      case THIS_MONTH:
-      case LAST_MONTH:
-        this.lastChosenRange = [1, 'months'];
-        break;
-      case THREE_MONTHS:
-      case PRIOR_THREE_MONTHS:
-        this.lastChosenRange = [3, 'months'];
-        break;
-      case THIS_YEAR:
-      case LAST_YEAR:
-        this.lastChosenRange = [1, 'year'];
-        break;
-      default:
-        break;
     }
   }
 
   onWhenChange(val) {
-    if (val && val.beginDate && val.endDate) {
+    if (val && val.range && val.beginDate && val.endDate) {
+      this.lastChosenRange = val.range;
       const { beginDate, endDate } = val;
       this.store.dispatch(new CastleFilterAction({filter: {beginDate, endDate}}));
     }

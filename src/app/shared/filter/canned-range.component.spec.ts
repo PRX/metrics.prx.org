@@ -87,7 +87,8 @@ describe('CannedRangeComponent', () => {
     expect(comp.filter.endDate.valueOf()).toEqual(endOfTodayUTC().valueOf());
   });
 
-  xit('should go to prev range when PREV button is click', () => {
+  it('should go to prev range when PREV button is click', () => {
+    comp.lastChosenRange = [1, 'weeks']; // get it to believe something was selected from the drop down
     filter = {
       beginDate: beginningOfTodayUTC().subtract(beginningOfTodayUTC().day(), 'days').toDate(), // 'This week'
       endDate: endOfTodayUTC().toDate(),

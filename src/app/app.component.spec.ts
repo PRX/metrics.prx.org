@@ -72,13 +72,13 @@ describe('AppComponent', () => {
     expect(comp).toBeTruthy();
   }));
 
-  it(`should only show header links when logged in`, async(() => {
+  it(`should only show podcasts when logged in`, async(() => {
     comp.loggedIn = true;
     fix.detectChanges();
-    expect(de.queryAll(By.css('prx-navitem')).length).toEqual(2);
+    expect(de.query(By.css('metrics-podcasts'))).not.toBeNull();
     comp.loggedIn = false;
     fix.detectChanges();
-    expect(de.query(By.css('prx-navitem'))).toBeNull();
+    expect(de.query(By.css('metrics-podcasts'))).toBeNull();
   }));
 
   it('should show user info when logged in', async(() => {

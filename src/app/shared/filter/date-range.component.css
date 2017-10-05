@@ -1,7 +1,12 @@
 :host {
-  padding: 20px;
+  padding: 20px 20px 0px 20px;
 }
 div {
   display: flex;
   flex-direction: column;
+}
+.invalid {
+  margin-top: 10px;
+  color: #ee4d3e;
+  font-style: italic;
 }

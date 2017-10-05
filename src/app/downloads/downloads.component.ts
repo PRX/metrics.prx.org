@@ -187,7 +187,8 @@ export class DownloadsComponent implements OnInit, OnDestroy {
   isEpisodesChanged(state: FilterModel): boolean {
     return state.episodes &&
       (!this.filter.episodes ||
-      !state.episodes.map(e => e.id).every(id => this.filter.episodes.map(e => e.id).indexOf(id) !== -1));
+      !state.episodes.map(e => e.id).every(id => this.filter.episodes.map(e => e.id).indexOf(id) !== -1) ||
+      !this.filter.episodes.map(e => e.id).every(id => state.episodes.map(e => e.id).indexOf(id) !== -1));
   }
 
   isBeginDateChanged(state: FilterModel): boolean {

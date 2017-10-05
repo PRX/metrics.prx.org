@@ -93,4 +93,17 @@ describe('DownloadsComponent', () => {
     expect(comp.setEpisodeMetrics).toHaveBeenCalledTimes(2);
     expect(comp.store.dispatch).toHaveBeenCalledTimes(7);
   });
+
+  it('should reload episode metrics if removed from filter then re-added', () => {
+    const episodes = [
+      {doc: undefined, id: 123, seriesId: 37800, title: 'A New Pet Talk Episode', publishedAt: new Date()},
+      {doc: undefined, id: 1234, seriesId: 37800, title: 'A New Pet Talk Episode', publishedAt: new Date()}
+    ];
+    comp.store.dispatch(new CastleFilterAction({filter: {episodes}}));
+    expect(comp.setEpisodeMetrics).toHaveBeenCalledTimes(2); // once for each episode
+    comp.store.dispatch(new CastleFilterAction({filter: {episodes: [episodes[0]]}}));
+    expect(comp.setEpisodeMetrics).toHaveBeenCalledTimes(3);
+    comp.store.dispatch(new CastleFilterAction({filter: {episodes}}));
+    expect(comp.setEpisodeMetrics).toHaveBeenCalledTimes(5);
+  });
 });

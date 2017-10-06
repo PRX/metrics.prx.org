@@ -44,6 +44,8 @@ export class DownloadsComponent implements OnInit, OnDestroy {
     this.filterStoreSub = this.store.select(selectFilter).subscribe((newFilter: FilterModel) => {
       let changedFilter = false;
       if (this.isPodcastChanged(newFilter)) {
+        this.isPodcastLoading = true;
+        this.isEpisodeLoading = true;
         this.filter.podcast = newFilter.podcast;
         changedFilter = true;
 

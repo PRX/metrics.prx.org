@@ -13,6 +13,7 @@ prx-spinner >>> .spinner::before, prx-spinner >>> .spinner::after {
   padding: 10px;
 }
 .content {
+  position: relative;
   flex: 4 4 80%;
 }
 .bar {

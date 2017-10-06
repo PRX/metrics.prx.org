@@ -3,6 +3,7 @@ import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs/Subscription';
 import { FilterModel, INTERVAL_DAILY, INTERVAL_HOURLY, INTERVAL_15MIN } from '../../ngrx/model';
 import { CastleFilterAction } from '../../ngrx/actions';
+import { isMoreThanXDays } from '../util/date.util';
 
 @Component({
   selector: 'metrics-interval',
@@ -32,11 +33,11 @@ export class IntervalComponent implements OnInit, OnDestroy {
          40 days at 1h
          2.7 years at 1d
          */
-        if (this.isMoreThanXDays(40)) {
+        if (isMoreThanXDays(40, this.filter.beginDate, this.filter.endDate)) {
           this.intervalOptions = [
             [INTERVAL_DAILY.name, INTERVAL_DAILY]
           ];
-        } else if (this.isMoreThanXDays(10)) {
+        } else if (isMoreThanXDays(10, this.filter.beginDate, this.filter.endDate)) {
           this.intervalOptions = [
             [INTERVAL_DAILY.name, INTERVAL_DAILY],
             [INTERVAL_HOURLY.name, INTERVAL_HOURLY],
@@ -56,10 +57,6 @@ export class IntervalComponent implements OnInit, OnDestroy {
     if (this.filterStoreSub) {
       this.filterStoreSub.unsubscribe();
     }
-  }
-
-  isMoreThanXDays(x: number): boolean {
-    return this.filter.endDate.valueOf() - this.filter.beginDate.valueOf() > (1000 * 60 * 60 * 24 * x); // x days
   }
 
   onIntervalChange(value: any) {

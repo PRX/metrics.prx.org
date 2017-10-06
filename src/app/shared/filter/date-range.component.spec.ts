@@ -7,7 +7,7 @@ import { DateRangeComponent } from './date-range.component';
 
 import { reducers } from '../../ngrx/reducers';
 
-import { FilterModel, INTERVAL_DAILY } from '../../ngrx/model';
+import { FilterModel, INTERVAL_DAILY, INTERVAL_HOURLY, INTERVAL_15MIN } from '../../ngrx/model';
 import { CastleFilterAction } from '../../ngrx/actions';
 
 describe('DateRangeComponent', () => {
@@ -48,5 +48,31 @@ describe('DateRangeComponent', () => {
     comp.store.dispatch(new CastleFilterAction({filter}));
     expect(comp.filter.beginDate.valueOf()).toEqual(utcBeginDate.valueOf());
     expect(comp.filter.endDate.valueOf()).toEqual(utcEndDate.valueOf());
+  });
+
+  it('should not allow users to select dates more than 10 days apart when interval is 15 minutes', () => {
+    const today = new Date();
+    const utcEndDate = new Date(Date.UTC(today.getFullYear(), today.getMonth(), today.getDate(), 23, 59, 59, 999));
+    const utcBeginDate = new Date(utcEndDate.valueOf() - (14 * 24 * 60 * 60 * 1000) + 1); // 14 days prior at 0:0:0
+    filter = {
+      beginDate: utcBeginDate,
+      endDate: utcEndDate,
+      interval: INTERVAL_15MIN
+    };
+    comp.store.dispatch(new CastleFilterAction({filter}));
+    expect(comp.invalid).toContain('cannot be more than 10 days apart');
+  });
+
+  it('should not allow users to select dates more than 40 days apart when interval is hourly', () => {
+    const today = new Date();
+    const utcEndDate = new Date(Date.UTC(today.getFullYear(), today.getMonth(), today.getDate(), 23, 59, 59, 999));
+    const utcBeginDate = new Date(utcEndDate.valueOf() - (41 * 24 * 60 * 60 * 1000) + 1); // 41 days prior at 0:0:0
+    filter = {
+      beginDate: utcBeginDate,
+      endDate: utcEndDate,
+      interval: INTERVAL_HOURLY
+    };
+    comp.store.dispatch(new CastleFilterAction({filter}));
+    expect(comp.invalid).toContain('cannot be more than 40 days apart');
   });
 });

@@ -157,6 +157,7 @@ describe('CannedRangeComponent', () => {
   });
 
   it('when NEXTing from PRIOR_TWO_WEEKS, should go to TWO_WEEKS and not extend past today', () => {
+    comp.lastChosenRange = [2, 'weeks']; // get it to believe something was selected from the drop down
     const daysIntoWeek = beginningOfTodayUTC().day();
     filter = {
       beginDate: beginningOfTodayUTC().subtract(daysIntoWeek + 21, 'days').toDate(), // 'PRIOR_TWO_WEEKS'

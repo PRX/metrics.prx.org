@@ -8,13 +8,15 @@ import { CannedRangeComponent } from './filter/canned-range.component';
 import { DateRangeComponent } from './filter/date-range.component';
 import { EpisodesComponent } from './filter/episodes.component';
 import { IntervalComponent } from './filter/interval.component';
+import { PodcastsComponent } from './filter/podcasts.component';
 
 @NgModule({
   declarations: [
     CannedRangeComponent,
     DateRangeComponent,
     EpisodesComponent,
-    IntervalComponent
+    IntervalComponent,
+    PodcastsComponent
   ],
   exports: [
     CommonModule,
@@ -26,7 +28,8 @@ import { IntervalComponent } from './filter/interval.component';
     CannedRangeComponent,
     DateRangeComponent,
     EpisodesComponent,
-    IntervalComponent
+    IntervalComponent,
+    PodcastsComponent
   ],
   imports: [
     CommonModule,

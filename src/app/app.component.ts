@@ -45,14 +45,7 @@ export class AppComponent implements OnInit, OnDestroy {
       this.podcasts = state;
 
       if (this.podcasts && this.podcasts.length > 0) {
-        let selectedPodcast;
-        if (Env.CASTLE_TEST_PODCAST) {
-          selectedPodcast = this.podcasts.find((p: PodcastModel) => {
-            return p.feederId === Env.CASTLE_TEST_PODCAST.toString();
-          });
-        } else {
-          selectedPodcast = this.podcasts[0];
-        }
+        const selectedPodcast = this.podcasts[0]; // Default select the first one. It'll be the last one that was updated
         if (selectedPodcast &&
           (!this.filter || !this.filter.podcast ||
           this.filter.podcast && selectedPodcast.seriesId !== this.filter.podcast.seriesId)) {

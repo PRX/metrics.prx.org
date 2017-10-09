@@ -1,7 +1,6 @@
 <prx-auth [host]="authHost" [client]="authClient"></prx-auth>
 <prx-header>
-  <prx-navitem *ngIf="loggedIn" route="/" text="Home"></prx-navitem>
-  <prx-navitem *ngIf="loggedIn" route="/search" text="Search"></prx-navitem>
+  <metrics-podcasts *ngIf="loggedIn"></metrics-podcasts>
   <prx-navuser *ngIf="loggedIn" [userName]="userName">
     <prx-spinner class="user-loading" inverse=true></prx-spinner>
     <prx-image *ngIf="userImageDoc" class="user-loaded" [imageDoc]="userImageDoc"></prx-image>

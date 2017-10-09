@@ -60,7 +60,7 @@ describe('PodcastsComponent', () => {
     expect(comp.selectedPodcast.seriesId).toEqual(podcasts[0].seriesId);
   });
 
-  it('should only show podcast title rather than dropdown if there is only one podcast', () => {
+  it('should show podcast title rather than dropdown if there is one podcast', () => {
     expect(comp.allPodcastOptions.length).toEqual(1);
     expect(comp.selectedPodcast.title).toEqual(podcasts[0].title);
     fix.detectChanges();

@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs/Subscription';
+import { Angulartics2 } from 'angulartics2';
 import { CastleService } from '../core';
 import { EpisodeModel, INTERVAL_DAILY, FilterModel } from '../ngrx/model';
 import { CastleFilterAction, CastlePodcastMetricsAction, CastleEpisodeMetricsAction } from '../ngrx/actions';
@@ -36,7 +37,7 @@ export class DownloadsComponent implements OnInit, OnDestroy {
   isEpisodeLoading = true;
   error: string;
 
-  constructor(private castle: CastleService, public store: Store<any>) {}
+  constructor(private castle: CastleService, public store: Store<any>, private angulartics2: Angulartics2) {}
 
   ngOnInit() {
     this.setDefaultFilter();
@@ -145,6 +146,10 @@ export class DownloadsComponent implements OnInit, OnDestroy {
         metricsType: 'downloads',
         metrics: metrics[0]['downloads']
       }));
+      this.angulartics2.eventTrack.next({
+        action: this.filter.interval.name,
+        properties: {category: 'Downloads', label: this.filter.podcast.title, value: metrics[0]['downloads'].length}
+      });
     }
   }
 

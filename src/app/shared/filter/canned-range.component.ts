@@ -146,6 +146,10 @@ export class CannedRangeComponent implements OnInit, OnDestroy {
       !misMatchedNamedRanges) {
       this.selected = range;
       this.setLastChosenRange(when);
+      // keep state in sync
+      if (!this.filter.when) {
+        this.store.dispatch(new CastleFilterAction({filter: {when, beginDate, endDate}}));
+      }
     }
   }
 

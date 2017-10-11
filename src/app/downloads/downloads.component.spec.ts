@@ -8,6 +8,7 @@ import { CoreModule, CastleService } from '../core';
 import { SharedModule } from '../shared';
 import { DownloadsComponent } from './downloads.component';
 import { DownloadsChartComponent } from './downloads-chart.component';
+import { DownloadsTableComponent } from './downloads-table.component';
 
 import { reducers } from '../ngrx/reducers';
 
@@ -43,7 +44,8 @@ describe('DownloadsComponent', () => {
     TestBed.configureTestingModule({
       declarations: [
         DownloadsComponent,
-        DownloadsChartComponent
+        DownloadsChartComponent,
+        DownloadsTableComponent
       ],
       imports: [
         CoreModule,

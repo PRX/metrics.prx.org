@@ -22,6 +22,7 @@ import { beginningOfTodayUTC, endOfTodayUTC } from '../shared/util/date.util';
     <section class="content">
       <prx-spinner *ngIf="isPodcastLoading || isEpisodeLoading"></prx-spinner>
       <metrics-downloads-chart></metrics-downloads-chart>
+      <metrics-downloads-table></metrics-downloads-table>
       <p class="error" *ngIf="error">{{error}}</p>
     </section>
   `,

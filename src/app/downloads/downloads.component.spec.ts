@@ -1,6 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { DebugElement } from '@angular/core';
 import { RouterTestingModule } from '@angular/router/testing';
+import { By } from '@angular/platform-browser';
 import { StoreModule } from '@ngrx/store';
 
 import { MockHalService } from 'ngx-prx-styleguide';
@@ -108,4 +109,8 @@ describe('DownloadsComponent', () => {
     comp.store.dispatch(new CastleFilterAction({filter: {episodes}}));
     expect(comp.setEpisodeMetrics).toHaveBeenCalledTimes(5);
   });
+
+  it('should show a downloads table of episodes', () => {
+    expect(de.query(By.css('metrics-downloads-table'))).not.toBeNull();
+  })
 });

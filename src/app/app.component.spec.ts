@@ -5,6 +5,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { StoreModule } from '@ngrx/store';
 import { Subject } from 'rxjs/Subject';
 import { Observable } from 'rxjs/Observable';
+import { Angulartics2, Angulartics2GoogleAnalytics } from 'angulartics2';
 
 import { AuthModule, AuthService, ModalModule, MockHalService, MockHalDoc } from 'ngx-prx-styleguide';
 import { CoreModule, CmsService } from './core';
@@ -57,7 +58,9 @@ describe('AppComponent', () => {
           setToken: token => cmsToken = token,
           account: new Subject<any>(),
           individualAccount: new Subject<any>()
-        }}
+        }},
+        {provide: Angulartics2GoogleAnalytics},
+        {provide: Angulartics2}
       ]
     }).compileComponents().then(() => {
       fix = TestBed.createComponent(AppComponent);

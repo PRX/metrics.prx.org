@@ -21,6 +21,7 @@ import * as moment from 'moment';
       <tr *ngFor="let episode of episodeTableData">
         <td>{{episode.title}}</td>
         <td>{{episode.totalForPeriod}}</td>
+        <td *ngFor="let download of episode.downloads">{{download.value}}</td>
       </tr>
     </table>
 
@@ -88,7 +89,7 @@ export class DownloadsTableComponent implements OnDestroy {
         .sort((a, b) => {
           return moment(a.publishedAt).valueOf() - moment(b.publishedAt).valueOf();
         });
-      this.updateTableData();
+      this.setTableDates();
     }
   }
 
@@ -102,9 +103,9 @@ export class DownloadsTableComponent implements OnDestroy {
     return state.podcast && (!this.filter || !this.filter.podcast ||  this.filter.podcast.seriesId !== state.podcast.seriesId);
   }
 
-  updateTableData() {
+  setTableDates() {
     if (this.episodeTableData) {
-      this.dateRange = this.episodeTableData.map(e => dailyDateFormat(e.publishedAt));
+      this.dateRange = this.episodeTableData[0].downloads.map(d => dailyDateFormat(new Date(d.date)));
     }
   }
 }

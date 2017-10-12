@@ -1,0 +1,30 @@
+table {
+  table-layout: fixed;
+  overflow-x: auto;
+  width: 100%;
+  border-collapse: collapse;
+  line-height: 14px;
+}
+thead th:nth-child(1) {
+  width: 200px;
+  text-align: left;
+}
+thead th:nth-child(2), th:nth-child(3) {
+  width: 70px;
+}
+tbody td:nth-child(1) {
+  text-align: left;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+th, td {
+  padding: 5px;
+  text-align: center;
+  border: 3px solid #f0f0f0;
+  background: white;
+  width: 45px;
+}
+td {
+  font-size: 12px;
+  white-space: nowrap;
+}

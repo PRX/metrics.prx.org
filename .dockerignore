@@ -1,4 +1,6 @@
 .env
+prod.env
+staging.env
 .git
 .gitignore
 coverage

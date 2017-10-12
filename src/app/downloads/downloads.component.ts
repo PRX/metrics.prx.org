@@ -3,7 +3,7 @@ import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs/Subscription';
 import { Angulartics2 } from 'angulartics2';
 import { CastleService } from '../core';
-import { EpisodeModel, INTERVAL_DAILY, FilterModel } from '../ngrx/model';
+import { EpisodeModel, INTERVAL_DAILY, FilterModel, TWO_WEEKS } from '../ngrx/model';
 import { CastleFilterAction, CastlePodcastMetricsAction, CastleEpisodeMetricsAction } from '../ngrx/actions';
 import { selectFilter, selectEpisodes } from '../ngrx/reducers';
 import { filterAllPodcastEpisodes } from '../shared/util/metrics.util';
@@ -100,6 +100,7 @@ export class DownloadsComponent implements OnInit, OnDestroy {
     const beginDate = beginningOfTodayUTC();
     const beginDateTwoWeeks = beginDate.subtract(beginDate.days() + 7, 'days').toDate();
     this.filter = {
+      when: TWO_WEEKS,
       beginDate: beginDateTwoWeeks, // TWO_WEEKS
       endDate,
       interval: INTERVAL_DAILY

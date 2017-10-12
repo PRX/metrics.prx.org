@@ -311,6 +311,10 @@ angular-2-dropdown-multiselect@^1.5.4:
   version "1.5.4"
   resolved "https://registry.yarnpkg.com/angular-2-dropdown-multiselect/-/angular-2-dropdown-multiselect-1.5.4.tgz#d596745ffdb877e4bc80170d64e8b5c52247926e"
 
+angulartics2@^2.4.0:
+  version "2.4.0"
+  resolved "https://registry.yarnpkg.com/angulartics2/-/angulartics2-2.4.0.tgz#0caa33eb8488a819077b3c3ffdd824e1c890fe81"
+
 ansi-html@0.0.7:
   version "0.0.7"
   resolved "https://registry.yarnpkg.com/ansi-html/-/ansi-html-0.0.7.tgz#813584021962a9e9e6fd039f940d12f56ca7859e"

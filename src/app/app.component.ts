@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs/Subscription';
+import { Angulartics2GoogleAnalytics } from 'angulartics2';
 import { AuthService } from 'ngx-prx-styleguide';
 import { CmsService, HalDoc } from './core';
 import { Env } from './core/core.env';
@@ -30,7 +31,8 @@ export class AppComponent implements OnInit, OnDestroy {
   constructor(
     private auth: AuthService,
     private cms: CmsService,
-    public store: Store<any>
+    public store: Store<any>,
+    private angulartics2GoogleAnalytics: Angulartics2GoogleAnalytics
   ) {
     auth.token.subscribe(token => {
       this.loadAccount(token);

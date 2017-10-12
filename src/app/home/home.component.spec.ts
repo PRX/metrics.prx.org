@@ -1,6 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { DebugElement } from '@angular/core';
 import { StoreModule } from '@ngrx/store';
+import { Angulartics2 } from 'angulartics2';
 import { HalService, MockHalService } from 'ngx-prx-styleguide';
 import { CastleService } from '../core';
 import { SharedModule } from '../shared';
@@ -26,7 +27,8 @@ describe('HomeComponent', () => {
       declarations: [ HomeComponent ],
       providers : [
         CastleService,
-        {provide: HalService, useValue: mockHal}
+        {provide: HalService, useValue: mockHal},
+        {provide: Angulartics2}
       ]
     })
     .compileComponents().then(() => {

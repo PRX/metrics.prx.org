@@ -7,7 +7,8 @@ const DEFAULTS = {
   CMS_TTL: 1, // 1 second
   AUTH_HOST: 'id.prx.org',
   AUTH_CLIENT_ID: 'ea0e04f7c85a8d4826dcf2747126a53a95014f51',
-  CASTLE_HOST: 'castle.prx.org'
+  CASTLE_HOST: 'castle.prx.org',
+  GA_KEY: ''
 };
 
 const addScheme = (name: string, value: any): any => {
@@ -33,5 +34,5 @@ export class Env {
   public static get AUTH_HOST():             string { return getVar('AUTH_HOST'); }
   public static get AUTH_CLIENT_ID():        string { return getVar('AUTH_CLIENT_ID'); }
   public static get CASTLE_HOST():           string { return getVar('CASTLE_HOST'); }
-  public static get CASTLE_TEST_PODCAST():   string { return getVar('CASTLE_TEST_PODCAST'); }
+  public static get GA_KEY():                string { return getVar('GA_KEY'); }
 }

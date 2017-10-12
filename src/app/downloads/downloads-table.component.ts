@@ -12,20 +12,27 @@ import * as moment from 'moment';
 @Component({
   selector: 'metrics-downloads-table',
   template: `
-    <table>
-      <tr>
-        <th>Episode</th>
-        <th>Total for period</th>
-        <th *ngFor="let date of dateRange">{{date}}</th>
-      </tr>
-      <tr *ngFor="let episode of episodeTableData">
-        <td>{{episode.title}}</td>
-        <td>{{episode.totalForPeriod}}</td>
-        <td *ngFor="let download of episode.downloads">{{download.value}}</td>
-      </tr>
+    <table *ngIf="episodeTableData">
+      <thead>
+        <tr>
+          <th>Episode</th>
+          <th>Release Date</th>
+          <th>Total for period</th>
+          <th *ngFor="let date of dateRange">{{date}}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let episode of episodeTableData">
+          <td>{{episode.title}}</td>
+          <td>{{episode.publishedAt}}</td>
+          <td>{{episode.totalForPeriod}}</td>
+          <td *ngFor="let download of episode.downloads">{{download.value}}</td>
+        </tr>
+      </tbody>
     </table>
+  `,
+  styleUrls: ['downloads-table.component.css']
 
-  `
 })
 export class DownloadsTableComponent implements OnDestroy {
   filterStoreSub: Subscription;
@@ -79,7 +86,7 @@ export class DownloadsTableComponent implements OnDestroy {
           if (episode) {
             return {
               title: episode.title,
-              publishedAt: episode.publishedAt,
+              publishedAt: episode.publishedAt.toDateString(),
               id: epMetric.id,
               downloads: mapMetricsToTimeseriesData(epMetric.downloads),
               totalForPeriod: getTotal(epMetric.downloads)

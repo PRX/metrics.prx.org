@@ -15,6 +15,7 @@ prx-spinner >>> .spinner::before, prx-spinner >>> .spinner::after {
 .content {
   position: relative;
   flex: 4 4 80%;
+  max-width: 80%;
 }
 .bar {
   width: 75%;

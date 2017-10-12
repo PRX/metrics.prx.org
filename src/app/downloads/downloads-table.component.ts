@@ -5,7 +5,7 @@ import { Subscription } from 'rxjs/Subscription';
 import { EpisodeMetricsModel, EpisodeModel, FilterModel } from '../ngrx/model'; // PodcastMetricsModel, INTERVAL_DAILY, INTERVAL_HOURLY, INTERVAL_15MIN
 import { selectEpisodes, selectFilter, selectEpisodeMetrics } from '../ngrx/reducers'; //selectPodcastMetrics,
 import { filterPodcastMetrics, filterAllPodcastEpisodes, filterEpisodeMetrics, metricsData, getTotal } from '../shared/util/metrics.util';
-import { mapMetricsToTimeseriesData, dailyDateFormat } from '../shared/util/chart.util'; // , subtractTimeseriesDatasets, UTCDateFormat, dailyDateFormat, hourlyDateFormat, neutralColor, generateShades }
+import { mapMetricsToTimeseriesData, dayMonthDate } from '../shared/util/chart.util'; // , subtractTimeseriesDatasets, UTCDateFormat, dailyDateFormat, hourlyDateFormat, neutralColor, generateShades }
 import * as moment from 'moment';
 
 
@@ -86,7 +86,7 @@ export class DownloadsTableComponent implements OnDestroy {
           if (episode) {
             return {
               title: episode.title,
-              publishedAt: episode.publishedAt.toDateString(),
+              publishedAt: dayMonthDate(episode.publishedAt),
               id: epMetric.id,
               downloads: mapMetricsToTimeseriesData(epMetric.downloads),
               totalForPeriod: getTotal(epMetric.downloads)
@@ -94,7 +94,7 @@ export class DownloadsTableComponent implements OnDestroy {
           }
         })
         .sort((a, b) => {
-          return moment(a.publishedAt).valueOf() - moment(b.publishedAt).valueOf();
+          return moment(b.publishedAt).valueOf() - moment(a.publishedAt).valueOf();
         });
       this.setTableDates();
     }
@@ -112,7 +112,7 @@ export class DownloadsTableComponent implements OnDestroy {
 
   setTableDates() {
     if (this.episodeTableData) {
-      this.dateRange = this.episodeTableData[0].downloads.map(d => dailyDateFormat(new Date(d.date)));
+      this.dateRange = this.episodeTableData[0].downloads.map(d => dayMonthDate(new Date(d.date)));
     }
   }
 }

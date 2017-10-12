@@ -1,21 +1,28 @@
+:host {
+  width: 100%;
+  overflow-x: auto;
+}
 table {
-  table-layout: fixed;
   overflow-x: auto;
   width: 100%;
   border-collapse: collapse;
   line-height: 14px;
+  display: block;
 }
 thead th:nth-child(1) {
-  width: 200px;
   text-align: left;
 }
 thead th:nth-child(2), th:nth-child(3) {
   width: 70px;
 }
 tbody td:nth-child(1) {
+  max-width: 200px;
   text-align: left;
   text-overflow: ellipsis;
   overflow: hidden;
+}
+tbody td:nth-child(3) {
+  font-weight: 700;
 }
 th, td {
   padding: 5px;

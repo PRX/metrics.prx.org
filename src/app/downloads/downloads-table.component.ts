@@ -64,16 +64,13 @@ export class DownloadsTableComponent implements OnDestroy {
     });
 
     this.episodeMetricsStoreSub = store.select(selectEpisodeMetrics).subscribe((episodeMetrics: EpisodeMetricsModel[]) => {
-      const epMetrics = filterEpisodeMetrics(this.filter, episodeMetrics, 'downloads');
-      if (epMetrics) {
-        this.episodeMetrics = epMetrics.map(e => {
-          return {
-            id: e.id,
-            downloads: metricsData(this.filter, e, 'downloads')
-          };
-        });
-        this.buildEpisodeMetrics();
-      }
+      this.episodeMetrics = episodeMetrics.map(e => {
+        return {
+          id: e.id,
+          downloads: metricsData(this.filter, e, 'downloads')
+        };
+      });
+      this.buildEpisodeMetrics();
     });
   }
 

@@ -1,11 +1,10 @@
 import { Component, OnDestroy } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs/Subscription';
-// import { TimeseriesChartModel } from 'ngx-prx-styleguide';
-import { EpisodeMetricsModel, EpisodeModel, FilterModel } from '../ngrx/model'; // PodcastMetricsModel, INTERVAL_DAILY, INTERVAL_HOURLY, INTERVAL_15MIN
-import { selectEpisodes, selectFilter, selectEpisodeMetrics } from '../ngrx/reducers'; //selectPodcastMetrics,
+import { EpisodeMetricsModel, EpisodeModel, FilterModel, INTERVAL_DAILY, INTERVAL_HOURLY, INTERVAL_15MIN } from '../ngrx/model';
+import { selectEpisodes, selectFilter, selectEpisodeMetrics } from '../ngrx/reducers';
 import { filterPodcastMetrics, filterAllPodcastEpisodes, filterEpisodeMetrics, metricsData, getTotal } from '../shared/util/metrics.util';
-import { mapMetricsToTimeseriesData, dayMonthDate } from '../shared/util/chart.util'; // , subtractTimeseriesDatasets, UTCDateFormat, dailyDateFormat, hourlyDateFormat, neutralColor, generateShades }
+import { mapMetricsToTimeseriesData, dayMonthDate, hourlyDateFormat } from '../shared/util/chart.util'; // , subtractTimeseriesDatasets, UTCDateFormat, dailyDateFormat, hourlyDateFormat, neutralColor, generateShades }
 import * as moment from 'moment';
 
 
@@ -112,7 +111,23 @@ export class DownloadsTableComponent implements OnDestroy {
 
   setTableDates() {
     if (this.episodeTableData) {
-      this.dateRange = this.episodeTableData[0].downloads.map(d => dayMonthDate(new Date(d.date)));
+      this.dateRange = this.episodeTableData[0].downloads.map(d => this.dateFormat(new Date(d.date)));
+    }
+  }
+
+  dateFormat(date: Date): string {
+    if (this.filter && this.filter.interval) {
+      switch (this.filter.interval.key) {
+        case INTERVAL_DAILY.key:
+          return dayMonthDate(date);
+        case INTERVAL_HOURLY.key:
+        case INTERVAL_15MIN.key:
+          return hourlyDateFormat(date);
+        default:
+          return dayMonthDate(date);
+      }
+    } else {
+      return dayMonthDate(date);
     }
   }
 }

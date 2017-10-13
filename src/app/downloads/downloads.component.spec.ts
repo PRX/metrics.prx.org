@@ -1,4 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
 import { DebugElement } from '@angular/core';
 import { RouterTestingModule } from '@angular/router/testing';
 import { StoreModule } from '@ngrx/store';
@@ -71,6 +72,14 @@ describe('DownloadsComponent', () => {
       spyOn(comp.store, 'dispatch').and.callThrough();
     });
   }));
+
+  it('should show loading spinner when episode or podcast is loading', () => {
+    comp.isPodcastLoading = true;
+    expect(de.query(By.css('prx-spinner'))).not.toBeNull();
+    comp.isPodcastLoading = comp.isEpisodeLoading = false;
+    fix.detectChanges();
+    expect(de.query(By.css('prx-spinner'))).toBeFalsy();
+  });
 
   it('should load podcast downloads and dispatch CASTLE action', () => {
     comp.store.dispatch(new CastleFilterAction({

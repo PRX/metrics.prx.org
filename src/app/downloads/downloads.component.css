@@ -1,9 +1,7 @@
 :host {
+  position: relative;
   display: flex;
-  padding: 40px 20px 0px 20px;
-}
-prx-spinner >>> .spinner::before, prx-spinner >>> .spinner::after {
-  z-index: 999;
+  padding: 40px 20px 10px 20px;
 }
 .controls {
   flex: 1 1 20%;

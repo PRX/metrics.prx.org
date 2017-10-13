@@ -4,14 +4,14 @@ import { Subscription } from 'rxjs/Subscription';
 import { EpisodeMetricsModel, EpisodeModel, FilterModel, INTERVAL_DAILY, INTERVAL_HOURLY, INTERVAL_15MIN } from '../ngrx/model';
 import { selectEpisodes, selectFilter, selectEpisodeMetrics } from '../ngrx/reducers';
 import { filterPodcastMetrics, filterAllPodcastEpisodes, filterEpisodeMetrics, metricsData, getTotal } from '../shared/util/metrics.util';
-import { mapMetricsToTimeseriesData, dayMonthDate, hourlyDateFormat } from '../shared/util/chart.util'; // , subtractTimeseriesDatasets, UTCDateFormat, dailyDateFormat, hourlyDateFormat, neutralColor, generateShades }
+import { mapMetricsToTimeseriesData, dayMonthDate, hourlyDateFormat } from '../shared/util/chart.util';
 import * as moment from 'moment';
 
 
 @Component({
   selector: 'metrics-downloads-table',
   template: `
-    <table *ngIf="episodeTableData">
+    <table *ngIf="episodeTableData && episodeTableData.length">
       <thead>
         <tr>
           <th>Episode</th>
@@ -50,6 +50,8 @@ export class DownloadsTableComponent implements OnDestroy {
       if (newFilter) {
         if (this.isPodcastChanged(newFilter)) {
           this.episodes = [];
+          this.episodeMetrics = [];
+          this.episodeTableData = [];
         }
         this.filter = newFilter;
       }
@@ -93,7 +95,7 @@ export class DownloadsTableComponent implements OnDestroy {
           }
         })
         .sort((a, b) => {
-          return moment(b.publishedAt).valueOf() - moment(a.publishedAt).valueOf();
+          return moment(new Date(b.publishedAt)).valueOf() - moment(new Date(a.publishedAt)).valueOf();
         });
       this.setTableDates();
     }
@@ -110,7 +112,7 @@ export class DownloadsTableComponent implements OnDestroy {
   }
 
   setTableDates() {
-    if (this.episodeTableData) {
+    if (this.episodeTableData && this.episodeTableData[0]) {
       this.dateRange = this.episodeTableData[0].downloads.map(d => this.dateFormat(new Date(d.date)));
     }
   }

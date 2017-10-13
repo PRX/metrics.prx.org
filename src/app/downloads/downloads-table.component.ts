@@ -23,7 +23,7 @@ import * as moment from 'moment';
       <tbody>
         <tr *ngFor="let episode of episodeTableData">
           <td>{{episode.title}}</td>
-          <td>{{episode.publishedAt}}</td>
+          <td>{{episode.releaseDate}}</td>
           <td>{{episode.totalForPeriod}}</td>
           <td *ngFor="let download of episode.downloads">{{download.value}}</td>
         </tr>
@@ -87,7 +87,8 @@ export class DownloadsTableComponent implements OnDestroy {
           if (episode) {
             return {
               title: episode.title,
-              publishedAt: dayMonthDate(episode.publishedAt),
+              publishedAt: episode.publishedAt,
+              releaseDate: dayMonthDate(episode.publishedAt),
               id: epMetric.id,
               downloads: mapMetricsToTimeseriesData(epMetric.downloads),
               totalForPeriod: getTotal(epMetric.downloads)

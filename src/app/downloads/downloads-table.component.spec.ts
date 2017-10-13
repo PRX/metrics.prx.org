@@ -134,6 +134,6 @@ describe('DownloadsTableComponent', () => {
     comp.episodeTableData.forEach(e => {
       const total = e.downloads.reduce((acc, val) => acc + val.value, 0);
       expect(e.totalForPeriod).toEqual(total);
-    })
+    });
   });
 });

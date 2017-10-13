@@ -7,7 +7,6 @@ import { By } from '@angular/platform-browser';
 import { SharedModule } from '../shared';
 import { DownloadsTableComponent } from './downloads-table.component';
 
-
 import { reducers } from '../ngrx/reducers';
 import { PodcastModel, EpisodeModel, FilterModel, INTERVAL_DAILY } from '../ngrx/model';
 import { CastleEpisodeMetricsAction, CastleFilterAction, CmsEpisodeGuidAction } from '../ngrx/actions';
@@ -114,7 +113,6 @@ describe('DownloadsTableComponent', () => {
     expect(comp.episodeTableData[0].title).toEqual('A More Recent Pet Talk Episode');
   });
 
-
   it('should not show up without data to display', () => {
     comp.episodeTableData = [];
     expect(de.query(By.css('metrics-downloads-table'))).toBeNull();
@@ -134,7 +132,7 @@ describe('DownloadsTableComponent', () => {
 
   it('should display episode total downloads for period', () => {
     comp.episodeTableData.forEach(e => {
-      const total = e.downloads.reduce((acc, val) => { return acc + val.value }, 0)
+      const total = e.downloads.reduce((acc, val) => acc + val.value, 0);
       expect(e.totalForPeriod).toEqual(total);
     })
   });

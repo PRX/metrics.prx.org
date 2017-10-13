@@ -112,5 +112,5 @@ describe('DownloadsComponent', () => {
 
   it('should show a downloads table of episodes', () => {
     expect(de.query(By.css('metrics-downloads-table'))).not.toBeNull();
-  })
+  });
 });

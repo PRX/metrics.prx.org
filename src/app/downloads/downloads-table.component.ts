@@ -7,7 +7,6 @@ import { filterPodcastMetrics, filterAllPodcastEpisodes, filterEpisodeMetrics, m
 import { mapMetricsToTimeseriesData, dayMonthDate, hourlyDateFormat } from '../shared/util/chart.util';
 import * as moment from 'moment';
 
-
 @Component({
   selector: 'metrics-downloads-table',
   template: `
@@ -43,7 +42,6 @@ export class DownloadsTableComponent implements OnDestroy {
   episodeTableData: any[];
   dateRange: any[];
 
-
   constructor(public store: Store<any>) {
 
     this.filterStoreSub = this.store.select(selectFilter).subscribe((newFilter: FilterModel) => {
@@ -72,7 +70,7 @@ export class DownloadsTableComponent implements OnDestroy {
           return {
             id: e.id,
             downloads: metricsData(this.filter, e, 'downloads')
-          }
+          };
         });
         this.buildEpisodeMetrics();
       }

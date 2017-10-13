@@ -118,9 +118,9 @@ describe('DownloadsTableComponent', () => {
     expect(de.query(By.css('metrics-downloads-table'))).toBeNull();
   });
 
-  it('should show all episodes in store, not just the ones in filter', () => {
+  it('should show only the episodes in filter', () => {
     comp.store.dispatch(new CastleFilterAction({filter: {episodes: [episodes[0]]}}));
-    expect(comp.episodeTableData.length).toEqual(episodes.length);
+    expect(comp.episodeTableData.length).toEqual(1);
   });
 
   it('should clear out episode table data when podcast changes', () => {

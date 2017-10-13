@@ -131,7 +131,7 @@ export class DownloadsComponent implements OnInit, OnDestroy {
           this.error = 'An error occurred while requesting podcast metrics on ' + this.filter.podcast.title;
           console.error(err);
         } else {
-          this.error = this.filter.podcast.title + ' podcast has no download metrics.';
+          this.error = this.filter.podcast.title + ' podcast has no download metrics for some or all of this time.';
         }
       }
     );
@@ -165,7 +165,7 @@ export class DownloadsComponent implements OnInit, OnDestroy {
             this.error = 'An error occurred while requesting episode metrics on' + episode.title;
             console.error(err);
           } else {
-            this.error = episode.title + ' episode has no download metrics.';
+            this.error = episode.title + ' episode has no download metrics for some or all of this time.';
           }
         }
       );

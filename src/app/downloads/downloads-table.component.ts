@@ -13,7 +13,7 @@ import * as moment from 'moment';
     <table *ngIf="episodeTableData && episodeTableData.length">
       <thead>
         <tr>
-          <th>Episode</th>
+          <th class="sticky">Episode</th>
           <th>Release Date</th>
           <th>Total for period</th>
           <th *ngFor="let date of dateRange">{{date}}</th>
@@ -21,7 +21,7 @@ import * as moment from 'moment';
       </thead>
       <tbody>
         <tr *ngFor="let episode of episodeTableData">
-          <td>{{episode.title}}</td>
+          <td class="sticky">{{episode.title}}</td>
           <td>{{episode.releaseDate}}</td>
           <td>{{episode.totalForPeriod}}</td>
           <td *ngFor="let download of episode.downloads">{{download.value}}</td>

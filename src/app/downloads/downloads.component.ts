@@ -12,6 +12,7 @@ import { beginningOfTodayUTC, endOfTodayUTC } from '../shared/util/date.util';
 @Component({
   selector: 'metrics-downloads',
   template: `
+    <prx-spinner *ngIf="isPodcastLoading || isEpisodeLoading" overlay="true" loadingMessage="Please wait..."></prx-spinner>
     <section class="controls">
       <metrics-interval></metrics-interval>
       <div class="bar"></div>
@@ -21,7 +22,6 @@ import { beginningOfTodayUTC, endOfTodayUTC } from '../shared/util/date.util';
       <metrics-episodes></metrics-episodes>
     </section>
     <section class="content">
-      <prx-spinner *ngIf="isPodcastLoading || isEpisodeLoading"></prx-spinner>
       <metrics-downloads-chart></metrics-downloads-chart>
       <p class="error" *ngIf="error">{{error}}</p>
     </section>
@@ -37,16 +37,18 @@ export class DownloadsComponent implements OnInit, OnDestroy {
   isEpisodeLoading = true;
   error: string;
 
-  constructor(private castle: CastleService, public store: Store<any>, private angulartics2: Angulartics2) {}
+  constructor(private castle: CastleService,
+              public store: Store<any>,
+              private angulartics2: Angulartics2) {}
 
   ngOnInit() {
     this.setDefaultFilter();
+    this.toggleLoading(true, true);
 
     this.filterStoreSub = this.store.select(selectFilter).subscribe((newFilter: FilterModel) => {
       let changedFilter = false;
       if (this.isPodcastChanged(newFilter)) {
-        this.isPodcastLoading = true;
-        this.isEpisodeLoading = true;
+        this.toggleLoading(true, true);
         this.filter.podcast = newFilter.podcast;
         changedFilter = true;
 
@@ -89,6 +91,11 @@ export class DownloadsComponent implements OnInit, OnDestroy {
     });
   }
 
+  toggleLoading(isPodcastLoading, isEpisodeLoading = this.isEpisodeLoading) {
+    this.isPodcastLoading = isPodcastLoading;
+    this.isEpisodeLoading = isEpisodeLoading;
+  }
+
   ngOnDestroy() {
     if (this.filterStoreSub) { this.filterStoreSub.unsubscribe(); }
     if (this.episodeStoreSub) { this.episodeStoreSub.unsubscribe(); }
@@ -118,7 +125,7 @@ export class DownloadsComponent implements OnInit, OnDestroy {
   }
 
   getPodcastMetrics() {
-    this.isPodcastLoading = true;
+    this.toggleLoading(true);
     this.castle.followList('prx:podcast-downloads', {
       id: this.filter.podcast.feederId,
       from: this.filter.beginDate.toISOString(),
@@ -127,7 +134,7 @@ export class DownloadsComponent implements OnInit, OnDestroy {
     }).subscribe(
       metrics => this.setPodcastMetrics(metrics),
       err => {
-        this.isPodcastLoading = false;
+        this.toggleLoading(false);
         if (err.name === 'HalHttpError' && err.status === 401) {
           this.error = 'An error occurred while requesting podcast metrics on ' + this.filter.podcast.title;
           console.error(err);
@@ -139,7 +146,7 @@ export class DownloadsComponent implements OnInit, OnDestroy {
   }
 
   setPodcastMetrics(metrics: any) {
-    this.isPodcastLoading = false;
+    this.toggleLoading(false);
     if (metrics && metrics.length && metrics[0]['downloads']) {
       this.store.dispatch(new CastlePodcastMetricsAction({
         podcast: this.filter.podcast,
@@ -155,7 +162,7 @@ export class DownloadsComponent implements OnInit, OnDestroy {
   }
 
   getEpisodeMetrics() {
-    this.isEpisodeLoading = true;
+    this.toggleLoading(this.isPodcastLoading, true);
     this.filter.episodes.forEach((episode: EpisodeModel) => {
       this.castle.followList('prx:episode-downloads', {
         guid: episode.guid,
@@ -165,7 +172,7 @@ export class DownloadsComponent implements OnInit, OnDestroy {
       }).subscribe(
         metrics => this.setEpisodeMetrics(episode, metrics),
         err => {
-          this.isEpisodeLoading = false;
+          this.toggleLoading(this.isPodcastLoading, false);
           if (err.name === 'HalHttpError' && err.status === 401) {
             this.error = 'An error occurred while requesting episode metrics on' + episode.title;
             console.error(err);
@@ -178,7 +185,7 @@ export class DownloadsComponent implements OnInit, OnDestroy {
   }
 
   setEpisodeMetrics(episode: EpisodeModel, metrics: any) {
-    this.isEpisodeLoading = false;
+    this.toggleLoading(this.isPodcastLoading, false);
     if (metrics && metrics.length && metrics[0]['downloads']) {
       this.store.dispatch(new CastleEpisodeMetricsAction({
         episode,

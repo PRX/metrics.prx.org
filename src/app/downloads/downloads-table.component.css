@@ -1,11 +1,8 @@
 :host {
-  width: 100%;
-  overflow-x: auto;
   position: relative;
 }
 table {
   margin-left: 150px;
-  width: calc(100% - 150px);
   overflow-x: auto;
   border-collapse: collapse;
   line-height: 14px;

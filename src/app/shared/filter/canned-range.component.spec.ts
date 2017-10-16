@@ -4,11 +4,12 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { StoreModule } from '@ngrx/store';
 
 import { DatepickerModule, SelectModule } from 'ngx-prx-styleguide';
-import { CannedRangeComponent, TODAY, THIS_WEEK, TWO_WEEKS, THIS_MONTH, THREE_MONTHS, THIS_YEAR,
-  YESTERDAY, LAST_WEEK, PRIOR_TWO_WEEKS, LAST_MONTH, PRIOR_THREE_MONTHS, LAST_YEAR } from './canned-range.component';
+import { CannedRangeComponent } from './canned-range.component';
 
 import { reducers } from '../../ngrx/reducers';
-import { FilterModel, INTERVAL_DAILY, INTERVAL_HOURLY, INTERVAL_15MIN } from '../../ngrx/model';
+import { FilterModel, INTERVAL_DAILY, INTERVAL_HOURLY, INTERVAL_15MIN,
+  TODAY, THIS_WEEK, TWO_WEEKS, THIS_MONTH, THREE_MONTHS, THIS_YEAR,
+  YESTERDAY, LAST_WEEK, PRIOR_TWO_WEEKS, LAST_MONTH, PRIOR_THREE_MONTHS, LAST_YEAR} from '../../ngrx/model';
 import { CastleFilterAction } from '../../ngrx/actions';
 
 import { beginningOfTodayUTC, endOfTodayUTC } from '../util/date.util';
@@ -43,6 +44,7 @@ describe('CannedRangeComponent', () => {
 
   it('should set selected if filter is one of the canned ranges', () => {
     filter = {
+      when: TODAY,
       beginDate: beginningOfTodayUTC().toDate(), // 'Today'
       endDate: endOfTodayUTC().toDate(),
       interval: INTERVAL_DAILY
@@ -53,6 +55,7 @@ describe('CannedRangeComponent', () => {
 
   it('should disable NEXT button if the end date would be past the end of the currently selected period', () => {
     filter = {
+      when: TODAY,
       beginDate: beginningOfTodayUTC().toDate(), // 'Today'
       endDate: endOfTodayUTC().toDate(),
       interval: INTERVAL_DAILY
@@ -69,12 +72,13 @@ describe('CannedRangeComponent', () => {
       interval: INTERVAL_DAILY
     };
     comp.store.dispatch(new CastleFilterAction({filter}));
-    expect(comp.lastChosenRange).toBe(undefined);
+    expect(comp.lastChosenRange).toBeNull();
     expect(comp.prevDisabled).toEqual('disabled');
   });
 
   it('should go to next range when NEXT button is clicked', () => {
     filter = {
+      when: YESTERDAY,
       beginDate: beginningOfTodayUTC().subtract(1, 'days').toDate(), // 'Yesterday'
       endDate: endOfTodayUTC().subtract(1, 'days').toDate(),
       interval: INTERVAL_DAILY
@@ -88,8 +92,8 @@ describe('CannedRangeComponent', () => {
   });
 
   it('should go to prev range when PREV button is click', () => {
-    comp.lastChosenRange = [1, 'weeks']; // get it to believe something was selected from the drop down
     filter = {
+      when: THIS_WEEK,
       beginDate: beginningOfTodayUTC().subtract(beginningOfTodayUTC().day(), 'days').toDate(), // 'This week'
       endDate: endOfTodayUTC().toDate(),
       interval: INTERVAL_DAILY
@@ -106,6 +110,7 @@ describe('CannedRangeComponent', () => {
   it('TWO_WEEKS option should be two weeks starting on Sunday of last week not extending past today', () => {
     // component needs a default filter in order to initialize options
     filter = {
+      when: TWO_WEEKS,
       beginDate: beginningOfTodayUTC().toDate(), // 'Today'
       endDate: endOfTodayUTC().toDate(),
       interval: INTERVAL_DAILY
@@ -120,6 +125,7 @@ describe('CannedRangeComponent', () => {
   it('THIS_MONTH option should begin on the 1st of this month not extending past today', () => {
     // component needs a default filter in order to initialize options
     filter = {
+      when: THIS_MONTH,
       beginDate: beginningOfTodayUTC().toDate(), // 'Today'
       endDate: endOfTodayUTC().toDate(),
       interval: INTERVAL_DAILY
@@ -133,6 +139,7 @@ describe('CannedRangeComponent', () => {
   it('THREE_MONTHS option should begin on the 1st of the month 3 months ago not extending past today', () => {
     // component needs a default filter in order to initialize options
     filter = {
+      when: TODAY,
       beginDate: beginningOfTodayUTC().toDate(), // 'Today'
       endDate: endOfTodayUTC().toDate(),
       interval: INTERVAL_DAILY
@@ -145,6 +152,7 @@ describe('CannedRangeComponent', () => {
 
   it('when NEXTing from LAST_YEAR, should go to THIS_YEAR and not extend past today', () => {
     filter = {
+      when: LAST_YEAR,
       beginDate: beginningOfTodayUTC().month(0).date(1).subtract(1, 'years').toDate(), // 'LAST_YEAR'
       endDate: endOfTodayUTC().month(11).date(31).subtract(1, 'years').toDate(),
       interval: INTERVAL_DAILY
@@ -157,9 +165,9 @@ describe('CannedRangeComponent', () => {
   });
 
   it('when NEXTing from PRIOR_TWO_WEEKS, should go to TWO_WEEKS and not extend past today', () => {
-    comp.lastChosenRange = [2, 'weeks']; // get it to believe something was selected from the drop down
     const daysIntoWeek = beginningOfTodayUTC().day();
     filter = {
+      when: PRIOR_TWO_WEEKS,
       beginDate: beginningOfTodayUTC().subtract(daysIntoWeek + 21, 'days').toDate(), // 'PRIOR_TWO_WEEKS'
       endDate: endOfTodayUTC().subtract(daysIntoWeek + 8, 'days').toDate(),
       interval: INTERVAL_DAILY
@@ -173,6 +181,7 @@ describe('CannedRangeComponent', () => {
 
   it('when PREVing from THIS_MONTH, should go to LAST_MONTH', () => {
     filter = {
+      when: THIS_MONTH,
       beginDate: beginningOfTodayUTC().date(1).toDate(), // 'THIS_MONTH'
       endDate: endOfTodayUTC().toDate(),
       interval: INTERVAL_DAILY
@@ -187,6 +196,7 @@ describe('CannedRangeComponent', () => {
 
   it('when PREVing from THREE_MONTHS, should go to PRIOR_THREE_MONTHS', () => {
     filter = {
+      when: THREE_MONTHS,
       beginDate: beginningOfTodayUTC().subtract(2, 'months').date(1).toDate(), // 'THREE_MONTHS'
       endDate: endOfTodayUTC().toDate(),
       interval: INTERVAL_DAILY
@@ -201,6 +211,7 @@ describe('CannedRangeComponent', () => {
 
   it('should not have options more than 10 days apart when interval is 15 minutes', () => {
     filter = {
+      when: TODAY,
       beginDate: beginningOfTodayUTC().toDate(), // 'TODAY'
       endDate: endOfTodayUTC().toDate(),
       interval: INTERVAL_15MIN
@@ -215,6 +226,7 @@ describe('CannedRangeComponent', () => {
 
   it('should not have options more than 40 days apart when interval is hourly', () => {
     filter = {
+      when: TODAY,
       beginDate: beginningOfTodayUTC().toDate(), // 'TODAY'
       endDate: endOfTodayUTC().toDate(),
       interval: INTERVAL_HOURLY

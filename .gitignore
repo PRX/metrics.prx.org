@@ -91,4 +91,5 @@ Thumbs.db
 
 # dotenv environment variables file
 .env
-
+prod.env
+staging.env

@@ -3,6 +3,8 @@ import { DebugElement } from '@angular/core';
 import { RouterTestingModule } from '@angular/router/testing';
 import { By } from '@angular/platform-browser';
 import { StoreModule } from '@ngrx/store';
+import { Subject } from 'rxjs/Subject';
+import { Angulartics2 } from 'angulartics2';
 
 import { MockHalService } from 'ngx-prx-styleguide';
 import { CoreModule, CastleService } from '../core';
@@ -55,7 +57,10 @@ describe('DownloadsComponent', () => {
         StoreModule.forRoot(reducers)
       ],
       providers: [
-        {provide: CastleService, useValue: castle.root}
+        {provide: CastleService, useValue: castle.root},
+        {provide: Angulartics2, useValue: {
+          eventTrack: new Subject<any>()
+        }}
       ]
     }).compileComponents().then(() => {
       fix = TestBed.createComponent(DownloadsComponent);

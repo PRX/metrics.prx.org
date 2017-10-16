@@ -47,11 +47,13 @@ export class DownloadsTableComponent implements OnDestroy {
     this.filterStoreSub = this.store.select(selectFilter).subscribe((newFilter: FilterModel) => {
       if (newFilter) {
         if (this.isPodcastChanged(newFilter)) {
-          this.episodes = [];
-          this.episodeMetrics = [];
           this.episodeTableData = [];
         }
+        if (this.isEpisodesChanged(newFilter)) {
+          this.episodeMetrics = filterEpisodeMetrics(newFilter, this.episodeMetrics, 'downloads');
+        }
         this.filter = newFilter;
+        this.buildEpisodeMetrics();
       }
     });
 
@@ -63,17 +65,9 @@ export class DownloadsTableComponent implements OnDestroy {
       }
     });
 
-    this.episodeMetricsStoreSub = store.select(selectEpisodeMetrics).subscribe((episodeMetrics: EpisodeMetricsModel[]) => {
-      const epMetrics = filterEpisodeMetrics(this.filter, episodeMetrics, 'downloads');
-      if (epMetrics && this.filter) {
-        this.episodeMetrics = epMetrics.map(e => {
-          return {
-            id: e.id,
-            downloads: metricsData(this.filter, e, 'downloads')
-          };
-        });
-        this.buildEpisodeMetrics();
-      }
+    this.episodeMetricsStoreSub = this.store.select(selectEpisodeMetrics).subscribe((episodeMetrics: EpisodeMetricsModel[]) => {
+      this.episodeMetrics = filterEpisodeMetrics(this.filter, episodeMetrics, 'downloads');
+      this.buildEpisodeMetrics();
     });
   }
 
@@ -82,15 +76,16 @@ export class DownloadsTableComponent implements OnDestroy {
       this.episodeTableData = this.episodeMetrics
         .filter((epMetric) => !!this.episodes.find(ep => ep.id === epMetric.id))
         .map((epMetric) => {
+          const downloads = metricsData(this.filter, epMetric, 'downloads');
           const episode = this.episodes.find(ep => ep.id === epMetric.id);
-          if (episode && epMetric && epMetric.downloads) {
+          if (episode && epMetric && downloads) {
             return {
               title: episode.title,
               publishedAt: episode.publishedAt,
               releaseDate: dayMonthDate(episode.publishedAt),
               id: epMetric.id,
-              downloads: mapMetricsToTimeseriesData(epMetric.downloads),
-              totalForPeriod: getTotal(epMetric.downloads)
+              downloads: mapMetricsToTimeseriesData(downloads),
+              totalForPeriod: getTotal(downloads)
             };
           }
         })
@@ -109,6 +104,12 @@ export class DownloadsTableComponent implements OnDestroy {
 
   isPodcastChanged(state: FilterModel): boolean {
     return state.podcast && (!this.filter || !this.filter.podcast ||  this.filter.podcast.seriesId !== state.podcast.seriesId);
+  }
+
+  isEpisodesChanged(state: FilterModel): boolean {
+    return state.episodes && (!this.filter || !this.filter.episodes ||
+      state.episodes.every(episode => this.filter.episodes.map(e => e.id).indexOf(episode.id) !== -1) ||
+      this.filter.episodes.every(episode => state.episodes.map(e => e.id).indexOf(episode.id) !== -1));
   }
 
   setTableDates() {

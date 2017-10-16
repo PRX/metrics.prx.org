@@ -10,24 +10,26 @@ import * as moment from 'moment';
 @Component({
   selector: 'metrics-downloads-table',
   template: `
-    <table *ngIf="episodeTableData && episodeTableData.length">
-      <thead>
-        <tr>
-          <th class="sticky">Episode</th>
-          <th>Release Date</th>
-          <th>Total for period</th>
-          <th *ngFor="let date of dateRange">{{date}}</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let episode of episodeTableData">
-          <td class="sticky">{{episode.title}}</td>
-          <td>{{episode.releaseDate}}</td>
-          <td>{{episode.totalForPeriod}}</td>
-          <td *ngFor="let download of episode.downloads">{{download.value}}</td>
-        </tr>
-      </tbody>
-    </table>
+    <div class="table-wrapper">
+      <table *ngIf="episodeTableData && episodeTableData.length">
+        <thead>
+          <tr>
+            <th class="sticky">Episode</th>
+            <th>Release Date</th>
+            <th>Total for period</th>
+            <th *ngFor="let date of dateRange">{{date}}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let episode of episodeTableData">
+            <td class="sticky">{{episode.title}}</td>
+            <td>{{episode.releaseDate}}</td>
+            <td>{{episode.totalForPeriod}}</td>
+            <td *ngFor="let download of episode.downloads">{{download.value}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   `,
   styleUrls: ['downloads-table.component.css']
 

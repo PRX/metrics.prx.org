@@ -74,7 +74,6 @@ export class DownloadsTableComponent implements OnDestroy {
   buildEpisodeMetrics() {
     if (this.episodes && this.episodeMetrics && this.episodeMetrics.length) {
       this.episodeTableData = this.episodeMetrics
-        .filter((epMetric) => !!this.episodes.find(ep => ep.id === epMetric.id))
         .map((epMetric) => {
           const downloads = metricsData(this.filter, epMetric, 'downloads');
           const episode = this.episodes.find(ep => ep.id === epMetric.id);

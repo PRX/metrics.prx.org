@@ -130,8 +130,6 @@ describe('DownloadsTableComponent', () => {
       title: 'Totally Not Pet Talks Daily'
     };
     comp.store.dispatch(new CastleFilterAction({filter: {podcast: differentPodcast}}));
-    expect(comp.episodes.length).toEqual(0);
-    expect(comp.episodeMetrics.length).toEqual(0);
     expect(comp.episodeTableData.length).toEqual(0);
   });
 

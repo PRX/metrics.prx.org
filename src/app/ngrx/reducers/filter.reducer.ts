@@ -20,6 +20,9 @@ export function FilterReducer(state: FilterModel = initialState, action: ActionW
         // but we can and maybe should do it in action creators instead of components)
         newState.when = action.payload.filter.when;
       }
+      if (action.payload.filter.range) {
+        newState.range = action.payload.filter.range;
+      }
       if (action.payload.filter.beginDate) {
         newState.beginDate = action.payload.filter.beginDate;
       }

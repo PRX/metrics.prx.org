@@ -3,14 +3,14 @@ import { DebugElement } from '@angular/core';
 import { StoreModule } from '@ngrx/store';
 
 import { DatepickerModule } from 'ngx-prx-styleguide';
-import { DateRangeComponent } from './date-range.component';
+import { DateRangeComponent } from './custom-date-range.component';
 
-import { reducers } from '../../ngrx/reducers';
+import { reducers } from '../../../ngrx/reducers';
 
-import { FilterModel, INTERVAL_DAILY, INTERVAL_HOURLY, INTERVAL_15MIN } from '../../ngrx/model';
-import { CastleFilterAction } from '../../ngrx/actions';
+import { FilterModel, INTERVAL_DAILY, INTERVAL_HOURLY, INTERVAL_15MIN } from '../../../ngrx/model';
+import { CastleFilterAction } from '../../../ngrx/actions';
 
-describe('DateRangeComponent', () => {
+describe('CustomDateRangeComponent', () => {
   let comp: DateRangeComponent;
   let fix: ComponentFixture<DateRangeComponent>;
   let de: DebugElement;

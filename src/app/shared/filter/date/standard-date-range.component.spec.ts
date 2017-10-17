@@ -4,17 +4,17 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { StoreModule } from '@ngrx/store';
 
 import { DatepickerModule, SelectModule } from 'ngx-prx-styleguide';
-import { CannedRangeComponent } from './canned-range.component';
+import { CannedRangeComponent } from './standard-date-range.component';
 
-import { reducers } from '../../ngrx/reducers';
+import { reducers } from '../../../ngrx/reducers';
 import { FilterModel, INTERVAL_DAILY, INTERVAL_HOURLY, INTERVAL_15MIN,
   TODAY, THIS_WEEK, TWO_WEEKS, THIS_MONTH, THREE_MONTHS, THIS_YEAR,
-  YESTERDAY, LAST_WEEK, PRIOR_TWO_WEEKS, LAST_MONTH, PRIOR_THREE_MONTHS, LAST_YEAR} from '../../ngrx/model';
-import { CastleFilterAction } from '../../ngrx/actions';
+  YESTERDAY, LAST_WEEK, PRIOR_TWO_WEEKS, LAST_MONTH, PRIOR_THREE_MONTHS, LAST_YEAR} from '../../../ngrx/model';
+import { CastleFilterAction } from '../../../ngrx/actions';
 
-import { beginningOfTodayUTC, endOfTodayUTC } from '../util/date.util';
+import { beginningOfTodayUTC, endOfTodayUTC } from '../../util/date.util';
 
-describe('CannedRangeComponent', () => {
+describe('StandardDateRangeComponent', () => {
   let comp: CannedRangeComponent;
   let fix: ComponentFixture<CannedRangeComponent>;
   let de: DebugElement;

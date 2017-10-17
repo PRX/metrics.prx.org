@@ -7,7 +7,7 @@ import { EpisodeModel, INTERVAL_DAILY, FilterModel, TWO_WEEKS } from '../ngrx/mo
 import { CastleFilterAction, CastlePodcastMetricsAction, CastleEpisodeMetricsAction } from '../ngrx/actions';
 import { selectFilter, selectEpisodes } from '../ngrx/reducers';
 import { filterAllPodcastEpisodes } from '../shared/util/metrics.util';
-import { beginningOfTodayUTC, endOfTodayUTC } from '../shared/util/date.util';
+import { beginningOfTwoWeeksUTC, endOfTodayUTC, getRange } from '../shared/util/date.util';
 
 @Component({
   selector: 'metrics-downloads',
@@ -16,10 +16,11 @@ import { beginningOfTodayUTC, endOfTodayUTC } from '../shared/util/date.util';
     <section class="controls">
       <metrics-interval></metrics-interval>
       <div class="bar"></div>
-      <metrics-canned-range></metrics-canned-range>
       <metrics-date-range></metrics-date-range>
       <div class="bar"></div>
       <metrics-episodes></metrics-episodes>
+      <metrics-prev-date-range></metrics-prev-date-range>
+      <metrics-next-date-range></metrics-next-date-range>
     </section>
     <section class="content">
       <metrics-downloads-chart></metrics-downloads-chart>
@@ -104,13 +105,11 @@ export class DownloadsComponent implements OnInit, OnDestroy {
 
   setDefaultFilter() {
     // dispatch some default values for the dates and interval
-    const endDate = endOfTodayUTC().toDate();
-    const beginDate = beginningOfTodayUTC();
-    const beginDateTwoWeeks = beginDate.subtract(beginDate.days() + 7, 'days').toDate();
     this.filter = {
       when: TWO_WEEKS,
-      beginDate: beginDateTwoWeeks, // TWO_WEEKS
-      endDate,
+      range: getRange(TWO_WEEKS),
+      beginDate: beginningOfTwoWeeksUTC().toDate(),
+      endDate: endOfTodayUTC().toDate(),
       interval: INTERVAL_DAILY
     };
     this.store.dispatch(new CastleFilterAction({filter: this.filter}));

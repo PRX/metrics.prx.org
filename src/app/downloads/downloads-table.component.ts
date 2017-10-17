@@ -1,8 +1,8 @@
 import { Component, OnDestroy } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs/Subscription';
-import { EpisodeMetricsModel, EpisodeModel, FilterModel, INTERVAL_DAILY, INTERVAL_HOURLY, INTERVAL_15MIN } from '../ngrx/model';
-import { selectEpisodes, selectFilter, selectEpisodeMetrics } from '../ngrx/reducers';
+import { EpisodeMetricsModel, EpisodeModel, FilterModel, PodcastMetricsModel, INTERVAL_DAILY, INTERVAL_HOURLY, INTERVAL_15MIN } from '../ngrx/model';
+import { selectEpisodes, selectFilter, selectEpisodeMetrics, selectPodcastMetrics } from '../ngrx/reducers';
 import { filterPodcastMetrics, filterAllPodcastEpisodes, filterEpisodeMetrics, metricsData, getTotal } from '../shared/util/metrics.util';
 import { mapMetricsToTimeseriesData, dayMonthDate, hourlyDateFormat } from '../shared/util/chart.util';
 import * as moment from 'moment';
@@ -11,16 +11,23 @@ import * as moment from 'moment';
   selector: 'metrics-downloads-table',
   template: `
     <div class="table-wrapper">
-      <table *ngIf="episodeTableData && episodeTableData.length">
+      <table *ngIf="podcastTableData">
         <thead>
           <tr>
             <th class="sticky">Episode</th>
             <th>Release Date</th>
-            <th>Total for period</th>
+            <th>Total for Period</th>
             <th *ngFor="let date of dateRange">{{date}}</th>
           </tr>
         </thead>
         <tbody>
+          <tr>
+            <td class="sticky">{{podcastTableData.title}}</td>
+            <td>{{podcastTableData.releaseDate}}</td>
+            <td>{{podcastTableData.totalForPeriod}}</td>
+            <td *ngFor="let download of podcastTableData.downloads">{{download.value}}</td>
+          </tr>
+        </tbody>
           <tr *ngFor="let episode of episodeTableData">
             <td class="sticky">{{episode.title}}</td>
             <td>{{episode.releaseDate}}</td>
@@ -40,22 +47,25 @@ export class DownloadsTableComponent implements OnDestroy {
   allEpisodesSub: Subscription;
   episodes: EpisodeModel[];
   episodeMetricsStoreSub: Subscription;
-  episodeMetrics: any[];
+  episodeMetrics: EpisodeMetricsModel[];
+  podcastMetricsStoreSub: Subscription;
+  podcastMetrics: PodcastMetricsModel;
+  podcastTableData: {};
   episodeTableData: any[];
-  dateRange: any[];
+  dateRange: string[];
 
   constructor(public store: Store<any>) {
 
     this.filterStoreSub = this.store.select(selectFilter).subscribe((newFilter: FilterModel) => {
       if (newFilter) {
         if (this.isPodcastChanged(newFilter)) {
-          this.episodeTableData = [];
+          this.resetAllData();
         }
         if (this.isEpisodesChanged(newFilter)) {
           this.episodeMetrics = filterEpisodeMetrics(newFilter, this.episodeMetrics, 'downloads');
         }
         this.filter = newFilter;
-        this.buildEpisodeMetrics();
+        this.buildTableData();
       }
     });
 
@@ -63,19 +73,47 @@ export class DownloadsTableComponent implements OnDestroy {
       const allPodcastEpisodes = filterAllPodcastEpisodes(this.filter, allEpisodes);
       if (allPodcastEpisodes) {
         this.episodes = allPodcastEpisodes;
-        this.buildEpisodeMetrics();
+        this.buildTableData();
       }
     });
 
     this.episodeMetricsStoreSub = this.store.select(selectEpisodeMetrics).subscribe((episodeMetrics: EpisodeMetricsModel[]) => {
       this.episodeMetrics = filterEpisodeMetrics(this.filter, episodeMetrics, 'downloads');
-      this.buildEpisodeMetrics();
+      if (this.episodeMetrics) {
+        this.buildTableData();
+      }
+    });
+
+    this.podcastMetricsStoreSub = this.store.select(selectPodcastMetrics).subscribe((podcastMetrics: PodcastMetricsModel[]) => {
+      this.podcastMetrics = filterPodcastMetrics(this.filter, podcastMetrics);
+      if (this.podcastMetrics) {
+        this.buildTableData();
+      }
     });
   }
 
-  buildEpisodeMetrics() {
+  resetAllData() {
+    this.podcastTableData = null;
+    this.episodeTableData = null;
+    this.podcastMetrics = null;
+    this.episodeMetrics = null;
+  }
+
+  mapPodcastData() {
+    const downloads = metricsData(this.filter, this.podcastMetrics, 'downloads');
+    if (downloads) {
+      return {
+        title: 'All Episodes',
+        releaseDate: '',
+        downloads: mapMetricsToTimeseriesData(downloads),
+        totalForPeriod: getTotal(downloads)
+      }
+    }
+  }
+
+  mapEpisodeData() {
     if (this.episodes && this.episodeMetrics && this.episodeMetrics.length) {
-      this.episodeTableData = this.episodeMetrics
+      return this.episodeMetrics
         .map((epMetric) => {
           const downloads = metricsData(this.filter, epMetric, 'downloads');
           const episode = this.episodes.find(ep => ep.id === epMetric.id);
@@ -93,7 +131,18 @@ export class DownloadsTableComponent implements OnDestroy {
         .sort((a, b) => {
           return moment(new Date(b.publishedAt)).valueOf() - moment(new Date(a.publishedAt)).valueOf();
         });
-      this.setTableDates();
+    }
+  }
+
+  buildTableData() {
+    if (this.podcastMetrics) {
+      this.podcastTableData = this.mapPodcastData();
+    }
+    if (this.episodeMetrics) {
+      this.episodeTableData = this.mapEpisodeData();
+    }
+    if (this.podcastTableData && this.podcastTableData['downloads']) {
+      this.dateRange = this.podcastTableData['downloads'].map(d => this.dateFormat(new Date(d.date)));
     }
   }
 
@@ -111,12 +160,6 @@ export class DownloadsTableComponent implements OnDestroy {
     return state.episodes && (!this.filter || !this.filter.episodes ||
       state.episodes.every(episode => this.filter.episodes.map(e => e.id).indexOf(episode.id) !== -1) ||
       this.filter.episodes.every(episode => state.episodes.map(e => e.id).indexOf(episode.id) !== -1));
-  }
-
-  setTableDates() {
-    if (this.episodeTableData && this.episodeTableData[0] && this.episodeTableData[0].downloads) {
-      this.dateRange = this.episodeTableData[0].downloads.map(d => this.dateFormat(new Date(d.date)));
-    }
   }
 
   dateFormat(date: Date): string {

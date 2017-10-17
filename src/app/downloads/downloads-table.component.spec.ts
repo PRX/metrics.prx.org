@@ -9,7 +9,7 @@ import { DownloadsTableComponent } from './downloads-table.component';
 
 import { reducers } from '../ngrx/reducers';
 import { PodcastModel, EpisodeModel, FilterModel, INTERVAL_DAILY } from '../ngrx/model';
-import { CastleEpisodeMetricsAction, CastleFilterAction, CmsEpisodeGuidAction } from '../ngrx/actions';
+import { CastlePodcastMetricsAction, CastleEpisodeMetricsAction, CastleFilterAction, CmsEpisodeGuidAction } from '../ngrx/actions';
 
 describe('DownloadsTableComponent', () => {
   let comp: DownloadsTableComponent;
@@ -17,6 +17,20 @@ describe('DownloadsTableComponent', () => {
   let de: DebugElement;
   let el: HTMLElement;
 
+  const podDownloads = [
+    ['2017-08-27T00:00:00Z', 52522],
+    ['2017-08-28T00:00:00Z', 162900],
+    ['2017-08-29T00:00:00Z', 46858],
+    ['2017-08-30T00:00:00Z', 52522],
+    ['2017-08-31T00:00:00Z', 162900],
+    ['2017-09-01T00:00:00Z', 46858],
+    ['2017-09-02T00:00:00Z', 52522],
+    ['2017-09-03T00:00:00Z', 162900],
+    ['2017-09-04T00:00:00Z', 46858],
+    ['2017-09-05T00:00:00Z', 52522],
+    ['2017-09-06T00:00:00Z', 162900],
+    ['2017-09-07T00:00:00Z', 46858]
+  ];
   const ep0Downloads = [
     ['2017-08-27T00:00:00Z', 22],
     ['2017-08-28T00:00:00Z', 90],
@@ -101,12 +115,15 @@ describe('DownloadsTableComponent', () => {
       episodes.forEach(episode => {
         comp.store.dispatch(new CmsEpisodeGuidAction({podcast, episode}));
       });
+      comp.store.dispatch(new CastlePodcastMetricsAction({podcast, filter, metricsType: 'downloads', metrics: podDownloads}));
     });
   }));
 
-  it('should transform episode data to table data', () => {
+  it('should transform episode and podcast data to table data', () => {
     expect(comp.episodeTableData.length).toEqual(episodes.length);
     expect(comp.episodeTableData[0].totalForPeriod).not.toBeNull();
+    expect(comp.podcastTableData['title']).toEqual('All Episodes');
+    expect(comp.podcastTableData['totalForPeriod']).not.toBeNull();
   });
 
   it('should sort episodes by published date', () => {
@@ -114,11 +131,11 @@ describe('DownloadsTableComponent', () => {
   });
 
   it('should not show up without data to display', () => {
-    comp.episodeTableData = [{a: 1}];
+    comp.podcastTableData = [{a: 1}];
     fix.detectChanges();
     expect(de.query(By.css('table'))).not.toBeNull();
 
-    comp.episodeTableData = [];
+    comp.podcastTableData = null;
     fix.detectChanges();
     expect(de.query(By.css('table'))).toBeNull();
   });
@@ -135,7 +152,7 @@ describe('DownloadsTableComponent', () => {
       title: 'Totally Not Pet Talks Daily'
     };
     comp.store.dispatch(new CastleFilterAction({filter: {podcast: differentPodcast}}));
-    expect(comp.episodeTableData.length).toEqual(0);
+    expect(comp.episodeTableData).toBeNull();
   });
 
   it('should display episode total downloads for period', () => {

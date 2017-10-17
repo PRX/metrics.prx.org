@@ -42,6 +42,10 @@ export const dailyDateFormat = (date: Date): string => {
   return dayOfWeek(date.getUTCDay()) + ' ' + (date.getUTCMonth() + 1) + '/' + date.getUTCDate();
 };
 
+export const dayMonthDate = (date: Date): string => {
+  return date.getUTCMonth() + 1 + '/' + date.getUTCDate();
+};
+
 export const hourlyDateFormat = (date: Date): string => {
   const minutes = date.getUTCMinutes() < 10 ? '0' + date.getUTCMinutes() : date.getUTCMinutes();
   return (date.getUTCMonth() + 1) + '/' + date.getUTCDate() + ' ' +

@@ -1,0 +1,46 @@
+.table-wrapper {
+  position: relative;
+}
+table {
+  margin-left: 150px;
+  overflow-x: auto;
+  border-collapse: collapse;
+  line-height: 14px;
+  display: block;
+}
+th, td {
+  padding: 5px;
+  text-align: center;
+  vertical-align: middle;
+  border: 3px solid #f0f0f0;
+  background: white;
+  width: 45px;
+}
+td {
+  font-size: 12px;
+  white-space: nowrap;
+}
+/* first column sticks to the left as you scroll right */
+.sticky {
+  position: absolute;
+  left: 0;
+  width: 150px;
+  border-right: none;
+  text-align: left;
+}
+th.sticky {
+  top: 0;
+  height: 44px;
+}
+td.sticky {
+  margin-top: -1px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+tbody td:nth-child(3) {
+  font-weight: 700;
+}
+thead th:nth-child(2), th:nth-child(3) {
+  min-width: 75px;
+}

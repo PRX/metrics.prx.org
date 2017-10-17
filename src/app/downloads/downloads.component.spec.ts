@@ -1,7 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { By } from '@angular/platform-browser';
 import { DebugElement } from '@angular/core';
 import { RouterTestingModule } from '@angular/router/testing';
+import { By } from '@angular/platform-browser';
 import { StoreModule } from '@ngrx/store';
 import { Subject } from 'rxjs/Subject';
 import { Angulartics2 } from 'angulartics2';
@@ -11,6 +11,7 @@ import { CoreModule, CastleService } from '../core';
 import { SharedModule } from '../shared';
 import { DownloadsComponent } from './downloads.component';
 import { DownloadsChartComponent } from './downloads-chart.component';
+import { DownloadsTableComponent } from './downloads-table.component';
 
 import { reducers } from '../ngrx/reducers';
 
@@ -46,7 +47,8 @@ describe('DownloadsComponent', () => {
     TestBed.configureTestingModule({
       declarations: [
         DownloadsComponent,
-        DownloadsChartComponent
+        DownloadsChartComponent,
+        DownloadsTableComponent
       ],
       imports: [
         CoreModule,
@@ -119,5 +121,9 @@ describe('DownloadsComponent', () => {
     expect(comp.setEpisodeMetrics).toHaveBeenCalledTimes(3);
     comp.store.dispatch(new CastleFilterAction({filter: {episodes}}));
     expect(comp.setEpisodeMetrics).toHaveBeenCalledTimes(5);
+  });
+
+  it('should show a downloads table of episodes', () => {
+    expect(de.query(By.css('metrics-downloads-table'))).not.toBeNull();
   });
 });

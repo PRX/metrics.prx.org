@@ -8,10 +8,8 @@ import { filterAllPodcastEpisodes } from '../../shared/util/metrics.util';
 @Component({
   selector: 'metrics-episodes',
   template: `
-    <span>Episodes:</span>
-    <span>
-      <prx-select [options]="allEpisodeOptions" [selected]="selected" searchable="true" (onSelect)="onEpisodesChange($event)"></prx-select>
-    </span>
+    <div>Episodes:</div>
+    <prx-select [options]="allEpisodeOptions" [selected]="selected" searchable="true" (onSelect)="onEpisodesChange($event)"></prx-select>
   `
 })
 export class EpisodesComponent implements OnInit, OnChanges, OnDestroy {

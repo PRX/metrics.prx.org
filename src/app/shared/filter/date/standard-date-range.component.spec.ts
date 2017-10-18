@@ -4,7 +4,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { StoreModule } from '@ngrx/store';
 
 import { DatepickerModule, SelectModule } from 'ngx-prx-styleguide';
-import { CannedRangeComponent } from './standard-date-range.component';
+import { StandardDateRangeComponent } from './standard-date-range.component';
 
 import { reducers } from '../../../ngrx/reducers';
 import { FilterModel, INTERVAL_DAILY, INTERVAL_HOURLY, INTERVAL_15MIN,
@@ -16,7 +16,7 @@ import { beginningOfTodayUTC, endOfTodayUTC } from '../../util/date.util';
 
 describe('StandardDateRangeComponent', () => {
   let comp: CannedRangeComponent;
-  let fix: ComponentFixture<CannedRangeComponent>;
+  let fix: ComponentFixture<StandardDateRangeComponent>;
   let de: DebugElement;
   let el: HTMLElement;
 

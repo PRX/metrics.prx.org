@@ -8,14 +8,9 @@ import { isMoreThanXDays, endOfTodayUTC, beginningOfTwoWeeksUTC, beginningOfThis
 @Component({
   selector: 'metrics-standard-date-range',
   template: `
-    <div>
-      <span>When:</span>
-      <span>
-        <prx-select single="true" [options]="whenOptions" [selected]="when" (onSelect)="onWhenChange($event)"></prx-select>
-      </span>
-    </div>
-  `,
-  styleUrls: ['standard-date-range.component.css']
+    <div>When:</div>
+    <prx-select single="true" [options]="whenOptions" [selected]="when" (onSelect)="onWhenChange($event)"></prx-select>
+  `
 })
 export class StandardDateRangeComponent implements OnChanges {
   @Input() when: string;

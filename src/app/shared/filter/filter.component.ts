@@ -8,13 +8,17 @@ import { CastleFilterAction } from '../../ngrx/actions';
 @Component({
   selector: 'metrics-filter',
   template: `
-    <metrics-interval [filter]="filter" (intervalChange)="onIntervalChange($event)"></metrics-interval>
     <metrics-date-range [filter]="filter" (dateRangeChange)="onDateRangeChange($event)"></metrics-date-range>
+    <hr>
+    <metrics-interval [filter]="filter" (intervalChange)="onIntervalChange($event)"></metrics-interval>
     <metrics-episodes [filter]="filter" (episodesChange)="onEpisodesChange($event)"></metrics-episodes>
-    <metrics-prev-date-range></metrics-prev-date-range>
-    <button (click)="onApply()">Apply</button>
-    <metrics-next-date-range></metrics-next-date-range>
-  `
+    <div class="buttons">
+      <metrics-prev-date-range></metrics-prev-date-range>
+      <button (click)="onApply()">Apply</button>
+      <metrics-next-date-range></metrics-next-date-range>
+    </div>
+  `,
+  styleUrls: ['filter.component.css']
 })
 
 export class FilterComponent implements OnInit, OnDestroy {

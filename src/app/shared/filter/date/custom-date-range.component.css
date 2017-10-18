@@ -1,10 +1,9 @@
-:host {
-  padding: 20px 20px 0px 20px;
-}
-div {
-  display: flex;
-  flex-direction: column;
-}
+/* this belongs in the styleguide, just too many unknowns on global invalid/changed
+ https://github.com/PRX/styleguide.prx.org/issues/30
+ https://github.com/PRX/publish.prx.org/issues/211
+ https://github.com/PRX/publish.prx.org/issues/111
+ https://github.com/PRX/publish.prx.org/issues/110
+ */
 .invalid {
   margin-top: 10px;
   color: #ee4d3e;

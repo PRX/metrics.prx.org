@@ -5,19 +5,15 @@ import { isMoreThanXDays, endOfTodayUTC } from '../../util/date.util';
 @Component({
   selector: 'metrics-custom-date-range',
   template: `
+    <div>From:</div>
     <div>
-      <span>From:</span>
-      <span>
-        <prx-datepicker [date]="beginDate" UTC="true" (dateChange)="onBeginDateChange($event)"></prx-datepicker>
-        <prx-timepicker [date]="beginDate" UTC="true" (timeChange)="onBeginDateChange($event)"></prx-timepicker>
-      </span>
+      <prx-datepicker [date]="beginDate" UTC="true" (dateChange)="onBeginDateChange($event)"></prx-datepicker>
+      <prx-timepicker [date]="beginDate" UTC="true" (timeChange)="onBeginDateChange($event)"></prx-timepicker>
     </div>
+    <div>Through:</div>
     <div>
-      <span>Through:</span>
-      <span>
-        <prx-datepicker [date]="endDate" UTC="true" (dateChange)="onEndDateChange($event)"></prx-datepicker>
-        <prx-timepicker [date]="endDate" UTC="true" (timeChange)="onEndDateChange($event)"></prx-timepicker>
-      </span>
+      <prx-datepicker [date]="endDate" UTC="true" (dateChange)="onEndDateChange($event)"></prx-datepicker>
+      <prx-timepicker [date]="endDate" UTC="true" (timeChange)="onEndDateChange($event)"></prx-timepicker>
     </div>
     <div class="invalid" *ngIf="invalid">
       {{ invalid }}

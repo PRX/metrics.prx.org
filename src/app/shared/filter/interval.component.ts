@@ -5,11 +5,9 @@ import { isMoreThanXDays } from '../util/date.util';
 @Component({
   selector: 'metrics-interval',
   template: `
-    <span>Interval:</span>
-    <span>
-      <prx-select single="true" [options]="intervalOptions" [selected]="selectedInterval" (onSelect)="onIntervalChange($event)">
-      </prx-select>
-    </span>
+    <div>Interval:</div>
+    <prx-select single="true" [options]="intervalOptions" [selected]="selectedInterval" (onSelect)="onIntervalChange($event)">
+    </prx-select>
   `
 })
 export class IntervalComponent implements OnChanges {

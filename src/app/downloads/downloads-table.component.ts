@@ -14,7 +14,7 @@ import * as moment from 'moment';
       <table *ngIf="podcastTableData">
         <thead>
           <tr>
-            <th class="sticky">Episode</th>
+            <th class="sticky"><div class="valign">Episode</div></th>
             <th>Release Date</th>
             <th>Total for Period</th>
             <th *ngFor="let date of dateRange">{{date}}</th>

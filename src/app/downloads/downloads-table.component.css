@@ -37,6 +37,12 @@ td.sticky {
   text-overflow: ellipsis;
   overflow: hidden;
 }
+.sticky .valign {
+  min-height: 100%;
+  display: flex;
+  align-items: center;
+  font-weight: inherit;
+}
 
 tbody td:nth-child(3) {
   font-weight: 700;

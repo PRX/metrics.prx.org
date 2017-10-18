@@ -1,7 +1,4 @@
-import { Component, Output, EventEmitter, OnInit, OnDestroy } from '@angular/core';
-import { Store } from '@ngrx/store';
-import { Subscription } from 'rxjs/Subscription';
-import { CastleFilterAction } from '../../../ngrx/actions';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { FilterModel, DateRangeModel } from '../../../ngrx/model';
 import { getBeginEndDateFromWhen, getWhenForRange, getRange } from '../../util/date.util';
 
@@ -15,34 +12,19 @@ import { getBeginEndDateFromWhen, getWhenForRange, getRange } from '../../util/d
                                (dateRangeChange)="onDateRangeChange($event)"></metrics-custom-date-range>
   `
 })
-export class DateRangeComponent implements OnInit, OnDestroy {
+export class DateRangeComponent {
+  @Input() filter: FilterModel;
   @Output() dateRangeChange = new EventEmitter<DateRangeModel>();
-  filterStoreSub: Subscription;
-  filter: FilterModel;
-
-  constructor(public store: Store<any>) {}
-
-  ngOnInit() {
-    this.filterStoreSub = this.store.select('filter').subscribe(state => {
-      this.filter = state;
-    });
-  }
-
-  ngOnDestroy() {
-    if (this.filterStoreSub) { this.filterStoreSub.unsubscribe(); }
-  }
 
   onDateRangeChange(dateRange: DateRangeModel) {
     const when = getWhenForRange(dateRange);
     const range = getRange(when);
     this.dateRangeChange.emit({...dateRange, when, range});
-    this.store.dispatch(new CastleFilterAction({filter: {...dateRange, when, range}}));
   }
 
   onWhenChange(when: string) {
     const dateRange = getBeginEndDateFromWhen(when);
     const range = getRange(when);
     this.dateRangeChange.emit({when, range, ...dateRange});
-    this.store.dispatch(new CastleFilterAction({filter: {when, range, ...dateRange}}));
   }
 }

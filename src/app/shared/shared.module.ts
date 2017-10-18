@@ -7,6 +7,7 @@ import { AuthGuard, DeactivateGuard, UnauthGuard,
 import { CustomDateRangeComponent } from './filter/date/custom-date-range.component';
 import { DateRangeComponent } from './filter/date/date-range.component';
 import { EpisodesComponent } from './filter/episodes.component';
+import { FilterComponent } from './filter/filter.component';
 import { IntervalComponent } from './filter/interval.component';
 import { NextDateRangeComponent } from './filter/date/next-date-range.component';
 import { PodcastsComponent } from './filter/podcasts.component';
@@ -18,6 +19,7 @@ import { StandardDateRangeComponent } from './filter/date/standard-date-range.co
     CustomDateRangeComponent,
     DateRangeComponent,
     EpisodesComponent,
+    FilterComponent,
     IntervalComponent,
     NextDateRangeComponent,
     PodcastsComponent,
@@ -31,12 +33,8 @@ import { StandardDateRangeComponent } from './filter/date/standard-date-range.co
     ImageModule,
     SelectModule,
     SpinnerModule,
-    DateRangeComponent,
-    EpisodesComponent,
-    IntervalComponent,
-    NextDateRangeComponent,
-    PodcastsComponent,
-    PrevDateRangeComponent
+    FilterComponent,
+    PodcastsComponent
   ],
   imports: [
     CommonModule,

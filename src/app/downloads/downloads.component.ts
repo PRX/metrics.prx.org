@@ -14,13 +14,7 @@ import { beginningOfTwoWeeksUTC, endOfTodayUTC, getRange } from '../shared/util/
   template: `
     <prx-spinner *ngIf="isPodcastLoading || isEpisodeLoading" overlay="true" loadingMessage="Please wait..."></prx-spinner>
     <section class="controls">
-      <metrics-interval></metrics-interval>
-      <div class="bar"></div>
-      <metrics-date-range></metrics-date-range>
-      <div class="bar"></div>
-      <metrics-episodes></metrics-episodes>
-      <metrics-prev-date-range></metrics-prev-date-range>
-      <metrics-next-date-range></metrics-next-date-range>
+      <metrics-filter></metrics-filter>
     </section>
     <section class="content">
       <metrics-downloads-chart></metrics-downloads-chart>

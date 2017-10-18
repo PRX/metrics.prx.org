@@ -1,6 +1,7 @@
 import * as moment from 'moment';
 import { DateRangeModel, TODAY, THIS_WEEK, TWO_WEEKS, THIS_MONTH, THREE_MONTHS, THIS_YEAR,
-  YESTERDAY, LAST_WEEK, PRIOR_TWO_WEEKS, LAST_MONTH, PRIOR_THREE_MONTHS, LAST_YEAR } from '../../ngrx/model';
+  YESTERDAY, LAST_WEEK, PRIOR_TWO_WEEKS, LAST_MONTH, PRIOR_THREE_MONTHS, LAST_YEAR,
+  IntervalModel, INTERVAL_15MIN, INTERVAL_HOURLY, INTERVAL_DAILY } from '../../ngrx/model';
 
 export const isMoreThanXDays = (x: number, beginDate, endDate): boolean => {
   return endDate.valueOf() - beginDate.valueOf() > (1000 * 60 * 60 * 24 * x); // x days
@@ -203,9 +204,9 @@ export const getWhenForRange = (dateRange: DateRangeModel) => {
     dateRange.endDate.valueOf() === endOfLastYearUTC().valueOf()) {
     return LAST_YEAR;
   }
-}
+};
 
-export const getRange = (when: string) => {
+export const getRange = (when: string): any[] => {
   switch (when) {
     case TODAY:
     case YESTERDAY:
@@ -227,5 +228,38 @@ export const getRange = (when: string) => {
       return [1, 'years'];
     default:
       break;
+  }
+};
+
+export const getMillisecondsOfInterval = (interval: IntervalModel): number => {
+  switch (interval) {
+    case INTERVAL_15MIN:
+      return 15 * 60 * 1000;
+    case INTERVAL_HOURLY:
+      return 60 * 60 * 1000;
+    case INTERVAL_DAILY:
+      return 24 * 60 * 60 * 1000;
+    default:
+      break;
+  }
+};
+
+export const normalizeBeginDate = (beginDate: Date, interval: IntervalModel): Date => {
+  const chunk = getMillisecondsOfInterval(interval);
+  const remainder = beginDate.valueOf() % chunk;
+  if (remainder > 0) {
+    return new Date(beginDate.valueOf() + (chunk - remainder));
+  } else {
+    return beginDate;
+  }
+};
+
+export const normalizeEndDate = (endDate: Date, interval: IntervalModel): Date => {
+  const chunk = getMillisecondsOfInterval(interval);
+  const remainder = endDate.valueOf() % chunk;
+  if (remainder > 0) {
+    return new Date(endDate.valueOf() - remainder);
+  } else {
+    return endDate;
   }
 };

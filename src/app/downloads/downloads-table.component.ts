@@ -1,7 +1,8 @@
 import { Component, OnDestroy } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs/Subscription';
-import { EpisodeMetricsModel, EpisodeModel, FilterModel, PodcastMetricsModel, INTERVAL_DAILY, INTERVAL_HOURLY, INTERVAL_15MIN } from '../ngrx/model';
+import { EpisodeMetricsModel, EpisodeModel, FilterModel, PodcastMetricsModel,
+  INTERVAL_DAILY, INTERVAL_HOURLY, INTERVAL_15MIN } from '../ngrx/model';
 import { selectEpisodes, selectFilter, selectEpisodeMetrics, selectPodcastMetrics } from '../ngrx/reducers';
 import { filterPodcastMetrics, filterAllPodcastEpisodes, filterEpisodeMetrics, metricsData, getTotal } from '../shared/util/metrics.util';
 import { mapMetricsToTimeseriesData, dayMonthDate, hourlyDateFormat } from '../shared/util/chart.util';
@@ -27,7 +28,6 @@ import * as moment from 'moment';
             <td>{{podcastTableData.totalForPeriod}}</td>
             <td *ngFor="let download of podcastTableData.downloads">{{download.value}}</td>
           </tr>
-        </tbody>
           <tr *ngFor="let episode of episodeTableData">
             <td class="sticky">{{episode.title}}</td>
             <td>{{episode.releaseDate}}</td>
@@ -61,10 +61,14 @@ export class DownloadsTableComponent implements OnDestroy {
         if (this.isPodcastChanged(newFilter)) {
           this.resetAllData();
         }
-        if (this.isEpisodesChanged(newFilter)) {
-          this.episodeMetrics = filterEpisodeMetrics(newFilter, this.episodeMetrics, 'downloads');
-        }
+        // apply new filter to existing data so it's not showing stale data while loading
         this.filter = newFilter;
+        if (this.episodeMetrics) {
+          this.episodeMetrics = filterEpisodeMetrics(this.filter, this.episodeMetrics, 'downloads');
+        }
+        if (this.podcastMetrics) {
+          this.podcastMetrics = filterPodcastMetrics(this.filter, [this.podcastMetrics]);
+        }
         this.buildTableData();
       }
     });
@@ -101,19 +105,23 @@ export class DownloadsTableComponent implements OnDestroy {
 
   mapPodcastData() {
     const downloads = metricsData(this.filter, this.podcastMetrics, 'downloads');
-    if (downloads) {
+    if (downloads && downloads.length) {
       return {
         title: 'All Episodes',
         releaseDate: '',
         downloads: mapMetricsToTimeseriesData(downloads),
         totalForPeriod: getTotal(downloads)
-      }
+      };
     }
   }
 
   mapEpisodeData() {
     if (this.episodes && this.episodeMetrics && this.episodeMetrics.length) {
       return this.episodeMetrics
+        .filter(epMetric =>  {
+          const downloads = metricsData(this.filter, epMetric, 'downloads');
+          return downloads && downloads.length > 0;
+        })
         .map((epMetric) => {
           const downloads = metricsData(this.filter, epMetric, 'downloads');
           const episode = this.episodes.find(ep => ep.id === epMetric.id);
@@ -137,9 +145,13 @@ export class DownloadsTableComponent implements OnDestroy {
   buildTableData() {
     if (this.podcastMetrics) {
       this.podcastTableData = this.mapPodcastData();
+    } else {
+      this.podcastTableData = null;
     }
     if (this.episodeMetrics) {
       this.episodeTableData = this.mapEpisodeData();
+    } else {
+      this.episodeTableData = [];
     }
     if (this.podcastTableData && this.podcastTableData['downloads']) {
       this.dateRange = this.podcastTableData['downloads'].map(d => this.dateFormat(new Date(d.date)));
@@ -154,12 +166,6 @@ export class DownloadsTableComponent implements OnDestroy {
 
   isPodcastChanged(state: FilterModel): boolean {
     return state.podcast && (!this.filter || !this.filter.podcast ||  this.filter.podcast.seriesId !== state.podcast.seriesId);
-  }
-
-  isEpisodesChanged(state: FilterModel): boolean {
-    return state.episodes && (!this.filter || !this.filter.episodes ||
-      state.episodes.every(episode => this.filter.episodes.map(e => e.id).indexOf(episode.id) !== -1) ||
-      this.filter.episodes.every(episode => state.episodes.map(e => e.id).indexOf(episode.id) !== -1));
   }
 
   dateFormat(date: Date): string {

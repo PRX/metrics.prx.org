@@ -12,7 +12,7 @@ import { mapMetricsToTimeseriesData, subtractTimeseriesDatasets,
 @Component({
   selector: 'metrics-downloads-chart',
   template: `
-    <prx-timeseries-chart type="area" stacked="true" [datasets]="chartData" [formatX]="dateFormat()">
+    <prx-timeseries-chart *ngIf="chartData" type="area" stacked="true" [datasets]="chartData" [formatX]="dateFormat()">
     </prx-timeseries-chart>
   `
 })
@@ -30,16 +30,18 @@ export class DownloadsChartComponent implements OnDestroy {
 
   constructor(public store: Store<any>) {
     this.filterStoreSub = store.select(selectFilter).subscribe((newFilter: FilterModel) => {
-      if (this.isPodcastChanged(newFilter)) {
-        // reset episode metrics if the filtered podcast changes
-        this.episodeChartData = [];
-      }
-      // this bit picks up changes when episodes are removed from the filter
-      if (this.isEpisodesChanged(newFilter)) {
-        this.episodeMetrics = filterEpisodeMetrics(newFilter, this.episodeMetrics, 'downloads');
-        this.buildEpisodeMetrics(newFilter);
-      }
+      // apply new filter to existing data so it's not showing stale data while loading
       this.filter = newFilter;
+      if (this.podcastMetrics) { // do we have anything at all?
+        this.podcastMetrics = filterPodcastMetrics(this.filter, [this.podcastMetrics]);
+        if (this.podcastMetrics) { // do we have the filtered data? (yes, I meant to check again)
+          this.podcastChartData = this.mapPodcastData(metricsData(this.filter, this.podcastMetrics, 'downloads'));
+        } else {
+          this.podcastChartData = null;
+        }
+      }
+      this.episodeMetrics = filterEpisodeMetrics(this.filter, this.episodeMetrics, 'downloads');
+      this.buildEpisodeMetrics(this.filter);
     });
 
     this.podcastMetricsStoreSub = store.select(selectPodcastMetrics).subscribe((podcastMetrics: PodcastMetricsModel[]) => {
@@ -80,16 +82,6 @@ export class DownloadsChartComponent implements OnDestroy {
     if (this.episodeMetricsStoreSub) { this.episodeMetricsStoreSub.unsubscribe(); }
   }
 
-  isPodcastChanged(state: FilterModel): boolean {
-    return state.podcast && (!this.filter || !this.filter.podcast ||  this.filter.podcast.seriesId !== state.podcast.seriesId);
-  }
-
-  isEpisodesChanged(state: FilterModel): boolean {
-    return state.episodes && (!this.filter || !this.filter.episodes ||
-      state.episodes.every(episode => this.filter.episodes.map(e => e.id).indexOf(episode.id) !== -1) ||
-      this.filter.episodes.every(episode => state.episodes.map(e => e.id).indexOf(episode.id) !== -1));
-  }
-
   mapEpisodeData(episode: EpisodeModel, metrics: any[][], color: string): TimeseriesChartModel {
     return { data: mapMetricsToTimeseriesData(metrics), label: episode.title, color };
   }
@@ -112,6 +104,8 @@ export class DownloadsChartComponent implements OnDestroy {
       this.chartData = [...this.episodeChartData, allOtherEpisodesData];
     } else if (this.podcastChartData && this.podcastChartData.data.length > 0) {
       this.chartData = [this.podcastChartData];
+    } else {
+      this.chartData = null;
     }
   }
 

@@ -40,18 +40,15 @@ export class FilterComponent implements OnInit, OnDestroy {
   }
 
   onIntervalChange(interval: IntervalModel) {
-    this.filter.interval = interval;
+    this.filter = {...this.filter, interval};
   }
 
   onDateRangeChange(dateRange: DateRangeModel) {
-    this.filter.when = dateRange.when;
-    this.filter.range = dateRange.range;
-    this.filter.beginDate = dateRange.beginDate;
-    this.filter.endDate = dateRange.endDate;
+    this.filter = {...this.filter, ...dateRange};
   }
 
   onEpisodesChange(episodes: EpisodeModel[]) {
-    this.filter.episodes = episodes;
+    this.filter = {...this.filter, episodes};
   }
 
   onApply() {

@@ -72,13 +72,13 @@ export class DownloadsComponent implements OnInit, OnDestroy {
         changedFilter = true;
       }
 
-      if (changedFilter && this.filter.podcast) {
-        this.getPodcastMetrics();
-      }
-
       if (this.isEpisodesChanged(newFilter)) {
         this.filter.episodes = newFilter.episodes;
         changedFilter = true;
+      }
+
+      if (changedFilter && this.filter.podcast) {
+        this.getPodcastMetrics();
       }
 
       if (changedFilter && this.filter.episodes && this.filter.episodes.length > 0) {

@@ -38,3 +38,7 @@ and (max-device-width: 568px) {
     max-width: 100%;
   }
 }
+.error {
+  color: #ee4d3e;
+  font-style: italic;
+}

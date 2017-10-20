@@ -19,7 +19,7 @@ import { beginningOfTwoWeeksUTC, endOfTodayUTC, getRange } from '../shared/util/
     <section class="content">
       <metrics-downloads-chart></metrics-downloads-chart>
       <metrics-downloads-table></metrics-downloads-table>
-      <p class="error" *ngIf="error">{{error}}</p>
+      <p class="error" *ngFor="let error of errors">{{error}}</p>
     </section>
   `,
   styleUrls: ['downloads.component.css']
@@ -31,7 +31,7 @@ export class DownloadsComponent implements OnInit, OnDestroy {
   filter: FilterModel;
   isPodcastLoading = true;
   isEpisodeLoading = true;
-  error: string;
+  errors: string[] = [];
 
   constructor(private castle: CastleService,
               public store: Store<any>,
@@ -90,6 +90,9 @@ export class DownloadsComponent implements OnInit, OnDestroy {
   toggleLoading(isPodcastLoading, isEpisodeLoading = this.isEpisodeLoading) {
     this.isPodcastLoading = isPodcastLoading;
     this.isEpisodeLoading = isEpisodeLoading;
+    if (this.isPodcastLoading && this.isEpisodeLoading) {
+      this.errors = [];
+    }
   }
 
   ngOnDestroy() {
@@ -129,12 +132,8 @@ export class DownloadsComponent implements OnInit, OnDestroy {
       metrics => this.setPodcastMetrics(metrics),
       err => {
         this.toggleLoading(false);
-        if (err.name === 'HalHttpError' && err.status === 401) {
-          this.error = 'An error occurred while requesting podcast metrics on ' + this.filter.podcast.title;
-          console.error(err);
-        } else {
-          this.error = this.filter.podcast.title + ' podcast has no download metrics.';
-        }
+        const type = err.status === 401 ? 'authorization' : 'unknown';
+        this.errors.push(`An ${type} error occurred while requesting podcast metrics on ${this.filter.podcast.title}`);
       }
     );
   }
@@ -167,12 +166,8 @@ export class DownloadsComponent implements OnInit, OnDestroy {
         metrics => this.setEpisodeMetrics(episode, metrics),
         err => {
           this.toggleLoading(this.isPodcastLoading, false);
-          if (err.name === 'HalHttpError' && err.status === 401) {
-            this.error = 'An error occurred while requesting episode metrics on' + episode.title;
-            console.error(err);
-          } else {
-            this.error = episode.title + ' episode has no download metrics.';
-          }
+          const type = err.status === 401 ? 'authorization' : 'unknown';
+          this.errors.push(`An ${type} error occurred while requesting episode metrics on ${episode.title}`);
         }
       );
     });

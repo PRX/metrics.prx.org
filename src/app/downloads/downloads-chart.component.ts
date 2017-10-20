@@ -30,18 +30,8 @@ export class DownloadsChartComponent implements OnDestroy {
 
   constructor(public store: Store<any>) {
     this.filterStoreSub = store.select(selectFilter).subscribe((newFilter: FilterModel) => {
-      // apply new filter to existing data so it's not showing stale data while loading
       this.filter = newFilter;
-      if (this.podcastMetrics) { // do we have anything at all?
-        this.podcastMetrics = filterPodcastMetrics(this.filter, [this.podcastMetrics]);
-        if (this.podcastMetrics) { // do we have the filtered data? (yes, I meant to check again)
-          this.podcastChartData = this.mapPodcastData(metricsData(this.filter, this.podcastMetrics, 'downloads'));
-        } else {
-          this.podcastChartData = null;
-        }
-      }
-      this.episodeMetrics = filterEpisodeMetrics(this.filter, this.episodeMetrics, 'downloads');
-      this.buildEpisodeMetrics(this.filter);
+      this.applyFilterToExistingData();
     });
 
     this.podcastMetricsStoreSub = store.select(selectPodcastMetrics).subscribe((podcastMetrics: PodcastMetricsModel[]) => {
@@ -58,6 +48,21 @@ export class DownloadsChartComponent implements OnDestroy {
         this.buildEpisodeMetrics(this.filter);
       });
     }
+  }
+
+  applyFilterToExistingData() {
+    if (this.podcastMetrics) { // do we have anything at all?
+      this.podcastMetrics = filterPodcastMetrics(this.filter, [this.podcastMetrics]);
+      // do we have the filtered data? (yes, I meant to check again.
+      // If things have changed drastically and there is no relevant data, filterPodcastMetrics returns undefined.)
+      if (this.podcastMetrics) {
+        this.podcastChartData = this.mapPodcastData(metricsData(this.filter, this.podcastMetrics, 'downloads'));
+      } else {
+        this.podcastChartData = null;
+      }
+    }
+    this.episodeMetrics = filterEpisodeMetrics(this.filter, this.episodeMetrics, 'downloads');
+    this.buildEpisodeMetrics(this.filter);
   }
 
   buildEpisodeMetrics(filter: FilterModel) {

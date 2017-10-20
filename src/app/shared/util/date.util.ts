@@ -244,22 +244,12 @@ export const getMillisecondsOfInterval = (interval: IntervalModel): number => {
   }
 };
 
-export const normalizeBeginDate = (beginDate: Date, interval: IntervalModel): Date => {
+export const roundDateToInterval = (date: Date, interval: IntervalModel): Date => {
   const chunk = getMillisecondsOfInterval(interval);
-  const remainder = beginDate.valueOf() % chunk;
+  const remainder = date.valueOf() % chunk;
   if (remainder > 0) {
-    return new Date(beginDate.valueOf() + (chunk - remainder));
+    return new Date(date.valueOf() - remainder);
   } else {
-    return beginDate;
-  }
-};
-
-export const normalizeEndDate = (endDate: Date, interval: IntervalModel): Date => {
-  const chunk = getMillisecondsOfInterval(interval);
-  const remainder = endDate.valueOf() % chunk;
-  if (remainder > 0) {
-    return new Date(endDate.valueOf() - remainder);
-  } else {
-    return endDate;
+    return date;
   }
 };

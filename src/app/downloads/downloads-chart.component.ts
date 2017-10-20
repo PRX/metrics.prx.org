@@ -64,6 +64,10 @@ export class DownloadsChartComponent implements OnDestroy {
     if (this.episodeMetrics) {
       this.colors = generateShades(this.episodeMetrics.length);
       this.episodeChartData = this.episodeMetrics
+        .filter((metrics: EpisodeMetricsModel) => {
+          const downloads = metricsData(filter, metrics, 'downloads');
+          return downloads && downloads.length > 0;
+        })
         .sort((a: EpisodeMetricsModel, b: EpisodeMetricsModel) => {
           return getTotal(metricsData(filter, b, 'downloads')) - getTotal(metricsData(filter, a, 'downloads'));
         })

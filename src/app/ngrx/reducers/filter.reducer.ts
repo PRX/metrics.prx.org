@@ -20,6 +20,10 @@ export function FilterReducer(state: FilterModel = initialState, action: ActionW
         // but we can and maybe should do it in action creators instead of components)
         newState.when = action.payload.filter.when;
       }
+      // the reason that there is a range separate from the standard range "when"
+      //  is because the when value becomes undefined when the begin and end dates do not
+      //  match one of the valid options; however, the range sticks around so that prev/next
+      //  buttons can still be used to page through based on the lat selected range
       if (action.payload.filter.range) {
         newState.range = action.payload.filter.range;
       }

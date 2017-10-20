@@ -1,6 +1,6 @@
 import { PodcastModel, EpisodeModel, FilterModel, MetricsType, IntervalModel,
   PodcastMetricsModel, EpisodeMetricsModel } from '../../ngrx/model';
-import { normalizeBeginDate, normalizeEndDate } from './date.util';
+import { roundDateToInterval } from './date.util';
 
 export const filterPodcasts = (filter: FilterModel, podcasts: PodcastModel[]): PodcastModel => {
   if (filter.podcast && podcasts) {
@@ -26,15 +26,15 @@ export const filterEpisodes = (filter: FilterModel, episodes: EpisodeModel[]) =>
 
 export const filterMetricsByDate = (beginDate: Date, endDate: Date, interval: IntervalModel, metrics: any[][]): any[][] => {
   const begin = metrics.findIndex(m => {
-    return new Date(m[0]).valueOf() === normalizeBeginDate(beginDate, interval).valueOf();
+    return new Date(m[0]).valueOf() === roundDateToInterval(beginDate, interval).valueOf();
   });
   const end = metrics.findIndex(m => {
-    return new Date(m[0]).valueOf() === normalizeEndDate(endDate, interval).valueOf();
+    return new Date(m[0]).valueOf() === roundDateToInterval(endDate, interval).valueOf();
   });
   if (begin !== -1 && end !== -1) {
     return metrics.slice(begin, end + 1);
   } else {
-    return []; // no partial data
+    return null; // no partial data
   }
 };
 
@@ -49,7 +49,7 @@ export const filterPodcastMetrics =
         filteredMetric[metricsProperty] = filterMetricsByDate(filter.beginDate, filter.endDate, filter.interval, metric[metricsProperty]);
         return filteredMetric;
       });
-    if (metrics && metrics.length) {
+    if (metrics && metrics.length && metrics[0][metricsProperty]) {
       return metrics[0]; // only one entry should match the series id
     }
   }
@@ -64,18 +64,8 @@ export const filterEpisodeMetrics =
           filter.episodes.map(e => e.id).indexOf(metric.id) !== -1 &&
           metric[metricsProperty])
         .map((metric: EpisodeMetricsModel) => {
-          const begin = metric[metricsProperty].findIndex(m => {
-            return new Date(m[0]).valueOf() === normalizeBeginDate(filter.beginDate, filter.interval).valueOf();
-          });
-          const end = metric[metricsProperty].findIndex(m => {
-            return new Date(m[0]).valueOf() === normalizeEndDate(filter.endDate, filter.interval).valueOf();
-          });
           const filteredMetric = {...metric};
-          if (begin !== -1 && end !== -1) {
-            filteredMetric[metricsProperty] = metric[metricsProperty].slice(begin, end + 1);
-          } else {
-            filteredMetric[metricsProperty] = []; // no partial data
-          }
+          filteredMetric[metricsProperty] = filterMetricsByDate(filter.beginDate, filter.endDate, filter.interval, metric[metricsProperty]);
           return filteredMetric;
         });
     }

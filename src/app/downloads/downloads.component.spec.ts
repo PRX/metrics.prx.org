@@ -105,9 +105,9 @@ describe('DownloadsComponent', () => {
     comp.store.dispatch(new CastleFilterAction({
       filter: {episodes: [{doc: undefined, id: 123, seriesId: 37800, title: 'A New Pet Talk Episode', publishedAt: new Date()}]}}));
     comp.store.dispatch(new CastleFilterAction({filter: {beginDate}}));
-    expect(comp.setPodcastMetrics).toHaveBeenCalledTimes(2);
+    expect(comp.setPodcastMetrics).toHaveBeenCalledTimes(3); // now also called for changes to episodes filter
     expect(comp.setEpisodeMetrics).toHaveBeenCalledTimes(2);
-    expect(comp.store.dispatch).toHaveBeenCalledTimes(7);
+    expect(comp.store.dispatch).toHaveBeenCalledTimes(8);
   });
 
   it('should reload episode metrics if removed from filter then re-added', () => {

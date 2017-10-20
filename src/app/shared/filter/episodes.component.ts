@@ -24,11 +24,13 @@ export class EpisodesComponent implements OnInit, OnChanges, OnDestroy {
 
   ngOnInit() {
     this.allEpisodesSub = this.store.select(selectEpisodes).subscribe((allEpisodes: EpisodeModel[]) => {
-      const allPodcastEpisodes = filterAllPodcastEpisodes(this.filter, allEpisodes);
-      if (allPodcastEpisodes) {
-        this.allEpisodeOptions = allPodcastEpisodes.map((episode: EpisodeModel) => {
-          return [episode.title, episode];
-        });
+      if (this.filter) {
+        const allPodcastEpisodes = filterAllPodcastEpisodes(this.filter, allEpisodes);
+        if (allPodcastEpisodes) {
+          this.allEpisodeOptions = allPodcastEpisodes.map((episode: EpisodeModel) => {
+            return [episode.title, episode];
+          });
+        }
       }
     });
   }

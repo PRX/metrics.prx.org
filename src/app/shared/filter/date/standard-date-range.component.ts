@@ -16,7 +16,7 @@ export class StandardDateRangeComponent implements OnChanges {
   @Input() when: string;
   @Input() interval: IntervalModel;
   @Output() whenChange = new EventEmitter<string>();
-  whenOptions: string[];
+  whenOptions: string[] = [];
 
   ngOnChanges() {
     this.genWhen();

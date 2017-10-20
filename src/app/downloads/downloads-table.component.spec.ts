@@ -146,13 +146,14 @@ describe('DownloadsTableComponent', () => {
   });
 
   it('should clear out episode table data when podcast changes', () => {
+    spyOn(comp, 'resetAllData').and.callThrough();
     const differentPodcast: PodcastModel = {
       doc: undefined,
       seriesId: 37801,
       title: 'Totally Not Pet Talks Daily'
     };
     comp.store.dispatch(new CastleFilterAction({filter: {podcast: differentPodcast}}));
-    expect(comp.episodeTableData).toBeNull();
+    expect(comp.resetAllData).toHaveBeenCalled();
   });
 
   it('should display episode total downloads for period', () => {

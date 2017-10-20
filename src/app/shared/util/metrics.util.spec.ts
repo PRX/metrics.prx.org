@@ -1,5 +1,5 @@
 import { INTERVAL_DAILY, INTERVAL_HOURLY } from '../../ngrx/model';
-import { filterPodcasts, filterAllPodcastEpisodes, filterEpisodes,
+import { filterPodcasts, filterAllPodcastEpisodes, filterEpisodes, filterMetricsByDate,
   filterPodcastMetrics, filterEpisodeMetrics, metricsData, getTotal } from './metrics.util';
 
 describe('metrics util', () => {
@@ -48,8 +48,8 @@ describe('metrics util', () => {
   const filter = {
     podcast: {...podcasts[0]},
     episodes: [{...episodes[0]}],
-    beginDate: new Date('2017-09-29 0:0:0'),
-    endDate: new Date('2017-09-29 23:59:59'),
+    beginDate: new Date('2017-09-01T00:00:00Z'),
+    endDate: new Date('2017-09-07T00:00:00Z'),
     interval: INTERVAL_DAILY
   };
   const metrics = [
@@ -70,12 +70,12 @@ describe('metrics util', () => {
     {
       seriesId: 37800,
       feederId: '70',
-      dailyDownloads: []
+      dailyDownloads: [...metrics]
     },
     {
       seriesId: 37801,
       feederId: '70',
-      dailyDownloads: []
+      dailyDownloads: [...metrics]
     }
   ];
   const episodeMetrics = [
@@ -151,11 +151,15 @@ describe('metrics util', () => {
   });
 
   it('should get metrics array according to interval', () => {
-    expect(metricsData(filter, podcastMetrics[0], 'downloads').length).toEqual(0);
+    expect(metricsData(filter, podcastMetrics[0], 'downloads').length).toEqual(12);
     expect(metricsData({interval: INTERVAL_HOURLY}, episodeMetrics[0], 'downloads')).toBeUndefined(); // no hourly
   });
 
   it('should get total of metrics datapoints', () => {
     expect(getTotal(metrics)).toEqual(52522 + 162900 + 46858 + 52522 + 162900 + 46858 + 52522 + 162900 + 46858 + 52522 + 162900 + 46858);
+  });
+
+  it('should filter metrics by date', () => {
+    expect(filterMetricsByDate(filter.beginDate, filter.endDate, filter.interval, metrics).length).toEqual(7);
   });
 });

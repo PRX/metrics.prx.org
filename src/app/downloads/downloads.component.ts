@@ -3,9 +3,9 @@ import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs/Subscription';
 import { Angulartics2 } from 'angulartics2';
 import { CastleService } from '../core';
-import { EpisodeModel, INTERVAL_DAILY, FilterModel, TWO_WEEKS } from '../ngrx/model';
+import { EpisodeModel, INTERVAL_DAILY, FilterModel, TWO_WEEKS, PodcastModel } from '../ngrx/model';
 import { CastleFilterAction, CastlePodcastMetricsAction, CastleEpisodeMetricsAction } from '../ngrx/actions';
-import { selectFilter, selectEpisodes } from '../ngrx/reducers';
+import { selectFilter, selectEpisodes, selectPodcasts } from '../ngrx/reducers';
 import { filterAllPodcastEpisodes } from '../shared/util/metrics.util';
 import { beginningOfTwoWeeksUTC, endOfTodayUTC, getRange } from '../shared/util/date.util';
 
@@ -14,7 +14,7 @@ import { beginningOfTwoWeeksUTC, endOfTodayUTC, getRange } from '../shared/util/
   template: `
     <prx-spinner *ngIf="isPodcastLoading || isEpisodeLoading" overlay="true" loadingMessage="Please wait..."></prx-spinner>
     <section class="controls">
-      <metrics-filter></metrics-filter>
+      <metrics-filter *ngIf="!isLoadingForTheFirstTime"></metrics-filter>
     </section>
     <section class="content">
       <metrics-downloads-chart></metrics-downloads-chart>
@@ -25,12 +25,14 @@ import { beginningOfTwoWeeksUTC, endOfTodayUTC, getRange } from '../shared/util/
   styleUrls: ['downloads.component.css']
 })
 export class DownloadsComponent implements OnInit, OnDestroy {
+  podcastStoreSub: Subscription;
   episodeStoreSub: Subscription;
   allPodcastEpisodes: EpisodeModel[];
   filterStoreSub: Subscription;
   filter: FilterModel;
   isPodcastLoading = true;
   isEpisodeLoading = true;
+  isLoadingForTheFirstTime = true;
   errors: string[] = [];
 
   constructor(private castle: CastleService,
@@ -40,6 +42,12 @@ export class DownloadsComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.setDefaultFilter();
     this.toggleLoading(true, true);
+
+    this.podcastStoreSub = this.store.select(selectPodcasts).subscribe((podcasts: PodcastModel[]) => {
+      if (podcasts && podcasts.length) {
+        this.isLoadingForTheFirstTime = false;
+      }
+    });
 
     this.filterStoreSub = this.store.select(selectFilter).subscribe((newFilter: FilterModel) => {
       let changedFilter = false;

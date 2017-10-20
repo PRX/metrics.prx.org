@@ -15,7 +15,7 @@ import { DownloadsTableComponent } from './downloads-table.component';
 
 import { reducers } from '../ngrx/reducers';
 
-import { CastleFilterAction } from '../ngrx/actions';
+import { CastleFilterAction, CmsPodcastFeedAction } from '../ngrx/actions';
 
 describe('DownloadsComponent', () => {
   let comp: DownloadsComponent;
@@ -24,6 +24,12 @@ describe('DownloadsComponent', () => {
   let el: HTMLElement;
   let castle;
 
+  const podcast = {
+    doc: undefined,
+    seriesId: 37800,
+    feederId: '70',
+    title: 'Pet Talks Daily'
+  };
   const downloads = [
     ['2017-08-27T00:00:00Z', 52522],
     ['2017-08-28T00:00:00Z', 162900],
@@ -74,6 +80,13 @@ describe('DownloadsComponent', () => {
       spyOn(comp.store, 'dispatch').and.callThrough();
     });
   }));
+
+  it('should not show filter if app is loading for the first time', () => {
+    expect(de.query(By.css('metrics-filter'))).toBeFalsy();
+    comp.store.dispatch(new CmsPodcastFeedAction({podcast}));
+    fix.detectChanges();
+    expect(de.query(By.css('metrics-filter'))).not.toBeNull();
+  });
 
   it('should show loading spinner when episode or podcast is loading', () => {
     comp.isPodcastLoading = true;

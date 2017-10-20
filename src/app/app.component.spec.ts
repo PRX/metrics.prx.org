@@ -93,6 +93,13 @@ describe('AppComponent', () => {
     expect(de.query(By.css('prx-navuser'))).toBeNull();
   }));
 
+  it('should inform users if they don\'t have any podcasts', () => {
+    const series = auth.mockItems('prx:series', []);
+    authToken.next('fake-token');
+    fix.detectChanges();
+    expect(de.query(By.css('p.error'))).not.toBeNull();
+  });
+
   it('should load series podcast and episode and dispatch CMS actions', () => {
     spyOn(comp, 'getSeriesPodcastDistribution').and.callThrough();
     spyOn(comp, 'getEpisodePodcastDistribution').and.callThrough();

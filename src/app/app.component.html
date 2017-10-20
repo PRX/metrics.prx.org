@@ -8,7 +8,8 @@
 </prx-header>
 <main>
   <article>
-    <router-outlet></router-outlet>
+    <router-outlet *ngIf="!error"></router-outlet>
+    <p class="error" *ngIf="error">{{error}}</p>
   </article>
 </main>
 <prx-footer></prx-footer>

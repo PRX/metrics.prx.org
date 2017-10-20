@@ -4,3 +4,7 @@ metrics-podcasts {
 main {
   padding-bottom: 0px;
 }
+.error {
+  margin: 40px;
+  text-align: center;
+}

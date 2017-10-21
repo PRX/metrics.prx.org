@@ -90,13 +90,14 @@ export class AppComponent implements OnInit, OnDestroy {
       if (series.length === 0) {
         this.error = 'Looks like you don\'t have any podcasts.';
       }
-      series.map(doc => {
-        return {
+      series.forEach((doc: HalDoc) => {
+        const podcast: PodcastModel = {
           doc,
           seriesId: doc['id'],
           title: doc['title']
         };
-      }).forEach(this.getSeriesPodcastDistribution.bind(this));
+        this.getSeriesPodcastDistribution(podcast);
+      });
     });
   }
 

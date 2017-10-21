@@ -50,7 +50,7 @@ export class NextDateRangeComponent implements OnInit, OnDestroy {
       const newEndDate = moment.min(endOfTodayUTC(),
         moment(this.filter.endDate).utc().add(this.filter.range[0], this.filter.range[1])).toDate();
       let when = this.getNextWhen();
-      // the first attempt at assinging when is where we are certain, if we aren't certain, we need to check for matching date ranges
+      // the first attempt at assigning when is where we are certain, if we aren't certain, we need to check for matching date ranges
       if (!when) {
         when = getWhenForRange({beginDate: newBeginDate, endDate: newEndDate});
       }

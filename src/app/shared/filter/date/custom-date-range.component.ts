@@ -55,8 +55,7 @@ export class CustomDateRangeComponent {
         return 'From date and Through date cannot be more than 10 days apart for 15 minute interval';
       } else if (this.interval === INTERVAL_HOURLY && isMoreThanXDays(40, this.beginDate, this.endDate)) {
         return 'From date and Through date cannot be more than 40 days apart for hourly interval';
-      } else if (this.endDate.valueOf() > endOfTodayUTC().valueOf() + 1 + (60 * 1000) ||
-        this.endDate.valueOf() > endOfTodayUTC().valueOf() + 1) {
+      } else if (this.endDate.valueOf() > endOfTodayUTC().valueOf() + 1 + (60 * 1000)) {
         // + 1 to roll milliseconds into the next day at midnight
         // + 60 * 1000 on endDate because seconds value is retained at :59
         // not sure what to do about the timepicker support but at least let the user select midnight tomorrow for thru end of current day

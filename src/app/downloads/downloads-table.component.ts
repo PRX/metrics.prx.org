@@ -4,7 +4,7 @@ import { Subscription } from 'rxjs/Subscription';
 import { EpisodeMetricsModel, EpisodeModel, FilterModel, PodcastMetricsModel,
   INTERVAL_DAILY, INTERVAL_HOURLY, INTERVAL_15MIN } from '../ngrx/model';
 import { selectEpisodes, selectFilter, selectEpisodeMetrics, selectPodcastMetrics } from '../ngrx/reducers';
-import { filterPodcastMetrics, filterAllPodcastEpisodes, filterEpisodeMetrics, metricsData, getTotal } from '../shared/util/metrics.util';
+import { findPodcastMetrics, filterAllPodcastEpisodes, filterEpisodeMetrics, metricsData, getTotal } from '../shared/util/metrics.util';
 import { mapMetricsToTimeseriesData, dayMonthDate, hourlyDateFormat } from '../shared/util/chart.util';
 import * as moment from 'moment';
 
@@ -67,7 +67,7 @@ export class DownloadsTableComponent implements OnDestroy {
           this.episodeMetrics = filterEpisodeMetrics(this.filter, this.episodeMetrics, 'downloads');
         }
         if (this.podcastMetrics) {
-          this.podcastMetrics = filterPodcastMetrics(this.filter, [this.podcastMetrics]);
+          this.podcastMetrics = findPodcastMetrics(this.filter, [this.podcastMetrics]);
         }
         this.buildTableData();
       }
@@ -89,7 +89,7 @@ export class DownloadsTableComponent implements OnDestroy {
     });
 
     this.podcastMetricsStoreSub = this.store.select(selectPodcastMetrics).subscribe((podcastMetrics: PodcastMetricsModel[]) => {
-      this.podcastMetrics = filterPodcastMetrics(this.filter, podcastMetrics);
+      this.podcastMetrics = findPodcastMetrics(this.filter, podcastMetrics);
       if (this.podcastMetrics) {
         this.buildTableData();
       }
@@ -105,7 +105,7 @@ export class DownloadsTableComponent implements OnDestroy {
 
   mapPodcastData() {
     const downloads = metricsData(this.filter, this.podcastMetrics, 'downloads');
-    if (downloads && downloads.length) {
+    if (downloads) {
       return {
         title: 'All Episodes',
         releaseDate: '',
@@ -118,10 +118,6 @@ export class DownloadsTableComponent implements OnDestroy {
   mapEpisodeData() {
     if (this.episodes && this.episodeMetrics && this.episodeMetrics.length) {
       return this.episodeMetrics
-        .filter(epMetric =>  {
-          const downloads = metricsData(this.filter, epMetric, 'downloads');
-          return downloads && downloads.length > 0;
-        })
         .map((epMetric) => {
           const downloads = metricsData(this.filter, epMetric, 'downloads');
           const episode = this.episodes.find(ep => ep.id === epMetric.id);
@@ -151,7 +147,7 @@ export class DownloadsTableComponent implements OnDestroy {
     if (this.episodeMetrics) {
       this.episodeTableData = this.mapEpisodeData();
     } else {
-      this.episodeTableData = [];
+      this.episodeTableData = null;
     }
     if (this.podcastTableData && this.podcastTableData['downloads']) {
       this.dateRange = this.podcastTableData['downloads'].map(d => this.dateFormat(new Date(d.date)));

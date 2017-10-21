@@ -103,6 +103,11 @@ export class DownloadsComponent implements OnInit, OnDestroy {
     }
   }
 
+  showError(errorCode: number, type: 'podcast' | 'episode', title: string) {
+    const errorType = errorCode === 401 ? 'Authorization' : 'Unknown';
+    this.errors.push(`${errorType} error occurred while requesting ${type} metrics on ${title}`);
+  }
+
   ngOnDestroy() {
     if (this.filterStoreSub) { this.filterStoreSub.unsubscribe(); }
     if (this.episodeStoreSub) { this.episodeStoreSub.unsubscribe(); }
@@ -140,8 +145,7 @@ export class DownloadsComponent implements OnInit, OnDestroy {
       metrics => this.setPodcastMetrics(metrics),
       err => {
         this.toggleLoading(false);
-        const type = err.status === 401 ? 'authorization' : 'unknown';
-        this.errors.push(`An ${type} error occurred while requesting podcast metrics on ${this.filter.podcast.title}`);
+        this.showError(err.status, 'podcast', this.filter.podcast.title);
       }
     );
   }
@@ -174,8 +178,7 @@ export class DownloadsComponent implements OnInit, OnDestroy {
         metrics => this.setEpisodeMetrics(episode, metrics),
         err => {
           this.toggleLoading(this.isPodcastLoading, false);
-          const type = err.status === 401 ? 'authorization' : 'unknown';
-          this.errors.push(`An ${type} error occurred while requesting episode metrics on ${episode.title}`);
+          this.showError(err.status, 'episode', episode.title);
         }
       );
     });

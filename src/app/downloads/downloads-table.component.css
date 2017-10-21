@@ -38,6 +38,7 @@ td.sticky {
   overflow: hidden;
 }
 .sticky .valign {
+  position: relative;
   min-height: 100%;
   display: flex;
   align-items: center;

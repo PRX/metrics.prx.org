@@ -1,6 +1,6 @@
 import { INTERVAL_DAILY, INTERVAL_HOURLY } from '../../ngrx/model';
 import { filterPodcasts, filterAllPodcastEpisodes, filterEpisodes, filterMetricsByDate,
-  filterPodcastMetrics, filterEpisodeMetrics, metricsData, getTotal } from './metrics.util';
+  findPodcastMetrics, filterEpisodeMetrics, metricsData, getTotal } from './metrics.util';
 
 describe('metrics util', () => {
   const podcasts = [
@@ -83,19 +83,19 @@ describe('metrics util', () => {
       seriesId: 37800,
       id: 123,
       guid: 'abcdefg',
-      dailyDownloads: []
+      dailyDownloads: [...metrics]
     },
     {
       seriesId: 37800,
       id: 124,
       guid: 'gfedcba',
-      dailyDownloads: []
+      dailyDownloads: [...metrics]
     },
     {
       seriesId: 37801,
       id: 125,
       guid: 'hijklmn',
-      dailyDownloads: []
+      dailyDownloads: [...metrics]
     }
   ];
 
@@ -142,8 +142,8 @@ describe('metrics util', () => {
     expect(filterEpisodes(nonMatchingFilter, episodes).length).toEqual(0);
   });
 
-  it('should get podcast metrics matching filter', () => {
-    expect(filterPodcastMetrics(filter, podcastMetrics).seriesId).toEqual(37800);
+  it('should find podcast metrics matching filter', () => {
+    expect(findPodcastMetrics(filter, podcastMetrics).seriesId).toEqual(37800);
   });
 
   it('should get episode metrics matching filter', () => {

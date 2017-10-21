@@ -49,7 +49,11 @@ describe('date util', () => {
       beginDate: beginningOfThisWeekUTC().toDate(),
       endDate: endOfTodayUTC().toDate()
     };
-    expect(getWhenForRange(thisWeek)).toEqual(THIS_WEEK);
+    if (thisWeek.beginDate.getUTCDate() === thisWeek.endDate.getUTCDate()) {
+      expect(getWhenForRange(thisWeek)).toEqual(TODAY);
+    } else {
+      expect(getWhenForRange(thisWeek)).toEqual(THIS_WEEK);
+    }
     const lastWeek: DateRangeModel = {
       beginDate: beginningOfLastWeekUTC().toDate(),
       endDate: endOfLastWeekUTC().toDate()

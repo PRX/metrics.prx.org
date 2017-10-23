@@ -6,7 +6,7 @@ import { FilterModel, TODAY, THIS_WEEK, TWO_WEEKS, THIS_MONTH, THREE_MONTHS, THI
   YESTERDAY, LAST_WEEK, PRIOR_TWO_WEEKS, LAST_MONTH, PRIOR_THREE_MONTHS, LAST_YEAR } from '../../../ngrx/model';
 import { selectFilter } from '../../../ngrx/reducers';
 import { CastleFilterAction } from '../../../ngrx/actions';
-import { endOfTodayUTC, getWhenForRange } from '../../util/date.util';
+import { endOfTodayUTC, getStandardRangeForBeginEndDate } from '../../util/date.util';
 
 @Component({
   selector: 'metrics-next-date-range',
@@ -49,17 +49,17 @@ export class NextDateRangeComponent implements OnInit, OnDestroy {
       const newBeginDate = moment(this.filter.beginDate).utc().add(this.filter.range[0], this.filter.range[1]).toDate();
       const newEndDate = moment.min(endOfTodayUTC(),
         moment(this.filter.endDate).utc().add(this.filter.range[0], this.filter.range[1])).toDate();
-      let when = this.getNextWhen();
+      let standardRange = this.getNextStandardRange();
       // the first attempt at assigning when is where we are certain, if we aren't certain, we need to check for matching date ranges
-      if (!when) {
-        when = getWhenForRange({beginDate: newBeginDate, endDate: newEndDate});
+      if (!standardRange) {
+        standardRange = getStandardRangeForBeginEndDate({beginDate: newBeginDate, endDate: newEndDate});
       }
-      this.store.dispatch(new CastleFilterAction({filter: {when, beginDate: newBeginDate, endDate: newEndDate}}));
+      this.store.dispatch(new CastleFilterAction({filter: {standardRange, beginDate: newBeginDate, endDate: newEndDate}}));
     }
   }
 
-  getNextWhen() {
-    switch (this.filter.when) {
+  getNextStandardRange() {
+    switch (this.filter.standardRange) {
       case TODAY:
         break;
       case YESTERDAY:

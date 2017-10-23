@@ -25,14 +25,14 @@ export class CustomDateRangeComponent {
   @Input() interval: IntervalModel;
   @Input() beginDate: Date;
   @Input() endDate: Date;
-  @Output() dateRangeChange = new EventEmitter<DateRangeModel>();
+  @Output() customRangeChange = new EventEmitter<DateRangeModel>();
 
   onBeginDateChange(date: Date) {
     // date picker is greedy about change events
     if (date.valueOf() !== this.beginDate.valueOf()) {
       this.beginDate = date;
       if (!this.invalid) {
-        this.dateRangeChange.emit({beginDate: date, endDate: this.endDate});
+        this.customRangeChange.emit({beginDate: date, endDate: this.endDate});
       }
     }
   }
@@ -42,7 +42,7 @@ export class CustomDateRangeComponent {
     if (date.valueOf() !== this.endDate.valueOf()) {
       this.endDate = date;
       if (!this.invalid) {
-        this.dateRangeChange.emit({beginDate: this.beginDate, endDate: date});
+        this.customRangeChange.emit({beginDate: this.beginDate, endDate: date});
       }
     }
   }

@@ -9,65 +9,65 @@ import { isMoreThanXDays, endOfTodayUTC, beginningOfTwoWeeksUTC, beginningOfThis
   selector: 'metrics-standard-date-range',
   template: `
     <div>When:</div>
-    <prx-select single="true" [options]="whenOptions" [selected]="when" (onSelect)="onWhenChange($event)"></prx-select>
+    <prx-select single="true" [options]="rangeOptions" [selected]="standardRange" (onSelect)="onStandardRangeChange($event)"></prx-select>
   `
 })
 export class StandardDateRangeComponent implements OnChanges {
-  @Input() when: string;
+  @Input() standardRange: string;
   @Input() interval: IntervalModel;
-  @Output() whenChange = new EventEmitter<string>();
-  whenOptions: string[] = [];
+  @Output() standardRangeChange = new EventEmitter<string>();
+  rangeOptions: string[] = [];
 
   ngOnChanges() {
-    this.genWhen();
+    this.genRanges();
   }
 
-  genWhen() {
-    this.whenOptions = [TODAY, THIS_WEEK];
+  genRanges() {
+    this.rangeOptions = [TODAY, THIS_WEEK];
 
     if (this.interval !== INTERVAL_15MIN ||
       (this.interval === INTERVAL_15MIN && !isMoreThanXDays(10, beginningOfTwoWeeksUTC(), endOfTodayUTC()))) {
-      this.whenOptions.push(TWO_WEEKS);
+      this.rangeOptions.push(TWO_WEEKS);
     }
 
     if (this.interval !== INTERVAL_15MIN ||
       (this.interval === INTERVAL_15MIN && !isMoreThanXDays(10, beginningOfThisMonthUTC(),  endOfTodayUTC()))) {
-      this.whenOptions.push(THIS_MONTH);
+      this.rangeOptions.push(THIS_MONTH);
     }
 
     if (this.interval === INTERVAL_DAILY ||
       (this.interval === INTERVAL_15MIN && !isMoreThanXDays(10, beginningOfThreeMonthsUTC(), endOfTodayUTC())) ||
       (this.interval === INTERVAL_HOURLY && !isMoreThanXDays(40, beginningOfThreeMonthsUTC(), endOfTodayUTC()))) {
-      this.whenOptions.push(THREE_MONTHS);
+      this.rangeOptions.push(THREE_MONTHS);
     }
 
     if (this.interval === INTERVAL_DAILY ||
       (this.interval === INTERVAL_15MIN && !isMoreThanXDays(10, beginningOfThisYearUTC(), endOfTodayUTC())) ||
       (this.interval === INTERVAL_HOURLY && !isMoreThanXDays(40, beginningOfThisYearUTC(), endOfTodayUTC()))) {
-      this.whenOptions.push(THIS_YEAR);
+      this.rangeOptions.push(THIS_YEAR);
     }
 
-    this.whenOptions.push(YESTERDAY);
-    this.whenOptions.push(LAST_WEEK);
+    this.rangeOptions.push(YESTERDAY);
+    this.rangeOptions.push(LAST_WEEK);
 
     if (this.interval !== INTERVAL_15MIN) {
-      this.whenOptions.push(PRIOR_TWO_WEEKS);
-      this.whenOptions.push(LAST_MONTH);
+      this.rangeOptions.push(PRIOR_TWO_WEEKS);
+      this.rangeOptions.push(LAST_MONTH);
     }
 
     if (this.interval !== INTERVAL_15MIN && this.interval !== INTERVAL_HOURLY) {
-      this.whenOptions.push(PRIOR_THREE_MONTHS);
-      this.whenOptions.push(LAST_YEAR);
+      this.rangeOptions.push(PRIOR_THREE_MONTHS);
+      this.rangeOptions.push(LAST_YEAR);
     }
 
     // We don't have back data yet, but users want an All time option,
     //  suppose that would just use the pub date of the very first episode as the begin date
-    // this.whenOptions.push('All time');
+    // this.rangeOptions.push('All time');
   }
 
-  onWhenChange(when) {
-    if (when) {
-      this.whenChange.emit(when);
+  onStandardRangeChange(standardRange) {
+    if (standardRange) {
+      this.standardRangeChange.emit(standardRange);
     }
   }
 }

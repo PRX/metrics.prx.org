@@ -5,9 +5,8 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { SelectModule } from 'ngx-prx-styleguide';
 import { StandardDateRangeComponent } from './standard-date-range.component';
 
-import { FilterModel, INTERVAL_DAILY, INTERVAL_HOURLY, INTERVAL_15MIN,
-  TODAY, THIS_WEEK, TWO_WEEKS, THIS_MONTH, THREE_MONTHS, THIS_YEAR,
-  YESTERDAY, LAST_WEEK, PRIOR_TWO_WEEKS, LAST_MONTH, PRIOR_THREE_MONTHS, LAST_YEAR} from '../../../ngrx/model';
+import { INTERVAL_HOURLY, INTERVAL_15MIN,
+  TODAY, THIS_MONTH, YESTERDAY, PRIOR_TWO_WEEKS, LAST_MONTH, PRIOR_THREE_MONTHS, LAST_YEAR } from '../../../ngrx/model';
 
 describe('StandardDateRangeComponent', () => {
   let comp: StandardDateRangeComponent;
@@ -34,22 +33,22 @@ describe('StandardDateRangeComponent', () => {
   }));
 
   it('should not have options more than 10 days apart when interval is 15 minutes', () => {
-    comp.when = TODAY;
+    comp.standardRange = TODAY;
     comp.interval = INTERVAL_15MIN;
     comp.ngOnChanges();
-    expect(comp.whenOptions.indexOf(YESTERDAY)).toBeGreaterThan(-1);
-    expect(comp.whenOptions.indexOf(PRIOR_TWO_WEEKS)).toBeLessThan(0);
-    expect(comp.whenOptions.indexOf(LAST_MONTH)).toBeLessThan(0);
-    expect(comp.whenOptions.indexOf(PRIOR_THREE_MONTHS)).toBeLessThan(0);
-    expect(comp.whenOptions.indexOf(LAST_YEAR)).toBeLessThan(0);
+    expect(comp.rangeOptions.indexOf(YESTERDAY)).toBeGreaterThan(-1);
+    expect(comp.rangeOptions.indexOf(PRIOR_TWO_WEEKS)).toBeLessThan(0);
+    expect(comp.rangeOptions.indexOf(LAST_MONTH)).toBeLessThan(0);
+    expect(comp.rangeOptions.indexOf(PRIOR_THREE_MONTHS)).toBeLessThan(0);
+    expect(comp.rangeOptions.indexOf(LAST_YEAR)).toBeLessThan(0);
   });
 
   it('should not have options more than 40 days apart when interval is hourly', () => {
-    comp.when = TODAY;
+    comp.standardRange = TODAY;
     comp.interval = INTERVAL_HOURLY;
     comp.ngOnChanges();
-    expect(comp.whenOptions.indexOf(THIS_MONTH)).toBeGreaterThan(-1);
-    expect(comp.whenOptions.indexOf(PRIOR_THREE_MONTHS)).toBeLessThan(0);
-    expect(comp.whenOptions.indexOf(LAST_YEAR)).toBeLessThan(0);
+    expect(comp.rangeOptions.indexOf(THIS_MONTH)).toBeGreaterThan(-1);
+    expect(comp.rangeOptions.indexOf(PRIOR_THREE_MONTHS)).toBeLessThan(0);
+    expect(comp.rangeOptions.indexOf(LAST_YEAR)).toBeLessThan(0);
   });
 });

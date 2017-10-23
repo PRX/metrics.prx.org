@@ -99,8 +99,8 @@ export const endOfLastYearUTC = () => {
   return endOfTodayUTC().month(11).date(31).subtract(1, 'years');
 };
 
-export const getBeginEndDateFromWhen = (when: string): DateRangeModel => {
-  switch (when) {
+export const getBeginEndDateFromStandardRange = (standardRange: string): DateRangeModel => {
+  switch (standardRange) {
     case TODAY:
       return {
         beginDate: beginningOfTodayUTC().toDate(),
@@ -166,7 +166,7 @@ export const getBeginEndDateFromWhen = (when: string): DateRangeModel => {
   }
 };
 
-export const getWhenForRange = (dateRange: DateRangeModel) => {
+export const getStandardRangeForBeginEndDate = (dateRange: DateRangeModel) => {
   if (dateRange.beginDate.valueOf() === beginningOfTodayUTC().valueOf() &&
     dateRange.endDate.valueOf() === endOfTodayUTC().valueOf()) {
     return TODAY;
@@ -206,8 +206,8 @@ export const getWhenForRange = (dateRange: DateRangeModel) => {
   }
 };
 
-export const getRange = (when: string): any[] => {
-  switch (when) {
+export const getRange = (standardRange: string): any[] => {
+  switch (standardRange) {
     case TODAY:
     case YESTERDAY:
       return [1, 'days'];

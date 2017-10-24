@@ -38,7 +38,7 @@ describe('DateRangeComponent', () => {
     });
   }));
 
-  it('keeps standard range "when" and prev/next range in sync with custom range dates', () => {
+  it('keeps standard range and prev/next range in sync with custom range dates', () => {
     const range = {
       beginDate: beginningOfLastMonthUTC().toDate(),
       endDate: endOfLastMonthUTC().toDate()
@@ -48,7 +48,7 @@ describe('DateRangeComponent', () => {
     expect(comp.dateRangeChange.emit).toHaveBeenCalledWith(inSync);
   });
 
-  it('keeps custom range dates in sync with standard range "when" and prev/next range', () => {
+  it('keeps custom range dates in sync with standard range and prev/next range', () => {
     comp.onStandardRangeChange(LAST_YEAR);
     const inSync = {
       beginDate: beginningOfLastYearUTC().toDate(),

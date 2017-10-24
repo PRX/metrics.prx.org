@@ -79,11 +79,11 @@ describe('DateRangeComponent', () => {
       },
       beginDate: beginningOfLastYearUTC().toDate(),
       endDate:  endOfLastYearUTC().toDate(),
-      when: LAST_YEAR,
+      standardRange: LAST_YEAR,
       range: getRange(LAST_YEAR),
       interval: INTERVAL_DAILY
     };
-    comp.onWhenChange(LAST_WEEK);
+    comp.onStandardRangeChange(LAST_WEEK);
     expect(comp.googleAnalyticsEvent).toHaveBeenCalledWith('standard-date', {
       beginDate: beginningOfLastWeekUTC().toDate(),
       endDate: endOfLastWeekUTC().toDate()
@@ -93,7 +93,7 @@ describe('DateRangeComponent', () => {
       beginDate: beginningOfYesterdayUTC().toDate(),
       endDate: endOfYesterdayUTC().toDate()
     };
-    comp.onDateRangeChange(yesterday);
+    comp.onCustomRangeChange(yesterday);
     expect(comp.googleAnalyticsEvent).toHaveBeenCalledWith('custom-date', yesterday);
   });
 });

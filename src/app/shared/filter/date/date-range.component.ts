@@ -10,6 +10,7 @@ import { getBeginEndDateFromStandardRange, getStandardRangeForBeginEndDate, getR
                                  (standardRangeChange)="onStandardRangeChange($event)"></metrics-standard-date-range>
     <metrics-custom-date-range *ngIf="filter" [interval]="filter.interval"
                                [beginDate]="filter.beginDate" [endDate]="filter.endDate"
+                               [podcast]="filter.podcast"
                                (customRangeChange)="onCustomRangeChange($event)"></metrics-custom-date-range>
   `
 })

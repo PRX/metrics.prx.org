@@ -116,7 +116,7 @@ export class DownloadsComponent implements OnInit, OnDestroy {
   setDefaultFilter() {
     // dispatch some default values for the dates and interval
     this.filter = {
-      when: TWO_WEEKS,
+      standardRange: TWO_WEEKS,
       range: getRange(TWO_WEEKS),
       beginDate: beginningOfTwoWeeksUTC().toDate(),
       endDate: endOfTodayUTC().toDate(),

@@ -51,13 +51,15 @@ describe('FilterReducer', () => {
     expect(newState.beginDate.getDate()).toEqual(26);
   });
 
-  it('should update when value if begin or end dates are present', () => {
+  it('should update standardRange value if begin or end dates are present', () => {
     newState = FilterReducer(newState,
-      new CastleFilterAction({filter: {when: TODAY, beginDate: beginningOfTodayUTC().toDate(), endDate: endOfTodayUTC().toDate()}}));
-    expect(newState.when).toEqual(TODAY);
+      new CastleFilterAction({filter: {
+        standardRange: TODAY, beginDate: beginningOfTodayUTC().toDate(), endDate: endOfTodayUTC().toDate()}
+      }));
+    expect(newState.standardRange).toEqual(TODAY);
     newState = FilterReducer(newState,
       new CastleFilterAction({filter: {beginDate: beginningOfTodayUTC().subtract(1, 'days').toDate()}}));
-    expect(newState.when).toBeUndefined();
+    expect(newState.standardRange).toBeUndefined();
   });
 
   it ('should update with new range', () => {

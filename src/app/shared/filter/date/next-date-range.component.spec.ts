@@ -19,7 +19,7 @@ describe('NextDateRangeComponent', () => {
   let el: HTMLElement;
 
   const filter: FilterModel = {
-    when: TWO_WEEKS,
+    standardRange: TWO_WEEKS,
     range: getRange(TWO_WEEKS),
     beginDate: beginningOfTwoWeeksUTC().toDate(),
     endDate: endOfTodayUTC().toDate(),
@@ -48,7 +48,7 @@ describe('NextDateRangeComponent', () => {
   it('should disable NEXT button if the end date would be past the end of the current range', () => {
     expect(comp.nextDisabled).toEqual('disabled');
     const newFilter: FilterModel = {
-      when: PRIOR_TWO_WEEKS,
+      standardRange: PRIOR_TWO_WEEKS,
       range: getRange(PRIOR_TWO_WEEKS),
       beginDate: beginningOfPriorTwoWeeksUTC().toDate(),
       endDate: endOfPriorTwoWeeksUTC().toDate(),
@@ -59,7 +59,7 @@ describe('NextDateRangeComponent', () => {
 
   it('should go to next range when NEXT button is clicked', () => {
     const newFilter: FilterModel = {
-      when: YESTERDAY,
+      standardRange: YESTERDAY,
       range: getRange(YESTERDAY),
       beginDate: beginningOfYesterdayUTC().toDate(),
       endDate: endOfYesterdayUTC().toDate(),
@@ -72,31 +72,31 @@ describe('NextDateRangeComponent', () => {
 
   it('when NEXTing from LAST_YEAR, should go to THIS_YEAR and not extend past today', () => {
     const newFilter: FilterModel = {
-      when: LAST_YEAR,
+      standardRange: LAST_YEAR,
       range: getRange(LAST_YEAR),
       beginDate: beginningOfLastYearUTC().toDate(),
       endDate: endOfLastYearUTC().toDate()
     };
     comp.store.dispatch(new CastleFilterAction({filter: newFilter}));
-    expect(comp.filter.when).toEqual(LAST_YEAR);
+    expect(comp.filter.standardRange).toEqual(LAST_YEAR);
     comp.next();
-    expect(comp.filter.when).toEqual(THIS_YEAR);
+    expect(comp.filter.standardRange).toEqual(THIS_YEAR);
     expect(comp.filter.beginDate.valueOf()).toEqual(beginningOfThisYearUTC().valueOf());
     expect(comp.filter.endDate.valueOf()).toBeLessThanOrEqual(endOfTodayUTC().valueOf());
   });
 
   it('when NEXTing from PRIOR_TWO_WEEKS, should go to TWO_WEEKS and not extend past today', () => {
     const newFilter: FilterModel = {
-      when: PRIOR_TWO_WEEKS,
+      standardRange: PRIOR_TWO_WEEKS,
       range: getRange(PRIOR_TWO_WEEKS),
       beginDate: beginningOfPriorTwoWeeksUTC().toDate(),
       endDate: endOfPriorTwoWeeksUTC().toDate(),
       interval: INTERVAL_DAILY
     };
     comp.store.dispatch(new CastleFilterAction({filter: newFilter}));
-    expect(comp.filter.when).toEqual(PRIOR_TWO_WEEKS);
+    expect(comp.filter.standardRange).toEqual(PRIOR_TWO_WEEKS);
     comp.next();
-    expect(comp.filter.when).toEqual(TWO_WEEKS);
+    expect(comp.filter.standardRange).toEqual(TWO_WEEKS);
     expect(comp.filter.beginDate.valueOf()).toEqual(beginningOfTwoWeeksUTC().valueOf());
     expect(comp.filter.endDate.valueOf()).toBeLessThanOrEqual(endOfTodayUTC().valueOf());
   });

@@ -47,22 +47,22 @@ describe('DateRangeComponent', () => {
     });
   }));
 
-  it('keeps standard range "when" and prev/next range in sync with custom range dates', () => {
+  it('keeps standard range and prev/next range in sync with custom range dates', () => {
     const range = {
       beginDate: beginningOfLastMonthUTC().toDate(),
       endDate: endOfLastMonthUTC().toDate()
     };
-    comp.onDateRangeChange(range);
-    const inSync = {...range, when: LAST_MONTH, range: getRange(LAST_MONTH)};
+    comp.onCustomRangeChange(range);
+    const inSync = {...range, standardRange: LAST_MONTH, range: getRange(LAST_MONTH)};
     expect(comp.dateRangeChange.emit).toHaveBeenCalledWith(inSync);
   });
 
-  it('keeps custom range dates in sync with standard range "when" and prev/next range', () => {
-    comp.onWhenChange(LAST_YEAR);
+  it('keeps custom range dates in sync with standard range and prev/next range', () => {
+    comp.onStandardRangeChange(LAST_YEAR);
     const inSync = {
       beginDate: beginningOfLastYearUTC().toDate(),
       endDate:  endOfLastYearUTC().toDate(),
-      when: LAST_YEAR,
+      standardRange: LAST_YEAR,
       range: getRange(LAST_YEAR)
     };
     expect(comp.dateRangeChange.emit).toHaveBeenCalledWith(inSync);

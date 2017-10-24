@@ -16,7 +16,7 @@ export const PRIOR_THREE_MONTHS = 'Prior 3 months';
 export const LAST_YEAR = 'Last year';
 
 export interface DateRangeModel {
-  when?: string;
+  standardRange?: string;
   range?: any[];
   beginDate: Date;
   endDate: Date;
@@ -27,7 +27,7 @@ export interface DateRangeModel {
 export interface FilterModel {
   podcast?: PodcastModel;
   episodes?: EpisodeModel[];
-  when?: string;
+  standardRange?: string;
   range?: any[];
   beginDate?: Date;
   endDate?: Date;

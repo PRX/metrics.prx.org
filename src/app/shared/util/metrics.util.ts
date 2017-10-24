@@ -39,10 +39,14 @@ export const filterMetricsByDate = (beginDate: Date, endDate: Date, interval: In
   }
 };
 
-export const findPodcastMetrics = /* TODO: findPodcastMetrics? */
+export const getMetricsProperty = (interval: IntervalModel, metricsType: MetricsType) => {
+  return interval.key + metricsType.charAt(0).toUpperCase() + metricsType.slice(1);
+};
+
+export const findPodcastMetrics =
   (filter: FilterModel, podcastMetrics: PodcastMetricsModel[], metricsType: MetricsType = 'downloads'): PodcastMetricsModel => {
   if (filter.podcast && filter.interval && filter.beginDate && filter.endDate && podcastMetrics) {
-    const metricsProperty = filter.interval.key + metricsType.charAt(0).toUpperCase() + metricsType.slice(1);
+    const metricsProperty = getMetricsProperty(filter.interval, metricsType);
     const metrics = podcastMetrics
       .filter((metric: PodcastMetricsModel) => metric.seriesId === filter.podcast.seriesId &&
         metric[metricsProperty] &&
@@ -61,7 +65,7 @@ export const findPodcastMetrics = /* TODO: findPodcastMetrics? */
 export const filterEpisodeMetrics =
   (filter: FilterModel, episodeMetrics: EpisodeMetricsModel[], metricsType: MetricsType): EpisodeMetricsModel[] => {
   if (filter.podcast && filter.episodes && filter.interval && filter.beginDate && filter.endDate && episodeMetrics) {
-    const metricsProperty = filter.interval.key + metricsType.charAt(0).toUpperCase() + metricsType.slice(1);
+    const metricsProperty = getMetricsProperty(filter.interval, metricsType);
     return episodeMetrics
       .filter((metric: EpisodeMetricsModel) => metric.seriesId === filter.podcast.seriesId &&
         filter.episodes.map(e => e.id).indexOf(metric.id) !== -1 &&
@@ -78,7 +82,7 @@ export const filterEpisodeMetrics =
 };
 
 export const metricsData = (filter: FilterModel, metrics: PodcastMetricsModel | EpisodeMetricsModel, metricsType: MetricsType) => {
-  const metricsProperty = filter.interval.key + metricsType.charAt(0).toUpperCase() + metricsType.slice(1);
+  const metricsProperty = getMetricsProperty(filter.interval, metricsType);
   return metrics[metricsProperty];
 };
 

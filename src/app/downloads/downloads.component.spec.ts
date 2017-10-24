@@ -15,7 +15,7 @@ import { DownloadsTableComponent } from './downloads-table.component';
 
 import { reducers } from '../ngrx/reducers';
 
-import { CastleFilterAction } from '../ngrx/actions';
+import { CastleFilterAction, CmsPodcastFeedAction } from '../ngrx/actions';
 
 describe('DownloadsComponent', () => {
   let comp: DownloadsComponent;
@@ -24,6 +24,12 @@ describe('DownloadsComponent', () => {
   let el: HTMLElement;
   let castle;
 
+  const podcast = {
+    doc: undefined,
+    seriesId: 37800,
+    feederId: '70',
+    title: 'Pet Talks Daily'
+  };
   const downloads = [
     ['2017-08-27T00:00:00Z', 52522],
     ['2017-08-28T00:00:00Z', 162900],
@@ -75,6 +81,13 @@ describe('DownloadsComponent', () => {
     });
   }));
 
+  it('should not show filter if app is loading for the first time', () => {
+    expect(de.query(By.css('metrics-filter'))).toBeFalsy();
+    comp.store.dispatch(new CmsPodcastFeedAction({podcast}));
+    fix.detectChanges();
+    expect(de.query(By.css('metrics-filter'))).not.toBeNull();
+  });
+
   it('should show loading spinner when episode or podcast is loading', () => {
     comp.isPodcastLoading = true;
     expect(de.query(By.css('prx-spinner'))).not.toBeNull();
@@ -105,9 +118,9 @@ describe('DownloadsComponent', () => {
     comp.store.dispatch(new CastleFilterAction({
       filter: {episodes: [{doc: undefined, id: 123, seriesId: 37800, title: 'A New Pet Talk Episode', publishedAt: new Date()}]}}));
     comp.store.dispatch(new CastleFilterAction({filter: {beginDate}}));
-    expect(comp.setPodcastMetrics).toHaveBeenCalledTimes(2);
+    expect(comp.setPodcastMetrics).toHaveBeenCalledTimes(3); // now also called for changes to episodes filter
     expect(comp.setEpisodeMetrics).toHaveBeenCalledTimes(2);
-    expect(comp.store.dispatch).toHaveBeenCalledTimes(7);
+    expect(comp.store.dispatch).toHaveBeenCalledTimes(8);
   });
 
   it('should reload episode metrics if removed from filter then re-added', () => {

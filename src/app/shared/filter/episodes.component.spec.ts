@@ -7,8 +7,8 @@ import { EpisodesComponent } from './episodes.component';
 
 import { reducers } from '../../ngrx/reducers';
 
-import { CastleFilterAction, CmsEpisodeGuidAction } from '../../ngrx/actions';
-import { FilterModel } from '../../ngrx/model';
+import { CmsEpisodeGuidAction } from '../../ngrx/actions';
+import { EpisodeModel, PodcastModel } from '../../ngrx/model';
 
 describe('EpisodesComponent', () => {
   let comp: EpisodesComponent;
@@ -16,12 +16,12 @@ describe('EpisodesComponent', () => {
   let de: DebugElement;
   let el: HTMLElement;
 
-  const podcast = {
+  const podcast: PodcastModel = {
     doc: undefined,
     seriesId: 37800,
     title: 'Pet Talks Daily'
   };
-  const episodes = [
+  const episodes: EpisodeModel[] = [
     {
       doc: undefined,
       seriesId: 37800,
@@ -39,10 +39,6 @@ describe('EpisodesComponent', () => {
       guid: 'gfedcba'
     }
   ];
-  const filter: FilterModel = {
-    podcast,
-    episodes
-  };
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -60,10 +56,14 @@ describe('EpisodesComponent', () => {
       de = fix.debugElement;
       el = de.nativeElement;
 
-      comp.store.dispatch(new CastleFilterAction({filter}));
+      comp.filter = {
+        podcast,
+        episodes
+      };
       episodes.forEach(episode => {
         comp.store.dispatch(new CmsEpisodeGuidAction({podcast, episode}));
       });
+      comp.ngOnChanges();
     });
   }));
 
@@ -75,14 +75,14 @@ describe('EpisodesComponent', () => {
 
   it('should clear episode selections if podcast changes', () => {
     expect(comp.allEpisodeOptions.length).toEqual(2);
-    const newFilter = {
+    comp.filter = {
       podcast: {
         doc: undefined,
         seriesId: 37801,
         title: 'Totally Not Pet Talks Daily'
       }
     };
-    comp.store.dispatch(new CastleFilterAction({filter: newFilter}));
+    comp.ngOnChanges();
     expect(comp.allEpisodeOptions.length).toEqual(0);
   });
 });

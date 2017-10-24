@@ -1,27 +1,45 @@
 :host {
   position: relative;
   display: flex;
-  padding: 40px 20px 10px 20px;
+  padding: 40px 20px 20px 20px;
+  min-height: 500px;
 }
 .controls {
-  flex: 1 1 30%;
-  max-width: 30%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 10px;
+  flex-grow: 4;
+  flex-shrink: 2;
+  flex-basis: 20%;
+  padding-right: 20px;
 }
 .content {
-  position: relative;
-  flex: 7 7 70%;
-  max-width: 70%;
+  flex-grow: 8;
+  flex-shrink: 6;
+  flex-basis: 80%;
+  max-width: 80%;
 }
-.bar {
-  width: 75%;
-  padding: 0 40px;
-  margin: 20px 0px;
-  border: 1px solid #a3a3a3;
+@media only screen
+and (max-device-width: 1024px) {
+  .content {
+    max-width: 70%
+  }
 }
-hr {
-  margin: 20px 0px;
+@media only screen
+and (max-device-width: 768px)
+and (min-device-width: 569px) {
+  .content {
+    max-width: 60%
+  }
+}
+@media only screen
+and (max-device-width: 568px) {
+  :host {
+    padding: 20px 10px 10px 10px;
+    display: block;
+  }
+  .content {
+    max-width: 100%;
+  }
+}
+.error {
+  color: #ee4d3e;
+  font-style: italic;
 }

@@ -28,6 +28,8 @@ export class AppComponent implements OnInit, OnDestroy {
   filterStoreSub: Subscription;
   filter: FilterModel;
 
+  error: string;
+
   constructor(
     private auth: AuthService,
     private cms: CmsService,
@@ -85,13 +87,17 @@ export class AppComponent implements OnInit, OnDestroy {
 
   loadCmsSeries(auth: HalDoc) {
     auth.followItems('prx:series', {filters: 'v4'}).subscribe((series: HalDoc[]) => {
-      series.map(doc => {
-        return {
+      if (series.length === 0) {
+        this.error = 'Looks like you don\'t have any podcasts.';
+      }
+      series.forEach((doc: HalDoc) => {
+        const podcast: PodcastModel = {
           doc,
           seriesId: doc['id'],
           title: doc['title']
         };
-      }).forEach(this.getSeriesPodcastDistribution.bind(this));
+        this.getSeriesPodcastDistribution(podcast);
+      });
     });
   }
 

@@ -13,4 +13,4 @@ export { CmsPodcastFeedPayload, CmsPodcastFeedAction,
   CmsEpisodeGuidPayload, CmsEpisodeGuidAction } from './cms.action.creator';
 export { CastleFilterPayload, CastleFilterAction,
   CastlePodcastMetricsPayload, CastlePodcastMetricsAction,
-  CastleEpisodeMetricsPayload, CastleEpisodeMetricsAction} from './castle.action.creator';
+  CastleEpisodeMetricsPayload, CastleEpisodeMetricsAction } from './castle.action.creator';

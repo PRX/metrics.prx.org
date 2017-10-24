@@ -1,9 +1,10 @@
 import { Component, OnDestroy } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs/Subscription';
-import { EpisodeMetricsModel, EpisodeModel, FilterModel, PodcastMetricsModel, INTERVAL_DAILY, INTERVAL_HOURLY, INTERVAL_15MIN } from '../ngrx/model';
+import { EpisodeMetricsModel, EpisodeModel, FilterModel, PodcastMetricsModel,
+  INTERVAL_DAILY, INTERVAL_HOURLY, INTERVAL_15MIN } from '../ngrx/model';
 import { selectEpisodes, selectFilter, selectEpisodeMetrics, selectPodcastMetrics } from '../ngrx/reducers';
-import { filterPodcastMetrics, filterAllPodcastEpisodes, filterEpisodeMetrics, metricsData, getTotal } from '../shared/util/metrics.util';
+import { findPodcastMetrics, filterAllPodcastEpisodes, filterEpisodeMetrics, metricsData, getTotal } from '../shared/util/metrics.util';
 import { mapMetricsToTimeseriesData, dayMonthDate, hourlyDateFormat } from '../shared/util/chart.util';
 import * as moment from 'moment';
 
@@ -14,7 +15,7 @@ import * as moment from 'moment';
       <table *ngIf="podcastTableData">
         <thead>
           <tr>
-            <th class="sticky">Episode</th>
+            <th class="sticky"><div class="valign">Episode</div></th>
             <th>Release Date</th>
             <th>Total for Period</th>
             <th *ngFor="let date of dateRange">{{date}}</th>
@@ -27,7 +28,6 @@ import * as moment from 'moment';
             <td>{{podcastTableData.totalForPeriod}}</td>
             <td *ngFor="let download of podcastTableData.downloads">{{download.value}}</td>
           </tr>
-        </tbody>
           <tr *ngFor="let episode of episodeTableData">
             <td class="sticky">{{episode.title}}</td>
             <td>{{episode.releaseDate}}</td>
@@ -61,10 +61,14 @@ export class DownloadsTableComponent implements OnDestroy {
         if (this.isPodcastChanged(newFilter)) {
           this.resetAllData();
         }
-        if (this.isEpisodesChanged(newFilter)) {
-          this.episodeMetrics = filterEpisodeMetrics(newFilter, this.episodeMetrics, 'downloads');
-        }
+        // apply new filter to existing data so it's not showing stale data while loading
         this.filter = newFilter;
+        if (this.episodeMetrics) {
+          this.episodeMetrics = filterEpisodeMetrics(this.filter, this.episodeMetrics, 'downloads');
+        }
+        if (this.podcastMetrics) {
+          this.podcastMetrics = findPodcastMetrics(this.filter, [this.podcastMetrics]);
+        }
         this.buildTableData();
       }
     });
@@ -85,7 +89,7 @@ export class DownloadsTableComponent implements OnDestroy {
     });
 
     this.podcastMetricsStoreSub = this.store.select(selectPodcastMetrics).subscribe((podcastMetrics: PodcastMetricsModel[]) => {
-      this.podcastMetrics = filterPodcastMetrics(this.filter, podcastMetrics);
+      this.podcastMetrics = findPodcastMetrics(this.filter, podcastMetrics);
       if (this.podcastMetrics) {
         this.buildTableData();
       }
@@ -107,7 +111,7 @@ export class DownloadsTableComponent implements OnDestroy {
         releaseDate: '',
         downloads: mapMetricsToTimeseriesData(downloads),
         totalForPeriod: getTotal(downloads)
-      }
+      };
     }
   }
 
@@ -137,9 +141,13 @@ export class DownloadsTableComponent implements OnDestroy {
   buildTableData() {
     if (this.podcastMetrics) {
       this.podcastTableData = this.mapPodcastData();
+    } else {
+      this.podcastTableData = null;
     }
     if (this.episodeMetrics) {
       this.episodeTableData = this.mapEpisodeData();
+    } else {
+      this.episodeTableData = null;
     }
     if (this.podcastTableData && this.podcastTableData['downloads']) {
       this.dateRange = this.podcastTableData['downloads'].map(d => this.dateFormat(new Date(d.date)));
@@ -154,12 +162,6 @@ export class DownloadsTableComponent implements OnDestroy {
 
   isPodcastChanged(state: FilterModel): boolean {
     return state.podcast && (!this.filter || !this.filter.podcast ||  this.filter.podcast.seriesId !== state.podcast.seriesId);
-  }
-
-  isEpisodesChanged(state: FilterModel): boolean {
-    return state.episodes && (!this.filter || !this.filter.episodes ||
-      state.episodes.every(episode => this.filter.episodes.map(e => e.id).indexOf(episode.id) !== -1) ||
-      this.filter.episodes.every(episode => state.episodes.map(e => e.id).indexOf(episode.id) !== -1));
   }
 
   dateFormat(date: Date): string {

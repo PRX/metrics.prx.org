@@ -3,40 +3,37 @@ import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs/Subscription';
 import { Angulartics2 } from 'angulartics2';
 import { CastleService } from '../core';
-import { EpisodeModel, INTERVAL_DAILY, FilterModel, TWO_WEEKS } from '../ngrx/model';
+import { EpisodeModel, INTERVAL_DAILY, FilterModel, TWO_WEEKS, PodcastModel } from '../ngrx/model';
 import { CastleFilterAction, CastlePodcastMetricsAction, CastleEpisodeMetricsAction } from '../ngrx/actions';
-import { selectFilter, selectEpisodes } from '../ngrx/reducers';
+import { selectFilter, selectEpisodes, selectPodcasts } from '../ngrx/reducers';
 import { filterAllPodcastEpisodes } from '../shared/util/metrics.util';
-import { beginningOfTodayUTC, endOfTodayUTC } from '../shared/util/date.util';
+import { beginningOfTwoWeeksUTC, endOfTodayUTC, getRange } from '../shared/util/date.util';
 
 @Component({
   selector: 'metrics-downloads',
   template: `
     <prx-spinner *ngIf="isPodcastLoading || isEpisodeLoading" overlay="true" loadingMessage="Please wait..."></prx-spinner>
     <section class="controls">
-      <metrics-interval></metrics-interval>
-      <div class="bar"></div>
-      <metrics-canned-range></metrics-canned-range>
-      <metrics-date-range></metrics-date-range>
-      <div class="bar"></div>
-      <metrics-episodes></metrics-episodes>
+      <metrics-filter *ngIf="!isLoadingForTheFirstTime"></metrics-filter>
     </section>
     <section class="content">
       <metrics-downloads-chart></metrics-downloads-chart>
       <metrics-downloads-table></metrics-downloads-table>
-      <p class="error" *ngIf="error">{{error}}</p>
+      <p class="error" *ngFor="let error of errors">{{error}}</p>
     </section>
   `,
   styleUrls: ['downloads.component.css']
 })
 export class DownloadsComponent implements OnInit, OnDestroy {
+  podcastStoreSub: Subscription;
   episodeStoreSub: Subscription;
   allPodcastEpisodes: EpisodeModel[];
   filterStoreSub: Subscription;
   filter: FilterModel;
   isPodcastLoading = true;
   isEpisodeLoading = true;
-  error: string;
+  isLoadingForTheFirstTime = true;
+  errors: string[] = [];
 
   constructor(private castle: CastleService,
               public store: Store<any>,
@@ -45,6 +42,12 @@ export class DownloadsComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.setDefaultFilter();
     this.toggleLoading(true, true);
+
+    this.podcastStoreSub = this.store.select(selectPodcasts).subscribe((podcasts: PodcastModel[]) => {
+      if (podcasts && podcasts.length) {
+        this.isLoadingForTheFirstTime = false;
+      }
+    });
 
     this.filterStoreSub = this.store.select(selectFilter).subscribe((newFilter: FilterModel) => {
       let changedFilter = false;
@@ -77,13 +80,13 @@ export class DownloadsComponent implements OnInit, OnDestroy {
         changedFilter = true;
       }
 
-      if (changedFilter && this.filter.podcast) {
-        this.getPodcastMetrics();
-      }
-
       if (this.isEpisodesChanged(newFilter)) {
         this.filter.episodes = newFilter.episodes;
         changedFilter = true;
+      }
+
+      if (changedFilter && this.filter.podcast) {
+        this.getPodcastMetrics();
       }
 
       if (changedFilter && this.filter.episodes && this.filter.episodes.length > 0) {
@@ -95,6 +98,14 @@ export class DownloadsComponent implements OnInit, OnDestroy {
   toggleLoading(isPodcastLoading, isEpisodeLoading = this.isEpisodeLoading) {
     this.isPodcastLoading = isPodcastLoading;
     this.isEpisodeLoading = isEpisodeLoading;
+    if (this.isPodcastLoading && this.isEpisodeLoading) {
+      this.errors = [];
+    }
+  }
+
+  showError(errorCode: number, type: 'podcast' | 'episode', title: string) {
+    const errorType = errorCode === 401 ? 'Authorization' : 'Unknown';
+    this.errors.push(`${errorType} error occurred while requesting ${type} metrics on ${title}`);
   }
 
   ngOnDestroy() {
@@ -104,13 +115,11 @@ export class DownloadsComponent implements OnInit, OnDestroy {
 
   setDefaultFilter() {
     // dispatch some default values for the dates and interval
-    const endDate = endOfTodayUTC().toDate();
-    const beginDate = beginningOfTodayUTC();
-    const beginDateTwoWeeks = beginDate.subtract(beginDate.days() + 7, 'days').toDate();
     this.filter = {
-      when: TWO_WEEKS,
-      beginDate: beginDateTwoWeeks, // TWO_WEEKS
-      endDate,
+      standardRange: TWO_WEEKS,
+      range: getRange(TWO_WEEKS),
+      beginDate: beginningOfTwoWeeksUTC().toDate(),
+      endDate: endOfTodayUTC().toDate(),
       interval: INTERVAL_DAILY
     };
     this.store.dispatch(new CastleFilterAction({filter: this.filter}));
@@ -136,12 +145,7 @@ export class DownloadsComponent implements OnInit, OnDestroy {
       metrics => this.setPodcastMetrics(metrics),
       err => {
         this.toggleLoading(false);
-        if (err.name === 'HalHttpError' && err.status === 401) {
-          this.error = 'An error occurred while requesting podcast metrics on ' + this.filter.podcast.title;
-          console.error(err);
-        } else {
-          this.error = this.filter.podcast.title + ' podcast has no download metrics.';
-        }
+        this.showError(err.status, 'podcast', this.filter.podcast.title);
       }
     );
   }
@@ -174,12 +178,7 @@ export class DownloadsComponent implements OnInit, OnDestroy {
         metrics => this.setEpisodeMetrics(episode, metrics),
         err => {
           this.toggleLoading(this.isPodcastLoading, false);
-          if (err.name === 'HalHttpError' && err.status === 401) {
-            this.error = 'An error occurred while requesting episode metrics on' + episode.title;
-            console.error(err);
-          } else {
-            this.error = episode.title + ' episode has no download metrics.';
-          }
+          this.showError(err.status, 'episode', episode.title);
         }
       );
     });

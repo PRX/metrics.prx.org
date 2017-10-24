@@ -1,4 +1,6 @@
-import { PodcastModel, EpisodeModel, FilterModel, MetricsType, PodcastMetricsModel, EpisodeMetricsModel } from '../../ngrx/model';
+import { PodcastModel, EpisodeModel, FilterModel, MetricsType, IntervalModel,
+  PodcastMetricsModel, EpisodeMetricsModel } from '../../ngrx/model';
+import { roundDateToInterval } from './date.util';
 
 export const filterPodcasts = (filter: FilterModel, podcasts: PodcastModel[]): PodcastModel => {
   if (filter.podcast && podcasts) {
@@ -22,9 +24,38 @@ export const filterEpisodes = (filter: FilterModel, episodes: EpisodeModel[]) =>
   }
 };
 
-export const filterPodcastMetrics = (filter: FilterModel, podcastMetrics: PodcastMetricsModel[]): PodcastMetricsModel => {
-  if (filter.podcast && filter.interval && podcastMetrics) {
-    const metrics = podcastMetrics.filter(metric => metric.seriesId === filter.podcast.seriesId);
+export const filterMetricsByDate = (beginDate: Date, endDate: Date, interval: IntervalModel, metrics: any[][]): any[][] => {
+  const findEntryByDate = (date: Date) => {
+    return metrics.findIndex(m => {
+      return new Date(m[0]).valueOf() === roundDateToInterval(date, interval).valueOf();
+    });
+  };
+  const begin = findEntryByDate(beginDate);
+  const end = findEntryByDate(endDate);
+  if (begin !== -1 && end !== -1) {
+    return metrics.slice(begin, end + 1);
+  } else {
+    return null; // no partial data
+  }
+};
+
+export const getMetricsProperty = (interval: IntervalModel, metricsType: MetricsType) => {
+  return interval.key + metricsType.charAt(0).toUpperCase() + metricsType.slice(1);
+};
+
+export const findPodcastMetrics =
+  (filter: FilterModel, podcastMetrics: PodcastMetricsModel[], metricsType: MetricsType = 'downloads'): PodcastMetricsModel => {
+  if (filter.podcast && filter.interval && filter.beginDate && filter.endDate && podcastMetrics) {
+    const metricsProperty = getMetricsProperty(filter.interval, metricsType);
+    const metrics = podcastMetrics
+      .filter((metric: PodcastMetricsModel) => metric.seriesId === filter.podcast.seriesId &&
+        metric[metricsProperty] &&
+        filterMetricsByDate(filter.beginDate, filter.endDate, filter.interval, metric[metricsProperty]))
+      .map((metric: PodcastMetricsModel) => {
+        const filteredMetric = {...metric};
+        filteredMetric[metricsProperty] = filterMetricsByDate(filter.beginDate, filter.endDate, filter.interval, metric[metricsProperty]);
+        return filteredMetric;
+      });
     if (metrics && metrics.length) {
       return metrics[0]; // only one entry should match the series id
     }
@@ -33,16 +64,25 @@ export const filterPodcastMetrics = (filter: FilterModel, podcastMetrics: Podcas
 
 export const filterEpisodeMetrics =
   (filter: FilterModel, episodeMetrics: EpisodeMetricsModel[], metricsType: MetricsType): EpisodeMetricsModel[] => {
-    if (filter.podcast && filter.episodes && filter.interval && episodeMetrics) {
-      const metricsProperty = filter.interval.key + metricsType.charAt(0).toUpperCase() + metricsType.slice(1);
-      return episodeMetrics.filter(metric => metric.seriesId === filter.podcast.seriesId &&
-      filter.episodes.map(e => e.id).indexOf(metric.id) !== -1 &&
-      metric[metricsProperty]);
-    }
-  };
+  if (filter.podcast && filter.episodes && filter.interval && filter.beginDate && filter.endDate && episodeMetrics) {
+    const metricsProperty = getMetricsProperty(filter.interval, metricsType);
+    return episodeMetrics
+      .filter((metric: EpisodeMetricsModel) => metric.seriesId === filter.podcast.seriesId &&
+        filter.episodes.map(e => e.id).indexOf(metric.id) !== -1 &&
+        metric[metricsProperty] &&
+        filterMetricsByDate(filter.beginDate, filter.endDate, filter.interval, metric[metricsProperty]))
+      .map((metric: EpisodeMetricsModel) => {
+        const filteredMetric = {...metric};
+        filteredMetric[metricsProperty] = filterMetricsByDate(filter.beginDate, filter.endDate, filter.interval, metric[metricsProperty]);
+        return filteredMetric;
+      });
+  } else {
+    return [];
+  }
+};
 
 export const metricsData = (filter: FilterModel, metrics: PodcastMetricsModel | EpisodeMetricsModel, metricsType: MetricsType) => {
-  const metricsProperty = filter.interval.key + metricsType.charAt(0).toUpperCase() + metricsType.slice(1);
+  const metricsProperty = getMetricsProperty(filter.interval, metricsType);
   return metrics[metricsProperty];
 };
 

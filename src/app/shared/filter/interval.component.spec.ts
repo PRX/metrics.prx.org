@@ -1,14 +1,11 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { DebugElement } from '@angular/core';
-import { StoreModule } from '@ngrx/store';
 
 import { SelectModule } from 'ngx-prx-styleguide';
 import { IntervalComponent } from './interval.component';
 
-import { reducers } from '../../ngrx/reducers/index';
-
-import { FilterModel, INTERVAL_DAILY } from '../../ngrx/model';
-import { CastleFilterAction } from '../../ngrx/actions';
+import { INTERVAL_DAILY } from '../../ngrx/model';
+import { beginningOfLastMonthUTC, endOfLastMonthUTC } from '../../shared/util/date.util';
 
 describe('IntervalComponent', () => {
   let comp: IntervalComponent;
@@ -16,16 +13,13 @@ describe('IntervalComponent', () => {
   let de: DebugElement;
   let el: HTMLElement;
 
-  let filter: FilterModel;
-
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [
         IntervalComponent
       ],
       imports: [
-        SelectModule,
-        StoreModule.forRoot(reducers)
+        SelectModule
       ]
     }).compileComponents().then(() => {
       fix = TestBed.createComponent(IntervalComponent);
@@ -34,15 +28,12 @@ describe('IntervalComponent', () => {
       de = fix.debugElement;
       el = de.nativeElement;
 
-      const today = new Date();
-      const utcEndDate = new Date(Date.UTC(today.getFullYear(), today.getMonth(), today.getDate(), 23, 59, 59, 999));
-      const utcBeginDate = new Date(utcEndDate.valueOf() - (14 * 24 * 60 * 60 * 1000) + 1); // 14 days prior at 0:0:0
-      filter = {
-        beginDate: utcBeginDate,
-        endDate: utcEndDate,
+      comp.filter = {
+        beginDate: beginningOfLastMonthUTC().toDate(),
+        endDate: endOfLastMonthUTC().toDate(),
         interval: INTERVAL_DAILY
       };
-      comp.store.dispatch(new CastleFilterAction({filter}));
+      comp.ngOnChanges();
     });
   }));
 

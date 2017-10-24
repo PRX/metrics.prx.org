@@ -160,8 +160,12 @@ export class DownloadsComponent implements OnInit, OnDestroy {
         metrics: metrics[0]['downloads']
       }));
       this.angulartics2.eventTrack.next({
-        action: this.filter.interval.name,
-        properties: {category: 'Downloads', label: this.filter.podcast.title, value: metrics[0]['downloads'].length}
+        action: 'load',
+        properties: {
+          category: 'Downloads/' + this.filter.interval.name,
+          label: this.filter.podcast.title,
+          value: metrics[0]['downloads'].length
+        }
       });
     }
   }

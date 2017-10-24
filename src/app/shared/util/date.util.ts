@@ -253,3 +253,18 @@ export const roundDateToInterval = (date: Date, interval: IntervalModel): Date =
     return date;
   }
 };
+
+export const getAmountOfIntervals = (beginDate: Date, endDate: Date, interval: IntervalModel): number => {
+  const duration = roundDateToInterval(endDate, interval).valueOf() - roundDateToInterval(beginDate, interval).valueOf();
+  // plus 1 because we actually want number of data points in duration, i.e. hourly 23 - 0 is 24 data points
+  switch (interval) {
+    case INTERVAL_15MIN:
+      return 1 + (duration / (1000 * 60 * 4));
+    case INTERVAL_HOURLY:
+      return 1 + (duration / (1000 * 60 * 60));
+    case INTERVAL_DAILY:
+      return 1 + (duration / (1000 * 60 * 60 * 24));
+    default:
+      break;
+  }
+};

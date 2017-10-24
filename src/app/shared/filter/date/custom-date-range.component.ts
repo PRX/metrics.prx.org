@@ -1,5 +1,6 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { DateRangeModel, IntervalModel, INTERVAL_HOURLY, INTERVAL_15MIN } from '../../../ngrx/model';
+import { Angulartics2 } from 'angulartics2';
+import { DateRangeModel, IntervalModel, PodcastModel, INTERVAL_HOURLY, INTERVAL_15MIN } from '../../../ngrx/model';
 import { isMoreThanXDays, endOfTodayUTC } from '../../util/date.util';
 
 @Component({
@@ -8,12 +9,12 @@ import { isMoreThanXDays, endOfTodayUTC } from '../../util/date.util';
     <div>From:</div>
     <div>
       <prx-datepicker [date]="beginDate" UTC="true" (dateChange)="onBeginDateChange($event)"></prx-datepicker>
-      <prx-timepicker [date]="beginDate" UTC="true" (timeChange)="onBeginDateChange($event)"></prx-timepicker>
+      <prx-timepicker [date]="beginDate" UTC="true" (timeChange)="onBeginTimeChange($event)"></prx-timepicker>
     </div>
     <div>Through:</div>
     <div>
       <prx-datepicker [date]="endDate" UTC="true" (dateChange)="onEndDateChange($event)"></prx-datepicker>
-      <prx-timepicker [date]="endDate" UTC="true" (timeChange)="onEndDateChange($event)"></prx-timepicker>
+      <prx-timepicker [date]="endDate" UTC="true" (timeChange)="onEndTimeChange($event)"></prx-timepicker>
     </div>
     <div class="invalid" *ngIf="invalid">
       {{ invalid }}
@@ -25,7 +26,15 @@ export class CustomDateRangeComponent {
   @Input() interval: IntervalModel;
   @Input() beginDate: Date;
   @Input() endDate: Date;
+  @Input() podcast: PodcastModel; // podcast is only here for google events tracking on the timepicker
   @Output() customRangeChange = new EventEmitter<DateRangeModel>();
+
+  constructor(public angulartics2: Angulartics2) {}
+
+  onBeginTimeChange(date: Date) {
+    this.onBeginDateChange(date);
+    this.googleAnalyticsEvent('begin-time', date.getUTCHours());
+  }
 
   onBeginDateChange(date: Date) {
     // date picker is greedy about change events
@@ -35,6 +44,11 @@ export class CustomDateRangeComponent {
         this.customRangeChange.emit({beginDate: date, endDate: this.endDate});
       }
     }
+  }
+
+  onEndTimeChange(date: Date) {
+    this.onEndDateChange(date);
+    this.googleAnalyticsEvent('end-time', date.getUTCHours());
   }
 
   onEndDateChange(date: Date) {
@@ -61,6 +75,19 @@ export class CustomDateRangeComponent {
         // not sure what to do about the timepicker support but at least let the user select midnight tomorrow for thru end of current day
         return 'Please select dates in the past or present'; // alternate error message: 'We cannot see into the future'
       }
+    }
+  }
+
+  googleAnalyticsEvent(action: string, value: number) {
+    if (this.interval && this.podcast) {
+      this.angulartics2.eventTrack.next({
+        action: 'filter-custom-' + action,
+        properties: {
+          category: 'Downloads/' + this.interval.name,
+          label: this.podcast.title,
+          value
+        }
+      });
     }
   }
 }

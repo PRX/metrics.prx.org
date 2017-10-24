@@ -1,6 +1,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { DebugElement } from '@angular/core';
 import { StoreModule } from '@ngrx/store';
+import { Subject } from 'rxjs/Subject';
+import { Angulartics2 } from 'angulartics2';
 
 import { DatepickerModule, SelectModule } from 'ngx-prx-styleguide';
 
@@ -49,6 +51,11 @@ describe('FilterComponent', () => {
         StoreModule.forRoot(reducers),
         DatepickerModule,
         SelectModule
+      ],
+      providers: [
+        {provide: Angulartics2, useValue: {
+          eventTrack: new Subject<any>()
+        }}
       ]
     }).compileComponents().then(() => {
       fix = TestBed.createComponent(FilterComponent);

@@ -126,12 +126,17 @@ export class DownloadsComponent implements OnInit, OnDestroy {
   }
 
   setDefaultEpisodeFilter() {
-    if (!this.filter.episodes ||
-        this.filter.episodes.length < 5) {
-      // init with the first five (or less) episodes
-      const episodes = this.allPodcastEpisodes.length > 5 ? this.allPodcastEpisodes.slice(0, 5) : this.allPodcastEpisodes;
-      this.store.dispatch(new CastleFilterAction({filter: {episodes}}));
-    }
+    const episodes = [];
+    this.allPodcastEpisodes.every((episode: EpisodeModel) => {
+      episodes.push(episode);
+      if (episode.publishedAt.valueOf() < this.filter.beginDate.valueOf() &&
+          episodes.length % 5 === 0) {
+        return false;
+      } else {
+        return true;
+      }
+    });
+    this.store.dispatch(new CastleFilterAction({filter: {episodes}}));
   }
 
   getPodcastMetrics() {

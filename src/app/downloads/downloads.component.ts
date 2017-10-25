@@ -34,6 +34,7 @@ export class DownloadsComponent implements OnInit, OnDestroy {
   isEpisodeLoading = true;
   isLoadingForTheFirstTime = true;
   errors: string[] = [];
+  static DONT_BREAK_CASTLE_LIMIT = 20;
 
   constructor(private castle: CastleService,
               public store: Store<any>,
@@ -129,8 +130,8 @@ export class DownloadsComponent implements OnInit, OnDestroy {
     const episodes = [];
     this.allPodcastEpisodes.every((episode: EpisodeModel) => {
       episodes.push(episode);
-      if (episode.publishedAt.valueOf() < this.filter.beginDate.valueOf() &&
-          episodes.length % 5 === 0) {
+      if ((episode.publishedAt.valueOf() < this.filter.beginDate.valueOf() &&
+          episodes.length % 5 === 0) || episodes.length === DownloadsComponent.DONT_BREAK_CASTLE_LIMIT) {
         return false;
       } else {
         return true;

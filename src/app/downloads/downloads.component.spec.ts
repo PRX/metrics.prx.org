@@ -15,7 +15,8 @@ import { DownloadsTableComponent } from './downloads-table.component';
 
 import { reducers } from '../ngrx/reducers';
 
-import { CastleFilterAction, CmsPodcastFeedAction } from '../ngrx/actions';
+import { EpisodeModel } from '../ngrx/model';
+import { CastleFilterAction, CmsPodcastFeedAction, CmsAllPodcastEpisodeGuidsAction } from '../ngrx/actions';
 
 describe('DownloadsComponent', () => {
   let comp: DownloadsComponent;
@@ -138,5 +139,16 @@ describe('DownloadsComponent', () => {
 
   it('should show a downloads table of episodes', () => {
     expect(de.query(By.css('metrics-downloads-table'))).not.toBeNull();
+  });
+
+  it('should limit the default episode filter to no more than the DONT_BREAK_CASTLE_LIMIT', () => {
+    comp.store.dispatch(new CastleFilterAction({
+      filter: {podcast: {doc: undefined, seriesId: 37800, title: 'Pet Talks Daily'}}}));
+    const episodes: EpisodeModel[] = [];
+    for (let i = 0; i < DownloadsComponent.DONT_BREAK_CASTLE_LIMIT + 1; i++) {
+      episodes.push({doc: undefined, id: i, seriesId: 37800, title: i.toString(), publishedAt: new Date()});
+    }
+    comp.store.dispatch(new CmsAllPodcastEpisodeGuidsAction({podcast, episodes}));
+    expect(comp.filter.episodes.length).toEqual(DownloadsComponent.DONT_BREAK_CASTLE_LIMIT);
   });
 });

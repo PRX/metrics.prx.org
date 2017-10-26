@@ -11,14 +11,14 @@ export class CmsPodcastFeedAction implements ActionWithPayload<CmsPodcastFeedPay
   constructor(public payload: CmsPodcastFeedPayload) {}
 }
 
-export interface CmsEpisodeGuidPayload {
+export interface CmsEpisodeGuidsPayload {
   podcast: PodcastModel;
-  episode: EpisodeModel;
+  episodes: EpisodeModel[];
 }
 
-export class CmsEpisodeGuidAction implements ActionWithPayload<CmsEpisodeGuidPayload> {
-  readonly type = ActionTypes.CMS_EPISODE_GUID;
+export class CmsAllPodcastEpisodeGuidsAction implements ActionWithPayload<CmsEpisodeGuidsPayload> {
+  readonly type = ActionTypes.CMS_ALL_PODCAST_EPISODE_GUIDS;
 
-  constructor(public payload: CmsEpisodeGuidPayload) {}
+  constructor(public payload: CmsEpisodeGuidsPayload) {}
 }
 

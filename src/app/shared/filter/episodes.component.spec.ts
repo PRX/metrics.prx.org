@@ -7,7 +7,7 @@ import { EpisodesComponent } from './episodes.component';
 
 import { reducers } from '../../ngrx/reducers';
 
-import { CmsEpisodeGuidAction } from '../../ngrx/actions';
+import { CmsAllPodcastEpisodeGuidsAction } from '../../ngrx/actions';
 import { EpisodeModel, PodcastModel } from '../../ngrx/model';
 
 describe('EpisodesComponent', () => {
@@ -60,9 +60,7 @@ describe('EpisodesComponent', () => {
         podcast,
         episodes
       };
-      episodes.forEach(episode => {
-        comp.store.dispatch(new CmsEpisodeGuidAction({podcast, episode}));
-      });
+      comp.store.dispatch(new CmsAllPodcastEpisodeGuidsAction({podcast, episodes}));
       comp.ngOnChanges();
     });
   }));

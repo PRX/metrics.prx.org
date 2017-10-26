@@ -1,12 +1,14 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs/Subscription';
+import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/observable/zip';
 import { Angulartics2GoogleAnalytics } from 'angulartics2';
 import { AuthService } from 'ngx-prx-styleguide';
 import { CmsService, HalDoc } from './core';
 import { Env } from './core/core.env';
 import { EpisodeModel, PodcastModel, FilterModel } from './ngrx/model';
-import { CastleFilterAction, CmsPodcastFeedAction, CmsEpisodeGuidAction } from './ngrx/actions';
+import { CastleFilterAction, CmsPodcastFeedAction, CmsAllPodcastEpisodeGuidsAction } from './ngrx/actions';
 import { selectPodcasts, selectFilter } from './ngrx/reducers';
 
 @Component({
@@ -104,7 +106,7 @@ export class AppComponent implements OnInit, OnDestroy {
   getSeriesPodcastDistribution(podcast: PodcastModel) {
     podcast.doc.followItems('prx:distributions').subscribe((distros: HalDoc[]) => {
       const podcasts = distros.filter((doc => doc['kind'] === 'podcast'));
-      if (podcasts && podcasts.length > 0) {
+      if (podcasts && podcasts.length > 0 && podcasts[0]['url']) {
         podcast.feederUrl = podcasts[0]['url'];
         const urlParts = podcast.feederUrl.split('/');
         if (urlParts.length > 1) {
@@ -117,12 +119,16 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   getEpisodes(podcast: PodcastModel) {
+    const distObsv = [];
     podcast.doc.followItems('prx:stories', {
       per: podcast.doc.count('prx:stories'),
       filters: 'v4',
       sorts: 'released_at: desc, published_at: desc'
-    }).subscribe((episodes: HalDoc[]) => {
-      episodes.map(doc => {
+    }).subscribe((docs: HalDoc[]) => {
+      const episodes: EpisodeModel[] = docs
+      // only include episodes with publish dates
+        .filter(doc => doc['publishedAt'])
+        .map(doc => {
         return {
           doc,
           id: doc['id'],
@@ -130,28 +136,30 @@ export class AppComponent implements OnInit, OnDestroy {
           title: doc['title'],
           publishedAt: doc['publishedAt'] ? new Date(doc['publishedAt']) : null
         };
-      }).forEach((e) => {
-        // only include episodes with publish dates
-        if (e.publishedAt) {
-          this.getEpisodePodcastDistribution(podcast, e);
-        }
+      });
+      episodes.forEach((e) => {
+        distObsv.push(this.getEpisodePodcastDistribution(e));
+      });
+      // wait for all the episode podcast distributions, then add all episodes to state at once
+      Observable.zip(...distObsv).subscribe(() => {
+        this.store.dispatch(new CmsAllPodcastEpisodeGuidsAction({podcast, episodes}));
       });
     });
   }
 
-  getEpisodePodcastDistribution(podcast: PodcastModel, episode: EpisodeModel) {
-    episode.doc.followItems('prx:distributions').subscribe((distros: HalDoc[]) => {
+  getEpisodePodcastDistribution(episode: EpisodeModel): Observable<HalDoc[]> {
+    const obsv = episode.doc.followItems('prx:distributions');
+    obsv.subscribe((distros: HalDoc[]) => {
       const podcasts = distros.filter((doc => doc['kind'] === 'episode'));
-      if (podcasts && podcasts.length > 0) {
+      if (podcasts && podcasts.length > 0 && podcasts[0]['url']) {
         episode.feederUrl = podcasts[0]['url'];
 
         const urlParts = episode.feederUrl.split('/');
         if (urlParts.length > 1) {
           episode.guid = urlParts[urlParts.length - 1];
-
-          this.store.dispatch(new CmsEpisodeGuidAction({podcast, episode}));
         }
       }
     });
+    return obsv;
   }
 }

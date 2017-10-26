@@ -42,14 +42,22 @@ export const dailyDateFormat = (date: Date): string => {
   return dayOfWeek(date.getUTCDay()) + ' ' + (date.getUTCMonth() + 1) + '/' + date.getUTCDate();
 };
 
-export const dayMonthDate = (date: Date): string => {
+export const dayMonthDateFormat = (date: Date): string => {
   return date.getUTCMonth() + 1 + '/' + date.getUTCDate();
+};
+
+export const monthDateYearFormat = (date: Date): string => {
+  return date.getUTCMonth() + 1 + '/' + date.getUTCDate() + '/' + date.getUTCFullYear() % 100;
 };
 
 export const hourlyDateFormat = (date: Date): string => {
   const minutes = date.getUTCMinutes() < 10 ? '0' + date.getUTCMinutes() : date.getUTCMinutes();
   return (date.getUTCMonth() + 1) + '/' + date.getUTCDate() + ' ' +
     date.getUTCHours() + ':' + minutes;
+};
+
+export const monthYearFormat = (date: Date): string => {
+  return date.getUTCMonth() + 1 + '/' + date.getUTCFullYear() % 100;
 };
 
 export const baseColor = 'rgb(32, 80, 96)';

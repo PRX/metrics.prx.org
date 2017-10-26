@@ -1,7 +1,7 @@
 import * as moment from 'moment';
 import { DateRangeModel, TODAY, THIS_WEEK, TWO_WEEKS, THIS_MONTH, THREE_MONTHS, THIS_YEAR,
   YESTERDAY, LAST_WEEK, PRIOR_TWO_WEEKS, LAST_MONTH, PRIOR_THREE_MONTHS, LAST_YEAR,
-  IntervalModel, INTERVAL_15MIN, INTERVAL_HOURLY, INTERVAL_DAILY } from '../../ngrx/model';
+  IntervalModel, INTERVAL_15MIN, INTERVAL_HOURLY, INTERVAL_DAILY, INTERVAL_WEEKLY, INTERVAL_MONTHLY } from '../../ngrx/model';
 
 export const isMoreThanXDays = (x: number, beginDate, endDate): boolean => {
   return endDate.valueOf() - beginDate.valueOf() > (1000 * 60 * 60 * 24 * x); // x days
@@ -239,18 +239,31 @@ export const getMillisecondsOfInterval = (interval: IntervalModel): number => {
       return 60 * 60 * 1000;
     case INTERVAL_DAILY:
       return 24 * 60 * 60 * 1000;
+    case INTERVAL_WEEKLY:
+      // here for completion but not actually used to round weekly dates
+      return 7 * 24 * 60 * 60 * 1000;
+    case INTERVAL_MONTHLY:
+      // varies, not used
     default:
       break;
   }
 };
 
 export const roundDateToInterval = (date: Date, interval: IntervalModel): Date => {
-  const chunk = getMillisecondsOfInterval(interval);
-  const remainder = date.valueOf() % chunk;
-  if (remainder > 0) {
-    return new Date(date.valueOf() - remainder);
+  if (interval === INTERVAL_MONTHLY) {
+    return new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), 1, 0, 0, 0, 0));
+  } else if (interval === INTERVAL_WEEKLY) {
+    const daysIntoWeek = date.getUTCDay();
+    // if date goes negative, the overflow gets normalized
+    return new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate() - daysIntoWeek, 0, 0, 0, 0))
   } else {
-    return date;
+    const chunk = getMillisecondsOfInterval(interval);
+    const remainder = date.valueOf() % chunk;
+    if (remainder > 0) {
+      return new Date(date.valueOf() - remainder);
+    } else {
+      return date;
+    }
   }
 };
 
@@ -264,6 +277,10 @@ export const getAmountOfIntervals = (beginDate: Date, endDate: Date, interval: I
       return 1 + (duration / (1000 * 60 * 60));
     case INTERVAL_DAILY:
       return 1 + (duration / (1000 * 60 * 60 * 24));
+    case INTERVAL_WEEKLY:
+      return 1 + (duration / (1000 * 60 * 60 * 24 * 7));
+    case INTERVAL_MONTHLY:
+      return 1 + (12 * endDate.getUTCFullYear() - beginDate.getUTCFullYear()) + (endDate.getUTCMonth() - beginDate.getUTCMonth());
     default:
       break;
   }

@@ -42,6 +42,6 @@ describe('IntervalComponent', () => {
   });
 
   it('should limit interval according to begin and end dates', () => {
-    expect(comp.intervalOptions.length).toEqual(2); // DAILY and HOURLY
+    expect(comp.intervalOptions.length).toEqual(4); // MONTHLY, WEEKLY, DAILY, and HOURLY
   });
 });

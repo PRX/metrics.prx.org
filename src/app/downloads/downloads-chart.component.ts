@@ -13,7 +13,7 @@ import { mapMetricsToTimeseriesData, subtractTimeseriesDatasets,
 @Component({
   selector: 'metrics-downloads-chart',
   template: `
-    <prx-timeseries-chart *ngIf="chartData" type="area" stacked="true" [datasets]="chartData" [formatX]="dateFormat()">
+    <prx-timeseries-chart *ngIf="chartData" [type]="chartType" stacked="true" [datasets]="chartData" [formatX]="dateFormat()">
     </prx-timeseries-chart>
   `
 })
@@ -129,6 +129,14 @@ export class DownloadsChartComponent implements OnDestroy {
       }
     } else {
       return UTCDateFormat;
+    }
+  }
+
+  get chartType(): string {
+    if (this.chartData && this.chartData.length && this.chartData[0].data.length < 4) {
+      return 'bar';
+    } else {
+      return 'area';
     }
   }
 }

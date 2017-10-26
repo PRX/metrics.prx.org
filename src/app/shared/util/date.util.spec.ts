@@ -3,7 +3,8 @@ import { isMoreThanXDays, beginningOfTodayUTC, endOfTodayUTC,
   beginningOfYesterdayUTC, endOfYesterdayUTC, beginningOfLastWeekUTC, endOfLastWeekUTC,
   beginningOfPriorTwoWeeksUTC, endOfPriorTwoWeeksUTC, beginningOfLastMonthUTC, endOfLastMonthUTC,
   beginningOfPriorThreeMonthsUTC, endOfPriorThreeMonthsUTC, beginningOfLastYearUTC, endOfLastYearUTC,
-  getBeginEndDateFromStandardRange, getStandardRangeForBeginEndDate, getRange, getMillisecondsOfInterval, roundDateToInterval } from './date.util';
+  getBeginEndDateFromStandardRange, getStandardRangeForBeginEndDate, getRange, getMillisecondsOfInterval,
+  roundDateToBeginOfInterval } from './date.util';
 import { DateRangeModel, INTERVAL_DAILY, INTERVAL_HOURLY, INTERVAL_15MIN,
   TODAY, YESTERDAY, THIS_WEEK, LAST_WEEK, TWO_WEEKS, PRIOR_TWO_WEEKS, THIS_MONTH, LAST_MONTH,
   THREE_MONTHS, PRIOR_THREE_MONTHS, THIS_YEAR, LAST_YEAR } from '../../ngrx/model';
@@ -76,9 +77,9 @@ describe('date util', () => {
 
   it('should round begin date to beginning of interval', () => {
     const today = new Date();
-    const daily = roundDateToInterval(today, INTERVAL_DAILY);
-    const hourly = roundDateToInterval(today, INTERVAL_HOURLY);
-    const fifteenMin = roundDateToInterval(today, INTERVAL_15MIN);
+    const daily = roundDateToBeginOfInterval(today, INTERVAL_DAILY);
+    const hourly = roundDateToBeginOfInterval(today, INTERVAL_HOURLY);
+    const fifteenMin = roundDateToBeginOfInterval(today, INTERVAL_15MIN);
     expect(daily.valueOf()).toEqual(beginningOfTodayUTC().valueOf());
     expect(hourly.getHours()).toEqual(today.getHours());
     expect(hourly.getMinutes()).toEqual(0);

@@ -249,13 +249,13 @@ export const getMillisecondsOfInterval = (interval: IntervalModel): number => {
   }
 };
 
-export const roundDateToInterval = (date: Date, interval: IntervalModel): Date => {
+export const roundDateToBeginOfInterval = (date: Date, interval: IntervalModel): Date => {
   if (interval === INTERVAL_MONTHLY) {
     return new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), 1, 0, 0, 0, 0));
   } else if (interval === INTERVAL_WEEKLY) {
     const daysIntoWeek = date.getUTCDay();
     // if date goes negative, the overflow gets normalized
-    return new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate() - daysIntoWeek, 0, 0, 0, 0))
+    return new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate() - daysIntoWeek, 0, 0, 0, 0));
   } else {
     const chunk = getMillisecondsOfInterval(interval);
     const remainder = date.valueOf() % chunk;
@@ -267,8 +267,31 @@ export const roundDateToInterval = (date: Date, interval: IntervalModel): Date =
   }
 };
 
+export const roundDateToEndOfInterval = (date: Date, interval: IntervalModel): Date => {
+  const today = new Date();
+  if (date.getUTCMonth() === today.getUTCMonth() &&
+    (interval === INTERVAL_MONTHLY || interval === INTERVAL_WEEKLY)) {
+    return endOfTodayUTC().toDate();
+  } else if (interval === INTERVAL_MONTHLY) {
+    return moment(date.valueOf())
+      .add(1, 'months')
+      .date(1).hours(23).minutes(59).seconds(59).milliseconds(999)
+      .subtract(1, 'days').toDate();
+  } else if (interval === INTERVAL_WEEKLY) {
+    const daysIntoWeek = date.getUTCDay();
+    // if date goes negative, the overflow gets normalized
+    return new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate() + (7 - daysIntoWeek), 23, 59, 59, 999));
+  } else if (interval === INTERVAL_DAILY) {
+    return new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(), 23, 59, 59, 999));
+  } else {
+    // hourly and 15 min data should just show the beginning of the interval
+    // (and there is where extracting these helper functions could lead to later trouble...)
+    return roundDateToBeginOfInterval(date, interval);
+  }
+};
+
 export const getAmountOfIntervals = (beginDate: Date, endDate: Date, interval: IntervalModel): number => {
-  const duration = roundDateToInterval(endDate, interval).valueOf() - roundDateToInterval(beginDate, interval).valueOf();
+  const duration = roundDateToBeginOfInterval(endDate, interval).valueOf() - roundDateToBeginOfInterval(beginDate, interval).valueOf();
   // plus 1 because we actually want number of data points in duration, i.e. hourly 23 - 0 is 24 data points
   switch (interval) {
     case INTERVAL_15MIN:

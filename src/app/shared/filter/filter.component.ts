@@ -4,6 +4,7 @@ import { Subscription } from 'rxjs/Subscription';
 import { selectFilter } from '../../ngrx/reducers';
 import { DateRangeModel, EpisodeModel, FilterModel, IntervalModel } from '../../ngrx/model';
 import { CastleFilterAction } from '../../ngrx/actions';
+import { roundDateToBeginOfInterval, roundDateToEndOfInterval, getStandardRangeForBeginEndDate, getRange } from '../../shared/util/date.util';
 
 @Component({
   selector: 'metrics-filter',
@@ -45,7 +46,12 @@ export class FilterComponent implements OnInit, OnDestroy {
     if (this.filter.interval !== interval) {
       this.hasChanges = true;
     }
-    this.filter = {...this.filter, interval};
+    // keep the dates in sync with interval changes
+    const beginDate = roundDateToBeginOfInterval(this.filter.beginDate, interval);
+    const endDate = roundDateToEndOfInterval(this.filter.endDate, interval);
+    const standardRange = getStandardRangeForBeginEndDate({beginDate, endDate});
+    const range = getRange(standardRange);
+    this.filter = {...this.filter, interval, beginDate, endDate, standardRange, range};
   }
 
   onDateRangeChange(dateRange: DateRangeModel) {
@@ -69,6 +75,10 @@ export class FilterComponent implements OnInit, OnDestroy {
 
   onApply() {
     if (this.hasChanges) {
+      this.filter.beginDate = roundDateToBeginOfInterval(this.filter.beginDate, this.filter.interval);
+      this.filter.endDate = roundDateToEndOfInterval(this.filter.endDate, this.filter.interval);
+      this.filter.standardRange = getStandardRangeForBeginEndDate({beginDate: this.filter.beginDate, endDate: this.filter.endDate});
+      this.filter.range = getRange(this.filter.standardRange);
       this.store.dispatch(new CastleFilterAction({filter: this.filter}));
     }
   }

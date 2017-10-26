@@ -268,21 +268,23 @@ export const roundDateToBeginOfInterval = (date: Date, interval: IntervalModel):
 };
 
 export const roundDateToEndOfInterval = (date: Date, interval: IntervalModel): Date => {
-  const today = new Date();
-  if (date.getUTCMonth() === today.getUTCMonth() &&
-    (interval === INTERVAL_MONTHLY || interval === INTERVAL_WEEKLY)) {
-    return endOfTodayUTC().toDate();
-  } else if (interval === INTERVAL_MONTHLY) {
-    return moment(date.valueOf())
+  if (interval === INTERVAL_MONTHLY) {
+    return moment.min(
+      moment(date.valueOf())
       .add(1, 'months')
       .date(1).hours(23).minutes(59).seconds(59).milliseconds(999)
-      .subtract(1, 'days').toDate();
+      .subtract(1, 'days'),
+      endOfTodayUTC()).toDate();
   } else if (interval === INTERVAL_WEEKLY) {
     const daysIntoWeek = date.getUTCDay();
     // if date goes negative, the overflow gets normalized
-    return new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate() + (7 - daysIntoWeek), 23, 59, 59, 999));
+    return moment.min(
+      moment(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate() + (6 - daysIntoWeek), 23, 59, 59, 999)).utc(),
+      endOfTodayUTC()).toDate();
   } else if (interval === INTERVAL_DAILY) {
-    return new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(), 23, 59, 59, 999));
+    return moment.min(
+      moment(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(), 23, 59, 59, 999)).utc(),
+      endOfTodayUTC()).toDate();
   } else {
     // hourly and 15 min data should just show the beginning of the interval
     // (and there is where extracting these helper functions could lead to later trouble...)

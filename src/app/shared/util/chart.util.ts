@@ -16,50 +16,6 @@ export const subtractTimeseriesDatasets = (from: TimeseriesDatumModel[], dataset
   });
 };
 
-export const UTCDateFormat = (date: Date): string => {
-  return date.toUTCString();
-};
-
-export const dailyDateFormat = (date: Date): string => {
-  const dayOfWeek = (day: number): string => {
-    switch (day) {
-      case 0:
-        return 'Sun';
-      case 1:
-        return 'Mon';
-      case 2:
-        return 'Tue';
-      case 3:
-        return 'Wed';
-      case 4:
-        return 'Thu';
-      case 5:
-        return 'Fri';
-      case 6:
-        return 'Sat';
-    }
-  };
-  return dayOfWeek(date.getUTCDay()) + ' ' + (date.getUTCMonth() + 1) + '/' + date.getUTCDate();
-};
-
-export const dayMonthDateFormat = (date: Date): string => {
-  return date.getUTCMonth() + 1 + '/' + date.getUTCDate();
-};
-
-export const monthDateYearFormat = (date: Date): string => {
-  return date.getUTCMonth() + 1 + '/' + date.getUTCDate() + '/' + date.getUTCFullYear() % 100;
-};
-
-export const hourlyDateFormat = (date: Date): string => {
-  const minutes = date.getUTCMinutes() < 10 ? '0' + date.getUTCMinutes() : date.getUTCMinutes();
-  return (date.getUTCMonth() + 1) + '/' + date.getUTCDate() + ' ' +
-    date.getUTCHours() + ':' + minutes;
-};
-
-export const monthYearFormat = (date: Date): string => {
-  return date.getUTCMonth() + 1 + '/' + date.getUTCFullYear() % 100;
-};
-
 export const baseColor = 'rgb(32, 80, 96)';
 export const neutralColor = '#a3a3a3';
 

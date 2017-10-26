@@ -4,7 +4,7 @@ import { isMoreThanXDays, beginningOfTodayUTC, endOfTodayUTC,
   beginningOfPriorTwoWeeksUTC, endOfPriorTwoWeeksUTC, beginningOfLastMonthUTC, endOfLastMonthUTC,
   beginningOfPriorThreeMonthsUTC, endOfPriorThreeMonthsUTC, beginningOfLastYearUTC, endOfLastYearUTC,
   getBeginEndDateFromStandardRange, getStandardRangeForBeginEndDate, getRange, getMillisecondsOfInterval,
-  roundDateToBeginOfInterval } from './date.util';
+  roundDateToBeginOfInterval, UTCDateFormat, dailyDateFormat, hourlyDateFormat } from './date.util';
 import { DateRangeModel, INTERVAL_DAILY, INTERVAL_HOURLY, INTERVAL_15MIN,
   TODAY, YESTERDAY, THIS_WEEK, LAST_WEEK, TWO_WEEKS, PRIOR_TWO_WEEKS, THIS_MONTH, LAST_MONTH,
   THREE_MONTHS, PRIOR_THREE_MONTHS, THIS_YEAR, LAST_YEAR } from '../../ngrx/model';
@@ -127,5 +127,16 @@ describe('date util', () => {
     expect(threeMonths.beginDate.getUTCDate()).toEqual(1);
     expect(threeMonths.beginDate.valueOf()).toEqual(beginningOfPriorThreeMonthsUTC().valueOf());
     expect(threeMonths.endDate.valueOf()).toBeLessThanOrEqual(endOfPriorThreeMonthsUTC().valueOf());
+  });
+
+  it('should format dates in UTC', () => {
+    const date = new Date();
+    let utcString = UTCDateFormat(date);
+    const search = utcString.match(/..:..:../);
+    expect(parseInt(utcString.slice(search.index, search.index + 2), 10)).toEqual(date.getUTCHours());
+    utcString = dailyDateFormat(date);
+    expect(parseInt(utcString.slice(utcString.indexOf('/') + 1), 10)).toEqual(date.getUTCDate());
+    utcString = hourlyDateFormat(date);
+    expect(parseInt(utcString.slice(utcString.indexOf(':') + 1), 10)).toEqual(date.getUTCMinutes());
   });
 });

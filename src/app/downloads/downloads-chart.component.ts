@@ -6,9 +6,8 @@ import { EpisodeMetricsModel, PodcastMetricsModel, EpisodeModel, FilterModel,
   INTERVAL_MONTHLY, INTERVAL_WEEKLY, INTERVAL_DAILY, INTERVAL_HOURLY, INTERVAL_15MIN } from '../ngrx/model';
 import { selectFilter, selectPodcastMetrics, selectEpisodeMetrics } from '../ngrx/reducers';
 import { findPodcastMetrics, filterEpisodeMetrics, metricsData, getTotal } from '../shared/util/metrics.util';
-import { mapMetricsToTimeseriesData, subtractTimeseriesDatasets,
-  UTCDateFormat, monthYearFormat, dayMonthDateFormat, dailyDateFormat, hourlyDateFormat,
-  neutralColor, generateShades } from '../shared/util/chart.util';
+import { mapMetricsToTimeseriesData, subtractTimeseriesDatasets, neutralColor, generateShades } from '../shared/util/chart.util';
+import { UTCDateFormat, monthYearFormat, dayMonthDateFormat, dailyDateFormat, hourlyDateFormat } from '../shared/util/date.util';
 
 @Component({
   selector: 'metrics-downloads-chart',

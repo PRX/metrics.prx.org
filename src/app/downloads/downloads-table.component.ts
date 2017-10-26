@@ -5,7 +5,8 @@ import { EpisodeMetricsModel, EpisodeModel, FilterModel, PodcastMetricsModel,
   INTERVAL_MONTHLY, INTERVAL_WEEKLY, INTERVAL_DAILY, INTERVAL_HOURLY, INTERVAL_15MIN } from '../ngrx/model';
 import { selectEpisodes, selectFilter, selectEpisodeMetrics, selectPodcastMetrics } from '../ngrx/reducers';
 import { findPodcastMetrics, filterAllPodcastEpisodes, filterEpisodeMetrics, metricsData, getTotal } from '../shared/util/metrics.util';
-import { mapMetricsToTimeseriesData, monthYearFormat, dayMonthDateFormat, hourlyDateFormat, monthDateYearFormat } from '../shared/util/chart.util';
+import { mapMetricsToTimeseriesData } from '../shared/util/chart.util';
+import { monthYearFormat, dayMonthDateFormat, hourlyDateFormat, monthDateYearFormat } from '../shared/util/date.util';
 import * as moment from 'moment';
 
 @Component({

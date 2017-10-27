@@ -88,7 +88,7 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   loadCmsSeries(auth: HalDoc) {
-    auth.followItems('prx:series', {filters: 'v4'}).subscribe((series: HalDoc[]) => {
+    auth.followItems('prx:series', {filters: 'v4', zoom: 'prx:distributions'}).subscribe((series: HalDoc[]) => {
       if (series.length === 0) {
         this.error = 'Looks like you don\'t have any podcasts.';
       }
@@ -123,7 +123,7 @@ export class AppComponent implements OnInit, OnDestroy {
     podcast.doc.followItems('prx:stories', {
       per: podcast.doc.count('prx:stories'),
       filters: 'v4',
-      sorts: 'released_at: desc, published_at: desc'
+      zoom: 'prx:distributions'
     }).subscribe((docs: HalDoc[]) => {
       const episodes: EpisodeModel[] = docs
       // only include episodes with publish dates

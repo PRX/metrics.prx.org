@@ -1,6 +1,6 @@
 import { PodcastModel, EpisodeModel, FilterModel, MetricsType, IntervalModel,
   PodcastMetricsModel, EpisodeMetricsModel } from '../../ngrx/model';
-import { roundDateToInterval } from './date.util';
+import { roundDateToBeginOfInterval } from './date.util';
 
 export const filterPodcasts = (filter: FilterModel, podcasts: PodcastModel[]): PodcastModel => {
   if (filter.podcast && podcasts) {
@@ -27,7 +27,7 @@ export const filterEpisodes = (filter: FilterModel, episodes: EpisodeModel[]) =>
 export const filterMetricsByDate = (beginDate: Date, endDate: Date, interval: IntervalModel, metrics: any[][]): any[][] => {
   const findEntryByDate = (date: Date) => {
     return metrics.findIndex(m => {
-      return new Date(m[0]).valueOf() === roundDateToInterval(date, interval).valueOf();
+      return new Date(m[0]).valueOf() === roundDateToBeginOfInterval(date, interval).valueOf();
     });
   };
   const begin = findEntryByDate(beginDate);

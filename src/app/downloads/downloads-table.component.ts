@@ -2,10 +2,11 @@ import { Component, OnDestroy } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs/Subscription';
 import { EpisodeMetricsModel, EpisodeModel, FilterModel, PodcastMetricsModel,
-  INTERVAL_DAILY, INTERVAL_HOURLY, INTERVAL_15MIN } from '../ngrx/model';
+  INTERVAL_MONTHLY, INTERVAL_WEEKLY, INTERVAL_DAILY, INTERVAL_HOURLY, INTERVAL_15MIN } from '../ngrx/model';
 import { selectEpisodes, selectFilter, selectEpisodeMetrics, selectPodcastMetrics } from '../ngrx/reducers';
 import { findPodcastMetrics, filterAllPodcastEpisodes, filterEpisodeMetrics, metricsData, getTotal } from '../shared/util/metrics.util';
-import { mapMetricsToTimeseriesData, dayMonthDate, hourlyDateFormat } from '../shared/util/chart.util';
+import { mapMetricsToTimeseriesData } from '../shared/util/chart.util';
+import { monthYearFormat, dayMonthDateFormat, hourlyDateFormat, monthDateYearFormat } from '../shared/util/date.util';
 import * as moment from 'moment';
 
 @Component({
@@ -125,7 +126,7 @@ export class DownloadsTableComponent implements OnDestroy {
             return {
               title: episode.title,
               publishedAt: episode.publishedAt,
-              releaseDate: dayMonthDate(episode.publishedAt),
+              releaseDate: monthDateYearFormat(episode.publishedAt),
               id: epMetric.id,
               downloads: mapMetricsToTimeseriesData(downloads),
               totalForPeriod: getTotal(downloads)
@@ -165,18 +166,21 @@ export class DownloadsTableComponent implements OnDestroy {
   }
 
   dateFormat(date: Date): string {
-    if (this.filter && this.filter.interval) {
-      switch (this.filter.interval.key) {
-        case INTERVAL_DAILY.key:
-          return dayMonthDate(date);
-        case INTERVAL_HOURLY.key:
-        case INTERVAL_15MIN.key:
+    if (this.filter) {
+      switch (this.filter.interval) {
+        case INTERVAL_MONTHLY:
+          return monthYearFormat(date);
+        case INTERVAL_WEEKLY:
+        case INTERVAL_DAILY:
+          return dayMonthDateFormat(date);
+        case INTERVAL_HOURLY:
+        case INTERVAL_15MIN:
           return hourlyDateFormat(date);
         default:
-          return dayMonthDate(date);
+          return dayMonthDateFormat(date);
       }
     } else {
-      return dayMonthDate(date);
+      return dayMonthDateFormat(date);
     }
   }
 }

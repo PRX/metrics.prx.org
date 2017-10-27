@@ -17,9 +17,10 @@ import { StandardDateRangeComponent } from './date/standard-date-range.component
 
 import { reducers } from '../../ngrx/reducers';
 import { CastleFilterAction } from '../../ngrx/actions';
-import { FilterModel, YESTERDAY, TWO_WEEKS, INTERVAL_DAILY, INTERVAL_HOURLY } from '../../ngrx/model';
-import { endOfTodayUTC, beginningOfYesterdayUTC, endOfYesterdayUTC,
-  beginningOfTwoWeeksUTC, getRange } from '../util/date.util';
+import { FilterModel, TODAY, YESTERDAY, TWO_WEEKS,
+  INTERVAL_MONTHLY, INTERVAL_WEEKLY, INTERVAL_DAILY, INTERVAL_HOURLY } from '../../ngrx/model';
+import { beginningOfTodayUTC, endOfTodayUTC, beginningOfYesterdayUTC, endOfYesterdayUTC, beginningOfThisWeekUTC,
+  beginningOfTwoWeeksUTC, beginningOfThisMonthUTC, getRange } from '../util/date.util';
 
 describe('FilterComponent', () => {
   let comp: FilterComponent;
@@ -84,5 +85,22 @@ describe('FilterComponent', () => {
     });
     comp.onApply();
     expect(comp.store.dispatch).toHaveBeenCalled();
+  });
+
+  it('should normalize dates to interval when interval is selected', () => {
+    comp.onIntervalChange(INTERVAL_MONTHLY);
+    expect(comp.filter.beginDate.valueOf()).toEqual(beginningOfThisMonthUTC().valueOf());
+  });
+
+  it('should normalize dates to interval on apply', () => {
+    comp.filter.interval = INTERVAL_WEEKLY;
+    comp.onDateRangeChange({
+      standardRange: TODAY,
+      range: getRange(TODAY),
+      beginDate: beginningOfTodayUTC().toDate(),
+      endDate: endOfTodayUTC().toDate()
+    });
+    comp.onApply();
+    expect(comp.filter.beginDate.valueOf()).toEqual(beginningOfThisWeekUTC().valueOf());
   });
 });

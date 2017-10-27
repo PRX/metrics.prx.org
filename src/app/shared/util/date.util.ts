@@ -1,7 +1,7 @@
 import * as moment from 'moment';
 import { DateRangeModel, TODAY, THIS_WEEK, TWO_WEEKS, THIS_MONTH, THREE_MONTHS, THIS_YEAR,
   YESTERDAY, LAST_WEEK, PRIOR_TWO_WEEKS, LAST_MONTH, PRIOR_THREE_MONTHS, LAST_YEAR,
-  IntervalModel, INTERVAL_15MIN, INTERVAL_HOURLY, INTERVAL_DAILY } from '../../ngrx/model';
+  IntervalModel, INTERVAL_15MIN, INTERVAL_HOURLY, INTERVAL_DAILY, INTERVAL_WEEKLY, INTERVAL_MONTHLY } from '../../ngrx/model';
 
 export const isMoreThanXDays = (x: number, beginDate, endDate): boolean => {
   return endDate.valueOf() - beginDate.valueOf() > (1000 * 60 * 60 * 24 * x); // x days
@@ -239,23 +239,61 @@ export const getMillisecondsOfInterval = (interval: IntervalModel): number => {
       return 60 * 60 * 1000;
     case INTERVAL_DAILY:
       return 24 * 60 * 60 * 1000;
+    case INTERVAL_WEEKLY:
+      // here for completion but not actually used to round weekly dates
+      return 7 * 24 * 60 * 60 * 1000;
+    case INTERVAL_MONTHLY:
+      // varies, not used
     default:
       break;
   }
 };
 
-export const roundDateToInterval = (date: Date, interval: IntervalModel): Date => {
-  const chunk = getMillisecondsOfInterval(interval);
-  const remainder = date.valueOf() % chunk;
-  if (remainder > 0) {
-    return new Date(date.valueOf() - remainder);
+export const roundDateToBeginOfInterval = (date: Date, interval: IntervalModel): Date => {
+  if (interval === INTERVAL_MONTHLY) {
+    return new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), 1, 0, 0, 0, 0));
+  } else if (interval === INTERVAL_WEEKLY) {
+    const daysIntoWeek = date.getUTCDay();
+    // if date goes negative, the overflow gets normalized
+    return new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate() - daysIntoWeek, 0, 0, 0, 0));
   } else {
-    return date;
+    const chunk = getMillisecondsOfInterval(interval);
+    const remainder = date.valueOf() % chunk;
+    if (remainder > 0) {
+      return new Date(date.valueOf() - remainder);
+    } else {
+      return date;
+    }
+  }
+};
+
+export const roundDateToEndOfInterval = (date: Date, interval: IntervalModel): Date => {
+  if (interval === INTERVAL_MONTHLY) {
+    return moment.min(
+      moment(date.valueOf()).utc()
+      .add(1, 'months')
+      .date(1).hours(23).minutes(59).seconds(59).milliseconds(999)
+      .subtract(1, 'days'),
+      endOfTodayUTC()).toDate();
+  } else if (interval === INTERVAL_WEEKLY) {
+    const daysIntoWeek = date.getUTCDay();
+    // if date goes negative, the overflow gets normalized
+    return moment.min(
+      moment(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate() + (6 - daysIntoWeek), 23, 59, 59, 999)).utc(),
+      endOfTodayUTC()).toDate();
+  } else if (interval === INTERVAL_DAILY) {
+    return moment.min(
+      moment(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(), 23, 59, 59, 999)).utc(),
+      endOfTodayUTC()).toDate();
+  } else {
+    // hourly and 15 min data should just show the beginning of the interval
+    // (and there is where extracting these helper functions could lead to later trouble...)
+    return roundDateToBeginOfInterval(date, interval);
   }
 };
 
 export const getAmountOfIntervals = (beginDate: Date, endDate: Date, interval: IntervalModel): number => {
-  const duration = roundDateToInterval(endDate, interval).valueOf() - roundDateToInterval(beginDate, interval).valueOf();
+  const duration = roundDateToBeginOfInterval(endDate, interval).valueOf() - roundDateToBeginOfInterval(beginDate, interval).valueOf();
   // plus 1 because we actually want number of data points in duration, i.e. hourly 23 - 0 is 24 data points
   switch (interval) {
     case INTERVAL_15MIN:
@@ -264,7 +302,55 @@ export const getAmountOfIntervals = (beginDate: Date, endDate: Date, interval: I
       return 1 + (duration / (1000 * 60 * 60));
     case INTERVAL_DAILY:
       return 1 + (duration / (1000 * 60 * 60 * 24));
+    case INTERVAL_WEEKLY:
+      return 1 + (duration / (1000 * 60 * 60 * 24 * 7));
+    case INTERVAL_MONTHLY:
+      return 1 + (12 * endDate.getUTCFullYear() - 12 * beginDate.getUTCFullYear()) + (endDate.getUTCMonth() - beginDate.getUTCMonth());
     default:
       break;
   }
+};
+
+export const UTCDateFormat = (date: Date): string => {
+  return date.toUTCString();
+};
+
+export const dailyDateFormat = (date: Date): string => {
+  const dayOfWeek = (day: number): string => {
+    switch (day) {
+      case 0:
+        return 'Sun';
+      case 1:
+        return 'Mon';
+      case 2:
+        return 'Tue';
+      case 3:
+        return 'Wed';
+      case 4:
+        return 'Thu';
+      case 5:
+        return 'Fri';
+      case 6:
+        return 'Sat';
+    }
+  };
+  return dayOfWeek(date.getUTCDay()) + ' ' + (date.getUTCMonth() + 1) + '/' + date.getUTCDate();
+};
+
+export const dayMonthDateFormat = (date: Date): string => {
+  return date.getUTCMonth() + 1 + '/' + date.getUTCDate();
+};
+
+export const monthDateYearFormat = (date: Date): string => {
+  return date.getUTCMonth() + 1 + '/' + date.getUTCDate() + '/' + date.getUTCFullYear() % 100;
+};
+
+export const monthYearFormat = (date: Date): string => {
+  return date.getUTCMonth() + 1 + '/' + date.getUTCFullYear() % 100;
+};
+
+export const hourlyDateFormat = (date: Date): string => {
+  const minutes = date.getUTCMinutes() < 10 ? '0' + date.getUTCMinutes() : date.getUTCMinutes();
+  return (date.getUTCMonth() + 1) + '/' + date.getUTCDate() + ' ' +
+    date.getUTCHours() + ':' + minutes;
 };

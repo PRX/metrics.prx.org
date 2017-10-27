@@ -3,16 +3,16 @@ import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs/Subscription';
 import { TimeseriesChartModel } from 'ngx-prx-styleguide';
 import { EpisodeMetricsModel, PodcastMetricsModel, EpisodeModel, FilterModel,
-  INTERVAL_DAILY, INTERVAL_HOURLY, INTERVAL_15MIN } from '../ngrx/model';
+  INTERVAL_MONTHLY, INTERVAL_WEEKLY, INTERVAL_DAILY, INTERVAL_HOURLY, INTERVAL_15MIN } from '../ngrx/model';
 import { selectFilter, selectPodcastMetrics, selectEpisodeMetrics } from '../ngrx/reducers';
 import { findPodcastMetrics, filterEpisodeMetrics, metricsData, getTotal } from '../shared/util/metrics.util';
-import { mapMetricsToTimeseriesData, subtractTimeseriesDatasets,
-  UTCDateFormat, dailyDateFormat, hourlyDateFormat, neutralColor, generateShades } from '../shared/util/chart.util';
+import { mapMetricsToTimeseriesData, subtractTimeseriesDatasets, neutralColor, generateShades } from '../shared/util/chart.util';
+import { UTCDateFormat, monthYearFormat, dayMonthDateFormat, dailyDateFormat, hourlyDateFormat } from '../shared/util/date.util';
 
 @Component({
   selector: 'metrics-downloads-chart',
   template: `
-    <prx-timeseries-chart *ngIf="chartData" type="area" stacked="true" [datasets]="chartData" [formatX]="dateFormat()">
+    <prx-timeseries-chart *ngIf="chartData" [type]="chartType" stacked="true" [datasets]="chartData" [formatX]="dateFormat()">
     </prx-timeseries-chart>
   `
 })
@@ -112,18 +112,30 @@ export class DownloadsChartComponent implements OnDestroy {
   }
 
   dateFormat(): Function {
-    if (this.filter && this.filter.interval) {
-      switch (this.filter.interval.key) {
-        case INTERVAL_DAILY.key:
+    if (this.filter) {
+      switch (this.filter.interval) {
+        case INTERVAL_MONTHLY:
+          return monthYearFormat;
+        case INTERVAL_WEEKLY:
+          return dayMonthDateFormat;
+        case INTERVAL_DAILY:
           return dailyDateFormat;
-        case INTERVAL_HOURLY.key:
-        case INTERVAL_15MIN.key:
+        case INTERVAL_HOURLY:
+        case INTERVAL_15MIN:
           return hourlyDateFormat;
         default:
           return UTCDateFormat;
       }
     } else {
       return UTCDateFormat;
+    }
+  }
+
+  get chartType(): string {
+    if (this.chartData && this.chartData.length && this.chartData[0].data.length < 4) {
+      return 'bar';
+    } else {
+      return 'area';
     }
   }
 }

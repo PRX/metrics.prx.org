@@ -29,15 +29,4 @@ describe('chart.util', () => {
     // if we subtract two of the timeseries datasets from each other, should have negative values
     expect(subtracted[0].value).toEqual(timeseries[0].value * -1);
   });
-
-  it('should format dates in UTC', () => {
-    const date = new Date();
-    let utcString = chartUtil.UTCDateFormat(date);
-    const search = utcString.match(/..:..:../);
-    expect(parseInt(utcString.slice(search.index, search.index + 2), 10)).toEqual(date.getUTCHours());
-    utcString = chartUtil.dailyDateFormat(date);
-    expect(parseInt(utcString.slice(utcString.indexOf('/') + 1), 10)).toEqual(date.getUTCDate());
-    utcString = chartUtil.hourlyDateFormat(date);
-    expect(parseInt(utcString.slice(utcString.indexOf(':') + 1), 10)).toEqual(date.getUTCMinutes());
-  });
 });

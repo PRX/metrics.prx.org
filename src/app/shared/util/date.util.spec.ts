@@ -3,8 +3,10 @@ import { isMoreThanXDays, beginningOfTodayUTC, endOfTodayUTC,
   beginningOfYesterdayUTC, endOfYesterdayUTC, beginningOfLastWeekUTC, endOfLastWeekUTC,
   beginningOfPriorTwoWeeksUTC, endOfPriorTwoWeeksUTC, beginningOfLastMonthUTC, endOfLastMonthUTC,
   beginningOfPriorThreeMonthsUTC, endOfPriorThreeMonthsUTC, beginningOfLastYearUTC, endOfLastYearUTC,
-  getBeginEndDateFromStandardRange, getStandardRangeForBeginEndDate, getRange, getMillisecondsOfInterval, roundDateToInterval } from './date.util';
-import { DateRangeModel, INTERVAL_DAILY, INTERVAL_HOURLY, INTERVAL_15MIN,
+  getBeginEndDateFromStandardRange, getStandardRangeForBeginEndDate, getRange, getMillisecondsOfInterval,
+  roundDateToBeginOfInterval, roundDateToEndOfInterval, getAmountOfIntervals,
+  UTCDateFormat, dailyDateFormat, dayMonthDateFormat, monthDateYearFormat, monthYearFormat, hourlyDateFormat } from './date.util';
+import { DateRangeModel, INTERVAL_MONTHLY, INTERVAL_WEEKLY, INTERVAL_DAILY, INTERVAL_HOURLY, INTERVAL_15MIN,
   TODAY, YESTERDAY, THIS_WEEK, LAST_WEEK, TWO_WEEKS, PRIOR_TWO_WEEKS, THIS_MONTH, LAST_MONTH,
   THREE_MONTHS, PRIOR_THREE_MONTHS, THIS_YEAR, LAST_YEAR } from '../../ngrx/model';
 
@@ -74,16 +76,28 @@ describe('date util', () => {
     expect(getMillisecondsOfInterval(INTERVAL_DAILY)).toEqual(24 * 60 * 60 * 1000);
   });
 
-  it('should round begin date to beginning of interval', () => {
+  it('should round date to beginning of interval', () => {
     const today = new Date();
-    const daily = roundDateToInterval(today, INTERVAL_DAILY);
-    const hourly = roundDateToInterval(today, INTERVAL_HOURLY);
-    const fifteenMin = roundDateToInterval(today, INTERVAL_15MIN);
+    const daily = roundDateToBeginOfInterval(today, INTERVAL_DAILY);
+    const hourly = roundDateToBeginOfInterval(today, INTERVAL_HOURLY);
+    const fifteenMin = roundDateToBeginOfInterval(today, INTERVAL_15MIN);
     expect(daily.valueOf()).toEqual(beginningOfTodayUTC().valueOf());
     expect(hourly.getHours()).toEqual(today.getHours());
     expect(hourly.getMinutes()).toEqual(0);
     expect(fifteenMin.getHours()).toEqual(today.getHours());
     expect(fifteenMin.getMinutes() % 15).toEqual(0);
+  });
+
+  describe('roundDateToEndOfInterval', () => {
+    it('should round date to end of interval', () => {
+      expect(roundDateToEndOfInterval(beginningOfLastWeekUTC().toDate(), INTERVAL_WEEKLY).valueOf()).toEqual(endOfLastWeekUTC().valueOf());
+    });
+    it('except for dates in the present, which should be rounded to the end of today utc', () => {
+      expect(roundDateToEndOfInterval(beginningOfThisMonthUTC().toDate(), INTERVAL_MONTHLY).valueOf()).toEqual(endOfTodayUTC().valueOf());
+    });
+    it('except for hourly and 15m, which should be rounded to the beginning of the interval', () => {
+      expect(roundDateToEndOfInterval(new Date(2017, 10, 27, 8, 48), INTERVAL_15MIN).getMinutes()).toEqual(45);
+    });
   });
 
   it('YESTERDAY range should be the day before today', () => {
@@ -126,5 +140,28 @@ describe('date util', () => {
     expect(threeMonths.beginDate.getUTCDate()).toEqual(1);
     expect(threeMonths.beginDate.valueOf()).toEqual(beginningOfPriorThreeMonthsUTC().valueOf());
     expect(threeMonths.endDate.valueOf()).toBeLessThanOrEqual(endOfPriorThreeMonthsUTC().valueOf());
+  });
+
+  it('should get the amount of intervals (data points) there are expected to be from begin to end date', () => {
+    expect(getAmountOfIntervals(beginningOfTodayUTC().toDate(), endOfTodayUTC().toDate(), INTERVAL_HOURLY)).toEqual(24);
+    expect(getAmountOfIntervals(beginningOfLastWeekUTC().toDate(), endOfLastWeekUTC().toDate(), INTERVAL_DAILY)).toEqual(7);
+    expect(getAmountOfIntervals(beginningOfLastYearUTC().toDate(), endOfLastYearUTC().toDate(), INTERVAL_MONTHLY)).toEqual(12);
+  });
+
+  it('should format dates in UTC', () => {
+    const date = new Date();
+    let utcString = UTCDateFormat(date);
+    const search = utcString.match(/..:..:../);
+    expect(parseInt(utcString.slice(search.index, search.index + 2), 10)).toEqual(date.getUTCHours());
+    utcString = dailyDateFormat(date);
+    expect(parseInt(utcString.slice(utcString.indexOf('/') + 1), 10)).toEqual(date.getUTCDate());
+    utcString = dayMonthDateFormat(date);
+    expect(parseInt(utcString.slice(utcString.indexOf('/') + 1), 10)).toEqual(date.getUTCDate());
+    utcString = monthDateYearFormat(date);
+    expect(parseInt(utcString.slice(utcString.indexOf('/') + 1), 10)).toEqual(date.getUTCDate());
+    utcString = monthYearFormat(date);
+    expect(parseInt(utcString.slice(utcString.indexOf('/') + 1), 10)).toEqual(date.getUTCFullYear() % 100);
+    utcString = hourlyDateFormat(date);
+    expect(parseInt(utcString.slice(utcString.indexOf(':') + 1), 10)).toEqual(date.getUTCMinutes());
   });
 });

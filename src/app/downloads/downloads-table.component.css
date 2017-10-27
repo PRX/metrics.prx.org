@@ -17,6 +17,7 @@ th, td {
   width: 45px;
 }
 td {
+  text-align: right;
   font-size: 12px;
   white-space: nowrap;
 }

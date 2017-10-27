@@ -9,6 +9,7 @@ import { DateRangeComponent } from './filter/date/date-range.component';
 import { EpisodesComponent } from './filter/episodes.component';
 import { FilterComponent } from './filter/filter.component';
 import { IntervalComponent } from './filter/interval.component';
+import { LargeNumberPipe } from './pipes/large-number.pipe';
 import { NextDateRangeComponent } from './filter/date/next-date-range.component';
 import { PodcastsComponent } from './filter/podcasts.component';
 import { PrevDateRangeComponent } from './filter/date/prev-date-range.component';
@@ -21,6 +22,7 @@ import { StandardDateRangeComponent } from './filter/date/standard-date-range.co
     EpisodesComponent,
     FilterComponent,
     IntervalComponent,
+    LargeNumberPipe,
     NextDateRangeComponent,
     PodcastsComponent,
     PrevDateRangeComponent,
@@ -34,6 +36,7 @@ import { StandardDateRangeComponent } from './filter/date/standard-date-range.co
     SelectModule,
     SpinnerModule,
     FilterComponent,
+    LargeNumberPipe,
     PodcastsComponent
   ],
   imports: [

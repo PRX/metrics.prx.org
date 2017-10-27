@@ -270,7 +270,7 @@ export const roundDateToBeginOfInterval = (date: Date, interval: IntervalModel):
 export const roundDateToEndOfInterval = (date: Date, interval: IntervalModel): Date => {
   if (interval === INTERVAL_MONTHLY) {
     return moment.min(
-      moment(date.valueOf())
+      moment(date.valueOf()).utc()
       .add(1, 'months')
       .date(1).hours(23).minutes(59).seconds(59).milliseconds(999)
       .subtract(1, 'days'),
@@ -305,7 +305,7 @@ export const getAmountOfIntervals = (beginDate: Date, endDate: Date, interval: I
     case INTERVAL_WEEKLY:
       return 1 + (duration / (1000 * 60 * 60 * 24 * 7));
     case INTERVAL_MONTHLY:
-      return 1 + (12 * endDate.getUTCFullYear() - beginDate.getUTCFullYear()) + (endDate.getUTCMonth() - beginDate.getUTCMonth());
+      return 1 + (12 * endDate.getUTCFullYear() - 12 * beginDate.getUTCFullYear()) + (endDate.getUTCMonth() - beginDate.getUTCMonth());
     default:
       break;
   }
@@ -345,12 +345,12 @@ export const monthDateYearFormat = (date: Date): string => {
   return date.getUTCMonth() + 1 + '/' + date.getUTCDate() + '/' + date.getUTCFullYear() % 100;
 };
 
+export const monthYearFormat = (date: Date): string => {
+  return date.getUTCMonth() + 1 + '/' + date.getUTCFullYear() % 100;
+};
+
 export const hourlyDateFormat = (date: Date): string => {
   const minutes = date.getUTCMinutes() < 10 ? '0' + date.getUTCMinutes() : date.getUTCMinutes();
   return (date.getUTCMonth() + 1) + '/' + date.getUTCDate() + ' ' +
     date.getUTCHours() + ':' + minutes;
-};
-
-export const monthYearFormat = (date: Date): string => {
-  return date.getUTCMonth() + 1 + '/' + date.getUTCFullYear() % 100;
 };

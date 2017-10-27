@@ -153,4 +153,14 @@ describe('DownloadsChartComponent', () => {
     };
     expect(getTotal(comp.episodeChartData[0].data)).toBeGreaterThanOrEqual(getTotal(comp.episodeChartData[1].data));
   });
+
+  it('should show bar chart if there are less than 4 data points; otherwise, area', () => {
+    expect(comp.chartType).toEqual('area');
+    comp.store.dispatch(new CastleFilterAction({filter: {
+      beginDate: new Date('2017-09-05T00:00:00Z'),
+      endDate: new Date('2017-09-07T00:00:00Z')
+    }}));
+    fix.detectChanges();
+    expect(comp.chartType).toEqual('bar');
+  });
 });

@@ -26,14 +26,14 @@ import * as moment from 'moment';
           <tr>
             <td class="sticky">{{podcastTableData.title}}</td>
             <td>{{podcastTableData.releaseDate}}</td>
-            <td>{{podcastTableData.totalForPeriod}}</td>
-            <td *ngFor="let download of podcastTableData.downloads">{{download.value}}</td>
+            <td>{{podcastTableData.totalForPeriod | largeNumber}}</td>
+            <td *ngFor="let download of podcastTableData.downloads">{{download.value | largeNumber}}</td>
           </tr>
           <tr *ngFor="let episode of episodeTableData">
             <td class="sticky">{{episode.title}}</td>
             <td>{{episode.releaseDate}}</td>
-            <td>{{episode.totalForPeriod}}</td>
-            <td *ngFor="let download of episode.downloads">{{download.value}}</td>
+            <td>{{episode.totalForPeriod | largeNumber}}</td>
+            <td *ngFor="let download of episode.downloads">{{download.value | largeNumber}}</td>
           </tr>
         </tbody>
       </table>

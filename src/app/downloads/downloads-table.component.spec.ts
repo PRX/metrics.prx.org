@@ -129,7 +129,6 @@ describe('DownloadsTableComponent', () => {
   });
 
   it('should not show up without data to display', () => {
-    comp.podcastTableData = [{a: 1}];
     fix.detectChanges();
     expect(de.query(By.css('table'))).not.toBeNull();
 

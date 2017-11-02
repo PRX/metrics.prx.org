@@ -86,7 +86,7 @@ describe('DownloadsChartComponent', () => {
     }
   ];
   const filter: FilterModel = {
-    podcast,
+    podcastSeriesId: podcast.seriesId,
     episodes,
     beginDate: new Date('2017-08-27T00:00:00Z'),
     endDate: new Date('2017-09-07T00:00:00Z'),

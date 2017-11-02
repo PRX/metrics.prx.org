@@ -26,6 +26,7 @@ import { beginningOfTwoWeeksUTC, endOfTodayUTC, getRange } from '../shared/util/
 })
 export class DownloadsComponent implements OnInit, OnDestroy {
   podcastStoreSub: Subscription;
+  podcasts: PodcastModel[];
   episodeStoreSub: Subscription;
   allPodcastEpisodes: EpisodeModel[];
   filterStoreSub: Subscription;
@@ -46,6 +47,7 @@ export class DownloadsComponent implements OnInit, OnDestroy {
 
     this.podcastStoreSub = this.store.select(selectPodcasts).subscribe((podcasts: PodcastModel[]) => {
       if (podcasts && podcasts.length) {
+        this.podcasts = podcasts;
         this.isLoadingForTheFirstTime = false;
       }
     });
@@ -54,7 +56,7 @@ export class DownloadsComponent implements OnInit, OnDestroy {
       let changedFilter = false;
       if (this.isPodcastChanged(newFilter)) {
         this.toggleLoading(true, true);
-        this.filter.podcast = newFilter.podcast;
+        this.filter.podcastSeriesId = newFilter.podcastSeriesId;
         changedFilter = true;
 
         // we don't want to even look at this store until we have the selected podcast
@@ -86,8 +88,11 @@ export class DownloadsComponent implements OnInit, OnDestroy {
         changedFilter = true;
       }
 
-      if (changedFilter && this.filter.podcast) {
-        this.getPodcastMetrics();
+      if (changedFilter && this.filter.podcastSeriesId && this.podcasts) {
+        const podcast = this.podcasts.find(p => p.seriesId === this.filter.podcastSeriesId);
+        if (podcast) {
+          this.getPodcastMetrics(podcast);
+        }
       }
 
       if (changedFilter && this.filter.episodes && this.filter.episodes.length > 0) {
@@ -140,27 +145,27 @@ export class DownloadsComponent implements OnInit, OnDestroy {
     this.store.dispatch(new CastleFilterAction({filter: {episodes}}));
   }
 
-  getPodcastMetrics() {
+  getPodcastMetrics(podcast: PodcastModel) {
     this.toggleLoading(true);
     this.castle.followList('prx:podcast-downloads', {
-      id: this.filter.podcast.feederId,
+      id: podcast.feederId,
       from: this.filter.beginDate.toISOString(),
       to: this.filter.endDate.toISOString(),
       interval: this.filter.interval.value
     }).subscribe(
-      metrics => this.setPodcastMetrics(metrics),
+      metrics => this.setPodcastMetrics(podcast, metrics),
       err => {
         this.toggleLoading(false);
-        this.showError(err.status, 'podcast', this.filter.podcast.title);
+        this.showError(err.status, 'podcast', podcast.title);
       }
     );
   }
 
-  setPodcastMetrics(metrics: any) {
+  setPodcastMetrics(podcast: PodcastModel, metrics: any) {
     this.toggleLoading(false);
     if (metrics && metrics.length && metrics[0]['downloads']) {
       this.store.dispatch(new CastlePodcastMetricsAction({
-        podcast: this.filter.podcast,
+        podcast: podcast,
         filter: this.filter,
         metricsType: 'downloads',
         metrics: metrics[0]['downloads']
@@ -169,7 +174,7 @@ export class DownloadsComponent implements OnInit, OnDestroy {
         action: 'load',
         properties: {
           category: 'Downloads/' + this.filter.interval.name,
-          label: this.filter.podcast.title,
+          label: podcast.title,
           value: metrics[0]['downloads'].length
         }
       });
@@ -207,7 +212,7 @@ export class DownloadsComponent implements OnInit, OnDestroy {
   }
 
   isPodcastChanged(state: FilterModel): boolean {
-    return state.podcast && (!this.filter.podcast ||  this.filter.podcast.seriesId !== state.podcast.seriesId);
+    return state.podcastSeriesId && (!this.filter.podcastSeriesId ||  this.filter.podcastSeriesId !== state.podcastSeriesId);
   }
 
   isEpisodesChanged(state: FilterModel): boolean {

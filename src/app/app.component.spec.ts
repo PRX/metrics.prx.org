@@ -14,7 +14,7 @@ import { AppComponent } from './app.component';
 
 import { reducers } from './ngrx/reducers';
 
-import { CastleFilterAction, CmsAllPodcastEpisodeGuidsAction, CmsPodcastFeedAction } from './ngrx/actions';
+import { CastleFilterAction, CmsAllPodcastEpisodeGuidsAction, CmsPodcastsSuccessAction } from './ngrx/actions';
 import { PodcastModel, FilterModel, INTERVAL_DAILY } from './ngrx/model/';
 
 describe('AppComponent', () => {
@@ -75,7 +75,7 @@ describe('AppComponent', () => {
     expect(comp).toBeTruthy();
   }));
 
-  it(`should only show podcasts when logged in`, async(() => {
+  it(`should show podcasts when logged in`, async(() => {
     comp.loggedIn = true;
     fix.detectChanges();
     expect(de.query(By.css('metrics-podcasts'))).not.toBeNull();
@@ -98,6 +98,7 @@ describe('AppComponent', () => {
     authToken.next('fake-token');
     fix.detectChanges();
     expect(de.query(By.css('p.error'))).not.toBeNull();
+    // TODO: Cannot match any routes because no router-outlet
   });
 
   it('should load series podcast and episode and dispatch CMS actions', () => {
@@ -111,7 +112,7 @@ describe('AppComponent', () => {
       title: 'Pet Talks Daily'
     };
     const filter: FilterModel = {
-      podcast,
+      podcastSeriesId: podcast.seriesId,
       beginDate: new Date('2017-08-27T00:00:00Z'),
       endDate: new Date('2017-09-07T00:00:00Z'),
       interval: INTERVAL_DAILY
@@ -121,22 +122,17 @@ describe('AppComponent', () => {
       {seriesId: 37801, title: 'Totally Not Pet Talks Daily'}]);
     series.forEach(s => {
       const distributions = s.mockItems('prx:distributions', [{kind: 'podcast', url: 'https://feeder.prx.org/api/v1/podcasts/70'}]);
-      const episodes = s.mockItems('prx:stories', [{id: 123, title: 'A Pet Talk Episode', publishedAt: new Date()}]);
-      episodes.forEach(e => {
-        e.mockItems('prx:distributions',
-          [{kind: 'episode', url: 'https://feeder.prx.org/api/v1/episodes/42b4ad11-36bd-4f3a-9e92-0de8ad43a515'}]);
-      });
     });
-    // TODO this is an awful lot of what looks like redundant mocking. will try to do a better set up but just trying to get there for now
     const episodes = (<MockHalDoc>podcast.doc).mockItems('prx:stories', [{id: 123, title: 'A Pet Talk Episode', publishedAt: new Date()}]);
     episodes.forEach(e => {
       e.mockItems('prx:distributions',
         [{kind: 'episode', url: 'https://feeder.prx.org/api/v1/episodes/42b4ad11-36bd-4f3a-9e92-0de8ad43a515'}]);
     });
+    comp.store.dispatch(new CmsPodcastsSuccessAction({podcasts: [podcast]}));
     comp.store.dispatch(new CastleFilterAction({filter}));
     authToken.next('fake-token');
     expect(comp.getSeriesPodcastDistribution).toHaveBeenCalled();
-    expect(comp.store.dispatch).toHaveBeenCalledWith(jasmine.any(CmsPodcastFeedAction));
+    expect(comp.store.dispatch).toHaveBeenCalledWith(jasmine.any(CmsPodcastsSuccessAction));
     expect(comp.getEpisodePodcastDistribution).toHaveBeenCalled();
     expect(comp.store.dispatch).toHaveBeenCalledWith(jasmine.any(CmsAllPodcastEpisodeGuidsAction));
   });

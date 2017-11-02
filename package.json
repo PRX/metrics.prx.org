@@ -23,6 +23,8 @@
     "@angular/platform-browser": "^4.4.6",
     "@angular/platform-browser-dynamic": "^4.4.6",
     "@angular/router": "^4.4.6",
+    "@ngrx/effects": "^4.1.0",
+    "@ngrx/router-store": "^4.1.0",
     "@ngrx/store": "^4.1.0",
     "angulartics2": "^2.4.0",
     "connect-gzip-static": "^2.0.1",

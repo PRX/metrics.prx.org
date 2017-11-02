@@ -46,7 +46,7 @@ describe('metrics util', () => {
     }
   ];
   const filter = {
-    podcast: {...podcasts[0]},
+    podcastSeriesId: podcasts[0].seriesId,
     episodes: [{...episodes[0]}],
     beginDate: new Date('2017-09-01T00:00:00Z'),
     endDate: new Date('2017-09-07T00:00:00Z'),
@@ -104,12 +104,7 @@ describe('metrics util', () => {
     const emptyFilter = {};
     expect(filterPodcasts(emptyFilter, podcasts)).toBeUndefined();
     const nonMatchingFilter = {
-      podcast: {
-        doc: undefined,
-        seriesId: 1,
-        feederId: '18',
-        title: 'Paisley and Polka Dots'
-      }
+      podcastSeriesId: 1
     };
     expect(filterPodcasts(nonMatchingFilter, podcasts)).toBeUndefined();
   });
@@ -124,13 +119,7 @@ describe('metrics util', () => {
     const emptyFilter = {};
     expect(filterEpisodes(emptyFilter, episodes)).toBeUndefined();
     const nonMatchingFilter = {
-      podcast: {
-        doc: undefined,
-        seriesId: 37802,
-        title: 'Nothing to do with pets',
-        feederUrl: 'https://feeder.prx.org/api/v1/podcasts/13',
-        feederId: '13'
-      },
+      podcastSeriesId: 37802,
       episodes: [{
         doc: undefined,
         seriesId: 37802,

@@ -16,7 +16,7 @@ import { DownloadsTableComponent } from './downloads-table.component';
 import { reducers } from '../ngrx/reducers';
 
 import { EpisodeModel } from '../ngrx/model';
-import { CastleFilterAction, CmsPodcastFeedAction, CmsAllPodcastEpisodeGuidsAction } from '../ngrx/actions';
+import { CastleFilterAction, CmsPodcastsSuccessAction, CmsAllPodcastEpisodeGuidsAction } from '../ngrx/actions';
 
 describe('DownloadsComponent', () => {
   let comp: DownloadsComponent;
@@ -84,7 +84,7 @@ describe('DownloadsComponent', () => {
 
   it('should not show filter if app is loading for the first time', () => {
     expect(de.query(By.css('metrics-filter'))).toBeFalsy();
-    comp.store.dispatch(new CmsPodcastFeedAction({podcast}));
+    comp.store.dispatch(new CmsPodcastsSuccessAction({podcasts: [podcast]}));
     fix.detectChanges();
     expect(de.query(By.css('metrics-filter'))).not.toBeNull();
   });
@@ -98,8 +98,9 @@ describe('DownloadsComponent', () => {
   });
 
   it('should load podcast downloads and dispatch CASTLE action', () => {
+    comp.store.dispatch(new CmsPodcastsSuccessAction({podcasts: [podcast]}));
     comp.store.dispatch(new CastleFilterAction({
-      filter: {podcast: {doc: undefined, seriesId: 37800, title: 'Pet Talks Daily'}}
+      filter: {podcastSeriesId: 37800}
     }));
     expect(comp.setPodcastMetrics).toHaveBeenCalled();
     expect(comp.store.dispatch).toHaveBeenCalled();
@@ -114,14 +115,15 @@ describe('DownloadsComponent', () => {
 
   it ('should reload podcast and episode data if filter parameters change', () => {
     const beginDate = new Date(comp.filter.beginDate.valueOf() + 24 * 60 * 60 * 1000);
+    comp.store.dispatch(new CmsPodcastsSuccessAction({podcasts: [podcast]}));
     comp.store.dispatch(new CastleFilterAction({
-      filter: {podcast: {doc: undefined, seriesId: 37800, title: 'Pet Talks Daily'}}}));
+      filter: {podcastSeriesId: 37800}}));
     comp.store.dispatch(new CastleFilterAction({
       filter: {episodes: [{doc: undefined, id: 123, seriesId: 37800, title: 'A New Pet Talk Episode', publishedAt: new Date()}]}}));
     comp.store.dispatch(new CastleFilterAction({filter: {beginDate}}));
     expect(comp.setPodcastMetrics).toHaveBeenCalledTimes(3); // now also called for changes to episodes filter
     expect(comp.setEpisodeMetrics).toHaveBeenCalledTimes(2);
-    expect(comp.store.dispatch).toHaveBeenCalledTimes(8);
+    expect(comp.store.dispatch).toHaveBeenCalledTimes(9);
   });
 
   it('should reload episode metrics if removed from filter then re-added', () => {
@@ -143,7 +145,7 @@ describe('DownloadsComponent', () => {
 
   it('should limit the default episode filter to no more than the DONT_BREAK_CASTLE_LIMIT', () => {
     comp.store.dispatch(new CastleFilterAction({
-      filter: {podcast: {doc: undefined, seriesId: 37800, title: 'Pet Talks Daily'}}}));
+      filter: {podcastSeriesId: 37800}}));
     const episodes: EpisodeModel[] = [];
     for (let i = 0; i < DownloadsComponent.DONT_BREAK_CASTLE_LIMIT + 1; i++) {
       episodes.push({doc: undefined, id: i, seriesId: 37800, title: i.toString(), publishedAt: new Date()});

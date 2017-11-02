@@ -84,7 +84,7 @@ describe('DownloadsTableComponent', () => {
     }
   ];
   const filter: FilterModel = {
-    podcast,
+    podcastSeriesId: podcast.seriesId,
     episodes,
     beginDate: new Date('2017-08-27T00:00:00Z'),
     endDate: new Date('2017-09-07T00:00:00Z'),
@@ -145,12 +145,7 @@ describe('DownloadsTableComponent', () => {
 
   it('should clear out episode table data when podcast changes', () => {
     spyOn(comp, 'resetAllData').and.callThrough();
-    const differentPodcast: PodcastModel = {
-      doc: undefined,
-      seriesId: 37801,
-      title: 'Totally Not Pet Talks Daily'
-    };
-    comp.store.dispatch(new CastleFilterAction({filter: {podcast: differentPodcast}}));
+    comp.store.dispatch(new CastleFilterAction({filter: {podcastSeriesId: 37801}}));
     expect(comp.resetAllData).toHaveBeenCalled();
   });
 

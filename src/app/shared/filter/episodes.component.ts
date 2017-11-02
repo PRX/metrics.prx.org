@@ -15,7 +15,7 @@ import { filterAllPodcastEpisodes } from '../../shared/util/metrics.util';
 export class EpisodesComponent implements OnInit, OnChanges, OnDestroy {
   @Input() filter: FilterModel;
   @Output() episodesChange = new EventEmitter<EpisodeModel[]>();
-  selectedPodcast: PodcastModel;
+  selectedPodcastSeriesId: number;
   selected: EpisodeModel[];
   allEpisodeOptions = [];
   allEpisodesSub: Subscription;
@@ -41,7 +41,7 @@ export class EpisodesComponent implements OnInit, OnChanges, OnDestroy {
         this.allEpisodeOptions = [];
       }
       this.selected = this.filter.episodes;
-      this.selectedPodcast = this.filter.podcast;
+      this.selectedPodcastSeriesId = this.filter.podcastSeriesId;
     }
   }
 
@@ -50,7 +50,7 @@ export class EpisodesComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   isPodcastChanged(): boolean {
-    return this.selectedPodcast && this.filter.podcast && this.filter.podcast.seriesId !== this.selectedPodcast.seriesId;
+    return this.selectedPodcastSeriesId && this.filter.podcastSeriesId && this.filter.podcastSeriesId !== this.selectedPodcastSeriesId;
   }
 
   onEpisodesChange(episodes: EpisodeModel[]) {

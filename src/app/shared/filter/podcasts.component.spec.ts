@@ -1,4 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { Router } from '@angular/router';
+import { RouterStub } from '../../../testing/stub.router';
 import { By } from '@angular/platform-browser';
 import { DebugElement } from '@angular/core';
 import { StoreModule } from '@ngrx/store';
@@ -8,7 +10,7 @@ import { PodcastsComponent } from './podcasts.component';
 
 import { reducers } from '../../ngrx/reducers';
 
-import { CastleFilterAction, CmsPodcastFeedAction } from '../../ngrx/actions';
+import { CastleFilterAction, CmsPodcastsSuccessAction } from '../../ngrx/actions';
 import { FilterModel } from '../../ngrx/model';
 
 describe('PodcastsComponent', () => {
@@ -32,7 +34,7 @@ describe('PodcastsComponent', () => {
     }
   ];
   const filter: FilterModel = {
-    podcast: podcasts[0]
+    podcastSeriesId: podcasts[0].seriesId
   };
 
   beforeEach(async(() => {
@@ -43,6 +45,9 @@ describe('PodcastsComponent', () => {
       imports: [
         SelectModule,
         StoreModule.forRoot(reducers)
+      ],
+      providers: [
+        {provide: Router, useValue: {router: new RouterStub()}}
       ]
     }).compileComponents().then(() => {
       fix = TestBed.createComponent(PodcastsComponent);
@@ -52,15 +57,15 @@ describe('PodcastsComponent', () => {
       el = de.nativeElement;
 
       comp.store.dispatch(new CastleFilterAction({filter}));
-      comp.store.dispatch(new CmsPodcastFeedAction({podcast: podcasts[0]}));
+      comp.store.dispatch(new CmsPodcastsSuccessAction({podcasts: podcasts.slice(0, 1)}));
     });
   }));
 
   it('should initialize selected podcast according to filter', () => {
-    expect(comp.selectedPodcast.seriesId).toEqual(podcasts[0].seriesId);
+    expect(comp.selectedPodcastSeriesId).toEqual(podcasts[0].seriesId);
   });
 
-  it('should show podcast title rather than dropdown if there is one podcast', () => {
+  it('should show podcast title rather than dropdown if there is just one podcast', () => {
     expect(comp.allPodcastOptions.length).toEqual(1);
     expect(comp.selectedPodcast.title).toEqual(podcasts[0].title);
     fix.detectChanges();
@@ -68,7 +73,7 @@ describe('PodcastsComponent', () => {
   });
 
   it('should show a drop down of podcasts if there are multiple to choose from', () => {
-    comp.store.dispatch(new CmsPodcastFeedAction({podcast: podcasts[1]}));
+    comp.store.dispatch(new CmsPodcastsSuccessAction({podcasts}));
     expect(de.query(By.css('prx-select'))).toBeDefined();
     expect(comp.allPodcastOptions.length).toEqual(2);
   });

@@ -70,13 +70,7 @@ describe('DateRangeComponent', () => {
 
   it('should send google analytics event when standard or custom date range changes', () => {
     comp.filter = {
-      podcast: {
-        doc: undefined,
-        seriesId: 37800,
-        title: 'Pet Talks Daily',
-        feederUrl: 'https://feeder.prx.org/api/v1/podcasts/70',
-        feederId: '70'
-      },
+      podcastSeriesId: 37800,
       beginDate: beginningOfLastYearUTC().toDate(),
       endDate:  endOfLastYearUTC().toDate(),
       standardRange: LAST_YEAR,

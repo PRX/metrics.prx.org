@@ -1,15 +1,19 @@
-import { CmsPodcastFeedPayload, CmsEpisodeGuidsPayload } from './cms.action.creator';
+import { RouterStateSnapshot } from '@angular/router';
+import { RouterNavigationPayload } from '@ngrx/router-store';
+import { CmsPodcastsPayload, CmsEpisodeGuidsPayload } from './cms.action.creator';
 import { CastleFilterPayload, CastlePodcastMetricsPayload, CastleEpisodeMetricsPayload } from './castle.action.creator';
 
+
 export type All
-  = CmsPodcastFeedPayload
+  = CmsPodcastsPayload
   | CmsEpisodeGuidsPayload
   | CastleFilterPayload
   | CastlePodcastMetricsPayload
-  | CastleEpisodeMetricsPayload;
+  | CastleEpisodeMetricsPayload
+  | RouterNavigationPayload<RouterStateSnapshot>;
 
 export { ActionTypes, ActionWithPayload } from './action.types';
-export { CmsPodcastFeedPayload, CmsPodcastFeedAction,
+export { CmsPodcastsPayload, CmsPodcastsAction, CmsPodcastsSuccessAction, CmsPodcastsFailureAction,
   CmsEpisodeGuidsPayload, CmsAllPodcastEpisodeGuidsAction } from './cms.action.creator';
 export { CastleFilterPayload, CastleFilterAction,
   CastlePodcastMetricsPayload, CastlePodcastMetricsAction,

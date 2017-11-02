@@ -1,5 +1,7 @@
 import { NgModule, ErrorHandler } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { StoreRouterConnectingModule, routerReducer } from '@ngrx/router-store';
+import { EffectsModule } from '@ngrx/effects';
 import { AuthModule } from 'ngx-prx-styleguide';
 import { StoreModule } from '@ngrx/store';
 import { Angulartics2Module, Angulartics2GoogleAnalytics } from 'angulartics2';
@@ -12,6 +14,8 @@ import { CoreModule } from './core';
 import { SharedModule } from './shared';
 
 import { reducers } from './ngrx/reducers';
+import { RoutingEffects } from './ngrx/effects/routing.effects';
+import { CmsEffects } from './ngrx/effects/cms.effects';
 
 import { DownloadsModule } from './downloads/downloads.module';
 
@@ -25,8 +29,10 @@ import { DownloadsModule } from './downloads/downloads.module';
     CoreModule,
     AuthModule,
     SharedModule,
-    StoreModule.forRoot(reducers),
+    StoreModule.forRoot({...reducers, routerReducer: routerReducer}),
     Angulartics2Module.forRoot([ Angulartics2GoogleAnalytics ]),
+    StoreRouterConnectingModule,
+    EffectsModule.forRoot([RoutingEffects/*, CmsEffects*/]),
     routing,
     DownloadsModule
   ],

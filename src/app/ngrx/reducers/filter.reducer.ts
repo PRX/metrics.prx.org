@@ -1,4 +1,4 @@
-import { ActionTypes, ActionWithPayload, CastleFilterPayload } from '../actions';
+import { ActionTypes, ActionWithPayload, CastleFilterPayload, CastleFilterAction } from '../actions';
 import { FilterModel } from '../model';
 
 const initialState = {};
@@ -7,8 +7,8 @@ export function FilterReducer(state: FilterModel = initialState, action: ActionW
   switch (action.type) {
     case ActionTypes.CASTLE_FILTER:
       const newState: FilterModel = {...state};
-      if (action.payload.filter.podcast) {
-        newState.podcast = action.payload.filter.podcast;
+      if (action.payload.filter.podcastSeriesId) {
+        newState.podcastSeriesId = action.payload.filter.podcastSeriesId;
       }
       if (action.payload.filter.episodes) {
         newState.episodes = [...action.payload.filter.episodes];

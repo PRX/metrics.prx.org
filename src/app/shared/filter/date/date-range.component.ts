@@ -35,6 +35,7 @@ export class DateRangeComponent {
   }
 
   googleAnalyticsEvent(action: string, dateRange: DateRangeModel) {
+    /* TODO: effect?
     if (this.filter && this.filter.podcast && this.filter.interval) {
       const value = getAmountOfIntervals(dateRange.beginDate, dateRange.endDate, this.filter.interval);
       this.angulartics2.eventTrack.next({
@@ -45,6 +46,6 @@ export class DateRangeComponent {
           value
         }
       });
-    }
+    }*/
   }
 }

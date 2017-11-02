@@ -6,6 +6,8 @@ import { DownloadsComponent } from './downloads.component';
 import { DownloadsChartComponent } from './downloads-chart.component';
 import { DownloadsTableComponent } from './downloads-table.component';
 
+import { downloadsRouting } from './downloads.routing';
+
 @NgModule({
   declarations: [
     DownloadsComponent,
@@ -14,7 +16,8 @@ import { DownloadsTableComponent } from './downloads-table.component';
   ],
   imports: [
     CommonModule,
-    SharedModule
+    SharedModule,
+    downloadsRouting
   ],
   exports: [
     DownloadsComponent

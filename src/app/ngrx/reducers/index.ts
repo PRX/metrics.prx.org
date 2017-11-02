@@ -27,9 +27,11 @@ export const selectAppState = (state: State) => state;
 export const selectFilter = createFeatureSelector<FilterModel>('filter');
 
 // these selectors off the selectAppState selector should only emit changes when that slice of the filter state changes, handy!
-export const selectPodcastFilter = createSelector(selectAppState, (state: State) => state.filter ? state.filter.podcast : undefined);
+export const selectPodcastFilter = createSelector(selectAppState, (state: State) => state.filter ? state.filter.podcastSeriesId : undefined);
 
 export const selectEpisodeFilter = createSelector(selectAppState, (state: State) => state.filter ? state.filter.episodes : undefined);
+
+export const selectIntervalFilter = createSelector(selectAppState, (state: State) => state.filter ? state.filter.interval : undefined);
 
 export const selectPodcasts = createFeatureSelector<PodcastModel[]>('podcasts');
 

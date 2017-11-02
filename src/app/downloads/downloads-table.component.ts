@@ -162,7 +162,8 @@ export class DownloadsTableComponent implements OnDestroy {
   }
 
   isPodcastChanged(state: FilterModel): boolean {
-    return state.podcast && (!this.filter || !this.filter.podcast ||  this.filter.podcast.seriesId !== state.podcast.seriesId);
+    return state.podcastSeriesId &&
+      (!this.filter || !this.filter.podcastSeriesId ||  this.filter.podcastSeriesId !== state.podcastSeriesId);
   }
 
   dateFormat(date: Date): string {

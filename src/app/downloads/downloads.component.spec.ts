@@ -97,60 +97,82 @@ describe('DownloadsComponent', () => {
     expect(de.query(By.css('prx-spinner'))).toBeFalsy();
   });
 
-  it('should load podcast downloads and dispatch CASTLE action', () => {
-    comp.store.dispatch(new CmsPodcastsSuccessAction({podcasts: [podcast]}));
-    comp.store.dispatch(new CastleFilterAction({
-      filter: {podcastSeriesId: 37800}
-    }));
-    expect(comp.setPodcastMetrics).toHaveBeenCalled();
-    expect(comp.store.dispatch).toHaveBeenCalled();
-  });
+  describe('after loading podcasts...', () => {
+    beforeEach(() => {
+      comp.store.dispatch(new CastleFilterAction({
+        filter: {podcastSeriesId: 37800}
+      }));
+      comp.store.dispatch(new CmsPodcastsSuccessAction({podcasts: [podcast]}));
+    });
 
-  it('should load episode downloads and call CASTLE action', () => {
-    comp.store.dispatch(new CastleFilterAction({
-      filter: {episodes: [{doc: undefined, id: 123, seriesId: 37800, title: 'A New Pet Talk Episode', publishedAt: new Date()}]}}));
-    expect(comp.setEpisodeMetrics).toHaveBeenCalled();
-    expect(comp.store.dispatch).toHaveBeenCalled();
-  });
 
-  it ('should reload podcast and episode data if filter parameters change', () => {
-    const beginDate = new Date(comp.filter.beginDate.valueOf() + 24 * 60 * 60 * 1000);
-    comp.store.dispatch(new CmsPodcastsSuccessAction({podcasts: [podcast]}));
-    comp.store.dispatch(new CastleFilterAction({
-      filter: {podcastSeriesId: 37800}}));
-    comp.store.dispatch(new CastleFilterAction({
-      filter: {episodes: [{doc: undefined, id: 123, seriesId: 37800, title: 'A New Pet Talk Episode', publishedAt: new Date()}]}}));
-    comp.store.dispatch(new CastleFilterAction({filter: {beginDate}}));
-    expect(comp.setPodcastMetrics).toHaveBeenCalledTimes(3); // now also called for changes to episodes filter
-    expect(comp.setEpisodeMetrics).toHaveBeenCalledTimes(2);
-    expect(comp.store.dispatch).toHaveBeenCalledTimes(9);
-  });
+    it('should load podcast downloads and dispatch CASTLE action', () => {
+      expect(comp.setPodcastMetrics).toHaveBeenCalled();
+      expect(comp.store.dispatch).toHaveBeenCalled();
+    });
 
-  it('should reload episode metrics if removed from filter then re-added', () => {
-    const episodes = [
-      {doc: undefined, id: 123, seriesId: 37800, title: 'A New Pet Talk Episode', publishedAt: new Date()},
-      {doc: undefined, id: 1234, seriesId: 37800, title: 'A New Pet Talk Episode', publishedAt: new Date()}
-    ];
-    comp.store.dispatch(new CastleFilterAction({filter: {episodes}}));
-    expect(comp.setEpisodeMetrics).toHaveBeenCalledTimes(2); // once for each episode
-    comp.store.dispatch(new CastleFilterAction({filter: {episodes: [episodes[0]]}}));
-    expect(comp.setEpisodeMetrics).toHaveBeenCalledTimes(3);
-    comp.store.dispatch(new CastleFilterAction({filter: {episodes}}));
-    expect(comp.setEpisodeMetrics).toHaveBeenCalledTimes(5);
-  });
+    it('should load episode downloads and call CASTLE action', () => {
+      comp.store.dispatch(new CastleFilterAction({
+        filter: {
+          episodes: [{
+            doc: undefined,
+            id: 123,
+            seriesId: 37800,
+            title: 'A New Pet Talk Episode',
+            publishedAt: new Date()
+          }]
+        }
+      }));
+      expect(comp.setEpisodeMetrics).toHaveBeenCalled();
+      expect(comp.store.dispatch).toHaveBeenCalled();
+    });
 
-  it('should show a downloads table of episodes', () => {
-    expect(de.query(By.css('metrics-downloads-table'))).not.toBeNull();
-  });
+    it('should reload podcast and episode data if filter parameters change', () => {
+      const beginDate = new Date();
+      comp.store.dispatch(new CastleFilterAction({
+        filter: {
+          episodes: [{
+            doc: undefined,
+            id: 123,
+            seriesId: 37800,
+            title: 'A New Pet Talk Episode',
+            publishedAt: new Date()
+          }]
+        }
+      }));
+      comp.store.dispatch(new CastleFilterAction({filter: {beginDate}}));
+      expect(comp.setPodcastMetrics).toHaveBeenCalledTimes(3); // now also called for changes to episodes filter
+      expect(comp.setEpisodeMetrics).toHaveBeenCalledTimes(2);
+      expect(comp.store.dispatch).toHaveBeenCalledTimes(9);
+    });
 
-  it('should limit the default episode filter to no more than the DONT_BREAK_CASTLE_LIMIT', () => {
-    comp.store.dispatch(new CastleFilterAction({
-      filter: {podcastSeriesId: 37800}}));
-    const episodes: EpisodeModel[] = [];
-    for (let i = 0; i < DownloadsComponent.DONT_BREAK_CASTLE_LIMIT + 1; i++) {
-      episodes.push({doc: undefined, id: i, seriesId: 37800, title: i.toString(), publishedAt: new Date()});
-    }
-    comp.store.dispatch(new CmsAllPodcastEpisodeGuidsAction({podcast, episodes}));
-    expect(comp.filter.episodes.length).toEqual(DownloadsComponent.DONT_BREAK_CASTLE_LIMIT);
+    it('should reload episode metrics if removed from filter then re-added', () => {
+      const episodes = [
+        {doc: undefined, id: 123, seriesId: 37800, title: 'A New Pet Talk Episode', publishedAt: new Date()},
+        {doc: undefined, id: 1234, seriesId: 37800, title: 'A New Pet Talk Episode', publishedAt: new Date()}
+      ];
+      comp.store.dispatch(new CastleFilterAction({
+        filter: {podcastSeriesId: 37800}
+      }));
+      comp.store.dispatch(new CastleFilterAction({filter: {episodes}}));
+      expect(comp.setEpisodeMetrics).toHaveBeenCalledTimes(2); // once for each episode
+      comp.store.dispatch(new CastleFilterAction({filter: {episodes: [episodes[0]]}}));
+      expect(comp.setEpisodeMetrics).toHaveBeenCalledTimes(3);
+      comp.store.dispatch(new CastleFilterAction({filter: {episodes}}));
+      expect(comp.setEpisodeMetrics).toHaveBeenCalledTimes(5);
+    });
+
+    it('should show a downloads table of episodes', () => {
+      expect(de.query(By.css('metrics-downloads-table'))).not.toBeNull();
+    });
+
+    it('should limit the default episode filter to no more than the DONT_BREAK_CASTLE_LIMIT', () => {
+      const episodes: EpisodeModel[] = [];
+      for (let i = 0; i < DownloadsComponent.DONT_BREAK_CASTLE_LIMIT + 1; i++) {
+        episodes.push({doc: undefined, id: i, seriesId: 37800, title: i.toString(), publishedAt: new Date()});
+      }
+      comp.store.dispatch(new CmsAllPodcastEpisodeGuidsAction({podcast, episodes}));
+      expect(comp.filter.episodes.length).toEqual(DownloadsComponent.DONT_BREAK_CASTLE_LIMIT);
+    });
   });
 });

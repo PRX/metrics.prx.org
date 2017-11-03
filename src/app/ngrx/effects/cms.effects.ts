@@ -22,8 +22,9 @@ export class CmsEffects {
       //  * would simplify app.component to just calling this.store.dispatch(new CmsPodcastsAction());
       //  * would provide state management for loading and errors
       // the followItems gets called, but it never returns, no errors on the console or caught exceptions, possibly swallowed error
-      // reason this isnt working is that auth is an observable, need to follow
-      return this.cms.auth.followItems('prx:series', {per: this.cms.auth.count('prx:series'), filters: 'v4', zoom: 'prx:distributions'})
+      // reason this isnt working is that auth is an observable
+      // TODO: needs per: auth.count('prx:series')
+      return this.cms.auth.followItems('prx:series', {/*per: this.cms.auth.count('prx:series'), */filters: 'v4', zoom: 'prx:distributions'})
         .flatMap((docs: HalDoc[]) => {
           const podcasts: PodcastModel[] = docs.map(doc => {
             return {

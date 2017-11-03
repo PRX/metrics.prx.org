@@ -30,8 +30,8 @@ export class PodcastsComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.podcastFilterSubscription = this.store.select(selectPodcastFilter).subscribe((selectedPodcastSeriesId: number) => {
-      // this.selectedPodcast = filteredPodcast;
       this.selectedPodcastSeriesId = selectedPodcastSeriesId;
+      this.selectedPodcast = this.allPodcastOptions.map(o => o[1]).find(p => p.seriesId === this.selectedPodcastSeriesId);
     });
     this.intervalFilterSubscription = this.store.select(selectIntervalFilter).subscribe((interval: IntervalModel) => {
       this.selectedInterval = interval;

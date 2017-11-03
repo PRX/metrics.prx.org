@@ -1,5 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { DebugElement } from '@angular/core';
+import { RouterTestingModule } from '@angular/router/testing';
 import { StoreModule } from '@ngrx/store';
 import { Angulartics2 } from 'angulartics2';
 import { HalService, MockHalService } from 'ngx-prx-styleguide';
@@ -20,6 +21,7 @@ describe('HomeComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [
+        RouterTestingModule,
         SharedModule,
         DownloadsModule,
         StoreModule.forRoot(reducers)

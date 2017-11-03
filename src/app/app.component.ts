@@ -53,15 +53,17 @@ export class AppComponent implements OnInit, OnDestroy {
       this.podcasts = state;
 
       if (this.podcasts && this.podcasts.length > 0) {
-        this.filterStoreSub = this.store.select(selectPodcastFilter).subscribe((newPodcastSeriesId: number) => {
-          if (newPodcastSeriesId && newPodcastSeriesId !== this.filteredPodcastSeriesId) {
-            const selectedPodcast = this.podcasts.find(p => p.seriesId === newPodcastSeriesId);
-            if (selectedPodcast) {
-              this.getEpisodes(selectedPodcast);
+        if (!this.filterStoreSub) {
+          this.filterStoreSub = this.store.select(selectPodcastFilter).subscribe((newPodcastSeriesId: number) => {
+            if (newPodcastSeriesId && newPodcastSeriesId !== this.filteredPodcastSeriesId) {
+              const selectedPodcast = this.podcasts.find(p => p.seriesId === newPodcastSeriesId);
+              if (selectedPodcast) {
+                this.getEpisodes(selectedPodcast);
+              }
             }
-          }
-          this.filteredPodcastSeriesId = newPodcastSeriesId;
-        });
+            this.filteredPodcastSeriesId = newPodcastSeriesId;
+          });
+        }
 
         // Default select the first one by navigating to it. (It'll be the last one that was updated)
         if (!this.filteredPodcastSeriesId) {
@@ -110,7 +112,7 @@ export class AppComponent implements OnInit, OnDestroy {
       });
     });
     // if I could cms.effects working, this function could just be
-    // this.store.dispatch(new CmsPodcastsAction());
+    this.store.dispatch(new CmsPodcastsAction());
   }
 
   getSeriesPodcastDistribution(podcast: PodcastModel): Observable<HalDoc[]> {

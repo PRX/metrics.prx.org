@@ -15,7 +15,7 @@ import { getBeginEndDateFromStandardRange, getStandardRangeForBeginEndDate, getR
   `
 })
 export class DateRangeComponent {
-  @Input() filter: FilterModel;
+  @Input() filter: FilterModel; // TODO: still using filter.podcast in the template here and looking for title in custom-date-range
   @Output() dateRangeChange = new EventEmitter<DateRangeModel>();
 
   constructor(public angulartics2: Angulartics2) {}

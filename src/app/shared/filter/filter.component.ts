@@ -1,4 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs/Subscription';
 import { selectFilter } from '../../ngrx/reducers';
@@ -27,7 +28,8 @@ export class FilterComponent implements OnInit, OnDestroy {
   filterSub: Subscription;
   hasChanges = false;
 
-  constructor(public store: Store<any>) {}
+  constructor(public store: Store<any>,
+              private router: Router) {}
 
   ngOnInit() {
     this.filterSub = this.store.select(selectFilter).subscribe((newFilter: FilterModel) => {
@@ -79,7 +81,23 @@ export class FilterComponent implements OnInit, OnDestroy {
       this.filter.endDate = roundDateToEndOfInterval(this.filter.endDate, this.filter.interval);
       this.filter.standardRange = getStandardRangeForBeginEndDate({beginDate: this.filter.beginDate, endDate: this.filter.endDate});
       this.filter.range = getRange(this.filter.standardRange);
-      this.store.dispatch(new CastleFilterAction({filter: this.filter}));
+      const routerParams = {
+        beginDate: this.filter.beginDate.toISOString(),
+        endDate: this.filter.endDate.toISOString()/*,
+        episodes: this.filter.episodes.map(e => e.id).join(',')*/
+      };
+      if (this.filter.standardRange) {
+        routerParams['standardRange'] = this.filter.standardRange;
+      }
+      if (this.filter.range) {
+        routerParams['range'] = this.filter.range.join(',');
+      }
+      this.router.navigate([this.filter.podcastSeriesId, 'downloads', this.filter.interval.key, routerParams]);
+
+      // until episodes are completed
+      if (this.filter.episodes) {
+        this.store.dispatch(new CastleFilterAction({filter: {episodes: this.filter.episodes}}));
+      }
     }
   }
 

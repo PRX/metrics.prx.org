@@ -95,8 +95,18 @@ describe('date util', () => {
     it('except for dates in the present, which should be rounded to the end of today utc', () => {
       expect(roundDateToEndOfInterval(beginningOfThisMonthUTC().toDate(), INTERVAL_MONTHLY).valueOf()).toEqual(endOfTodayUTC().valueOf());
     });
-    it('except for hourly and 15m, which should be rounded to the beginning of the interval', () => {
-      expect(roundDateToEndOfInterval(new Date(2017, 10, 27, 8, 48), INTERVAL_15MIN).getMinutes()).toEqual(45);
+    it('except for hourly and 15m, which should be rounded to the end of the interval', () => {
+      expect(roundDateToEndOfInterval(new Date(2017, 9, 27, 8, 32), INTERVAL_15MIN).getMinutes()).toEqual(44);
+      expect(roundDateToEndOfInterval(new Date(2017, 9, 27, 8, 32), INTERVAL_HOURLY).getMinutes()).toEqual(59);
+    });
+    it('dates in the future will be rounded to end of today UTC', () => {
+      const future = new Date;
+      future.setDate(future.getDate() + 1);
+      expect(roundDateToEndOfInterval(future, INTERVAL_15MIN).valueOf()).toEqual(endOfTodayUTC().valueOf());
+      expect(roundDateToEndOfInterval(future, INTERVAL_HOURLY).valueOf()).toEqual(endOfTodayUTC().valueOf());
+      expect(roundDateToEndOfInterval(future, INTERVAL_DAILY).valueOf()).toEqual(endOfTodayUTC().valueOf());
+      expect(roundDateToEndOfInterval(future, INTERVAL_WEEKLY).valueOf()).toEqual(endOfTodayUTC().valueOf());
+      expect(roundDateToEndOfInterval(future, INTERVAL_MONTHLY).valueOf()).toEqual(endOfTodayUTC().valueOf());
     });
   });
 

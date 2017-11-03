@@ -285,10 +285,15 @@ export const roundDateToEndOfInterval = (date: Date, interval: IntervalModel): D
     return moment.min(
       moment(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(), 23, 59, 59, 999)).utc(),
       endOfTodayUTC()).toDate();
-  } else {
-    // hourly and 15 min data should just show the beginning of the interval
-    // (and there is where extracting these helper functions could lead to later trouble...)
-    return roundDateToBeginOfInterval(date, interval);
+  } else if (interval === INTERVAL_HOURLY) {
+    return moment.min(
+      moment(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(), date.getUTCHours(), 59, 59, 999)).utc(),
+      endOfTodayUTC()).toDate();
+  } else if (interval === INTERVAL_15MIN) {
+    const minutes = date.getUTCMinutes() - (date.getUTCMinutes() % 15) + 14;
+    return moment.min(
+      moment(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(), date.getUTCHours(), minutes, 59, 999)).utc(),
+      endOfTodayUTC()).toDate();
   }
 };
 

@@ -38,18 +38,18 @@ export class RoutingEffects {
         if (params['endDate']) {
           filter.endDate = new Date(params['endDate']);
         }
+        if (params['range']) {
+          filter.range = params['range'].split(',');
+        }
         // begin and end date take precendence over standard range because "users want to use urls to pass around reports"
         // "users want to bookmark common parameters" is mutually exclusive with the idea of using these date based urls
         // because dates (and episodes) are temporal parameters that would change over time
         if (filter.beginDate && filter.endDate) {
           // maybe these shouldn't even go in the url if they are being overridden, but "all things must go in the url"
           filter.standardRange = getStandardRangeForBeginEndDate({beginDate: filter.beginDate, endDate: filter.endDate});
-          filter.range = getRange(filter.standardRange);
         } else {
           filter.standardRange = params['standardRange'];
-          if (params['range']) {
-            filter.range = params['range'].split(',');
-          }
+
         }
       }
       return Observable.of(new CastleFilterAction({filter}));

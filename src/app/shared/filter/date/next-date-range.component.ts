@@ -1,11 +1,11 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs/Subscription';
 import * as moment from 'moment';
 import { FilterModel, TODAY, THIS_WEEK, TWO_WEEKS, THIS_MONTH, THREE_MONTHS, THIS_YEAR,
   YESTERDAY, LAST_WEEK, PRIOR_TWO_WEEKS, LAST_MONTH, PRIOR_THREE_MONTHS, LAST_YEAR } from '../../../ngrx/model';
 import { selectFilter } from '../../../ngrx/reducers';
-import { CastleFilterAction } from '../../../ngrx/actions';
 import { endOfTodayUTC, getStandardRangeForBeginEndDate } from '../../util/date.util';
 
 @Component({
@@ -18,7 +18,8 @@ export class NextDateRangeComponent implements OnInit, OnDestroy {
   filterStoreSub: Subscription;
   filter: FilterModel;
 
-  constructor(public store: Store<any>) {}
+  constructor(public store: Store<any>,
+              private router: Router) {}
 
   ngOnInit() {
     this.filterStoreSub = this.store.select(selectFilter).subscribe(newFilter => {
@@ -33,7 +34,7 @@ export class NextDateRangeComponent implements OnInit, OnDestroy {
   }
 
   get nextDisabled(): string {
-    if (!this.filter || !this.filter.range) {
+    if (!this.filter || !this.filter.range ||!this.filter.podcastSeriesId || !this.filter.interval) {
       return 'disabled';
     } else if (moment(this.filter.endDate.valueOf()).utc().add(this.filter.range[0], this.filter.range[1]).valueOf() >
       endOfTodayUTC().endOf(this.filter.range[1]).valueOf()) {
@@ -45,7 +46,7 @@ export class NextDateRangeComponent implements OnInit, OnDestroy {
   }
 
   next() {
-    if (this.filter.range && this.filter.range.length) {
+    if (this.filter.range && this.filter.range.length && this.filter.podcastSeriesId && this.filter.interval) {
       const newBeginDate = moment(this.filter.beginDate).utc().add(this.filter.range[0], this.filter.range[1]).toDate();
       const newEndDate = moment.min(endOfTodayUTC(),
         moment(this.filter.endDate).utc().add(this.filter.range[0], this.filter.range[1])).toDate();
@@ -54,7 +55,16 @@ export class NextDateRangeComponent implements OnInit, OnDestroy {
       if (!standardRange) {
         standardRange = getStandardRangeForBeginEndDate({beginDate: newBeginDate, endDate: newEndDate});
       }
-      this.store.dispatch(new CastleFilterAction({filter: {standardRange, beginDate: newBeginDate, endDate: newEndDate}}));
+      const routerParams = {
+        range: this.filter.range,
+        beginDate: newBeginDate.toISOString(),
+        endDate: newEndDate.toISOString()
+      };
+      // can be undefined and don't want undefined in route
+      if (standardRange) {
+        routerParams['standardRange'] = standardRange;
+      }
+      this.router.navigate([this.filter.podcastSeriesId, 'downloads', this.filter.interval.key, routerParams]);
     }
   }
 

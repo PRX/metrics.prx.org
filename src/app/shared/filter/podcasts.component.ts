@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs/Subscription';
 import { selectPodcastFilter, selectPodcasts, selectIntervalFilter } from '../../ngrx/reducers';
@@ -9,11 +9,11 @@ import { CastleFilterAction } from '../../ngrx/actions';
 @Component({
   selector: 'metrics-podcasts',
   template: `
-    <prx-select *ngIf="allPodcastOptions.length > 1"
+    <prx-select *ngIf="allPodcastOptions?.length > 1"
                 single="true" searchable="true"
                 [options]="allPodcastOptions" [selected]="selectedPodcast" (onSelect)="onPodcastChange($event)">
     </prx-select>
-    <span *ngIf="allPodcastOptions.length === 1 && selectedPodcast">{{ selectedPodcast.title }}</span>
+    <span *ngIf="allPodcastOptions?.length === 1 && selectedPodcast">{{ selectedPodcast.title }}</span>
   `
 })
 export class PodcastsComponent implements OnInit, OnDestroy {
@@ -37,8 +37,10 @@ export class PodcastsComponent implements OnInit, OnDestroy {
       this.selectedInterval = interval;
     });
     this.podcastsSubscription = this.store.select(selectPodcasts).subscribe((allPodcasts: PodcastModel[]) => {
-      this.allPodcastOptions = allPodcasts.map((podcast: PodcastModel) => [podcast.title, podcast]);
-      this.selectedPodcast = allPodcasts.find(p => p.seriesId === this.selectedPodcastSeriesId);
+      if (allPodcasts && allPodcasts.length) {
+        this.allPodcastOptions = allPodcasts.map((podcast: PodcastModel) => [podcast.title, podcast]);
+        this.selectedPodcast = allPodcasts.find(p => p.seriesId === this.selectedPodcastSeriesId);
+      }
     });
   }
 

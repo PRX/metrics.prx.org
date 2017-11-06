@@ -15,7 +15,8 @@ import { getBeginEndDateFromStandardRange, getStandardRangeForBeginEndDate, getR
   `
 })
 export class DateRangeComponent {
-  @Input() filter: FilterModel; // TODO: still using filter.podcast in the template here and looking for title in custom-date-range
+  // TODO: still using filter.podcast in the template here and looking for title in custom-date-range
+  @Input() filter: FilterModel;
   @Output() dateRangeChange = new EventEmitter<DateRangeModel>();
 
   constructor(public angulartics2: Angulartics2) {}
@@ -35,7 +36,7 @@ export class DateRangeComponent {
   }
 
   googleAnalyticsEvent(action: string, dateRange: DateRangeModel) {
-    /* TODO: effect?
+    /* TODO: effect? (if there is time)
     if (this.filter && this.filter.podcast && this.filter.interval) {
       const value = getAmountOfIntervals(dateRange.beginDate, dateRange.endDate, this.filter.interval);
       this.angulartics2.eventTrack.next({

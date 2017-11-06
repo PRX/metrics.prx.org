@@ -1,9 +1,8 @@
 import { ActionTypes, ActionWithPayload, CmsPodcastsPayload } from '../actions';
 import { PodcastModel } from '../model';
 
-const initialState = [];
-
-export function PodcastReducer(state: PodcastModel[] = initialState, action: ActionWithPayload<CmsPodcastsPayload>): PodcastModel[] {
+// initialState is undefined, not yet loaded; so when empty, no podcasts
+export function PodcastReducer(state: PodcastModel[] = undefined, action: ActionWithPayload<CmsPodcastsPayload>): PodcastModel[] {
   switch (action.type) {
     case ActionTypes.CMS_PODCASTS_SUCCESS:
       // console.log('PodcastReducer', action.type, action.payload.podcasts);

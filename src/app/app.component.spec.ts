@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { DebugElement } from '@angular/core';
+import { Component, DebugElement } from '@angular/core';
 import { RouterTestingModule } from '@angular/router/testing';
 import { StoreModule } from '@ngrx/store';
 import { Subject } from 'rxjs/Subject';
@@ -16,6 +16,9 @@ import { reducers } from './ngrx/reducers';
 
 import { CastleFilterAction, CmsAllPodcastEpisodeGuidsAction, CmsPodcastsSuccessAction } from './ngrx/actions';
 import { PodcastModel, FilterModel, INTERVAL_DAILY } from './ngrx/model/';
+
+@Component({template: ''})
+export class DummyComponent {}
 
 describe('AppComponent', () => {
   let comp: AppComponent;
@@ -36,15 +39,18 @@ describe('AppComponent', () => {
 
     TestBed.configureTestingModule({
       declarations: [
-        AppComponent
+        AppComponent,
+        DummyComponent
       ],
       imports: [
         CoreModule,
         AuthModule,
         ModalModule,
-        RouterTestingModule,
         SharedModule,
-        StoreModule.forRoot(reducers)
+        StoreModule.forRoot(reducers),
+        RouterTestingModule.withRoutes([
+          { path: ':seriesId/downloads/daily', component: DummyComponent }
+        ])
       ],
       providers: [
         {provide: AuthService, useValue: {
@@ -92,14 +98,6 @@ describe('AppComponent', () => {
     fix.detectChanges();
     expect(de.query(By.css('prx-navuser'))).toBeNull();
   }));
-
-  it('should inform users if they don\'t have any podcasts', () => {
-    const series = auth.mockItems('prx:series', []);
-    authToken.next('fake-token');
-    fix.detectChanges();
-    expect(de.query(By.css('p.error'))).not.toBeNull();
-    // TODO: Cannot match any routes because no router-outlet
-  });
 
   it('should load series podcast and episode and dispatch CMS actions', () => {
     spyOn(comp, 'getSeriesPodcastDistribution').and.callThrough();

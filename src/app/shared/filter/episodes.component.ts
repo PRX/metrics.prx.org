@@ -30,6 +30,7 @@ export class EpisodesComponent implements OnInit, OnChanges, OnDestroy {
           this.allEpisodeOptions = allPodcastEpisodes.map((episode: EpisodeModel) => {
             return [episode.title, episode];
           });
+          this.setSelectedOptions();
         }
       }
     });
@@ -40,13 +41,19 @@ export class EpisodesComponent implements OnInit, OnChanges, OnDestroy {
       if (this.isPodcastChanged()) {
         this.allEpisodeOptions = [];
       }
-      this.selected = this.filter.episodes;
+      this.setSelectedOptions();
       this.selectedPodcastSeriesId = this.filter.podcastSeriesId;
     }
   }
 
   ngOnDestroy() {
     if (this.allEpisodesSub) { this.allEpisodesSub.unsubscribe(); }
+  }
+
+  setSelectedOptions() {
+    if (this.filter.episodeIds) {
+      this.selected = this.allEpisodeOptions.map(o => o[1]).filter(e => this.filter.episodeIds.indexOf(e.id) !== -1);
+    }
   }
 
   isPodcastChanged(): boolean {

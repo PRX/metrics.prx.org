@@ -24,7 +24,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       if (allPodcasts && allPodcasts.length === 0) {
         this.error = 'Looks like you don\'t have any podcasts.';
       } else {
-        this.error = undefined;
+        this.error = null;
       }
     });
   }

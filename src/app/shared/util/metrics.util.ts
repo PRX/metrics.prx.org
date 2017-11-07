@@ -18,9 +18,9 @@ export const filterAllPodcastEpisodes = (filter: FilterModel, episodes: EpisodeM
 };
 
 export const filterEpisodes = (filter: FilterModel, episodes: EpisodeModel[]) => {
-  if (filter.podcastSeriesId && filter.episodes) {
+  if (filter.podcastSeriesId && filter.episodeIds) {
     return episodes.filter(episode => episode.seriesId === filter.podcastSeriesId &&
-    filter.episodes.map(e => e.id).indexOf(episode.id) !== -1);
+    filter.episodeIds.indexOf(episode.id) !== -1);
   }
 };
 
@@ -64,11 +64,11 @@ export const findPodcastMetrics =
 
 export const filterEpisodeMetrics =
   (filter: FilterModel, episodeMetrics: EpisodeMetricsModel[], metricsType: MetricsType): EpisodeMetricsModel[] => {
-  if (filter.podcastSeriesId && filter.episodes && filter.interval && filter.beginDate && filter.endDate && episodeMetrics) {
+  if (filter.podcastSeriesId && filter.episodeIds && filter.interval && filter.beginDate && filter.endDate && episodeMetrics) {
     const metricsProperty = getMetricsProperty(filter.interval, metricsType);
     return episodeMetrics
       .filter((metric: EpisodeMetricsModel) => metric.seriesId === filter.podcastSeriesId &&
-        filter.episodes.map(e => e.id).indexOf(metric.id) !== -1 &&
+        filter.episodeIds.indexOf(metric.id) !== -1 &&
         metric[metricsProperty] &&
         filterMetricsByDate(filter.beginDate, filter.endDate, filter.interval, metric[metricsProperty]))
       .map((metric: EpisodeMetricsModel) => {

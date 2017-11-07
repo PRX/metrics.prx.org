@@ -49,7 +49,11 @@ export class RoutingEffects {
           filter.standardRange = getStandardRangeForBeginEndDate({beginDate: filter.beginDate, endDate: filter.endDate});
         } else {
           filter.standardRange = params['standardRange'];
-
+        }
+        if (params['episodes'] === '') {
+          filter.episodeIds = [];
+        } else if (params['episodes']) {
+          filter.episodeIds = params['episodes'].split(',').map(stringValue => +stringValue);
         }
       }
       return Observable.of(new CastleFilterAction({filter}));

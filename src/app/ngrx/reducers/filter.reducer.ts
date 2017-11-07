@@ -9,9 +9,12 @@ export function FilterReducer(state: FilterModel = initialState, action: ActionW
       const newState: FilterModel = {...state};
       if (action.payload.filter.podcastSeriesId) {
         newState.podcastSeriesId = action.payload.filter.podcastSeriesId;
+        if (isPodcastChanged(action.payload.filter, state)) {
+          newState.episodeIds = null;
+        }
       }
-      if (action.payload.filter.episodes) {
-        newState.episodes = [...action.payload.filter.episodes];
+      if (action.payload.filter.episodeIds) {
+        newState.episodeIds = [...action.payload.filter.episodeIds];
       }
       if (action.payload.filter.beginDate || action.payload.filter.endDate) {
         // standardRange can only be set with accompanying begin or end date
@@ -39,4 +42,8 @@ export function FilterReducer(state: FilterModel = initialState, action: ActionW
     default:
       return state;
   }
+}
+
+export function isPodcastChanged(newState: FilterModel, oldState: FilterModel): boolean {
+  return newState.podcastSeriesId && (!oldState.podcastSeriesId ||  newState.podcastSeriesId !== oldState.podcastSeriesId);
 }

@@ -9,7 +9,8 @@ import { DownloadsTableComponent } from './downloads-table.component';
 
 import { reducers } from '../ngrx/reducers';
 import { PodcastModel, EpisodeModel, FilterModel, INTERVAL_DAILY } from '../ngrx/model';
-import { CastlePodcastMetricsAction, CastleEpisodeMetricsAction, CastleFilterAction, CmsAllPodcastEpisodeGuidsAction } from '../ngrx/actions';
+import { CastlePodcastMetricsAction, CastleEpisodeMetricsAction,
+  CastleFilterAction, CmsAllPodcastEpisodeGuidsAction } from '../ngrx/actions';
 
 describe('DownloadsTableComponent', () => {
   let comp: DownloadsTableComponent;
@@ -85,7 +86,7 @@ describe('DownloadsTableComponent', () => {
   ];
   const filter: FilterModel = {
     podcastSeriesId: podcast.seriesId,
-    episodes,
+    episodeIds: episodes.map(e => e.id),
     beginDate: new Date('2017-08-27T00:00:00Z'),
     endDate: new Date('2017-09-07T00:00:00Z'),
     interval: INTERVAL_DAILY
@@ -139,7 +140,7 @@ describe('DownloadsTableComponent', () => {
   });
 
   it('should show only the episodes in filter', () => {
-    comp.store.dispatch(new CastleFilterAction({filter: {episodes: [episodes[0]]}}));
+    comp.store.dispatch(new CastleFilterAction({filter: {episodeIds: [episodes[0].id]}}));
     expect(comp.episodeTableData.length).toEqual(1);
   });
 

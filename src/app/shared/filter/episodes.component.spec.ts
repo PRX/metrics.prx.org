@@ -58,7 +58,7 @@ describe('EpisodesComponent', () => {
 
       comp.filter = {
         podcastSeriesId: podcast.seriesId,
-        episodes
+        episodeIds: episodes.map(e => e.id)
       };
       comp.store.dispatch(new CmsAllPodcastEpisodeGuidsAction({podcast, episodes}));
       comp.ngOnChanges();

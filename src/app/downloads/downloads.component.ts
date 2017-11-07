@@ -26,12 +26,14 @@ import { beginningOfTwoWeeksUTC, endOfTodayUTC, getRange } from '../shared/util/
   styleUrls: ['downloads.component.css']
 })
 export class DownloadsComponent implements OnInit, OnDestroy {
-  podcastStoreSub: Subscription;
+  podcastSub: Subscription;
   podcasts: PodcastModel[];
-  episodeStoreSub: Subscription;
+  episodeSub: Subscription;
   allPodcastEpisodes: EpisodeModel[];
-  filterStoreSub: Subscription;
+  filterSub: Subscription;
   filter: FilterModel;
+  updatePodcast: boolean;
+  updateEpisodes: boolean;
   isPodcastLoading = true;
   isEpisodeLoading = true;
   isLoadingForTheFirstTime = true;
@@ -46,66 +48,100 @@ export class DownloadsComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.toggleLoading(true, true);
 
-    this.podcastStoreSub = this.store.select(selectPodcasts).subscribe((podcasts: PodcastModel[]) => {
+    this.subPodcastsAndFilter();
+  }
+
+  subPodcastsAndFilter() {
+    this.podcastSub = this.store.select(selectPodcasts).subscribe((podcasts: PodcastModel[]) => {
       if (podcasts && podcasts.length) {
         this.podcasts = podcasts;
         this.isLoadingForTheFirstTime = false;
 
-        if (!this.filterStoreSub) {
-          this.filterStoreSub = this.store.select(selectFilter).subscribe((newFilter: FilterModel) => {
+        if (!this.filterSub) {
+          this.filterSub = this.store.select(selectFilter).subscribe((newFilter: FilterModel) => {
             if (!this.filter || !this.filter.beginDate || !this.filter.endDate || !this.filter.interval) {
               this.setDefaultFilter(newFilter);
-            }
-
-            let changedFilter = false;
-            if (this.isPodcastChanged(newFilter)) {
+              this.updatePodcast = this.updateEpisodes = true;
               this.toggleLoading(true, true);
-              this.filter.podcastSeriesId = newFilter.podcastSeriesId;
-              changedFilter = true;
+            }
 
-              // we don't want to even look at this store until we have the selected podcast
-              if (!this.episodeStoreSub) {
-                this.episodeStoreSub = this.store.select(selectEpisodes).subscribe((allEpisodes: EpisodeModel[]) => {
-                  const episodes = filterAllPodcastEpisodes(this.filter, allEpisodes);
-                  if (episodes && episodes.length) {
-                    this.allPodcastEpisodes = episodes;
-                    this.setDefaultEpisodeFilter();
-                  }
-                });
+            if (this.isPodcastChanged(newFilter)) {
+              this.filter.podcastSeriesId = newFilter.podcastSeriesId;
+              this.resetEpisodes();
+              this.toggleLoading(true, true);
+              if (!this.episodeSub) {
+                this.subEpisodes();
               }
-            }
-            if (this.isBeginDateChanged(newFilter)) {
-              this.filter.beginDate = newFilter.beginDate;
-              changedFilter = true;
-            }
-            if (this.isEndDateChanged(newFilter)) {
-              this.filter.endDate = newFilter.endDate;
-              changedFilter = true;
-            }
-            if (this.isIntervalChanged(newFilter)) {
-              this.filter.interval = newFilter.interval;
-              changedFilter = true;
+              this.updatePodcast = this.updateEpisodes = true;
             }
 
             if (this.isEpisodesChanged(newFilter)) {
-              this.filter.episodes = newFilter.episodes;
-              changedFilter = true;
+              this.filter.episodeIds = newFilter.episodeIds;
+              // we also update the podcast data when episodes changes because when looking at the current day
+              // after a bit there is more data to be had on the podcast also
+              this.updatePodcast = this.updateEpisodes = true;
             }
 
-            if (changedFilter && this.filter.podcastSeriesId && this.podcasts) {
+            if (this.isBeginDateChanged(newFilter)) {
+              this.filter.beginDate = newFilter.beginDate;
+              this.updatePodcast = this.updateEpisodes = true;
+            }
+            if (this.isEndDateChanged(newFilter)) {
+              this.filter.endDate = newFilter.endDate;
+              this.updatePodcast = this.updateEpisodes = true;
+            }
+            if (this.isIntervalChanged(newFilter)) {
+              this.filter.interval = newFilter.interval;
+              this.updatePodcast = this.updateEpisodes = true;
+            }
+
+            if (this.updatePodcast && this.filter.podcastSeriesId) {
               const podcast = this.podcasts.find(p => p.seriesId === this.filter.podcastSeriesId);
               if (podcast) {
                 this.getPodcastMetrics(podcast);
+                this.updatePodcast = false;
               }
             }
 
-            if (changedFilter && this.filter.episodes && this.filter.episodes.length > 0) {
-              this.getEpisodeMetrics();
+            // if episodes were already loaded, update episode metrics with filter change
+            if (this.updateEpisodes && this.allPodcastEpisodes && this.filter.episodeIds && this.filter.episodeIds.length > 0) {
+              const episodes = filterAllPodcastEpisodes(this.filter, this.allPodcastEpisodes);
+              if (episodes && episodes.length) {
+                this.getEpisodeMetrics();
+                this.updateEpisodes = false;
+              }
             }
           });
         }
       }
     });
+  }
+
+  subEpisodes() {
+    // update episodes separate from filter change when we're waiting on the episodes to load
+    this.episodeSub = this.store.select(selectEpisodes).subscribe((allEpisodes: EpisodeModel[]) => {
+      const episodes = filterAllPodcastEpisodes(this.filter, allEpisodes);
+      if (episodes && episodes.length) {
+        this.allPodcastEpisodes = episodes;
+        if (!this.filter.episodeIds) {
+          this.setDefaultEpisodeFilter();
+          this.updateEpisodes = true;
+        }
+        if (this.updateEpisodes && this.filter.episodeIds) {
+          if (this.filter.episodeIds.length === 0) {
+            this.toggleLoading(this.isPodcastLoading, false);
+          } else {
+            this.getEpisodeMetrics();
+          }
+          this.updateEpisodes = false;
+        }
+      }
+    });
+  }
+
+  resetEpisodes() {
+    this.allPodcastEpisodes = null;
+    this.filter.episodeIds = null;
   }
 
   toggleLoading(isPodcastLoading, isEpisodeLoading = this.isEpisodeLoading) {
@@ -122,8 +158,9 @@ export class DownloadsComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    if (this.filterStoreSub) { this.filterStoreSub.unsubscribe(); }
-    if (this.episodeStoreSub) { this.episodeStoreSub.unsubscribe(); }
+    if (this.filterSub) { this.filterSub.unsubscribe(); }
+    if (this.podcastSub) { this.podcastSub.unsubscribe(); }
+    if (this.episodeSub) { this.episodeSub.unsubscribe(); }
   }
 
   setDefaultFilter(newFilter: FilterModel) {
@@ -135,9 +172,6 @@ export class DownloadsComponent implements OnInit, OnDestroy {
       endDate: endOfTodayUTC().toDate(),
       interval: INTERVAL_DAILY
     };
-    // override the defaults if we have incoming filter
-    // I would just add a ...newFilter above, but I do not want the podcast or episode params here just yet
-    // gotta have podcast and episodes come back down thru the router effects filter mechanism
     if (newFilter.standardRange) {
       this.filter.standardRange = newFilter.standardRange;
     }
@@ -160,6 +194,11 @@ export class DownloadsComponent implements OnInit, OnDestroy {
         standardRange: this.filter.standardRange,
         range: this.filter.range.join(',')
       };
+      // if episodes are on the route, keep them on the route
+      // but do not put them on this.filter yet because we need to check for incoming changes
+      if (newFilter.episodeIds) {
+        routerParams['episodes'] = newFilter.episodeIds.join(',');
+      }
       this.router.navigate([newFilter.podcastSeriesId, 'downloads', this.filter.interval.key, routerParams]);
     } else {
       this.store.dispatch(new CastleFilterAction({filter: this.filter}));
@@ -170,14 +209,24 @@ export class DownloadsComponent implements OnInit, OnDestroy {
     const episodes = [];
     this.allPodcastEpisodes.every((episode: EpisodeModel) => {
       episodes.push(episode);
-      if ((episode.publishedAt.valueOf() < this.filter.beginDate.valueOf() &&
-          episodes.length % 5 === 0) || episodes.length === DownloadsComponent.DONT_BREAK_CASTLE_LIMIT) {
-        return false;
-      } else {
-        return true;
-      }
+      return !((episode.publishedAt.valueOf() < this.filter.beginDate.valueOf() &&
+          episodes.length % 5 === 0) || episodes.length === DownloadsComponent.DONT_BREAK_CASTLE_LIMIT);
     });
-    this.store.dispatch(new CastleFilterAction({filter: {episodes}}));
+    this.filter.episodeIds = episodes.map(e => e.id);
+    const routerParams = {episodes: episodes.map(e => e.id).join(',')};
+    if (this.filter.range) {
+      routerParams['range'] = this.filter.range;
+    }
+    if (this.filter.standardRange) {
+      routerParams['standardRange'] = this.filter.standardRange;
+    }
+    if (this.filter.beginDate) {
+      routerParams['beginDate'] = this.filter.beginDate.toISOString();
+    }
+    if (this.filter.endDate) {
+      routerParams['endDate'] = this.filter.endDate.toISOString();
+    }
+    this.router.navigate([this.filter.podcastSeriesId, 'downloads', this.filter.interval.key, routerParams]);
   }
 
   getPodcastMetrics(podcast: PodcastModel) {
@@ -218,19 +267,22 @@ export class DownloadsComponent implements OnInit, OnDestroy {
 
   getEpisodeMetrics() {
     this.toggleLoading(this.isPodcastLoading, true);
-    this.filter.episodes.forEach((episode: EpisodeModel) => {
-      this.castle.followList('prx:episode-downloads', {
-        guid: episode.guid,
-        from: this.filter.beginDate.toISOString(),
-        to: this.filter.endDate.toISOString(),
-        interval: this.filter.interval.value
-      }).subscribe(
-        metrics => this.setEpisodeMetrics(episode, metrics),
-        err => {
-          this.toggleLoading(this.isPodcastLoading, false);
-          this.showError(err.status, 'episode', episode.title);
-        }
-      );
+    this.filter.episodeIds.forEach((episodeId: number) => {
+      const episode = this.allPodcastEpisodes.find(e => e.id === episodeId);
+      if (episode && episode.guid) {
+        this.castle.followList('prx:episode-downloads', {
+          guid: episode.guid,
+          from: this.filter.beginDate.toISOString(),
+          to: this.filter.endDate.toISOString(),
+          interval: this.filter.interval.value
+        }).subscribe(
+          metrics => this.setEpisodeMetrics(episode, metrics),
+          err => {
+            this.toggleLoading(this.isPodcastLoading, false);
+            this.showError(err.status, 'episode', episode.title);
+          }
+        );
+      }
     });
   }
 
@@ -251,10 +303,10 @@ export class DownloadsComponent implements OnInit, OnDestroy {
   }
 
   isEpisodesChanged(state: FilterModel): boolean {
-    return state.episodes &&
-      (!this.filter.episodes ||
-      !state.episodes.map(e => e.id).every(id => this.filter.episodes.map(e => e.id).indexOf(id) !== -1) ||
-      !this.filter.episodes.map(e => e.id).every(id => state.episodes.map(e => e.id).indexOf(id) !== -1));
+    return state.episodeIds &&
+      (!this.filter.episodeIds ||
+      !state.episodeIds.every(id => this.filter.episodeIds.indexOf(id) !== -1) ||
+      !this.filter.episodeIds.every(id => state.episodeIds.indexOf(id) !== -1));
   }
 
   isBeginDateChanged(state: FilterModel): boolean {

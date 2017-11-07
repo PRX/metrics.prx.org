@@ -52,7 +52,6 @@ export class PodcastsComponent implements OnInit, OnDestroy {
 
   onPodcastChange(val) {
     if (val && val.seriesId !== this.selectedPodcast.seriesId) {
-      this.store.dispatch(new CastleFilterAction({filter: {podcastSeriesId: val.seriesId, episodes: []}}));
       this.router.navigate([val.seriesId, 'downloads', this.selectedInterval.key]);
     }
   }

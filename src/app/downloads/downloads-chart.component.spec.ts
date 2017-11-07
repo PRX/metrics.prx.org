@@ -8,7 +8,8 @@ import { DownloadsChartComponent } from './downloads-chart.component';
 
 import { reducers } from '../ngrx/reducers';
 import { PodcastModel, EpisodeModel, FilterModel, INTERVAL_DAILY } from '../ngrx/model';
-import { CastlePodcastMetricsAction, CastleEpisodeMetricsAction, CastleFilterAction } from '../ngrx/actions';
+import { CmsAllPodcastEpisodeGuidsAction,
+  CastlePodcastMetricsAction, CastleEpisodeMetricsAction, CastleFilterAction } from '../ngrx/actions';
 
 import { getTotal } from '../shared/util/metrics.util';
 import { TimeseriesDatumModel } from 'ngx-prx-styleguide';
@@ -87,7 +88,7 @@ describe('DownloadsChartComponent', () => {
   ];
   const filter: FilterModel = {
     podcastSeriesId: podcast.seriesId,
-    episodes,
+    episodeIds: episodes.map(e => e.id),
     beginDate: new Date('2017-08-27T00:00:00Z'),
     endDate: new Date('2017-09-07T00:00:00Z'),
     interval: INTERVAL_DAILY
@@ -112,6 +113,7 @@ describe('DownloadsChartComponent', () => {
 
       // call episode and podcast metrics to prime the store
       comp.store.dispatch(new CastleFilterAction({filter}));
+      comp.store.dispatch(new CmsAllPodcastEpisodeGuidsAction({podcast, episodes}));
       comp.store.dispatch(new CastleEpisodeMetricsAction({episode: episodes[0], filter, metricsType: 'downloads', metrics: ep0Downloads}));
       comp.store.dispatch(new CastleEpisodeMetricsAction({episode: episodes[1], filter, metricsType: 'downloads', metrics: ep1Downloads}));
       comp.store.dispatch(new CastlePodcastMetricsAction({podcast, filter, metricsType: 'downloads', metrics: podDownloads}));
@@ -137,7 +139,7 @@ describe('DownloadsChartComponent', () => {
   });
 
   it('should only include filtered episode metrics', () => {
-    comp.store.dispatch(new CastleFilterAction({filter: {episodes: [episodes[0]]}}));
+    comp.store.dispatch(new CastleFilterAction({filter: {episodeIds: [episodes[0].id]}}));
     expect(comp.episodeChartData.length).toEqual(1);
   });
 

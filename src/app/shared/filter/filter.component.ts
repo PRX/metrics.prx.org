@@ -4,8 +4,8 @@ import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs/Subscription';
 import { selectFilter } from '../../ngrx/reducers';
 import { DateRangeModel, EpisodeModel, FilterModel, IntervalModel } from '../../ngrx/model';
-import { CastleFilterAction } from '../../ngrx/actions';
-import { roundDateToBeginOfInterval, roundDateToEndOfInterval, getStandardRangeForBeginEndDate, getRange } from '../../shared/util/date.util';
+import { roundDateToBeginOfInterval, roundDateToEndOfInterval,
+  getStandardRangeForBeginEndDate, getRange } from '../../shared/util/date.util';
 
 @Component({
   selector: 'metrics-filter',
@@ -67,12 +67,12 @@ export class FilterComponent implements OnInit, OnDestroy {
   onEpisodesChange(episodes: EpisodeModel[]) {
     if (episodes &&
       (!this.filter ||
-      !this.filter.episodes ||
-      !episodes.map(e => e.id).every(id => this.filter.episodes.map(e => e.id).indexOf(id) !== -1) ||
-      !this.filter.episodes.map(e => e.id).every(id => episodes.map(e => e.id).indexOf(id) !== -1))) {
+      !this.filter.episodeIds ||
+      !episodes.map(e => e.id).every(id => this.filter.episodeIds.indexOf(id) !== -1) ||
+      !this.filter.episodeIds.every(id => episodes.map(e => e.id).indexOf(id) !== -1))) {
       this.hasChanges = true;
     }
-    this.filter = {...this.filter, episodes};
+    this.filter = {...this.filter, episodeIds: episodes.map(e => e.id)};
   }
 
   onApply() {
@@ -83,9 +83,11 @@ export class FilterComponent implements OnInit, OnDestroy {
       this.filter.range = getRange(this.filter.standardRange);
       const routerParams = {
         beginDate: this.filter.beginDate.toISOString(),
-        endDate: this.filter.endDate.toISOString()/*,
-        episodes: this.filter.episodes.map(e => e.id).join(',')*/
+        endDate: this.filter.endDate.toISOString()
       };
+      if (this.filter.episodeIds) {
+        routerParams['episodes'] = this.filter.episodeIds.join(',');
+      }
       if (this.filter.standardRange) {
         routerParams['standardRange'] = this.filter.standardRange;
       }
@@ -93,11 +95,6 @@ export class FilterComponent implements OnInit, OnDestroy {
         routerParams['range'] = this.filter.range.join(',');
       }
       this.router.navigate([this.filter.podcastSeriesId, 'downloads', this.filter.interval.key, routerParams]);
-
-      // until episodes are completed
-      if (this.filter.episodes) {
-        this.store.dispatch(new CastleFilterAction({filter: {episodes: this.filter.episodes}}));
-      }
     }
   }
 

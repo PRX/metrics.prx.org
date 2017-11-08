@@ -122,7 +122,8 @@ describe('DownloadsComponent', () => {
           id: 123,
           seriesId: 37800,
           title: 'A New Pet Talk Episode',
-          publishedAt: new Date()
+          publishedAt: new Date(),
+          guid: 'abcdefg'
         }]
       }));
       expect(comp.setEpisodeMetrics).toHaveBeenCalled();
@@ -138,19 +139,21 @@ describe('DownloadsComponent', () => {
           id: 123,
           seriesId: 37800,
           title: 'A New Pet Talk Episode',
-          publishedAt: new Date()
+          publishedAt: new Date(),
+          guid: 'abcdefg'
         }]
       }));
       comp.store.dispatch(new CastleFilterAction({filter: {beginDate}}));
       expect(comp.setPodcastMetrics).toHaveBeenCalledTimes(3); // now also called for changes to episodes filter
       expect(comp.setEpisodeMetrics).toHaveBeenCalledTimes(2);
-      expect(comp.store.dispatch).toHaveBeenCalledTimes(9);
+      // 2 (beforeEach) + 3 (this spec) + 3 (setPodcastMetrics) + 2 (setEpisodeMetrics)
+      expect(comp.store.dispatch).toHaveBeenCalledTimes(10);
     });
 
     it('should reload episode metrics if removed from filter then re-added', () => {
       const episodes = [
-        {doc: undefined, id: 123, seriesId: 37800, title: 'A New Pet Talk Episode', publishedAt: new Date()},
-        {doc: undefined, id: 1234, seriesId: 37800, title: 'A New Pet Talk Episode', publishedAt: new Date()}
+        {doc: undefined, id: 123, seriesId: 37800, title: 'A New Pet Talk Episode', publishedAt: new Date(), guid: 'abcdefg'},
+        {doc: undefined, id: 1234, seriesId: 37800, title: 'A New Pet Talk Episode', publishedAt: new Date(), guid: 'abcdefgh'}
       ];
       comp.store.dispatch(new CastleFilterAction({
         filter: {podcastSeriesId: 37800}

@@ -1,9 +1,9 @@
-import { INTERVAL_DAILY, INTERVAL_HOURLY } from '../../ngrx/model';
+import { PodcastModel, EpisodeModel, FilterModel, PodcastMetricsModel, EpisodeMetricsModel, INTERVAL_DAILY, INTERVAL_HOURLY } from '../../ngrx/model';
 import { filterPodcasts, filterAllPodcastEpisodes, filterEpisodes, filterMetricsByDate,
   findPodcastMetrics, filterEpisodeMetrics, metricsData, getTotal } from './metrics.util';
 
 describe('metrics util', () => {
-  const podcasts = [
+  const podcasts: PodcastModel[] = [
     {
       doc: undefined,
       seriesId: 37800,
@@ -19,7 +19,7 @@ describe('metrics util', () => {
       feederId: '12'
     }
   ];
-  const episodes = [
+  const episodes: EpisodeModel[] = [
     {
       doc: undefined,
       seriesId: 37800,
@@ -45,9 +45,9 @@ describe('metrics util', () => {
       guid: 'hijklmn'
     }
   ];
-  const filter = {
+  const filter: FilterModel = {
     podcastSeriesId: podcasts[0].seriesId,
-    episodes: [{...episodes[0]}],
+    episodeIds: [episodes[0].id],
     beginDate: new Date('2017-09-01T00:00:00Z'),
     endDate: new Date('2017-09-07T00:00:00Z'),
     interval: INTERVAL_DAILY
@@ -66,7 +66,7 @@ describe('metrics util', () => {
     ['2017-09-06T00:00:00Z', 162900],
     ['2017-09-07T00:00:00Z', 46858]
   ];
-  const podcastMetrics = [
+  const podcastMetrics: PodcastMetricsModel[] = [
     {
       seriesId: 37800,
       feederId: '70',
@@ -78,7 +78,7 @@ describe('metrics util', () => {
       dailyDownloads: [...metrics]
     }
   ];
-  const episodeMetrics = [
+  const episodeMetrics: EpisodeMetricsModel[] = [
     {
       seriesId: 37800,
       id: 123,
@@ -103,7 +103,7 @@ describe('metrics util', () => {
     expect(filterPodcasts(filter, podcasts).seriesId).toEqual(37800);
     const emptyFilter = {};
     expect(filterPodcasts(emptyFilter, podcasts)).toBeUndefined();
-    const nonMatchingFilter = {
+    const nonMatchingFilter: FilterModel = {
       podcastSeriesId: 1
     };
     expect(filterPodcasts(nonMatchingFilter, podcasts)).toBeUndefined();
@@ -118,15 +118,9 @@ describe('metrics util', () => {
     expect(filterEpisodes(filter, episodes)[0].id).toEqual(123);
     const emptyFilter = {};
     expect(filterEpisodes(emptyFilter, episodes)).toBeUndefined();
-    const nonMatchingFilter = {
+    const nonMatchingFilter: FilterModel = {
       podcastSeriesId: 37802,
-      episodes: [{
-        doc: undefined,
-        seriesId: 37802,
-        title: 'Why dragons make terrible pets',
-        id: 126,
-        publishedAt: new Date()
-      }]
+      episodeIds: [126]
     };
     expect(filterEpisodes(nonMatchingFilter, episodes).length).toEqual(0);
   });

@@ -1,8 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/operator/concatMap';
 import 'rxjs/add/operator/switchMap';
-import 'rxjs/add/operator/map';
 import { Action, Store } from '@ngrx/store';
 import { Actions, Effect } from '@ngrx/effects';
 import { selectPodcasts } from '../reducers';
@@ -21,22 +19,22 @@ export class CmsEffects {
       // would be great if this worked
       //  * would simplify app.component to just calling this.store.dispatch(new CmsPodcastsAction());
       //  * would provide state management for loading and errors
-      // the followItems gets called, but it never returns, no errors on the console or caught exceptions, possibly swallowed error
-      // reason this isnt working is that auth is an observable
-      // TODO: needs per: auth.count('prx:series')
-      return this.cms.auth.followItems('prx:series', {/*per: this.cms.auth.count('prx:series'), */filters: 'v4', zoom: 'prx:distributions'})
-        .flatMap((docs: HalDoc[]) => {
-          const podcasts: PodcastModel[] = docs.map(doc => {
-            return {
-              doc,
-              seriesId: doc['id'],
-              title: doc['title']
-            };
-          });
-          const dist$ = podcasts.map(p => this.getPodcastDistribution(p));
-          return Observable.forkJoin(...dist$).map(() => new CmsPodcastsSuccessAction({podcasts}));
-        })
-        .catch(error => Observable.of(new CmsPodcastsFailureAction()));
+      // this.cms.auth.flatMap gets called, but it never returns
+      return this.cms.auth.flatMap(auth => {
+        return auth.followItems('prx:series', {per: auth.count('prx:series'), filters: 'v4', zoom: 'prx:distributions'})
+          .flatMap((docs: HalDoc[]) => {
+            const podcasts: PodcastModel[] = docs.map(doc => {
+              return {
+                doc,
+                seriesId: doc['id'],
+                title: doc['title']
+              };
+            });
+            const dist$ = podcasts.map(p => this.getPodcastDistribution(p));
+            return Observable.forkJoin(...dist$).map(() => new CmsPodcastsSuccessAction({podcasts}));
+          })
+          .catch(error => Observable.of(new CmsPodcastsFailureAction()));
+      });
   });
 
   constructor(private store: Store<any>,

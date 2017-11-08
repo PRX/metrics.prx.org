@@ -91,7 +91,7 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   loadCmsSeries(auth: HalDoc) {
-    auth.followItems('prx:series',
+    /*auth.followItems('prx:series',
       {per: auth.count('prx:series'), filters: 'v4', zoom: 'prx:distributions'}).subscribe((series: HalDoc[]) => {
       if (series && series.length === 0) {
         this.store.dispatch(new CmsPodcastsSuccessAction({podcasts: []}));
@@ -108,9 +108,9 @@ export class AppComponent implements OnInit, OnDestroy {
           this.store.dispatch(new CmsPodcastsSuccessAction({podcasts: podcasts.filter(p => p.feederId)}));
         });
       }
-    });
+    });*/
     // if I could cms.effects working, this function could just be
-    // this.store.dispatch(new CmsPodcastsAction());
+    this.store.dispatch(new CmsPodcastsAction());
   }
 
   getSeriesPodcastDistribution(podcast: PodcastModel): Observable<HalDoc[]> {

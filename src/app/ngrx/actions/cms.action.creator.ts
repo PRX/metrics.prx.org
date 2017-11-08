@@ -6,18 +6,10 @@ export interface CmsPodcastsPayload {
   podcasts: PodcastModel[];
 }
 
-export class CmsPodcastsSuccessAction implements ActionWithPayload<CmsPodcastsPayload> {
-  readonly type = ActionTypes.CMS_PODCASTS_SUCCESS;
-
-  constructor(public payload: CmsPodcastsPayload) {}
-}
-
-export class CmsPodcastsFailureAction implements Action {
-  readonly type = ActionTypes.CMS_PODCASTS_FAILURE;
-}
-
 export class CmsPodcastsAction implements Action {
   readonly type = ActionTypes.CMS_PODCASTS;
+
+  constructor(public payload: CmsPodcastsPayload) {}
 }
 
 export interface CmsEpisodeGuidsPayload {

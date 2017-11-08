@@ -18,7 +18,7 @@ import { DownloadsTableComponent } from './downloads-table.component';
 import { reducers } from '../ngrx/reducers';
 
 import { EpisodeModel } from '../ngrx/model';
-import { CastleFilterAction, CmsPodcastsSuccessAction, CmsAllPodcastEpisodeGuidsAction } from '../ngrx/actions';
+import { CastleFilterAction, CmsPodcastsAction, CmsAllPodcastEpisodeGuidsAction } from '../ngrx/actions';
 
 describe('DownloadsComponent', () => {
   let comp: DownloadsComponent;
@@ -87,7 +87,7 @@ describe('DownloadsComponent', () => {
 
   it('should not show filter if app is loading for the first time', () => {
     expect(de.query(By.css('metrics-filter'))).toBeFalsy();
-    comp.store.dispatch(new CmsPodcastsSuccessAction({podcasts: [podcast]}));
+    comp.store.dispatch(new CmsPodcastsAction({podcasts: [podcast]}));
     fix.detectChanges();
     expect(de.query(By.css('metrics-filter'))).not.toBeNull();
   });
@@ -105,7 +105,7 @@ describe('DownloadsComponent', () => {
       comp.store.dispatch(new CastleFilterAction({
         filter: {podcastSeriesId: 37800}
       }));
-      comp.store.dispatch(new CmsPodcastsSuccessAction({podcasts: [podcast]}));
+      comp.store.dispatch(new CmsPodcastsAction({podcasts: [podcast]}));
     });
 
 

@@ -1,11 +1,11 @@
-import { CmsPodcastsSuccessAction } from '../actions';
+import { CmsPodcastsAction } from '../actions';
 import { PodcastReducer } from './podcast.reducer';
 
 describe('PodcastReducer', () => {
   let newState;
   beforeEach(() => {
     newState = PodcastReducer(undefined,
-      new CmsPodcastsSuccessAction({
+      new CmsPodcastsAction({
         podcasts: [{
           doc: undefined,
           seriesId: 37800,
@@ -23,7 +23,7 @@ describe('PodcastReducer', () => {
 
   it('should update existing podcasts keyed by seriesId', () => {
     newState = PodcastReducer(newState,
-      new CmsPodcastsSuccessAction({
+      new CmsPodcastsAction({
         podcasts: [{
           doc: undefined,
           seriesId: 37800,

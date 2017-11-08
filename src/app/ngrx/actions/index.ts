@@ -13,7 +13,7 @@ export type All
   | RouterNavigationPayload<RouterStateSnapshot>;
 
 export { ActionTypes, ActionWithPayload } from './action.types';
-export { CmsPodcastsPayload, CmsPodcastsAction, CmsPodcastsSuccessAction, CmsPodcastsFailureAction,
+export { CmsPodcastsPayload, CmsPodcastsAction,
   CmsEpisodeGuidsPayload, CmsAllPodcastEpisodeGuidsAction } from './cms.action.creator';
 export { CastleFilterPayload, CastleFilterAction,
   CastlePodcastMetricsPayload, CastlePodcastMetricsAction,

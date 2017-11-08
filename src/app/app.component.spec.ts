@@ -14,7 +14,7 @@ import { AppComponent } from './app.component';
 
 import { reducers } from './ngrx/reducers';
 
-import { CastleFilterAction, CmsAllPodcastEpisodeGuidsAction, CmsPodcastsSuccessAction } from './ngrx/actions';
+import { CastleFilterAction, CmsAllPodcastEpisodeGuidsAction, CmsPodcastsAction } from './ngrx/actions';
 import { PodcastModel, FilterModel, INTERVAL_DAILY } from './ngrx/model/';
 
 @Component({template: ''})
@@ -126,11 +126,11 @@ describe('AppComponent', () => {
       e.mockItems('prx:distributions',
         [{kind: 'episode', url: 'https://feeder.prx.org/api/v1/episodes/42b4ad11-36bd-4f3a-9e92-0de8ad43a515'}]);
     });
-    comp.store.dispatch(new CmsPodcastsSuccessAction({podcasts: [podcast]}));
+    comp.store.dispatch(new CmsPodcastsAction({podcasts: [podcast]}));
     comp.store.dispatch(new CastleFilterAction({filter}));
     authToken.next('fake-token');
     expect(comp.getSeriesPodcastDistribution).toHaveBeenCalled();
-    expect(comp.store.dispatch).toHaveBeenCalledWith(jasmine.any(CmsPodcastsSuccessAction));
+    expect(comp.store.dispatch).toHaveBeenCalledWith(jasmine.any(CmsPodcastsAction));
     expect(comp.getEpisodePodcastDistribution).toHaveBeenCalled();
     expect(comp.store.dispatch).toHaveBeenCalledWith(jasmine.any(CmsAllPodcastEpisodeGuidsAction));
   });

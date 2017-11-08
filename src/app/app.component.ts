@@ -9,7 +9,7 @@ import { AuthService } from 'ngx-prx-styleguide';
 import { CmsService, HalDoc } from './core';
 import { Env } from './core/core.env';
 import { EpisodeModel, PodcastModel } from './ngrx/model';
-import { CmsPodcastsAction, CmsPodcastsSuccessAction, CmsAllPodcastEpisodeGuidsAction } from './ngrx/actions';
+import { CmsPodcastsAction, CmsAllPodcastEpisodeGuidsAction } from './ngrx/actions';
 import { selectPodcasts, selectPodcastFilter } from './ngrx/reducers';
 
 @Component({
@@ -91,10 +91,10 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   loadCmsSeries(auth: HalDoc) {
-    /*auth.followItems('prx:series',
+    auth.followItems('prx:series',
       {per: auth.count('prx:series'), filters: 'v4', zoom: 'prx:distributions'}).subscribe((series: HalDoc[]) => {
       if (series && series.length === 0) {
-        this.store.dispatch(new CmsPodcastsSuccessAction({podcasts: []}));
+        this.store.dispatch(new CmsPodcastsAction({podcasts: []}));
       } else {
         const podcasts: PodcastModel[] = series.map(doc => {
           return {
@@ -105,12 +105,10 @@ export class AppComponent implements OnInit, OnDestroy {
         });
         const distros$ = podcasts.map(p => this.getSeriesPodcastDistribution(p));
         Observable.zip(...distros$).subscribe(() => {
-          this.store.dispatch(new CmsPodcastsSuccessAction({podcasts: podcasts.filter(p => p.feederId)}));
+          this.store.dispatch(new CmsPodcastsAction({podcasts: podcasts.filter(p => p.feederId)}));
         });
       }
-    });*/
-    // if I could cms.effects working, this function could just be
-    this.store.dispatch(new CmsPodcastsAction());
+    });
   }
 
   getSeriesPodcastDistribution(podcast: PodcastModel): Observable<HalDoc[]> {

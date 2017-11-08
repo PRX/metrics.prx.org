@@ -15,7 +15,6 @@ import { SharedModule } from './shared';
 
 import { reducers } from './ngrx/reducers';
 import { RoutingEffects } from './ngrx/effects/routing.effects';
-import { CmsEffects } from './ngrx/effects/cms.effects';
 
 import { DownloadsModule } from './downloads/downloads.module';
 
@@ -32,7 +31,7 @@ import { DownloadsModule } from './downloads/downloads.module';
     StoreModule.forRoot({...reducers, routerReducer: routerReducer}),
     Angulartics2Module.forRoot([ Angulartics2GoogleAnalytics ]),
     StoreRouterConnectingModule,
-    EffectsModule.forRoot([RoutingEffects, CmsEffects]),
+    EffectsModule.forRoot([RoutingEffects]),
     routing,
     DownloadsModule
   ],

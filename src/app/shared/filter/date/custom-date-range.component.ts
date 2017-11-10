@@ -1,7 +1,8 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { Angulartics2 } from 'angulartics2';
-import { DateRangeModel, IntervalModel, PodcastModel, INTERVAL_HOURLY, INTERVAL_15MIN } from '../../../ngrx/model';
+import { Store } from '@ngrx/store';
+import { DateRangeModel, IntervalModel, INTERVAL_HOURLY, INTERVAL_15MIN } from '../../../ngrx/model';
 import { isMoreThanXDays, endOfTodayUTC } from '../../util/date.util';
+import { GoogleAnalyticsEventAction } from '../../../ngrx/actions';
 
 @Component({
   selector: 'metrics-custom-date-range',
@@ -26,10 +27,9 @@ export class CustomDateRangeComponent {
   @Input() interval: IntervalModel;
   @Input() beginDate: Date;
   @Input() endDate: Date;
-  @Input() podcast: PodcastModel; // podcast is only here for google events tracking on the timepicker
   @Output() customRangeChange = new EventEmitter<DateRangeModel>();
 
-  constructor(public angulartics2: Angulartics2) {}
+  constructor(public store: Store<any>) {}
 
   onBeginTimeChange(date: Date) {
     this.onBeginDateChange(date);
@@ -79,15 +79,6 @@ export class CustomDateRangeComponent {
   }
 
   googleAnalyticsEvent(action: string, value: number) {
-    if (this.interval && this.podcast) {
-      this.angulartics2.eventTrack.next({
-        action: 'filter-custom-' + action,
-        properties: {
-          category: 'Downloads/' + this.interval.name,
-          label: this.podcast.title,
-          value
-        }
-      });
-    }
+    this.store.dispatch(new GoogleAnalyticsEventAction({gaAction: 'filter-custom-' + action, value}));
   }
 }

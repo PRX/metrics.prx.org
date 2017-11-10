@@ -2,10 +2,9 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs/Subscription';
-import { Angulartics2 } from 'angulartics2';
 import { CastleService } from '../core';
 import { EpisodeModel, INTERVAL_DAILY, FilterModel, TWO_WEEKS, PodcastModel } from '../ngrx/model';
-import { CastleFilterAction, CastlePodcastMetricsAction, CastleEpisodeMetricsAction } from '../ngrx/actions';
+import { CastleFilterAction, CastlePodcastMetricsAction, CastleEpisodeMetricsAction, GoogleAnalyticsEventAction } from '../ngrx/actions';
 import { selectFilter, selectEpisodes, selectPodcasts } from '../ngrx/reducers';
 import { filterAllPodcastEpisodes } from '../shared/util/metrics.util';
 import { beginningOfTwoWeeksUTC, endOfTodayUTC, getRange } from '../shared/util/date.util';
@@ -42,8 +41,7 @@ export class DownloadsComponent implements OnInit, OnDestroy {
 
   constructor(private castle: CastleService,
               public store: Store<any>,
-              private router: Router,
-              private angulartics2: Angulartics2) {}
+              private router: Router) {}
 
   ngOnInit() {
     this.toggleLoading(true, true);
@@ -254,15 +252,12 @@ export class DownloadsComponent implements OnInit, OnDestroy {
         metricsType: 'downloads',
         metrics: metrics[0]['downloads']
       }));
-      this.angulartics2.eventTrack.next({
-        action: 'load',
-        properties: {
-          category: 'Downloads/' + this.filter.interval.name,
-          label: podcast.title,
-          value: metrics[0]['downloads'].length
-        }
-      });
+      this.googleAnalyticsEvent('load', metrics[0]['downloads'].length);
     }
+  }
+
+  googleAnalyticsEvent(gaAction, value) {
+    this.store.dispatch(new GoogleAnalyticsEventAction({gaAction, value}));
   }
 
   getEpisodeMetrics() {

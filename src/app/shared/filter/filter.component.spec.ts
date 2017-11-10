@@ -3,8 +3,6 @@ import { DebugElement } from '@angular/core';
 import { Router } from '@angular/router';
 import { RouterStub } from '../../../testing/stub.router';
 import { StoreModule } from '@ngrx/store';
-import { Subject } from 'rxjs/Subject';
-import { Angulartics2 } from 'angulartics2';
 
 import { DatepickerModule, SelectModule } from 'ngx-prx-styleguide';
 
@@ -58,7 +56,6 @@ describe('FilterComponent', () => {
         SelectModule
       ],
       providers: [
-        {provide: Angulartics2, useValue: {eventTrack: new Subject<any>()}},
         {provide: Router, useValue: router}
       ]
     }).compileComponents().then(() => {

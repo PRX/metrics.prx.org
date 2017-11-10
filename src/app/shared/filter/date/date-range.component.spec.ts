@@ -1,13 +1,13 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { DebugElement } from '@angular/core';
-import { Subject } from 'rxjs/Subject';
-import { Angulartics2 } from 'angulartics2';
+import { StoreModule } from '@ngrx/store';
 
 import { DatepickerModule, SelectModule } from 'ngx-prx-styleguide';
 import { DateRangeComponent } from './date-range.component';
 import { CustomDateRangeComponent } from './custom-date-range.component';
 import { StandardDateRangeComponent } from './standard-date-range.component';
 
+import { reducers } from '../../../ngrx/reducers';
 import { LAST_YEAR, LAST_MONTH, LAST_WEEK, INTERVAL_DAILY, INTERVAL_HOURLY } from '../../../ngrx/model';
 import { beginningOfYesterdayUTC, endOfYesterdayUTC, beginningOfLastWeekUTC, endOfLastWeekUTC,
   beginningOfLastMonthUTC, endOfLastMonthUTC,
@@ -28,12 +28,8 @@ describe('DateRangeComponent', () => {
       ],
       imports: [
         DatepickerModule,
-        SelectModule
-      ],
-      providers: [
-        {provide: Angulartics2, useValue: {
-          eventTrack: new Subject<any>()
-        }}
+        SelectModule,
+        StoreModule.forRoot(reducers)
       ]
     }).compileComponents().then(() => {
       fix = TestBed.createComponent(DateRangeComponent);
@@ -48,6 +44,7 @@ describe('DateRangeComponent', () => {
   }));
 
   it('keeps standard range and prev/next range in sync with custom range dates', () => {
+    comp.filter = {interval: INTERVAL_DAILY};
     const range = {
       beginDate: beginningOfLastMonthUTC().toDate(),
       endDate: endOfLastMonthUTC().toDate()
@@ -58,6 +55,7 @@ describe('DateRangeComponent', () => {
   });
 
   it('keeps custom range dates in sync with standard range and prev/next range', () => {
+    comp.filter = {interval: INTERVAL_DAILY};
     comp.onStandardRangeChange(LAST_YEAR);
     const inSync = {
       beginDate: beginningOfLastYearUTC().toDate(),

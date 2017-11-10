@@ -7,7 +7,7 @@ import { ROUTER_NAVIGATION, RouterNavigationPayload, RouterNavigationAction } fr
 import { Actions, Effect } from '@ngrx/effects';
 import { FilterModel, IntervalList } from '../model';
 import { CastleFilterAction } from '../actions';
-import { getStandardRangeForBeginEndDate, getRange } from '../../shared/util/date.util';
+import { getStandardRangeForBeginEndDate } from '../../shared/util/date.util';
 
 @Injectable()
 export class RoutingEffects {
@@ -47,7 +47,7 @@ export class RoutingEffects {
         if (filter.beginDate && filter.endDate) {
           // maybe these shouldn't even go in the url if they are being overridden, but "all things must go in the url"
           filter.standardRange = getStandardRangeForBeginEndDate({beginDate: filter.beginDate, endDate: filter.endDate});
-        } else {
+        } else if (params['standardRange']) {
           filter.standardRange = params['standardRange'];
         }
         if (params['episodes'] === '') {

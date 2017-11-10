@@ -2,7 +2,7 @@ import { RouterStateSnapshot } from '@angular/router';
 import { RouterNavigationPayload } from '@ngrx/router-store';
 import { CmsPodcastsPayload, CmsEpisodeGuidsPayload } from './cms.action.creator';
 import { CastleFilterPayload, CastlePodcastMetricsPayload, CastleEpisodeMetricsPayload } from './castle.action.creator';
-
+import { GoogleAnalyticsEventPayload } from './google-analytics.action.creator';
 
 export type All
   = CmsPodcastsPayload
@@ -10,7 +10,8 @@ export type All
   | CastleFilterPayload
   | CastlePodcastMetricsPayload
   | CastleEpisodeMetricsPayload
-  | RouterNavigationPayload<RouterStateSnapshot>;
+  | RouterNavigationPayload<RouterStateSnapshot>
+  | GoogleAnalyticsEventPayload;
 
 export { ActionTypes, ActionWithPayload } from './action.types';
 export { CmsPodcastsPayload, CmsPodcastsAction,
@@ -18,3 +19,4 @@ export { CmsPodcastsPayload, CmsPodcastsAction,
 export { CastleFilterPayload, CastleFilterAction,
   CastlePodcastMetricsPayload, CastlePodcastMetricsAction,
   CastleEpisodeMetricsPayload, CastleEpisodeMetricsAction } from './castle.action.creator';
+export { GoogleAnalyticsEventPayload, GoogleAnalyticsEventAction } from './google-analytics.action.creator';

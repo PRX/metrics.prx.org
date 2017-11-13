@@ -8,6 +8,7 @@ import { CastleFilterAction, CastlePodcastMetricsAction, CastleEpisodeMetricsAct
 import { selectFilter, selectEpisodes, selectPodcasts } from '../ngrx/reducers';
 import { filterAllPodcastEpisodes } from '../shared/util/metrics.util';
 import { beginningOfTwoWeeksUTC, endOfTodayUTC, getRange } from '../shared/util/date.util';
+import { isPodcastChanged, isEpisodesChanged, isBeginDateChanged, isEndDateChanged, isIntervalChanged } from '../shared/util/filter.util';
 
 @Component({
   selector: 'metrics-downloads',
@@ -63,7 +64,7 @@ export class DownloadsComponent implements OnInit, OnDestroy {
               this.toggleLoading(true, true);
             }
 
-            if (this.isPodcastChanged(newFilter)) {
+            if (isPodcastChanged(newFilter, this.filter)) {
               this.filter.podcastSeriesId = newFilter.podcastSeriesId;
               this.resetEpisodes();
               this.toggleLoading(true, true);
@@ -73,22 +74,22 @@ export class DownloadsComponent implements OnInit, OnDestroy {
               this.updatePodcast = this.updateEpisodes = true;
             }
 
-            if (this.isEpisodesChanged(newFilter)) {
+            if (isEpisodesChanged(newFilter, this.filter)) {
               this.filter.episodeIds = newFilter.episodeIds;
               // we also update the podcast data when episodes changes because when looking at the current day
               // after a bit there is more data to be had on the podcast also
               this.updatePodcast = this.updateEpisodes = true;
             }
 
-            if (this.isBeginDateChanged(newFilter)) {
+            if (isBeginDateChanged(newFilter, this.filter)) {
               this.filter.beginDate = newFilter.beginDate;
               this.updatePodcast = this.updateEpisodes = true;
             }
-            if (this.isEndDateChanged(newFilter)) {
+            if (isEndDateChanged(newFilter, this.filter)) {
               this.filter.endDate = newFilter.endDate;
               this.updatePodcast = this.updateEpisodes = true;
             }
-            if (this.isIntervalChanged(newFilter)) {
+            if (isIntervalChanged(newFilter, this.filter)) {
               this.filter.interval = newFilter.interval;
               this.updatePodcast = this.updateEpisodes = true;
             }
@@ -291,28 +292,5 @@ export class DownloadsComponent implements OnInit, OnDestroy {
         metrics: metrics[0]['downloads']
       }));
     }
-  }
-
-  isPodcastChanged(state: FilterModel): boolean {
-    return state.podcastSeriesId && (!this.filter.podcastSeriesId ||  this.filter.podcastSeriesId !== state.podcastSeriesId);
-  }
-
-  isEpisodesChanged(state: FilterModel): boolean {
-    return state.episodeIds &&
-      (!this.filter.episodeIds ||
-      !state.episodeIds.every(id => this.filter.episodeIds.indexOf(id) !== -1) ||
-      !this.filter.episodeIds.every(id => state.episodeIds.indexOf(id) !== -1));
-  }
-
-  isBeginDateChanged(state: FilterModel): boolean {
-    return state.beginDate && (!this.filter.beginDate || this.filter.beginDate.valueOf() !== state.beginDate.valueOf());
-  }
-
-  isEndDateChanged(state: FilterModel): boolean {
-    return state.endDate && (!this.filter.endDate || this.filter.endDate.valueOf() !== state.endDate.valueOf());
-  }
-
-  isIntervalChanged(state: FilterModel): boolean {
-    return state.interval && (!this.filter.interval || this.filter.interval.value !== state.interval.value);
   }
 }

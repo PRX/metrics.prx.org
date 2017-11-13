@@ -1,5 +1,6 @@
 import { ActionTypes, ActionWithPayload, CastleFilterPayload, CastleFilterAction } from '../actions';
 import { FilterModel } from '../model';
+import { isPodcastChanged } from '../../shared/util/filter.util';
 
 const initialState = {};
 
@@ -44,6 +45,3 @@ export function FilterReducer(state: FilterModel = initialState, action: ActionW
   }
 }
 
-export function isPodcastChanged(newState: FilterModel, oldState: FilterModel): boolean {
-  return newState.podcastSeriesId && (!oldState.podcastSeriesId ||  newState.podcastSeriesId !== oldState.podcastSeriesId);
-}

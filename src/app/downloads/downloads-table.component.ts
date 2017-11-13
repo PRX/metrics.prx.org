@@ -7,6 +7,7 @@ import { selectEpisodes, selectFilter, selectEpisodeMetrics, selectPodcastMetric
 import { findPodcastMetrics, filterAllPodcastEpisodes, filterEpisodeMetrics, metricsData, getTotal } from '../shared/util/metrics.util';
 import { mapMetricsToTimeseriesData } from '../shared/util/chart.util';
 import { monthYearFormat, dayMonthDateFormat, hourlyDateFormat, monthDateYearFormat } from '../shared/util/date.util';
+import { isPodcastChanged } from '../shared/util/filter.util';
 import * as moment from 'moment';
 
 @Component({
@@ -59,7 +60,7 @@ export class DownloadsTableComponent implements OnDestroy {
 
     this.filterStoreSub = this.store.select(selectFilter).subscribe((newFilter: FilterModel) => {
       if (newFilter) {
-        if (this.isPodcastChanged(newFilter)) {
+        if (isPodcastChanged(newFilter, this.filter)) {
           this.resetAllData();
         }
         // apply new filter to existing data so it's not showing stale data while loading

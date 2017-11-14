@@ -162,11 +162,6 @@ export class DownloadsTableComponent implements OnDestroy {
     if (this.episodeMetricsStoreSub) { this.episodeMetricsStoreSub.unsubscribe(); }
   }
 
-  isPodcastChanged(state: FilterModel): boolean {
-    return state.podcastSeriesId &&
-      (!this.filter || !this.filter.podcastSeriesId ||  this.filter.podcastSeriesId !== state.podcastSeriesId);
-  }
-
   dateFormat(date: Date): string {
     if (this.filter) {
       switch (this.filter.interval) {

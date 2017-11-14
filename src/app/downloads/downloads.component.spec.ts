@@ -17,7 +17,8 @@ import { DownloadsTableComponent } from './downloads-table.component';
 
 import { reducers } from '../ngrx/reducers';
 import { EpisodeModel } from '../ngrx/model';
-import { CastleFilterAction, CmsPodcastsAction, CmsAllPodcastEpisodeGuidsAction } from '../ngrx/actions';
+import { CastleFilterAction, CmsPodcastsAction, CmsAllPodcastEpisodeGuidsAction,
+  CastlePodcastMetricsAction, CastleEpisodeMetricsAction} from '../ngrx/actions';
 
 describe('DownloadsComponent', () => {
   let comp: DownloadsComponent;
@@ -101,6 +102,7 @@ describe('DownloadsComponent', () => {
 
   describe('after loading podcasts...', () => {
     beforeEach(() => {
+      spyOn(comp, 'googleAnalyticsEvent').and.callThrough();
       comp.store.dispatch(new CastleFilterAction({
         filter: {podcastSeriesId: 37800}
       }));
@@ -145,15 +147,9 @@ describe('DownloadsComponent', () => {
       comp.store.dispatch(new CastleFilterAction({filter: {beginDate}}));
       expect(comp.setPodcastMetrics).toHaveBeenCalledTimes(3); // now also called for changes to episodes filter
       expect(comp.setEpisodeMetrics).toHaveBeenCalledTimes(2);
-      // 2 (beforeEach) + 3 (this spec) + 3 (setPodcastMetrics) + 2 (setEpisodeMetrics)
-      // +3, also called for GoogleAnalyticsEventAction to 'load'
-      /*
-      * I do not understand why this spy isn't working. I have debugged it. It is being called. Ugh.
-      spyOn(comp, 'googleAnalyticsEvent').and.callThrough();
       expect(comp.googleAnalyticsEvent).toHaveBeenCalledTimes(3);
-       */
-      // TODO: dispatch called times is fragile way to test this but should create a test for just dispatch expectations
-      expect(comp.store.dispatch).toHaveBeenCalledTimes(13);
+      expect(comp.store.dispatch).toHaveBeenCalledWith(jasmine.any(CastlePodcastMetricsAction));
+      expect(comp.store.dispatch).toHaveBeenCalledWith(jasmine.any(CastleEpisodeMetricsAction));
     });
 
     it('should reload episode metrics if removed from filter then re-added', () => {

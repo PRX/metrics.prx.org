@@ -248,7 +248,7 @@ export class DownloadsComponent implements OnInit, OnDestroy {
     this.toggleLoading(false);
     if (metrics && metrics.length && metrics[0]['downloads']) {
       this.store.dispatch(new CastlePodcastMetricsAction({
-        podcast: podcast,
+        podcast,
         filter: this.filter,
         metricsType: 'downloads',
         metrics: metrics[0]['downloads']

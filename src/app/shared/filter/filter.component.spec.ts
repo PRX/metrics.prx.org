@@ -88,7 +88,6 @@ describe('FilterComponent', () => {
   });
 
   it('should normalize dates to interval when interval is selected', () => {
-    // TODO: two weeks ago was in last month
     comp.filter.beginDate = beginningOfThisMonthUTC().hour(3).toDate();
     comp.onIntervalChange(INTERVAL_MONTHLY);
     expect(comp.filter.beginDate.valueOf()).toEqual(beginningOfThisMonthUTC().valueOf());

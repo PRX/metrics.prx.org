@@ -7,7 +7,7 @@ import { ROUTER_NAVIGATION, RouterNavigationPayload, RouterNavigationAction } fr
 import { Actions, Effect } from '@ngrx/effects';
 import { FilterModel, IntervalList } from '../model';
 import { CastleFilterAction } from '../actions';
-import { getStandardRangeForBeginEndDate } from '../../shared/util/date.util';
+import { getStandardRangeForBeginEndDate, getBeginEndDateFromStandardRange, getRange } from '../../shared/util/date.util';
 
 @Injectable()
 export class RoutingEffects {
@@ -49,6 +49,12 @@ export class RoutingEffects {
           filter.standardRange = getStandardRangeForBeginEndDate({beginDate: filter.beginDate, endDate: filter.endDate});
         } else if (params['standardRange']) {
           filter.standardRange = params['standardRange'];
+          if (!filter.range) {
+            filter.range = getRange(filter.standardRange);
+          }
+          const { beginDate, endDate } = getBeginEndDateFromStandardRange(filter.standardRange);
+          filter.beginDate = beginDate;
+          filter.endDate = endDate;
         }
         if (params['episodes'] === '') {
           filter.episodeIds = [];

@@ -8,8 +8,9 @@ import { ROUTER_NAVIGATION } from '@ngrx/router-store';
 import { getActions, TestActions } from './test.actions';
 import { reducers } from '../../ngrx/reducers';
 import { CastleFilterAction } from '../actions';
-import { INTERVAL_HOURLY } from '../model';
+import { INTERVAL_HOURLY, THREE_MONTHS } from '../model';
 import { RoutingEffects } from './routing.effects';
+import { beginningOfThreeMonthsUTC, endOfTodayUTC } from '../../shared/util/date.util';
 
 describe('RoutingEffects', () => {
   let effects: RoutingEffects;
@@ -59,6 +60,40 @@ describe('RoutingEffects', () => {
       beginDate: new Date('2017-11-01T00:00:00.000Z'),
       endDate: new Date('2017-11-01T22:00:00.000'),
       standardRange: undefined
+    }});
+    actions$.stream = hot('-a', { a: action });
+    const expected = cold('-r', { r: result });
+    expect(effects.filterFromRoute$).toBeObservable(expected);
+  });
+
+  it('should provide filter for begin and end date corresponding to standard range when dates not present', () => {
+    const action = {
+      type: ROUTER_NAVIGATION,
+      payload: {
+        routerState: {
+          url: '/37800/downloads/hourly;' +
+          'standardRange=3%20months;' +
+          'episodes=123,1234',
+          root: {
+            firstChild: {
+              params: {
+                seriesId: '37800',
+                episodes: '123,1234',
+                standardRange: THREE_MONTHS
+              }
+            }
+          }
+        }
+      }
+    };
+    const result = new CastleFilterAction({filter: {
+      podcastSeriesId: 37800,
+      episodeIds: [123, 1234],
+      interval: INTERVAL_HOURLY,
+      beginDate: beginningOfThreeMonthsUTC().toDate(),
+      endDate: endOfTodayUTC().toDate(),
+      standardRange: THREE_MONTHS,
+      range: [3, 'months']
     }});
     actions$.stream = hot('-a', { a: action });
     const expected = cold('-r', { r: result });

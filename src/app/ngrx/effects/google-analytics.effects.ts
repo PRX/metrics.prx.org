@@ -15,7 +15,7 @@ export class GoogleAnalyticsEffects {
   filter: FilterModel;
 
   @Effect({dispatch: false})
-  fromGAEvent$: Observable<Action> = this.actions$
+  fromGAEvent$: Observable<void> = this.actions$
     .ofType(ActionTypes.GOOGLE_ANALYTICS_EVENT)
     .map((action: GoogleAnalyticsEventAction) => {
       const event = {
@@ -42,9 +42,6 @@ export class GoogleAnalyticsEffects {
         event['value'] = action.payload.value;
       }
       this.angulartics2.eventTrack.next(event);
-
-      // return action; hmmm, don't return the same action, infinite loop Effect if it gets dispatched (NOTE: {dispatch: false} above)
-      return {type: ''}; // noop
     });
 
   constructor(private actions$: Actions,

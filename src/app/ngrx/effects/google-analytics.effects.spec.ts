@@ -35,11 +35,10 @@ describe('GoogleAnalyticsEffects', () => {
 
   it('should create Google Analytics event from action and track through angulartics2', () => {
     spyOn(effects.angulartics2.eventTrack, 'next');
-    const result = {type: ''};
     const action = new GoogleAnalyticsEventAction({gaAction: 'itsafake', value: 42});
     effects.store.dispatch(action);
     actions$.stream = hot('-a', { a: action });
-    const expected = cold('-r', { r: result });
+    const expected = cold('-r', { r: undefined });
     expect(effects.fromGAEvent$).toBeObservable(expected);
     expect(effects.angulartics2.eventTrack.next).toHaveBeenCalled();
   });

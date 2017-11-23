@@ -4,7 +4,6 @@ import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs/Subscription';
 import { selectPodcastFilter, selectPodcasts, selectIntervalFilter } from '../../ngrx/reducers';
 import { PodcastModel, IntervalModel } from '../../ngrx/model';
-import { CastleFilterAction } from '../../ngrx/actions';
 
 @Component({
   selector: 'metrics-podcasts',

@@ -3,7 +3,7 @@ import { Routes, RouterModule } from '@angular/router';
 
 import { AuthGuard, UnauthGuard } from 'ngx-prx-styleguide';
 import { HomeComponent } from './home';
-import { LoginComponent } from './login/login.component';
+import { LoginComponent } from './login';
 
 export const routes: Routes = [
   { path: '',          component: HomeComponent,  canActivate: [AuthGuard] },

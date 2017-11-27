@@ -165,6 +165,14 @@
   dependencies:
     nan "^2.4.0"
 
+"@ngrx/effects@^4.1.0":
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/@ngrx/effects/-/effects-4.1.0.tgz#a67f5abb71bdb2fea1fa9b751a4f38435674a6a8"
+
+"@ngrx/router-store@^4.1.0":
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/@ngrx/router-store/-/router-store-4.1.0.tgz#ac77969c38c406cc6f0d1537e7e78502ace03b9a"
+
 "@ngrx/store@^4.1.0":
   version "4.1.0"
   resolved "https://registry.yarnpkg.com/@ngrx/store/-/store-4.1.0.tgz#8c074cbc6197e259cd9492e85a76c3c67dbea173"
@@ -2960,6 +2968,12 @@ istanbul-reports@^1.1.1:
 jasmine-core@~2.6.0, jasmine-core@~2.6.2:
   version "2.6.4"
   resolved "https://registry.yarnpkg.com/jasmine-core/-/jasmine-core-2.6.4.tgz#dec926cd0a9fa287fb6db5c755fa487e74cecac5"
+
+jasmine-marbles@^0.2.0:
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/jasmine-marbles/-/jasmine-marbles-0.2.0.tgz#b893d8508b75790b634876d3a1bea1345d65c156"
+  dependencies:
+    lodash "^4.5.0"
 
 jasmine-spec-reporter@~4.1.0:
   version "4.1.1"

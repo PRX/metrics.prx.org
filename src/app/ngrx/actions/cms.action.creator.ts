@@ -1,14 +1,15 @@
+import { Action } from '@ngrx/store';
 import { ActionTypes, ActionWithPayload } from './action.types';
 import { EpisodeModel, PodcastModel } from '../model';
 
-export interface CmsPodcastFeedPayload {
-  podcast: PodcastModel;
+export interface CmsPodcastsPayload {
+  podcasts: PodcastModel[];
 }
 
-export class CmsPodcastFeedAction implements ActionWithPayload<CmsPodcastFeedPayload> {
-  readonly type = ActionTypes.CMS_PODCAST_FEED;
+export class CmsPodcastsAction implements Action {
+  readonly type = ActionTypes.CMS_PODCASTS;
 
-  constructor(public payload: CmsPodcastFeedPayload) {}
+  constructor(public payload: CmsPodcastsPayload) {}
 }
 
 export interface CmsEpisodeGuidsPayload {

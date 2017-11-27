@@ -1,11 +1,11 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { DebugElement } from '@angular/core';
-import { Subject } from 'rxjs/Subject';
-import { Angulartics2 } from 'angulartics2';
+import { StoreModule } from '@ngrx/store';
 
 import { DatepickerModule } from 'ngx-prx-styleguide';
 import { CustomDateRangeComponent } from './custom-date-range.component';
 
+import { reducers } from '../../../ngrx/reducers';
 import { INTERVAL_DAILY, INTERVAL_HOURLY, INTERVAL_15MIN } from '../../../ngrx/model';
 import { beginningOfLastMonthUTC, endOfLastMonthUTC,
   beginningOfLastYearUTC, endOfLastYearUTC } from '../../../shared/util/date.util';
@@ -22,12 +22,8 @@ describe('CustomDateRangeComponent', () => {
         CustomDateRangeComponent
       ],
       imports: [
-        DatepickerModule
-      ],
-      providers: [
-        {provide: Angulartics2, useValue: {
-          eventTrack: new Subject<any>()
-        }}
+        DatepickerModule,
+        StoreModule.forRoot(reducers)
       ]
     }).compileComponents().then(() => {
       fix = TestBed.createComponent(CustomDateRangeComponent);

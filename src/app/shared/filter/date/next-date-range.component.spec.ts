@@ -1,5 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { DebugElement } from '@angular/core';
+import { Router } from '@angular/router';
 import { StoreModule } from '@ngrx/store';
 
 import { NextDateRangeComponent } from './next-date-range.component';
@@ -19,6 +20,7 @@ describe('NextDateRangeComponent', () => {
   let el: HTMLElement;
 
   const filter: FilterModel = {
+    podcastSeriesId: 37800,
     standardRange: TWO_WEEKS,
     range: getRange(TWO_WEEKS),
     beginDate: beginningOfTwoWeeksUTC().toDate(),
@@ -33,6 +35,23 @@ describe('NextDateRangeComponent', () => {
       ],
       imports: [
         StoreModule.forRoot(reducers)
+      ],
+      providers: [
+        {provide: Router, useValue: {
+          navigate: (route) => {
+            const routeParams = {range: route[route.length - 1].range};
+            if (route[route.length - 1]['beginDate']) {
+              routeParams['beginDate'] = new Date(route[route.length - 1]['beginDate']);
+            }
+            if (route[route.length - 1]['endDate']) {
+              routeParams['endDate'] = new Date(route[route.length - 1]['endDate']);
+            }
+            if (route[route.length - 1]['standardRange']) {
+              routeParams['standardRange'] = route[route.length - 1]['standardRange'];
+            }
+            comp.store.dispatch(new CastleFilterAction({filter: routeParams}));
+          }
+        }}
       ]
     }).compileComponents().then(() => {
       fix = TestBed.createComponent(NextDateRangeComponent);

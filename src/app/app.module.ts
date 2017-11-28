@@ -1,9 +1,9 @@
-import { NgModule, ErrorHandler } from '@angular/core';
+import { NgModule, ErrorHandler, InjectionToken } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { StoreRouterConnectingModule, routerReducer } from '@ngrx/router-store';
 import { EffectsModule } from '@ngrx/effects';
 import { AuthModule } from 'ngx-prx-styleguide';
-import { StoreModule } from '@ngrx/store';
+import { StoreModule, ActionReducerMap } from '@ngrx/store';
 import { Angulartics2Module, Angulartics2GoogleAnalytics } from 'angulartics2';
 
 import { AppComponent } from './app.component';
@@ -13,11 +13,21 @@ import { ErrorService } from './error';
 import { CoreModule } from './core';
 import { SharedModule } from './shared';
 
-import { reducers } from './ngrx/reducers';
+import { reducers, RootState } from './ngrx/reducers';
 import { RoutingEffects } from './ngrx/effects/routing.effects';
 import { GoogleAnalyticsEffects } from './ngrx/effects/google-analytics.effects';
 
 import { DownloadsModule } from './downloads/downloads.module';
+
+// AOT compile doesn't call reducer functions unless they are created with InjectionToken
+export function getReducers() {
+  return {...reducers, routerReducer: routerReducer};
+}
+
+export const reducerToken: InjectionToken<ActionReducerMap<RootState>> =
+  new InjectionToken<ActionReducerMap<RootState>>('Reducers');
+
+export const reducerProvider = { provide: reducerToken, useFactory: getReducers };
 
 @NgModule({
   declarations: [
@@ -29,7 +39,7 @@ import { DownloadsModule } from './downloads/downloads.module';
     CoreModule,
     AuthModule,
     SharedModule,
-    StoreModule.forRoot({...reducers, routerReducer: routerReducer}),
+    StoreModule.forRoot(reducerToken),
     Angulartics2Module.forRoot([ Angulartics2GoogleAnalytics ]),
     StoreRouterConnectingModule,
     EffectsModule.forRoot([RoutingEffects, GoogleAnalyticsEffects]),
@@ -38,7 +48,8 @@ import { DownloadsModule } from './downloads/downloads.module';
   ],
   providers: [
     {provide: ErrorHandler, useClass: ErrorService},
-    routingProviders
+    routingProviders,
+    reducerProvider
   ],
   bootstrap: [AppComponent]
 })

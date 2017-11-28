@@ -30,6 +30,10 @@ describe('AppComponent', () => {
   let authToken;
   let refreshToken;
   let cmsToken: string = null;
+  let podcast: PodcastModel,
+    filter: FilterModel;
+  let series: MockHalDoc[],
+    episodes: MockHalDoc[];
 
   beforeEach(async(() => {
     cms = new MockHalService();
@@ -74,6 +78,41 @@ describe('AppComponent', () => {
       fix.detectChanges();
       de = fix.debugElement;
       el = de.nativeElement;
+
+      spyOn(comp, 'getSeriesPodcastDistribution').and.callThrough();
+      spyOn(comp, 'getEpisodePodcastDistribution').and.callThrough();
+      spyOn(comp.store, 'dispatch').and.callThrough();
+
+      podcast = {
+        doc: auth.mock('prx:series', {seriesId: 37800, title: 'Pet Talks Daily'}),
+        seriesId: 37800,
+        feederId: '70',
+        title: 'Pet Talks Daily'
+      };
+
+      filter = {
+        podcastSeriesId: podcast.seriesId,
+        beginDate: new Date('2017-08-27T00:00:00Z'),
+        endDate: new Date('2017-09-07T00:00:00Z'),
+        interval: INTERVAL_DAILY
+      };
+
+      series = auth.mockItems('prx:series', [
+        {seriesId: 37800, title: 'Pet Talks Daily'},
+        {seriesId: 37801, title: 'Totally Not Pet Talks Daily'}]);
+
+      series.forEach(s => {
+        const distributions = s.mockItems('prx:distributions', [{kind: 'podcast', url: 'https://feeder.prx.org/api/v1/podcasts/70'}]);
+      });
+      episodes = (<MockHalDoc>podcast.doc).mockItems('prx:stories', [{id: 123, title: 'A Pet Talk Episode', publishedAt: new Date()}]);
+      episodes.forEach(e => {
+        e.mockItems('prx:distributions',
+          [{kind: 'episode', url: 'https://feeder.prx.org/api/v1/episodes/42b4ad11-36bd-4f3a-9e92-0de8ad43a515'}]);
+      });
+
+      comp.store.dispatch(new CmsPodcastsAction({podcasts: [podcast]}));
+      comp.store.dispatch(new CastleFilterAction({filter}));
+      authToken.next('fake-token');
     });
   }));
 
@@ -100,38 +139,23 @@ describe('AppComponent', () => {
   }));
 
   it('should load series podcast and episode and dispatch CMS actions', () => {
-    spyOn(comp, 'getSeriesPodcastDistribution').and.callThrough();
-    spyOn(comp, 'getEpisodePodcastDistribution').and.callThrough();
-    spyOn(comp.store, 'dispatch').and.callThrough();
-    const podcast: PodcastModel = {
-      doc: auth.mock('prx:series', {seriesId: 37800, title: 'Pet Talks Daily'}),
-      seriesId: 37800,
-      feederId: '70',
-      title: 'Pet Talks Daily'
-    };
-    const filter: FilterModel = {
-      podcastSeriesId: podcast.seriesId,
-      beginDate: new Date('2017-08-27T00:00:00Z'),
-      endDate: new Date('2017-09-07T00:00:00Z'),
-      interval: INTERVAL_DAILY
-    };
-    const series = auth.mockItems('prx:series', [
-      {seriesId: 37800, title: 'Pet Talks Daily'},
-      {seriesId: 37801, title: 'Totally Not Pet Talks Daily'}]);
-    series.forEach(s => {
-      const distributions = s.mockItems('prx:distributions', [{kind: 'podcast', url: 'https://feeder.prx.org/api/v1/podcasts/70'}]);
-    });
-    const episodes = (<MockHalDoc>podcast.doc).mockItems('prx:stories', [{id: 123, title: 'A Pet Talk Episode', publishedAt: new Date()}]);
-    episodes.forEach(e => {
-      e.mockItems('prx:distributions',
-        [{kind: 'episode', url: 'https://feeder.prx.org/api/v1/episodes/42b4ad11-36bd-4f3a-9e92-0de8ad43a515'}]);
-    });
-    comp.store.dispatch(new CmsPodcastsAction({podcasts: [podcast]}));
-    comp.store.dispatch(new CastleFilterAction({filter}));
-    authToken.next('fake-token');
     expect(comp.getSeriesPodcastDistribution).toHaveBeenCalled();
     expect(comp.store.dispatch).toHaveBeenCalledWith(jasmine.any(CmsPodcastsAction));
     expect(comp.getEpisodePodcastDistribution).toHaveBeenCalled();
     expect(comp.store.dispatch).toHaveBeenCalledWith(jasmine.any(CmsAllPodcastEpisodeGuidsAction));
+  });
+
+  it('should not include episodes not yet published', () => {
+    const dateInFuture = new Date();
+    dateInFuture.setDate(dateInFuture.getDate() + 1);
+    episodes = (<MockHalDoc>podcast.doc).mockItems('prx:stories', [
+      {id: 123, title: 'A Pet Talk Episode', publishedAt: new Date()},
+      {id: 123, title: 'A Pet Talk Episode', publishedAt: dateInFuture}
+    ]);
+    episodes.forEach(e => {
+      e.mockItems('prx:distributions',
+        [{kind: 'episode', url: 'https://feeder.prx.org/api/v1/episodes/42b4ad11-36bd-4f3a-9e92-0de8ad43a515'}]);
+    });
+    expect(comp.getEpisodePodcastDistribution).toHaveBeenCalledTimes(1);
   });
 });

@@ -1,4 +1,4 @@
-import { ActionTypes, ActionWithPayload, CastleFilterPayload, CastleFilterAction } from '../actions';
+import { ActionTypes, ActionWithPayload, CastleFilterPayload } from '../actions';
 import { FilterModel } from '../model';
 import { isPodcastChanged } from '../../shared/util/filter.util';
 

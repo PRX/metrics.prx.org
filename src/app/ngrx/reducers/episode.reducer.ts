@@ -1,4 +1,4 @@
-import { ActionTypes, ActionWithPayload, CmsEpisodeGuidsPayload, CmsAllPodcastEpisodeGuidsAction  } from '../actions';
+import { ActionTypes, ActionWithPayload, CmsEpisodeGuidsPayload  } from '../actions';
 import { EpisodeModel } from '../model';
 
 const initialState = [];

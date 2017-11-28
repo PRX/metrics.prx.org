@@ -1,5 +1,6 @@
 import { ActionTypes, ActionWithPayload, CastleFilterPayload } from '../actions';
 import { FilterModel } from '../model';
+import { isPodcastChanged } from '../../shared/util/filter.util';
 
 const initialState = {};
 
@@ -7,11 +8,14 @@ export function FilterReducer(state: FilterModel = initialState, action: ActionW
   switch (action.type) {
     case ActionTypes.CASTLE_FILTER:
       const newState: FilterModel = {...state};
-      if (action.payload.filter.podcast) {
-        newState.podcast = action.payload.filter.podcast;
+      if (action.payload.filter.podcastSeriesId) {
+        newState.podcastSeriesId = action.payload.filter.podcastSeriesId;
+        if (isPodcastChanged(action.payload.filter, state)) {
+          newState.episodeIds = null;
+        }
       }
-      if (action.payload.filter.episodes) {
-        newState.episodes = [...action.payload.filter.episodes];
+      if (action.payload.filter.episodeIds) {
+        newState.episodeIds = [...action.payload.filter.episodeIds];
       }
       if (action.payload.filter.beginDate || action.payload.filter.endDate) {
         // standardRange can only be set with accompanying begin or end date
@@ -40,3 +44,4 @@ export function FilterReducer(state: FilterModel = initialState, action: ActionW
       return state;
   }
 }
+

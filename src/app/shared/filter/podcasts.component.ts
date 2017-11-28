@@ -1,45 +1,57 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs/Subscription';
-import { selectPodcastFilter, selectPodcasts } from '../../ngrx/reducers';
-import { PodcastModel } from '../../ngrx/model';
-import { CastleFilterAction } from '../../ngrx/actions';
+import { selectPodcastFilter, selectPodcasts, selectIntervalFilter } from '../../ngrx/reducers';
+import { PodcastModel, IntervalModel } from '../../ngrx/model';
 
 @Component({
   selector: 'metrics-podcasts',
   template: `
-    <prx-select *ngIf="allPodcastOptions.length > 1"
+    <prx-select *ngIf="allPodcastOptions?.length > 1"
                 single="true" searchable="true"
                 [options]="allPodcastOptions" [selected]="selectedPodcast" (onSelect)="onPodcastChange($event)">
     </prx-select>
-    <span *ngIf="allPodcastOptions.length === 1 && selectedPodcast">{{ selectedPodcast.title }}</span>
+    <span *ngIf="allPodcastOptions?.length === 1 && selectedPodcast">{{ selectedPodcast.title }}</span>
   `
 })
 export class PodcastsComponent implements OnInit, OnDestroy {
   podcastFilterSubscription: Subscription;
+  intervalFilterSubscription: Subscription;
   podcastsSubscription: Subscription;
+  selectedPodcastSeriesId: number;
   selectedPodcast: PodcastModel;
+  selectedInterval: IntervalModel;
   allPodcastOptions = [];
 
-  constructor(public store: Store<any>) {}
+  constructor(public store: Store<any>,
+              private router: Router) {}
 
   ngOnInit() {
-    this.podcastFilterSubscription = this.store.select(selectPodcastFilter).subscribe((filteredPodcast: PodcastModel) => {
-      this.selectedPodcast = filteredPodcast;
+    this.podcastFilterSubscription = this.store.select(selectPodcastFilter).subscribe((selectedPodcastSeriesId: number) => {
+      this.selectedPodcastSeriesId = selectedPodcastSeriesId;
+      this.selectedPodcast = this.allPodcastOptions.map(o => o[1]).find(p => p.seriesId === this.selectedPodcastSeriesId);
+    });
+    this.intervalFilterSubscription = this.store.select(selectIntervalFilter).subscribe((interval: IntervalModel) => {
+      this.selectedInterval = interval;
     });
     this.podcastsSubscription = this.store.select(selectPodcasts).subscribe((allPodcasts: PodcastModel[]) => {
-      this.allPodcastOptions = allPodcasts.map((podcast: PodcastModel) => [podcast.title, podcast]);
+      if (allPodcasts && allPodcasts.length) {
+        this.allPodcastOptions = allPodcasts.map((podcast: PodcastModel) => [podcast.title, podcast]);
+        this.selectedPodcast = allPodcasts.find(p => p.seriesId === this.selectedPodcastSeriesId);
+      }
     });
   }
 
   ngOnDestroy() {
     if (this.podcastFilterSubscription) { this.podcastFilterSubscription.unsubscribe(); }
+    if (this.intervalFilterSubscription) { this.intervalFilterSubscription.unsubscribe(); }
     if (this.podcastsSubscription) { this.podcastsSubscription.unsubscribe(); }
   }
 
   onPodcastChange(val) {
     if (val && val.seriesId !== this.selectedPodcast.seriesId) {
-      this.store.dispatch(new CastleFilterAction({filter: {podcast: val, episodes: []}}));
+      this.router.navigate([val.seriesId, 'downloads', this.selectedInterval.key]);
     }
   }
 }

@@ -1,11 +1,11 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs/Subscription';
 import * as moment from 'moment';
 import { FilterModel, TODAY, THIS_WEEK, TWO_WEEKS, THIS_MONTH, THREE_MONTHS, THIS_YEAR,
   YESTERDAY, LAST_WEEK, PRIOR_TWO_WEEKS, LAST_MONTH, PRIOR_THREE_MONTHS, LAST_YEAR } from '../../../ngrx/model';
 import { selectFilter } from '../../../ngrx/reducers';
-import { CastleFilterAction } from '../../../ngrx/actions';
 import { beginningOfYesterdayUTC, endOfYesterdayUTC, beginningOfLastWeekUTC, endOfLastWeekUTC,
   beginningOfPriorTwoWeeksUTC, endOfPriorTwoWeeksUTC, beginningOfLastMonthUTC, endOfLastMonthUTC,
   beginningOfPriorThreeMonthsUTC, endOfPriorThreeMonthsUTC, beginningOfLastYearUTC, endOfLastYearUTC,
@@ -21,7 +21,8 @@ export class PrevDateRangeComponent implements OnInit, OnDestroy {
   filterStoreSub: Subscription;
   filter: FilterModel;
 
-  constructor(public store: Store<any>) {}
+  constructor(public store: Store<any>,
+              private router: Router) {}
 
   ngOnInit() {
     this.filterStoreSub = this.store.select(selectFilter).subscribe(newFilter => {
@@ -36,7 +37,7 @@ export class PrevDateRangeComponent implements OnInit, OnDestroy {
   }
 
   get prevDisabled(): string {
-    if (!this.filter || !this.filter.range) {
+    if (!this.filter || !this.filter.range || !this.filter.podcastSeriesId || !this.filter.interval) {
       return 'disabled';
     } else {
       return null;
@@ -44,9 +45,18 @@ export class PrevDateRangeComponent implements OnInit, OnDestroy {
   }
 
   prev() {
-    if (this.filter.range && this.filter.range.length) {
-      const filter = this.getPrev();
-      this.store.dispatch(new CastleFilterAction({filter}));
+    if (this.filter.range && this.filter.range.length && this.filter.podcastSeriesId && this.filter.interval) {
+      const prev = this.getPrev();
+      const routerParams = {
+        range: this.filter.range,
+        beginDate: prev.beginDate.toISOString(),
+        endDate: prev.endDate.toISOString()
+      };
+      // do not want in route if undefined
+      if (prev.standardRange) {
+        routerParams['standardRange'] = prev.standardRange;
+      }
+      this.router.navigate([this.filter.podcastSeriesId, 'downloads', this.filter.interval.key, routerParams]);
     }
   }
 

@@ -1,8 +1,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { DebugElement } from '@angular/core';
+import { Router } from '@angular/router';
+import { RouterStub } from '../../../testing/stub.router';
 import { StoreModule } from '@ngrx/store';
-import { Subject } from 'rxjs/Subject';
-import { Angulartics2 } from 'angulartics2';
 
 import { DatepickerModule, SelectModule } from 'ngx-prx-styleguide';
 
@@ -21,6 +21,8 @@ import { FilterModel, TODAY, YESTERDAY, TWO_WEEKS,
   INTERVAL_MONTHLY, INTERVAL_WEEKLY, INTERVAL_DAILY, INTERVAL_HOURLY } from '../../ngrx/model';
 import { beginningOfTodayUTC, endOfTodayUTC, beginningOfYesterdayUTC, endOfYesterdayUTC, beginningOfThisWeekUTC,
   beginningOfTwoWeeksUTC, beginningOfThisMonthUTC, getRange } from '../util/date.util';
+
+const router = new RouterStub();
 
 describe('FilterComponent', () => {
   let comp: FilterComponent;
@@ -54,9 +56,7 @@ describe('FilterComponent', () => {
         SelectModule
       ],
       providers: [
-        {provide: Angulartics2, useValue: {
-          eventTrack: new Subject<any>()
-        }}
+        {provide: Router, useValue: router}
       ]
     }).compileComponents().then(() => {
       fix = TestBed.createComponent(FilterComponent);
@@ -75,8 +75,8 @@ describe('FilterComponent', () => {
     expect(comp.applyDisabled).toBeNull();
   });
 
-  it('should dispatch filter action on Apply', () => {
-    spyOn(comp.store, 'dispatch').and.callThrough();
+  it('should navigate to route on Apply', () => {
+    spyOn(router, 'navigate').and.callThrough();
     comp.onDateRangeChange({
       standardRange: YESTERDAY,
       range: getRange(YESTERDAY),
@@ -84,10 +84,11 @@ describe('FilterComponent', () => {
       endDate: endOfYesterdayUTC().toDate()
     });
     comp.onApply();
-    expect(comp.store.dispatch).toHaveBeenCalled();
+    expect(router.navigate).toHaveBeenCalled();
   });
 
   it('should normalize dates to interval when interval is selected', () => {
+    comp.filter.beginDate = beginningOfThisMonthUTC().hour(3).toDate();
     comp.onIntervalChange(INTERVAL_MONTHLY);
     expect(comp.filter.beginDate.valueOf()).toEqual(beginningOfThisMonthUTC().valueOf());
   });

@@ -57,8 +57,8 @@ describe('EpisodesComponent', () => {
       el = de.nativeElement;
 
       comp.filter = {
-        podcast,
-        episodes
+        podcastSeriesId: podcast.seriesId,
+        episodeIds: episodes.map(e => e.id)
       };
       comp.store.dispatch(new CmsAllPodcastEpisodeGuidsAction({podcast, episodes}));
       comp.ngOnChanges();
@@ -73,13 +73,7 @@ describe('EpisodesComponent', () => {
 
   it('should clear episode selections if podcast changes', () => {
     expect(comp.allEpisodeOptions.length).toEqual(2);
-    comp.filter = {
-      podcast: {
-        doc: undefined,
-        seriesId: 37801,
-        title: 'Totally Not Pet Talks Daily'
-      }
-    };
+    comp.filter = {podcastSeriesId: 37801};
     comp.ngOnChanges();
     expect(comp.allEpisodeOptions.length).toEqual(0);
   });

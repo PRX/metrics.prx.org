@@ -1,7 +1,8 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { Angulartics2 } from 'angulartics2';
+import { Store } from '@ngrx/store';
 import { FilterModel, DateRangeModel } from '../../../ngrx/model';
 import { getBeginEndDateFromStandardRange, getStandardRangeForBeginEndDate, getRange, getAmountOfIntervals } from '../../util/date.util';
+import { GoogleAnalyticsEventAction } from '../../../ngrx/actions';
 
 @Component({
   selector: 'metrics-date-range',
@@ -10,7 +11,6 @@ import { getBeginEndDateFromStandardRange, getStandardRangeForBeginEndDate, getR
                                  (standardRangeChange)="onStandardRangeChange($event)"></metrics-standard-date-range>
     <metrics-custom-date-range *ngIf="filter" [interval]="filter.interval"
                                [beginDate]="filter.beginDate" [endDate]="filter.endDate"
-                               [podcast]="filter.podcast"
                                (customRangeChange)="onCustomRangeChange($event)"></metrics-custom-date-range>
   `
 })
@@ -18,7 +18,7 @@ export class DateRangeComponent {
   @Input() filter: FilterModel;
   @Output() dateRangeChange = new EventEmitter<DateRangeModel>();
 
-  constructor(public angulartics2: Angulartics2) {}
+  constructor(public store: Store<any>) {}
 
   onCustomRangeChange(dateRange: DateRangeModel) {
     const standardRange = getStandardRangeForBeginEndDate(dateRange);
@@ -35,16 +35,7 @@ export class DateRangeComponent {
   }
 
   googleAnalyticsEvent(action: string, dateRange: DateRangeModel) {
-    if (this.filter && this.filter.podcast && this.filter.interval) {
-      const value = getAmountOfIntervals(dateRange.beginDate, dateRange.endDate, this.filter.interval);
-      this.angulartics2.eventTrack.next({
-        action: 'filter-' + action,
-        properties: {
-          category: 'Downloads/' + this.filter.interval.name,
-          label: this.filter.podcast.title,
-          value
-        }
-      });
-    }
+    const value = getAmountOfIntervals(dateRange.beginDate, dateRange.endDate, this.filter.interval);
+    this.store.dispatch(new GoogleAnalyticsEventAction({gaAction: 'filter-' + action, value}));
   }
 }

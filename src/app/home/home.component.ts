@@ -1,12 +1,35 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Store } from '@ngrx/store';
+import { Subscription } from 'rxjs/Subscription';
+import { selectPodcasts } from '../ngrx/reducers';
+import { PodcastModel } from '../ngrx/model';
 
 @Component({
   selector: 'metrics-home',
   template: `
-    <metrics-downloads></metrics-downloads>
-  `
+    <p class="error" *ngIf="error">{{error}}</p>
+    <metrics-downloads *ngIf="!error"></metrics-downloads>
+  `,
+  styleUrls: ['./home.component.css']
 })
-export class HomeComponent {
-  // eventually this will have Tabs+TabService (or whatever else we use because Tab uses BaseModel plus we have mobile requirements),
-  //  but right now it does nothing but a place to point the router and put downloads
+export class HomeComponent implements OnInit, OnDestroy {
+  // eventually this will have Tabs+TabService (or whatever else we use because Tab uses BaseModel plus we have mobile requirements)
+  error: string;
+  podcastsSub: Subscription;
+
+  constructor(public store: Store<any>) {}
+
+  ngOnInit() {
+    this.podcastsSub = this.store.select(selectPodcasts).subscribe((allPodcasts: PodcastModel[]) => {
+      if (allPodcasts && allPodcasts.length === 0) {
+        this.error = 'Looks like you don\'t have any podcasts.';
+      } else {
+        this.error = null;
+      }
+    });
+  }
+
+  ngOnDestroy() {
+    if (this.podcastsSub) {this.podcastsSub.unsubscribe(); }
+  }
 }

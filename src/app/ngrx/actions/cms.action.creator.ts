@@ -1,4 +1,3 @@
-import { Action } from '@ngrx/store';
 import { ActionTypes, ActionWithPayload } from './action.types';
 import { EpisodeModel, PodcastModel } from '../model';
 
@@ -6,7 +5,7 @@ export interface CmsPodcastsPayload {
   podcasts: PodcastModel[];
 }
 
-export class CmsPodcastsAction implements Action {
+export class CmsPodcastsAction implements ActionWithPayload<CmsPodcastsPayload> {
   readonly type = ActionTypes.CMS_PODCASTS;
 
   constructor(public payload: CmsPodcastsPayload) {}
@@ -22,4 +21,3 @@ export class CmsAllPodcastEpisodeGuidsAction implements ActionWithPayload<CmsEpi
 
   constructor(public payload: CmsEpisodeGuidsPayload) {}
 }
-

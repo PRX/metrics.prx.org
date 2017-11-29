@@ -134,7 +134,7 @@ export class AppComponent implements OnInit, OnDestroy {
     }).subscribe((docs: HalDoc[]) => {
       const episodes: EpisodeModel[] = docs
       // only include episodes with publish dates
-        .filter(doc => doc['publishedAt'])
+        .filter(doc => doc['publishedAt'] && new Date(doc['publishedAt']).valueOf() <= new Date().valueOf())
         .map(doc => {
           return {
             doc,

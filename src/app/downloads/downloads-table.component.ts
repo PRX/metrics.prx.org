@@ -13,31 +13,45 @@ import * as moment from 'moment';
 @Component({
   selector: 'metrics-downloads-table',
   template: `
-    <div class="table-wrapper">
-      <table *ngIf="podcastTableData">
+    <div class="table-wrapper" *ngIf="podcastTableData">
+      <table class="sticky">
         <thead>
           <tr>
-            <th class="sticky"><div class="valign">Episode</div></th>
-            <th>Release Date</th>
-            <th>Total for Period</th>
-            <th *ngFor="let date of dateRange">{{date}}</th>
+            <th>Episode</th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td class="sticky">{{podcastTableData.title}}</td>
-            <td>{{podcastTableData.releaseDate}}</td>
-            <td>{{podcastTableData.totalForPeriod | largeNumber}}</td>
-            <td *ngFor="let download of podcastTableData.downloads">{{download.value | largeNumber}}</td>
+            <td>{{podcastTableData.title}}</td>
           </tr>
           <tr *ngFor="let episode of episodeTableData">
-            <td class="sticky">{{episode.title}}</td>
-            <td>{{episode.releaseDate}}</td>
-            <td>{{episode.totalForPeriod | largeNumber}}</td>
-            <td *ngFor="let download of episode.downloads">{{download.value | largeNumber}}</td>
+            <td>{{episode.title}}</td>
           </tr>
         </tbody>
       </table>
+      <div class="scroll-x-wrapper">
+        <table class="scroll-x">
+          <thead>
+            <tr>
+              <th>Release Date</th>
+              <th>Total for Period</th>
+              <th *ngFor="let date of dateRange">{{date}}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>{{podcastTableData.releaseDate}}</td>
+              <td>{{podcastTableData.totalForPeriod | largeNumber}}</td>
+              <td *ngFor="let download of podcastTableData.downloads">{{download.value | largeNumber}}</td>
+            </tr>
+            <tr *ngFor="let episode of episodeTableData">
+              <td>{{episode.releaseDate}}</td>
+              <td>{{episode.totalForPeriod | largeNumber}}</td>
+              <td *ngFor="let download of episode.downloads">{{download.value | largeNumber}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
   `,
   styleUrls: ['downloads-table.component.css']

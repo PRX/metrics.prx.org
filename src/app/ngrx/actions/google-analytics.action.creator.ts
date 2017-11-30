@@ -1,4 +1,5 @@
-import { ActionTypes, ActionWithPayload } from './action.types';
+import { Action } from '@ngrx/store';
+import { ActionTypes } from './action.types';
 
 export interface GoogleAnalyticsEventPayload {
   gaAction: string;
@@ -7,7 +8,7 @@ export interface GoogleAnalyticsEventPayload {
   value?: number;
 }
 
-export class GoogleAnalyticsEventAction implements ActionWithPayload<GoogleAnalyticsEventPayload> {
+export class GoogleAnalyticsEventAction implements Action {
   readonly type = ActionTypes.GOOGLE_ANALYTICS_EVENT;
 
   constructor(public payload: GoogleAnalyticsEventPayload) {}

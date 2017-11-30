@@ -1,10 +1,10 @@
-import { ActionTypes, ActionWithPayload, CastleEpisodeMetricsPayload } from '../actions';
+import { ActionTypes, CastleEpisodeMetricsAction } from '../actions';
 import { EpisodeMetricsModel, IntervalModel, MetricsType } from '../model';
 import { getMetricsProperty } from '../../shared/util/metrics.util';
 
 const initialState = [];
 
-export function EpisodeMetricsReducer(state: EpisodeMetricsModel[] = initialState, action: ActionWithPayload<CastleEpisodeMetricsPayload>) {
+export function EpisodeMetricsReducer(state: EpisodeMetricsModel[] = initialState, action: CastleEpisodeMetricsAction) {
   let epIdx: number, episode: EpisodeMetricsModel, newState: EpisodeMetricsModel[];
   switch (action.type) {
     case ActionTypes.CASTLE_EPISODE_METRICS:

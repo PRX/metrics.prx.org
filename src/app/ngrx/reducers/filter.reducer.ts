@@ -1,10 +1,10 @@
-import { ActionTypes, ActionWithPayload, CastleFilterPayload } from '../actions';
+import { ActionTypes, CastleFilterAction } from '../actions';
 import { FilterModel } from '../model';
 import { isPodcastChanged } from '../../shared/util/filter.util';
 
 const initialState = {};
 
-export function FilterReducer(state: FilterModel = initialState, action: ActionWithPayload<CastleFilterPayload>): FilterModel {
+export function FilterReducer(state: FilterModel = initialState, action: CastleFilterAction): FilterModel {
   switch (action.type) {
     case ActionTypes.CASTLE_FILTER:
       const newState: FilterModel = {...state};

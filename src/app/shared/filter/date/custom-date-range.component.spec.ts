@@ -31,8 +31,6 @@ describe('CustomDateRangeComponent', () => {
       fix.detectChanges();
       de = fix.debugElement;
       el = de.nativeElement;
-
-      spyOn(comp, 'googleAnalyticsEvent').and.callThrough();
     });
   }));
 
@@ -41,16 +39,5 @@ describe('CustomDateRangeComponent', () => {
     comp.beginDate = beginningOfLastYearUTC().toDate();
     comp.endDate = endOfLastYearUTC().toDate();
     expect(comp.invalid).toContain('cannot be more than 40 days apart');
-  });
-
-  it('should send google analytics event when begin or end time changes', () => {
-    comp.interval = INTERVAL_DAILY;
-    comp.beginDate = beginningOfLastMonthUTC().toDate();
-    comp.endDate = endOfLastMonthUTC().toDate();
-    const now = new Date();
-    comp.onBeginTimeChange(now);
-    expect(comp.googleAnalyticsEvent).toHaveBeenCalledWith('begin-time', now.getUTCHours());
-    comp.onEndTimeChange(now);
-    expect(comp.googleAnalyticsEvent).toHaveBeenCalledWith('end-time', now.getUTCHours());
   });
 });

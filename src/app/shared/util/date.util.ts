@@ -1,7 +1,7 @@
 import * as moment from 'moment';
 import { DateRangeModel, TODAY, THIS_WEEK, TWO_WEEKS, THIS_MONTH, THREE_MONTHS, THIS_YEAR,
   YESTERDAY, LAST_WEEK, PRIOR_TWO_WEEKS, LAST_MONTH, PRIOR_THREE_MONTHS, LAST_YEAR,
-  IntervalModel, INTERVAL_15MIN, INTERVAL_HOURLY, INTERVAL_DAILY, INTERVAL_WEEKLY, INTERVAL_MONTHLY } from '../../ngrx/model';
+  IntervalModel, INTERVAL_HOURLY, INTERVAL_DAILY, INTERVAL_WEEKLY, INTERVAL_MONTHLY } from '../../ngrx/model';
 
 export const isMoreThanXDays = (x: number, beginDate, endDate): boolean => {
   return endDate.valueOf() - beginDate.valueOf() > (1000 * 60 * 60 * 24 * x); // x days
@@ -233,8 +233,6 @@ export const getRange = (standardRange: string): any[] => {
 
 export const getMillisecondsOfInterval = (interval: IntervalModel): number => {
   switch (interval) {
-    case INTERVAL_15MIN:
-      return 15 * 60 * 1000;
     case INTERVAL_HOURLY:
       return 60 * 60 * 1000;
     case INTERVAL_DAILY:
@@ -286,7 +284,7 @@ export const roundDateToEndOfInterval = (date: Date, interval: IntervalModel): D
       moment(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(), 23, 59, 59, 999)).utc(),
       endOfTodayUTC()).toDate();
   } else {
-    // hourly and 15 min data should just show the beginning of the interval
+    // hourly data should just show the beginning of the interval
     // (and there is where extracting these helper functions could lead to later trouble...)
     return roundDateToBeginOfInterval(date, interval);
   }
@@ -296,8 +294,6 @@ export const getAmountOfIntervals = (beginDate: Date, endDate: Date, interval: I
   const duration = roundDateToBeginOfInterval(endDate, interval).valueOf() - roundDateToBeginOfInterval(beginDate, interval).valueOf();
   // plus 1 because we actually want number of data points in duration, i.e. hourly 23 - 0 is 24 data points
   switch (interval) {
-    case INTERVAL_15MIN:
-      return 1 + (duration / (1000 * 60 * 4));
     case INTERVAL_HOURLY:
       return 1 + (duration / (1000 * 60 * 60));
     case INTERVAL_DAILY:

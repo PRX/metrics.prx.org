@@ -2,7 +2,7 @@ import { Component, OnDestroy } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs/Subscription';
 import { EpisodeMetricsModel, EpisodeModel, FilterModel, PodcastMetricsModel,
-  INTERVAL_MONTHLY, INTERVAL_WEEKLY, INTERVAL_DAILY, INTERVAL_HOURLY, INTERVAL_15MIN } from '../ngrx/model';
+  INTERVAL_MONTHLY, INTERVAL_WEEKLY, INTERVAL_DAILY, INTERVAL_HOURLY } from '../ngrx/model';
 import { selectEpisodes, selectFilter, selectEpisodeMetrics, selectPodcastMetrics } from '../ngrx/reducers';
 import { findPodcastMetrics, filterAllPodcastEpisodes, filterEpisodeMetrics, metricsData, getTotal } from '../shared/util/metrics.util';
 import { mapMetricsToTimeseriesData } from '../shared/util/chart.util';
@@ -185,7 +185,6 @@ export class DownloadsTableComponent implements OnDestroy {
         case INTERVAL_DAILY:
           return dayMonthDateFormat(date);
         case INTERVAL_HOURLY:
-        case INTERVAL_15MIN:
           return hourlyDateFormat(date);
         default:
           return dayMonthDateFormat(date);

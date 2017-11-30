@@ -3,7 +3,7 @@ import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs/Subscription';
 import { TimeseriesChartModel } from 'ngx-prx-styleguide';
 import { EpisodeMetricsModel, PodcastMetricsModel, EpisodeModel, FilterModel,
-  INTERVAL_MONTHLY, INTERVAL_WEEKLY, INTERVAL_DAILY, INTERVAL_HOURLY, INTERVAL_15MIN } from '../ngrx/model';
+  INTERVAL_MONTHLY, INTERVAL_WEEKLY, INTERVAL_DAILY, INTERVAL_HOURLY } from '../ngrx/model';
 import { selectFilter, selectEpisodes, selectPodcastMetrics, selectEpisodeMetrics } from '../ngrx/reducers';
 import { findPodcastMetrics, filterEpisodeMetrics, metricsData, getTotal } from '../shared/util/metrics.util';
 import { mapMetricsToTimeseriesData, subtractTimeseriesDatasets, neutralColor, generateShades } from '../shared/util/chart.util';
@@ -126,7 +126,6 @@ export class DownloadsChartComponent implements OnDestroy {
         case INTERVAL_DAILY:
           return dailyDateFormat;
         case INTERVAL_HOURLY:
-        case INTERVAL_15MIN:
           return hourlyDateFormat;
         default:
           return UTCDateFormat;

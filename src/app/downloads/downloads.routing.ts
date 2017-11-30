@@ -3,7 +3,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { AuthGuard, DeactivateGuard } from 'ngx-prx-styleguide';
 
 import { DownloadsComponent } from './downloads.component';
-import { INTERVAL_MONTHLY, INTERVAL_WEEKLY, INTERVAL_DAILY, INTERVAL_HOURLY, INTERVAL_15MIN } from '../ngrx/model';
+import { INTERVAL_MONTHLY, INTERVAL_WEEKLY, INTERVAL_DAILY, INTERVAL_HOURLY } from '../ngrx/model';
 
 export const downloadsRoutes: Routes = [
   {
@@ -26,12 +26,6 @@ export const downloadsRoutes: Routes = [
   },
   {
     path: `:seriesId/downloads/${INTERVAL_HOURLY.key}`,
-    component: DownloadsComponent,
-    canActivate: [AuthGuard],
-    canDeactivate: [DeactivateGuard]
-  },
-  {
-    path: `:seriesId/downloads/${INTERVAL_15MIN.key}`,
     component: DownloadsComponent,
     canActivate: [AuthGuard],
     canDeactivate: [DeactivateGuard]

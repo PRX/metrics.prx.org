@@ -1,6 +1,6 @@
 import { Component, Input, Output, EventEmitter, OnChanges } from '@angular/core';
 import { FilterModel, IntervalModel,
-  INTERVAL_MONTHLY, INTERVAL_WEEKLY, INTERVAL_DAILY, INTERVAL_HOURLY, INTERVAL_15MIN } from '../../ngrx/model';
+  INTERVAL_MONTHLY, INTERVAL_WEEKLY, INTERVAL_DAILY, INTERVAL_HOURLY } from '../../ngrx/model';
 import { isMoreThanXDays } from '../util/date.util';
 
 @Component({
@@ -43,8 +43,7 @@ export class IntervalComponent implements OnChanges {
           [INTERVAL_MONTHLY.name, INTERVAL_MONTHLY],
           [INTERVAL_WEEKLY.name, INTERVAL_WEEKLY],
           [INTERVAL_DAILY.name, INTERVAL_DAILY],
-          [INTERVAL_HOURLY.name, INTERVAL_HOURLY],
-          [INTERVAL_15MIN.name, INTERVAL_15MIN]
+          [INTERVAL_HOURLY.name, INTERVAL_HOURLY]
         ];
       }
     }

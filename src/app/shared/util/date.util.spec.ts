@@ -6,7 +6,7 @@ import { isMoreThanXDays, beginningOfTodayUTC, endOfTodayUTC,
   getBeginEndDateFromStandardRange, getStandardRangeForBeginEndDate, getRange, getMillisecondsOfInterval,
   roundDateToBeginOfInterval, roundDateToEndOfInterval, getAmountOfIntervals,
   UTCDateFormat, dailyDateFormat, dayMonthDateFormat, monthDateYearFormat, monthYearFormat, hourlyDateFormat } from './date.util';
-import { DateRangeModel, INTERVAL_MONTHLY, INTERVAL_WEEKLY, INTERVAL_DAILY, INTERVAL_HOURLY, INTERVAL_15MIN,
+import { DateRangeModel, INTERVAL_MONTHLY, INTERVAL_WEEKLY, INTERVAL_DAILY, INTERVAL_HOURLY,
   TODAY, YESTERDAY, THIS_WEEK, LAST_WEEK, TWO_WEEKS, PRIOR_TWO_WEEKS, THIS_MONTH, LAST_MONTH,
   THREE_MONTHS, PRIOR_THREE_MONTHS, THIS_YEAR, LAST_YEAR } from '../../ngrx/model';
 
@@ -80,12 +80,9 @@ describe('date util', () => {
     const today = new Date();
     const daily = roundDateToBeginOfInterval(today, INTERVAL_DAILY);
     const hourly = roundDateToBeginOfInterval(today, INTERVAL_HOURLY);
-    const fifteenMin = roundDateToBeginOfInterval(today, INTERVAL_15MIN);
     expect(daily.valueOf()).toEqual(beginningOfTodayUTC().valueOf());
     expect(hourly.getHours()).toEqual(today.getHours());
     expect(hourly.getMinutes()).toEqual(0);
-    expect(fifteenMin.getHours()).toEqual(today.getHours());
-    expect(fifteenMin.getMinutes() % 15).toEqual(0);
   });
 
   describe('roundDateToEndOfInterval', () => {
@@ -96,11 +93,10 @@ describe('date util', () => {
       expect(roundDateToEndOfInterval(beginningOfThisMonthUTC().toDate(), INTERVAL_MONTHLY).valueOf()).toEqual(endOfTodayUTC().valueOf());
     });
     it('except for hourly and 15m, which should be rounded to the beginning of the interval', () => {
-      expect(roundDateToEndOfInterval(new Date(2017, 10, 27, 8, 48), INTERVAL_15MIN).getMinutes()).toEqual(45);
       expect(roundDateToEndOfInterval(new Date(2017, 9, 27, 8, 32), INTERVAL_HOURLY).getMinutes()).toEqual(0);
     });
     it('dates in the future will be rounded to end of today UTC', () => {
-      const future = new Date;
+      const future = new Date();
       future.setDate(future.getDate() + 1);
       expect(roundDateToEndOfInterval(future, INTERVAL_DAILY).valueOf()).toEqual(endOfTodayUTC().valueOf());
       expect(roundDateToEndOfInterval(future, INTERVAL_WEEKLY).valueOf()).toEqual(endOfTodayUTC().valueOf());

@@ -1,6 +1,6 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { DateRangeModel, IntervalModel, INTERVAL_HOURLY, INTERVAL_15MIN } from '../../../ngrx/model';
+import { DateRangeModel, IntervalModel, INTERVAL_HOURLY } from '../../../ngrx/model';
 import { isMoreThanXDays, endOfTodayUTC } from '../../util/date.util';
 import { GoogleAnalyticsEventAction } from '../../../ngrx/actions';
 
@@ -65,8 +65,6 @@ export class CustomDateRangeComponent {
     if (this.beginDate && this.endDate) {
       if (this.beginDate.valueOf() > this.endDate.valueOf()) {
         return 'From date must come before Through date';
-      } else if (this.interval === INTERVAL_15MIN && isMoreThanXDays(10, this.beginDate, this.endDate)) {
-        return 'From date and Through date cannot be more than 10 days apart for 15 minute interval';
       } else if (this.interval === INTERVAL_HOURLY && isMoreThanXDays(40, this.beginDate, this.endDate)) {
         return 'From date and Through date cannot be more than 40 days apart for hourly interval';
       } else if (this.endDate.valueOf() > endOfTodayUTC().valueOf() + 1 + (60 * 1000)) {

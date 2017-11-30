@@ -346,7 +346,5 @@ export const monthYearFormat = (date: Date): string => {
 };
 
 export const hourlyDateFormat = (date: Date): string => {
-  const minutes = date.getUTCMinutes() < 10 ? '0' + date.getUTCMinutes() : date.getUTCMinutes();
-  return (date.getUTCMonth() + 1) + '/' + date.getUTCDate() + ' ' +
-    date.getUTCHours() + ':' + minutes;
+  return (date.getMonth() + 1) + '/' + date.getDate() + ' ' + date.getHours() + ':00';
 };

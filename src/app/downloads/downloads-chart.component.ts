@@ -7,7 +7,7 @@ import { EpisodeMetricsModel, PodcastMetricsModel, EpisodeModel, FilterModel,
 import { selectFilter, selectEpisodes, selectPodcastMetrics, selectEpisodeMetrics } from '../ngrx/reducers';
 import { findPodcastMetrics, filterEpisodeMetrics, metricsData, getTotal } from '../shared/util/metrics.util';
 import { mapMetricsToTimeseriesData, subtractTimeseriesDatasets, neutralColor, generateShades } from '../shared/util/chart.util';
-import { UTCDateFormat, monthYearFormat, dayMonthDateFormat, dailyDateFormat, hourlyDateFormat } from '../shared/util/date.util';
+import { UTCDateFormat, monthYearFormat, dayMonthDateFormat, hourlyDateFormat } from '../shared/util/date.util';
 
 @Component({
   selector: 'metrics-downloads-chart',
@@ -122,9 +122,8 @@ export class DownloadsChartComponent implements OnDestroy {
         case INTERVAL_MONTHLY:
           return monthYearFormat;
         case INTERVAL_WEEKLY:
-          return dayMonthDateFormat;
         case INTERVAL_DAILY:
-          return dailyDateFormat;
+          return dayMonthDateFormat;
         case INTERVAL_HOURLY:
           return hourlyDateFormat;
         default:

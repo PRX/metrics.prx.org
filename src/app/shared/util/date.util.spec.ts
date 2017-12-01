@@ -5,7 +5,7 @@ import { isMoreThanXDays, beginningOfTodayUTC, endOfTodayUTC,
   beginningOfPriorThreeMonthsUTC, endOfPriorThreeMonthsUTC, beginningOfLastYearUTC, endOfLastYearUTC,
   getBeginEndDateFromStandardRange, getStandardRangeForBeginEndDate, getRange, getMillisecondsOfInterval,
   roundDateToBeginOfInterval, roundDateToEndOfInterval, getAmountOfIntervals,
-  UTCDateFormat, dailyDateFormat, dayMonthDateFormat, monthDateYearFormat, monthYearFormat, hourlyDateFormat } from './date.util';
+  UTCDateFormat, dailyOfWeekDateFormat, dayMonthDateFormat, monthDateYearFormat, monthYearFormat, hourlyDateFormat } from './date.util';
 import { DateRangeModel, INTERVAL_MONTHLY, INTERVAL_WEEKLY, INTERVAL_DAILY, INTERVAL_HOURLY,
   TODAY, YESTERDAY, THIS_WEEK, LAST_WEEK, TWO_WEEKS, PRIOR_TWO_WEEKS, THIS_MONTH, LAST_MONTH,
   THREE_MONTHS, PRIOR_THREE_MONTHS, THIS_YEAR, LAST_YEAR } from '../../ngrx/model';
@@ -157,15 +157,25 @@ describe('date util', () => {
     let utcString = UTCDateFormat(date);
     const search = utcString.match(/..:..:../);
     expect(parseInt(utcString.slice(search.index, search.index + 2), 10)).toEqual(date.getUTCHours());
-    utcString = dailyDateFormat(date);
-    expect(parseInt(utcString.slice(utcString.indexOf('/') + 1), 10)).toEqual(date.getUTCDate());
+    utcString = dailyOfWeekDateFormat(date);
+    expect(parseInt(utcString.slice(utcString.lastIndexOf(' ') + 1), 10)).toEqual(date.getUTCDate());
     utcString = dayMonthDateFormat(date);
-    expect(parseInt(utcString.slice(utcString.indexOf('/') + 1), 10)).toEqual(date.getUTCDate());
+    expect(parseInt(utcString.slice(utcString.indexOf(' ') + 1), 10)).toEqual(date.getUTCDate());
     utcString = monthDateYearFormat(date);
-    expect(parseInt(utcString.slice(utcString.indexOf('/') + 1), 10)).toEqual(date.getUTCDate());
+    expect(parseInt(utcString.slice(utcString.indexOf(' ') + 1), 10)).toEqual(date.getUTCDate());
     utcString = monthYearFormat(date);
-    expect(parseInt(utcString.slice(utcString.indexOf('/') + 1), 10)).toEqual(date.getUTCFullYear() % 100);
-    utcString = hourlyDateFormat(date);
-    expect(parseInt(utcString.slice(utcString.indexOf(':') + 1), 10)).toEqual(date.getUTCMinutes());
+    expect(parseInt(utcString.slice(utcString.indexOf(' ') + 1), 10)).toEqual(date.getUTCFullYear());
+  });
+
+  it('should format hourly dates in local timezone', () => {
+    const date = new Date();
+    const dateString = hourlyDateFormat(date);
+    let hours;
+    if (date.getHours() === 0) {
+      hours = 12;
+    } else {
+      hours = date.getHours() % 12;
+    }
+    expect(parseInt(dateString.slice(dateString.indexOf(', ') + 1), 10)).toEqual(hours);
   });
 });

@@ -311,7 +311,7 @@ export const UTCDateFormat = (date: Date): string => {
   return date.toUTCString();
 };
 
-export const dailyDateFormat = (date: Date): string => {
+export const dailyOfWeekDateFormat = (date: Date): string => {
   const dayOfWeek = (day: number): string => {
     switch (day) {
       case 0:
@@ -330,21 +330,36 @@ export const dailyDateFormat = (date: Date): string => {
         return 'Sat';
     }
   };
-  return dayOfWeek(date.getUTCDay()) + ' ' + (date.getUTCMonth() + 1) + '/' + date.getUTCDate();
+  const month = moment(date).utc().format('MMM');
+  return dayOfWeek(date.getUTCDay()) + ', ' + month + ' ' + date.getUTCDate();
 };
 
 export const dayMonthDateFormat = (date: Date): string => {
-  return date.getUTCMonth() + 1 + '/' + date.getUTCDate();
+  const month = moment(date).utc().format('MMM');
+  return month + ' ' + date.getUTCDate();
 };
 
 export const monthDateYearFormat = (date: Date): string => {
-  return date.getUTCMonth() + 1 + '/' + date.getUTCDate() + '/' + date.getUTCFullYear() % 100;
+  const month = moment(date).utc().format('MMM');
+  return month + ' ' + date.getUTCDate() + ', ' + date.getUTCFullYear();
 };
 
 export const monthYearFormat = (date: Date): string => {
-  return date.getUTCMonth() + 1 + '/' + date.getUTCFullYear() % 100;
+  const month = moment(date).utc().format('MMM');
+  return month + ' ' + date.getUTCFullYear();
 };
 
 export const hourlyDateFormat = (date: Date): string => {
-  return (date.getMonth() + 1) + '/' + date.getDate() + ' ' + date.getHours() + ':00';
+  let time;
+  const hours = date.getHours();
+  if (hours === 0) {
+    time = '12:00 AM';
+  } else if (hours > 12) {
+    time = hours % 12 + ':00 PM';
+  } else {
+    time = hours + ':00 AM';
+  }
+  const month = moment(date).format('MMM');
+
+  return month + ' ' + date.getDate() + ', ' + time;
 };

@@ -13,6 +13,7 @@ import * as moment from 'moment';
 @Component({
   selector: 'metrics-downloads-table',
   template: `
+    <p *ngIf="podcastTableData && filter?.interval === bindToIntervalHourly"><em>Hourly data is shown in your local timezone</em></p>
     <div class="table-wrapper" *ngIf="podcastTableData">
       <table class="sticky">
         <thead>
@@ -69,6 +70,7 @@ export class DownloadsTableComponent implements OnDestroy {
   podcastTableData: {};
   episodeTableData: any[];
   dateRange: string[];
+  bindToIntervalHourly = INTERVAL_HOURLY;
 
   constructor(public store: Store<any>) {
 
@@ -185,7 +187,7 @@ export class DownloadsTableComponent implements OnDestroy {
         case INTERVAL_DAILY:
           return dayMonthDateFormat(date);
         case INTERVAL_HOURLY:
-          return hourlyDateFormat(date);
+          return hourlyDateFormat(date).split(', ').join(',\n');
         default:
           return dayMonthDateFormat(date);
       }

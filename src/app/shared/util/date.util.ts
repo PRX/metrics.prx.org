@@ -193,41 +193,39 @@ export const getBeginEndDateFromStandardRange = (standardRange: string): {beginD
 export const getStandardRangeForBeginEndDate = (dateRange: FilterModel) => {
   if (dateRange.beginDate.valueOf() === beginningOfTodayUTC().valueOf() &&
     (dateRange.endDate.valueOf() === endOfTodayUTC().valueOf() ||
-    (dateRange.interval && dateRange.interval === INTERVAL_HOURLY && dateRange.endDate.valueOf() === endOfTodayHourlyUTC().valueOf()))) {
+    (dateRange.interval === INTERVAL_HOURLY && dateRange.endDate.valueOf() === endOfTodayHourlyUTC().valueOf()))) {
     return TODAY;
   } else if (dateRange.beginDate.valueOf() === beginningOfThisWeekUTC().valueOf() &&
     (dateRange.endDate.valueOf() === endOfTodayUTC().valueOf() ||
-    (dateRange.interval && dateRange.interval === INTERVAL_HOURLY && dateRange.endDate.valueOf() === endOfTodayHourlyUTC().valueOf()))) {
+    (dateRange.interval === INTERVAL_HOURLY && dateRange.endDate.valueOf() === endOfTodayHourlyUTC().valueOf()))) {
     return THIS_WEEK;
   } else if (dateRange.beginDate.valueOf() === beginningOfTwoWeeksUTC().valueOf() &&
     (dateRange.endDate.valueOf() === endOfTodayUTC().valueOf() ||
-    (dateRange.interval && dateRange.interval === INTERVAL_HOURLY && dateRange.endDate.valueOf() === endOfTodayHourlyUTC().valueOf()))) {
+    (dateRange.interval === INTERVAL_HOURLY && dateRange.endDate.valueOf() === endOfTodayHourlyUTC().valueOf()))) {
     return TWO_WEEKS;
   } else if (dateRange.beginDate.valueOf() === beginningOfThisMonthUTC().valueOf() &&
     (dateRange.endDate.valueOf() === endOfTodayUTC().valueOf() ||
-    (dateRange.interval && dateRange.interval === INTERVAL_HOURLY && dateRange.endDate.valueOf() === endOfTodayHourlyUTC().valueOf()))) {
+    (dateRange.interval === INTERVAL_HOURLY && dateRange.endDate.valueOf() === endOfTodayHourlyUTC().valueOf()))) {
     return THIS_MONTH;
   } else if (dateRange.beginDate.valueOf() === beginningOfThreeMonthsUTC().valueOf() &&
     (dateRange.endDate.valueOf() === endOfTodayUTC().valueOf() ||
-    (dateRange.interval && dateRange.interval === INTERVAL_HOURLY && dateRange.endDate.valueOf() === endOfTodayHourlyUTC().valueOf()))) {
+    (dateRange.interval === INTERVAL_HOURLY && dateRange.endDate.valueOf() === endOfTodayHourlyUTC().valueOf()))) {
     return THREE_MONTHS;
   } else if (dateRange.beginDate.valueOf() === beginningOfThisYearUTC().valueOf() &&
     (dateRange.endDate.valueOf() === endOfTodayUTC().valueOf() ||
-    (dateRange.interval && dateRange.interval === INTERVAL_HOURLY && dateRange.endDate.valueOf() === endOfTodayHourlyUTC().valueOf()))) {
+    (dateRange.interval === INTERVAL_HOURLY && dateRange.endDate.valueOf() === endOfTodayHourlyUTC().valueOf()))) {
     return THIS_YEAR;
   } else if (dateRange.beginDate.valueOf() === beginningOfYesterdayUTC().valueOf() &&
     (dateRange.endDate.valueOf() === endOfYesterdayUTC().valueOf() ||
-    (dateRange.interval && dateRange.interval === INTERVAL_HOURLY &&
-      dateRange.endDate.valueOf() === endOfYesterdayHourlyUTC().valueOf()))) {
+    (dateRange.interval === INTERVAL_HOURLY && dateRange.endDate.valueOf() === endOfYesterdayHourlyUTC().valueOf()))) {
     return YESTERDAY;
   } else if (dateRange.beginDate.valueOf() === beginningOfLastWeekUTC().valueOf() &&
     (dateRange.endDate.valueOf() === endOfLastWeekUTC().valueOf() ||
-    (dateRange.interval && dateRange.interval === INTERVAL_HOURLY && dateRange.endDate.valueOf() === endOfLastWeekHourlyUTC().valueOf()))) {
+    (dateRange.interval === INTERVAL_HOURLY && dateRange.endDate.valueOf() === endOfLastWeekHourlyUTC().valueOf()))) {
     return LAST_WEEK;
   } else if (dateRange.beginDate.valueOf() === beginningOfPriorTwoWeeksUTC().valueOf() &&
     (dateRange.endDate.valueOf() === endOfLastWeekUTC().valueOf() ||
-    (dateRange.interval && dateRange.interval === INTERVAL_HOURLY &&
-      dateRange.endDate.valueOf() === endOfPriorTwoWeeksHourlyUTC().valueOf()))) {
+    (dateRange.interval === INTERVAL_HOURLY && dateRange.endDate.valueOf() === endOfPriorTwoWeeksHourlyUTC().valueOf()))) {
     return PRIOR_TWO_WEEKS;
   } else if (dateRange.beginDate.valueOf() === beginningOfLastMonthUTC().valueOf() &&
     dateRange.endDate.valueOf() === endOfLastMonthUTC().valueOf()) {

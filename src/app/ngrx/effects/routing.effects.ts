@@ -46,7 +46,7 @@ export class RoutingEffects {
         // because dates (and episodes) are temporal parameters that would change over time
         if (filter.beginDate && filter.endDate) {
           // maybe these shouldn't even go in the url if they are being overridden, but "all things must go in the url"
-          filter.standardRange = getStandardRangeForBeginEndDate({beginDate: filter.beginDate, endDate: filter.endDate});
+          filter.standardRange = getStandardRangeForBeginEndDate(filter);
         } else if (params['standardRange']) {
           filter.standardRange = params['standardRange'];
           if (!filter.range) {

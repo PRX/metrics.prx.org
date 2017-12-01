@@ -53,7 +53,7 @@ export class NextDateRangeComponent implements OnInit, OnDestroy {
       let standardRange = this.getNextStandardRange();
       // the first attempt at assigning when is where we are certain, if we aren't certain, we need to check for matching date ranges
       if (!standardRange) {
-        standardRange = getStandardRangeForBeginEndDate({beginDate: newBeginDate, endDate: newEndDate});
+        standardRange = getStandardRangeForBeginEndDate({...this.filter, beginDate: newBeginDate, endDate: newEndDate});
       }
       const routerParams = {
         range: this.filter.range,

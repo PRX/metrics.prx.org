@@ -1,6 +1,6 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { DateRangeModel, IntervalModel, INTERVAL_HOURLY } from '../../../ngrx/model';
+import { FilterModel, IntervalModel, INTERVAL_HOURLY } from '../../../ngrx/model';
 import { isMoreThanXDays, endOfTodayUTC } from '../../util/date.util';
 
 @Component({
@@ -20,7 +20,7 @@ export class CustomDateRangeComponent {
   @Input() interval: IntervalModel;
   @Input() beginDate: Date;
   @Input() endDate: Date;
-  @Output() customRangeChange = new EventEmitter<DateRangeModel>();
+  @Output() customRangeChange = new EventEmitter<FilterModel>();
 
   constructor(public store: Store<any>) {}
 

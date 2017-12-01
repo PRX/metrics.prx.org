@@ -50,7 +50,7 @@ describe('DateRangeComponent', () => {
       endDate: endOfLastMonthUTC().toDate()
     };
     comp.onCustomRangeChange(range);
-    const inSync = {...range, standardRange: LAST_MONTH, range: getRange(LAST_MONTH)};
+    const inSync = {...comp.filter, ...range, standardRange: LAST_MONTH, range: getRange(LAST_MONTH)};
     expect(comp.dateRangeChange.emit).toHaveBeenCalledWith(inSync);
   });
 
@@ -58,6 +58,7 @@ describe('DateRangeComponent', () => {
     comp.filter = {interval: INTERVAL_DAILY};
     comp.onStandardRangeChange(LAST_YEAR);
     const inSync = {
+      ...comp.filter,
       beginDate: beginningOfLastYearUTC().toDate(),
       endDate:  endOfLastYearUTC().toDate(),
       standardRange: LAST_YEAR,

@@ -6,7 +6,7 @@ import { isMoreThanXDays, beginningOfTodayUTC, endOfTodayUTC,
   getBeginEndDateFromStandardRange, getStandardRangeForBeginEndDate, getRange, getMillisecondsOfInterval,
   roundDateToBeginOfInterval, roundDateToEndOfInterval, getAmountOfIntervals,
   UTCDateFormat, dailyOfWeekDateFormat, dayMonthDateFormat, monthDateYearFormat, monthYearFormat, hourlyDateFormat } from './date.util';
-import { DateRangeModel, INTERVAL_MONTHLY, INTERVAL_WEEKLY, INTERVAL_DAILY, INTERVAL_HOURLY,
+import { FilterModel, INTERVAL_MONTHLY, INTERVAL_WEEKLY, INTERVAL_DAILY, INTERVAL_HOURLY,
   TODAY, YESTERDAY, THIS_WEEK, LAST_WEEK, TWO_WEEKS, PRIOR_TWO_WEEKS, THIS_MONTH, LAST_MONTH,
   THREE_MONTHS, PRIOR_THREE_MONTHS, THIS_YEAR, LAST_YEAR } from '../../ngrx/model';
 
@@ -47,7 +47,8 @@ describe('date util', () => {
   });
 
   it('should get standard range from begin and end dates', () => {
-    const thisWeek: DateRangeModel = {
+    const thisWeek: FilterModel = {
+      interval: INTERVAL_DAILY,
       beginDate: beginningOfThisWeekUTC().toDate(),
       endDate: endOfTodayUTC().toDate()
     };
@@ -56,7 +57,8 @@ describe('date util', () => {
     } else {
       expect(getStandardRangeForBeginEndDate(thisWeek)).toEqual(THIS_WEEK);
     }
-    const lastWeek: DateRangeModel = {
+    const lastWeek: FilterModel = {
+      interval: INTERVAL_DAILY,
       beginDate: beginningOfLastWeekUTC().toDate(),
       endDate: endOfLastWeekUTC().toDate()
     };

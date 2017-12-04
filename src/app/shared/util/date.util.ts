@@ -100,7 +100,7 @@ export const endOfLastMonthUTC = () => {
 };
 
 export const endOfLastMonthHourlyUTC = () => {
-  return endOfTodayUTC().date(1).subtract(1, 'days'); // 1st of month - 1 day
+  return endOfTodayHourlyUTC().date(1).subtract(1, 'days'); // 1st of month - 1 day
 };
 
 export const beginningOfPriorThreeMonthsUTC = () => {
@@ -228,7 +228,8 @@ export const getStandardRangeForBeginEndDate = (dateRange: FilterModel) => {
     (dateRange.interval === INTERVAL_HOURLY && dateRange.endDate.valueOf() === endOfPriorTwoWeeksHourlyUTC().valueOf()))) {
     return PRIOR_TWO_WEEKS;
   } else if (dateRange.beginDate.valueOf() === beginningOfLastMonthUTC().valueOf() &&
-    dateRange.endDate.valueOf() === endOfLastMonthUTC().valueOf()) {
+    (dateRange.endDate.valueOf() === endOfLastMonthUTC().valueOf() ||
+    (dateRange.interval === INTERVAL_HOURLY && dateRange.endDate.valueOf() === endOfLastMonthHourlyUTC().valueOf()))) {
     return LAST_MONTH;
   } else if (dateRange.beginDate.valueOf() === beginningOfPriorThreeMonthsUTC().valueOf() &&
     dateRange.endDate.valueOf() === endOfPriorThreeMonthsUTC().valueOf()) {

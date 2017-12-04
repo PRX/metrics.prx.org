@@ -159,7 +159,7 @@ describe('date util', () => {
     let utcString = UTCDateFormat(date);
     const search = utcString.match(/..:..:../);
     expect(parseInt(utcString.slice(search.index, search.index + 2), 10)).toEqual(date.getUTCHours());
-    utcString = dailyOfWeekDateFormat(date);
+    utcString = dayOfWeekDateFormat(date);
     expect(parseInt(utcString.slice(utcString.lastIndexOf(' ') + 1), 10)).toEqual(date.getUTCDate());
     utcString = dayMonthDateFormat(date);
     expect(parseInt(utcString.slice(utcString.indexOf(' ') + 1), 10)).toEqual(date.getUTCDate());

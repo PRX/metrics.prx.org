@@ -1,5 +1,3 @@
-import { PodcastModel } from './podcast.model';
-import { EpisodeModel } from './episode.model';
 import { IntervalModel } from './metrics.model';
 
 export const TODAY = 'Today';
@@ -14,13 +12,6 @@ export const PRIOR_TWO_WEEKS = 'Prior 2 weeks';
 export const LAST_MONTH = 'Last month';
 export const PRIOR_THREE_MONTHS = 'Prior 3 months';
 export const LAST_YEAR = 'Last year';
-
-export interface DateRangeModel {
-  standardRange?: string;
-  range?: any[];
-  beginDate: Date;
-  endDate: Date;
-}
 
 // TODO: filter doesn't yet support type (like downloads on the metrics model)
 // --> will a filter apply just to downloads and not be the same if they move to geo data? or would users not want that to stick?

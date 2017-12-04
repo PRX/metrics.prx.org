@@ -1,4 +1,4 @@
-import { ActionTypes, ActionWithPayload, CmsEpisodeGuidsPayload  } from '../actions';
+import { ActionTypes, CmsAllPodcastEpisodeGuidsAction  } from '../actions';
 import { EpisodeModel } from '../model';
 
 const initialState = [];
@@ -6,7 +6,7 @@ const initialState = [];
 // TODO: should be able to use ActionWithPayload<All> here with the union type,
 // but even though I upgraded TypeScript, it still can seem to get the typing right unless I also add an if instanceof =/
 // https://github.com/ngrx/platform/blob/master/docs/store/actions.md#typed-actions
-export function EpisodeReducer(state: EpisodeModel[] = initialState, action: ActionWithPayload<CmsEpisodeGuidsPayload>): EpisodeModel[] {
+export function EpisodeReducer(state: EpisodeModel[] = initialState, action: CmsAllPodcastEpisodeGuidsAction): EpisodeModel[] {
   let epIdx: number, newState: EpisodeModel[];
   switch (action.type) {
     case ActionTypes.CMS_ALL_PODCAST_EPISODE_GUIDS:

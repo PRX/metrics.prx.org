@@ -115,7 +115,7 @@ export class PrevDateRangeComponent implements OnInit, OnDestroy {
       endDate = moment(this.filter.endDate).utc().subtract(this.filter.range[0], this.filter.range[1]).toDate();
     }
     if (!standardRange) {
-      standardRange = getStandardRangeForBeginEndDate({beginDate, endDate});
+      standardRange = getStandardRangeForBeginEndDate({...this.filter, beginDate, endDate});
     }
     return { standardRange, beginDate, endDate };
   }

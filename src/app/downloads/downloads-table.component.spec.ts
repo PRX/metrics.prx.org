@@ -8,7 +8,7 @@ import { SharedModule } from '../shared';
 import { DownloadsTableComponent } from './downloads-table.component';
 
 import { reducers } from '../ngrx/reducers';
-import { PodcastModel, EpisodeModel, FilterModel, INTERVAL_DAILY } from '../ngrx/model';
+import { PodcastModel, EpisodeModel, FilterModel, INTERVAL_DAILY, INTERVAL_HOURLY } from '../ngrx/model';
 import { CastlePodcastMetricsAction, CastleEpisodeMetricsAction,
   CastleFilterAction, CmsAllPodcastEpisodeGuidsAction } from '../ngrx/actions';
 
@@ -31,6 +31,32 @@ describe('DownloadsTableComponent', () => {
     ['2017-09-05T00:00:00Z', 52522],
     ['2017-09-06T00:00:00Z', 162900],
     ['2017-09-07T00:00:00Z', 46858]
+  ];
+  const podHourlyDownloads = [
+    ['2017-09-07T00:00:00Z', 52522],
+    ['2017-09-07T01:00:00Z', 162900],
+    ['2017-09-07T02:00:00Z', 46858],
+    ['2017-09-07T03:00:00Z', 52522],
+    ['2017-09-07T04:00:00Z', 162900],
+    ['2017-09-07T05:00:00Z', 46858],
+    ['2017-09-07T06:00:00Z', 52522],
+    ['2017-09-07T07:00:00Z', 162900],
+    ['2017-09-07T08:00:00Z', 46858],
+    ['2017-09-07T09:00:00Z', 52522],
+    ['2017-09-07T10:00:00Z', 162900],
+    ['2017-09-07T11:00:00Z', 46858],
+    ['2017-09-07T12:00:00Z', 52522],
+    ['2017-09-07T13:00:00Z', 162900],
+    ['2017-09-07T14:00:00Z', 46858],
+    ['2017-09-07T15:00:00Z', 52522],
+    ['2017-09-07T16:00:00Z', 162900],
+    ['2017-09-07T17:00:00Z', 46858],
+    ['2017-09-07T18:00:00Z', 52522],
+    ['2017-09-07T19:00:00Z', 162900],
+    ['2017-09-07T20:00:00Z', 46858],
+    ['2017-09-07T21:00:00Z', 52522],
+    ['2017-09-07T22:00:00Z', 162900],
+    ['2017-09-07T23:00:00Z', 46858]
   ];
   const ep0Downloads = [
     ['2017-08-27T00:00:00Z', 22],
@@ -153,5 +179,18 @@ describe('DownloadsTableComponent', () => {
     comp.episodeTableData.forEach(e => {
       expect(e.totalForPeriod).not.toBeNull();
     });
+  });
+
+  it('should show message about local timezone translation for hourly data', () => {
+    const hourlyFilter = {
+      interval: INTERVAL_HOURLY,
+      beginDate: new Date('2017-09-07T00:00:00Z'),
+      endDate: new Date('2017-09-07T23:00:00Z')
+    };
+    comp.store.dispatch(new CastleFilterAction({filter: hourlyFilter}));
+    comp.store.dispatch(new CastlePodcastMetricsAction({podcast,
+      filter: hourlyFilter, metricsType: 'downloads', metrics: podHourlyDownloads}));
+    fix.detectChanges();
+    expect(de.query(By.css('em')).nativeElement.textContent).toContain('local timezone');
   });
 });

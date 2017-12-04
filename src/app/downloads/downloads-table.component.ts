@@ -2,7 +2,7 @@ import { Component, OnDestroy } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs/Subscription';
 import { EpisodeMetricsModel, EpisodeModel, FilterModel, PodcastMetricsModel,
-  INTERVAL_MONTHLY, INTERVAL_WEEKLY, INTERVAL_DAILY, INTERVAL_HOURLY, INTERVAL_15MIN } from '../ngrx/model';
+  INTERVAL_MONTHLY, INTERVAL_WEEKLY, INTERVAL_DAILY, INTERVAL_HOURLY } from '../ngrx/model';
 import { selectEpisodes, selectFilter, selectEpisodeMetrics, selectPodcastMetrics } from '../ngrx/reducers';
 import { findPodcastMetrics, filterAllPodcastEpisodes, filterEpisodeMetrics, metricsData, getTotal } from '../shared/util/metrics.util';
 import { mapMetricsToTimeseriesData } from '../shared/util/chart.util';
@@ -13,6 +13,7 @@ import * as moment from 'moment';
 @Component({
   selector: 'metrics-downloads-table',
   template: `
+    <p *ngIf="podcastTableData && filter?.interval === bindToIntervalHourly"><em>Hourly data is shown in your local timezone</em></p>
     <div class="table-wrapper" *ngIf="podcastTableData">
       <table class="sticky">
         <thead>
@@ -69,6 +70,7 @@ export class DownloadsTableComponent implements OnDestroy {
   podcastTableData: {};
   episodeTableData: any[];
   dateRange: string[];
+  bindToIntervalHourly = INTERVAL_HOURLY;
 
   constructor(public store: Store<any>) {
 
@@ -185,8 +187,7 @@ export class DownloadsTableComponent implements OnDestroy {
         case INTERVAL_DAILY:
           return dayMonthDateFormat(date);
         case INTERVAL_HOURLY:
-        case INTERVAL_15MIN:
-          return hourlyDateFormat(date);
+          return hourlyDateFormat(date).split(', ').join(',\n');
         default:
           return dayMonthDateFormat(date);
       }

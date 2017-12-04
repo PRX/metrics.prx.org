@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs/Subscription';
 import { selectFilter } from '../../ngrx/reducers';
-import { DateRangeModel, EpisodeModel, FilterModel, IntervalModel } from '../../ngrx/model';
+import { EpisodeModel, FilterModel, IntervalModel } from '../../ngrx/model';
 import { roundDateToBeginOfInterval, roundDateToEndOfInterval,
   getStandardRangeForBeginEndDate, getRange } from '../../shared/util/date.util';
 
@@ -51,12 +51,12 @@ export class FilterComponent implements OnInit, OnDestroy {
     // keep the dates in sync with interval changes
     const beginDate = roundDateToBeginOfInterval(this.filter.beginDate, interval);
     const endDate = roundDateToEndOfInterval(this.filter.endDate, interval);
-    const standardRange = getStandardRangeForBeginEndDate({beginDate, endDate});
+    const standardRange = getStandardRangeForBeginEndDate({...this.filter, interval, beginDate, endDate});
     const range = getRange(standardRange);
     this.filter = {...this.filter, interval, beginDate, endDate, standardRange, range};
   }
 
-  onDateRangeChange(dateRange: DateRangeModel) {
+  onDateRangeChange(dateRange: FilterModel) {
     if (dateRange.beginDate.valueOf() !== this.filter.beginDate.valueOf() ||
       dateRange.endDate.valueOf() !== this.filter.endDate.valueOf()) {
       this.hasChanges = true;
@@ -79,7 +79,7 @@ export class FilterComponent implements OnInit, OnDestroy {
     if (this.hasChanges) {
       this.filter.beginDate = roundDateToBeginOfInterval(this.filter.beginDate, this.filter.interval);
       this.filter.endDate = roundDateToEndOfInterval(this.filter.endDate, this.filter.interval);
-      this.filter.standardRange = getStandardRangeForBeginEndDate({beginDate: this.filter.beginDate, endDate: this.filter.endDate});
+      this.filter.standardRange = getStandardRangeForBeginEndDate(this.filter);
       this.filter.range = getRange(this.filter.standardRange);
       const routerParams = {
         beginDate: this.filter.beginDate.toISOString(),

@@ -345,7 +345,7 @@ export const UTCDateFormat = (date: Date): string => {
   return date.toUTCString();
 };
 
-export const dailyOfWeekDateFormat = (date: Date): string => {
+export const dayOfWeekDateFormat = (date: Date): string => {
   const dayOfWeek = (day: number): string => {
     switch (day) {
       case 0:

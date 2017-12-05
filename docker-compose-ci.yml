@@ -1,0 +1,21 @@
+metrics:
+  build: .
+  volumes:
+    - ./bin:/app/bin
+    - ./e2e:/app/e2e
+    - ./lib:/app/lib
+    - ./src:/app/src
+    - ./.angular-cli.json:/app/.angular-cli.json
+    - ./karma.conf.js:/app/karma.conf.js
+    - ./newrelic.js:/app/newrelic.js
+    - ./package.json:/app/package.json
+    - ./protractor.conf.js:/app/protractor.conf.js
+    - ./tsconfig.json:/app/tsconfig.json
+    - ./tslint.json:/app/tslint.json
+    - ./.git:/app/.git
+  ports:
+    - "4202:4202"
+    - "4203:4203"
+  command: start
+  environment:
+    VIRTUAL_HOST: metrics.prx.docker

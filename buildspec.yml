@@ -12,6 +12,7 @@ phases:
       - "chmod +x /usr/local/bin/docker-compose"
   build:
     commands:
+      - "cd $(ls -d */|head -n 1)"
       - "docker-compose build"
       - "docker-compose run metrics testonce"
   post_build:

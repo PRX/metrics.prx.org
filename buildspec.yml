@@ -12,8 +12,8 @@ phases:
       - "chmod +x /usr/local/bin/docker-compose"
   build:
     commands:
-      - "docker-compose -f docker-compose-ci.yml build"
-      - "docker-compose -f docker-compose-ci.yml run metrics testonce"
+      - "docker-compose build"
+      - "docker-compose run metrics testonce"
   post_build:
       commands:
         - 'curl -sO "https://raw.githubusercontent.com/PRX/Infrastructure/master/ci/utility/post_build.sh" && chmod +x post_build.sh && bash ./post_build.sh'

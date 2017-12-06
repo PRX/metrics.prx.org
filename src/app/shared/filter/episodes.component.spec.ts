@@ -5,10 +5,10 @@ import { StoreModule } from '@ngrx/store';
 import { SelectModule } from 'ngx-prx-styleguide';
 import { EpisodesComponent } from './episodes.component';
 
-import { reducers } from '../../ngrx/reducers';
+import { reducers, PodcastModel } from '../../ngrx/reducers';
 
 import { CmsAllPodcastEpisodeGuidsAction } from '../../ngrx/actions';
-import { EpisodeModel, PodcastModel } from '../../ngrx/model';
+import { EpisodeModel } from '../../ngrx/model';
 
 describe('EpisodesComponent', () => {
   let comp: EpisodesComponent;

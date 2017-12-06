@@ -3,9 +3,9 @@ import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs/Subscription';
 import { CastleService } from '../core';
-import { EpisodeModel, INTERVAL_DAILY, FilterModel, TWO_WEEKS, PodcastModel } from '../ngrx/model';
+import { EpisodeModel, INTERVAL_DAILY, FilterModel, TWO_WEEKS } from '../ngrx/model';
 import { CastleFilterAction, CastlePodcastMetricsAction, CastleEpisodeMetricsAction, GoogleAnalyticsEventAction } from '../ngrx/actions';
-import { selectFilter, selectEpisodes, selectPodcasts } from '../ngrx/reducers';
+import { selectFilter, selectEpisodes, selectPodcasts, PodcastModel } from '../ngrx/reducers';
 import { filterAllPodcastEpisodes } from '../shared/util/metrics.util';
 import { beginningOfTwoWeeksUTC, endOfTodayUTC, getRange } from '../shared/util/date.util';
 import { isPodcastChanged, isEpisodesChanged, isBeginDateChanged, isEndDateChanged, isIntervalChanged } from '../shared/util/filter.util';
@@ -205,13 +205,9 @@ export class DownloadsComponent implements OnInit, OnDestroy {
   }
 
   setDefaultEpisodeFilter() {
-    const episodes = [];
-    this.allPodcastEpisodes.every((episode: EpisodeModel) => {
-      episodes.push(episode);
-      return !((episode.publishedAt.valueOf() < this.filter.beginDate.valueOf() &&
-          episodes.length % 5 === 0) || episodes.length === DownloadsComponent.DONT_BREAK_CASTLE_LIMIT);
-    });
-    this.filter.episodeIds = episodes.map(e => e.id);
+    const end = Math.min(this.allPodcastEpisodes.length, 10);
+    const episodes = this.allPodcastEpisodes.slice(0, end);
+    this.filter.episodeIds = episodes.map((e: EpisodeModel) => e.id);
     const routerParams = {episodes: episodes.map(e => e.id).join(',')};
     if (this.filter.range) {
       routerParams['range'] = this.filter.range;

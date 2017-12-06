@@ -1,13 +1,12 @@
 import { Injectable } from '@angular/core';
 import 'rxjs/add/operator/switchMap';
 import { Observable } from 'rxjs/Observable';
-import { Action } from '@ngrx/store';
 import { Actions, Effect } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import { Angulartics2 } from 'angulartics2';
 import { ActionTypes, GoogleAnalyticsEventAction } from '../actions';
-import { selectPodcasts, selectFilter } from '../reducers';
-import { PodcastModel, FilterModel } from '../model';
+import { selectPodcasts, PodcastModel, selectFilter } from '../reducers';
+import { FilterModel } from '../model';
 
 @Injectable()
 export class GoogleAnalyticsEffects {

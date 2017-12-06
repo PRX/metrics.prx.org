@@ -1,6 +1,7 @@
 import { Action } from '@ngrx/store';
 import { ActionTypes } from './action.types';
-import { FilterModel, EpisodeModel, PodcastModel, MetricsType } from '../model';
+import { FilterModel, EpisodeModel, MetricsType } from '../model';
+import { PodcastModel } from '../reducers';
 
 export interface CastleFilterPayload {
   filter: FilterModel;

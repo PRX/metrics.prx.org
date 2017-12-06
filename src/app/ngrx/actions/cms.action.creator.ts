@@ -1,6 +1,7 @@
 import { Action } from '@ngrx/store';
 import { ActionTypes } from './action.types';
-import { EpisodeModel, PodcastModel } from '../model';
+import { EpisodeModel } from '../model';
+import { PodcastModel } from '../reducers';
 
 export interface CmsPodcastsPayload {
   podcasts: PodcastModel[];

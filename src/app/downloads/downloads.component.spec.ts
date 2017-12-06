@@ -173,13 +173,13 @@ describe('DownloadsComponent', () => {
       expect(de.query(By.css('metrics-downloads-table'))).not.toBeNull();
     });
 
-    it('should limit the default episode filter to no more than the DONT_BREAK_CASTLE_LIMIT', () => {
+    it('should limit the default episode filter to no more than 10 episodes', () => {
       const episodes: EpisodeModel[] = [];
       for (let i = 0; i < DownloadsComponent.DONT_BREAK_CASTLE_LIMIT + 1; i++) {
         episodes.push({doc: undefined, id: i, seriesId: 37800, title: i.toString(), publishedAt: new Date()});
       }
       comp.store.dispatch(new CmsAllPodcastEpisodeGuidsAction({podcast, episodes}));
-      expect(comp.filter.episodeIds.length).toEqual(DownloadsComponent.DONT_BREAK_CASTLE_LIMIT);
+      expect(comp.filter.episodeIds.length).toEqual(10);
     });
   });
 });

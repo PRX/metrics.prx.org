@@ -7,8 +7,8 @@ import { By } from '@angular/platform-browser';
 import { SharedModule } from '../shared';
 import { DownloadsTableComponent } from './downloads-table.component';
 
-import { reducers } from '../ngrx/reducers';
-import { PodcastModel, EpisodeModel, FilterModel, INTERVAL_DAILY, INTERVAL_HOURLY } from '../ngrx/model';
+import { reducers, PodcastModel } from '../ngrx/reducers';
+import { EpisodeModel, FilterModel, INTERVAL_DAILY, INTERVAL_HOURLY } from '../ngrx/model';
 import { CastlePodcastMetricsAction, CastleEpisodeMetricsAction,
   CastleFilterAction, CmsAllPodcastEpisodeGuidsAction } from '../ngrx/actions';
 

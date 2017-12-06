@@ -1,4 +1,3 @@
-export { PodcastModel } from './podcast.model';
 export { EpisodeModel } from './episode.model';
 export { INTERVAL_MONTHLY, INTERVAL_WEEKLY, INTERVAL_DAILY, INTERVAL_HOURLY, IntervalModel, IntervalList,
   PodcastMetricsModel, EpisodeMetricsModel, MetricsType } from './metrics.model';

@@ -1,4 +1,4 @@
-import { FilterModel } from '../../ngrx/model';
+import { FilterModel, EpisodeModel } from '../../ngrx/model';
 
 export const isPodcastChanged = (state: FilterModel, oldState: FilterModel): boolean => {
   return state && state.podcastSeriesId && (!oldState || !oldState.podcastSeriesId || oldState.podcastSeriesId !== state.podcastSeriesId);
@@ -22,4 +22,10 @@ export const isEndDateChanged = (state: FilterModel, oldState: FilterModel): boo
 
 export const isIntervalChanged = (state: FilterModel, oldState: FilterModel): boolean => {
   return state.interval && (!oldState.interval || oldState.interval.value !== state.interval.value);
+};
+
+export const getEpisodesPage = (pageNumber: number, episodes: EpisodeModel[]): EpisodeModel[] => {
+  const pageSize = 10;
+  const end = Math.min(episodes.length, pageNumber * pageSize);
+  return episodes.slice((pageNumber - 1) * pageSize, end);
 };

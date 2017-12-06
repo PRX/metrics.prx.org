@@ -1,4 +1,5 @@
-import { PodcastModel, EpisodeModel, FilterModel, MetricsType, IntervalModel,
+import { PodcastModel } from '../../ngrx/reducers';
+import { EpisodeModel, FilterModel, MetricsType, IntervalModel,
   PodcastMetricsModel, EpisodeMetricsModel } from '../../ngrx/model';
 import { roundDateToBeginOfInterval } from './date.util';
 

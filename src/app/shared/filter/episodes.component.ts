@@ -1,8 +1,8 @@
 import { Component, Input, Output, EventEmitter, OnInit, OnChanges, OnDestroy } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs/Subscription';
-import { selectEpisodes } from '../../ngrx/reducers';
-import { EpisodeModel, FilterModel, PodcastModel } from '../../ngrx/model';
+import { selectEpisodes } from '../../ngrx';
+import { EpisodeModel, FilterModel } from '../../ngrx/model';
 import { filterAllPodcastEpisodes } from '../../shared/util/metrics.util';
 import { isPodcastChanged } from '../../shared/util/filter.util';
 

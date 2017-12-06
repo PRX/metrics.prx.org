@@ -12,10 +12,10 @@ import { CoreModule, CmsService } from './core';
 import { SharedModule } from './shared';
 import { AppComponent } from './app.component';
 
-import { reducers } from './ngrx/reducers';
+import { reducers, PodcastModel } from './ngrx/reducers';
 
 import { CastleFilterAction, CmsAllPodcastEpisodeGuidsAction, CmsPodcastsAction } from './ngrx/actions';
-import { PodcastModel, FilterModel, INTERVAL_DAILY } from './ngrx/model/';
+import { FilterModel, INTERVAL_DAILY } from './ngrx/model/';
 
 @Component({template: ''})
 export class DummyComponent {}

@@ -21,13 +21,11 @@ describe('PodcastsComponent', () => {
 
   const podcasts = [
     {
-      doc: undefined,
       seriesId: 37800,
       title: 'Pet Talks Daily',
       feederId: '70'
     },
     {
-      doc: undefined,
       seriesId: 37801,
       title: 'Totally Not Pet Talks Daily',
       feederId: '72'

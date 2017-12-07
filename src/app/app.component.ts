@@ -147,7 +147,7 @@ export class AppComponent implements OnInit, OnDestroy {
       const distros$ = episodes.map((e) => this.getEpisodePodcastDistribution(e));
       // wait for all the episode podcast distributions, then add all episodes to state at once
       Observable.zip(...distros$).subscribe(() => {
-        this.store.dispatch(new CmsAllPodcastEpisodeGuidsAction({podcast, episodes: episodes.filter(e => e.guid)}));
+        this.store.dispatch(new CmsAllPodcastEpisodeGuidsAction({episodes: episodes.filter(e => e.guid)}));
       });
     });
   }

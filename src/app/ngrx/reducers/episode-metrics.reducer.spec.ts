@@ -5,7 +5,6 @@ import { EpisodeMetricsReducer } from './episode-metrics.reducer';
 describe('EpisodeMetricsReducer', () => {
   let newState;
   const episode = {
-    doc: undefined,
     seriesId: 37800,
     id: 123,
     publishedAt: new Date(),
@@ -69,7 +68,6 @@ describe('EpisodeMetricsReducer', () => {
     newState = EpisodeMetricsReducer(newState,
       new CastleEpisodeMetricsAction({
         episode: {
-          doc: undefined,
           seriesId: 37800,
           id: 1234,
           publishedAt: new Date(),

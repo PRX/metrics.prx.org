@@ -87,14 +87,12 @@ describe('DownloadsTableComponent', () => {
     ['2017-09-07T00:00:00Z', 858]
   ];
   const podcast: PodcastModel = {
-    doc: undefined,
     seriesId: 37800,
     feederId: '70',
     title: 'Pet Talks Daily'
   };
   const episodes: EpisodeModel[] = [
     {
-      doc: undefined,
       seriesId: 37800,
       id: 123,
       publishedAt: new Date('9/9/17'),
@@ -102,7 +100,6 @@ describe('DownloadsTableComponent', () => {
       guid: 'abcdefg'
     },
     {
-      doc: undefined,
       seriesId: 37800,
       id: 124,
       publishedAt: new Date(),
@@ -139,7 +136,7 @@ describe('DownloadsTableComponent', () => {
       comp.store.dispatch(new CastleFilterAction({filter}));
       comp.store.dispatch(new CastleEpisodeMetricsAction({episode: episodes[0], filter, metricsType: 'downloads', metrics: ep0Downloads}));
       comp.store.dispatch(new CastleEpisodeMetricsAction({episode: episodes[1], filter, metricsType: 'downloads', metrics: ep1Downloads}));
-      comp.store.dispatch(new CmsAllPodcastEpisodeGuidsAction({podcast, episodes}));
+      comp.store.dispatch(new CmsAllPodcastEpisodeGuidsAction({episodes}));
       comp.store.dispatch(new CastlePodcastMetricsAction({podcast, filter, metricsType: 'downloads', metrics: podDownloads}));
     });
   }));

@@ -28,7 +28,6 @@ describe('DownloadsComponent', () => {
   let castle;
 
   const podcast = {
-    doc: undefined,
     seriesId: 37800,
     feederId: '70',
     title: 'Pet Talks Daily'
@@ -117,9 +116,8 @@ describe('DownloadsComponent', () => {
 
     it('should load episode downloads and call CASTLE action', () => {
       comp.store.dispatch(new CastleFilterAction({filter: {episodeIds: [123]}}));
-      comp.store.dispatch(new CmsAllPodcastEpisodeGuidsAction({podcast: podcast, episodes:
+      comp.store.dispatch(new CmsAllPodcastEpisodeGuidsAction({episodes:
         [{
-          doc: undefined,
           id: 123,
           seriesId: 37800,
           title: 'A New Pet Talk Episode',
@@ -134,9 +132,8 @@ describe('DownloadsComponent', () => {
     it('should reload podcast and episode data if filter parameters change', () => {
       const beginDate = new Date();
       comp.store.dispatch(new CastleFilterAction({filter: {episodeIds: [123]}}));
-      comp.store.dispatch(new CmsAllPodcastEpisodeGuidsAction({podcast: podcast, episodes:
+      comp.store.dispatch(new CmsAllPodcastEpisodeGuidsAction({episodes:
         [{
-          doc: undefined,
           id: 123,
           seriesId: 37800,
           title: 'A New Pet Talk Episode',
@@ -154,13 +151,13 @@ describe('DownloadsComponent', () => {
 
     it('should reload episode metrics if removed from filter then re-added', () => {
       const episodes = [
-        {doc: undefined, id: 123, seriesId: 37800, title: 'A New Pet Talk Episode', publishedAt: new Date(), guid: 'abcdefg'},
-        {doc: undefined, id: 1234, seriesId: 37800, title: 'A New Pet Talk Episode', publishedAt: new Date(), guid: 'abcdefgh'}
+        {id: 123, seriesId: 37800, title: 'A New Pet Talk Episode', publishedAt: new Date(), guid: 'abcdefg'},
+        {id: 1234, seriesId: 37800, title: 'A New Pet Talk Episode', publishedAt: new Date(), guid: 'abcdefgh'}
       ];
       comp.store.dispatch(new CastleFilterAction({
         filter: {podcastSeriesId: 37800}
       }));
-      comp.store.dispatch(new CmsAllPodcastEpisodeGuidsAction({podcast: podcast, episodes}));
+      comp.store.dispatch(new CmsAllPodcastEpisodeGuidsAction({episodes}));
       comp.store.dispatch(new CastleFilterAction({filter: {episodeIds: episodes.map(e => e.id)}}));
       expect(comp.setEpisodeMetrics).toHaveBeenCalledTimes(2); // once for each episode
       comp.store.dispatch(new CastleFilterAction({filter: {episodeIds: [episodes[0].id]}}));
@@ -176,9 +173,9 @@ describe('DownloadsComponent', () => {
     it('should limit the default episode filter to no more than 10 episodes', () => {
       const episodes: EpisodeModel[] = [];
       for (let i = 0; i < DownloadsComponent.DONT_BREAK_CASTLE_LIMIT + 1; i++) {
-        episodes.push({doc: undefined, id: i, seriesId: 37800, title: i.toString(), publishedAt: new Date()});
+        episodes.push({id: i, seriesId: 37800, title: i.toString(), publishedAt: new Date()});
       }
-      comp.store.dispatch(new CmsAllPodcastEpisodeGuidsAction({podcast, episodes}));
+      comp.store.dispatch(new CmsAllPodcastEpisodeGuidsAction({episodes}));
       expect(comp.filter.episodeIds.length).toEqual(10);
     });
   });

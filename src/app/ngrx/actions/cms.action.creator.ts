@@ -14,7 +14,6 @@ export class CmsPodcastsAction implements Action {
 }
 
 export interface CmsEpisodeGuidsPayload {
-  podcast: PodcastModel;
   episodes: EpisodeModel[];
 }
 

@@ -16,14 +16,8 @@ describe('EpisodesComponent', () => {
   let de: DebugElement;
   let el: HTMLElement;
 
-  const podcast: PodcastModel = {
-    doc: undefined,
-    seriesId: 37800,
-    title: 'Pet Talks Daily'
-  };
   const episodes: EpisodeModel[] = [
     {
-      doc: undefined,
       seriesId: 37800,
       id: 123,
       publishedAt: new Date(),
@@ -31,7 +25,6 @@ describe('EpisodesComponent', () => {
       guid: 'abcdefg'
     },
     {
-      doc: undefined,
       seriesId: 37800,
       id: 124,
       publishedAt: new Date(),
@@ -57,10 +50,10 @@ describe('EpisodesComponent', () => {
       el = de.nativeElement;
 
       comp.filter = {
-        podcastSeriesId: podcast.seriesId,
+        podcastSeriesId: episodes[0].seriesId,
         episodeIds: episodes.map(e => e.id)
       };
-      comp.store.dispatch(new CmsAllPodcastEpisodeGuidsAction({podcast, episodes}));
+      comp.store.dispatch(new CmsAllPodcastEpisodeGuidsAction({episodes}));
       comp.ngOnChanges();
     });
   }));

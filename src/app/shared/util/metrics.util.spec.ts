@@ -6,14 +6,12 @@ import { filterPodcasts, filterAllPodcastEpisodes, filterEpisodes, filterMetrics
 describe('metrics util', () => {
   const podcasts: PodcastModel[] = [
     {
-      doc: undefined,
       seriesId: 37800,
       title: 'Pet Talks Daily',
       feederUrl: 'https://feeder.prx.org/api/v1/podcasts/70',
       feederId: '70'
     },
     {
-      doc: undefined,
       seriesId: 37801,
       title: 'Totally Not Pet Talks Daily',
       feederUrl: 'https://feeder.prx.org/api/v1/podcasts/12',
@@ -22,7 +20,6 @@ describe('metrics util', () => {
   ];
   const episodes: EpisodeModel[] = [
     {
-      doc: undefined,
       seriesId: 37800,
       id: 123,
       publishedAt: new Date(),
@@ -30,7 +27,6 @@ describe('metrics util', () => {
       guid: 'abcdefg'
     },
     {
-      doc: undefined,
       seriesId: 37800,
       id: 124,
       publishedAt: new Date(),
@@ -38,7 +34,6 @@ describe('metrics util', () => {
       guid: 'gfedcba'
     },
     {
-      doc: undefined,
       seriesId: 37801,
       id: 125,
       publishedAt: new Date(),

@@ -1,4 +1,4 @@
-export { EpisodeModel } from './episode.model';
+export { EpisodeModel } from '../reducers/episode.reducer';
 export { INTERVAL_MONTHLY, INTERVAL_WEEKLY, INTERVAL_DAILY, INTERVAL_HOURLY, IntervalModel, IntervalList,
   PodcastMetricsModel, EpisodeMetricsModel, MetricsType } from './metrics.model';
 export { FilterModel, TODAY, THIS_WEEK, TWO_WEEKS, THIS_MONTH, THREE_MONTHS, THIS_YEAR,

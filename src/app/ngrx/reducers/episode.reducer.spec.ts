@@ -6,13 +6,7 @@ describe('EpisodeReducer', () => {
   beforeEach(() => {
     newState = EpisodeReducer(undefined,
       new CmsAllPodcastEpisodeGuidsAction({
-        podcast: {
-          doc: undefined,
-          seriesId: 37800,
-          title: 'Pet Talks Daily'
-        },
         episodes: [{
-          doc: undefined,
           seriesId: 37800,
           id: 123,
           publishedAt: new Date(),
@@ -29,13 +23,7 @@ describe('EpisodeReducer', () => {
 
   it('should update existing podcast episodes keyed by seriesId and episode id', () => {
     newState = EpisodeReducer(newState, new CmsAllPodcastEpisodeGuidsAction({
-      podcast: {
-        doc: undefined,
-        seriesId: 37800,
-        title: 'Pet Talks Daily'
-      },
       episodes: [{
-        doc: undefined,
         seriesId: 37800,
         id: 123,
         publishedAt: new Date(),
@@ -49,14 +37,8 @@ describe('EpisodeReducer', () => {
 
   it ('should replace all episodes in existing podcast', () => {
     newState = EpisodeReducer(newState, new CmsAllPodcastEpisodeGuidsAction({
-      podcast: {
-        doc: undefined,
-        seriesId: 37800,
-        title: 'Pet Talks Daily'
-      },
       episodes: [
         {
-          doc: undefined,
           seriesId: 37800,
           id: 123,
           publishedAt: new Date(),
@@ -64,7 +46,6 @@ describe('EpisodeReducer', () => {
           guid: 'gfedcba'
         },
         {
-          doc: undefined,
           seriesId: 37800,
           id: 1234,
           publishedAt: new Date(),

@@ -1,30 +1,56 @@
-import { ActionTypes, CmsAllPodcastEpisodeGuidsAction  } from '../actions';
-import { EpisodeModel } from '../model';
+import { ActionTypes, CmsAllPodcastEpisodeGuidsAction, AllActions  } from '../actions';
+import { HalDoc } from 'ngx-prx-styleguide';
 
-const initialState = [];
+export interface EpisodeModel {
+  doc?: HalDoc;
+  id: number;
+  seriesId: number;
+  title: string;
+  publishedAt: Date;
+  feederUrl?: string;
+  guid?: string;
+};
 
-// TODO: should be able to use ActionWithPayload<All> here with the union type,
-// but even though I upgraded TypeScript, it still can seem to get the typing right unless I also add an if instanceof =/
-// https://github.com/ngrx/platform/blob/master/docs/store/actions.md#typed-actions
-export function EpisodeReducer(state: EpisodeModel[] = initialState, action: CmsAllPodcastEpisodeGuidsAction): EpisodeModel[] {
-  let epIdx: number, newState: EpisodeModel[];
+export interface EpisodeState {
+  entities?: {[id: number]: EpisodeModel};
+};
+
+export const initialState = {
+  entities: {}
+};
+
+export function EpisodeReducer(state: EpisodeState = initialState, action: AllActions): EpisodeState {
   switch (action.type) {
     case ActionTypes.CMS_ALL_PODCAST_EPISODE_GUIDS:
-      const seriesId = action.payload.podcast.seriesId;
-      epIdx = state.findIndex(e => e.seriesId === seriesId);
-      if (epIdx > -1) {
-        const existingEpisodes = state.filter(e => e.seriesId === seriesId);
-        newState = [...state.slice(0, epIdx), ...action.payload.episodes, ...state.slice(epIdx + existingEpisodes.length)];
-      } else {
-        newState = [...action.payload.episodes, ...state];
+      if (action instanceof CmsAllPodcastEpisodeGuidsAction) {
+        const entities = episodeEntities(state, action.payload.episodes);
+        return {
+          ...state,
+          entities
+        };
+        // TODO:? in selector?
+        // sortEpisodesByReleaseDate(newState);
       }
-      sortEpisodesByReleaseDate(newState);
-      // console.log('EpisodeReducer', action.type, newState);
-      return newState;
-    default:
-      return state;
+      break;
   }
+  return state;
 }
+
+const episodeEntities = (state: EpisodeState, episodes: EpisodeModel[]): {[id: number]: EpisodeModel} => {
+  return episodes.reduce(
+    (entities: {[id: number]: EpisodeModel}, episode: EpisodeModel) => {
+      return {
+        ...entities,
+        [episode.id]: episode
+      };
+    },
+    {
+      ...state.entities
+    }
+  );
+};
+
+export const getEpisodeEntities = (state: EpisodeState) => state.entities;
 
 const sortEpisodesByReleaseDate = (episodes: EpisodeModel[]) => {
   // sort the episodes by seriesId, publishedAt

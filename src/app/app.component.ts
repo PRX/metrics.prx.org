@@ -8,9 +8,8 @@ import { Angulartics2GoogleAnalytics } from 'angulartics2';
 import { AuthService } from 'ngx-prx-styleguide';
 import { CmsService, HalDoc } from './core';
 import { Env } from './core/core.env';
-import { EpisodeModel } from './ngrx/model';
 import { CmsPodcastsAction, CmsAllPodcastEpisodeGuidsAction } from './ngrx/actions';
-import { selectPodcasts, selectPodcastFilter, PodcastModel } from './ngrx/reducers';
+import { selectPodcasts, PodcastModel, selectFilter, FilterModel, EpisodeModel, EPISODE_PAGE_SIZE } from './ngrx/reducers';
 
 @Component({
   selector: 'metrics-root',
@@ -30,6 +29,7 @@ export class AppComponent implements OnInit, OnDestroy {
   podcasts: PodcastModel[];
   filterStoreSub: Subscription;
   filteredPodcastSeriesId: number;
+  episodePage: number;
 
   constructor(
     private auth: AuthService,
@@ -52,14 +52,18 @@ export class AppComponent implements OnInit, OnDestroy {
 
       if (this.podcasts && this.podcasts.length > 0) {
         if (!this.filterStoreSub) {
-          this.filterStoreSub = this.store.select(selectPodcastFilter).subscribe((newPodcastSeriesId: number) => {
-            if (newPodcastSeriesId && newPodcastSeriesId !== this.filteredPodcastSeriesId) {
+          this.filterStoreSub = this.store.select(selectFilter).subscribe((newFilter: FilterModel) => {
+            const newPodcastSeriesId = newFilter.podcastSeriesId;
+            const newEpisodePage = newFilter.page;
+            if (newPodcastSeriesId && newPodcastSeriesId !== this.filteredPodcastSeriesId ||
+                newEpisodePage !== this.episodePage) {
               const selectedPodcast = this.podcasts.find(p => p.seriesId === newPodcastSeriesId);
               if (selectedPodcast) {
-                this.getEpisodes(selectedPodcast);
+                this.getEpisodes(selectedPodcast, newEpisodePage ? newEpisodePage : 1);
               }
             }
             this.filteredPodcastSeriesId = newPodcastSeriesId;
+            this.episodePage = newEpisodePage;
           });
         }
 
@@ -126,9 +130,11 @@ export class AppComponent implements OnInit, OnDestroy {
     return obsv$;
   }
 
-  getEpisodes(podcast: PodcastModel) {
+  getEpisodes(podcast: PodcastModel, page: number) {
     podcast.doc.followItems('prx:stories', {
-      per: podcast.doc.count('prx:stories'),
+      page,
+      per: EPISODE_PAGE_SIZE,
+      sorts: 'published_at: desc',
       filters: 'v4',
       zoom: 'prx:distributions'
     }).subscribe((docs: HalDoc[]) => {
@@ -141,7 +147,8 @@ export class AppComponent implements OnInit, OnDestroy {
             id: doc['id'],
             seriesId: podcast.seriesId,
             title: doc['title'],
-            publishedAt: doc['publishedAt'] ? new Date(doc['publishedAt']) : null
+            publishedAt: doc['publishedAt'] ? new Date(doc['publishedAt']) : null,
+            page
           };
         });
       const distros$ = episodes.map((e) => this.getEpisodePodcastDistribution(e));

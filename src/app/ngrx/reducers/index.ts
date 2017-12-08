@@ -9,7 +9,8 @@ import { PodcastState, getPodcastEntities } from './podcast.reducer';
 import { EpisodeState, getEpisodeEntities } from './episode.reducer';
 
 export { PodcastModel } from './podcast.reducer';
-export { EpisodeModel } from './episode.reducer';
+export { EpisodeModel, EPISODE_PAGE_SIZE } from './episode.reducer';
+export { INTERVAL_MONTHLY, INTERVAL_WEEKLY, INTERVAL_DAILY, INTERVAL_HOURLY, IntervalModel, IntervalList, FilterModel } from './filter.reducer';
 
 export interface RootState {
   filter: FilterModel;
@@ -29,13 +30,11 @@ export const reducers: ActionReducerMap<RootState> = {
 
 export const selectAppState = (state: RootState) => state;
 
-export const selectFilter = createFeatureSelector<FilterModel>('filter');
-
-export const selectPodcastFilter = createSelector(selectAppState, (state: RootState) => state.filter ? state.filter.podcastSeriesId : undefined);
-
-export const selectEpisodeFilter = createSelector(selectAppState, (state: RootState) => state.filter ? state.filter.episodeIds : undefined);
-
-export const selectIntervalFilter = createSelector(selectAppState, (state: RootState) => state.filter ? state.filter.interval : undefined);
+export const selectFilter = createSelector(selectAppState, (state: RootState) => state.filter);
+export const selectPodcastFilter = createSelector(selectFilter, (filter: FilterModel) => filter.podcastSeriesId);
+export const selectPageFilter = createSelector(selectFilter, (filter: FilterModel) => filter.page);
+export const selectEpisodeFilter = createSelector(selectFilter, (filter: FilterModel) => filter.episodeIds);
+export const selectIntervalFilter = createSelector(selectFilter, (filter: FilterModel) => filter.interval);
 
 export const selectPodcastState = createSelector(selectAppState, (state: RootState) => state.podcasts);
 export const selectPodcastEntities = createSelector(selectPodcastState, getPodcastEntities);

@@ -5,7 +5,7 @@ import { Observable } from 'rxjs/Observable';
 import { Action } from '@ngrx/store';
 import { ROUTER_NAVIGATION, RouterNavigationPayload, RouterNavigationAction } from '@ngrx/router-store';
 import { Actions, Effect } from '@ngrx/effects';
-import { FilterModel, IntervalList } from '../model';
+import { FilterModel, IntervalList } from '../reducers';
 import { CastleFilterAction } from '../actions';
 import { getStandardRangeForBeginEndDate, getBeginEndDateFromStandardRange, getRange } from '../../shared/util/date.util';
 
@@ -60,6 +60,9 @@ export class RoutingEffects {
           filter.episodeIds = [];
         } else if (params['episodes']) {
           filter.episodeIds = params['episodes'].split(',').map(stringValue => +stringValue);
+        }
+        if (params['page']) {
+          filter.page = +params['page'];
         }
       }
       return Observable.of(new CastleFilterAction({filter}));

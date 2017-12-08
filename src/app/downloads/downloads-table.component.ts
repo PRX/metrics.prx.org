@@ -1,10 +1,10 @@
 import { Component, OnDestroy } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs/Subscription';
-import { EpisodeMetricsModel, EpisodeModel, FilterModel, PodcastMetricsModel,
+import { EpisodeMetricsModel, PodcastMetricsModel,
   INTERVAL_MONTHLY, INTERVAL_WEEKLY, INTERVAL_DAILY, INTERVAL_HOURLY } from '../ngrx/model';
-import { selectEpisodes, selectFilter, selectEpisodeMetrics, selectPodcastMetrics } from '../ngrx/reducers';
-import { findPodcastMetrics, filterAllPodcastEpisodes, filterEpisodeMetrics, metricsData, getTotal } from '../shared/util/metrics.util';
+import { selectEpisodes, EpisodeModel, selectFilter, FilterModel, selectEpisodeMetrics, selectPodcastMetrics } from '../ngrx/reducers';
+import { findPodcastMetrics, filterPodcastEpisodePage, filterEpisodeMetricsPage, metricsData, getTotal } from '../shared/util/metrics.util';
 import { mapMetricsToTimeseriesData } from '../shared/util/chart.util';
 import { monthYearFormat, dayMonthDateFormat, hourlyDateFormat, monthDateYearFormat } from '../shared/util/date.util';
 import { isPodcastChanged } from '../shared/util/filter.util';
@@ -82,7 +82,7 @@ export class DownloadsTableComponent implements OnDestroy {
         // apply new filter to existing data so it's not showing stale data while loading
         this.filter = newFilter;
         if (this.episodeMetrics) {
-          this.episodeMetrics = filterEpisodeMetrics(this.filter, this.episodeMetrics, 'downloads');
+          this.episodeMetrics = filterEpisodeMetricsPage(this.filter, this.episodeMetrics, 'downloads');
         }
         if (this.podcastMetrics) {
           this.podcastMetrics = findPodcastMetrics(this.filter, [this.podcastMetrics]);
@@ -92,7 +92,7 @@ export class DownloadsTableComponent implements OnDestroy {
     });
 
     this.allEpisodesSub = this.store.select(selectEpisodes).subscribe((allEpisodes: EpisodeModel[]) => {
-      const allPodcastEpisodes = filterAllPodcastEpisodes(this.filter, allEpisodes);
+      const allPodcastEpisodes = filterPodcastEpisodePage(this.filter, allEpisodes);
       if (allPodcastEpisodes) {
         this.episodes = allPodcastEpisodes;
         this.buildTableData();
@@ -100,7 +100,7 @@ export class DownloadsTableComponent implements OnDestroy {
     });
 
     this.episodeMetricsStoreSub = this.store.select(selectEpisodeMetrics).subscribe((episodeMetrics: EpisodeMetricsModel[]) => {
-      this.episodeMetrics = filterEpisodeMetrics(this.filter, episodeMetrics, 'downloads');
+      this.episodeMetrics = filterEpisodeMetricsPage(this.filter, episodeMetrics, 'downloads');
       if (this.episodeMetrics) {
         this.buildTableData();
       }

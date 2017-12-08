@@ -2,10 +2,10 @@ import { Component, OnDestroy } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs/Subscription';
 import { TimeseriesChartModel } from 'ngx-prx-styleguide';
-import { EpisodeMetricsModel, PodcastMetricsModel, EpisodeModel, FilterModel,
-  INTERVAL_MONTHLY, INTERVAL_WEEKLY, INTERVAL_DAILY, INTERVAL_HOURLY } from '../ngrx/model';
-import { selectFilter, selectEpisodes, selectPodcastMetrics, selectEpisodeMetrics } from '../ngrx/reducers';
-import { findPodcastMetrics, filterEpisodeMetrics, metricsData, getTotal } from '../shared/util/metrics.util';
+import { EpisodeMetricsModel, PodcastMetricsModel,  } from '../ngrx/model';
+import { selectFilter, FilterModel, selectEpisodes, EpisodeModel, selectPodcastMetrics, selectEpisodeMetrics,
+  INTERVAL_MONTHLY, INTERVAL_WEEKLY, INTERVAL_DAILY, INTERVAL_HOURLY} from '../ngrx/reducers';
+import { findPodcastMetrics, filterEpisodeMetricsPage, metricsData, getTotal } from '../shared/util/metrics.util';
 import { mapMetricsToTimeseriesData, subtractTimeseriesDatasets, neutralColor, generateShades } from '../shared/util/chart.util';
 import { UTCDateFormat, monthYearFormat, dayMonthDateFormat, hourlyDateFormat } from '../shared/util/date.util';
 
@@ -45,7 +45,7 @@ export class DownloadsChartComponent implements OnDestroy {
     });
 
     this.episodeMetricsStoreSub = store.select(selectEpisodeMetrics).subscribe((episodeMetrics: EpisodeMetricsModel[]) => {
-      this.episodeMetrics = filterEpisodeMetrics(this.filter, episodeMetrics, 'downloads');
+      this.episodeMetrics = filterEpisodeMetricsPage(this.filter, episodeMetrics, 'downloads');
       this.updateEpisodeChartData();
     });
   }
@@ -54,7 +54,7 @@ export class DownloadsChartComponent implements OnDestroy {
     if (this.podcastMetrics) {
       this.updatePodcastChartData([this.podcastMetrics]);
     }
-    this.episodeMetrics = filterEpisodeMetrics(this.filter, this.episodeMetrics, 'downloads');
+    this.episodeMetrics = filterEpisodeMetricsPage(this.filter, this.episodeMetrics, 'downloads');
     this.updateEpisodeChartData();
   }
 

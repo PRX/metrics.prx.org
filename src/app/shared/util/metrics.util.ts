@@ -18,6 +18,12 @@ export const filterAllPodcastEpisodes = (filter: FilterModel, episodes: EpisodeM
   }
 };
 
+export const filterPodcastEpisodePage = (filter: FilterModel, episodes: EpisodeModel[]) => {
+  if (filter && filter.podcastSeriesId && filter.page && episodes) {
+    return episodes.filter(episode => episode.seriesId === filter.podcastSeriesId && episode.page === filter.page);
+  }
+};
+
 export const filterEpisodes = (filter: FilterModel, episodes: EpisodeModel[]) => {
   if (filter && filter.podcastSeriesId && filter.episodeIds) {
     return episodes.filter(episode => episode.seriesId === filter.podcastSeriesId &&
@@ -60,6 +66,25 @@ export const findPodcastMetrics =
     if (metrics && metrics.length) {
       return metrics[0]; // only one entry should match the series id
     }
+  }
+};
+
+export const filterEpisodeMetricsPage =
+  (filter: FilterModel, episodeMetrics: EpisodeMetricsModel[], metricsType: MetricsType): EpisodeMetricsModel[] => {
+  if (filter && filter.interval && filter.beginDate && filter.endDate && episodeMetrics) {
+    const metricsProperty = getMetricsProperty(filter.interval, metricsType);
+    return episodeMetrics
+      .filter((metric: EpisodeMetricsModel) => metric.seriesId === filter.podcastSeriesId &&
+      filter.page === metric.page &&
+      metric[metricsProperty] &&
+      filterMetricsByDate(filter.beginDate, filter.endDate, filter.interval, metric[metricsProperty]))
+      .map((metric: EpisodeMetricsModel) => {
+        const filteredMetric: EpisodeMetricsModel = {...metric};
+        filteredMetric[metricsProperty] = filterMetricsByDate(filter.beginDate, filter.endDate, filter.interval, metric[metricsProperty]);
+        return filteredMetric;
+      });
+  } else {
+    return [];
   }
 };
 

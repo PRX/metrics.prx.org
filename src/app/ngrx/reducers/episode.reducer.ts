@@ -1,12 +1,15 @@
 import { ActionTypes, CmsAllPodcastEpisodeGuidsAction, AllActions  } from '../actions';
 import { HalDoc } from 'ngx-prx-styleguide';
 
+export const EPISODE_PAGE_SIZE = 10;
+
 export interface EpisodeModel {
   doc?: HalDoc;
   id: number;
   seriesId: number;
   title: string;
   publishedAt: Date;
+  page?: number;
   feederUrl?: string;
   guid?: string;
 };
@@ -28,7 +31,7 @@ export function EpisodeReducer(state: EpisodeState = initialState, action: AllAc
           ...state,
           entities
         };
-        // TODO:? in selector?
+        // TODO:? in selector? meh, currently done in component
         // sortEpisodesByReleaseDate(newState);
       }
       break;

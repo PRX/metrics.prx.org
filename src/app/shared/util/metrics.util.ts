@@ -24,13 +24,6 @@ export const filterPodcastEpisodePage = (filter: FilterModel, episodes: EpisodeM
   }
 };
 
-export const filterEpisodes = (filter: FilterModel, episodes: EpisodeModel[]) => {
-  if (filter && filter.podcastSeriesId && filter.episodeIds) {
-    return episodes.filter(episode => episode.seriesId === filter.podcastSeriesId &&
-    filter.episodeIds.indexOf(episode.id) !== -1);
-  }
-};
-
 export const filterMetricsByDate = (beginDate: Date, endDate: Date, interval: IntervalModel, metrics: any[][]): any[][] => {
   const findEntryByDate = (date: Date) => {
     return metrics.findIndex(m => {
@@ -78,25 +71,6 @@ export const filterEpisodeMetricsPage =
       filter.page === metric.page &&
       metric[metricsProperty] &&
       filterMetricsByDate(filter.beginDate, filter.endDate, filter.interval, metric[metricsProperty]))
-      .map((metric: EpisodeMetricsModel) => {
-        const filteredMetric: EpisodeMetricsModel = {...metric};
-        filteredMetric[metricsProperty] = filterMetricsByDate(filter.beginDate, filter.endDate, filter.interval, metric[metricsProperty]);
-        return filteredMetric;
-      });
-  } else {
-    return [];
-  }
-};
-
-export const filterEpisodeMetrics =
-  (filter: FilterModel, episodeMetrics: EpisodeMetricsModel[], metricsType: MetricsType): EpisodeMetricsModel[] => {
-  if (filter && filter.podcastSeriesId && filter.episodeIds && filter.interval && filter.beginDate && filter.endDate && episodeMetrics) {
-    const metricsProperty = getMetricsProperty(filter.interval, metricsType);
-    return episodeMetrics
-      .filter((metric: EpisodeMetricsModel) => metric.seriesId === filter.podcastSeriesId &&
-        filter.episodeIds.indexOf(metric.id) !== -1 &&
-        metric[metricsProperty] &&
-        filterMetricsByDate(filter.beginDate, filter.endDate, filter.interval, metric[metricsProperty]))
       .map((metric: EpisodeMetricsModel) => {
         const filteredMetric: EpisodeMetricsModel = {...metric};
         filteredMetric[metricsProperty] = filterMetricsByDate(filter.beginDate, filter.endDate, filter.interval, metric[metricsProperty]);

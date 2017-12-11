@@ -17,7 +17,7 @@ import { DownloadsTableComponent } from './downloads-table.component';
 
 import { reducers } from '../ngrx/reducers';
 import { EpisodeModel } from '../ngrx/model';
-import { CastleFilterAction, CmsPodcastsAction, CmsAllPodcastEpisodeGuidsAction,
+import { CastleFilterAction, CmsPodcastsAction, CmsPodcastEpisodePageAction,
   CastlePodcastMetricsAction, CastleEpisodeMetricsAction} from '../ngrx/actions';
 
 describe('DownloadsComponent', () => {
@@ -116,7 +116,7 @@ describe('DownloadsComponent', () => {
 
     it('should load episode downloads and call CASTLE action', () => {
       comp.store.dispatch(new CastleFilterAction({filter: {episodeIds: [123]}}));
-      comp.store.dispatch(new CmsAllPodcastEpisodeGuidsAction({episodes:
+      comp.store.dispatch(new CmsPodcastEpisodePageAction({episodes:
         [{
           id: 123,
           seriesId: 37800,
@@ -132,7 +132,7 @@ describe('DownloadsComponent', () => {
     it('should reload podcast and episode data if filter parameters change', () => {
       const beginDate = new Date();
       comp.store.dispatch(new CastleFilterAction({filter: {episodeIds: [123]}}));
-      comp.store.dispatch(new CmsAllPodcastEpisodeGuidsAction({episodes:
+      comp.store.dispatch(new CmsPodcastEpisodePageAction({episodes:
         [{
           id: 123,
           seriesId: 37800,
@@ -157,7 +157,7 @@ describe('DownloadsComponent', () => {
       comp.store.dispatch(new CastleFilterAction({
         filter: {podcastSeriesId: 37800}
       }));
-      comp.store.dispatch(new CmsAllPodcastEpisodeGuidsAction({episodes}));
+      comp.store.dispatch(new CmsPodcastEpisodePageAction({episodes}));
       comp.store.dispatch(new CastleFilterAction({filter: {episodeIds: episodes.map(e => e.id)}}));
       expect(comp.setEpisodeMetrics).toHaveBeenCalledTimes(2); // once for each episode
       comp.store.dispatch(new CastleFilterAction({filter: {episodeIds: [episodes[0].id]}}));
@@ -175,7 +175,7 @@ describe('DownloadsComponent', () => {
       for (let i = 0; i < DownloadsComponent.DONT_BREAK_CASTLE_LIMIT + 1; i++) {
         episodes.push({id: i, seriesId: 37800, title: i.toString(), publishedAt: new Date()});
       }
-      comp.store.dispatch(new CmsAllPodcastEpisodeGuidsAction({episodes}));
+      comp.store.dispatch(new CmsPodcastEpisodePageAction({episodes}));
       expect(comp.filter.episodeIds.length).toEqual(10);
     });
   });

@@ -5,11 +5,10 @@ export const isPodcastChanged = (state: FilterModel, oldState: FilterModel): boo
 };
 
 export const isEpisodesChanged = (state: FilterModel, oldState: FilterModel): boolean => {
-  return state && state.episodeIds &&
+  return state && state.page &&
     (!oldState ||
-    !oldState.episodeIds ||
-    !state.episodeIds.every(id => oldState.episodeIds.indexOf(id) !== -1) ||
-    !oldState.episodeIds.every(id => state.episodeIds.indexOf(id) !== -1));
+    !oldState.page ||
+    state.page !== oldState.page);
 };
 
 export const isBeginDateChanged = (state: FilterModel, oldState: FilterModel): boolean => {
@@ -22,10 +21,4 @@ export const isEndDateChanged = (state: FilterModel, oldState: FilterModel): boo
 
 export const isIntervalChanged = (state: FilterModel, oldState: FilterModel): boolean => {
   return state.interval && (!oldState.interval || oldState.interval.value !== state.interval.value);
-};
-
-export const getEpisodesPage = (pageNumber: number, episodes: EpisodeModel[]): EpisodeModel[] => {
-  const pageSize = 10;
-  const end = Math.min(episodes.length, pageNumber * pageSize);
-  return episodes.slice((pageNumber - 1) * pageSize, end);
 };

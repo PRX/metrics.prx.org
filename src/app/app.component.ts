@@ -8,7 +8,7 @@ import { Angulartics2GoogleAnalytics } from 'angulartics2';
 import { AuthService } from 'ngx-prx-styleguide';
 import { CmsService, HalDoc } from './core';
 import { Env } from './core/core.env';
-import { CmsPodcastsAction, CmsAllPodcastEpisodeGuidsAction } from './ngrx/actions';
+import { CmsPodcastsAction, CmsPodcastEpisodePageAction } from './ngrx/actions';
 import { selectPodcasts, PodcastModel, selectFilter, FilterModel, EpisodeModel, EPISODE_PAGE_SIZE } from './ngrx/reducers';
 
 @Component({
@@ -131,47 +131,6 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   getEpisodes(podcast: PodcastModel, page: number) {
-    podcast.doc.followItems('prx:stories', {
-      page,
-      per: EPISODE_PAGE_SIZE,
-      sorts: 'published_at: desc',
-      filters: 'v4',
-      zoom: 'prx:distributions'
-    }).subscribe((docs: HalDoc[]) => {
-      const episodes: EpisodeModel[] = docs
-      // only include episodes with publish dates
-        .filter(doc => doc['publishedAt'] && new Date(doc['publishedAt']).valueOf() <= new Date().valueOf())
-        .map(doc => {
-          return {
-            doc,
-            id: doc['id'],
-            seriesId: podcast.seriesId,
-            title: doc['title'],
-            publishedAt: doc['publishedAt'] ? new Date(doc['publishedAt']) : null,
-            page
-          };
-        });
-      const distros$ = episodes.map((e) => this.getEpisodePodcastDistribution(e));
-      // wait for all the episode podcast distributions, then add all episodes to state at once
-      Observable.zip(...distros$).subscribe(() => {
-        this.store.dispatch(new CmsAllPodcastEpisodeGuidsAction({episodes: episodes.filter(e => e.guid)}));
-      });
-    });
-  }
-
-  getEpisodePodcastDistribution(episode: EpisodeModel): Observable<HalDoc[]> {
-    const obsv = episode.doc.followItems('prx:distributions');
-    obsv.subscribe((distros: HalDoc[]) => {
-      const podcasts = distros.filter((doc => doc['kind'] === 'episode'));
-      if (podcasts && podcasts.length > 0 && podcasts[0]['url']) {
-        episode.feederUrl = podcasts[0]['url'];
-
-        const urlParts = episode.feederUrl.split('/');
-        if (urlParts.length > 1) {
-          episode.guid = urlParts[urlParts.length - 1];
-        }
-      }
-    });
-    return obsv;
+    this.store.dispatch(new CmsPodcastEpisodePageAction({podcast, page}));
   }
 }

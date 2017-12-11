@@ -8,7 +8,7 @@ import { DownloadsChartComponent } from './downloads-chart.component';
 
 import { reducers, PodcastModel } from '../ngrx/reducers';
 import { EpisodeModel, FilterModel, INTERVAL_DAILY } from '../ngrx/model';
-import { CmsAllPodcastEpisodeGuidsAction,
+import { CmsPodcastEpisodePageAction,
   CastlePodcastMetricsAction, CastleEpisodeMetricsAction, CastleFilterAction } from '../ngrx/actions';
 
 import { getTotal } from '../shared/util/metrics.util';
@@ -110,7 +110,7 @@ describe('DownloadsChartComponent', () => {
 
       // call episode and podcast metrics to prime the store
       comp.store.dispatch(new CastleFilterAction({filter}));
-      comp.store.dispatch(new CmsAllPodcastEpisodeGuidsAction({episodes}));
+      comp.store.dispatch(new CmsPodcastEpisodePageAction({episodes}));
       comp.store.dispatch(new CastleEpisodeMetricsAction({episode: episodes[0], filter, metricsType: 'downloads', metrics: ep0Downloads}));
       comp.store.dispatch(new CastleEpisodeMetricsAction({episode: episodes[1], filter, metricsType: 'downloads', metrics: ep1Downloads}));
       comp.store.dispatch(new CastlePodcastMetricsAction({podcast, filter, metricsType: 'downloads', metrics: podDownloads}));

@@ -1,4 +1,4 @@
-import { ActionTypes, CmsAllPodcastEpisodeGuidsAction, AllActions  } from '../actions';
+import { ActionTypes, CmsPodcastEpisodePageSuccessAction, AllActions  } from '../actions';
 import { HalDoc } from 'ngx-prx-styleguide';
 
 export const EPISODE_PAGE_SIZE = 10;
@@ -12,11 +12,11 @@ export interface EpisodeModel {
   page?: number;
   feederUrl?: string;
   guid?: string;
-};
+}
 
 export interface EpisodeState {
   entities?: {[id: number]: EpisodeModel};
-};
+}
 
 export const initialState = {
   entities: {}
@@ -24,15 +24,13 @@ export const initialState = {
 
 export function EpisodeReducer(state: EpisodeState = initialState, action: AllActions): EpisodeState {
   switch (action.type) {
-    case ActionTypes.CMS_ALL_PODCAST_EPISODE_GUIDS:
-      if (action instanceof CmsAllPodcastEpisodeGuidsAction) {
+    case ActionTypes.CMS_PODCAST_EPISODE_PAGE_SUCCESS:
+      if (action instanceof CmsPodcastEpisodePageSuccessAction) {
         const entities = episodeEntities(state, action.payload.episodes);
         return {
           ...state,
           entities
         };
-        // TODO:? in selector? meh, currently done in component
-        // sortEpisodesByReleaseDate(newState);
       }
       break;
   }

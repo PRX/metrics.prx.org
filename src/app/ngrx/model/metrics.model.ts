@@ -2,7 +2,8 @@ export type MetricsType = 'downloads' | 'geo' | 'userAgents';
 
 export interface PodcastMetricsModel {
   seriesId: number;
-  feederId: string;
+  feederId?: string;
+  charted?: boolean;
   monthlyDownloads?: any[][];
   weeklyDownloads?: any[][];
   dailyDownloads?: any[][];
@@ -12,8 +13,9 @@ export interface PodcastMetricsModel {
 export interface EpisodeMetricsModel {
   seriesId: number;
   id: number;
-  guid: string;
-  page: number;
+  guid?: string;
+  page?: number;
+  charted?: boolean;
   monthlyDownloads?: any[][];
   weeklyDownloads?: any[][];
   dailyDownloads?: any[][];

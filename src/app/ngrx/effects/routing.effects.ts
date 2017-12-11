@@ -2,11 +2,11 @@ import { Injectable } from '@angular/core';
 import { RouterStateSnapshot } from '@angular/router';
 import 'rxjs/add/operator/switchMap';
 import { Observable } from 'rxjs/Observable';
-import { Action } from '@ngrx/store';
+import { Action, Store } from '@ngrx/store';
 import { ROUTER_NAVIGATION, RouterNavigationPayload, RouterNavigationAction } from '@ngrx/router-store';
 import { Actions, Effect } from '@ngrx/effects';
 import { FilterModel, IntervalList } from '../reducers';
-import { CastleFilterAction } from '../actions';
+import { CastleFilterAction, CastlePodcastChartToggleAction, CastleEpisodeChartToggleAction } from '../actions';
 import { getStandardRangeForBeginEndDate, getBeginEndDateFromStandardRange, getRange } from '../../shared/util/date.util';
 
 @Injectable()
@@ -56,17 +56,22 @@ export class RoutingEffects {
           filter.beginDate = beginDate;
           filter.endDate = endDate;
         }
-        if (params['episodes'] === '') {
-          filter.episodeIds = [];
-        } else if (params['episodes']) {
-          filter.episodeIds = params['episodes'].split(',').map(stringValue => +stringValue);
+        if (params['episodes']) {
+          params['episodes'].split(',').map(stringValue => +stringValue).forEach(episodeId => {
+            this.store.dispatch(new CastleEpisodeChartToggleAction({id: episodeId, seriesId: filter.podcastSeriesId, charted: true}));
+          });
         }
         if (params['page']) {
           filter.page = +params['page'];
+        }
+        if (params['chartPodcast']) {
+          const charted = params['chartPodcast'] === 'true';
+          this.store.dispatch(new CastlePodcastChartToggleAction({seriesId: filter.podcastSeriesId, charted}));
         }
       }
       return Observable.of(new CastleFilterAction({filter}));
     });
 
-  constructor(private actions$: Actions) {}
+  constructor(private store: Store<any>,
+              private actions$: Actions) {}
 }

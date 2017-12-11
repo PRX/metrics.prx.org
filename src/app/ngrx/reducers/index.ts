@@ -33,7 +33,6 @@ export const selectAppState = (state: RootState) => state;
 export const selectFilter = createSelector(selectAppState, (state: RootState) => state.filter);
 export const selectPodcastFilter = createSelector(selectFilter, (filter: FilterModel) => filter.podcastSeriesId);
 export const selectPageFilter = createSelector(selectFilter, (filter: FilterModel) => filter.page);
-export const selectEpisodeFilter = createSelector(selectFilter, (filter: FilterModel) => filter.episodeIds);
 export const selectIntervalFilter = createSelector(selectFilter, (filter: FilterModel) => filter.interval);
 
 export const selectPodcastState = createSelector(selectAppState, (state: RootState) => state.podcasts);

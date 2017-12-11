@@ -17,7 +17,6 @@ export const IntervalList = [INTERVAL_MONTHLY, INTERVAL_WEEKLY, INTERVAL_DAILY, 
 export interface FilterModel {
   podcastSeriesId?: number;
   page?: number;
-  episodeIds?: number[];
   standardRange?: string;
   range?: any[];
   beginDate?: Date;
@@ -34,14 +33,11 @@ export function FilterReducer(state: FilterModel = initialState, action: CastleF
       if (action.payload.filter.podcastSeriesId) {
         newState.podcastSeriesId = action.payload.filter.podcastSeriesId;
         if (isPodcastChanged(action.payload.filter, state)) {
-          newState.episodeIds = null;
+          newState.page = 1;
         }
       }
       if (action.payload.filter.page) {
         newState.page = action.payload.filter.page;
-      }
-      if (action.payload.filter.episodeIds) {
-        newState.episodeIds = [...action.payload.filter.episodeIds];
       }
       if (action.payload.filter.beginDate || action.payload.filter.endDate) {
         // standardRange can only be set with accompanying begin or end date

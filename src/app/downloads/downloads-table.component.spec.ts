@@ -10,7 +10,7 @@ import { DownloadsTableComponent } from './downloads-table.component';
 import { reducers, PodcastModel } from '../ngrx/reducers';
 import { EpisodeModel, FilterModel, INTERVAL_DAILY, INTERVAL_HOURLY } from '../ngrx/model';
 import { CastlePodcastMetricsAction, CastleEpisodeMetricsAction,
-  CastleFilterAction, CmsAllPodcastEpisodeGuidsAction } from '../ngrx/actions';
+  CastleFilterAction, CmsPodcastEpisodePageAction } from '../ngrx/actions';
 
 describe('DownloadsTableComponent', () => {
   let comp: DownloadsTableComponent;
@@ -136,7 +136,7 @@ describe('DownloadsTableComponent', () => {
       comp.store.dispatch(new CastleFilterAction({filter}));
       comp.store.dispatch(new CastleEpisodeMetricsAction({episode: episodes[0], filter, metricsType: 'downloads', metrics: ep0Downloads}));
       comp.store.dispatch(new CastleEpisodeMetricsAction({episode: episodes[1], filter, metricsType: 'downloads', metrics: ep1Downloads}));
-      comp.store.dispatch(new CmsAllPodcastEpisodeGuidsAction({episodes}));
+      comp.store.dispatch(new CmsPodcastEpisodePageAction({episodes}));
       comp.store.dispatch(new CastlePodcastMetricsAction({podcast, filter, metricsType: 'downloads', metrics: podDownloads}));
     });
   }));

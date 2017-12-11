@@ -1,7 +1,7 @@
 import { PodcastModel } from '../../ngrx/reducers';
 import { EpisodeModel, FilterModel, PodcastMetricsModel, EpisodeMetricsModel, INTERVAL_DAILY, INTERVAL_HOURLY } from '../../ngrx/model';
-import { filterPodcasts, filterAllPodcastEpisodes, filterEpisodes, filterMetricsByDate,
-  findPodcastMetrics, filterEpisodeMetrics, metricsData, getTotal } from './metrics.util';
+import { filterPodcasts, filterAllPodcastEpisodes, filterMetricsByDate,
+  findPodcastMetrics, filterEpisodeMetricsPage, metricsData, getTotal } from './metrics.util';
 
 describe('metrics util', () => {
   const podcasts: PodcastModel[] = [
@@ -43,7 +43,7 @@ describe('metrics util', () => {
   ];
   const filter: FilterModel = {
     podcastSeriesId: podcasts[0].seriesId,
-    episodeIds: [episodes[0].id],
+    page: 1,
     beginDate: new Date('2017-09-01T00:00:00Z'),
     endDate: new Date('2017-09-07T00:00:00Z'),
     interval: INTERVAL_DAILY
@@ -79,18 +79,21 @@ describe('metrics util', () => {
       seriesId: 37800,
       id: 123,
       guid: 'abcdefg',
+      page: 1,
       dailyDownloads: [...metrics]
     },
     {
       seriesId: 37800,
       id: 124,
       guid: 'gfedcba',
+      page: 2,
       dailyDownloads: [...metrics]
     },
     {
       seriesId: 37801,
       id: 125,
       guid: 'hijklmn',
+      page: 1,
       dailyDownloads: [...metrics]
     }
   ];
@@ -109,24 +112,12 @@ describe('metrics util', () => {
     expect(filterAllPodcastEpisodes(filter, episodes).length).toEqual(2);
   });
 
-  it('should only get episodes that match filter or nothing if no match', () => {
-    expect(filterEpisodes(filter, episodes).length).toEqual(1);
-    expect(filterEpisodes(filter, episodes)[0].id).toEqual(123);
-    const emptyFilter = {};
-    expect(filterEpisodes(emptyFilter, episodes)).toBeUndefined();
-    const nonMatchingFilter: FilterModel = {
-      podcastSeriesId: 37802,
-      episodeIds: [126]
-    };
-    expect(filterEpisodes(nonMatchingFilter, episodes).length).toEqual(0);
-  });
-
   it('should find podcast metrics matching filter', () => {
     expect(findPodcastMetrics(filter, podcastMetrics).seriesId).toEqual(37800);
   });
 
   it('should get episode metrics matching filter', () => {
-    expect(filterEpisodeMetrics(filter, episodeMetrics, 'downloads').length).toEqual(1);
+    expect(filterEpisodeMetricsPage(filter, episodeMetrics, 'downloads').length).toEqual(1);
   });
 
   it('should get metrics array according to interval', () => {

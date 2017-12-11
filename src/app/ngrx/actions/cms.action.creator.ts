@@ -13,12 +13,29 @@ export class CmsPodcastsAction implements Action {
   constructor(public payload: CmsPodcastsPayload) {}
 }
 
-export interface CmsEpisodeGuidsPayload {
+export interface CmsEpisodePagePayload {
+  podcast: PodcastModel;
+  page: number;
+}
+
+export class CmsPodcastEpisodePageAction implements Action {
+  readonly type = ActionTypes.CMS_PODCAST_EPISODE_PAGE;
+
+  constructor(public payload: CmsEpisodePagePayload) {}
+}
+
+export interface CmsEpisodePageSuccessPayload {
   episodes: EpisodeModel[];
 }
 
-export class CmsAllPodcastEpisodeGuidsAction implements Action {
-  readonly type = ActionTypes.CMS_ALL_PODCAST_EPISODE_GUIDS;
+export class CmsPodcastEpisodePageSuccessAction implements Action {
+  readonly type = ActionTypes.CMS_PODCAST_EPISODE_PAGE_SUCCESS;
 
-  constructor(public payload: CmsEpisodeGuidsPayload) {}
+  constructor(public payload: CmsEpisodePageSuccessPayload) {}
+}
+
+export class CmsPodcastEpisodePageFailureAction implements Action {
+  readonly type = ActionTypes.CMS_PODCAST_EPISODE_PAGE_FAILURE;
+
+  constructor(public payload: any) {}
 }

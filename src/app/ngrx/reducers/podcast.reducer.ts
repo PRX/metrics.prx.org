@@ -11,7 +11,7 @@ export interface PodcastModel {
 
 export interface PodcastState {
   entities?: {[seriesId: number]: PodcastModel};
-};
+}
 
 export const initialState = {
   entities: {}

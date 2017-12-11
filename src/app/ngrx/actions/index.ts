@@ -1,21 +1,30 @@
 import { RouterNavigationAction } from '@ngrx/router-store';
-import { CmsPodcastsAction, CmsAllPodcastEpisodeGuidsAction } from './cms.action.creator';
-import { CastleFilterAction, CastlePodcastMetricsAction, CastleEpisodeMetricsAction } from './castle.action.creator';
+import { CmsPodcastsAction,
+  CmsPodcastEpisodePageAction, CmsPodcastEpisodePageSuccessAction, CmsPodcastEpisodePageFailureAction } from './cms.action.creator';
+import { CastleFilterAction, CastlePodcastMetricsAction, CastlePodcastChartToggleAction,
+  CastleEpisodeMetricsAction, CastleEpisodeChartToggleAction } from './castle.action.creator';
 import { GoogleAnalyticsEventAction } from './google-analytics.action.creator';
 
 export type AllActions
   = CmsPodcastsAction
-  | CmsAllPodcastEpisodeGuidsAction
+  | CmsPodcastEpisodePageAction
+  | CmsPodcastEpisodePageSuccessAction
+  | CmsPodcastEpisodePageFailureAction
   | CastleFilterAction
   | CastlePodcastMetricsAction
+  | CastlePodcastChartToggleAction
   | CastleEpisodeMetricsAction
+  | CastleEpisodeChartToggleAction
   | RouterNavigationAction
   | GoogleAnalyticsEventAction;
 
 export { ActionTypes } from './action.types';
 export { CmsPodcastsPayload, CmsPodcastsAction,
-  CmsEpisodeGuidsPayload, CmsAllPodcastEpisodeGuidsAction } from './cms.action.creator';
+  CmsEpisodePagePayload, CmsPodcastEpisodePageAction,
+  CmsEpisodePageSuccessPayload, CmsPodcastEpisodePageSuccessAction, CmsPodcastEpisodePageFailureAction } from './cms.action.creator';
 export { CastleFilterPayload, CastleFilterAction,
   CastlePodcastMetricsPayload, CastlePodcastMetricsAction,
-  CastleEpisodeMetricsPayload, CastleEpisodeMetricsAction } from './castle.action.creator';
+  CastlePodcastChartTogglePayload, CastlePodcastChartToggleAction,
+  CastleEpisodeMetricsPayload, CastleEpisodeMetricsAction,
+  CastleEpisodeChartTogglePayload, CastleEpisodeChartToggleAction} from './castle.action.creator';
 export { GoogleAnalyticsEventPayload, GoogleAnalyticsEventAction } from './google-analytics.action.creator';

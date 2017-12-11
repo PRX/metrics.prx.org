@@ -14,7 +14,7 @@ import { AppComponent } from './app.component';
 
 import { reducers, PodcastModel } from './ngrx/reducers';
 
-import { CastleFilterAction, CmsAllPodcastEpisodeGuidsAction, CmsPodcastsAction } from './ngrx/actions';
+import { CastleFilterAction, CmsPodcastEpisodePageAction, CmsPodcastsAction } from './ngrx/actions';
 import { FilterModel, INTERVAL_DAILY } from './ngrx/model/';
 
 @Component({template: ''})
@@ -142,7 +142,7 @@ describe('AppComponent', () => {
     expect(comp.getSeriesPodcastDistribution).toHaveBeenCalled();
     expect(comp.store.dispatch).toHaveBeenCalledWith(jasmine.any(CmsPodcastsAction));
     expect(comp.getEpisodePodcastDistribution).toHaveBeenCalled();
-    expect(comp.store.dispatch).toHaveBeenCalledWith(jasmine.any(CmsAllPodcastEpisodeGuidsAction));
+    expect(comp.store.dispatch).toHaveBeenCalledWith(jasmine.any(CmsPodcastEpisodePageAction));
   });
 
   it('should not include episodes not yet published', () => {

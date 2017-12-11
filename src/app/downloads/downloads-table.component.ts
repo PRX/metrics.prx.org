@@ -1,6 +1,7 @@
 import { Component, OnDestroy } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs/Subscription';
+import { CastlePodcastChartToggleAction, CastleEpisodeChartToggleAction } from '../ngrx/actions';
 import { EpisodeMetricsModel, PodcastMetricsModel,
   INTERVAL_MONTHLY, INTERVAL_WEEKLY, INTERVAL_DAILY, INTERVAL_HOURLY } from '../ngrx/model';
 import { selectEpisodes, EpisodeModel, selectFilter, FilterModel, selectEpisodeMetrics, selectPodcastMetrics } from '../ngrx/reducers';
@@ -23,10 +24,16 @@ import * as moment from 'moment';
         </thead>
         <tbody>
           <tr>
-            <td>{{podcastTableData.title}}</td>
+            <td>
+              <input type="checkbox" (click)="toggleChartPodcast(!podcastTableData.charted)" [checked]="podcastTableData.charted">
+              {{podcastTableData.title}}
+            </td>
           </tr>
           <tr *ngFor="let episode of episodeTableData">
-            <td>{{episode.title}}</td>
+            <td>
+              <input type="checkbox" (click)="toggleChartEpisode(episode, !episode.charted)" [checked]="episode.charted">
+              {{episode.title}}
+            </td>
           </tr>
         </tbody>
       </table>
@@ -128,7 +135,8 @@ export class DownloadsTableComponent implements OnDestroy {
         title: 'All Episodes',
         releaseDate: '',
         downloads: mapMetricsToTimeseriesData(downloads),
-        totalForPeriod: getTotal(downloads)
+        totalForPeriod: getTotal(downloads),
+        charted: this.podcastMetrics.charted
       };
     }
   }
@@ -146,7 +154,8 @@ export class DownloadsTableComponent implements OnDestroy {
               releaseDate: monthDateYearFormat(episode.publishedAt),
               id: epMetric.id,
               downloads: mapMetricsToTimeseriesData(downloads),
-              totalForPeriod: getTotal(downloads)
+              totalForPeriod: getTotal(downloads),
+              charted: epMetric.charted
             };
           }
         })
@@ -194,5 +203,13 @@ export class DownloadsTableComponent implements OnDestroy {
     } else {
       return dayMonthDateFormat(date);
     }
+  }
+
+  toggleChartPodcast(charted: boolean) {
+    this.store.dispatch(new CastlePodcastChartToggleAction({seriesId: this.filter.podcastSeriesId, charted}));
+  }
+
+  toggleChartEpisode(episode, charted) {
+    this.store.dispatch(new CastleEpisodeChartToggleAction({id: episode.id, seriesId: this.filter.podcastSeriesId, charted}));
   }
 }

@@ -127,11 +127,6 @@ export class DownloadsComponent implements OnInit, OnDestroy {
       const episodes = filterPodcastEpisodePage(this.filter, allAvailableEpisodes);
       if (episodes && episodes.length) {
         this.pageEpisodes = episodes;
-        /* TODO: where does it belong to set the default charted episodes? reducer if undefined?
-        if (!this.filter.episodeIds) {
-          this.setDefaultEpisodeFilter();
-          this.updateEpisodes = true;
-        }*/
         if (this.updateEpisodes) {
           this.getEpisodeMetrics();
           this.updateEpisodes = false;
@@ -142,7 +137,6 @@ export class DownloadsComponent implements OnInit, OnDestroy {
 
   resetEpisodes() {
     this.pageEpisodes = null;
-    this.filter.episodeIds = null;
   }
 
   toggleLoading(isPodcastLoading, isEpisodeLoading = this.isEpisodeLoading) {
@@ -208,33 +202,8 @@ export class DownloadsComponent implements OnInit, OnDestroy {
       standardRange: filter.standardRange,
       range: filter.range.join(',')
     };
-    if (filter.episodeIds) {
-      params['episodes'] = filter.episodeIds.join(',');
-    }
     this.router.navigate([filter.podcastSeriesId, 'downloads', filter.interval.key, params]);
   }
-
-  /*
-  setDefaultEpisodeFilter() {
-    const end = Math.min(this.pageEpisodes.length, 10);
-    const episodes = this.pageEpisodes.slice(0, end);
-    this.filter.episodeIds = episodes.map((e: EpisodeModel) => e.id);
-    const routerParams = {episodes: episodes.map(e => e.id).join(',')};
-    if (this.filter.range) {
-      routerParams['range'] = this.filter.range;
-    }
-    if (this.filter.standardRange) {
-      routerParams['standardRange'] = this.filter.standardRange;
-    }
-    if (this.filter.beginDate) {
-      routerParams['beginDate'] = this.filter.beginDate.toISOString();
-    }
-    if (this.filter.endDate) {
-      routerParams['endDate'] = this.filter.endDate.toISOString();
-    }
-    this.router.navigate([this.filter.podcastSeriesId, 'downloads', this.filter.interval.key, routerParams]);
-  }
-  */
 
   getPodcastMetrics(podcast: PodcastModel) {
     this.toggleLoading(true);

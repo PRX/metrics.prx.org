@@ -1,11 +1,11 @@
-import { CmsAllPodcastEpisodeGuidsAction } from '../actions';
+import { CmsPodcastEpisodePageAction } from '../actions';
 import { EpisodeReducer } from './episode.reducer';
 
 describe('EpisodeReducer', () => {
   let newState;
   beforeEach(() => {
     newState = EpisodeReducer(undefined,
-      new CmsAllPodcastEpisodeGuidsAction({
+      new CmsPodcastEpisodePageAction({
         episodes: [{
           seriesId: 37800,
           id: 123,
@@ -22,7 +22,7 @@ describe('EpisodeReducer', () => {
   });
 
   it('should update existing podcast episodes keyed by seriesId and episode id', () => {
-    newState = EpisodeReducer(newState, new CmsAllPodcastEpisodeGuidsAction({
+    newState = EpisodeReducer(newState, new CmsPodcastEpisodePageAction({
       episodes: [{
         seriesId: 37800,
         id: 123,
@@ -36,7 +36,7 @@ describe('EpisodeReducer', () => {
   });
 
   it ('should replace all episodes in existing podcast', () => {
-    newState = EpisodeReducer(newState, new CmsAllPodcastEpisodeGuidsAction({
+    newState = EpisodeReducer(newState, new CmsPodcastEpisodePageAction({
       episodes: [
         {
           seriesId: 37800,

@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs/Subscription';
 import { selectFilter } from '../../ngrx/reducers';
-import { EpisodeModel, FilterModel, IntervalModel } from '../../ngrx/model';
+import { FilterModel, IntervalModel } from '../../ngrx/model';
 import { roundDateToBeginOfInterval, roundDateToEndOfInterval,
   getStandardRangeForBeginEndDate, getRange } from '../../shared/util/date.util';
 
@@ -13,7 +13,6 @@ import { roundDateToBeginOfInterval, roundDateToEndOfInterval,
     <metrics-date-range [filter]="filter" (dateRangeChange)="onDateRangeChange($event)"></metrics-date-range>
     <hr>
     <metrics-interval [filter]="filter" (intervalChange)="onIntervalChange($event)"></metrics-interval>
-    <metrics-episodes [filter]="filter" (episodesChange)="onEpisodesChange($event)"></metrics-episodes>
     <div class="buttons">
       <metrics-prev-date-range></metrics-prev-date-range>
       <button (click)="onApply()" [disabled]="applyDisabled">Apply</button>
@@ -64,17 +63,6 @@ export class FilterComponent implements OnInit, OnDestroy {
     this.filter = {...this.filter, ...dateRange};
   }
 
-  onEpisodesChange(episodes: EpisodeModel[]) {
-    if (episodes &&
-      (!this.filter ||
-      !this.filter.episodeIds ||
-      !episodes.map(e => e.id).every(id => this.filter.episodeIds.indexOf(id) !== -1) ||
-      !this.filter.episodeIds.every(id => episodes.map(e => e.id).indexOf(id) !== -1))) {
-      this.hasChanges = true;
-    }
-    this.filter = {...this.filter, episodeIds: episodes.map(e => e.id)};
-  }
-
   onApply() {
     if (this.hasChanges) {
       this.filter.beginDate = roundDateToBeginOfInterval(this.filter.beginDate, this.filter.interval);
@@ -85,9 +73,6 @@ export class FilterComponent implements OnInit, OnDestroy {
         beginDate: this.filter.beginDate.toISOString(),
         endDate: this.filter.endDate.toISOString()
       };
-      if (this.filter.episodeIds) {
-        routerParams['episodes'] = this.filter.episodeIds.join(',');
-      }
       if (this.filter.standardRange) {
         routerParams['standardRange'] = this.filter.standardRange;
       }

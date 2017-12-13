@@ -27,10 +27,8 @@ export class RoutingEffects {
         if (url.length >= 3 && url[2]) {
           const type = url[2]; // "downloads" MetricsType
         }
-        if (url.length >= 4 && url[3]) {
-          const semi = url[3].indexOf(';');
-          const interval = semi > 0 ? url[3].substr(0, semi) : url[3];
-          filter.interval = IntervalList.find(i => i.key === interval);
+        if (params['interval']) {
+          filter.interval = IntervalList.find(i => i.key === params['interval']);
         }
         if (params['beginDate']) {
           filter.beginDate = new Date(params['beginDate']);

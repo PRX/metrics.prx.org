@@ -1,4 +1,4 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, Output, EventEmitter } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs/Subscription';
 import { CastlePodcastChartToggleAction, CastleEpisodeChartToggleAction } from '../ngrx/actions';
@@ -66,6 +66,8 @@ import * as moment from 'moment';
 
 })
 export class DownloadsTableComponent implements OnDestroy {
+  @Output() podcastChartToggle = new EventEmitter();
+  @Output() episodeChartToggle = new EventEmitter();
   filterStoreSub: Subscription;
   filter: FilterModel;
   allEpisodesSub: Subscription;
@@ -185,6 +187,7 @@ export class DownloadsTableComponent implements OnDestroy {
     if (this.filterStoreSub) { this.filterStoreSub.unsubscribe(); }
     if (this.allEpisodesSub) { this.allEpisodesSub.unsubscribe(); }
     if (this.episodeMetricsStoreSub) { this.episodeMetricsStoreSub.unsubscribe(); }
+    if (this.podcastMetricsStoreSub) { this.podcastMetricsStoreSub.unsubscribe(); }
   }
 
   dateFormat(date: Date): string {
@@ -206,10 +209,10 @@ export class DownloadsTableComponent implements OnDestroy {
   }
 
   toggleChartPodcast(charted: boolean) {
-    this.store.dispatch(new CastlePodcastChartToggleAction({seriesId: this.filter.podcastSeriesId, charted}));
+    this.podcastChartToggle.emit(charted);
   }
 
   toggleChartEpisode(episode, charted) {
-    this.store.dispatch(new CastleEpisodeChartToggleAction({id: episode.id, seriesId: this.filter.podcastSeriesId, charted}));
+    this.episodeChartToggle.emit({id: episode.id, charted});
   }
 }

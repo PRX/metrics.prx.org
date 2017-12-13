@@ -1,10 +1,11 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs/Subscription';
 import { CastleService } from '../core';
 import { TWO_WEEKS } from '../ngrx/model';
-import { CastleFilterAction, CastlePodcastMetricsAction, CastleEpisodeMetricsAction, GoogleAnalyticsEventAction } from '../ngrx/actions';
+import { CastleFilterAction, CastlePodcastMetricsAction, CastleEpisodeMetricsAction,
+  GoogleAnalyticsEventAction, CastleEpisodeChartToggleAction } from '../ngrx/actions';
 import { selectFilter, FilterModel, selectEpisodes, EpisodeModel, selectPodcasts, PodcastModel,
   INTERVAL_DAILY, EPISODE_PAGE_SIZE } from '../ngrx/reducers';
 import { filterPodcastEpisodePage } from '../shared/util/metrics.util';
@@ -20,7 +21,9 @@ import { isPodcastChanged, isBeginDateChanged, isEndDateChanged, isIntervalChang
     </section>
     <section class="content">
       <metrics-downloads-chart></metrics-downloads-chart>
-      <metrics-downloads-table></metrics-downloads-table>
+      <metrics-downloads-table
+        (podcastChartToggle)="onPodcastChartToggle($event)" (episodeChartToggle)="onEpisodeChartToggle($event)">
+      </metrics-downloads-table>
       <p class="error" *ngFor="let error of errors">{{error}}</p>
       <metrics-episode-page
         [currentPage]="filter?.page"
@@ -45,11 +48,22 @@ export class DownloadsComponent implements OnInit, OnDestroy {
   isEpisodeLoading = true;
   isLoadingForTheFirstTime = true;
   errors: string[] = [];
-  static DONT_BREAK_CASTLE_LIMIT = 20;
+  chartPodcast: boolean;
+  chartedEpisodes: number[];
 
   constructor(private castle: CastleService,
               public store: Store<any>,
-              private router: Router) {}
+              private router: Router,
+              private route: ActivatedRoute) {
+    route.params.subscribe(params => {
+      if (params['chartPodcast']) {
+        this.chartPodcast = params['chartPodcast'] === 'true';
+      }
+      if (params['episodes']) {
+        this.chartedEpisodes = params['episodes'].split(',').map(id => +id);
+      }
+    });
+  }
 
   ngOnInit() {
     this.toggleLoading(true, true);
@@ -188,13 +202,13 @@ export class DownloadsComponent implements OnInit, OnDestroy {
     }
     if (routingFilter.podcastSeriesId) {
       this.filter.podcastSeriesId = routingFilter.podcastSeriesId;
-      this.routeFromFilter(this.filter);
+      this.routeFromFilter(this.filter, undefined, undefined);
     } else {
       this.store.dispatch(new CastleFilterAction({filter: this.filter}));
     }
   }
 
-  routeFromFilter(filter: FilterModel) {
+  routeFromFilter(filter: FilterModel, podcastToggle: boolean, episodeToggle: {id: number, charted: boolean}) {
     const params = {
       page: filter.page,
       beginDate: filter.beginDate.toISOString(),
@@ -202,6 +216,30 @@ export class DownloadsComponent implements OnInit, OnDestroy {
       standardRange: filter.standardRange,
       range: filter.range.join(',')
     };
+    if (podcastToggle !== undefined) {
+      params['chartPodcast'] = podcastToggle;
+    } else if (this.chartPodcast !== undefined) {
+      params['chartPodcast'] = this.chartPodcast;
+    } else {
+      params['chartPodcast'] = true; // true is the default
+    }
+
+    if (episodeToggle !== undefined && this.chartedEpisodes) {
+      if (episodeToggle.charted) {
+        // positive state changes on episodes are reflected in and dispatch through the route
+        params['episodes'] = this.chartedEpisodes.join(',') + ',' + episodeToggle.id;
+      } else {
+        // update the route and the state, negative state changes on episodes aren't reflected in route
+        params['episodes'] = this.chartedEpisodes.filter(id => id !== episodeToggle.id).join(',');
+        this.store.dispatch(new CastleEpisodeChartToggleAction({id: episodeToggle.id, seriesId: filter.podcastSeriesId, charted: false}));
+      }
+    } else if (episodeToggle !== undefined) {
+      if (episodeToggle.charted) {
+        params['episodes'] = episodeToggle.id;
+      }
+    } else if (this.chartedEpisodes) {
+      params['episodes'] = this.chartedEpisodes.join(',');
+    }
     this.router.navigate([filter.podcastSeriesId, 'downloads', filter.interval.key, params]);
   }
 
@@ -271,6 +309,14 @@ export class DownloadsComponent implements OnInit, OnDestroy {
   }
 
   onPageChange(page: number) {
-    this.routeFromFilter({...this.filter, page});
+    this.routeFromFilter({...this.filter, page}, undefined, undefined);
+  }
+
+  onPodcastChartToggle(charted: boolean) {
+    this.routeFromFilter(this.filter, charted, undefined);
+  }
+
+  onEpisodeChartToggle(params: {id: number, charted: boolean}) {
+    this.routeFromFilter(this.filter, undefined, params);
   }
 }

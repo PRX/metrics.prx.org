@@ -175,8 +175,10 @@ describe('date util', () => {
     let hours;
     if (date.getHours() === 0) {
       hours = 12;
-    } else {
+    } else if (date.getHours() > 12) {
       hours = date.getHours() % 12;
+    } else {
+      hours = date.getHours();
     }
     expect(parseInt(dateString.slice(dateString.indexOf(', ') + 1), 10)).toEqual(hours);
   });

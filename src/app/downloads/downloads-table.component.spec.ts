@@ -10,7 +10,7 @@ import { DownloadsTableComponent } from './downloads-table.component';
 import { reducers, PodcastModel } from '../ngrx/reducers';
 import { EpisodeModel, FilterModel, INTERVAL_DAILY, INTERVAL_HOURLY } from '../ngrx/model';
 import { CastlePodcastMetricsAction, CastleEpisodeMetricsAction,
-  CastleFilterAction, CmsPodcastEpisodePageAction } from '../ngrx/actions';
+  CastleFilterAction, CmsPodcastEpisodePageSuccessAction, CastleEpisodeChartToggleAction } from '../ngrx/actions';
 
 describe('DownloadsTableComponent', () => {
   let comp: DownloadsTableComponent;
@@ -97,19 +97,21 @@ describe('DownloadsTableComponent', () => {
       id: 123,
       publishedAt: new Date('9/9/17'),
       title: 'A Pet Talk Episode',
-      guid: 'abcdefg'
+      guid: 'abcdefg',
+      page: 1
     },
     {
       seriesId: 37800,
       id: 124,
       publishedAt: new Date(),
       title: 'A More Recent Pet Talk Episode',
-      guid: 'gfedcba'
+      guid: 'gfedcba',
+      page: 1
     }
   ];
   const filter: FilterModel = {
     podcastSeriesId: podcast.seriesId,
-    episodeIds: episodes.map(e => e.id),
+    page: 1,
     beginDate: new Date('2017-08-27T00:00:00Z'),
     endDate: new Date('2017-09-07T00:00:00Z'),
     interval: INTERVAL_DAILY
@@ -136,13 +138,13 @@ describe('DownloadsTableComponent', () => {
       comp.store.dispatch(new CastleFilterAction({filter}));
       comp.store.dispatch(new CastleEpisodeMetricsAction({episode: episodes[0], filter, metricsType: 'downloads', metrics: ep0Downloads}));
       comp.store.dispatch(new CastleEpisodeMetricsAction({episode: episodes[1], filter, metricsType: 'downloads', metrics: ep1Downloads}));
-      comp.store.dispatch(new CmsPodcastEpisodePageAction({episodes}));
+      comp.store.dispatch(new CmsPodcastEpisodePageSuccessAction({episodes}));
       comp.store.dispatch(new CastlePodcastMetricsAction({podcast, filter, metricsType: 'downloads', metrics: podDownloads}));
     });
   }));
 
   it('should transform episode and podcast data to table data', () => {
-    expect(comp.episodeTableData.length).toEqual(episodes.length);
+    expect(comp.episodeTableData.length).toEqual(episodes.filter(e => e.page === filter.page).length);
     expect(comp.episodeTableData[0].totalForPeriod).not.toBeNull();
     expect(comp.podcastTableData['title']).toEqual('All Episodes');
     expect(comp.podcastTableData['totalForPeriod']).not.toBeNull();
@@ -162,7 +164,17 @@ describe('DownloadsTableComponent', () => {
   });
 
   it('should show only the episodes in filter', () => {
-    comp.store.dispatch(new CastleFilterAction({filter: {episodeIds: [episodes[0].id]}}));
+    const episode = {
+      seriesId: 37800,
+      id: 120,
+      publishedAt: new Date('1/1/17'),
+      title: 'An Older Pet Talk Episode',
+      guid: 'aaa',
+      page: 2
+    };
+    comp.store.dispatch(new CastleFilterAction({filter: {page: 2}}));
+    comp.store.dispatch(new CmsPodcastEpisodePageSuccessAction({episodes: [episode]}));
+    comp.store.dispatch(new CastleEpisodeMetricsAction({episode: episode, filter, metricsType: 'downloads', metrics: ep0Downloads}));
     expect(comp.episodeTableData.length).toEqual(1);
   });
 

@@ -21,14 +21,14 @@ describe('FilterReducer', () => {
     expect(newState.podcastSeriesId).toEqual(37800);
   });
 
-  it('should update with new episodes', () => {
+  it('should update with new episode page', () => {
     newState = FilterReducer(newState,
       new CastleFilterAction({
         filter: {
-          episodeIds: [123]
+          page: 1
         }
       }));
-    expect(newState.episodeIds[0]).toEqual(123);
+    expect(newState.page).toEqual(1);
   });
 
   it ('should update with new beginDate or endDate', () => {

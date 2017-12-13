@@ -44,7 +44,8 @@ describe('RoutingEffects', () => {
             firstChild: {
               params: {
                 seriesId: '37800',
-                episodes: '123,1234',
+                interval: 'hourly',
+                page: '1',
                 beginDate: '2017-11-01T00:00:00.000Z',
                 endDate: '2017-11-01T22:00:00.000'
               }
@@ -55,7 +56,7 @@ describe('RoutingEffects', () => {
     };
     const result = new CastleFilterAction({filter: {
       podcastSeriesId: 37800,
-      episodeIds: [123, 1234],
+      page: 1,
       interval: INTERVAL_HOURLY,
       beginDate: new Date('2017-11-01T00:00:00.000Z'),
       endDate: new Date('2017-11-01T22:00:00.000'),
@@ -78,7 +79,8 @@ describe('RoutingEffects', () => {
             firstChild: {
               params: {
                 seriesId: '37800',
-                episodes: '123,1234',
+                interval: 'hourly',
+                page: '1',
                 standardRange: THREE_MONTHS
               }
             }
@@ -88,7 +90,7 @@ describe('RoutingEffects', () => {
     };
     const result = new CastleFilterAction({filter: {
       podcastSeriesId: 37800,
-      episodeIds: [123, 1234],
+      page: 1,
       interval: INTERVAL_HOURLY,
       beginDate: beginningOfThreeMonthsUTC().toDate(),
       endDate: endOfTodayUTC().toDate(),

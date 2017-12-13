@@ -9,7 +9,6 @@ import { DatepickerModule, SelectModule } from 'ngx-prx-styleguide';
 import { FilterComponent } from './filter.component';
 import { CustomDateRangeComponent } from './date/custom-date-range.component';
 import { DateRangeComponent } from './date/date-range.component';
-import { EpisodesComponent } from './episodes.component';
 import { IntervalComponent } from './interval.component';
 import { NextDateRangeComponent } from './date/next-date-range.component';
 import { PrevDateRangeComponent } from './date/prev-date-range.component';
@@ -44,7 +43,6 @@ describe('FilterComponent', () => {
         FilterComponent,
         CustomDateRangeComponent,
         DateRangeComponent,
-        EpisodesComponent,
         IntervalComponent,
         NextDateRangeComponent,
         PrevDateRangeComponent,

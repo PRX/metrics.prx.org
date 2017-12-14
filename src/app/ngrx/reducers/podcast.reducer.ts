@@ -1,4 +1,4 @@
-import { ActionTypes, CmsPodcastsAction, AllActions } from '../actions';
+import { ActionTypes, CmsPodcastsSuccessAction, CmsPodcastsFailureAction, AllActions } from '../actions';
 import { HalDoc } from 'ngx-prx-styleguide';
 
 export interface PodcastModel {
@@ -11,24 +11,48 @@ export interface PodcastModel {
 
 export interface PodcastState {
   entities?: {[seriesId: number]: PodcastModel};
+  loaded: boolean;
+  loading: boolean;
+  error?: any;
 }
 
 export const initialState = {
-  entities: {}
+  entities: {},
+  loaded: false,
+  loading: false
 };
 
 // TODO: initialState _was_ undefined, not yet loaded; so when empty, no podcasts
 export function PodcastReducer(state: PodcastState = initialState, action: AllActions): PodcastState {
   switch (action.type) {
-    case ActionTypes.CMS_PODCASTS:
-      if (action instanceof CmsPodcastsAction) {
+    case ActionTypes.CMS_PODCASTS: {
+      return {
+        ...state,
+        loading: true
+      };
+    }
+    case ActionTypes.CMS_PODCASTS_SUCCESS:
+      if (action instanceof CmsPodcastsSuccessAction) {
         const entities = podcastEntities(state, [...action.payload.podcasts]);
         return {
           ...state,
-          entities
+          entities,
+          loading: false,
+          loaded: true
         };
       }
       break;
+    case ActionTypes.CMS_PODCASTS_FAILURE: {
+      if (action instanceof CmsPodcastsFailureAction) {
+        return {
+          ...state,
+          error: action.payload['error'],
+          loading: false,
+          loaded: false
+        };
+      }
+      break;
+    }
   }
   return state;
 }
@@ -48,3 +72,4 @@ const podcastEntities = (state: PodcastState, podcasts: PodcastModel[]): {[serie
 };
 
 export const getPodcastEntities = (state: PodcastState) => state.entities;
+export const getPodcastError = (state: PodcastState) => state.error;

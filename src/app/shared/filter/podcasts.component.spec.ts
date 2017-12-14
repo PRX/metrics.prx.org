@@ -10,7 +10,7 @@ import { PodcastsComponent } from './podcasts.component';
 
 import { reducers } from '../../ngrx/reducers';
 
-import { CastleFilterAction, CmsPodcastsAction } from '../../ngrx/actions';
+import { CastleFilterAction, CmsPodcastsSuccessAction } from '../../ngrx/actions';
 import { FilterModel } from '../../ngrx/model';
 
 describe('PodcastsComponent', () => {
@@ -55,7 +55,7 @@ describe('PodcastsComponent', () => {
       el = de.nativeElement;
 
       comp.store.dispatch(new CastleFilterAction({filter}));
-      comp.store.dispatch(new CmsPodcastsAction({podcasts: podcasts.slice(0, 1)}));
+      comp.store.dispatch(new CmsPodcastsSuccessAction({podcasts: podcasts.slice(0, 1)}));
     });
   }));
 
@@ -71,7 +71,7 @@ describe('PodcastsComponent', () => {
   });
 
   it('should show a drop down of podcasts if there are multiple to choose from', () => {
-    comp.store.dispatch(new CmsPodcastsAction({podcasts}));
+    comp.store.dispatch(new CmsPodcastsSuccessAction({podcasts}));
     expect(de.query(By.css('prx-select'))).toBeDefined();
     expect(comp.allPodcastOptions.length).toEqual(2);
   });

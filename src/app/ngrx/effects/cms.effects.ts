@@ -49,7 +49,7 @@ export class CmsEffects {
             const dist$ = episodes.map(e => this.getEpisodePodcastDistribution(e));
             return Observable.forkJoin(...dist$).map(() => new CmsPodcastEpisodePageSuccessAction({episodes}));
           })
-          .catch(error => Observable.of(new CmsPodcastEpisodePageFailureAction(error)));
+          .catch(error => Observable.of(new CmsPodcastEpisodePageFailureAction({error})));
       });
     });
 

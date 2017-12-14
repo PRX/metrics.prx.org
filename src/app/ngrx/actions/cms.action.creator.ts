@@ -3,14 +3,24 @@ import { ActionTypes } from './action.types';
 import { EpisodeModel } from '../model';
 import { PodcastModel } from '../reducers';
 
-export interface CmsPodcastsPayload {
+export class CmsPodcastsAction implements Action {
+  readonly type = ActionTypes.CMS_PODCASTS;
+}
+
+export interface CmsPodcastsSuccessPayload {
   podcasts: PodcastModel[];
 }
 
-export class CmsPodcastsAction implements Action {
-  readonly type = ActionTypes.CMS_PODCASTS;
+export class CmsPodcastsSuccessAction implements Action {
+  readonly type = ActionTypes.CMS_PODCASTS_SUCCESS;
 
-  constructor(public payload: CmsPodcastsPayload) {}
+  constructor(public payload: CmsPodcastsSuccessPayload) {}
+}
+
+export class CmsPodcastsFailureAction implements Action {
+  readonly type = ActionTypes.CMS_PODCASTS_FAILURE;
+
+  constructor(public payload: any) {}
 }
 
 export interface CmsEpisodePagePayload {

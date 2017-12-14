@@ -16,23 +16,44 @@ export interface EpisodeModel {
 
 export interface EpisodeState {
   entities?: {[id: number]: EpisodeModel};
+  loaded: boolean;
+  loading: boolean;
+  error?: any;
 }
 
 export const initialState = {
-  entities: {}
+  entities: {},
+  loaded: false,
+  loading: false
 };
 
 export function EpisodeReducer(state: EpisodeState = initialState, action: AllActions): EpisodeState {
   switch (action.type) {
+    case ActionTypes.CMS_PODCAST_EPISODE_PAGE: {
+      return {
+        ...state,
+        loading: true
+      };
+    }
     case ActionTypes.CMS_PODCAST_EPISODE_PAGE_SUCCESS:
       if (action instanceof CmsPodcastEpisodePageSuccessAction) {
         const entities = episodeEntities(state, action.payload.episodes);
         return {
           ...state,
-          entities
+          entities,
+          loading: false,
+          loaded: true
         };
       }
       break;
+    case ActionTypes.CMS_PODCAST_EPISODE_PAGE_FAILURE: {
+      return {
+        ...state,
+        error: action.payload['error'],
+        loading: false,
+        loaded: false
+      };
+    }
   }
   return state;
 }

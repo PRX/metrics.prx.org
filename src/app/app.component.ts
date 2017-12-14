@@ -8,8 +8,8 @@ import { Angulartics2GoogleAnalytics } from 'angulartics2';
 import { AuthService } from 'ngx-prx-styleguide';
 import { CmsService, HalDoc } from './core';
 import { Env } from './core/core.env';
-import { CmsPodcastsAction, CmsPodcastEpisodePageAction } from './ngrx/actions';
-import { selectPodcasts, PodcastModel, selectFilter, FilterModel, EpisodeModel, EPISODE_PAGE_SIZE } from './ngrx/reducers';
+import { CmsPodcastsSuccessAction, CmsPodcastEpisodePageAction, CmsPodcastsAction, CmsPodcastsFailureAction } from './ngrx/actions';
+import { selectPodcasts, PodcastModel, selectFilter, FilterModel } from './ngrx/reducers';
 
 @Component({
   selector: 'metrics-root',
@@ -95,10 +95,11 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   loadCmsSeries(auth: HalDoc) {
+    this.store.dispatch(new CmsPodcastsAction());
     auth.followItems('prx:series',
       {per: auth.count('prx:series'), filters: 'v4', zoom: 'prx:distributions'}).subscribe((series: HalDoc[]) => {
       if (series && series.length === 0) {
-        this.store.dispatch(new CmsPodcastsAction({podcasts: []}));
+        this.store.dispatch(new CmsPodcastsFailureAction({error: 'Looks like you don\'t have any podcasts.'}));
       } else {
         const podcasts: PodcastModel[] = series.map(doc => {
           return {
@@ -109,10 +110,11 @@ export class AppComponent implements OnInit, OnDestroy {
         });
         const distros$ = podcasts.map(p => this.getSeriesPodcastDistribution(p));
         Observable.zip(...distros$).subscribe(() => {
-          this.store.dispatch(new CmsPodcastsAction({podcasts: podcasts.filter(p => p.feederId)}));
+          this.store.dispatch(new CmsPodcastsSuccessAction({podcasts: podcasts.filter(p => p.feederId)}));
         });
       }
-    });
+    },
+    error => this.store.dispatch(new CmsPodcastsFailureAction({error})));
   }
 
   getSeriesPodcastDistribution(podcast: PodcastModel): Observable<HalDoc[]> {
@@ -126,7 +128,8 @@ export class AppComponent implements OnInit, OnDestroy {
           podcast.feederId = urlParts[urlParts.length - 1];
         }
       }
-    });
+    },
+    error => this.store.dispatch(new CmsPodcastsFailureAction({error})));
     return obsv$;
   }
 

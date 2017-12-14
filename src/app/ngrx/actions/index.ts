@@ -1,12 +1,12 @@
 import { RouterNavigationAction } from '@ngrx/router-store';
-import { CmsPodcastsAction,
+import { CmsPodcastsSuccessAction,
   CmsPodcastEpisodePageAction, CmsPodcastEpisodePageSuccessAction, CmsPodcastEpisodePageFailureAction } from './cms.action.creator';
 import { CastleFilterAction, CastlePodcastMetricsAction, CastlePodcastChartToggleAction,
   CastleEpisodeMetricsAction, CastleEpisodeChartToggleAction } from './castle.action.creator';
 import { GoogleAnalyticsEventAction } from './google-analytics.action.creator';
 
 export type AllActions
-  = CmsPodcastsAction
+  = CmsPodcastsSuccessAction
   | CmsPodcastEpisodePageAction
   | CmsPodcastEpisodePageSuccessAction
   | CmsPodcastEpisodePageFailureAction
@@ -19,7 +19,8 @@ export type AllActions
   | GoogleAnalyticsEventAction;
 
 export { ActionTypes } from './action.types';
-export { CmsPodcastsPayload, CmsPodcastsAction,
+export { CmsPodcastsSuccessPayload, CmsPodcastsSuccessAction,
+  CmsPodcastsAction, CmsPodcastsFailureAction,
   CmsEpisodePagePayload, CmsPodcastEpisodePageAction,
   CmsEpisodePageSuccessPayload, CmsPodcastEpisodePageSuccessAction, CmsPodcastEpisodePageFailureAction } from './cms.action.creator';
 export { CastleFilterPayload, CastleFilterAction,

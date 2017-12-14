@@ -1,4 +1,4 @@
-import { CmsPodcastsAction } from '../actions';
+import { CmsPodcastsSuccessAction } from '../actions';
 import { PodcastReducer, initialState, getPodcastEntities } from './podcast.reducer';
 
 describe('PodcastReducer', () => {
@@ -10,7 +10,7 @@ describe('PodcastReducer', () => {
       feederId: '70'
     };
   beforeEach(() => {
-    newState = PodcastReducer(initialState, new CmsPodcastsAction({podcasts: [podcast]}));
+    newState = PodcastReducer(initialState, new CmsPodcastsSuccessAction({podcasts: [podcast]}));
   });
 
   it('should update with new podcasts', () => {
@@ -23,7 +23,7 @@ describe('PodcastReducer', () => {
       title: 'Something that is not Pet Talks'
     };
     newState = PodcastReducer(newState,
-      new CmsPodcastsAction({
+      new CmsPodcastsSuccessAction({
         podcasts: [updatedPodcast]
       }));
     expect(getPodcastEntities(newState)[37800].title).toEqual('Something that is not Pet Talks');

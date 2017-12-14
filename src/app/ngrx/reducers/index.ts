@@ -5,7 +5,7 @@ import { EpisodeReducer } from './episode.reducer';
 import { PodcastMetricsReducer } from './podcast-metrics.reducer';
 import { EpisodeMetricsReducer } from './episode-metrics.reducer';
 import { EpisodeModel, FilterModel, PodcastMetricsModel, EpisodeMetricsModel } from '../model';
-import { PodcastState, getPodcastEntities } from './podcast.reducer';
+import { PodcastState, getPodcastEntities, getPodcastError } from './podcast.reducer';
 import { EpisodeState, getEpisodeEntities } from './episode.reducer';
 
 export { PodcastModel } from './podcast.reducer';
@@ -20,6 +20,7 @@ export interface RootState {
   episodeMetrics: EpisodeMetricsModel[];
 }
 
+// TypeScript is complaining about this ActionReducerMap again, not sure why ugh
 export const reducers: ActionReducerMap<RootState> = {
   filter: FilterReducer,
   podcasts: PodcastReducer,
@@ -40,6 +41,7 @@ export const selectPodcastEntities = createSelector(selectPodcastState, getPodca
 export const selectPodcasts = createSelector(selectPodcastEntities, entities => {
   return Object.keys(entities).map(seriesId => entities[parseInt(seriesId, 10)]);
 });
+export const selectPodcastsError = createSelector(selectPodcastState, getPodcastError);
 
 export const selectEpisodeState = createSelector(selectAppState, (state: RootState) => state.episodes);
 export const selectEpisodeEntities = createSelector(selectEpisodeState, getEpisodeEntities);

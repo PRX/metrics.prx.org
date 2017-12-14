@@ -1,6 +1,5 @@
-import { PodcastModel } from '../../ngrx/reducers';
-import { EpisodeModel, FilterModel, MetricsType, IntervalModel,
-  PodcastMetricsModel, EpisodeMetricsModel } from '../../ngrx/model';
+import { PodcastModel, EpisodeModel, FilterModel, IntervalModel,
+  PodcastMetricsModel, EpisodeMetricsModel, MetricsType, getMetricsProperty } from '../../ngrx';
 import { roundDateToBeginOfInterval } from './date.util';
 
 export const filterPodcasts = (filter: FilterModel, podcasts: PodcastModel[]): PodcastModel => {
@@ -37,10 +36,6 @@ export const filterMetricsByDate = (beginDate: Date, endDate: Date, interval: In
   } else {
     return null; // no partial data
   }
-};
-
-export const getMetricsProperty = (interval: IntervalModel, metricsType: MetricsType) => {
-  return interval.key + metricsType.charAt(0).toUpperCase() + metricsType.slice(1);
 };
 
 export const findPodcastMetrics =

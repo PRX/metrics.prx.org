@@ -1,16 +1,11 @@
 import { createSelector, createFeatureSelector, ActionReducerMap } from '@ngrx/store';
-import { FilterReducer } from './filter.reducer';
+import { FilterReducer, FilterModel } from './filter.reducer';
 import { PodcastReducer } from './podcast.reducer';
 import { EpisodeReducer } from './episode.reducer';
-import { PodcastMetricsReducer } from './podcast-metrics.reducer';
-import { EpisodeMetricsReducer } from './episode-metrics.reducer';
-import { EpisodeModel, FilterModel, PodcastMetricsModel, EpisodeMetricsModel } from '../model';
+import { PodcastMetricsReducer, PodcastMetricsModel } from './podcast-metrics.reducer';
+import { EpisodeMetricsReducer, EpisodeMetricsModel } from './episode-metrics.reducer';
 import { PodcastState, getPodcastEntities, getPodcastError } from './podcast.reducer';
 import { EpisodeState, getEpisodeEntities } from './episode.reducer';
-
-export { PodcastModel } from './podcast.reducer';
-export { EpisodeModel, EPISODE_PAGE_SIZE } from './episode.reducer';
-export { INTERVAL_MONTHLY, INTERVAL_WEEKLY, INTERVAL_DAILY, INTERVAL_HOURLY, IntervalModel, IntervalList, FilterModel } from './filter.reducer';
 
 export interface RootState {
   filter: FilterModel;

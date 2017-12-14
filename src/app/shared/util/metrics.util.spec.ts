@@ -1,5 +1,5 @@
-import { PodcastModel } from '../../ngrx/reducers';
-import { EpisodeModel, FilterModel, PodcastMetricsModel, EpisodeMetricsModel, INTERVAL_DAILY, INTERVAL_HOURLY } from '../../ngrx/model';
+import { PodcastModel, EpisodeModel, FilterModel, PodcastMetricsModel, EpisodeMetricsModel,
+  INTERVAL_DAILY, INTERVAL_HOURLY } from '../../ngrx';
 import { filterPodcasts, filterAllPodcastEpisodes, filterMetricsByDate,
   findPodcastMetrics, filterEpisodeMetricsPage, metricsData, getTotal } from './metrics.util';
 

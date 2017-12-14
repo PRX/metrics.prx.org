@@ -2,9 +2,9 @@ import { Component, OnDestroy } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs/Subscription';
 import { TimeseriesChartModel } from 'ngx-prx-styleguide';
-import { EpisodeMetricsModel, PodcastMetricsModel,  } from '../ngrx/model';
-import { selectFilter, FilterModel, selectEpisodes, EpisodeModel, selectPodcastMetrics, selectEpisodeMetrics,
-  INTERVAL_MONTHLY, INTERVAL_WEEKLY, INTERVAL_DAILY, INTERVAL_HOURLY} from '../ngrx/reducers';
+import { FilterModel, EpisodeModel, PodcastMetricsModel, EpisodeMetricsModel,
+  INTERVAL_MONTHLY, INTERVAL_WEEKLY, INTERVAL_DAILY, INTERVAL_HOURLY } from '../ngrx';
+import { selectFilter, selectEpisodes, selectPodcastMetrics, selectEpisodeMetrics } from '../ngrx/reducers';
 import { findPodcastMetrics, filterEpisodeMetricsPage, metricsData, getTotal } from '../shared/util/metrics.util';
 import { mapMetricsToTimeseriesData, subtractTimeseriesDatasets, neutralColor, generateShades } from '../shared/util/chart.util';
 import { UTCDateFormat, monthYearFormat, dayMonthDateFormat, hourlyDateFormat, getAmountOfIntervals } from '../shared/util/date.util';

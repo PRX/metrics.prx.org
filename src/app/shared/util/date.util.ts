@@ -1,7 +1,18 @@
 import * as moment from 'moment';
-import { FilterModel, TODAY, THIS_WEEK, TWO_WEEKS, THIS_MONTH, THREE_MONTHS, THIS_YEAR,
-  YESTERDAY, LAST_WEEK, PRIOR_TWO_WEEKS, LAST_MONTH, PRIOR_THREE_MONTHS, LAST_YEAR,
-  IntervalModel, INTERVAL_HOURLY, INTERVAL_DAILY, INTERVAL_WEEKLY, INTERVAL_MONTHLY } from '../../ngrx/model';
+import { FilterModel, IntervalModel, INTERVAL_HOURLY, INTERVAL_DAILY, INTERVAL_WEEKLY, INTERVAL_MONTHLY } from '../../ngrx';
+
+export const TODAY = 'Today';
+export const THIS_WEEK = 'This week';
+export const TWO_WEEKS = '2 weeks';
+export const THIS_MONTH = 'This month';
+export const THREE_MONTHS = '3 months';
+export const THIS_YEAR = 'This year';
+export const YESTERDAY = 'Yesterday';
+export const LAST_WEEK = 'Last week';
+export const PRIOR_TWO_WEEKS = 'Prior 2 weeks';
+export const LAST_MONTH = 'Last month';
+export const PRIOR_THREE_MONTHS = 'Prior 3 months';
+export const LAST_YEAR = 'Last year';
 
 export const isMoreThanXDays = (x: number, beginDate, endDate): boolean => {
   return endDate.valueOf() - beginDate.valueOf() > (1000 * 60 * 60 * 24 * x); // x days

@@ -11,7 +11,7 @@ import { PodcastsComponent } from './podcasts.component';
 import { reducers } from '../../ngrx/reducers';
 
 import { CastleFilterAction, CmsPodcastsSuccessAction } from '../../ngrx/actions';
-import { FilterModel } from '../../ngrx/model';
+import { FilterModel } from '../../ngrx';
 
 describe('PodcastsComponent', () => {
   let comp: PodcastsComponent;

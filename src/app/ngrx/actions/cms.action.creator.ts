@@ -1,7 +1,6 @@
 import { Action } from '@ngrx/store';
 import { ActionTypes } from './action.types';
-import { EpisodeModel } from '../model';
-import { PodcastModel } from '../reducers';
+import { PodcastModel, EpisodeModel } from '../';
 
 export class CmsPodcastsAction implements Action {
   readonly type = ActionTypes.CMS_PODCASTS;

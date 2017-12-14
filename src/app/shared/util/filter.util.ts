@@ -1,4 +1,4 @@
-import { FilterModel, EpisodeModel } from '../../ngrx/model';
+import { FilterModel, EpisodeModel } from '../../ngrx';
 
 export const isPodcastChanged = (state: FilterModel, oldState: FilterModel): boolean => {
   return state && state.podcastSeriesId && (!oldState || !oldState.podcastSeriesId || oldState.podcastSeriesId !== state.podcastSeriesId);

@@ -1,6 +1,15 @@
 import { ActionTypes, AllActions, CastlePodcastMetricsAction, CastlePodcastChartToggleAction } from '../actions';
-import { PodcastMetricsModel } from '../model';
-import { getMetricsProperty } from '../../shared/util/metrics.util';
+import { getMetricsProperty } from './metrics.type';
+
+export interface PodcastMetricsModel {
+  seriesId: number;
+  feederId?: string;
+  charted?: boolean;
+  monthlyDownloads?: any[][];
+  weeklyDownloads?: any[][];
+  dailyDownloads?: any[][];
+  hourlyDownloads?: any[][];
+}
 
 const initialState = [];
 

@@ -1,5 +1,5 @@
 import { ActionTypes, CastleFilterAction } from '../actions';
-import { FilterModel } from '../model';
+import { FilterModel } from '../';
 import { isPodcastChanged } from '../../shared/util/filter.util';
 
 export interface IntervalModel {

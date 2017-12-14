@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
-import { Router, ActivatedRoute, Params, RoutesRecognized } from '@angular/router';
+import { Router, Params, RoutesRecognized } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/switchMap';
 import { Action, Store } from '@ngrx/store';
 import { Actions, Effect } from '@ngrx/effects';
-import { selectEpisodeMetrics, EpisodeModel, EPISODE_PAGE_SIZE } from '../reducers';
-import { EpisodeMetricsModel } from '../model';
+import { EpisodeModel, EPISODE_PAGE_SIZE, EpisodeMetricsModel } from '../';
+import { selectEpisodeMetrics } from '../reducers';
 import { CmsPodcastEpisodePageAction, CmsEpisodePagePayload,
   CmsPodcastEpisodePageSuccessAction, CmsPodcastEpisodePageFailureAction, ActionTypes } from '../actions';
 import { CmsService, HalDoc } from '../../core';

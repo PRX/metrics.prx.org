@@ -1,5 +1,5 @@
 import { CastlePodcastMetricsAction } from '../actions/castle.action.creator';
-import { INTERVAL_DAILY, FilterModel } from '../model';
+import { INTERVAL_DAILY, FilterModel } from './filter.reducer';
 import { PodcastMetricsReducer } from './podcast-metrics.reducer';
 
 describe('PodcastMetricsReducer', () => {

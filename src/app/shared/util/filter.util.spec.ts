@@ -1,5 +1,5 @@
 import * as filterUtil from './filter.util';
-import { INTERVAL_DAILY, INTERVAL_MONTHLY } from '../../ngrx/model';
+import { INTERVAL_DAILY, INTERVAL_MONTHLY } from '../../ngrx';
 import { beginningOfTodayUTC, endOfTodayUTC, beginningOfPriorTwoWeeksUTC, endOfPriorTwoWeeksUTC } from './date.util';
 
 describe('filter.util', () => {

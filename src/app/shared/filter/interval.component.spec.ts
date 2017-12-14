@@ -4,7 +4,7 @@ import { DebugElement } from '@angular/core';
 import { SelectModule } from 'ngx-prx-styleguide';
 import { IntervalComponent } from './interval.component';
 
-import { INTERVAL_DAILY } from '../../ngrx/model';
+import { INTERVAL_DAILY } from '../../ngrx';
 import { beginningOfLastMonthUTC, endOfLastMonthUTC } from '../../shared/util/date.util';
 
 describe('IntervalComponent', () => {

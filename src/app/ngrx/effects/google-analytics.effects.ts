@@ -5,8 +5,8 @@ import { Actions, Effect } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import { Angulartics2 } from 'angulartics2';
 import { ActionTypes, GoogleAnalyticsEventAction } from '../actions';
-import { selectPodcasts, PodcastModel, selectFilter } from '../reducers';
-import { FilterModel } from '../model';
+import { PodcastModel, FilterModel } from '../';
+import { selectPodcasts, selectFilter } from '../reducers';
 
 @Injectable()
 export class GoogleAnalyticsEffects {

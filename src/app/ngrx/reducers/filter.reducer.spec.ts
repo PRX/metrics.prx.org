@@ -1,7 +1,7 @@
 import { CastleFilterAction } from '../actions';
-import { FilterModel, INTERVAL_DAILY, INTERVAL_HOURLY, TODAY, THIS_MONTH } from '../model';
+import { FilterModel, INTERVAL_DAILY, INTERVAL_HOURLY } from '../';
 import { FilterReducer } from './filter.reducer';
-import { beginningOfTodayUTC, endOfTodayUTC, getRange } from '../../shared/util/date.util';
+import { beginningOfTodayUTC, endOfTodayUTC, getRange, TODAY, THIS_MONTH } from '../../shared/util/date.util';
 
 describe('FilterReducer', () => {
   let newState: FilterModel;

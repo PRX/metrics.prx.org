@@ -6,11 +6,11 @@ import { EffectsModule } from '@ngrx/effects';
 import { routerReducer } from '@ngrx/router-store';
 import { ROUTER_NAVIGATION } from '@ngrx/router-store';
 import { getActions, TestActions } from './test.actions';
+import { INTERVAL_HOURLY } from '../../ngrx';
 import { reducers } from '../../ngrx/reducers';
 import { CastleFilterAction } from '../actions';
-import { INTERVAL_HOURLY, THREE_MONTHS } from '../model';
 import { RoutingEffects } from './routing.effects';
-import { beginningOfThreeMonthsUTC, endOfTodayUTC } from '../../shared/util/date.util';
+import { beginningOfThreeMonthsUTC, endOfTodayUTC, THREE_MONTHS } from '../../shared/util/date.util';
 
 describe('RoutingEffects', () => {
   let effects: RoutingEffects;

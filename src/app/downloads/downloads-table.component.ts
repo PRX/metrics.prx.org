@@ -1,10 +1,9 @@
 import { Component, OnDestroy, Output, EventEmitter } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs/Subscription';
-import { CastlePodcastChartToggleAction, CastleEpisodeChartToggleAction } from '../ngrx/actions';
-import { EpisodeMetricsModel, PodcastMetricsModel,
-  INTERVAL_MONTHLY, INTERVAL_WEEKLY, INTERVAL_DAILY, INTERVAL_HOURLY } from '../ngrx/model';
-import { selectEpisodes, EpisodeModel, selectFilter, FilterModel, selectEpisodeMetrics, selectPodcastMetrics } from '../ngrx/reducers';
+import { EpisodeModel, FilterModel, EpisodeMetricsModel, PodcastMetricsModel,
+  INTERVAL_MONTHLY, INTERVAL_WEEKLY, INTERVAL_DAILY, INTERVAL_HOURLY } from '../ngrx';
+import { selectEpisodes, selectFilter, selectEpisodeMetrics, selectPodcastMetrics } from '../ngrx/reducers';
 import { findPodcastMetrics, filterPodcastEpisodePage, filterEpisodeMetricsPage, metricsData, getTotal } from '../shared/util/metrics.util';
 import { mapMetricsToTimeseriesData } from '../shared/util/chart.util';
 import { monthYearFormat, dayMonthDateFormat, hourlyDateFormat, monthDateYearFormat } from '../shared/util/date.util';

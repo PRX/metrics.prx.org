@@ -1,6 +1,19 @@
 import { ActionTypes, AllActions, CastleEpisodeMetricsAction, CastleEpisodeChartToggleAction } from '../actions';
-import { EpisodeMetricsModel, IntervalModel, MetricsType } from '../model';
-import { getMetricsProperty } from '../../shared/util/metrics.util';
+import { MetricsType } from './metrics.type';
+import { IntervalModel } from './filter.reducer';
+import { getMetricsProperty } from './metrics.type';
+
+export interface EpisodeMetricsModel {
+  seriesId: number;
+  id: number;
+  guid?: string;
+  page?: number;
+  charted?: boolean;
+  monthlyDownloads?: any[][];
+  weeklyDownloads?: any[][];
+  dailyDownloads?: any[][];
+  hourlyDownloads?: any[][];
+}
 
 const initialState = [];
 

@@ -16,8 +16,8 @@ import { StandardDateRangeComponent } from './date/standard-date-range.component
 
 import { reducers } from '../../ngrx/reducers';
 import { CastleFilterAction } from '../../ngrx/actions';
-import { FilterModel, TODAY, YESTERDAY, TWO_WEEKS,
-  INTERVAL_MONTHLY, INTERVAL_WEEKLY, INTERVAL_DAILY, INTERVAL_HOURLY } from '../../ngrx/model';
+import { FilterModel, INTERVAL_MONTHLY, INTERVAL_WEEKLY, INTERVAL_DAILY, INTERVAL_HOURLY  } from '../../ngrx';
+import { TODAY, YESTERDAY, TWO_WEEKS } from '../../shared/util/date.util';
 import { beginningOfTodayUTC, endOfTodayUTC, beginningOfYesterdayUTC, endOfYesterdayUTC, beginningOfThisWeekUTC,
   beginningOfTwoWeeksUTC, beginningOfThisMonthUTC, getRange } from '../util/date.util';
 

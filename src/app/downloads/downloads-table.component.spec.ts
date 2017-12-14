@@ -7,10 +7,10 @@ import { By } from '@angular/platform-browser';
 import { SharedModule } from '../shared';
 import { DownloadsTableComponent } from './downloads-table.component';
 
-import { reducers, PodcastModel } from '../ngrx/reducers';
-import { EpisodeModel, FilterModel, INTERVAL_DAILY, INTERVAL_HOURLY } from '../ngrx/model';
+import { reducers } from '../ngrx/reducers';
+import { PodcastModel, EpisodeModel, FilterModel, INTERVAL_DAILY, INTERVAL_HOURLY } from '../ngrx';
 import { CastlePodcastMetricsAction, CastleEpisodeMetricsAction,
-  CastleFilterAction, CmsPodcastEpisodePageSuccessAction, CastleEpisodeChartToggleAction } from '../ngrx/actions';
+  CastleFilterAction, CmsPodcastEpisodePageSuccessAction } from '../ngrx/actions';
 
 describe('DownloadsTableComponent', () => {
   let comp: DownloadsTableComponent;

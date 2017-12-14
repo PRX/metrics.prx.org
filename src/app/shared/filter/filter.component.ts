@@ -2,8 +2,8 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs/Subscription';
+import { FilterModel, IntervalModel } from '../../ngrx';
 import { selectFilter } from '../../ngrx/reducers';
-import { FilterModel, IntervalModel } from '../../ngrx/model';
 import { roundDateToBeginOfInterval, roundDateToEndOfInterval,
   getStandardRangeForBeginEndDate, getRange } from '../../shared/util/date.util';
 

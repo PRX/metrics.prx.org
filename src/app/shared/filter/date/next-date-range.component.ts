@@ -3,10 +3,11 @@ import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs/Subscription';
 import * as moment from 'moment';
-import { FilterModel, TODAY, THIS_WEEK, TWO_WEEKS, THIS_MONTH, THREE_MONTHS, THIS_YEAR,
-  YESTERDAY, LAST_WEEK, PRIOR_TWO_WEEKS, LAST_MONTH, PRIOR_THREE_MONTHS, LAST_YEAR } from '../../../ngrx/model';
+import { FilterModel } from '../../../ngrx';
 import { selectFilter } from '../../../ngrx/reducers';
-import { endOfTodayUTC, getStandardRangeForBeginEndDate } from '../../util/date.util';
+import { endOfTodayUTC, getStandardRangeForBeginEndDate,
+  TODAY, THIS_WEEK, TWO_WEEKS, THIS_MONTH, THREE_MONTHS, THIS_YEAR,
+  YESTERDAY, LAST_WEEK, PRIOR_TWO_WEEKS, LAST_MONTH, PRIOR_THREE_MONTHS, LAST_YEAR } from '../../util/date.util';
 
 @Component({
   selector: 'metrics-next-date-range',

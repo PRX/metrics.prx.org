@@ -5,10 +5,10 @@ import { isMoreThanXDays, beginningOfTodayUTC, endOfTodayUTC,
   beginningOfPriorThreeMonthsUTC, endOfPriorThreeMonthsUTC, beginningOfLastYearUTC, endOfLastYearUTC,
   getBeginEndDateFromStandardRange, getStandardRangeForBeginEndDate, getRange, getMillisecondsOfInterval,
   roundDateToBeginOfInterval, roundDateToEndOfInterval, getAmountOfIntervals,
-  UTCDateFormat, dayOfWeekDateFormat, dayMonthDateFormat, monthDateYearFormat, monthYearFormat, hourlyDateFormat } from './date.util';
-import { FilterModel, INTERVAL_MONTHLY, INTERVAL_WEEKLY, INTERVAL_DAILY, INTERVAL_HOURLY,
+  UTCDateFormat, dayOfWeekDateFormat, dayMonthDateFormat, monthDateYearFormat, monthYearFormat, hourlyDateFormat,
   TODAY, YESTERDAY, THIS_WEEK, LAST_WEEK, TWO_WEEKS, PRIOR_TWO_WEEKS, THIS_MONTH, LAST_MONTH,
-  THREE_MONTHS, PRIOR_THREE_MONTHS, THIS_YEAR, LAST_YEAR } from '../../ngrx/model';
+  THREE_MONTHS, PRIOR_THREE_MONTHS, THIS_YEAR, LAST_YEAR } from './date.util';
+import { FilterModel, INTERVAL_MONTHLY, INTERVAL_WEEKLY, INTERVAL_DAILY, INTERVAL_HOURLY } from '../../ngrx';
 
 describe('date util', () => {
   it('should tell us if dates are more than a specified number of days apart', () => {

@@ -1,6 +1,6 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { FilterModel, IntervalModel, INTERVAL_HOURLY } from '../../../ngrx/model';
+import { FilterModel, IntervalModel, INTERVAL_HOURLY } from '../../../ngrx';
 import { isMoreThanXDays, endOfTodayUTC } from '../../util/date.util';
 
 @Component({

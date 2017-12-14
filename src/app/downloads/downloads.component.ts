@@ -3,11 +3,11 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs/Subscription';
 import { CastleService } from '../core';
-import { TWO_WEEKS } from '../ngrx/model';
+import { TWO_WEEKS } from '../shared/util/date.util';
 import { CastleFilterAction, CastlePodcastMetricsAction, CastleEpisodeMetricsAction,
   GoogleAnalyticsEventAction, CastleEpisodeChartToggleAction } from '../ngrx/actions';
-import { selectFilter, FilterModel, selectEpisodes, EpisodeModel, selectPodcasts, PodcastModel,
-  INTERVAL_DAILY, EPISODE_PAGE_SIZE } from '../ngrx/reducers';
+import { FilterModel, EpisodeModel, PodcastModel, INTERVAL_DAILY, EPISODE_PAGE_SIZE } from '../ngrx';
+import { selectFilter, selectEpisodes, selectPodcasts } from '../ngrx/reducers';
 import { filterPodcastEpisodePage } from '../shared/util/metrics.util';
 import { beginningOfTwoWeeksUTC, endOfTodayUTC, getRange } from '../shared/util/date.util';
 import { isPodcastChanged, isBeginDateChanged, isEndDateChanged, isIntervalChanged } from '../shared/util/filter.util';

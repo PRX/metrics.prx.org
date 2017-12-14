@@ -8,8 +8,9 @@ import { Angulartics2GoogleAnalytics } from 'angulartics2';
 import { AuthService } from 'ngx-prx-styleguide';
 import { CmsService, HalDoc } from './core';
 import { Env } from './core/core.env';
+import { PodcastModel, FilterModel } from './ngrx';
 import { CmsPodcastsSuccessAction, CmsPodcastEpisodePageAction, CmsPodcastsAction, CmsPodcastsFailureAction } from './ngrx/actions';
-import { selectPodcasts, PodcastModel, selectFilter, FilterModel } from './ngrx/reducers';
+import { selectPodcasts, selectFilter } from './ngrx/reducers';
 
 @Component({
   selector: 'metrics-root',

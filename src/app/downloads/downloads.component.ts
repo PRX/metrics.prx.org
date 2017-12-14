@@ -26,6 +26,7 @@ import { isPodcastChanged, isBeginDateChanged, isEndDateChanged, isIntervalChang
       </metrics-downloads-table>
       <p class="error" *ngFor="let error of errors">{{error}}</p>
       <metrics-episode-page
+        *ngIf="!isEpisodeLoading"
         [currentPage]="filter?.page"
         [totalPages]="totalPages"
         (pageChange)="onPageChange($event)"></metrics-episode-page>

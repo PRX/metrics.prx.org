@@ -30,7 +30,8 @@ export class CmsEffects {
             zoom: 'prx:distributions'})
           .flatMap((docs: HalDoc[]) => {
             const chartedEpisodes = this.episodeMetrics.filter(e => e.charted).map(e => e.id);
-            const chartIncomingEpisodes = chartedEpisodes.length === 0;
+            // if none of the incoming episodes are already on the route, we want to add the first 5
+            const chartIncomingEpisodes = chartedEpisodes.filter(id => docs.map(doc => doc['id']).indexOf(id) !== -1).length === 0;
             const episodes: EpisodeModel[] = docs.map((doc, i) => {
               const episode = {
                 doc,
@@ -88,11 +89,7 @@ export class CmsEffects {
         params[key] = this.routeParams[key];
       }
     });
-    if (params['episodes']) {
-      params['episodes'] += ',' + episodeIds.join(',');
-    } else {
-      params['episodes'] = episodeIds.join(',');
-    }
+    params['episodes'] = episodeIds.join(',');
     this.router.navigate([this.routeParams['seriesId'], 'downloads', this.routeParams['interval'], params]);
   }
 }

@@ -146,11 +146,15 @@ describe('DownloadsChartComponent', () => {
   });
 
   it('should only include charted episodes', () => {
-    // TODO
+    expect(comp.episodeChartData.length).toEqual(2);
+    comp.store.dispatch(new CastleEpisodeChartToggleAction({id: episodes[0].id, seriesId: podcast.seriesId, charted: false}));
+    expect(comp.episodeChartData.length).toEqual(1);
   });
 
   it('should only include podcast if charted', () => {
-    // TODO
+    expect(comp.podcastChartData).not.toBeNull();
+    comp.store.dispatch(new CastlePodcastChartToggleAction({seriesId: podcast.seriesId, charted: false}));
+    expect(comp.podcastChartData).toBeNull();
   });
 
   it('should sort episode chart data by total biggest to smallest', () => {

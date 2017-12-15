@@ -22,14 +22,10 @@ import { isPodcastChanged, isBeginDateChanged, isEndDateChanged, isIntervalChang
     <section class="content">
       <metrics-downloads-chart></metrics-downloads-chart>
       <metrics-downloads-table
+        [totalPages]="totalPages" (pageChange)="onPageChange($event)"
         (podcastChartToggle)="onPodcastChartToggle($event)" (episodeChartToggle)="onEpisodeChartToggle($event)">
       </metrics-downloads-table>
       <p class="error" *ngFor="let error of errors">{{error}}</p>
-      <metrics-episode-page
-        *ngIf="!isEpisodeLoading"
-        [currentPage]="filter?.page"
-        [totalPages]="totalPages"
-        (pageChange)="onPageChange($event)"></metrics-episode-page>
     </section>
   `,
   styleUrls: ['downloads.component.css']

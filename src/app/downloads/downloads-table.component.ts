@@ -1,4 +1,4 @@
-import { Component, OnDestroy, Output, EventEmitter } from '@angular/core';
+import { Component, OnDestroy, Input, Output, EventEmitter } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs/Subscription';
 import { EpisodeModel, FilterModel, EpisodeMetricsModel, PodcastMetricsModel,
@@ -58,6 +58,10 @@ import * as moment from 'moment';
             </tr>
           </tbody>
         </table>
+        <metrics-episode-page
+          [currentPage]="filter?.page"
+          [totalPages]="totalPages"
+          (pageChange)="pageChange.emit($event)"></metrics-episode-page>
       </div>
     </div>
   `,
@@ -65,8 +69,10 @@ import * as moment from 'moment';
 
 })
 export class DownloadsTableComponent implements OnDestroy {
+  @Input() totalPages;
   @Output() podcastChartToggle = new EventEmitter();
   @Output() episodeChartToggle = new EventEmitter();
+  @Output() pageChange = new EventEmitter();
   filterStoreSub: Subscription;
   filter: FilterModel;
   allEpisodesSub: Subscription;

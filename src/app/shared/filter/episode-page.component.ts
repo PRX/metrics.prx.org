@@ -4,13 +4,13 @@ import { Component, Input, Output, EventEmitter, OnChanges } from '@angular/core
   selector: 'metrics-episode-page',
   template: `
     <div *ngIf="currentPage && totalPages">
-      <button [disabled]="currentPage === 1 || totalPages === 1" (click)="pageChange.emit(currentPage - 1)" class="btn-link">&lt;</button>
+      <button [disabled]="prevDisabled" (click)="pageChange.emit(currentPage - 1)" class="btn-link">&lt;</button>
       <button *ngFor="let page of pages | slice:pagesBegin:pagesEnd;"
               [disabled]="page === currentPage" [class.active]="page === currentPage"
               (click)="pageChange.emit(page)"
               class="btn-link">{{page}}</button>
       <button disabled *ngIf="pages.length > showNumPages" class="btn-link">of {{pages.length}}</button>
-      <button [disabled]="currentPage === pages.length" (click)="pageChange.emit(currentPage + 1)" class="btn-link">&gt;</button>
+      <button [disabled]="nextDisabled" (click)="pageChange.emit(currentPage + 1)" class="btn-link">&gt;</button>
     </div>
   `,
   styleUrls: ['episode-page.component.css']
@@ -31,5 +31,13 @@ export class EpisodePageComponent implements OnChanges {
     }
     this.pagesBegin = this.showNumPages * Math.floor((this.currentPage - 1) / this.showNumPages);
     this.pagesEnd = this.showNumPages * Math.ceil(this.currentPage / this.showNumPages);
+  }
+
+  get prevDisabled(): boolean {
+    return this.currentPage === 1 || this.totalPages === 1;
+  }
+
+  get nextDisabled(): boolean {
+    return this.currentPage === this.pages.length;
   }
 }

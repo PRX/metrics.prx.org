@@ -103,11 +103,6 @@ describe('AppComponent', () => {
       series.forEach(s => {
         const distributions = s.mockItems('prx:distributions', [{kind: 'podcast', url: 'https://feeder.prx.org/api/v1/podcasts/70'}]);
       });
-      episodes = (<MockHalDoc>podcast.doc).mockItems('prx:stories', [{id: 123, title: 'A Pet Talk Episode', publishedAt: new Date()}]);
-      episodes.forEach(e => {
-        e.mockItems('prx:distributions',
-          [{kind: 'episode', url: 'https://feeder.prx.org/api/v1/episodes/42b4ad11-36bd-4f3a-9e92-0de8ad43a515'}]);
-      });
     });
   }));
 

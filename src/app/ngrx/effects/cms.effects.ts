@@ -53,7 +53,7 @@ export class CmsEffects {
       });
     });
 
-  constructor(private store: Store<any>,
+  constructor(public store: Store<any>,
               private actions$: Actions,
               private cms: CmsService,
               private router: Router) {

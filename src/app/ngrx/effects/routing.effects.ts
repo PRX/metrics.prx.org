@@ -70,6 +70,6 @@ export class RoutingEffects {
       return Observable.of(new CastleFilterAction({filter}));
     });
 
-  constructor(private store: Store<any>,
+  constructor(public store: Store<any>,
               private actions$: Actions) {}
 }

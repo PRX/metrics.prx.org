@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute, Params } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs/Subscription';
 import { FilterModel, IntervalModel } from '../../ngrx';
@@ -26,9 +26,15 @@ export class FilterComponent implements OnInit, OnDestroy {
   filter: FilterModel;
   filterSub: Subscription;
   hasChanges = false;
+  existingRouteParams: Params;
 
   constructor(public store: Store<any>,
-              private router: Router) {}
+              public router: Router,
+              private route: ActivatedRoute) {
+    route.params.subscribe(params => {
+      this.existingRouteParams = params;
+    });
+  }
 
   ngOnInit() {
     this.filterSub = this.store.select(selectFilter).subscribe((newFilter: FilterModel) => {
@@ -78,6 +84,12 @@ export class FilterComponent implements OnInit, OnDestroy {
       }
       if (this.filter.range) {
         routerParams['range'] = this.filter.range.join(',');
+      }
+      if (this.existingRouteParams['chartPodcast']) {
+        routerParams['chartPodcast'] = this.existingRouteParams['chartPodcast'];
+      }
+      if (this.existingRouteParams['episodes']) {
+        routerParams['episodes'] = this.existingRouteParams['episodes'];
       }
       this.router.navigate([this.filter.podcastSeriesId, 'downloads', this.filter.interval.key, routerParams]);
     }

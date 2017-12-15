@@ -1,7 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { DebugElement } from '@angular/core';
-import { Router } from '@angular/router';
-import { RouterStub } from '../../../testing/stub.router';
+import { RouterTestingModule } from '@angular/router/testing';
 import { StoreModule } from '@ngrx/store';
 
 import { DatepickerModule, SelectModule } from 'ngx-prx-styleguide';
@@ -20,8 +19,6 @@ import { FilterModel, INTERVAL_MONTHLY, INTERVAL_WEEKLY, INTERVAL_DAILY, INTERVA
 import { TODAY, YESTERDAY, TWO_WEEKS } from '../../shared/util/date.util';
 import { beginningOfTodayUTC, endOfTodayUTC, beginningOfYesterdayUTC, endOfYesterdayUTC, beginningOfThisWeekUTC,
   beginningOfTwoWeeksUTC, beginningOfThisMonthUTC, getRange } from '../util/date.util';
-
-const router = new RouterStub();
 
 describe('FilterComponent', () => {
   let comp: FilterComponent;
@@ -49,12 +46,10 @@ describe('FilterComponent', () => {
         StandardDateRangeComponent
       ],
       imports: [
+        RouterTestingModule,
         StoreModule.forRoot(reducers),
         DatepickerModule,
         SelectModule
-      ],
-      providers: [
-        {provide: Router, useValue: router}
       ]
     }).compileComponents().then(() => {
       fix = TestBed.createComponent(FilterComponent);
@@ -64,6 +59,7 @@ describe('FilterComponent', () => {
       el = de.nativeElement;
 
       comp.store.dispatch(new CastleFilterAction({filter}));
+      spyOn(comp.router, 'navigate').and.callFake(() => {});
     });
   }));
 
@@ -74,7 +70,6 @@ describe('FilterComponent', () => {
   });
 
   it('should navigate to route on Apply', () => {
-    spyOn(router, 'navigate').and.callThrough();
     comp.onDateRangeChange({
       standardRange: YESTERDAY,
       range: getRange(YESTERDAY),
@@ -82,7 +77,7 @@ describe('FilterComponent', () => {
       endDate: endOfYesterdayUTC().toDate()
     });
     comp.onApply();
-    expect(router.navigate).toHaveBeenCalled();
+    expect(comp.router.navigate).toHaveBeenCalled();
   });
 
   it('should normalize dates to interval when interval is selected', () => {

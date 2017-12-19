@@ -13,6 +13,10 @@ export interface PodcastMetricsModel {
 
 const initialState = [];
 
+const podcastIndex = (state: PodcastMetricsModel[], seriesId: number) => {
+  return state.findIndex(p => p.seriesId === seriesId);
+};
+
 export function PodcastMetricsReducer(state: PodcastMetricsModel[] = initialState, action: AllActions) {
   switch (action.type) {
     case ActionTypes.CASTLE_PODCAST_METRICS:
@@ -22,7 +26,7 @@ export function PodcastMetricsReducer(state: PodcastMetricsModel[] = initialStat
         const podcastIdx = podcastIndex(state, seriesId);
         let podcast: PodcastMetricsModel, newState: PodcastMetricsModel[];
         if (podcastIdx > -1) {
-          podcast = {...state[podcastIdx]};
+          podcast = {...state[podcastIdx], seriesId};
           podcast[metricsProperty] = action.payload.metrics;
           newState = [...state.slice(0, podcastIdx), podcast, ...state.slice(podcastIdx + 1)];
         } else {
@@ -39,7 +43,7 @@ export function PodcastMetricsReducer(state: PodcastMetricsModel[] = initialStat
         const podcastIdx = podcastIndex(state, seriesId);
         let podcast: PodcastMetricsModel, newState: PodcastMetricsModel[];
         if (podcastIdx > -1) {
-          podcast = {...state[podcastIdx], charted: action.payload.charted};
+          podcast = {...state[podcastIdx], charted: action.payload.charted, seriesId};
           newState = [...state.slice(0, podcastIdx), podcast, ...state.slice(podcastIdx + 1)];
         } else {
           podcast = {seriesId, charted: action.payload.charted};
@@ -51,7 +55,3 @@ export function PodcastMetricsReducer(state: PodcastMetricsModel[] = initialStat
   }
   return state;
 }
-
-const podcastIndex = (state: PodcastMetricsModel[], seriesId: number) => {
-  return state.findIndex(p => p.seriesId === seriesId);
-};

@@ -17,6 +17,16 @@ export interface EpisodeMetricsModel {
 
 const initialState = [];
 
+const setEpisodeMetrics = (interval: IntervalModel, metricsType: MetricsType, episode: EpisodeMetricsModel, metrics: any[][]) => {
+  const metricsProperty = getMetricsProperty(interval, metricsType);
+  episode[metricsProperty] = metrics;
+};
+
+const episodeIndex = (state: EpisodeMetricsModel[], id: number, seriesId: number) => {
+  return state.findIndex(e => e.seriesId === seriesId && e.id === id);
+};
+
+
 export function EpisodeMetricsReducer(state: EpisodeMetricsModel[] = initialState, action: AllActions) {
   switch (action.type) {
     case ActionTypes.CASTLE_EPISODE_METRICS:
@@ -25,7 +35,7 @@ export function EpisodeMetricsReducer(state: EpisodeMetricsModel[] = initialStat
         const epIdx = episodeIndex(state, id, seriesId);
         let episode: EpisodeMetricsModel, newState: EpisodeMetricsModel[];
         if (epIdx > -1) {
-          episode = {...state[epIdx], guid, page};
+          episode = {...state[epIdx], id, seriesId, guid, page};
           setEpisodeMetrics(action.payload.filter.interval, action.payload.metricsType, episode, action.payload.metrics);
           newState = [...state.slice(0, epIdx), episode, ...state.slice(epIdx + 1)];
         } else {
@@ -54,12 +64,3 @@ export function EpisodeMetricsReducer(state: EpisodeMetricsModel[] = initialStat
   }
   return state;
 }
-
-const setEpisodeMetrics = (interval: IntervalModel, metricsType: MetricsType, episode: EpisodeMetricsModel, metrics: any[][]) => {
-  const metricsProperty = getMetricsProperty(interval, metricsType);
-  episode[metricsProperty] = metrics;
-};
-
-const episodeIndex = (state: EpisodeMetricsModel[], id: number, seriesId: number) => {
-  return state.findIndex(e => e.seriesId === seriesId && e.id === id);
-};

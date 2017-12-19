@@ -35,7 +35,7 @@ export class NextDateRangeComponent implements OnInit, OnDestroy {
   }
 
   get nextDisabled(): string {
-    if (!this.filter || !this.filter.range ||!this.filter.podcastSeriesId || !this.filter.interval) {
+    if (!this.filter || !this.filter.range || !this.filter.podcastSeriesId || !this.filter.interval) {
       return 'disabled';
     } else if (moment(this.filter.endDate.valueOf()).utc().add(this.filter.range[0], this.filter.range[1]).valueOf() >
       endOfTodayUTC().endOf(this.filter.range[1]).valueOf()) {

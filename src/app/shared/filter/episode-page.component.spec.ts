@@ -4,7 +4,7 @@ import { Component, DebugElement, ViewChild } from '@angular/core';
 import { EpisodePageComponent } from './episode-page.component';
 
 @Component({
-  selector: 'test-component',
+  selector: 'metrics-test-component',
   template: `<metrics-episode-page #paging
               [currentPage]="filter?.page"
               [totalPages]="totalPages"

@@ -22,13 +22,27 @@ export const initialState = {
   loading: false
 };
 
-// TODO: initialState _was_ undefined, not yet loaded; so when empty, no podcasts
+const podcastEntities = (state: PodcastState, podcasts: PodcastModel[]): {[seriesId: number]: PodcastModel} => {
+  return podcasts.reduce(
+    (entities: {[seriesId: number]: PodcastModel}, podcast: PodcastModel) => {
+      return {
+        ...entities,
+        [podcast.seriesId]: podcast
+      };
+    },
+    {
+      ...state.entities
+    }
+  );
+};
+
 export function PodcastReducer(state: PodcastState = initialState, action: AllActions): PodcastState {
   switch (action.type) {
     case ActionTypes.CMS_PODCASTS: {
       return {
         ...state,
-        loading: true
+        loading: true,
+        loaded: false
       };
     }
     case ActionTypes.CMS_PODCASTS_SUCCESS:
@@ -56,20 +70,6 @@ export function PodcastReducer(state: PodcastState = initialState, action: AllAc
   }
   return state;
 }
-
-const podcastEntities = (state: PodcastState, podcasts: PodcastModel[]): {[seriesId: number]: PodcastModel} => {
-  return podcasts.reduce(
-    (entities: {[seriesId: number]: PodcastModel}, podcast: PodcastModel) => {
-      return {
-        ...entities,
-        [podcast.seriesId]: podcast
-      };
-    },
-    {
-      ...state.entities
-    }
-  );
-};
 
 export const getPodcastEntities = (state: PodcastState) => state.entities;
 export const getPodcastError = (state: PodcastState) => state.error;

@@ -32,8 +32,7 @@ describe('AppComponent', () => {
   let cmsToken: string = null;
   let podcast: PodcastModel,
     filter: FilterModel;
-  let series: MockHalDoc[],
-    episodes: MockHalDoc[];
+  let series: MockHalDoc[];
 
   beforeEach(async(() => {
     cms = new MockHalService();

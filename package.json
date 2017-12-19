@@ -6,7 +6,7 @@
     "start": "node lib/server.js dev",
     "build": "ng build --prod",
     "test": "ng test",
-    "lint": "ng lint",
+    "lint": "ng lint --type-check",
     "e2e": "ng e2e",
     "testonce": "ng test --watch=false --browsers=PhantomJS",
     "ci": "CODECOV=true ng test --watch=false --browsers=PhantomJS && codecov",

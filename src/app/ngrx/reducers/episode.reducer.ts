@@ -27,12 +27,27 @@ export const initialState = {
   loading: false
 };
 
+const episodeEntities = (state: EpisodeState, episodes: EpisodeModel[]): {[id: number]: EpisodeModel} => {
+  return episodes.reduce(
+    (entities: {[id: number]: EpisodeModel}, episode: EpisodeModel) => {
+      return {
+        ...entities,
+        [episode.id]: episode
+      };
+    },
+    {
+      ...state.entities
+    }
+  );
+};
+
 export function EpisodeReducer(state: EpisodeState = initialState, action: AllActions): EpisodeState {
   switch (action.type) {
     case ActionTypes.CMS_PODCAST_EPISODE_PAGE: {
       return {
         ...state,
-        loading: true
+        loading: true,
+        loaded: false
       };
     }
     case ActionTypes.CMS_PODCAST_EPISODE_PAGE_SUCCESS:
@@ -58,22 +73,6 @@ export function EpisodeReducer(state: EpisodeState = initialState, action: AllAc
   return state;
 }
 
-const episodeEntities = (state: EpisodeState, episodes: EpisodeModel[]): {[id: number]: EpisodeModel} => {
-  return episodes.reduce(
-    (entities: {[id: number]: EpisodeModel}, episode: EpisodeModel) => {
-      return {
-        ...entities,
-        [episode.id]: episode
-      };
-    },
-    {
-      ...state.entities
-    }
-  );
-};
-
-export const getEpisodeEntities = (state: EpisodeState) => state.entities;
-
 const sortEpisodesByReleaseDate = (episodes: EpisodeModel[]) => {
   // sort the episodes by seriesId, publishedAt
   episodes.sort((a: EpisodeModel, b: EpisodeModel) => {
@@ -84,3 +83,5 @@ const sortEpisodesByReleaseDate = (episodes: EpisodeModel[]) => {
     }
   });
 };
+
+export const getEpisodeEntities = (state: EpisodeState) => state.entities;

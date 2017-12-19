@@ -227,7 +227,8 @@ export class DownloadsComponent implements OnInit, OnDestroy {
         params['episodes'] = this.chartedEpisodes.join(',') + ',' + episodeToggle.id;
       } else {
         // update the route and the state, negative state changes on episodes aren't reflected in route
-        params['episodes'] = this.chartedEpisodes.filter(id => id !== episodeToggle.id).join(',');
+        this.chartedEpisodes = this.chartedEpisodes.filter(id => id !== episodeToggle.id);
+        params['episodes'] = this.chartedEpisodes.join(',');
         this.store.dispatch(new CastleEpisodeChartToggleAction({id: episodeToggle.id, seriesId: filter.podcastSeriesId, charted: false}));
       }
     } else if (episodeToggle !== undefined) {

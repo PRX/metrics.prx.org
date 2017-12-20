@@ -8,12 +8,12 @@ import { PrevDateRangeComponent } from './prev-date-range.component';
 import { reducers } from '../../../ngrx/reducers';
 
 import { CastleFilterAction } from '../../../ngrx/actions';
-import { FilterModel, INTERVAL_DAILY,
-  TODAY, THIS_WEEK, LAST_WEEK, THIS_MONTH, LAST_MONTH, THREE_MONTHS, PRIOR_THREE_MONTHS } from '../../../ngrx/model';
+import { FilterModel, INTERVAL_DAILY  } from '../../../ngrx';
 import { getRange, beginningOfTodayUTC, endOfTodayUTC,
   beginningOfThisWeekUTC, beginningOfLastWeekUTC, endOfLastWeekUTC,
   beginningOfThisMonthUTC, beginningOfLastMonthUTC, endOfLastMonthUTC,
-  beginningOfPriorThreeMonthsUTC, endOfPriorThreeMonthsUTC } from '../../../shared/util/date.util';
+  beginningOfPriorThreeMonthsUTC, endOfPriorThreeMonthsUTC,
+  TODAY, THIS_WEEK, LAST_WEEK, THIS_MONTH, LAST_MONTH, THREE_MONTHS, PRIOR_THREE_MONTHS } from '../../../shared/util/date.util';
 
 describe('PrevDateRangeComponent', () => {
   let comp: PrevDateRangeComponent;

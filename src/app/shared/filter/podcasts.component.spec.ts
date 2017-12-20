@@ -10,8 +10,8 @@ import { PodcastsComponent } from './podcasts.component';
 
 import { reducers } from '../../ngrx/reducers';
 
-import { CastleFilterAction, CmsPodcastsAction } from '../../ngrx/actions';
-import { FilterModel } from '../../ngrx/model';
+import { CastleFilterAction, CmsPodcastsSuccessAction } from '../../ngrx/actions';
+import { FilterModel } from '../../ngrx';
 
 describe('PodcastsComponent', () => {
   let comp: PodcastsComponent;
@@ -21,13 +21,11 @@ describe('PodcastsComponent', () => {
 
   const podcasts = [
     {
-      doc: undefined,
       seriesId: 37800,
       title: 'Pet Talks Daily',
       feederId: '70'
     },
     {
-      doc: undefined,
       seriesId: 37801,
       title: 'Totally Not Pet Talks Daily',
       feederId: '72'
@@ -57,7 +55,7 @@ describe('PodcastsComponent', () => {
       el = de.nativeElement;
 
       comp.store.dispatch(new CastleFilterAction({filter}));
-      comp.store.dispatch(new CmsPodcastsAction({podcasts: podcasts.slice(0, 1)}));
+      comp.store.dispatch(new CmsPodcastsSuccessAction({podcasts: podcasts.slice(0, 1)}));
     });
   }));
 
@@ -73,7 +71,7 @@ describe('PodcastsComponent', () => {
   });
 
   it('should show a drop down of podcasts if there are multiple to choose from', () => {
-    comp.store.dispatch(new CmsPodcastsAction({podcasts}));
+    comp.store.dispatch(new CmsPodcastsSuccessAction({podcasts}));
     expect(de.query(By.css('prx-select'))).toBeDefined();
     expect(comp.allPodcastOptions.length).toEqual(2);
   });

@@ -1,23 +1,21 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { DebugElement } from '@angular/core';
-import { Router } from '@angular/router';
-import { RouterStub } from '../../testing/stub.router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { By } from '@angular/platform-browser';
 import { StoreModule } from '@ngrx/store';
 import { Subject } from 'rxjs/Subject';
 import { Angulartics2 } from 'angulartics2';
 
-import { MockHalService } from 'ngx-prx-styleguide';
+import { MockHalService, MockHalDoc, AuthModule } from 'ngx-prx-styleguide';
 import { CoreModule, CastleService } from '../core';
 import { SharedModule } from '../shared';
 import { DownloadsComponent } from './downloads.component';
 import { DownloadsChartComponent } from './downloads-chart.component';
 import { DownloadsTableComponent } from './downloads-table.component';
+import { downloadsRouting } from './downloads.routing';
 
 import { reducers } from '../ngrx/reducers';
-import { EpisodeModel } from '../ngrx/model';
-import { CastleFilterAction, CmsPodcastsAction, CmsAllPodcastEpisodeGuidsAction,
+import { CastleFilterAction, CmsPodcastsSuccessAction, CmsPodcastEpisodePageSuccessAction,
   CastlePodcastMetricsAction, CastleEpisodeMetricsAction} from '../ngrx/actions';
 
 describe('DownloadsComponent', () => {
@@ -28,11 +26,11 @@ describe('DownloadsComponent', () => {
   let castle;
 
   const podcast = {
-    doc: undefined,
     seriesId: 37800,
     feederId: '70',
     title: 'Pet Talks Daily'
   };
+  podcast['doc'] = new MockHalDoc(podcast);
   const downloads = [
     ['2017-08-27T00:00:00Z', 52522],
     ['2017-08-28T00:00:00Z', 162900],
@@ -62,15 +60,16 @@ describe('DownloadsComponent', () => {
       imports: [
         CoreModule,
         RouterTestingModule,
+        downloadsRouting,
         SharedModule,
+        AuthModule,
         StoreModule.forRoot(reducers)
       ],
       providers: [
         {provide: CastleService, useValue: castle.root},
         {provide: Angulartics2, useValue: {
           eventTrack: new Subject<any>()
-        }},
-        {provide: Router, useValue: new RouterStub()}
+        }}
       ]
     }).compileComponents().then(() => {
       fix = TestBed.createComponent(DownloadsComponent);
@@ -87,7 +86,7 @@ describe('DownloadsComponent', () => {
 
   it('should not show filter if app is loading for the first time', () => {
     expect(de.query(By.css('metrics-filter'))).toBeFalsy();
-    comp.store.dispatch(new CmsPodcastsAction({podcasts: [podcast]}));
+    comp.store.dispatch(new CmsPodcastsSuccessAction({podcasts: [podcast]}));
     fix.detectChanges();
     expect(de.query(By.css('metrics-filter'))).not.toBeNull();
   });
@@ -104,9 +103,9 @@ describe('DownloadsComponent', () => {
     beforeEach(() => {
       spyOn(comp, 'googleAnalyticsEvent').and.callThrough();
       comp.store.dispatch(new CastleFilterAction({
-        filter: {podcastSeriesId: 37800}
+        filter: {podcastSeriesId: 37800, page: 1}
       }));
-      comp.store.dispatch(new CmsPodcastsAction({podcasts: [podcast]}));
+      comp.store.dispatch(new CmsPodcastsSuccessAction({podcasts: [podcast]}));
     });
 
 
@@ -116,15 +115,15 @@ describe('DownloadsComponent', () => {
     });
 
     it('should load episode downloads and call CASTLE action', () => {
-      comp.store.dispatch(new CastleFilterAction({filter: {episodeIds: [123]}}));
-      comp.store.dispatch(new CmsAllPodcastEpisodeGuidsAction({podcast: podcast, episodes:
+      comp.store.dispatch(new CastleFilterAction({filter: {page: 1}}));
+      comp.store.dispatch(new CmsPodcastEpisodePageSuccessAction({episodes:
         [{
-          doc: undefined,
           id: 123,
           seriesId: 37800,
           title: 'A New Pet Talk Episode',
           publishedAt: new Date(),
-          guid: 'abcdefg'
+          guid: 'abcdefg',
+          page: 1
         }]
       }));
       expect(comp.setEpisodeMetrics).toHaveBeenCalled();
@@ -133,53 +132,27 @@ describe('DownloadsComponent', () => {
 
     it('should reload podcast and episode data if filter parameters change', () => {
       const beginDate = new Date();
-      comp.store.dispatch(new CastleFilterAction({filter: {episodeIds: [123]}}));
-      comp.store.dispatch(new CmsAllPodcastEpisodeGuidsAction({podcast: podcast, episodes:
+      comp.store.dispatch(new CastleFilterAction({filter: {page: 1}}));
+      comp.store.dispatch(new CmsPodcastEpisodePageSuccessAction({episodes:
         [{
-          doc: undefined,
           id: 123,
           seriesId: 37800,
           title: 'A New Pet Talk Episode',
           publishedAt: new Date(),
-          guid: 'abcdefg'
+          guid: 'abcdefg',
+          page: 1
         }]
       }));
       comp.store.dispatch(new CastleFilterAction({filter: {beginDate}}));
-      expect(comp.setPodcastMetrics).toHaveBeenCalledTimes(3); // now also called for changes to episodes filter
+      expect(comp.setPodcastMetrics).toHaveBeenCalledTimes(2);
       expect(comp.setEpisodeMetrics).toHaveBeenCalledTimes(2);
-      expect(comp.googleAnalyticsEvent).toHaveBeenCalledTimes(3);
+      expect(comp.googleAnalyticsEvent).toHaveBeenCalledTimes(2);
       expect(comp.store.dispatch).toHaveBeenCalledWith(jasmine.any(CastlePodcastMetricsAction));
       expect(comp.store.dispatch).toHaveBeenCalledWith(jasmine.any(CastleEpisodeMetricsAction));
     });
 
-    it('should reload episode metrics if removed from filter then re-added', () => {
-      const episodes = [
-        {doc: undefined, id: 123, seriesId: 37800, title: 'A New Pet Talk Episode', publishedAt: new Date(), guid: 'abcdefg'},
-        {doc: undefined, id: 1234, seriesId: 37800, title: 'A New Pet Talk Episode', publishedAt: new Date(), guid: 'abcdefgh'}
-      ];
-      comp.store.dispatch(new CastleFilterAction({
-        filter: {podcastSeriesId: 37800}
-      }));
-      comp.store.dispatch(new CmsAllPodcastEpisodeGuidsAction({podcast: podcast, episodes}));
-      comp.store.dispatch(new CastleFilterAction({filter: {episodeIds: episodes.map(e => e.id)}}));
-      expect(comp.setEpisodeMetrics).toHaveBeenCalledTimes(2); // once for each episode
-      comp.store.dispatch(new CastleFilterAction({filter: {episodeIds: [episodes[0].id]}}));
-      expect(comp.setEpisodeMetrics).toHaveBeenCalledTimes(3);
-      comp.store.dispatch(new CastleFilterAction({filter: {episodeIds: episodes.map(e => e.id)}}));
-      expect(comp.setEpisodeMetrics).toHaveBeenCalledTimes(5);
-    });
-
     it('should show a downloads table of episodes', () => {
       expect(de.query(By.css('metrics-downloads-table'))).not.toBeNull();
-    });
-
-    it('should limit the default episode filter to no more than the DONT_BREAK_CASTLE_LIMIT', () => {
-      const episodes: EpisodeModel[] = [];
-      for (let i = 0; i < DownloadsComponent.DONT_BREAK_CASTLE_LIMIT + 1; i++) {
-        episodes.push({doc: undefined, id: i, seriesId: 37800, title: i.toString(), publishedAt: new Date()});
-      }
-      comp.store.dispatch(new CmsAllPodcastEpisodeGuidsAction({podcast, episodes}));
-      expect(comp.filter.episodeIds.length).toEqual(DownloadsComponent.DONT_BREAK_CASTLE_LIMIT);
     });
   });
 });

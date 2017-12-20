@@ -14,6 +14,7 @@ import { CoreModule } from './core';
 import { SharedModule } from './shared';
 
 import { reducers, RootState } from './ngrx/reducers';
+import { CmsEffects } from './ngrx/effects/cms.effects';
 import { RoutingEffects } from './ngrx/effects/routing.effects';
 import { GoogleAnalyticsEffects } from './ngrx/effects/google-analytics.effects';
 
@@ -42,7 +43,7 @@ export const reducerProvider = { provide: reducerToken, useFactory: getReducers 
     StoreModule.forRoot(reducerToken),
     Angulartics2Module.forRoot([ Angulartics2GoogleAnalytics ]),
     StoreRouterConnectingModule,
-    EffectsModule.forRoot([RoutingEffects, GoogleAnalyticsEffects]),
+    EffectsModule.forRoot([CmsEffects, RoutingEffects, GoogleAnalyticsEffects]),
     routing,
     DownloadsModule
   ],

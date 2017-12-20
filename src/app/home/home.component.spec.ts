@@ -11,7 +11,7 @@ import { DownloadsModule } from '../downloads/downloads.module';
 import { HomeComponent } from './home.component';
 
 import { reducers } from '../ngrx/reducers';
-import { CmsPodcastsAction } from '../ngrx/actions';
+import { CmsPodcastsFailureAction } from '../ngrx/actions';
 
 describe('HomeComponent', () => {
   let comp: HomeComponent;
@@ -49,7 +49,7 @@ describe('HomeComponent', () => {
   });
 
   it('should inform users if they don\'t have any podcasts', () => {
-    comp.store.dispatch(new CmsPodcastsAction({podcasts: []}));
+    comp.store.dispatch(new CmsPodcastsFailureAction({error: 'error is type any so we can also capture response errors'}));
     fix.detectChanges();
     expect(de.query(By.css('p.error'))).not.toBeNull();
   });

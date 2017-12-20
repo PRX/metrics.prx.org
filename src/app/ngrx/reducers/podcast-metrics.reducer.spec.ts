@@ -1,11 +1,10 @@
 import { CastlePodcastMetricsAction } from '../actions/castle.action.creator';
-import { INTERVAL_DAILY, FilterModel } from '../model';
+import { INTERVAL_DAILY, FilterModel } from './filter.reducer';
 import { PodcastMetricsReducer } from './podcast-metrics.reducer';
 
 describe('PodcastMetricsReducer', () => {
   let newState;
   const podcast = {
-    doc: undefined,
     seriesId: 37800,
     feederId: '70',
     title: 'Pet Talks Daily'
@@ -63,7 +62,6 @@ describe('PodcastMetricsReducer', () => {
     newState = PodcastMetricsReducer(newState,
       new CastlePodcastMetricsAction({
         podcast: {
-          doc: undefined,
           seriesId: 37801,
           feederId: '71',
           title: 'Totally Not Pet Talks Daily'

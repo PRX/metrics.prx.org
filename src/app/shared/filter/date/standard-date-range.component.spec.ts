@@ -5,8 +5,8 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { SelectModule } from 'ngx-prx-styleguide';
 import { StandardDateRangeComponent } from './standard-date-range.component';
 
-import { INTERVAL_HOURLY,
-  TODAY, THIS_MONTH, YESTERDAY, PRIOR_TWO_WEEKS, LAST_MONTH, PRIOR_THREE_MONTHS, LAST_YEAR } from '../../../ngrx/model';
+import { INTERVAL_HOURLY } from '../../../ngrx';
+import { TODAY, THIS_MONTH, PRIOR_THREE_MONTHS, LAST_YEAR } from '../../../shared/util/date.util';
 
 describe('StandardDateRangeComponent', () => {
   let comp: StandardDateRangeComponent;

@@ -1,15 +1,14 @@
-import { FilterModel } from '../../ngrx/model';
+import { FilterModel, EpisodeModel } from '../../ngrx';
 
 export const isPodcastChanged = (state: FilterModel, oldState: FilterModel): boolean => {
   return state && state.podcastSeriesId && (!oldState || !oldState.podcastSeriesId || oldState.podcastSeriesId !== state.podcastSeriesId);
 };
 
 export const isEpisodesChanged = (state: FilterModel, oldState: FilterModel): boolean => {
-  return state && state.episodeIds &&
+  return state && state.page &&
     (!oldState ||
-    !oldState.episodeIds ||
-    !state.episodeIds.every(id => oldState.episodeIds.indexOf(id) !== -1) ||
-    !oldState.episodeIds.every(id => state.episodeIds.indexOf(id) !== -1));
+    !oldState.page ||
+    state.page !== oldState.page);
 };
 
 export const isBeginDateChanged = (state: FilterModel, oldState: FilterModel): boolean => {

@@ -1,7 +1,7 @@
 import { CastleFilterAction } from '../actions';
-import { FilterModel, INTERVAL_DAILY, INTERVAL_HOURLY, TODAY, THIS_MONTH } from '../model';
+import { FilterModel, INTERVAL_DAILY, INTERVAL_HOURLY } from '../';
 import { FilterReducer } from './filter.reducer';
-import { beginningOfTodayUTC, endOfTodayUTC, getRange } from '../../shared/util/date.util';
+import { beginningOfTodayUTC, endOfTodayUTC, getRange, TODAY, THIS_MONTH } from '../../shared/util/date.util';
 
 describe('FilterReducer', () => {
   let newState: FilterModel;
@@ -21,14 +21,14 @@ describe('FilterReducer', () => {
     expect(newState.podcastSeriesId).toEqual(37800);
   });
 
-  it('should update with new episodes', () => {
+  it('should update with new episode page', () => {
     newState = FilterReducer(newState,
       new CastleFilterAction({
         filter: {
-          episodeIds: [123]
+          page: 1
         }
       }));
-    expect(newState.episodeIds[0]).toEqual(123);
+    expect(newState.page).toEqual(1);
   });
 
   it ('should update with new beginDate or endDate', () => {

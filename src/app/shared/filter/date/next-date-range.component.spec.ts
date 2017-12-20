@@ -8,10 +8,11 @@ import { NextDateRangeComponent } from './next-date-range.component';
 import { reducers } from '../../../ngrx/reducers';
 
 import { CastleFilterAction } from '../../../ngrx/actions';
-import { FilterModel, YESTERDAY, TWO_WEEKS, PRIOR_TWO_WEEKS, THIS_YEAR, LAST_YEAR, INTERVAL_DAILY } from '../../../ngrx/model';
+import { FilterModel, INTERVAL_DAILY } from '../../../ngrx';
 import { beginningOfTodayUTC, endOfTodayUTC, beginningOfYesterdayUTC, endOfYesterdayUTC,
   beginningOfTwoWeeksUTC, beginningOfPriorTwoWeeksUTC, endOfPriorTwoWeeksUTC,
-  beginningOfThisYearUTC, beginningOfLastYearUTC, endOfLastYearUTC, getRange } from '../../../shared/util/date.util';
+  beginningOfThisYearUTC, beginningOfLastYearUTC, endOfLastYearUTC, getRange,
+  YESTERDAY, TWO_WEEKS, PRIOR_TWO_WEEKS, THIS_YEAR, LAST_YEAR } from '../../../shared/util/date.util';
 
 describe('NextDateRangeComponent', () => {
   let comp: NextDateRangeComponent;

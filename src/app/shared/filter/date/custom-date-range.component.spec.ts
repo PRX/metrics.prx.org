@@ -6,9 +6,8 @@ import { DatepickerModule } from 'ngx-prx-styleguide';
 import { CustomDateRangeComponent } from './custom-date-range.component';
 
 import { reducers } from '../../../ngrx/reducers';
-import { INTERVAL_DAILY, INTERVAL_HOURLY } from '../../../ngrx/model';
-import { beginningOfLastMonthUTC, endOfLastMonthUTC,
-  beginningOfLastYearUTC, endOfLastYearUTC } from '../../../shared/util/date.util';
+import { INTERVAL_HOURLY } from '../../../ngrx';
+import { beginningOfLastYearUTC, endOfLastYearUTC } from '../../../shared/util/date.util';
 
 describe('CustomDateRangeComponent', () => {
   let comp: CustomDateRangeComponent;

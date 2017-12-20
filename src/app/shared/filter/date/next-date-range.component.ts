@@ -3,10 +3,11 @@ import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs/Subscription';
 import * as moment from 'moment';
-import { FilterModel, TODAY, THIS_WEEK, TWO_WEEKS, THIS_MONTH, THREE_MONTHS, THIS_YEAR,
-  YESTERDAY, LAST_WEEK, PRIOR_TWO_WEEKS, LAST_MONTH, PRIOR_THREE_MONTHS, LAST_YEAR } from '../../../ngrx/model';
+import { FilterModel } from '../../../ngrx';
 import { selectFilter } from '../../../ngrx/reducers';
-import { endOfTodayUTC, getStandardRangeForBeginEndDate } from '../../util/date.util';
+import { endOfTodayUTC, getStandardRangeForBeginEndDate,
+  TODAY, THIS_WEEK, TWO_WEEKS, THIS_MONTH, THREE_MONTHS, THIS_YEAR,
+  YESTERDAY, LAST_WEEK, PRIOR_TWO_WEEKS, LAST_MONTH, PRIOR_THREE_MONTHS, LAST_YEAR } from '../../util/date.util';
 
 @Component({
   selector: 'metrics-next-date-range',
@@ -34,7 +35,7 @@ export class NextDateRangeComponent implements OnInit, OnDestroy {
   }
 
   get nextDisabled(): string {
-    if (!this.filter || !this.filter.range ||!this.filter.podcastSeriesId || !this.filter.interval) {
+    if (!this.filter || !this.filter.range || !this.filter.podcastSeriesId || !this.filter.interval) {
       return 'disabled';
     } else if (moment(this.filter.endDate.valueOf()).utc().add(this.filter.range[0], this.filter.range[1]).valueOf() >
       endOfTodayUTC().endOf(this.filter.range[1]).valueOf()) {

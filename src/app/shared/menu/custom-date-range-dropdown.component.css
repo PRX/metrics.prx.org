@@ -1,0 +1,35 @@
+.custom-date-range-dropdown {
+  position: relative;
+  display: inline-block;
+}
+button.btn-icon {
+  border: 0px;
+  max-width: 24px;
+  max-height: 36px;
+  margin: 6px;
+}
+.custom-date-range-button {
+  border: 1px solid #a3a3a3;
+  background-color: #f0f0f0;
+  height: 38px;
+}
+.custom-date-range-button.open {
+  background-color: #ddd;
+}
+.custom-date-range-content {
+  display: none;
+  position: absolute;
+  right: 0;
+  z-index: 997;
+  background-color: white;
+  padding: 10px;
+}
+.custom-date-range-content.open {
+  display: block;
+}
+button {
+  margin-top: 10px;
+}
+.btn-link {
+  padding-right: 10px;
+}

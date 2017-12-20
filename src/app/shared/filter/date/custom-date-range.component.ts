@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnChanges } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { FilterModel, IntervalModel, INTERVAL_HOURLY } from '../../../ngrx/model';
 import { isMoreThanXDays, endOfTodayUTC } from '../../util/date.util';
@@ -6,23 +6,32 @@ import { isMoreThanXDays, endOfTodayUTC } from '../../util/date.util';
 @Component({
   selector: 'metrics-custom-date-range',
   template: `
-    <div>From:</div>
-    <prx-datepicker [date]="beginDate" UTC="true" (dateChange)="onBeginDateChange($event)"></prx-datepicker>
-    <div>Through:</div>
-    <prx-datepicker [date]="endDate" UTC="true" (dateChange)="onEndDateChange($event)"></prx-datepicker>
+    <div>
+      <span>From:</span>
+      <prx-datepicker [date]="beginDate" UTC="true" (dateChange)="onBeginDateChange($event)"></prx-datepicker>
+      <span>To:</span>
+      <prx-datepicker [date]="endDate" UTC="true" (dateChange)="onEndDateChange($event)"></prx-datepicker>
+    </div>
     <div class="invalid" *ngIf="invalid">
       {{ invalid }}
     </div>
   `,
   styleUrls: ['custom-date-range.component.css']
 })
-export class CustomDateRangeComponent {
-  @Input() interval: IntervalModel;
-  @Input() beginDate: Date;
-  @Input() endDate: Date;
+export class CustomDateRangeComponent implements OnChanges {
+  @Input() filter: FilterModel;
   @Output() customRangeChange = new EventEmitter<FilterModel>();
+  interval: IntervalModel;
+  beginDate: Date;
+  endDate: Date;
 
   constructor(public store: Store<any>) {}
+
+  ngOnChanges() {
+    this.interval = this.filter.interval;
+    this.beginDate = this.filter.beginDate;
+    this.endDate = this.filter.endDate;
+  }
 
   onBeginDateChange(date: Date) {
     // date picker is greedy about change events

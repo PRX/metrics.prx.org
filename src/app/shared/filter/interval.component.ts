@@ -6,7 +6,6 @@ import { isMoreThanXDays } from '../util/date.util';
 @Component({
   selector: 'metrics-interval',
   template: `
-    <div>Interval:</div>
     <prx-select single="true" [options]="intervalOptions" [selected]="selectedInterval" (onSelect)="onIntervalChange($event)">
     </prx-select>
   `
@@ -27,23 +26,23 @@ export class IntervalComponent implements OnChanges {
        */
       if (isMoreThanXDays(40, this.filter.beginDate, this.filter.endDate)) {
         this.intervalOptions = [
-          [INTERVAL_MONTHLY.name, INTERVAL_MONTHLY],
+          [INTERVAL_DAILY.name, INTERVAL_DAILY],
           [INTERVAL_WEEKLY.name, INTERVAL_WEEKLY],
-          [INTERVAL_DAILY.name, INTERVAL_DAILY]
+          [INTERVAL_MONTHLY.name, INTERVAL_MONTHLY]
         ];
       } else if (isMoreThanXDays(10, this.filter.beginDate, this.filter.endDate)) {
         this.intervalOptions = [
-          [INTERVAL_MONTHLY.name, INTERVAL_MONTHLY],
-          [INTERVAL_WEEKLY.name, INTERVAL_WEEKLY],
-          [INTERVAL_DAILY.name, INTERVAL_DAILY],
           [INTERVAL_HOURLY.name, INTERVAL_HOURLY],
+          [INTERVAL_DAILY.name, INTERVAL_DAILY],
+          [INTERVAL_WEEKLY.name, INTERVAL_WEEKLY],
+          [INTERVAL_MONTHLY.name, INTERVAL_MONTHLY]
         ];
       } else {
         this.intervalOptions = [
-          [INTERVAL_MONTHLY.name, INTERVAL_MONTHLY],
-          [INTERVAL_WEEKLY.name, INTERVAL_WEEKLY],
+          [INTERVAL_HOURLY.name, INTERVAL_HOURLY],
           [INTERVAL_DAILY.name, INTERVAL_DAILY],
-          [INTERVAL_HOURLY.name, INTERVAL_HOURLY]
+          [INTERVAL_WEEKLY.name, INTERVAL_WEEKLY],
+          [INTERVAL_MONTHLY.name, INTERVAL_MONTHLY]
         ];
       }
     }

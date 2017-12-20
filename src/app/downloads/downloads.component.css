@@ -43,3 +43,7 @@ and (max-device-width: 568px) {
   color: #ee4d3e;
   font-style: italic;
 }
+metrics-downloads-chart {
+  display: block;
+  background-color: white;
+}

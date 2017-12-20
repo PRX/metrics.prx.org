@@ -15,9 +15,9 @@ import { isPodcastChanged, isEpisodesChanged, isBeginDateChanged, isEndDateChang
   template: `
     <prx-spinner *ngIf="isPodcastLoading || isEpisodeLoading" overlay="true" loadingMessage="Please wait..."></prx-spinner>
     <section class="controls">
-      <metrics-filter *ngIf="!isLoadingForTheFirstTime"></metrics-filter>
     </section>
     <section class="content">
+      <metrics-menu-bar *ngIf="!isLoadingForTheFirstTime"></metrics-menu-bar>
       <metrics-downloads-chart></metrics-downloads-chart>
       <metrics-downloads-table></metrics-downloads-table>
       <p class="error" *ngFor="let error of errors">{{error}}</p>

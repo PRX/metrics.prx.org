@@ -1,0 +1,12 @@
+a {
+  display: inline-block;
+  border: 1px solid #a3a3a3;
+  background-color: #f0f0f0;
+}
+a img {
+  min-width: 36px;
+  height: 36px;
+}
+.active {
+  background-color: #ddd;
+}

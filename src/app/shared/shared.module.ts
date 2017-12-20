@@ -14,15 +14,21 @@ import { NextDateRangeComponent } from './filter/date/next-date-range.component'
 import { PodcastsComponent } from './filter/podcasts.component';
 import { PrevDateRangeComponent } from './filter/date/prev-date-range.component';
 import { StandardDateRangeComponent } from './filter/date/standard-date-range.component';
+import { CustomDateRangeDropdownComponent } from './menu/custom-date-range-dropdown.component';
+import { ChartTypeComponent } from './menu/chart-type.component';
+import { MenuBarComponent } from './menu/menu-bar.component';
 
 @NgModule({
   declarations: [
+    ChartTypeComponent,
     CustomDateRangeComponent,
+    CustomDateRangeDropdownComponent,
     DateRangeComponent,
     EpisodesComponent,
     FilterComponent,
     IntervalComponent,
     LargeNumberPipe,
+    MenuBarComponent,
     NextDateRangeComponent,
     PodcastsComponent,
     PrevDateRangeComponent,
@@ -33,6 +39,7 @@ import { StandardDateRangeComponent } from './filter/date/standard-date-range.co
     ChartsModule,
     DatepickerModule,
     ImageModule,
+    MenuBarComponent,
     SelectModule,
     SpinnerModule,
     FilterComponent,

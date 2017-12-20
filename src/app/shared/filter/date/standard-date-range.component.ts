@@ -2,13 +2,12 @@ import { Component, Input, Output, EventEmitter, OnChanges } from '@angular/core
 import { IntervalModel, INTERVAL_HOURLY, INTERVAL_DAILY, INTERVAL_WEEKLY, INTERVAL_MONTHLY,
   TODAY, THIS_WEEK, TWO_WEEKS, THIS_MONTH, THREE_MONTHS, THIS_YEAR,
   YESTERDAY, LAST_WEEK, PRIOR_TWO_WEEKS, LAST_MONTH, PRIOR_THREE_MONTHS, LAST_YEAR } from '../../../ngrx/model';
-import { isMoreThanXDays, endOfTodayUTC, beginningOfTwoWeeksUTC, beginningOfThisMonthUTC,
+import { isMoreThanXDays, endOfTodayUTC,
   beginningOfThreeMonthsUTC, beginningOfThisYearUTC } from '../../util/date.util';
 
 @Component({
   selector: 'metrics-standard-date-range',
   template: `
-    <div>When:</div>
     <prx-select single="true" [options]="rangeOptions" [selected]="standardRange" (onSelect)="onStandardRangeChange($event)"></prx-select>
   `
 })

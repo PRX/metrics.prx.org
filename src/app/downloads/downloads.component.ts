@@ -19,7 +19,7 @@ import { isPodcastChanged, isBeginDateChanged, isEndDateChanged, isIntervalChang
     <section class="controls">
     </section>
     <section class="content">
-      <metrics-menu-bar *ngIf="!isLoadingForTheFirstTime"></metrics-menu-bar>
+      <metrics-menu-bar *ngIf="!isLoadingForTheFirstTime" (routeFromFilter)="routeFromFilter($event)"></metrics-menu-bar>
       <metrics-downloads-chart></metrics-downloads-chart>
       <metrics-downloads-table
         [totalPages]="totalPages" (pageChange)="onPageChange($event)"

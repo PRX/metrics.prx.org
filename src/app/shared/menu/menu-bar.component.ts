@@ -1,5 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, OnInit, OnDestroy, Output, EventEmitter } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs/Subscription';
 import { selectFilter } from '../../ngrx/reducers';
@@ -22,11 +21,11 @@ import { roundDateToBeginOfInterval, roundDateToEndOfInterval,
   styleUrls: ['./menu-bar.component.css']
 })
 export class MenuBarComponent implements OnInit, OnDestroy {
+  @Output() routeFromFilter = new EventEmitter();
   filter: FilterModel;
   filterSub: Subscription;
 
-  constructor(public store: Store<any>,
-              private router: Router) {}
+  constructor(public store: Store<any>) {}
 
   ngOnInit() {
     this.filterSub = this.store.select(selectFilter).subscribe((newFilter: FilterModel) => {
@@ -49,7 +48,7 @@ export class MenuBarComponent implements OnInit, OnDestroy {
       const range = getRange(standardRange);
       this.filter = {...this.filter, interval, beginDate, endDate, standardRange, range};
 
-      this.routeFromFilter(this.filter);
+      this.routeFromFilter.emit(this.filter);
     }
   }
 
@@ -70,26 +69,8 @@ export class MenuBarComponent implements OnInit, OnDestroy {
       this.filter.standardRange = getStandardRangeForBeginEndDate(this.filter);
       this.filter.range = getRange(this.filter.standardRange);
 
-      this.routeFromFilter(this.filter);
+      this.routeFromFilter.emit(this.filter);
     }
-  }
-
-  routeFromFilter(filter: FilterModel) {
-    const routerParams = {
-      beginDate: this.filter.beginDate.toISOString(),
-      endDate: this.filter.endDate.toISOString()
-    };
-    // TODO: needs to be updated with changes to routing params for chart toggle, which really should be using router state composition
-    if (this.filter.episodeIds) {
-      routerParams['episodes'] = this.filter.episodeIds.join(',');
-    }
-    if (this.filter.standardRange) {
-      routerParams['standardRange'] = this.filter.standardRange;
-    }
-    if (this.filter.range) {
-      routerParams['range'] = this.filter.range.join(',');
-    }
-    this.router.navigate([this.filter.podcastSeriesId, 'downloads', this.filter.interval.key, routerParams]);
   }
 
   googleAnalyticsEvent(action: string, dateRange: FilterModel) {

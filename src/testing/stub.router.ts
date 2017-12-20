@@ -24,4 +24,8 @@ export class ActivatedRouteStub {
   get snapshot() {
     return { params: this.testParams };
   }
+
+  get state() {
+    return {root: {firstChild: {params: this.testParams}}};
+  }
 }

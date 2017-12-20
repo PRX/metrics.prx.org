@@ -2,8 +2,8 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs/Subscription';
+import { PodcastModel, IntervalModel } from '../../ngrx';
 import { selectPodcastFilter, selectPodcasts, selectIntervalFilter } from '../../ngrx/reducers';
-import { PodcastModel, IntervalModel } from '../../ngrx/model';
 
 @Component({
   selector: 'metrics-podcasts',

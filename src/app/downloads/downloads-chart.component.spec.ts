@@ -7,8 +7,8 @@ import { SharedModule } from '../shared';
 import { DownloadsChartComponent } from './downloads-chart.component';
 
 import { reducers } from '../ngrx/reducers';
-import { PodcastModel, EpisodeModel, FilterModel, INTERVAL_DAILY } from '../ngrx/model';
-import { CmsAllPodcastEpisodeGuidsAction,
+import { PodcastModel, EpisodeModel, FilterModel, INTERVAL_DAILY } from '../ngrx';
+import { CmsPodcastEpisodePageSuccessAction, CastleEpisodeChartToggleAction, CastlePodcastChartToggleAction,
   CastlePodcastMetricsAction, CastleEpisodeMetricsAction, CastleFilterAction } from '../ngrx/actions';
 
 import { getTotal } from '../shared/util/metrics.util';
@@ -63,32 +63,31 @@ describe('DownloadsChartComponent', () => {
     ['2017-09-07T00:00:00Z', 858]
   ];
   const podcast: PodcastModel = {
-    doc: undefined,
     seriesId: 37800,
     feederId: '70',
     title: 'Pet Talks Daily'
   };
   const episodes: EpisodeModel[] = [
     {
-      doc: undefined,
       seriesId: 37800,
       id: 123,
       publishedAt: new Date(),
       title: 'A Pet Talk Episode',
-      guid: 'abcdefg'
+      guid: 'abcdefg',
+      page: 1
     },
     {
-      doc: undefined,
       seriesId: 37800,
       id: 124,
       publishedAt: new Date(),
       title: 'Another Pet Talk Episode',
-      guid: 'gfedcba'
+      guid: 'gfedcba',
+      page: 1
     }
   ];
   const filter: FilterModel = {
     podcastSeriesId: podcast.seriesId,
-    episodeIds: episodes.map(e => e.id),
+    page: 1,
     beginDate: new Date('2017-08-27T00:00:00Z'),
     endDate: new Date('2017-09-07T00:00:00Z'),
     interval: INTERVAL_DAILY
@@ -113,10 +112,13 @@ describe('DownloadsChartComponent', () => {
 
       // call episode and podcast metrics to prime the store
       comp.store.dispatch(new CastleFilterAction({filter}));
-      comp.store.dispatch(new CmsAllPodcastEpisodeGuidsAction({podcast, episodes}));
+      comp.store.dispatch(new CmsPodcastEpisodePageSuccessAction({episodes}));
       comp.store.dispatch(new CastleEpisodeMetricsAction({episode: episodes[0], filter, metricsType: 'downloads', metrics: ep0Downloads}));
+      comp.store.dispatch(new CastleEpisodeChartToggleAction({id: episodes[0].id, seriesId: podcast.seriesId, charted: true}));
       comp.store.dispatch(new CastleEpisodeMetricsAction({episode: episodes[1], filter, metricsType: 'downloads', metrics: ep1Downloads}));
+      comp.store.dispatch(new CastleEpisodeChartToggleAction({id: episodes[1].id, seriesId: podcast.seriesId, charted: true}));
       comp.store.dispatch(new CastlePodcastMetricsAction({podcast, filter, metricsType: 'downloads', metrics: podDownloads}));
+      comp.store.dispatch(new CastlePodcastChartToggleAction({seriesId: podcast.seriesId, charted: true}));
     });
   }));
 
@@ -139,8 +141,20 @@ describe('DownloadsChartComponent', () => {
   });
 
   it('should only include filtered episode metrics', () => {
-    comp.store.dispatch(new CastleFilterAction({filter: {episodeIds: [episodes[0].id]}}));
+    comp.store.dispatch(new CastleFilterAction({filter: {page: 2}}));
+    expect(comp.episodeChartData.length).toEqual(0);
+  });
+
+  it('should only include charted episodes', () => {
+    expect(comp.episodeChartData.length).toEqual(2);
+    comp.store.dispatch(new CastleEpisodeChartToggleAction({id: episodes[0].id, seriesId: podcast.seriesId, charted: false}));
     expect(comp.episodeChartData.length).toEqual(1);
+  });
+
+  it('should only include podcast if charted', () => {
+    expect(comp.podcastChartData).not.toBeNull();
+    comp.store.dispatch(new CastlePodcastChartToggleAction({seriesId: podcast.seriesId, charted: false}));
+    expect(comp.podcastChartData).toBeNull();
   });
 
   it('should sort episode chart data by total biggest to smallest', () => {

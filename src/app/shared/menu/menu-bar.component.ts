@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs/Subscription';
 import { selectFilter } from '../../ngrx/reducers';
-import { FilterModel, IntervalModel } from '../../ngrx/model';
+import { FilterModel, IntervalModel } from '../../ngrx';
 import { GoogleAnalyticsEventAction } from '../../ngrx/actions';
 import { roundDateToBeginOfInterval, roundDateToEndOfInterval,
   getBeginEndDateFromStandardRange, getStandardRangeForBeginEndDate, getRange, getAmountOfIntervals } from '../util/date.util';

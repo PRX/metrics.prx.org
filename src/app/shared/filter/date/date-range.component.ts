@@ -1,6 +1,6 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { FilterModel } from '../../../ngrx/model';
+import { FilterModel } from '../../../ngrx';
 import { getBeginEndDateFromStandardRange, getStandardRangeForBeginEndDate, getRange, getAmountOfIntervals } from '../../util/date.util';
 import { GoogleAnalyticsEventAction } from '../../../ngrx/actions';
 

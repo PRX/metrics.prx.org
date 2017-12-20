@@ -8,10 +8,10 @@ import { CustomDateRangeComponent } from './custom-date-range.component';
 import { StandardDateRangeComponent } from './standard-date-range.component';
 
 import { reducers } from '../../../ngrx/reducers';
-import { LAST_YEAR, LAST_MONTH, LAST_WEEK, INTERVAL_DAILY, INTERVAL_HOURLY } from '../../../ngrx/model';
+import { INTERVAL_DAILY, INTERVAL_HOURLY } from '../../../ngrx';
 import { beginningOfYesterdayUTC, endOfYesterdayUTC, beginningOfLastWeekUTC, endOfLastWeekUTC,
   beginningOfLastMonthUTC, endOfLastMonthUTC,
-  beginningOfLastYearUTC, endOfLastYearUTC, getRange } from '../../../shared/util/date.util';
+  beginningOfLastYearUTC, endOfLastYearUTC, getRange, LAST_YEAR, LAST_MONTH, LAST_WEEK } from '../../../shared/util/date.util';
 
 describe('DateRangeComponent', () => {
   let comp: DateRangeComponent;

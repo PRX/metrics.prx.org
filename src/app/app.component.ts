@@ -8,9 +8,9 @@ import { Angulartics2GoogleAnalytics } from 'angulartics2';
 import { AuthService } from 'ngx-prx-styleguide';
 import { CmsService, HalDoc } from './core';
 import { Env } from './core/core.env';
-import { EpisodeModel, PodcastModel } from './ngrx/model';
-import { CmsPodcastsAction, CmsAllPodcastEpisodeGuidsAction } from './ngrx/actions';
-import { selectPodcasts, selectPodcastFilter } from './ngrx/reducers';
+import { PodcastModel, FilterModel } from './ngrx';
+import { CmsPodcastsSuccessAction, CmsPodcastEpisodePageAction, CmsPodcastsAction, CmsPodcastsFailureAction } from './ngrx/actions';
+import { selectPodcasts, selectFilter } from './ngrx/reducers';
 
 @Component({
   selector: 'metrics-root',
@@ -30,6 +30,7 @@ export class AppComponent implements OnInit, OnDestroy {
   podcasts: PodcastModel[];
   filterStoreSub: Subscription;
   filteredPodcastSeriesId: number;
+  episodePage: number;
 
   constructor(
     private auth: AuthService,
@@ -52,14 +53,18 @@ export class AppComponent implements OnInit, OnDestroy {
 
       if (this.podcasts && this.podcasts.length > 0) {
         if (!this.filterStoreSub) {
-          this.filterStoreSub = this.store.select(selectPodcastFilter).subscribe((newPodcastSeriesId: number) => {
-            if (newPodcastSeriesId && newPodcastSeriesId !== this.filteredPodcastSeriesId) {
+          this.filterStoreSub = this.store.select(selectFilter).subscribe((newFilter: FilterModel) => {
+            const newPodcastSeriesId = newFilter.podcastSeriesId;
+            const newEpisodePage = newFilter.page;
+            if (newPodcastSeriesId && newPodcastSeriesId !== this.filteredPodcastSeriesId ||
+                newEpisodePage !== this.episodePage) {
               const selectedPodcast = this.podcasts.find(p => p.seriesId === newPodcastSeriesId);
               if (selectedPodcast) {
-                this.getEpisodes(selectedPodcast);
+                this.getEpisodes(selectedPodcast, newEpisodePage ? newEpisodePage : 1);
               }
             }
             this.filteredPodcastSeriesId = newPodcastSeriesId;
+            this.episodePage = newEpisodePage;
           });
         }
 
@@ -91,10 +96,11 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   loadCmsSeries(auth: HalDoc) {
+    this.store.dispatch(new CmsPodcastsAction());
     auth.followItems('prx:series',
       {per: auth.count('prx:series'), filters: 'v4', zoom: 'prx:distributions'}).subscribe((series: HalDoc[]) => {
       if (series && series.length === 0) {
-        this.store.dispatch(new CmsPodcastsAction({podcasts: []}));
+        this.store.dispatch(new CmsPodcastsFailureAction({error: 'Looks like you don\'t have any podcasts.'}));
       } else {
         const podcasts: PodcastModel[] = series.map(doc => {
           return {
@@ -105,10 +111,11 @@ export class AppComponent implements OnInit, OnDestroy {
         });
         const distros$ = podcasts.map(p => this.getSeriesPodcastDistribution(p));
         Observable.zip(...distros$).subscribe(() => {
-          this.store.dispatch(new CmsPodcastsAction({podcasts: podcasts.filter(p => p.feederId)}));
+          this.store.dispatch(new CmsPodcastsSuccessAction({podcasts: podcasts.filter(p => p.feederId)}));
         });
       }
-    });
+    },
+    error => this.store.dispatch(new CmsPodcastsFailureAction({error})));
   }
 
   getSeriesPodcastDistribution(podcast: PodcastModel): Observable<HalDoc[]> {
@@ -122,49 +129,12 @@ export class AppComponent implements OnInit, OnDestroy {
           podcast.feederId = urlParts[urlParts.length - 1];
         }
       }
-    });
+    },
+    error => this.store.dispatch(new CmsPodcastsFailureAction({error})));
     return obsv$;
   }
 
-  getEpisodes(podcast: PodcastModel) {
-    podcast.doc.followItems('prx:stories', {
-      per: podcast.doc.count('prx:stories'),
-      filters: 'v4',
-      zoom: 'prx:distributions'
-    }).subscribe((docs: HalDoc[]) => {
-      const episodes: EpisodeModel[] = docs
-      // only include episodes with publish dates
-        .filter(doc => doc['publishedAt'] && new Date(doc['publishedAt']).valueOf() <= new Date().valueOf())
-        .map(doc => {
-          return {
-            doc,
-            id: doc['id'],
-            seriesId: podcast.seriesId,
-            title: doc['title'],
-            publishedAt: doc['publishedAt'] ? new Date(doc['publishedAt']) : null
-          };
-        });
-      const distros$ = episodes.map((e) => this.getEpisodePodcastDistribution(e));
-      // wait for all the episode podcast distributions, then add all episodes to state at once
-      Observable.zip(...distros$).subscribe(() => {
-        this.store.dispatch(new CmsAllPodcastEpisodeGuidsAction({podcast, episodes: episodes.filter(e => e.guid)}));
-      });
-    });
-  }
-
-  getEpisodePodcastDistribution(episode: EpisodeModel): Observable<HalDoc[]> {
-    const obsv = episode.doc.followItems('prx:distributions');
-    obsv.subscribe((distros: HalDoc[]) => {
-      const podcasts = distros.filter((doc => doc['kind'] === 'episode'));
-      if (podcasts && podcasts.length > 0 && podcasts[0]['url']) {
-        episode.feederUrl = podcasts[0]['url'];
-
-        const urlParts = episode.feederUrl.split('/');
-        if (urlParts.length > 1) {
-          episode.guid = urlParts[urlParts.length - 1];
-        }
-      }
-    });
-    return obsv;
+  getEpisodes(podcast: PodcastModel, page: number) {
+    this.store.dispatch(new CmsPodcastEpisodePageAction({podcast, page}));
   }
 }

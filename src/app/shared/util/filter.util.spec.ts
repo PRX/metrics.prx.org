@@ -1,5 +1,5 @@
 import * as filterUtil from './filter.util';
-import { INTERVAL_DAILY, INTERVAL_MONTHLY } from '../../ngrx/model';
+import { INTERVAL_DAILY, INTERVAL_MONTHLY } from '../../ngrx';
 import { beginningOfTodayUTC, endOfTodayUTC, beginningOfPriorTwoWeeksUTC, endOfPriorTwoWeeksUTC } from './date.util';
 
 describe('filter.util', () => {
@@ -13,12 +13,12 @@ describe('filter.util', () => {
   });
 
   it ('should check if episodes changed', () => {
-    expect(filterUtil.isEpisodesChanged({episodeIds: [123, 1234]}, {})).toBeTruthy();
-    expect(filterUtil.isEpisodesChanged({episodeIds: [123, 1234]}, undefined)).toBeTruthy();
-    expect(filterUtil.isEpisodesChanged({episodeIds: [123, 1234]}, {episodeIds: [123]})).toBeTruthy();
+    expect(filterUtil.isEpisodesChanged({page: 1}, {})).toBeTruthy();
+    expect(filterUtil.isEpisodesChanged({page: 1}, undefined)).toBeTruthy();
+    expect(filterUtil.isEpisodesChanged({page: 1}, {page: 2})).toBeTruthy();
     expect(filterUtil.isEpisodesChanged(undefined, undefined)).toBeFalsy();
-    expect(filterUtil.isEpisodesChanged(undefined, {episodeIds: [123]})).toBeFalsy();
-    expect(filterUtil.isEpisodesChanged({episodeIds: [123, 1234]}, {episodeIds: [123, 1234]})).toBeFalsy();
+    expect(filterUtil.isEpisodesChanged(undefined, {page: 1})).toBeFalsy();
+    expect(filterUtil.isEpisodesChanged({page: 1}, {page: 1})).toBeFalsy();
   });
 
   it('should check if interval changed', () => {

@@ -1,10 +1,10 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, Input, Output, EventEmitter } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs/Subscription';
-import { EpisodeMetricsModel, EpisodeModel, FilterModel, PodcastMetricsModel,
-  INTERVAL_MONTHLY, INTERVAL_WEEKLY, INTERVAL_DAILY, INTERVAL_HOURLY } from '../ngrx/model';
+import { EpisodeModel, FilterModel, EpisodeMetricsModel, PodcastMetricsModel,
+  INTERVAL_MONTHLY, INTERVAL_WEEKLY, INTERVAL_DAILY, INTERVAL_HOURLY } from '../ngrx';
 import { selectEpisodes, selectFilter, selectEpisodeMetrics, selectPodcastMetrics } from '../ngrx/reducers';
-import { findPodcastMetrics, filterAllPodcastEpisodes, filterEpisodeMetrics, metricsData, getTotal } from '../shared/util/metrics.util';
+import { findPodcastMetrics, filterPodcastEpisodePage, filterEpisodeMetricsPage, metricsData, getTotal } from '../shared/util/metrics.util';
 import { mapMetricsToTimeseriesData } from '../shared/util/chart.util';
 import { monthYearFormat, dayMonthDateFormat, hourlyDateFormat, monthDateYearFormat } from '../shared/util/date.util';
 import { isPodcastChanged } from '../shared/util/filter.util';
@@ -23,10 +23,16 @@ import * as moment from 'moment';
         </thead>
         <tbody>
           <tr>
-            <td>{{podcastTableData.title}}</td>
+            <td>
+              <input type="checkbox" (click)="toggleChartPodcast(!podcastTableData.charted)" [checked]="podcastTableData.charted">
+              {{podcastTableData.title}}
+            </td>
           </tr>
           <tr *ngFor="let episode of episodeTableData">
-            <td>{{episode.title}}</td>
+            <td>
+              <input type="checkbox" (click)="toggleChartEpisode(episode, !episode.charted)" [checked]="episode.charted">
+              {{episode.title}}
+            </td>
           </tr>
         </tbody>
       </table>
@@ -52,6 +58,10 @@ import * as moment from 'moment';
             </tr>
           </tbody>
         </table>
+        <metrics-episode-page
+          [currentPage]="filter?.page"
+          [totalPages]="totalPages"
+          (pageChange)="pageChange.emit($event)"></metrics-episode-page>
       </div>
     </div>
   `,
@@ -59,6 +69,10 @@ import * as moment from 'moment';
 
 })
 export class DownloadsTableComponent implements OnDestroy {
+  @Input() totalPages;
+  @Output() podcastChartToggle = new EventEmitter();
+  @Output() episodeChartToggle = new EventEmitter();
+  @Output() pageChange = new EventEmitter();
   filterStoreSub: Subscription;
   filter: FilterModel;
   allEpisodesSub: Subscription;
@@ -82,7 +96,7 @@ export class DownloadsTableComponent implements OnDestroy {
         // apply new filter to existing data so it's not showing stale data while loading
         this.filter = newFilter;
         if (this.episodeMetrics) {
-          this.episodeMetrics = filterEpisodeMetrics(this.filter, this.episodeMetrics, 'downloads');
+          this.episodeMetrics = filterEpisodeMetricsPage(this.filter, this.episodeMetrics, 'downloads');
         }
         if (this.podcastMetrics) {
           this.podcastMetrics = findPodcastMetrics(this.filter, [this.podcastMetrics]);
@@ -92,7 +106,7 @@ export class DownloadsTableComponent implements OnDestroy {
     });
 
     this.allEpisodesSub = this.store.select(selectEpisodes).subscribe((allEpisodes: EpisodeModel[]) => {
-      const allPodcastEpisodes = filterAllPodcastEpisodes(this.filter, allEpisodes);
+      const allPodcastEpisodes = filterPodcastEpisodePage(this.filter, allEpisodes);
       if (allPodcastEpisodes) {
         this.episodes = allPodcastEpisodes;
         this.buildTableData();
@@ -100,7 +114,7 @@ export class DownloadsTableComponent implements OnDestroy {
     });
 
     this.episodeMetricsStoreSub = this.store.select(selectEpisodeMetrics).subscribe((episodeMetrics: EpisodeMetricsModel[]) => {
-      this.episodeMetrics = filterEpisodeMetrics(this.filter, episodeMetrics, 'downloads');
+      this.episodeMetrics = filterEpisodeMetricsPage(this.filter, episodeMetrics, 'downloads');
       if (this.episodeMetrics) {
         this.buildTableData();
       }
@@ -128,7 +142,8 @@ export class DownloadsTableComponent implements OnDestroy {
         title: 'All Episodes',
         releaseDate: '',
         downloads: mapMetricsToTimeseriesData(downloads),
-        totalForPeriod: getTotal(downloads)
+        totalForPeriod: getTotal(downloads),
+        charted: this.podcastMetrics.charted
       };
     }
   }
@@ -146,7 +161,8 @@ export class DownloadsTableComponent implements OnDestroy {
               releaseDate: monthDateYearFormat(episode.publishedAt),
               id: epMetric.id,
               downloads: mapMetricsToTimeseriesData(downloads),
-              totalForPeriod: getTotal(downloads)
+              totalForPeriod: getTotal(downloads),
+              charted: epMetric.charted
             };
           }
         })
@@ -176,6 +192,7 @@ export class DownloadsTableComponent implements OnDestroy {
     if (this.filterStoreSub) { this.filterStoreSub.unsubscribe(); }
     if (this.allEpisodesSub) { this.allEpisodesSub.unsubscribe(); }
     if (this.episodeMetricsStoreSub) { this.episodeMetricsStoreSub.unsubscribe(); }
+    if (this.podcastMetricsStoreSub) { this.podcastMetricsStoreSub.unsubscribe(); }
   }
 
   dateFormat(date: Date): string {
@@ -194,5 +211,13 @@ export class DownloadsTableComponent implements OnDestroy {
     } else {
       return dayMonthDateFormat(date);
     }
+  }
+
+  toggleChartPodcast(charted: boolean) {
+    this.podcastChartToggle.emit(charted);
+  }
+
+  toggleChartEpisode(episode, charted) {
+    this.episodeChartToggle.emit({id: episode.id, charted});
   }
 }

@@ -41,14 +41,8 @@ export class MenuBarComponent implements OnInit, OnDestroy {
 
   onIntervalChange(interval: IntervalModel) {
     if (this.filter.interval !== interval) {
-      // keep the dates in sync with interval changes
-      const beginDate = roundDateToBeginOfInterval(this.filter.beginDate, interval);
-      const endDate = roundDateToEndOfInterval(this.filter.endDate, interval);
-      const standardRange = getStandardRangeForBeginEndDate({...this.filter, interval, beginDate, endDate});
-      const range = getRange(standardRange);
-      this.filter = {...this.filter, interval, beginDate, endDate, standardRange, range};
-
-      this.routeFromFilter.emit(this.filter);
+      this.filter.interval = interval;
+      this.adjustAndRouteFromFilter();
     }
   }
 
@@ -63,17 +57,21 @@ export class MenuBarComponent implements OnInit, OnDestroy {
     if (dateRange.beginDate.valueOf() !== this.filter.beginDate.valueOf() ||
       dateRange.endDate.valueOf() !== this.filter.endDate.valueOf()) {
       this.filter = {...this.filter, ...dateRange};
-
-      this.filter.beginDate = roundDateToBeginOfInterval(this.filter.beginDate, this.filter.interval);
-      this.filter.endDate = roundDateToEndOfInterval(this.filter.endDate, this.filter.interval);
-      this.filter.standardRange = getStandardRangeForBeginEndDate(this.filter);
-      const range = getRange(this.filter.standardRange);
-      // I guess we were retaining the range for prev and next, so let's not break too much at once
-      if (range) {
-        this.filter.range = range;
-      }
-      this.routeFromFilter.emit(this.filter);
+      this.adjustAndRouteFromFilter();
     }
+  }
+
+  adjustAndRouteFromFilter() {
+    this.filter.beginDate = roundDateToBeginOfInterval(this.filter.beginDate, this.filter.interval);
+    this.filter.endDate = roundDateToEndOfInterval(this.filter.endDate, this.filter.interval);
+    this.filter.standardRange = getStandardRangeForBeginEndDate(this.filter);
+    const range = getRange(this.filter.standardRange);
+    // I guess we were retaining the range for prev and next, so let's not break too much at once
+    if (range) {
+      this.filter.range = range;
+    }
+
+    this.routeFromFilter.emit(this.filter);
   }
 
   googleAnalyticsEvent(action: string, dateRange: FilterModel) {

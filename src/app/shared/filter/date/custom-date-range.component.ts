@@ -7,10 +7,14 @@ import { isMoreThanXDays, endOfTodayUTC } from '../../util/date.util';
   selector: 'metrics-custom-date-range',
   template: `
     <div>
-      <span>From:</span>
-      <prx-datepicker [date]="beginDate" UTC="true" (dateChange)="onBeginDateChange($event)"></prx-datepicker>
-      <span>To:</span>
-      <prx-datepicker [date]="endDate" UTC="true" (dateChange)="onEndDateChange($event)"></prx-datepicker>
+      <div class="picker">
+        <span>From:</span>
+        <prx-datepicker [date]="beginDate" UTC="true" (dateChange)="onBeginDateChange($event)"></prx-datepicker>
+      </div>
+      <div class="picker">
+        <span>To:</span>
+        <prx-datepicker [date]="endDate" UTC="true" (dateChange)="onEndDateChange($event)"></prx-datepicker>
+      </div>
     </div>
     <div class="invalid" *ngIf="invalid">
       {{ invalid }}

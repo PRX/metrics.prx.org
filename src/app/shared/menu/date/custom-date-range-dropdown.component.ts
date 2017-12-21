@@ -38,7 +38,8 @@ export class CustomDateRangeDropdownComponent implements OnInit {
   }
 
   onCustomRangeChange(dateRange: FilterModel) {
-    this.dateRange = {...dateRange};
+    this.dateRange.beginDate = dateRange.beginDate;
+    this.dateRange.endDate = dateRange.endDate;
   }
 
   googleAnalyticsEvent(action: string, dateRange: FilterModel) {
@@ -52,10 +53,8 @@ export class CustomDateRangeDropdownComponent implements OnInit {
   }
 
   onApply() {
-    const standardRange = getStandardRangeForBeginEndDate({...this.filter, ...this.dateRange});
-    const range = getRange(standardRange);
     this.googleAnalyticsEvent('custom-date', this.dateRange);
-    this.dateRangeChange.emit({...this.filter, ...this.dateRange, standardRange, range});
+    this.dateRangeChange.emit({...this.dateRange});
     this.open = false;
   }
 }

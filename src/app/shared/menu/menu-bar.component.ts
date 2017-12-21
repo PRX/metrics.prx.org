@@ -67,8 +67,11 @@ export class MenuBarComponent implements OnInit, OnDestroy {
       this.filter.beginDate = roundDateToBeginOfInterval(this.filter.beginDate, this.filter.interval);
       this.filter.endDate = roundDateToEndOfInterval(this.filter.endDate, this.filter.interval);
       this.filter.standardRange = getStandardRangeForBeginEndDate(this.filter);
-      this.filter.range = getRange(this.filter.standardRange);
-
+      const range = getRange(this.filter.standardRange);
+      // I guess we were retaining the range for prev and next, so let's not break too much at once
+      if (range) {
+        this.filter.range = range;
+      }
       this.routeFromFilter.emit(this.filter);
     }
   }

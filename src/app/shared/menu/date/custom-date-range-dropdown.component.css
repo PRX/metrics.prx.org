@@ -19,16 +19,19 @@ button.btn-icon {
 }
 
 .custom-date-range-content {
-  display: none;
+  max-height: 0px;
+  overflow-y: hidden;
   position: absolute;
   right: 0;
   z-index: 997;
   background-color: white;
   box-shadow: 0 5px 15px -5px rgba(0,0,0,.5);
-  padding: 10px;
 }
 .open .custom-date-range-content {
-  display: block;
+  padding: 10px;
+  max-height: 200px;
+  transition: max-height;
+  transition: 0.5s;
 }
 
 .overlay {

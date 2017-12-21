@@ -1,7 +1,7 @@
 import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { FilterModel } from '../../../ngrx';
-import { getStandardRangeForBeginEndDate, getRange, getAmountOfIntervals } from '../../util/date.util';
+import { getAmountOfIntervals } from '../../util/date.util';
 import { GoogleAnalyticsEventAction } from '../../../ngrx/actions';
 
 @Component({
@@ -10,7 +10,7 @@ import { GoogleAnalyticsEventAction } from '../../../ngrx/actions';
     <div class="custom-date-range-dropdown" [class.open]="open">
       <div class="overlay" (click)="toggleOpen()"></div>
       <div class="custom-date-range-button">
-        <button class="btn-icon icon-calendar grey-dove" (click)="toggleOpen()"></button>
+        <button class="btn-icon icon-calendar grey-dove" (click)="toggleOpen()" aria-label="Custom Date Range"></button>
       </div>
       <div class="custom-date-range-content">
         <metrics-custom-date-range [filter]="dateRange"

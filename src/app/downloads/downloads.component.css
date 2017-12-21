@@ -1,10 +1,20 @@
 :host {
+  display: block;
+  padding: 40px 20px 20px 20px;
+  max-width: 100%;
+  min-height: 600px;
+}
+/*
+pause this sidebar/responsive layout bit
+ - all this max-width business is because tables follow their own rules
+ - flex would be cleaner and layout more adaptive without table
+:host {
   position: relative;
   display: flex;
   padding: 40px 20px 20px 20px;
   min-height: 600px;
 }
-.controls {
+.profile {
   flex-grow: 4;
   flex-shrink: 2;
   flex-basis: 20%;
@@ -39,6 +49,7 @@ and (max-device-width: 568px) {
     max-width: 100%;
   }
 }
+*/
 .error {
   color: #ee4d3e;
   font-style: italic;

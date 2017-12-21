@@ -7,15 +7,18 @@ import { GoogleAnalyticsEventAction } from '../../ngrx/actions';
 @Component({
   selector: 'metrics-custom-date-range-dropdown',
   template: `
-    <div class="custom-date-range-dropdown">
-      <div class="custom-date-range-button" [class.open]="open">
+    <div class="custom-date-range-dropdown" [class.open]="open">
+      <div class="overlay" (click)="toggleOpen()"></div>
+      <div class="custom-date-range-button">
         <button class="btn-icon icon-calendar grey-dove" (click)="toggleOpen()"></button>
       </div>
-      <div class="custom-date-range-content" [class.open]="open">
+      <div class="custom-date-range-content">
         <metrics-custom-date-range [filter]="dateRange"
                                    (customRangeChange)="onCustomRangeChange($event)"></metrics-custom-date-range>
-        <button (click)="toggleOpen()" class="btn-link">Cancel</button>
-        <button (click)="onApply()">Apply</button>
+        <p class="buttons">
+          <button (click)="toggleOpen()" class="btn-link">Cancel</button>
+          <button (click)="onApply()">Apply</button>
+        </p>
       </div>
     </div>
   `,

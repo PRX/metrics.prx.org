@@ -2,6 +2,7 @@
   position: relative;
   display: inline-block;
 }
+
 button.btn-icon {
   border: 0px;
   max-width: 24px;
@@ -13,22 +14,39 @@ button.btn-icon {
   background-color: #f0f0f0;
   height: 38px;
 }
-.custom-date-range-button.open {
+.open .custom-date-range-button {
   background-color: #ddd;
 }
+
 .custom-date-range-content {
   display: none;
   position: absolute;
   right: 0;
   z-index: 997;
   background-color: white;
+  box-shadow: 0 5px 15px -5px rgba(0,0,0,.5);
   padding: 10px;
 }
-.custom-date-range-content.open {
+.open .custom-date-range-content {
   display: block;
 }
-button {
-  margin-top: 10px;
+
+.overlay {
+  position: fixed;
+  display: none;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 996;
+}
+.open .overlay {
+  display: block;
+}
+
+.buttons {
+  text-align: right;
+  margin-top: 20px;
 }
 .btn-link {
   padding-right: 10px;

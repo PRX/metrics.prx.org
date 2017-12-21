@@ -20,7 +20,7 @@ import { isMoreThanXDays, endOfTodayUTC } from '../../util/date.util';
       {{ invalid }}
     </div>
   `,
-  styleUrls: ['custom-date-range.component.css']
+  styleUrls: ['./custom-date-range.component.css']
 })
 export class CustomDateRangeComponent implements OnChanges {
   @Input() filter: FilterModel;

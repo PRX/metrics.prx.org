@@ -7,7 +7,7 @@ import { CustomDateRangeComponent } from './custom-date-range.component';
 
 import { reducers } from '../../../ngrx/reducers';
 import { INTERVAL_HOURLY } from '../../../ngrx';
-import { beginningOfLastYearUTC, endOfLastYearUTC } from '../../../shared/util/date.util';
+import { beginningOfLastYearUTC, endOfLastYearUTC } from '../../util/date.util';
 
 describe('CustomDateRangeComponent', () => {
   let comp: CustomDateRangeComponent;

@@ -6,7 +6,7 @@ import { SelectModule } from 'ngx-prx-styleguide';
 import { StandardDateRangeComponent } from './standard-date-range.component';
 
 import { INTERVAL_HOURLY } from '../../../ngrx';
-import { TODAY, THIS_MONTH, PRIOR_THREE_MONTHS, LAST_YEAR } from '../../../shared/util/date.util';
+import { TODAY, THIS_MONTH, PRIOR_THREE_MONTHS, LAST_YEAR } from '../../util/date.util';
 
 describe('StandardDateRangeComponent', () => {
   let comp: StandardDateRangeComponent;

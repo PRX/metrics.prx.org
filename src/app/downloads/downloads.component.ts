@@ -19,7 +19,7 @@ import { isPodcastChanged, isBeginDateChanged, isEndDateChanged, isIntervalChang
     <section class="controls">
     </section>
     <section class="content">
-      <metrics-menu-bar *ngIf="!isLoadingForTheFirstTime" (routeFromFilter)="routeFromFilter($event)"></metrics-menu-bar>
+      <metrics-menu-bar *ngIf="!isPodcastLoading && !isEpisodeLoading" (routeFromFilter)="routeFromFilter($event)"></metrics-menu-bar>
       <metrics-downloads-chart></metrics-downloads-chart>
       <metrics-downloads-table
         [totalPages]="totalPages" (pageChange)="onPageChange($event)"
@@ -43,7 +43,6 @@ export class DownloadsComponent implements OnInit, OnDestroy {
   updateEpisodes: boolean;
   isPodcastLoading = true;
   isEpisodeLoading = true;
-  isLoadingForTheFirstTime = true;
   errors: string[] = [];
   chartPodcast: boolean;
   chartedEpisodes: number[];
@@ -72,7 +71,6 @@ export class DownloadsComponent implements OnInit, OnDestroy {
     this.podcastSub = this.store.select(selectPodcasts).subscribe((podcasts: PodcastModel[]) => {
       if (podcasts && podcasts.length) {
         this.podcasts = podcasts;
-        this.isLoadingForTheFirstTime = false;
 
         if (!this.filterSub) {
           this.filterSub = this.store.select(selectFilter).subscribe((newFilter: FilterModel) => {

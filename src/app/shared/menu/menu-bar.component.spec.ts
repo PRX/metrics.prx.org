@@ -11,7 +11,6 @@ import { TODAY, YESTERDAY, LAST_WEEK, THIS_MONTH,
 
 import { MenuBarComponent } from './menu-bar.component';
 import { ChartTypeComponent } from './chart-type.component';
-import { CustomDateRangeComponent } from './date/custom-date-range.component';
 import { CustomDateRangeDropdownComponent } from './date/custom-date-range-dropdown.component';
 import { IntervalComponent } from './interval.component';
 import { PodcastsComponent } from './podcasts.component';
@@ -37,7 +36,6 @@ describe('MenuBarComponent', () => {
       declarations: [
         MenuBarComponent,
         ChartTypeComponent,
-        CustomDateRangeComponent,
         CustomDateRangeDropdownComponent,
         IntervalComponent,
         PodcastsComponent,

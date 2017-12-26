@@ -6,11 +6,11 @@ import { By } from '@angular/platform-browser';
 import { reducers } from '../../../ngrx/reducers';
 
 import { DatepickerModule } from 'ngx-prx-styleguide';
-import { CustomDateRangeComponent } from './custom-date-range.component';
 import { CustomDateRangeDropdownComponent } from './custom-date-range-dropdown.component';
 
-import { INTERVAL_DAILY } from '../../../ngrx';
-import { beginningOfTodayUTC, endOfTodayUTC, beginningOfYesterdayUTC, endOfYesterdayUTC } from '../../../shared/util/date.util';
+import { INTERVAL_DAILY, INTERVAL_HOURLY } from '../../../ngrx';
+import { beginningOfTodayUTC, endOfTodayUTC,
+  beginningOfYesterdayUTC, endOfYesterdayUTC, beginningOfLastYearUTC, endOfLastYearUTC } from '../../../shared/util/date.util';
 
 describe('CustomDateRangeDropdownComponent', () => {
   let comp: CustomDateRangeDropdownComponent;
@@ -21,7 +21,6 @@ describe('CustomDateRangeDropdownComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [
-        CustomDateRangeComponent,
         CustomDateRangeDropdownComponent
       ],
       imports: [
@@ -46,7 +45,7 @@ describe('CustomDateRangeDropdownComponent', () => {
   }));
 
   it('should send google analytics event on apply changes', () => {
-    comp.onCustomRangeChange({beginDate: beginningOfYesterdayUTC().toDate(), endDate: endOfYesterdayUTC().toDate()});
+    comp.onCustomRangeChange({from: beginningOfYesterdayUTC().toDate(), to: endOfYesterdayUTC().toDate()});
     expect(comp.googleAnalyticsEvent).not.toHaveBeenCalled();
     comp.onApply();
     expect(comp.googleAnalyticsEvent).toHaveBeenCalled();
@@ -57,5 +56,38 @@ describe('CustomDateRangeDropdownComponent', () => {
     comp.toggleOpen();
     fix.detectChanges();
     expect(de.query(By.css('.custom-date-range-dropdown.open'))).not.toBeNull();
+  });
+
+  it('should not allow users to select dates more than 40 days apart when interval is hourly', () => {
+    comp.filter = {
+      interval: INTERVAL_HOURLY,
+      beginDate: beginningOfLastYearUTC().toDate(),
+      endDate: endOfLastYearUTC().toDate()
+    };
+    comp.ngOnChanges();
+    fix.detectChanges();
+    expect(comp.invalid).toContain('cannot be more than 40 days apart');
+  });
+
+  it('should not allow to date before from date', () => {
+    comp.filter = {
+      interval: INTERVAL_DAILY,
+      beginDate: endOfLastYearUTC().toDate(),
+      endDate: beginningOfLastYearUTC().toDate()
+    };
+    comp.ngOnChanges();
+    fix.detectChanges();
+    expect(comp.invalid).toContain('must come before');
+  });
+
+  it('should not allow dates in the future', () => {
+    comp.filter = {
+      interval: INTERVAL_DAILY,
+      beginDate: beginningOfTodayUTC().toDate(),
+      endDate: endOfTodayUTC().add(1, 'days').toDate()
+    };
+    comp.ngOnChanges();
+    fix.detectChanges();
+    expect(comp.invalid).toContain('dates in the past or present');
   });
 });

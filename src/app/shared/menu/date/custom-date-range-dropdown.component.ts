@@ -1,7 +1,7 @@
-import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnChanges } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { FilterModel } from '../../../ngrx';
-import { getAmountOfIntervals } from '../../util/date.util';
+import { FilterModel, INTERVAL_HOURLY } from '../../../ngrx';
+import { getAmountOfIntervals, isMoreThanXDays, endOfTodayUTC } from '../../util/date.util';
 import { GoogleAnalyticsEventAction } from '../../../ngrx/actions';
 
 @Component({
@@ -13,8 +13,11 @@ import { GoogleAnalyticsEventAction } from '../../../ngrx/actions';
         <button class="btn-icon icon-calendar grey-dove" (click)="toggleOpen()" aria-label="Custom Date Range"></button>
       </div>
       <div class="custom-date-range-content">
-        <metrics-custom-date-range [filter]="dateRange"
-                                   (customRangeChange)="onCustomRangeChange($event)"></metrics-custom-date-range>
+        <prx-daterange [from]="dateRange.beginDate" [to]="dateRange.endDate" UTC="true"
+                       (rangeChange)="onCustomRangeChange($event)"></prx-daterange>
+        <div class="invalid" *ngIf="invalid">
+          {{ invalid }}
+        </div>
         <p class="buttons">
           <button (click)="toggleOpen()" class="btn-link">Cancel</button>
           <button (click)="onApply()">Apply</button>
@@ -25,7 +28,7 @@ import { GoogleAnalyticsEventAction } from '../../../ngrx/actions';
   styleUrls: ['./custom-date-range-dropdown.component.css']
 })
 
-export class CustomDateRangeDropdownComponent implements OnInit {
+export class CustomDateRangeDropdownComponent implements OnChanges {
   @Input() filter: FilterModel;
   @Output() dateRangeChange = new EventEmitter<FilterModel>();
   dateRange: FilterModel;
@@ -33,13 +36,13 @@ export class CustomDateRangeDropdownComponent implements OnInit {
 
   constructor(public store: Store<any>) {}
 
-  ngOnInit() {
+  ngOnChanges() {
     this.dateRange = this.filter;
   }
 
-  onCustomRangeChange(dateRange: FilterModel) {
-    this.dateRange.beginDate = dateRange.beginDate;
-    this.dateRange.endDate = dateRange.endDate;
+  onCustomRangeChange(dateRange: {from: Date, to: Date}) {
+    this.dateRange.beginDate = dateRange.from;
+    this.dateRange.endDate = dateRange.to;
   }
 
   googleAnalyticsEvent(action: string, dateRange: FilterModel) {
@@ -53,8 +56,25 @@ export class CustomDateRangeDropdownComponent implements OnInit {
   }
 
   onApply() {
-    this.googleAnalyticsEvent('custom-date', this.dateRange);
-    this.dateRangeChange.emit({...this.dateRange});
-    this.open = false;
+    if (!this.invalid) {
+      this.googleAnalyticsEvent('custom-date', this.dateRange);
+      this.dateRangeChange.emit({...this.dateRange});
+      this.open = false;
+    }
+  }
+
+  get invalid(): string {
+    if (this.dateRange.beginDate && this.dateRange.endDate) {
+      if (this.dateRange.beginDate.valueOf() > this.dateRange.endDate.valueOf()) {
+        return 'From date must come before To date';
+      } else if (this.filter.interval === INTERVAL_HOURLY && isMoreThanXDays(40, this.dateRange.beginDate, this.dateRange.endDate)) {
+        return 'From date and To date cannot be more than 40 days apart for hourly interval';
+      } else if (this.dateRange.endDate.valueOf() > endOfTodayUTC().valueOf() + 1 + (60 * 1000)) {
+        // + 1 to roll milliseconds into the next day at midnight
+        // + 60 * 1000 on endDate because seconds value is retained at :59
+        // not sure what to do about the timepicker support but at least let the user select midnight tomorrow for thru end of current day
+        return 'Please select dates in the past or present'; // alternate error message: 'We cannot see into the future'
+      }
+    }
   }
 }

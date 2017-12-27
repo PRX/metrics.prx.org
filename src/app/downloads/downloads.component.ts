@@ -9,7 +9,7 @@ import { CastleFilterAction, CastlePodcastMetricsAction, CastleEpisodeMetricsAct
 import { FilterModel, EpisodeModel, PodcastModel, INTERVAL_DAILY, EPISODE_PAGE_SIZE } from '../ngrx';
 import { selectFilter, selectEpisodes, selectPodcasts } from '../ngrx/reducers';
 import { filterPodcastEpisodePage } from '../shared/util/metrics.util';
-import { beginningOfTwoWeeksUTC, endOfTodayUTC, getRange } from '../shared/util/date.util';
+import { beginningOfTwoWeeksUTC, endOfTodayUTC } from '../shared/util/date.util';
 import { isPodcastChanged, isBeginDateChanged, isEndDateChanged, isIntervalChanged } from '../shared/util/filter.util';
 
 @Component({
@@ -172,7 +172,6 @@ export class DownloadsComponent implements OnInit, OnDestroy {
     this.filter = {
       page: 1,
       standardRange: TWO_WEEKS,
-      range: getRange(TWO_WEEKS),
       beginDate: beginningOfTwoWeeksUTC().toDate(),
       endDate: endOfTodayUTC().toDate(),
       interval: INTERVAL_DAILY
@@ -182,9 +181,6 @@ export class DownloadsComponent implements OnInit, OnDestroy {
     }
     if (routingFilter.standardRange) {
       this.filter.standardRange = routingFilter.standardRange;
-    }
-    if (routingFilter.range) {
-      this.filter.range = routingFilter.range;
     }
     if (routingFilter.beginDate) {
       this.filter.beginDate = routingFilter.beginDate;
@@ -208,8 +204,7 @@ export class DownloadsComponent implements OnInit, OnDestroy {
       page: filter.page,
       beginDate: filter.beginDate.toISOString(),
       endDate: filter.endDate.toISOString(),
-      standardRange: filter.standardRange,
-      range: filter.range.join(',')
+      standardRange: filter.standardRange
     };
     if (podcastToggle !== undefined) {
       params['chartPodcast'] = podcastToggle;

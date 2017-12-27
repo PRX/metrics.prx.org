@@ -251,31 +251,6 @@ export const getStandardRangeForBeginEndDate = (dateRange: FilterModel) => {
   }
 };
 
-export const getRange = (standardRange: string): any[] => {
-  switch (standardRange) {
-    case TODAY:
-    case YESTERDAY:
-      return [1, 'days'];
-    case THIS_WEEK:
-    case LAST_WEEK:
-      return [1, 'weeks'];
-    case TWO_WEEKS:
-    case PRIOR_TWO_WEEKS:
-      return [2, 'weeks'];
-    case THIS_MONTH:
-    case LAST_MONTH:
-      return [1, 'months'];
-    case THREE_MONTHS:
-    case PRIOR_THREE_MONTHS:
-      return [3, 'months'];
-    case THIS_YEAR:
-    case LAST_YEAR:
-      return [1, 'years'];
-    default:
-      break;
-  }
-};
-
 export const getMillisecondsOfInterval = (interval: IntervalModel): number => {
   switch (interval) {
     case INTERVAL_HOURLY:

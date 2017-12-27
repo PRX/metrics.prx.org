@@ -5,7 +5,7 @@ import { selectFilter } from '../../ngrx/reducers';
 import { FilterModel, IntervalModel } from '../../ngrx';
 import { GoogleAnalyticsEventAction } from '../../ngrx/actions';
 import { roundDateToBeginOfInterval, roundDateToEndOfInterval,
-  getBeginEndDateFromStandardRange, getStandardRangeForBeginEndDate, getRange, getAmountOfIntervals } from '../util/date.util';
+  getBeginEndDateFromStandardRange, getStandardRangeForBeginEndDate,getAmountOfIntervals } from '../util/date.util';
 
 @Component({
   selector: 'metrics-menu-bar',
@@ -48,9 +48,8 @@ export class MenuBarComponent implements OnInit, OnDestroy {
 
   onStandardRangeChange(standardRange: string) {
     const dateRange = getBeginEndDateFromStandardRange(standardRange);
-    const range = getRange(standardRange);
     this.googleAnalyticsEvent('standard-date', dateRange);
-    this.onDateRangeChange({...this.filter, standardRange, range, ...dateRange});
+    this.onDateRangeChange({...this.filter, standardRange, ...dateRange});
   }
 
   onDateRangeChange(dateRange: FilterModel) {
@@ -65,12 +64,6 @@ export class MenuBarComponent implements OnInit, OnDestroy {
     this.filter.beginDate = roundDateToBeginOfInterval(this.filter.beginDate, this.filter.interval);
     this.filter.endDate = roundDateToEndOfInterval(this.filter.endDate, this.filter.interval);
     this.filter.standardRange = getStandardRangeForBeginEndDate(this.filter);
-    const range = getRange(this.filter.standardRange);
-    // keeping the range that was for prev and next/let's not break too much at once
-    if (range) {
-      this.filter.range = range;
-    }
-
     this.routeFromFilter.emit(this.filter);
   }
 

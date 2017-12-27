@@ -7,7 +7,7 @@ import { ROUTER_NAVIGATION, RouterNavigationPayload, RouterNavigationAction } fr
 import { Actions, Effect } from '@ngrx/effects';
 import { FilterModel, IntervalList } from '../';
 import { CastleFilterAction, CastlePodcastChartToggleAction, CastleEpisodeChartToggleAction } from '../actions';
-import { getStandardRangeForBeginEndDate, getBeginEndDateFromStandardRange, getRange } from '../../shared/util/date.util';
+import { getStandardRangeForBeginEndDate, getBeginEndDateFromStandardRange } from '../../shared/util/date.util';
 
 @Injectable()
 export class RoutingEffects {
@@ -36,9 +36,6 @@ export class RoutingEffects {
         if (params['endDate']) {
           filter.endDate = new Date(params['endDate']);
         }
-        if (params['range']) {
-          filter.range = params['range'].split(',');
-        }
         // begin and end date take precendence over standard range because "users want to use urls to pass around reports"
         // "users want to bookmark common parameters" is mutually exclusive with the idea of using these date based urls
         // because dates (and episodes) are temporal parameters that would change over time
@@ -47,9 +44,6 @@ export class RoutingEffects {
           filter.standardRange = getStandardRangeForBeginEndDate(filter);
         } else if (params['standardRange']) {
           filter.standardRange = params['standardRange'];
-          if (!filter.range) {
-            filter.range = getRange(filter.standardRange);
-          }
           const { beginDate, endDate } = getBeginEndDateFromStandardRange(filter.standardRange);
           filter.beginDate = beginDate;
           filter.endDate = endDate;

@@ -58,8 +58,7 @@ describe('RoutingEffects', () => {
       interval: INTERVAL_HOURLY,
       beginDate: beginningOfThreeMonthsUTC().toDate(),
       endDate: endOfTodayUTC().toDate(),
-      standardRange: THREE_MONTHS,
-      range: [3, 'months']
+      standardRange: THREE_MONTHS
     }});
     actions$.stream = hot('-a', { a: action });
     const expected = cold('-r', { r: result });

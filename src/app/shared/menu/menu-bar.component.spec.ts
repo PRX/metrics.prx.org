@@ -25,7 +25,6 @@ describe('MenuBarComponent', () => {
 
   const filter: FilterModel = {
     interval: INTERVAL_DAILY,
-    range: [1, 'day'],
     standardRange: TODAY,
     beginDate: beginningOfTodayUTC().toDate(),
     endDate: endOfTodayUTC().toDate()

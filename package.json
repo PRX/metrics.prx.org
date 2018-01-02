@@ -9,7 +9,7 @@
     "lint": "ng lint --type-check",
     "e2e": "ng e2e",
     "testonce": "ng test --watch=false --browsers=PhantomJS",
-    "ci": "CODECOV=true ng test --watch=false --browsers=PhantomJS && codecov",
+    "ci": "ng test --watch=false --browsers=PhantomJS --code-coverage && codecov",
     "serve": "prx-ng-serve dist"
   },
   "private": true,

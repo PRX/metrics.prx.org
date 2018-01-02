@@ -11,4 +11,4 @@ metrics:
   command: start
   environment:
     VIRTUAL_HOST: metrics.prx.docker
-    HOST: http://publish.prx.docker
+    HOST: http://metrics.prx.docker

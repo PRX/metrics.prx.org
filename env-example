@@ -11,6 +11,8 @@ CMS_TTL=
 AUTH_HOST=id.staging.prx.tech
 # for metrics.prx.dev
 AUTH_CLIENT_ID=ea0e04f7c85a8d4826dcf2747126a53a95014f51
+# for metrics.prx.docker
+# AUTH_CLIENT_ID=brAFnuD1cMdct7FMyjrsErbCFFpAM4hGzZlyYA2X
 
 # monitoring
 NEW_RELIC_APP_NAME=

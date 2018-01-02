@@ -17,5 +17,9 @@ NEW_RELIC_APP_NAME=
 NEW_RELIC_LICENSE_KEY=
 GA_KEY=
 
+# dev server
+PORT=4202
+HOST=https://metrics.prx.dev
+
 # metrics
 CASTLE_HOST=

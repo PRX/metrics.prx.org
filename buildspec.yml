@@ -4,6 +4,8 @@ env:
     PRX_ECR_REGION: "us-east-1"
     PRX_ECR_REPOSITORY: "metrics.prx.org"
     PRX_ECR_CONFIG_PARAMETERS: "MetricsEcrImageTag"
+  parameter-store:
+    CODECOV_TOKEN: "/prx/test/metrics.prx.org/CODECOV_TOKEN"
 phases:
   install:
     commands:
@@ -13,8 +15,14 @@ phases:
   build:
     commands:
       - "cd $(ls -d */|head -n 1)"
-      - "docker-compose -f docker-compose-ci.yml build"
-      - "docker-compose -f docker-compose-ci.yml run metrics testonce"
+      - "echo CODECOV_TOKEN=$CODECOV_TOKEN > .env"
+      - "echo CODEBUILD_BUILD_ID=$CODEBUILD_BUILD_ID >> .env"
+      - "echo PRX_REPO=$PRX_REPO >> .env"
+      - "echo PRX_COMMIT=$PRX_COMMIT >> .env"
+      - "echo PRX_BRANCH=$PRX_BRANCH >> .env"
+      - "echo PRX_GITHUB_PR=$PRX_GITHUB_PR >> .env"
+      - "docker-compose build"
+      - "docker-compose run metrics ci"
   post_build:
       commands:
         - 'curl -sO "https://raw.githubusercontent.com/PRX/Infrastructure/master/ci/utility/post_build.sh" && chmod +x post_build.sh && bash ./post_build.sh'

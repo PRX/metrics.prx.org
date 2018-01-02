@@ -4582,9 +4582,9 @@ prr@~0.0.0:
   version "0.0.0"
   resolved "https://registry.yarnpkg.com/prr/-/prr-0.0.0.tgz#1a84b85908325501411853d0081ee3fa86e2926a"
 
-prx-ng-serve@^0.0.1:
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/prx-ng-serve/-/prx-ng-serve-0.0.1.tgz#24d34634eeae194504ae210c6d0156ae8201f7fa"
+prx-ng-serve@^0.0.2:
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/prx-ng-serve/-/prx-ng-serve-0.0.2.tgz#878a549705d0cdf2951ffd5b2ee38887bb580bf5"
   dependencies:
     connect-gzip-static "^2.1.1"
     dotenv "^4.0.0"

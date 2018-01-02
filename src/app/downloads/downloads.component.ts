@@ -9,17 +9,17 @@ import { CastleFilterAction, CastlePodcastMetricsAction, CastleEpisodeMetricsAct
 import { FilterModel, EpisodeModel, PodcastModel, INTERVAL_DAILY, EPISODE_PAGE_SIZE } from '../ngrx';
 import { selectFilter, selectEpisodes, selectPodcasts } from '../ngrx/reducers';
 import { filterPodcastEpisodePage } from '../shared/util/metrics.util';
-import { beginningOfTwoWeeksUTC, endOfTodayUTC, getRange } from '../shared/util/date.util';
+import { beginningOfTwoWeeksUTC, endOfTodayUTC } from '../shared/util/date.util';
 import { isPodcastChanged, isBeginDateChanged, isEndDateChanged, isIntervalChanged } from '../shared/util/filter.util';
 
 @Component({
   selector: 'metrics-downloads',
   template: `
     <prx-spinner *ngIf="isPodcastLoading || isEpisodeLoading" overlay="true" loadingMessage="Please wait..."></prx-spinner>
-    <section class="controls">
-      <metrics-filter *ngIf="!isLoadingForTheFirstTime"></metrics-filter>
-    </section>
+    <!--<section class="profile">
+    </section>-->
     <section class="content">
+      <metrics-menu-bar *ngIf="!isPodcastLoading && !isEpisodeLoading" (routeFromFilter)="routeFromFilter($event)"></metrics-menu-bar>
       <metrics-downloads-chart></metrics-downloads-chart>
       <metrics-downloads-table
         [totalPages]="totalPages" (pageChange)="onPageChange($event)"
@@ -43,7 +43,6 @@ export class DownloadsComponent implements OnInit, OnDestroy {
   updateEpisodes: boolean;
   isPodcastLoading = true;
   isEpisodeLoading = true;
-  isLoadingForTheFirstTime = true;
   errors: string[] = [];
   chartPodcast: boolean;
   chartedEpisodes: number[];
@@ -72,7 +71,6 @@ export class DownloadsComponent implements OnInit, OnDestroy {
     this.podcastSub = this.store.select(selectPodcasts).subscribe((podcasts: PodcastModel[]) => {
       if (podcasts && podcasts.length) {
         this.podcasts = podcasts;
-        this.isLoadingForTheFirstTime = false;
 
         if (!this.filterSub) {
           this.filterSub = this.store.select(selectFilter).subscribe((newFilter: FilterModel) => {
@@ -174,7 +172,6 @@ export class DownloadsComponent implements OnInit, OnDestroy {
     this.filter = {
       page: 1,
       standardRange: TWO_WEEKS,
-      range: getRange(TWO_WEEKS),
       beginDate: beginningOfTwoWeeksUTC().toDate(),
       endDate: endOfTodayUTC().toDate(),
       interval: INTERVAL_DAILY
@@ -184,9 +181,6 @@ export class DownloadsComponent implements OnInit, OnDestroy {
     }
     if (routingFilter.standardRange) {
       this.filter.standardRange = routingFilter.standardRange;
-    }
-    if (routingFilter.range) {
-      this.filter.range = routingFilter.range;
     }
     if (routingFilter.beginDate) {
       this.filter.beginDate = routingFilter.beginDate;
@@ -210,8 +204,7 @@ export class DownloadsComponent implements OnInit, OnDestroy {
       page: filter.page,
       beginDate: filter.beginDate.toISOString(),
       endDate: filter.endDate.toISOString(),
-      standardRange: filter.standardRange,
-      range: filter.range.join(',')
+      standardRange: filter.standardRange
     };
     if (podcastToggle !== undefined) {
       params['chartPodcast'] = podcastToggle;

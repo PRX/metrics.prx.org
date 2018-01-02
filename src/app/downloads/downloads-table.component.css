@@ -1,5 +1,6 @@
 .table-wrapper {
   display: flex;
+  margin-left: -3px;
 }
 table {
   line-height: 14px;

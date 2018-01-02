@@ -84,13 +84,6 @@ describe('DownloadsComponent', () => {
     });
   }));
 
-  it('should not show filter if app is loading for the first time', () => {
-    expect(de.query(By.css('metrics-filter'))).toBeFalsy();
-    comp.store.dispatch(new CmsPodcastsSuccessAction({podcasts: [podcast]}));
-    fix.detectChanges();
-    expect(de.query(By.css('metrics-filter'))).not.toBeNull();
-  });
-
   it('should show loading spinner when episode or podcast is loading', () => {
     comp.isPodcastLoading = true;
     expect(de.query(By.css('prx-spinner'))).not.toBeNull();

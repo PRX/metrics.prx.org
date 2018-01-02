@@ -8,7 +8,6 @@ import { isMoreThanXDays, endOfTodayUTC,
 @Component({
   selector: 'metrics-standard-date-range',
   template: `
-    <div>When:</div>
     <prx-select single="true" [options]="rangeOptions" [selected]="standardRange" (onSelect)="onStandardRangeChange($event)"></prx-select>
   `
 })

@@ -1,7 +1,7 @@
 import { CastleFilterAction } from '../actions';
 import { FilterModel, INTERVAL_DAILY, INTERVAL_HOURLY } from '../';
 import { FilterReducer } from './filter.reducer';
-import { beginningOfTodayUTC, endOfTodayUTC, getRange, TODAY, THIS_MONTH } from '../../shared/util/date.util';
+import { beginningOfTodayUTC, endOfTodayUTC, TODAY } from '../../shared/util/date.util';
 
 describe('FilterReducer', () => {
   let newState: FilterModel;
@@ -46,13 +46,6 @@ describe('FilterReducer', () => {
     newState = FilterReducer(newState,
       new CastleFilterAction({filter: {beginDate: beginningOfTodayUTC().subtract(1, 'days').toDate()}}));
     expect(newState.standardRange).toBeUndefined();
-  });
-
-  it ('should update with new range', () => {
-    newState = FilterReducer(newState,
-      new CastleFilterAction({filter: {range: getRange(THIS_MONTH)}}));
-    expect(newState.range[0]).toEqual(1);
-    expect(newState.range[1]).toEqual('months');
   });
 
   it ('should update with new interval', () => {

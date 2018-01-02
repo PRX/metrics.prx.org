@@ -97,7 +97,6 @@ describe('CmsEffects', () => {
       episodes: '',
       interval: 'daily',
       page: '1',
-      range: '2,weeks',
       seriesId: '37800',
       standardRange: '2 weeks'
     };

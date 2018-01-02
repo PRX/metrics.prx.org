@@ -3,7 +3,7 @@ import { isMoreThanXDays, beginningOfTodayUTC, endOfTodayUTC,
   beginningOfYesterdayUTC, endOfYesterdayUTC, beginningOfLastWeekUTC, endOfLastWeekUTC,
   beginningOfPriorTwoWeeksUTC, endOfPriorTwoWeeksUTC, beginningOfLastMonthUTC, endOfLastMonthUTC,
   beginningOfPriorThreeMonthsUTC, endOfPriorThreeMonthsUTC, beginningOfLastYearUTC, endOfLastYearUTC,
-  getBeginEndDateFromStandardRange, getStandardRangeForBeginEndDate, getRange, getMillisecondsOfInterval,
+  getBeginEndDateFromStandardRange, getStandardRangeForBeginEndDate, getMillisecondsOfInterval,
   roundDateToBeginOfInterval, roundDateToEndOfInterval, getAmountOfIntervals,
   UTCDateFormat, dayOfWeekDateFormat, dayMonthDateFormat, monthDateYearFormat, monthYearFormat, hourlyDateFormat,
   TODAY, YESTERDAY, THIS_WEEK, LAST_WEEK, TWO_WEEKS, PRIOR_TWO_WEEKS, THIS_MONTH, LAST_MONTH,
@@ -63,15 +63,6 @@ describe('date util', () => {
       endDate: endOfLastWeekUTC().toDate()
     };
     expect(getStandardRangeForBeginEndDate(lastWeek)).toEqual(LAST_WEEK);
-  });
-
-  it('should get range (to add/subtract with prev/next)', () => {
-    expect(getRange(PRIOR_THREE_MONTHS)[0]).toEqual(3);
-    expect(getRange(PRIOR_THREE_MONTHS)[1]).toEqual('months');
-    expect(getRange(PRIOR_TWO_WEEKS)[0]).toEqual(2);
-    expect(getRange(PRIOR_TWO_WEEKS)[1]).toEqual('weeks');
-    expect(getRange(YESTERDAY)[0]).toEqual(1);
-    expect(getRange(YESTERDAY)[1]).toEqual('days');
   });
 
   it('should get amount of milliseconds in interval', () => {

@@ -1,6 +1,6 @@
 import * as filterUtil from './filter.util';
 import { INTERVAL_DAILY, INTERVAL_MONTHLY } from '../../ngrx';
-import { beginningOfTodayUTC, endOfTodayUTC, beginningOfPriorTwoWeeksUTC, endOfPriorTwoWeeksUTC } from './date.util';
+import { beginningOfTodayUTC, endOfTodayUTC, beginningOfLastWeekUTC, endOfLastWeekUTC } from './date.util';
 
 describe('filter.util', () => {
   it('should check if podcast changed', () => {
@@ -30,7 +30,7 @@ describe('filter.util', () => {
 
   it('should check if begin date changed', () => {
     expect(filterUtil.isBeginDateChanged({beginDate: beginningOfTodayUTC().toDate()},
-      {beginDate: beginningOfPriorTwoWeeksUTC().toDate()})).toBeTruthy();
+      {beginDate: beginningOfLastWeekUTC().toDate()})).toBeTruthy();
     expect(filterUtil.isBeginDateChanged({beginDate: beginningOfTodayUTC().toDate()},
       {beginDate: beginningOfTodayUTC().toDate()})).toBeFalsy();
     expect(filterUtil.isBeginDateChanged({beginDate: beginningOfTodayUTC().toDate()}, {})).toBeTruthy();
@@ -39,7 +39,7 @@ describe('filter.util', () => {
 
   it('should check if end date changed', () => {
     expect(filterUtil.isEndDateChanged({endDate: endOfTodayUTC().toDate()},
-      {endDate: endOfPriorTwoWeeksUTC().toDate()})).toBeTruthy();
+      {endDate: endOfLastWeekUTC().toDate()})).toBeTruthy();
     expect(filterUtil.isEndDateChanged({endDate: endOfTodayUTC().toDate()},
       {endDate: endOfTodayUTC().toDate()})).toBeFalsy();
     expect(filterUtil.isEndDateChanged({endDate: endOfTodayUTC().toDate()}, {})).toBeTruthy();

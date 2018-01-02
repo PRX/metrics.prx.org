@@ -6,7 +6,7 @@ import { SelectModule } from 'ngx-prx-styleguide';
 import { StandardDateRangeComponent } from './standard-date-range.component';
 
 import { INTERVAL_HOURLY } from '../../../ngrx';
-import { TODAY, THIS_MONTH, PRIOR_THREE_MONTHS, LAST_YEAR } from '../../util/date.util';
+import { THIS_WEEK, THIS_MONTH, THIS_MONTH_PLUS_2_MONTHS, LAST_365_DAYS } from '../../util/date.util';
 
 describe('StandardDateRangeComponent', () => {
   let comp: StandardDateRangeComponent;
@@ -33,11 +33,11 @@ describe('StandardDateRangeComponent', () => {
   }));
 
   it('should not have options more than 40 days apart when interval is hourly', () => {
-    comp.standardRange = TODAY;
+    comp.standardRange = THIS_WEEK;
     comp.interval = INTERVAL_HOURLY;
     comp.ngOnChanges();
-    expect(comp.rangeOptions.indexOf(THIS_MONTH)).toBeGreaterThan(-1);
-    expect(comp.rangeOptions.indexOf(PRIOR_THREE_MONTHS)).toBeLessThan(0);
-    expect(comp.rangeOptions.indexOf(LAST_YEAR)).toBeLessThan(0);
+    expect(comp.flattenedOptions.indexOf(THIS_MONTH)).toBeGreaterThan(-1);
+    expect(comp.flattenedOptions.indexOf(THIS_MONTH_PLUS_2_MONTHS)).toBeLessThan(0);
+    expect(comp.flattenedOptions.indexOf(LAST_365_DAYS)).toBeLessThan(0);
   });
 });

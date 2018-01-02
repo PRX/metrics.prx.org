@@ -3,13 +3,13 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs/Subscription';
 import { CastleService } from '../core';
-import { TWO_WEEKS } from '../shared/util/date.util';
+import { THIS_WEEK_PLUS_7_DAYS } from '../shared/util/date.util';
 import { CastleFilterAction, CastlePodcastMetricsAction, CastleEpisodeMetricsAction,
   GoogleAnalyticsEventAction, CastleEpisodeChartToggleAction } from '../ngrx/actions';
 import { FilterModel, EpisodeModel, PodcastModel, INTERVAL_DAILY, EPISODE_PAGE_SIZE } from '../ngrx';
 import { selectFilter, selectEpisodes, selectPodcasts } from '../ngrx/reducers';
 import { filterPodcastEpisodePage } from '../shared/util/metrics.util';
-import { beginningOfTwoWeeksUTC, endOfTodayUTC } from '../shared/util/date.util';
+import { beginningOfThisWeekPlus7DaysUTC, endOfTodayUTC } from '../shared/util/date.util';
 import { isPodcastChanged, isBeginDateChanged, isEndDateChanged, isIntervalChanged } from '../shared/util/filter.util';
 
 @Component({
@@ -171,8 +171,8 @@ export class DownloadsComponent implements OnInit, OnDestroy {
     // dispatch some default values for the dates and interval
     this.filter = {
       page: 1,
-      standardRange: TWO_WEEKS,
-      beginDate: beginningOfTwoWeeksUTC().toDate(),
+      standardRange: THIS_WEEK_PLUS_7_DAYS,
+      beginDate: beginningOfThisWeekPlus7DaysUTC().toDate(),
       endDate: endOfTodayUTC().toDate(),
       interval: INTERVAL_DAILY
     };

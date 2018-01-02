@@ -1,13 +1,14 @@
 import { isMoreThanXDays, beginningOfTodayUTC, endOfTodayUTC,
-  beginningOfThisWeekUTC, beginningOfTwoWeeksUTC, beginningOfThisMonthUTC, beginningOfThreeMonthsUTC, beginningOfThisYearUTC,
-  beginningOfYesterdayUTC, endOfYesterdayUTC, beginningOfLastWeekUTC, endOfLastWeekUTC,
-  beginningOfPriorTwoWeeksUTC, endOfPriorTwoWeeksUTC, beginningOfLastMonthUTC, endOfLastMonthUTC,
-  beginningOfPriorThreeMonthsUTC, endOfPriorThreeMonthsUTC, beginningOfLastYearUTC, endOfLastYearUTC,
+  beginningOfThisWeekUTC, beginningOfLastWeekUTC, endOfLastWeekUTC, beginningOfLast7DaysUTC,
+  beginningOfThisWeekPlus7DaysUTC,
+  beginningOfThisMonthUTC, beginningOfLastMonthUTC, endOfLastMonthUTC, beginningOfLast28DaysUTC, beginningOfLast30DaysUTC,
+  beginningOfThisMonthPlusTwoMonthsUTC, beginningOfLast90DaysUTC,
+  beginningOfThisYearUTC, beginningOfLast365DaysUTC,
   getBeginEndDateFromStandardRange, getStandardRangeForBeginEndDate, getMillisecondsOfInterval,
   roundDateToBeginOfInterval, roundDateToEndOfInterval, getAmountOfIntervals,
   UTCDateFormat, dayOfWeekDateFormat, dayMonthDateFormat, monthDateYearFormat, monthYearFormat, hourlyDateFormat,
-  TODAY, YESTERDAY, THIS_WEEK, LAST_WEEK, TWO_WEEKS, PRIOR_TWO_WEEKS, THIS_MONTH, LAST_MONTH,
-  THREE_MONTHS, PRIOR_THREE_MONTHS, THIS_YEAR, LAST_YEAR } from './date.util';
+  THIS_WEEK, LAST_WEEK, LAST_7_DAYS, THIS_WEEK_PLUS_7_DAYS, THIS_MONTH, LAST_MONTH, LAST_28_DAYS, LAST_30_DAYS,
+  THIS_MONTH_PLUS_2_MONTHS, LAST_90_DAYS, THIS_YEAR, LAST_365_DAYS, OTHER } from './date.util';
 import { FilterModel, INTERVAL_MONTHLY, INTERVAL_WEEKLY, INTERVAL_DAILY, INTERVAL_HOURLY } from '../../ngrx';
 
 describe('date util', () => {
@@ -36,14 +37,14 @@ describe('date util', () => {
   });
 
   it('should get begin and end dates from standard range', () => {
-    expect(getBeginEndDateFromStandardRange(TODAY).beginDate.valueOf()).toEqual(beginningOfTodayUTC().valueOf());
-    expect(getBeginEndDateFromStandardRange(TODAY).endDate.valueOf()).toEqual(endOfTodayUTC().valueOf());
+    expect(getBeginEndDateFromStandardRange(THIS_WEEK).beginDate.valueOf()).toEqual(beginningOfThisWeekUTC().valueOf());
+    expect(getBeginEndDateFromStandardRange(THIS_WEEK).endDate.valueOf()).toEqual(endOfTodayUTC().valueOf());
     expect(getBeginEndDateFromStandardRange(THIS_YEAR).beginDate.valueOf()).toEqual(beginningOfThisYearUTC().valueOf());
     expect(getBeginEndDateFromStandardRange(THIS_YEAR).endDate.valueOf()).toEqual(endOfTodayUTC().valueOf());
     expect(getBeginEndDateFromStandardRange(LAST_MONTH).beginDate.valueOf()).toEqual(beginningOfLastMonthUTC().valueOf());
     expect(getBeginEndDateFromStandardRange(LAST_MONTH).endDate.valueOf()).toEqual(endOfLastMonthUTC().valueOf());
-    expect(getBeginEndDateFromStandardRange(LAST_YEAR).beginDate.valueOf()).toEqual(beginningOfLastYearUTC().valueOf());
-    expect(getBeginEndDateFromStandardRange(LAST_YEAR).endDate.valueOf()).toEqual(endOfLastYearUTC().valueOf());
+    expect(getBeginEndDateFromStandardRange(LAST_90_DAYS).beginDate.valueOf()).toEqual(beginningOfLast90DaysUTC().valueOf());
+    expect(getBeginEndDateFromStandardRange(LAST_90_DAYS).endDate.valueOf()).toEqual(endOfTodayUTC().valueOf());
   });
 
   it('should get standard range from begin and end dates', () => {
@@ -52,17 +53,20 @@ describe('date util', () => {
       beginDate: beginningOfThisWeekUTC().toDate(),
       endDate: endOfTodayUTC().toDate()
     };
-    if (thisWeek.beginDate.getUTCDate() === thisWeek.endDate.getUTCDate()) {
-      expect(getStandardRangeForBeginEndDate(thisWeek)).toEqual(TODAY);
-    } else {
-      expect(getStandardRangeForBeginEndDate(thisWeek)).toEqual(THIS_WEEK);
-    }
+    expect(getStandardRangeForBeginEndDate(thisWeek)).toEqual(THIS_WEEK);
     const lastWeek: FilterModel = {
       interval: INTERVAL_DAILY,
       beginDate: beginningOfLastWeekUTC().toDate(),
       endDate: endOfLastWeekUTC().toDate()
     };
     expect(getStandardRangeForBeginEndDate(lastWeek)).toEqual(LAST_WEEK);
+    const other: FilterModel = {
+      interval: INTERVAL_DAILY,
+      beginDate: beginningOfTodayUTC().toDate(),
+      endDate: endOfTodayUTC().toDate()
+    };
+    // TODAY is no longer a valid option, so should match OTHER
+    expect(getStandardRangeForBeginEndDate(other)).toEqual(OTHER);
   });
 
   it('should get amount of milliseconds in interval', () => {
@@ -97,25 +101,29 @@ describe('date util', () => {
     });
   });
 
-  it('YESTERDAY range should be the day before today', () => {
-    const yesterday = getBeginEndDateFromStandardRange(YESTERDAY);
-    expect(yesterday.beginDate.valueOf()).toEqual(beginningOfYesterdayUTC().valueOf());
-    expect(yesterday.endDate.valueOf()).toBeLessThanOrEqual(endOfYesterdayUTC().valueOf());
-    expect(yesterday.endDate.valueOf()).toBeLessThanOrEqual(beginningOfTodayUTC().valueOf());
+  it('LAST_7_DAYS range should be 7 days ago through today', () => {
+    const last7Days = getBeginEndDateFromStandardRange(LAST_7_DAYS);
+    expect(last7Days.beginDate.valueOf()).toEqual(beginningOfLast7DaysUTC().valueOf());
+    expect(last7Days.endDate.valueOf()).toEqual(endOfTodayUTC().valueOf());
   });
 
-  it('TWO_WEEKS range should be two weeks starting on Sunday of last week not extending past today', () => {
-    const twoWeeks = getBeginEndDateFromStandardRange(TWO_WEEKS);
+  it('THIS_WEEK_PLUS_7_DAYS range should be two weeks starting on Sunday of last week not extending past today', () => {
+    const twoWeeks = getBeginEndDateFromStandardRange(THIS_WEEK_PLUS_7_DAYS);
     expect(twoWeeks.beginDate.getUTCDay()).toEqual(0);
-    expect(twoWeeks.beginDate.valueOf()).toEqual(beginningOfTwoWeeksUTC().valueOf());
-    expect(twoWeeks.endDate.valueOf()).toBeLessThanOrEqual(endOfTodayUTC().valueOf());
+    expect(twoWeeks.beginDate.valueOf()).toEqual(beginningOfThisWeekPlus7DaysUTC().valueOf());
+    expect(twoWeeks.endDate.valueOf()).toEqual(endOfTodayUTC().valueOf());
   });
 
-  it('PRIOR_TWO_WEEKS range should be the two weeks starting on Sunday of four weeks ago', () => {
-    const priorTwoWeeks = getBeginEndDateFromStandardRange(PRIOR_TWO_WEEKS);
-    expect(priorTwoWeeks.beginDate.getUTCDay()).toEqual(0);
-    expect(priorTwoWeeks.beginDate.valueOf()).toEqual(beginningOfPriorTwoWeeksUTC().valueOf());
-    expect(priorTwoWeeks.endDate.valueOf()).toBeLessThanOrEqual(endOfPriorTwoWeeksUTC().valueOf());
+  it('LAST_28_DAYS range should be 28 days ago through today', () => {
+    const last28Days = getBeginEndDateFromStandardRange(LAST_28_DAYS);
+    expect(last28Days.beginDate.valueOf()).toEqual(beginningOfLast28DaysUTC().valueOf());
+    expect(last28Days.endDate.valueOf()).toEqual(endOfTodayUTC().valueOf());
+  });
+
+  it('LAST_30_DAYS range should be 30 days ago through today', () => {
+    const last30Days = getBeginEndDateFromStandardRange(LAST_30_DAYS);
+    expect(last30Days.beginDate.valueOf()).toEqual(beginningOfLast30DaysUTC().valueOf());
+    expect(last30Days.endDate.valueOf()).toEqual(endOfTodayUTC().valueOf());
   });
 
   it('THIS_MONTH range should begin on the 1st of this month not extending past today', () => {
@@ -125,24 +133,22 @@ describe('date util', () => {
     expect(thisMonth.endDate.valueOf()).toBeLessThanOrEqual(endOfTodayUTC().valueOf());
   });
 
-  it('THREE_MONTHS range should begin on the 1st of the month 3 months ago not extending past today', () => {
-    const threeMonths = getBeginEndDateFromStandardRange(THREE_MONTHS);
+  it('THIS_MONTH_PLUS_2_MONTHS range should begin on the 1st of the month 3 months ago not extending past today', () => {
+    const threeMonths = getBeginEndDateFromStandardRange(THIS_MONTH_PLUS_2_MONTHS);
     expect(threeMonths.beginDate.getUTCDate()).toEqual(1);
-    expect(threeMonths.beginDate.valueOf()).toEqual(beginningOfThreeMonthsUTC().valueOf());
-    expect(threeMonths.endDate.valueOf()).toBeLessThanOrEqual(endOfTodayUTC().valueOf());
+    expect(threeMonths.beginDate.valueOf()).toEqual(beginningOfThisMonthPlusTwoMonthsUTC().valueOf());
+    expect(threeMonths.endDate.valueOf()).toEqual(endOfTodayUTC().valueOf());
   });
 
-  it('PRIOR_THREE_MONTHS range should begin on the 1st of the month 3 months ago not extending past today', () => {
-    const threeMonths = getBeginEndDateFromStandardRange(PRIOR_THREE_MONTHS);
-    expect(threeMonths.beginDate.getUTCDate()).toEqual(1);
-    expect(threeMonths.beginDate.valueOf()).toEqual(beginningOfPriorThreeMonthsUTC().valueOf());
-    expect(threeMonths.endDate.valueOf()).toBeLessThanOrEqual(endOfPriorThreeMonthsUTC().valueOf());
+  it('LAST_365_DAYS range should be 365 days ago through today', () => {
+    const last365Days = getBeginEndDateFromStandardRange(LAST_365_DAYS);
+    expect(last365Days.beginDate.valueOf()).toEqual(beginningOfLast365DaysUTC().valueOf());
+    expect(last365Days.endDate.valueOf()).toEqual(endOfTodayUTC().valueOf());
   });
 
   it('should get the amount of intervals (data points) there are expected to be from begin to end date', () => {
     expect(getAmountOfIntervals(beginningOfTodayUTC().toDate(), endOfTodayUTC().toDate(), INTERVAL_HOURLY)).toEqual(24);
     expect(getAmountOfIntervals(beginningOfLastWeekUTC().toDate(), endOfLastWeekUTC().toDate(), INTERVAL_DAILY)).toEqual(7);
-    expect(getAmountOfIntervals(beginningOfLastYearUTC().toDate(), endOfLastYearUTC().toDate(), INTERVAL_MONTHLY)).toEqual(12);
   });
 
   it('should format dates in UTC', () => {

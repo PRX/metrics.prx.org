@@ -10,7 +10,7 @@ import { CustomDateRangeDropdownComponent } from './custom-date-range-dropdown.c
 
 import { INTERVAL_DAILY, INTERVAL_HOURLY } from '../../../ngrx';
 import { beginningOfTodayUTC, endOfTodayUTC,
-  beginningOfYesterdayUTC, endOfYesterdayUTC, beginningOfLastYearUTC, endOfLastYearUTC } from '../../../shared/util/date.util';
+  beginningOfLastWeekUTC, endOfLastWeekUTC, beginningOfLast365DaysUTC } from '../../../shared/util/date.util';
 
 describe('CustomDateRangeDropdownComponent', () => {
   let comp: CustomDateRangeDropdownComponent;
@@ -45,7 +45,7 @@ describe('CustomDateRangeDropdownComponent', () => {
   }));
 
   it('should send google analytics event on apply changes', () => {
-    comp.onCustomRangeChange({from: beginningOfYesterdayUTC().toDate(), to: endOfYesterdayUTC().toDate()});
+    comp.onCustomRangeChange({from: beginningOfLastWeekUTC().toDate(), to: endOfLastWeekUTC().toDate()});
     expect(comp.googleAnalyticsEvent).not.toHaveBeenCalled();
     comp.onApply();
     expect(comp.googleAnalyticsEvent).toHaveBeenCalled();
@@ -61,8 +61,8 @@ describe('CustomDateRangeDropdownComponent', () => {
   it('should not allow users to select dates more than 40 days apart when interval is hourly', () => {
     comp.filter = {
       interval: INTERVAL_HOURLY,
-      beginDate: beginningOfLastYearUTC().toDate(),
-      endDate: endOfLastYearUTC().toDate()
+      beginDate: beginningOfLast365DaysUTC().toDate(),
+      endDate: endOfTodayUTC().toDate()
     };
     comp.ngOnChanges();
     fix.detectChanges();
@@ -72,8 +72,8 @@ describe('CustomDateRangeDropdownComponent', () => {
   it('should not allow to date before from date', () => {
     comp.filter = {
       interval: INTERVAL_DAILY,
-      beginDate: endOfLastYearUTC().toDate(),
-      endDate: beginningOfLastYearUTC().toDate()
+      beginDate: endOfLastWeekUTC().toDate(),
+      endDate: beginningOfLastWeekUTC().toDate()
     };
     comp.ngOnChanges();
     fix.detectChanges();

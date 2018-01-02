@@ -6,8 +6,9 @@ import { reducers } from '../../ngrx/reducers';
 
 import { CastleFilterAction } from '../../ngrx/actions';
 import { FilterModel, INTERVAL_DAILY, INTERVAL_MONTHLY } from '../../ngrx';
-import { TODAY, YESTERDAY, LAST_WEEK, THIS_MONTH,
-  beginningOfTodayUTC, endOfTodayUTC, beginningOfLastWeekUTC, endOfLastWeekUTC, beginningOfThisMonthUTC } from '../util/date.util';
+import {
+  THIS_WEEK, LAST_WEEK, THIS_MONTH, beginningOfThisWeekUTC, beginningOfTodayUTC, endOfTodayUTC,
+  beginningOfLastWeekUTC, endOfLastWeekUTC, beginningOfThisMonthUTC } from '../util/date.util';
 
 import { MenuBarComponent } from './menu-bar.component';
 import { ChartTypeComponent } from './chart-type.component';
@@ -25,8 +26,8 @@ describe('MenuBarComponent', () => {
 
   const filter: FilterModel = {
     interval: INTERVAL_DAILY,
-    standardRange: TODAY,
-    beginDate: beginningOfTodayUTC().toDate(),
+    standardRange: THIS_WEEK,
+    beginDate: beginningOfThisWeekUTC().toDate(),
     endDate: endOfTodayUTC().toDate()
   };
 
@@ -64,13 +65,14 @@ describe('MenuBarComponent', () => {
   });
 
   it('keeps date range in sync with interval', () => {
+    comp.filter.beginDate = beginningOfTodayUTC().toDate();
     comp.onIntervalChange(INTERVAL_MONTHLY);
     expect(comp.filter.beginDate.valueOf()).toEqual(beginningOfThisMonthUTC().valueOf());
     expect(comp.filter.standardRange).toEqual(THIS_MONTH);
   });
 
   it('should send google analytics event when standard range is changed', () => {
-    comp.onStandardRangeChange(YESTERDAY);
+    comp.onStandardRangeChange(LAST_WEEK);
     expect(comp.googleAnalyticsEvent).toHaveBeenCalled();
   });
 });

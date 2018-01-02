@@ -1033,7 +1033,7 @@ code-point-at@^1.0.0:
 
 codecov@PRX/codecov-node:
   version "2.2.0"
-  resolved "https://codeload.github.com/PRX/codecov-node/tar.gz/97f8dc6255576feb540bdd6b61a5a04b919cf23a"
+  resolved "https://codeload.github.com/PRX/codecov-node/tar.gz/7d395678c45215ecd37f5f8ae9e0cfade16c4b74"
   dependencies:
     argv "0.0.2"
     request "2.79.0"

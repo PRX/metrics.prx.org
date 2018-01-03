@@ -16,7 +16,7 @@ import { IntervalModel } from '../../../ngrx';
         </metrics-standard-date-range>
         <ul>
           <li>
-            <button class="btn-link" (click)="onCustom(range)">
+            <button class="btn-link" (click)="onCustom()">
               Other...
             </button>
           </li>

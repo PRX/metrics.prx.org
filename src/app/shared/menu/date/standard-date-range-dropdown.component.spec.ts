@@ -8,7 +8,7 @@ import { StandardDateRangeDropdownComponent } from './standard-date-range-dropdo
 import { INTERVAL_DAILY } from '../../../ngrx';
 import { THIS_WEEK } from '../../util/date.util';
 
-describe('CustomDateRangeDropdownComponent', () => {
+describe('StandardDateRangeDropdownComponent', () => {
   let comp: StandardDateRangeDropdownComponent;
   let fix: ComponentFixture<StandardDateRangeDropdownComponent>;
   let de: DebugElement;

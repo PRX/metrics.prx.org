@@ -60,14 +60,6 @@ export class StandardDateRangeComponent implements OnChanges {
     }
   }
 
-  get flattenedOptions(): string[] {
-    const options = [];
-    this.rangeOptions.forEach(group => group.forEach(option => {
-      options.push(option);
-    }));
-    return options;
-  }
-
   getRangeDesc(range: string): string {
     switch (range) {
       case THIS_WEEK:

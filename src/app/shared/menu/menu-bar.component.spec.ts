@@ -15,6 +15,7 @@ import { ChartTypeComponent } from './chart-type.component';
 import { CustomDateRangeDropdownComponent } from './date/custom-date-range-dropdown.component';
 import { IntervalComponent } from './interval.component';
 import { PodcastsComponent } from './podcasts.component';
+import { StandardDateRangeDropdownComponent } from './date/standard-date-range-dropdown.component';
 import { StandardDateRangeComponent } from './date/standard-date-range.component';
 import { DatepickerModule, SelectModule } from 'ngx-prx-styleguide';
 
@@ -39,7 +40,8 @@ describe('MenuBarComponent', () => {
         CustomDateRangeDropdownComponent,
         IntervalComponent,
         PodcastsComponent,
-        StandardDateRangeComponent
+        StandardDateRangeComponent,
+        StandardDateRangeDropdownComponent
       ],
       imports: [
         DatepickerModule,

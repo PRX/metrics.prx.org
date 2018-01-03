@@ -61,8 +61,8 @@ Make sure you're running the node version in `.nvmrc`, and you're off!
 # install dependencies (https://yarnpkg.com/en/docs/install)
 yarn install
 
-# setup pow proxy (see http://pow.cx/)
-echo 4202 > ~/.pow/metrics.prx
+# setup puma-dev proxy (see https://github.com/puma/puma-dev)
+echo 4202 > ~/.puma-dev/metrics.prx
 
 # dev server
 npm start
@@ -71,3 +71,21 @@ open http://metrics.prx.dev
 # run tests in Chrome
 npm test
 ```
+
+## Docker Install
+
+ Or if you really want to, you can develop via docker-compose.
+ This guide assumes you already have docker and dinghy installed.
+
+ ``` sh
+ # build a docker image
+ docker-compose build
+
+ # make sure your AUTH_CLIENT_ID is the .docker one
+ vim .env
+
+ # run the dev server
+ docker-compose up
+ 
+ # open up a browser to view
+ open http://metrics.prx.docker

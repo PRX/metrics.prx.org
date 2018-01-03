@@ -1,4 +1,4 @@
-FROM mhart/alpine-node:8.0.0
+FROM mhart/alpine-node:9.3.0
 
 MAINTAINER PRX <sysadmin@prx.org>
 LABEL org.prx.app="yes"
@@ -27,13 +27,11 @@ CMD [ "serve" ]
 
 ADD ./package.json ./
 ADD ./yarn.lock ./
-RUN apk --update add curl git && \
-  curl -Ls "https://github.com/dustinblackman/phantomized/releases/download/2.1.1/dockerized-phantomjs.tar.gz" | tar xz -C / && \
-  npm install yarn --global && \
-  yarn install --no-progress --silent && \
-  apk del curl && \
-  yarn cache clean && \
-  rm -rf /usr/share/man /tmp/* /var/tmp/* /var/cache/apk/* /root/.npm /root/.node-gyp
+RUN apk --no-cache add curl fontconfig && \
+  echo "downloading phantomized..." && \
+  curl -Ls "https://github.com/dustinblackman/phantomized/releases/download/2.1.1a/dockerized-phantomjs.tar.gz" | tar xz -C / && \
+  echo "downloaded success!" && \
+  yarn install
 
 ADD . ./
 RUN npm run build

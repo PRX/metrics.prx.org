@@ -306,55 +306,26 @@ export const UTCDateFormat = (date: Date): string => {
   return date.toUTCString();
 };
 
-export const dayOfWeekDateFormat = (date: Date): string => {
-  const dayOfWeek = (day: number): string => {
-    switch (day) {
-      case 0:
-        return 'Sun';
-      case 1:
-        return 'Mon';
-      case 2:
-        return 'Tue';
-      case 3:
-        return 'Wed';
-      case 4:
-        return 'Thu';
-      case 5:
-        return 'Fri';
-      case 6:
-        return 'Sat';
-    }
-  };
-  const month = moment(date).utc().format('MMM');
-  return dayOfWeek(date.getUTCDay()) + ', ' + month + ' ' + date.getUTCDate();
+export const dayOfWeekDateFormat = (date: Date | moment.Moment): string => {
+  return moment(date).utc().format('ddd MMM D');
 };
 
-export const dayMonthDateFormat = (date: Date): string => {
-  const month = moment(date).utc().format('MMM');
-  return month + ' ' + date.getUTCDate();
+export const dayMonthDateFormat = (date: Date | moment.Moment): string => {
+  return  moment(date).utc().format('MMM D');
 };
 
-export const monthDateYearFormat = (date: Date): string => {
-  const month = moment(date).utc().format('MMM');
-  return month + ' ' + date.getUTCDate() + ', ' + date.getUTCFullYear();
+export const monthDateYearFormat = (date: Date | moment.Moment, separator = true): string => {
+  if (separator) {
+    return moment(date).utc().format('MMM D, YYYY');
+  } else {
+    return moment(date).utc().format('MMM D YYYY');
+  }
 };
 
 export const monthYearFormat = (date: Date): string => {
-  const month = moment(date).utc().format('MMM');
-  return month + ' ' + date.getUTCFullYear();
+  return moment(date).utc().format('MMM YYYY');
 };
 
 export const hourlyDateFormat = (date: Date): string => {
-  let time;
-  const hours = date.getHours();
-  if (hours === 0) {
-    time = '12:00 AM';
-  } else if (hours > 12) {
-    time = hours % 12 + ':00 PM';
-  } else {
-    time = hours + ':00 AM';
-  }
-  const month = moment(date).format('MMM');
-
-  return month + ' ' + date.getDate() + ', ' + time;
+  return moment(date).format('MMM D, h:mm A');
 };

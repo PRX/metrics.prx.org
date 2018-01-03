@@ -13,8 +13,8 @@ import { roundDateToBeginOfInterval, roundDateToEndOfInterval,
     <metrics-chart-type></metrics-chart-type>
     <metrics-interval [filter]="filter" (intervalChange)="onIntervalChange($event)"></metrics-interval>
     <div class="empty"></div>
-    <metrics-standard-date-range [interval]="filter?.interval" [standardRange]="filter?.standardRange"
-                                 (standardRangeChange)="onStandardRangeChange($event)"></metrics-standard-date-range>
+    <metrics-standard-date-range-dropdown [interval]="filter?.interval" [standardRange]="filter?.standardRange"
+                                 (standardRangeChange)="onStandardRangeChange($event)"></metrics-standard-date-range-dropdown>
     <metrics-custom-date-range-dropdown [filter]="filter"
                                (dateRangeChange)="onDateRangeChange($event)"></metrics-custom-date-range-dropdown>
   `,

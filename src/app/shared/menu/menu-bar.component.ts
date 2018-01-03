@@ -14,8 +14,9 @@ import { roundDateToBeginOfInterval, roundDateToEndOfInterval,
     <metrics-interval [filter]="filter" (intervalChange)="onIntervalChange($event)"></metrics-interval>
     <div class="empty"></div>
     <metrics-standard-date-range-dropdown [interval]="filter?.interval" [standardRange]="filter?.standardRange"
-                                 (standardRangeChange)="onStandardRangeChange($event)"></metrics-standard-date-range-dropdown>
-    <metrics-custom-date-range-dropdown [filter]="filter"
+                                          (standardRangeChange)="onStandardRangeChange($event)"
+                                          (custom)="custom.toggleOpen()"></metrics-standard-date-range-dropdown>
+    <metrics-custom-date-range-dropdown [filter]="filter" #custom
                                (dateRangeChange)="onDateRangeChange($event)"></metrics-custom-date-range-dropdown>
   `,
   styleUrls: ['./menu-bar.component.css']

@@ -16,7 +16,7 @@ import { IntervalModel } from '../../../ngrx';
         </metrics-standard-date-range>
         <ul>
           <li>
-            <button class="btn-link" (click)="onOther(range)">
+            <button class="btn-link" (click)="onCustom(range)">
               Other...
             </button>
           </li>
@@ -30,11 +30,15 @@ export class StandardDateRangeDropdownComponent {
   @Input() standardRange: string;
   @Input() interval: IntervalModel;
   @Output() standardRangeChange = new EventEmitter<string>();
+  @Output() custom = new EventEmitter();
   open = false;
 
   toggleOpen() {
     this.open = !this.open;
   }
 
-  onOther() {}
+  onCustom() {
+    this.custom.emit();
+    this.toggleOpen();
+  }
 }

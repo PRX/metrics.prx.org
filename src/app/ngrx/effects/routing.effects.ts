@@ -7,7 +7,7 @@ import { ROUTER_NAVIGATION, RouterNavigationPayload, RouterNavigationAction } fr
 import { Actions, Effect } from '@ngrx/effects';
 import { FilterModel, IntervalList } from '../';
 import { CastleFilterAction, CastlePodcastChartToggleAction, CastleEpisodeChartToggleAction } from '../actions';
-import { getStandardRangeForBeginEndDate, getBeginEndDateFromStandardRange } from '../../shared/util/date.util';
+import * as dateUtil from '../../shared/util/date';
 
 @Injectable()
 export class RoutingEffects {
@@ -41,10 +41,10 @@ export class RoutingEffects {
         // because dates (and episodes) are temporal parameters that would change over time
         if (filter.beginDate && filter.endDate) {
           // maybe these shouldn't even go in the url if they are being overridden, but "all things must go in the url"
-          filter.standardRange = getStandardRangeForBeginEndDate(filter);
+          filter.standardRange = dateUtil.getStandardRangeForBeginEndDate(filter);
         } else if (params['standardRange']) {
           filter.standardRange = params['standardRange'];
-          const { beginDate, endDate } = getBeginEndDateFromStandardRange(filter.standardRange);
+          const { beginDate, endDate } = dateUtil.getBeginEndDateFromStandardRange(filter.standardRange);
           filter.beginDate = beginDate;
           filter.endDate = endDate;
         }

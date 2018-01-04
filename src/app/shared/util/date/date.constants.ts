@@ -1,0 +1,13 @@
+export const THIS_WEEK = 'This week';
+export const LAST_WEEK = 'Last week';
+export const LAST_7_DAYS = 'Last 7 days';
+export const THIS_WEEK_PLUS_7_DAYS = 'This week + 7 days';
+export const THIS_MONTH = 'This month';
+export const LAST_MONTH = 'Last month';
+export const LAST_28_DAYS = 'Last 28 days';
+export const LAST_30_DAYS = 'Last 30 days';
+export const THIS_MONTH_PLUS_2_MONTHS = 'This month + 2 months';
+export const LAST_90_DAYS = 'Last 90 days';
+export const THIS_YEAR = 'This year';
+export const LAST_365_DAYS = 'Last 365 days';
+export const OTHER = 'Other';

@@ -8,6 +8,7 @@ import { EpisodeModel, EPISODE_PAGE_SIZE, EpisodeMetricsModel } from '../';
 import { selectEpisodeMetrics } from '../reducers';
 import { CmsPodcastEpisodePageAction, CmsEpisodePagePayload,
   CmsPodcastEpisodePageSuccessAction, CmsPodcastEpisodePageFailureAction, ActionTypes } from '../actions';
+import { getColor, getShade } from '../../shared/util/chart.util';
 import { CmsService, HalDoc } from '../../core';
 
 @Injectable()
@@ -39,6 +40,8 @@ export class CmsEffects {
                 seriesId: payload.podcast.seriesId,
                 title: doc['title'],
                 publishedAt: doc['publishedAt'] ? new Date(doc['publishedAt']) : null,
+                color: getColor(EPISODE_PAGE_SIZE, i),
+                // color: getShade(EPISODE_PAGE_SIZE, i),
                 page: payload.page
               };
               if (chartIncomingEpisodes && i < 5) {

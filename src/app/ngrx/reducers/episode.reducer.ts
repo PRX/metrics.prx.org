@@ -10,6 +10,7 @@ export interface EpisodeModel {
   title: string;
   publishedAt: Date;
   page?: number;
+  color?: string;
   feederUrl?: string;
   guid?: string;
 }

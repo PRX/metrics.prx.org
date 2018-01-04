@@ -1,57 +1,90 @@
 import { Component, Input, Output, EventEmitter, OnChanges } from '@angular/core';
 import { IntervalModel, INTERVAL_HOURLY, INTERVAL_DAILY, INTERVAL_WEEKLY, INTERVAL_MONTHLY } from '../../../ngrx';
-import { isMoreThanXDays, endOfTodayUTC,
-  beginningOfThreeMonthsUTC, beginningOfThisYearUTC,
-  TODAY, THIS_WEEK, TWO_WEEKS, THIS_MONTH, THREE_MONTHS, THIS_YEAR,
-  YESTERDAY, LAST_WEEK, PRIOR_TWO_WEEKS, LAST_MONTH, PRIOR_THREE_MONTHS, LAST_YEAR } from '../../util/date.util';
+import * as dateUtil from '../../util/date';
 
 @Component({
   selector: 'metrics-standard-date-range',
   template: `
-    <prx-select single="true" [options]="rangeOptions" [selected]="standardRange" (onSelect)="onStandardRangeChange($event)"></prx-select>
-  `
+    <ul *ngFor="let group of rangeOptions" class="group">
+      <li *ngFor="let range of group">
+        <button class="btn-link" (click)="onStandardRangeChange(range)">
+          {{range}} <span>{{ getRangeDesc(range) }}</span>
+        </button>
+      </li>
+    </ul>
+  `,
+  styleUrls: ['./standard-date-range.component.css']
 })
 export class StandardDateRangeComponent implements OnChanges {
   @Input() standardRange: string;
   @Input() interval: IntervalModel;
   @Output() standardRangeChange = new EventEmitter<string>();
-  rangeOptions: string[] = [];
+  rangeOptions: string[][] = [];
 
   ngOnChanges() {
-    this.genRanges();
+    this.rangeOptions = this.getRanges();
   }
 
-  genRanges() {
-    this.rangeOptions = [TODAY, THIS_WEEK, TWO_WEEKS, THIS_MONTH];
-
-    if (this.interval === INTERVAL_DAILY || this.interval === INTERVAL_WEEKLY || this.interval === INTERVAL_MONTHLY ||
-      (this.interval === INTERVAL_HOURLY && !isMoreThanXDays(40, beginningOfThreeMonthsUTC(), endOfTodayUTC()))) {
-      this.rangeOptions.push(THREE_MONTHS);
+  getRanges() {
+    switch (this.interval) {
+      case INTERVAL_HOURLY:
+        return [
+          [dateUtil.THIS_WEEK, dateUtil.LAST_WEEK, dateUtil.LAST_7_DAYS],
+          [dateUtil.THIS_WEEK_PLUS_7_DAYS],
+          [dateUtil.THIS_MONTH, dateUtil.LAST_MONTH, dateUtil.LAST_28_DAYS, dateUtil.LAST_30_DAYS]
+        ];
+      case INTERVAL_DAILY:
+      case INTERVAL_WEEKLY:
+        return [
+          [dateUtil.THIS_WEEK, dateUtil.LAST_WEEK, dateUtil.LAST_7_DAYS],
+          [dateUtil.THIS_WEEK_PLUS_7_DAYS],
+          [dateUtil.THIS_MONTH, dateUtil.LAST_MONTH, dateUtil.LAST_28_DAYS, dateUtil.LAST_30_DAYS],
+          [dateUtil.THIS_MONTH_PLUS_2_MONTHS, dateUtil.LAST_90_DAYS],
+          [dateUtil.THIS_YEAR, dateUtil.LAST_365_DAYS]
+        ];
+      case INTERVAL_MONTHLY:
+        return [
+          [dateUtil.THIS_MONTH, dateUtil.LAST_MONTH],
+          [dateUtil.THIS_MONTH_PLUS_2_MONTHS],
+          [dateUtil.THIS_YEAR]
+        ];
     }
-
-    if (this.interval === INTERVAL_DAILY || this.interval === INTERVAL_WEEKLY || this.interval === INTERVAL_MONTHLY ||
-      (this.interval === INTERVAL_HOURLY && !isMoreThanXDays(40, beginningOfThisYearUTC(), endOfTodayUTC()))) {
-      this.rangeOptions.push(THIS_YEAR);
-    }
-
-    this.rangeOptions.push(YESTERDAY);
-    this.rangeOptions.push(LAST_WEEK);
-    this.rangeOptions.push(PRIOR_TWO_WEEKS);
-    this.rangeOptions.push(LAST_MONTH);
-
-    if (this.interval !== INTERVAL_HOURLY) {
-      this.rangeOptions.push(PRIOR_THREE_MONTHS);
-      this.rangeOptions.push(LAST_YEAR);
-    }
-
-    // We don't have back data yet, but users want an All time option,
-    //  suppose that would just use the pub date of the very first episode as the begin date
-    // this.rangeOptions.push('All time');
   }
 
   onStandardRangeChange(standardRange) {
     if (standardRange) {
       this.standardRangeChange.emit(standardRange);
+    }
+  }
+
+  getRangeDesc(range: string): string {
+    switch (range) {
+      case dateUtil.THIS_WEEK:
+        return dateUtil.dayOfWeek(dateUtil.beginningOfThisWeekUTC()) + ' - TODAY';
+      case dateUtil.LAST_WEEK:
+        return dateUtil.dayOfWeek(dateUtil.beginningOfLastWeekUTC()) + ' - ' + dateUtil.monthDate(dateUtil.endOfLastWeekUTC());
+      case dateUtil.LAST_7_DAYS:
+        return dateUtil.monthDate(dateUtil.endOfLastWeekUTC()) + ' - TODAY';
+      case dateUtil.THIS_WEEK_PLUS_7_DAYS:
+        return dateUtil.dayOfWeek(dateUtil.beginningOfThisWeekPlus7DaysUTC()) + ' - TODAY';
+      case dateUtil.THIS_MONTH:
+        return dateUtil.monthDate(dateUtil.beginningOfThisMonthUTC()) + ' - TODAY';
+      case dateUtil.LAST_MONTH:
+        return dateUtil.monthDate(dateUtil.beginningOfLastMonthUTC()) + ' - ' + dateUtil.monthDate(dateUtil.endOfLastMonthUTC());
+      case dateUtil.LAST_28_DAYS:
+        return dateUtil.monthDate(dateUtil.beginningOfLast28DaysUTC()) + ' - TODAY';
+      case dateUtil.LAST_30_DAYS:
+        return dateUtil.monthDate(dateUtil.beginningOfLast30DaysUTC()) + ' - TODAY';
+      case dateUtil.THIS_MONTH_PLUS_2_MONTHS:
+        return dateUtil.monthDate(dateUtil.beginningOfThisMonthPlusTwoMonthsUTC()) + ' - TODAY';
+      case dateUtil.LAST_90_DAYS:
+        return dateUtil.monthDate(dateUtil.beginningOfLast90DaysUTC()) + ' - TODAY';
+      case dateUtil.THIS_YEAR:
+        return dateUtil.monthDate(dateUtil.beginningOfThisYearUTC()) + ' - TODAY';
+      case dateUtil.LAST_365_DAYS:
+        return dateUtil.monthDateYear(dateUtil.beginningOfLast365DaysUTC()) + ' - TODAY';
+      default:
+        break;
     }
   }
 }

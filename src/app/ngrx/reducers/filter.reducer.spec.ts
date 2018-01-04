@@ -1,7 +1,7 @@
 import { CastleFilterAction } from '../actions';
 import { FilterModel, INTERVAL_DAILY, INTERVAL_HOURLY } from '../';
 import { FilterReducer } from './filter.reducer';
-import { beginningOfTodayUTC, endOfTodayUTC, TODAY } from '../../shared/util/date.util';
+import * as dateUtil from '../../shared/util/date';
 
 describe('FilterReducer', () => {
   let newState: FilterModel;
@@ -40,11 +40,13 @@ describe('FilterReducer', () => {
   it('should update standardRange value if begin or end dates are present', () => {
     newState = FilterReducer(newState,
       new CastleFilterAction({filter: {
-        standardRange: TODAY, beginDate: beginningOfTodayUTC().toDate(), endDate: endOfTodayUTC().toDate()}
+        standardRange: dateUtil.THIS_WEEK,
+        beginDate: dateUtil.beginningOfThisWeekUTC().toDate(),
+        endDate: dateUtil.endOfTodayUTC().toDate()}
       }));
-    expect(newState.standardRange).toEqual(TODAY);
+    expect(newState.standardRange).toEqual(dateUtil.THIS_WEEK);
     newState = FilterReducer(newState,
-      new CastleFilterAction({filter: {beginDate: beginningOfTodayUTC().subtract(1, 'days').toDate()}}));
+      new CastleFilterAction({filter: {beginDate: dateUtil.beginningOfTodayUTC().subtract(18, 'days').toDate()}}));
     expect(newState.standardRange).toBeUndefined();
   });
 

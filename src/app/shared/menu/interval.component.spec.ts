@@ -5,7 +5,7 @@ import { SelectModule } from 'ngx-prx-styleguide';
 import { IntervalComponent } from './interval.component';
 
 import { INTERVAL_DAILY } from '../../ngrx';
-import { beginningOfLastMonthUTC, endOfLastMonthUTC } from '../../shared/util/date.util';
+import * as dateUtil from '../util/date';
 
 describe('IntervalComponent', () => {
   let comp: IntervalComponent;
@@ -29,8 +29,8 @@ describe('IntervalComponent', () => {
       el = de.nativeElement;
 
       comp.filter = {
-        beginDate: beginningOfLastMonthUTC().toDate(),
-        endDate: endOfLastMonthUTC().toDate(),
+        beginDate: dateUtil.beginningOfLastMonthUTC().toDate(),
+        endDate: dateUtil.endOfLastMonthUTC().toDate(),
         interval: INTERVAL_DAILY
       };
       comp.ngOnChanges();

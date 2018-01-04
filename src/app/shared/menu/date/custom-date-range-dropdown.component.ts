@@ -7,12 +7,12 @@ import { GoogleAnalyticsEventAction } from '../../../ngrx/actions';
 @Component({
   selector: 'metrics-custom-date-range-dropdown',
   template: `
-    <div class="custom-date-range-dropdown" [class.open]="open">
+    <div class="dropdown" [class.open]="open">
       <div class="overlay" (click)="toggleOpen()"></div>
-      <div class="custom-date-range-button">
+      <div class="dropdown-button">
         <button class="btn-icon icon-calendar grey-dove" (click)="toggleOpen()" aria-label="Custom Date Range"></button>
       </div>
-      <div class="custom-date-range-content">
+      <div class="dropdown-content">
         <prx-daterange [from]="dateRange.beginDate" [to]="dateRange.endDate" UTC="true"
                        (rangeChange)="onCustomRangeChange($event)"></prx-daterange>
         <div class="invalid" *ngIf="invalid">
@@ -25,7 +25,7 @@ import { GoogleAnalyticsEventAction } from '../../../ngrx/actions';
       </div>
     </div>
   `,
-  styleUrls: ['./custom-date-range-dropdown.component.css']
+  styleUrls: ['../dropdown.css', './custom-date-range-dropdown.component.css']
 })
 
 export class CustomDateRangeDropdownComponent implements OnChanges {

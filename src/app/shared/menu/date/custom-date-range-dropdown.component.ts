@@ -1,7 +1,8 @@
 import { Component, Input, Output, EventEmitter, OnChanges } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { FilterModel, INTERVAL_HOURLY } from '../../../ngrx';
-import { getAmountOfIntervals, isMoreThanXDays, endOfTodayUTC, getBeginEndDateFromStandardRange } from '../../util/date.util';
+import { FilterModel, INTERVAL_HOURLY, IntervalModel, IntervalList } from '../../../ngrx';
+import { getAmountOfIntervals, isMoreThanXDays, endOfTodayUTC, getBeginEndDateFromStandardRange,
+  roundDateToBeginOfInterval, roundDateToEndOfInterval, getStandardRangeForBeginEndDate } from '../../util/date.util';
 import { GoogleAnalyticsEventAction } from '../../../ngrx/actions';
 
 @Component({
@@ -13,7 +14,11 @@ import { GoogleAnalyticsEventAction } from '../../../ngrx/actions';
         <button class="btn-icon icon-calendar grey-dove" (click)="toggleOpen()" aria-label="Custom Date Range"></button>
       </div>
       <div class="dropdown-content">
-        <div class="intervals"></div>
+        <div class="intervals">
+          <button *ngFor="let interval of intervalList"
+                  [class.btn-link]="dateRange?.interval !== interval"
+                  (click)="onIntervalChange(interval)">{{ interval.name }}</button>
+        </div>
         <hr>
         <div class="ranges">
           <div class="pickers">
@@ -24,15 +29,13 @@ import { GoogleAnalyticsEventAction } from '../../../ngrx/actions';
             </div>
           </div>
           <div class="separator"></div>
-          <div>
-            <metrics-standard-date-range [standardRange]="dateRange?.standardRange" [interval]="dateRange?.interval"
-                                         (standardRangeChange)="onStandardRangeChange($event)">
-            </metrics-standard-date-range>
-          </div>
+          <metrics-standard-date-range [standardRange]="dateRange?.standardRange" [interval]="dateRange?.interval"
+                                       (standardRangeChange)="onStandardRangeChange($event)">
+          </metrics-standard-date-range>
         </div>
         <p class="buttons">
           <button (click)="toggleOpen()" class="btn-link">Cancel</button>
-          <button (click)="onApply()">Apply</button>
+          <button (click)="onApply()" [disabled]="invalid">Apply</button>
         </p>
       </div>
     </div>
@@ -45,11 +48,19 @@ export class CustomDateRangeDropdownComponent implements OnChanges {
   @Output() dateRangeChange = new EventEmitter<FilterModel>();
   dateRange: FilterModel;
   open = false;
+  intervalList = IntervalList;
 
   constructor(public store: Store<any>) {}
 
   ngOnChanges() {
     this.dateRange = this.filter;
+  }
+
+  onIntervalChange(interval: IntervalModel) {
+    this.dateRange.interval = interval;
+    this.dateRange.beginDate = roundDateToBeginOfInterval(this.dateRange.beginDate, interval);
+    this.dateRange.endDate = roundDateToEndOfInterval(this.dateRange.endDate, interval);
+    this.dateRange.standardRange = getStandardRangeForBeginEndDate(this.dateRange);
   }
 
   onCustomRangeChange(dateRange: {from: Date, to: Date}) {
@@ -86,7 +97,7 @@ export class CustomDateRangeDropdownComponent implements OnChanges {
     if (this.dateRange.beginDate && this.dateRange.endDate) {
       if (this.dateRange.beginDate.valueOf() > this.dateRange.endDate.valueOf()) {
         return 'From date must come before To date';
-      } else if (this.filter.interval === INTERVAL_HOURLY && isMoreThanXDays(40, this.dateRange.beginDate, this.dateRange.endDate)) {
+      } else if (this.dateRange.interval === INTERVAL_HOURLY && isMoreThanXDays(40, this.dateRange.beginDate, this.dateRange.endDate)) {
         return 'From date and To date cannot be more than 40 days apart for hourly interval';
       } else if (this.dateRange.endDate.valueOf() > endOfTodayUTC().valueOf() + 1 + (60 * 1000)) {
         // + 1 to roll milliseconds into the next day at midnight

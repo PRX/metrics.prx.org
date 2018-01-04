@@ -1,23 +1,35 @@
 .dropdown-button {
   min-width: 36px;
 }
-
 .dropdown-button > button {
   border: 0px;
   max-width: 24px;
   max-height: 36px;
 }
 
+.intervals {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+.intervals > button {
+  max-width: 100px;
+}
+
 .ranges {
   display: flex;
   align-items: center;
 }
-
 .ranges > .separator {
   border-left: 1px solid #a3a3a3;
   width: 0px;
   height: 330px;
   margin: 1em;
+}
+.ranges > metrics-standard-date-range {
+  align-self: flex-start;
+  min-width: 285px;
 }
 
 .pickers {

@@ -9,6 +9,6 @@ button > span {
   text-transform: uppercase;
   color: #a3a3a3;
 }
-button:hover > span {
+button.active > span, button:hover > span {
   color: #676767;
 }

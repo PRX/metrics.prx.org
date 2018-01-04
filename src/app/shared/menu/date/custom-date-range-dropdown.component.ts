@@ -48,6 +48,9 @@ export class CustomDateRangeDropdownComponent implements OnChanges {
   dateRange: FilterModel;
   open = false;
   intervalList = IntervalList;
+  userChoseRange: string;
+  CUSTOM_DATE = 'custom-date';
+  STANDARD_DATE = 'standard-date';
 
   constructor(public store: Store<any>) {}
 
@@ -66,6 +69,7 @@ export class CustomDateRangeDropdownComponent implements OnChanges {
     this.dateRange.beginDate = dateRange.from;
     this.dateRange.endDate = dateRange.to;
     this.dateRange.standardRange = dateUtil.getStandardRangeForBeginEndDate(this.dateRange);
+    this.userChoseRange = this.CUSTOM_DATE;
   }
 
   onStandardRangeChange(standardRange: string) {
@@ -73,6 +77,7 @@ export class CustomDateRangeDropdownComponent implements OnChanges {
     this.dateRange.standardRange = standardRange;
     this.dateRange.beginDate = beginDate;
     this.dateRange.endDate = endDate;
+    this.userChoseRange = this.STANDARD_DATE;
   }
 
   googleAnalyticsEvent(action: string, dateRange: FilterModel) {
@@ -87,7 +92,7 @@ export class CustomDateRangeDropdownComponent implements OnChanges {
 
   onApply() {
     if (!this.invalid) {
-      this.googleAnalyticsEvent('custom-date', this.dateRange);
+      this.googleAnalyticsEvent(this.userChoseRange || this.CUSTOM_DATE, this.dateRange);
       this.dateRangeChange.emit({...this.dateRange});
       this.open = false;
     }

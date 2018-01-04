@@ -3,6 +3,7 @@ import { DebugElement } from '@angular/core';
 import { RouterTestingModule } from '@angular/router/testing';
 import { StoreModule } from '@ngrx/store';
 import { By } from '@angular/platform-browser';
+import { FancyFormModule } from 'ngx-prx-styleguide';
 
 import { SharedModule } from '../shared';
 import { DownloadsTableComponent } from './downloads-table.component';
@@ -98,7 +99,8 @@ describe('DownloadsTableComponent', () => {
       publishedAt: new Date('9/9/17'),
       title: 'A Pet Talk Episode',
       guid: 'abcdefg',
-      page: 1
+      page: 1,
+      color: '#ff0000'
     },
     {
       seriesId: 37800,
@@ -106,7 +108,8 @@ describe('DownloadsTableComponent', () => {
       publishedAt: new Date(),
       title: 'A More Recent Pet Talk Episode',
       guid: 'gfedcba',
-      page: 1
+      page: 1,
+      color: '#00ff00'
     }
   ];
   const filter: FilterModel = {
@@ -125,6 +128,7 @@ describe('DownloadsTableComponent', () => {
       imports: [
         RouterTestingModule,
         SharedModule,
+        FancyFormModule,
         StoreModule.forRoot(reducers)
       ]
     }).compileComponents().then(() => {
@@ -201,5 +205,14 @@ describe('DownloadsTableComponent', () => {
       filter: hourlyFilter, metricsType: 'downloads', metrics: podHourlyDownloads}));
     fix.detectChanges();
     expect(de.query(By.css('em')).nativeElement.textContent).toContain('local timezone');
+  });
+
+  it('toggles episode display when checkbox is clicked', () => {
+    spyOn(comp.episodeChartToggle, 'emit');
+    fix.detectChanges();
+    const checks = de.queryAll(By.css('input[type="checkbox"]'));
+    expect(checks.length).toEqual(3);
+    checks[2].nativeElement.click();
+    expect(comp.episodeChartToggle.emit).toHaveBeenCalledWith({id: 123, charted: true});
   });
 });

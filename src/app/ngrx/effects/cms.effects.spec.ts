@@ -5,7 +5,7 @@ import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
 import { Observable } from 'rxjs/Observable';
 import { cold, hot } from 'jasmine-marbles';
-import { MockHalService, AuthModule } from 'ngx-prx-styleguide';
+import { MockHalService, AuthModule, FancyFormModule } from 'ngx-prx-styleguide';
 import { CmsService } from '../../core';
 import { SharedModule } from '../../shared';
 import { getActions, TestActions } from './test.actions';
@@ -14,6 +14,7 @@ import { downloadsRouting } from '../../downloads/downloads.routing';
 import { DownloadsComponent } from '../../downloads/downloads.component';
 import { DownloadsChartComponent } from '../../downloads/downloads-chart.component';
 import { DownloadsTableComponent } from '../../downloads/downloads-table.component';
+import { getColor } from '../../shared/util/chart.util';
 import { reducers } from '../reducers';
 import { CmsPodcastEpisodePageAction, CmsPodcastEpisodePageSuccessAction } from '../actions';
 import { CmsEffects } from './cms.effects';
@@ -37,6 +38,7 @@ describe('CmsEffects', () => {
       title: 'A Pet Talk Episode',
       feederUrl: 'https://feeder.prx.org/api/v1/episodes/abcdefg',
       guid: 'abcdefg',
+      color: getColor(2, 0),
       page: 1
     },
     {
@@ -46,6 +48,7 @@ describe('CmsEffects', () => {
       title: 'A More Recent Pet Talk Episode',
       feederUrl: 'https://feeder.prx.org/api/v1/episodes/gfedcba',
       guid: 'gfedcba',
+      color: getColor(2, 1),
       page: 1
     }
   ];
@@ -74,6 +77,7 @@ describe('CmsEffects', () => {
         RouterTestingModule,
         downloadsRouting,
         AuthModule,
+        FancyFormModule,
         SharedModule,
         StoreModule.forRoot(reducers),
         EffectsModule.forRoot([CmsEffects])

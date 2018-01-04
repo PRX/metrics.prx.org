@@ -6,7 +6,7 @@ import { StoreModule } from '@ngrx/store';
 import { Subject } from 'rxjs/Subject';
 import { Angulartics2 } from 'angulartics2';
 
-import { MockHalService, MockHalDoc, AuthModule } from 'ngx-prx-styleguide';
+import { MockHalService, MockHalDoc, AuthModule, FancyFormModule } from 'ngx-prx-styleguide';
 import { CoreModule, CastleService } from '../core';
 import { SharedModule } from '../shared';
 import { DownloadsComponent } from './downloads.component';
@@ -63,6 +63,7 @@ describe('DownloadsComponent', () => {
         downloadsRouting,
         SharedModule,
         AuthModule,
+        FancyFormModule,
         StoreModule.forRoot(reducers)
       ],
       providers: [

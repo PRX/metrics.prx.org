@@ -28,30 +28,33 @@ export class StandardDateRangeComponent implements OnChanges {
   rangeOptions: string[][] = [];
 
   ngOnChanges() {
-    this.genRanges();
+    this.rangeOptions = this.getRanges();
   }
 
-  genRanges() {
-    if (this.interval !== INTERVAL_MONTHLY) {
-      this.rangeOptions = [[THIS_WEEK, LAST_WEEK, LAST_7_DAYS], [THIS_WEEK_PLUS_7_DAYS],
-        [THIS_MONTH, LAST_MONTH, LAST_28_DAYS, LAST_30_DAYS]];
-    } else {
-      this.rangeOptions = [[THIS_MONTH, LAST_MONTH]];
+  getRanges() {
+    switch (this.interval) {
+      case INTERVAL_HOURLY:
+        return [
+          [THIS_WEEK, LAST_WEEK, LAST_7_DAYS],
+          [THIS_WEEK_PLUS_7_DAYS],
+          [THIS_MONTH, LAST_MONTH, LAST_28_DAYS, LAST_30_DAYS]
+        ];
+      case INTERVAL_DAILY:
+      case INTERVAL_WEEKLY:
+        return [
+          [THIS_WEEK, LAST_WEEK, LAST_7_DAYS],
+          [THIS_WEEK_PLUS_7_DAYS],
+          [THIS_MONTH, LAST_MONTH, LAST_28_DAYS, LAST_30_DAYS],
+          [THIS_MONTH_PLUS_2_MONTHS, LAST_90_DAYS],
+          [THIS_YEAR, LAST_365_DAYS]
+        ];
+      case INTERVAL_MONTHLY:
+        return [
+          [THIS_MONTH, LAST_MONTH],
+          [THIS_MONTH_PLUS_2_MONTHS],
+          [THIS_YEAR]
+        ];
     }
-
-    if (this.interval !== INTERVAL_HOURLY) {
-      if (this.interval !== INTERVAL_MONTHLY) {
-        this.rangeOptions.push([THIS_MONTH_PLUS_2_MONTHS, LAST_90_DAYS]);
-        this.rangeOptions.push([THIS_YEAR, LAST_365_DAYS]);
-      } else {
-        this.rangeOptions.push([THIS_MONTH_PLUS_2_MONTHS]);
-        this.rangeOptions.push([THIS_YEAR]);
-      }
-    }
-
-    // We don't have back data yet, but users want an All time option,
-    //  suppose that would just use the pub date of the very first episode as the begin date
-    // this.rangeOptions.push('All time');
   }
 
   onStandardRangeChange(standardRange) {

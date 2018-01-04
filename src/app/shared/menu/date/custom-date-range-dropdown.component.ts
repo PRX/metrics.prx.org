@@ -1,7 +1,7 @@
 import { Component, Input, Output, EventEmitter, OnChanges } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { FilterModel, INTERVAL_HOURLY } from '../../../ngrx';
-import { getAmountOfIntervals, isMoreThanXDays, endOfTodayUTC } from '../../util/date.util';
+import { getAmountOfIntervals, isMoreThanXDays, endOfTodayUTC, getBeginEndDateFromStandardRange } from '../../util/date.util';
 import { GoogleAnalyticsEventAction } from '../../../ngrx/actions';
 
 @Component({
@@ -13,10 +13,22 @@ import { GoogleAnalyticsEventAction } from '../../../ngrx/actions';
         <button class="btn-icon icon-calendar grey-dove" (click)="toggleOpen()" aria-label="Custom Date Range"></button>
       </div>
       <div class="dropdown-content">
-        <prx-daterange [from]="dateRange.beginDate" [to]="dateRange.endDate" UTC="true"
-                       (rangeChange)="onCustomRangeChange($event)"></prx-daterange>
-        <div class="invalid" *ngIf="invalid">
-          {{ invalid }}
+        <div class="intervals"></div>
+        <hr>
+        <div class="ranges">
+          <div class="pickers">
+            <prx-daterange [from]="dateRange.beginDate" [to]="dateRange.endDate" UTC="true"
+                           (rangeChange)="onCustomRangeChange($event)"></prx-daterange>
+            <div class="invalid" *ngIf="invalid">
+              {{ invalid }}
+            </div>
+          </div>
+          <div class="separator"></div>
+          <div>
+            <metrics-standard-date-range [standardRange]="dateRange?.standardRange" [interval]="dateRange?.interval"
+                                         (standardRangeChange)="onStandardRangeChange($event)">
+            </metrics-standard-date-range>
+          </div>
         </div>
         <p class="buttons">
           <button (click)="toggleOpen()" class="btn-link">Cancel</button>
@@ -43,6 +55,13 @@ export class CustomDateRangeDropdownComponent implements OnChanges {
   onCustomRangeChange(dateRange: {from: Date, to: Date}) {
     this.dateRange.beginDate = dateRange.from;
     this.dateRange.endDate = dateRange.to;
+  }
+
+  onStandardRangeChange(standardRange: string) {
+    const { beginDate, endDate } = getBeginEndDateFromStandardRange(standardRange);
+    this.dateRange.standardRange = standardRange;
+    this.dateRange.beginDate = beginDate;
+    this.dateRange.endDate = endDate;
   }
 
   googleAnalyticsEvent(action: string, dateRange: FilterModel) {

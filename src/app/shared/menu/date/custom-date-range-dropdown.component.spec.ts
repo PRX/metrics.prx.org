@@ -6,6 +6,7 @@ import { By } from '@angular/platform-browser';
 import { reducers } from '../../../ngrx/reducers';
 
 import { DatepickerModule } from 'ngx-prx-styleguide';
+import { StandardDateRangeComponent } from './standard-date-range.component';
 import { CustomDateRangeDropdownComponent } from './custom-date-range-dropdown.component';
 
 import { INTERVAL_DAILY, INTERVAL_HOURLY } from '../../../ngrx';
@@ -21,7 +22,8 @@ describe('CustomDateRangeDropdownComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [
-        CustomDateRangeDropdownComponent
+        CustomDateRangeDropdownComponent,
+        StandardDateRangeComponent
       ],
       imports: [
         DatepickerModule,
@@ -52,10 +54,10 @@ describe('CustomDateRangeDropdownComponent', () => {
   });
 
   it('should show date range controls when open', () => {
-    expect(de.query(By.css('.custom-date-range-dropdown.open'))).toBeNull();
+    expect(de.query(By.css('.dropdown.open'))).toBeNull();
     comp.toggleOpen();
     fix.detectChanges();
-    expect(de.query(By.css('.custom-date-range-dropdown.open'))).not.toBeNull();
+    expect(de.query(By.css('.dropdown.open'))).not.toBeNull();
   });
 
   it('should not allow users to select dates more than 40 days apart when interval is hourly', () => {

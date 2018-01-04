@@ -1,12 +1,6 @@
 import { Component, Input, Output, EventEmitter, OnChanges } from '@angular/core';
-import { IntervalModel, INTERVAL_HOURLY, INTERVAL_MONTHLY } from '../../../ngrx';
-import { dayOfWeekDateFormat, dayMonthDateFormat, monthDateYearFormat,
-  beginningOfThisWeekUTC, beginningOfLastWeekUTC, endOfLastWeekUTC, beginningOfLast7DaysUTC, beginningOfThisWeekPlus7DaysUTC,
-  beginningOfThisMonthUTC, beginningOfLastMonthUTC, endOfLastMonthUTC, beginningOfLast28DaysUTC, beginningOfLast30DaysUTC,
-  beginningOfThisMonthPlusTwoMonthsUTC, beginningOfLast90DaysUTC, beginningOfThisYearUTC, beginningOfLast365DaysUTC,
-  THIS_WEEK, LAST_WEEK, LAST_7_DAYS, THIS_WEEK_PLUS_7_DAYS,
-  THIS_MONTH, LAST_MONTH, LAST_28_DAYS, LAST_30_DAYS,
-  THIS_MONTH_PLUS_2_MONTHS, LAST_90_DAYS, THIS_YEAR, LAST_365_DAYS, OTHER } from '../../util/date.util';
+import { IntervalModel, INTERVAL_HOURLY, INTERVAL_DAILY, INTERVAL_WEEKLY, INTERVAL_MONTHLY } from '../../../ngrx';
+import * as dateUtil from '../../util/date';
 
 @Component({
   selector: 'metrics-standard-date-range',
@@ -28,30 +22,33 @@ export class StandardDateRangeComponent implements OnChanges {
   rangeOptions: string[][] = [];
 
   ngOnChanges() {
-    this.genRanges();
+    this.rangeOptions = this.getRanges();
   }
 
-  genRanges() {
-    if (this.interval !== INTERVAL_MONTHLY) {
-      this.rangeOptions = [[THIS_WEEK, LAST_WEEK, LAST_7_DAYS], [THIS_WEEK_PLUS_7_DAYS],
-        [THIS_MONTH, LAST_MONTH, LAST_28_DAYS, LAST_30_DAYS]];
-    } else {
-      this.rangeOptions = [[THIS_MONTH, LAST_MONTH]];
+  getRanges() {
+    switch (this.interval) {
+      case INTERVAL_HOURLY:
+        return [
+          [dateUtil.THIS_WEEK, dateUtil.LAST_WEEK, dateUtil.LAST_7_DAYS],
+          [dateUtil.THIS_WEEK_PLUS_7_DAYS],
+          [dateUtil.THIS_MONTH, dateUtil.LAST_MONTH, dateUtil.LAST_28_DAYS, dateUtil.LAST_30_DAYS]
+        ];
+      case INTERVAL_DAILY:
+      case INTERVAL_WEEKLY:
+        return [
+          [dateUtil.THIS_WEEK, dateUtil.LAST_WEEK, dateUtil.LAST_7_DAYS],
+          [dateUtil.THIS_WEEK_PLUS_7_DAYS],
+          [dateUtil.THIS_MONTH, dateUtil.LAST_MONTH, dateUtil.LAST_28_DAYS, dateUtil.LAST_30_DAYS],
+          [dateUtil.THIS_MONTH_PLUS_2_MONTHS, dateUtil.LAST_90_DAYS],
+          [dateUtil.THIS_YEAR, dateUtil.LAST_365_DAYS]
+        ];
+      case INTERVAL_MONTHLY:
+        return [
+          [dateUtil.THIS_MONTH, dateUtil.LAST_MONTH],
+          [dateUtil.THIS_MONTH_PLUS_2_MONTHS],
+          [dateUtil.THIS_YEAR]
+        ];
     }
-
-    if (this.interval !== INTERVAL_HOURLY) {
-      if (this.interval !== INTERVAL_MONTHLY) {
-        this.rangeOptions.push([THIS_MONTH_PLUS_2_MONTHS, LAST_90_DAYS]);
-        this.rangeOptions.push([THIS_YEAR, LAST_365_DAYS]);
-      } else {
-        this.rangeOptions.push([THIS_MONTH_PLUS_2_MONTHS]);
-        this.rangeOptions.push([THIS_YEAR]);
-      }
-    }
-
-    // We don't have back data yet, but users want an All time option,
-    //  suppose that would just use the pub date of the very first episode as the begin date
-    // this.rangeOptions.push('All time');
   }
 
   onStandardRangeChange(standardRange) {
@@ -62,30 +59,30 @@ export class StandardDateRangeComponent implements OnChanges {
 
   getRangeDesc(range: string): string {
     switch (range) {
-      case THIS_WEEK:
-        return dayOfWeekDateFormat(beginningOfThisWeekUTC()) + ' - TODAY';
-      case LAST_WEEK:
-        return dayOfWeekDateFormat(beginningOfLastWeekUTC()) + ' - ' + dayMonthDateFormat(endOfLastWeekUTC());
-      case LAST_7_DAYS:
-        return dayMonthDateFormat(beginningOfLast7DaysUTC()) + ' - TODAY';
-      case THIS_WEEK_PLUS_7_DAYS:
-        return dayOfWeekDateFormat(beginningOfThisWeekPlus7DaysUTC()) + ' - TODAY';
-      case THIS_MONTH:
-        return dayMonthDateFormat(beginningOfThisMonthUTC()) + ' - TODAY';
-      case LAST_MONTH:
-        return dayMonthDateFormat(beginningOfLastMonthUTC()) + ' - ' + dayMonthDateFormat(endOfLastMonthUTC());
-      case LAST_28_DAYS:
-        return dayMonthDateFormat(beginningOfLast28DaysUTC()) + ' - TODAY';
-      case LAST_30_DAYS:
-        return dayMonthDateFormat(beginningOfLast30DaysUTC()) + ' - TODAY';
-      case THIS_MONTH_PLUS_2_MONTHS:
-        return dayMonthDateFormat(beginningOfThisMonthPlusTwoMonthsUTC()) + ' - TODAY';
-      case LAST_90_DAYS:
-        return dayMonthDateFormat(beginningOfLast90DaysUTC()) + ' - TODAY';
-      case THIS_YEAR:
-        return dayMonthDateFormat(beginningOfThisYearUTC()) + ' - TODAY';
-      case LAST_365_DAYS:
-        return monthDateYearFormat(beginningOfLast365DaysUTC()) + ' - TODAY';
+      case dateUtil.THIS_WEEK:
+        return dateUtil.dayOfWeek(dateUtil.beginningOfThisWeekUTC()) + ' - TODAY';
+      case dateUtil.LAST_WEEK:
+        return dateUtil.dayOfWeek(dateUtil.beginningOfLastWeekUTC()) + ' - ' + dateUtil.monthDate(dateUtil.endOfLastWeekUTC());
+      case dateUtil.LAST_7_DAYS:
+        return dateUtil.monthDate(dateUtil.endOfLastWeekUTC()) + ' - TODAY';
+      case dateUtil.THIS_WEEK_PLUS_7_DAYS:
+        return dateUtil.dayOfWeek(dateUtil.beginningOfThisWeekPlus7DaysUTC()) + ' - TODAY';
+      case dateUtil.THIS_MONTH:
+        return dateUtil.monthDate(dateUtil.beginningOfThisMonthUTC()) + ' - TODAY';
+      case dateUtil.LAST_MONTH:
+        return dateUtil.monthDate(dateUtil.beginningOfLastMonthUTC()) + ' - ' + dateUtil.monthDate(dateUtil.endOfLastMonthUTC());
+      case dateUtil.LAST_28_DAYS:
+        return dateUtil.monthDate(dateUtil.beginningOfLast28DaysUTC()) + ' - TODAY';
+      case dateUtil.LAST_30_DAYS:
+        return dateUtil.monthDate(dateUtil.beginningOfLast30DaysUTC()) + ' - TODAY';
+      case dateUtil.THIS_MONTH_PLUS_2_MONTHS:
+        return dateUtil.monthDate(dateUtil.beginningOfThisMonthPlusTwoMonthsUTC()) + ' - TODAY';
+      case dateUtil.LAST_90_DAYS:
+        return dateUtil.monthDate(dateUtil.beginningOfLast90DaysUTC()) + ' - TODAY';
+      case dateUtil.THIS_YEAR:
+        return dateUtil.monthDate(dateUtil.beginningOfThisYearUTC()) + ' - TODAY';
+      case dateUtil.LAST_365_DAYS:
+        return dateUtil.monthDateYear(dateUtil.beginningOfLast365DaysUTC()) + ' - TODAY';
       default:
         break;
     }

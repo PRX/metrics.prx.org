@@ -1,19 +1,6 @@
 import * as moment from 'moment';
-import { FilterModel, IntervalModel, INTERVAL_HOURLY, INTERVAL_DAILY, INTERVAL_WEEKLY, INTERVAL_MONTHLY } from '../../ngrx';
-
-export const THIS_WEEK = 'This week';
-export const LAST_WEEK = 'Last week';
-export const LAST_7_DAYS = 'Last 7 days';
-export const THIS_WEEK_PLUS_7_DAYS = 'This week + 7 days';
-export const THIS_MONTH = 'This month';
-export const LAST_MONTH = 'Last month';
-export const LAST_28_DAYS = 'Last 28 days';
-export const LAST_30_DAYS = 'Last 30 days';
-export const THIS_MONTH_PLUS_2_MONTHS = 'This month + 2 months';
-export const LAST_90_DAYS = 'Last 90 days';
-export const THIS_YEAR = 'This year';
-export const LAST_365_DAYS = 'Last 365 days';
-export const OTHER = 'Other';
+import * as dateConst from './date.constants';
+import { FilterModel, IntervalModel, INTERVAL_HOURLY, INTERVAL_DAILY, INTERVAL_WEEKLY, INTERVAL_MONTHLY } from '../../../ngrx';
 
 export const isMoreThanXDays = (x: number, beginDate, endDate): boolean => {
   return endDate.valueOf() - beginDate.valueOf() > (1000 * 60 * 60 * 24 * x); // x days
@@ -107,62 +94,62 @@ export const beginningOfLast365DaysUTC = () => {
 
 export const getBeginEndDateFromStandardRange = (standardRange: string): {beginDate: Date, endDate: Date} => {
   switch (standardRange) {
-    case THIS_WEEK:
+    case dateConst.THIS_WEEK:
       return {
         beginDate: beginningOfThisWeekUTC().toDate(),
         endDate: endOfTodayUTC().toDate()
       };
-    case LAST_WEEK:
+    case dateConst.LAST_WEEK:
       return {
         beginDate: beginningOfLastWeekUTC().toDate(),
         endDate: endOfLastWeekUTC().toDate()
       };
-    case LAST_7_DAYS:
+    case dateConst.LAST_7_DAYS:
       return {
         beginDate: beginningOfLast7DaysUTC().toDate(),
         endDate: endOfTodayUTC().toDate()
       };
-    case THIS_WEEK_PLUS_7_DAYS:
+    case dateConst.THIS_WEEK_PLUS_7_DAYS:
       return {
         beginDate: beginningOfThisWeekPlus7DaysUTC().toDate(),
         endDate: endOfTodayUTC().toDate()
       };
-    case THIS_MONTH:
+    case dateConst.THIS_MONTH:
       return {
         beginDate: beginningOfThisMonthUTC().toDate(),
         endDate: endOfTodayUTC().toDate()
       };
-    case LAST_MONTH:
+    case dateConst.LAST_MONTH:
       return {
         beginDate: beginningOfLastMonthUTC().toDate(),
         endDate: endOfLastMonthUTC().toDate()
       };
-    case LAST_28_DAYS:
+    case dateConst.LAST_28_DAYS:
       return {
         beginDate: beginningOfLast28DaysUTC().toDate(),
         endDate: endOfTodayUTC().toDate()
       };
-    case LAST_30_DAYS:
+    case dateConst.LAST_30_DAYS:
       return {
         beginDate: beginningOfLast30DaysUTC().toDate(),
         endDate: endOfTodayUTC().toDate()
       };
-    case THIS_MONTH_PLUS_2_MONTHS:
+    case dateConst.THIS_MONTH_PLUS_2_MONTHS:
       return {
         beginDate: beginningOfThisMonthPlusTwoMonthsUTC().toDate(),
         endDate: endOfTodayUTC().toDate()
       };
-    case LAST_90_DAYS:
+    case dateConst.LAST_90_DAYS:
       return {
         beginDate: beginningOfLast90DaysUTC().toDate(),
         endDate: endOfTodayUTC().toDate()
       };
-    case THIS_YEAR:
+    case dateConst.THIS_YEAR:
       return {
         beginDate: beginningOfThisYearUTC().toDate(),
         endDate: endOfTodayUTC().toDate()
       };
-    case LAST_365_DAYS:
+    case dateConst.LAST_365_DAYS:
       return {
         beginDate: beginningOfLast365DaysUTC().toDate(),
         endDate: endOfTodayUTC().toDate()
@@ -176,53 +163,53 @@ export const getStandardRangeForBeginEndDate = (dateRange: FilterModel) => {
   if (dateRange.beginDate.valueOf() === beginningOfThisWeekUTC().valueOf() &&
     (dateRange.endDate.valueOf() === endOfTodayUTC().valueOf() ||
     (dateRange.interval === INTERVAL_HOURLY && dateRange.endDate.valueOf() === endOfTodayHourlyUTC().valueOf()))) {
-    return THIS_WEEK;
+    return dateConst.THIS_WEEK;
   } else if (dateRange.beginDate.valueOf() === beginningOfLastWeekUTC().valueOf() &&
     (dateRange.endDate.valueOf() === endOfLastWeekUTC().valueOf() ||
     (dateRange.interval === INTERVAL_HOURLY && dateRange.endDate.valueOf() === endOfLastWeekHourlyUTC().valueOf()))) {
-    return LAST_WEEK;
+    return dateConst.LAST_WEEK;
   } else if (dateRange.beginDate.valueOf() === beginningOfLast7DaysUTC().valueOf() &&
     (dateRange.endDate.valueOf() === endOfTodayUTC().valueOf() ||
     (dateRange.interval === INTERVAL_HOURLY && dateRange.endDate.valueOf() === endOfTodayHourlyUTC().valueOf()))) {
-    return LAST_7_DAYS;
+    return dateConst.LAST_7_DAYS;
   } else if (dateRange.beginDate.valueOf() === beginningOfThisWeekPlus7DaysUTC().valueOf() &&
     (dateRange.endDate.valueOf() === endOfTodayUTC().valueOf() ||
     (dateRange.interval === INTERVAL_HOURLY && dateRange.endDate.valueOf() === endOfTodayHourlyUTC().valueOf()))) {
-    return THIS_WEEK_PLUS_7_DAYS;
+    return dateConst.THIS_WEEK_PLUS_7_DAYS;
   } else if (dateRange.beginDate.valueOf() === beginningOfThisMonthUTC().valueOf() &&
     (dateRange.endDate.valueOf() === endOfTodayUTC().valueOf() ||
     (dateRange.interval === INTERVAL_HOURLY && dateRange.endDate.valueOf() === endOfTodayHourlyUTC().valueOf()))) {
-    return THIS_MONTH;
+    return dateConst.THIS_MONTH;
   } else if (dateRange.beginDate.valueOf() === beginningOfLastMonthUTC().valueOf() &&
     (dateRange.endDate.valueOf() === endOfLastMonthUTC().valueOf() ||
     (dateRange.interval === INTERVAL_HOURLY && dateRange.endDate.valueOf() === endOfLastMonthHourlyUTC().valueOf()))) {
-    return LAST_MONTH;
+    return dateConst.LAST_MONTH;
   } else if (dateRange.beginDate.valueOf() === beginningOfLast28DaysUTC().valueOf() &&
     (dateRange.endDate.valueOf() === endOfTodayUTC().valueOf() ||
     (dateRange.interval === INTERVAL_HOURLY && dateRange.endDate.valueOf() === endOfTodayHourlyUTC().valueOf()))) {
-    return LAST_28_DAYS;
+    return dateConst.LAST_28_DAYS;
   } else if (dateRange.beginDate.valueOf() === beginningOfLast30DaysUTC().valueOf() &&
     (dateRange.endDate.valueOf() === endOfTodayUTC().valueOf() ||
     (dateRange.interval === INTERVAL_HOURLY && dateRange.endDate.valueOf() === endOfTodayHourlyUTC().valueOf()))) {
-    return LAST_30_DAYS;
+    return dateConst.LAST_30_DAYS;
   } else if (dateRange.beginDate.valueOf() === beginningOfThisMonthPlusTwoMonthsUTC().valueOf() &&
     (dateRange.endDate.valueOf() === endOfTodayUTC().valueOf() ||
     (dateRange.interval === INTERVAL_HOURLY && dateRange.endDate.valueOf() === endOfTodayHourlyUTC().valueOf()))) {
-    return THIS_MONTH_PLUS_2_MONTHS;
+    return dateConst.THIS_MONTH_PLUS_2_MONTHS;
   } else if (dateRange.beginDate.valueOf() === beginningOfLast90DaysUTC().valueOf() &&
     (dateRange.endDate.valueOf() === endOfTodayUTC().valueOf() ||
     (dateRange.interval === INTERVAL_HOURLY && dateRange.endDate.valueOf() === endOfTodayHourlyUTC().valueOf()))) {
-    return LAST_90_DAYS;
+    return dateConst.LAST_90_DAYS;
   } else if (dateRange.beginDate.valueOf() === beginningOfThisYearUTC().valueOf() &&
     (dateRange.endDate.valueOf() === endOfTodayUTC().valueOf() ||
     (dateRange.interval === INTERVAL_HOURLY && dateRange.endDate.valueOf() === endOfTodayHourlyUTC().valueOf()))) {
-    return THIS_YEAR;
+    return dateConst.THIS_YEAR;
   } else if (dateRange.beginDate.valueOf() === beginningOfLast365DaysUTC().valueOf() &&
     (dateRange.endDate.valueOf() === endOfTodayUTC().valueOf() ||
     (dateRange.interval === INTERVAL_HOURLY && dateRange.endDate.valueOf() === endOfTodayHourlyUTC().valueOf()))) {
-    return LAST_365_DAYS;
+    return dateConst.LAST_365_DAYS;
   } else {
-    return OTHER;
+    return dateConst.OTHER;
   }
 };
 
@@ -300,32 +287,4 @@ export const getAmountOfIntervals = (beginDate: Date, endDate: Date, interval: I
     default:
       break;
   }
-};
-
-export const UTCDateFormat = (date: Date): string => {
-  return date.toUTCString();
-};
-
-export const dayOfWeekDateFormat = (date: Date | moment.Moment): string => {
-  return moment(date).utc().format('ddd MMM D');
-};
-
-export const dayMonthDateFormat = (date: Date | moment.Moment): string => {
-  return  moment(date).utc().format('MMM D');
-};
-
-export const monthDateYearFormat = (date: Date | moment.Moment, separator = true): string => {
-  if (separator) {
-    return moment(date).utc().format('MMM D, YYYY');
-  } else {
-    return moment(date).utc().format('MMM D YYYY');
-  }
-};
-
-export const monthYearFormat = (date: Date): string => {
-  return moment(date).utc().format('MMM YYYY');
-};
-
-export const hourlyDateFormat = (date: Date): string => {
-  return moment(date).format('MMM D, h:mm A');
 };

@@ -6,7 +6,7 @@ import { StandardDateRangeComponent } from './standard-date-range.component';
 import { StandardDateRangeDropdownComponent } from './standard-date-range-dropdown.component';
 
 import { INTERVAL_DAILY } from '../../../ngrx';
-import { THIS_WEEK } from '../../util/date.util';
+import { THIS_WEEK } from '../../util/date/date.constants';
 
 describe('StandardDateRangeDropdownComponent', () => {
   let comp: StandardDateRangeDropdownComponent;

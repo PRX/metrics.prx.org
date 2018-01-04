@@ -1,8 +1,7 @@
 import { Component, Input, Output, EventEmitter, OnChanges } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { FilterModel, INTERVAL_HOURLY, IntervalModel, IntervalList } from '../../../ngrx';
-import { getAmountOfIntervals, isMoreThanXDays, endOfTodayUTC, getBeginEndDateFromStandardRange,
-  roundDateToBeginOfInterval, roundDateToEndOfInterval, getStandardRangeForBeginEndDate } from '../../util/date.util';
+import * as dateUtil from '../../util/date';
 import { GoogleAnalyticsEventAction } from '../../../ngrx/actions';
 
 @Component({
@@ -58,9 +57,9 @@ export class CustomDateRangeDropdownComponent implements OnChanges {
 
   onIntervalChange(interval: IntervalModel) {
     this.dateRange.interval = interval;
-    this.dateRange.beginDate = roundDateToBeginOfInterval(this.dateRange.beginDate, interval);
-    this.dateRange.endDate = roundDateToEndOfInterval(this.dateRange.endDate, interval);
-    this.dateRange.standardRange = getStandardRangeForBeginEndDate(this.dateRange);
+    this.dateRange.beginDate = dateUtil.roundDateToBeginOfInterval(this.dateRange.beginDate, interval);
+    this.dateRange.endDate = dateUtil.roundDateToEndOfInterval(this.dateRange.endDate, interval);
+    this.dateRange.standardRange = dateUtil.getStandardRangeForBeginEndDate(this.dateRange);
   }
 
   onCustomRangeChange(dateRange: {from: Date, to: Date}) {
@@ -69,14 +68,14 @@ export class CustomDateRangeDropdownComponent implements OnChanges {
   }
 
   onStandardRangeChange(standardRange: string) {
-    const { beginDate, endDate } = getBeginEndDateFromStandardRange(standardRange);
+    const { beginDate, endDate } = dateUtil.getBeginEndDateFromStandardRange(standardRange);
     this.dateRange.standardRange = standardRange;
     this.dateRange.beginDate = beginDate;
     this.dateRange.endDate = endDate;
   }
 
   googleAnalyticsEvent(action: string, dateRange: FilterModel) {
-    const value = getAmountOfIntervals(dateRange.beginDate, dateRange.endDate, this.filter.interval);
+    const value = dateUtil.getAmountOfIntervals(dateRange.beginDate, dateRange.endDate, this.filter.interval);
     this.store.dispatch(new GoogleAnalyticsEventAction({gaAction: 'filter-' + action, value}));
   }
 
@@ -97,9 +96,10 @@ export class CustomDateRangeDropdownComponent implements OnChanges {
     if (this.dateRange.beginDate && this.dateRange.endDate) {
       if (this.dateRange.beginDate.valueOf() > this.dateRange.endDate.valueOf()) {
         return 'From date must come before To date';
-      } else if (this.dateRange.interval === INTERVAL_HOURLY && isMoreThanXDays(40, this.dateRange.beginDate, this.dateRange.endDate)) {
+      } else if (this.dateRange.interval === INTERVAL_HOURLY &&
+        dateUtil.isMoreThanXDays(40, this.dateRange.beginDate, this.dateRange.endDate)) {
         return 'From date and To date cannot be more than 40 days apart for hourly interval';
-      } else if (this.dateRange.endDate.valueOf() > endOfTodayUTC().valueOf() + 1 + (60 * 1000)) {
+      } else if (this.dateRange.endDate.valueOf() > dateUtil.endOfTodayUTC().valueOf() + 1 + (60 * 1000)) {
         // + 1 to roll milliseconds into the next day at midnight
         // + 60 * 1000 on endDate because seconds value is retained at :59
         // not sure what to do about the timepicker support but at least let the user select midnight tomorrow for thru end of current day

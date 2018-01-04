@@ -1,7 +1,7 @@
 import { Component, Input, Output, EventEmitter, OnChanges } from '@angular/core';
 import { FilterModel, IntervalModel,
   INTERVAL_MONTHLY, INTERVAL_WEEKLY, INTERVAL_DAILY, INTERVAL_HOURLY } from '../../ngrx';
-import { isMoreThanXDays } from '../util/date.util';
+import * as dateUtil from '../util/date';
 
 @Component({
   selector: 'metrics-interval',
@@ -24,13 +24,13 @@ export class IntervalComponent implements OnChanges {
        40 days at 1h
        2.7 years at 1d
        */
-      if (isMoreThanXDays(40, this.filter.beginDate, this.filter.endDate)) {
+      if (dateUtil.isMoreThanXDays(40, this.filter.beginDate, this.filter.endDate)) {
         this.intervalOptions = [
           [INTERVAL_DAILY.name, INTERVAL_DAILY],
           [INTERVAL_WEEKLY.name, INTERVAL_WEEKLY],
           [INTERVAL_MONTHLY.name, INTERVAL_MONTHLY]
         ];
-      } else if (isMoreThanXDays(10, this.filter.beginDate, this.filter.endDate)) {
+      } else if (dateUtil.isMoreThanXDays(10, this.filter.beginDate, this.filter.endDate)) {
         this.intervalOptions = [
           [INTERVAL_HOURLY.name, INTERVAL_HOURLY],
           [INTERVAL_DAILY.name, INTERVAL_DAILY],

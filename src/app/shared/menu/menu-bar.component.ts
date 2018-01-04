@@ -4,8 +4,7 @@ import { Subscription } from 'rxjs/Subscription';
 import { selectFilter } from '../../ngrx/reducers';
 import { FilterModel, IntervalModel } from '../../ngrx';
 import { GoogleAnalyticsEventAction } from '../../ngrx/actions';
-import { roundDateToBeginOfInterval, roundDateToEndOfInterval,
-  getBeginEndDateFromStandardRange, getStandardRangeForBeginEndDate,getAmountOfIntervals } from '../util/date.util';
+import * as dateUtil from '../util/date';
 
 @Component({
   selector: 'metrics-menu-bar',
@@ -48,7 +47,7 @@ export class MenuBarComponent implements OnInit, OnDestroy {
   }
 
   onStandardRangeChange(standardRange: string) {
-    const dateRange = getBeginEndDateFromStandardRange(standardRange);
+    const dateRange = dateUtil.getBeginEndDateFromStandardRange(standardRange);
     this.googleAnalyticsEvent('standard-date', dateRange);
     this.onDateRangeChange({...this.filter, standardRange, ...dateRange});
   }
@@ -62,14 +61,14 @@ export class MenuBarComponent implements OnInit, OnDestroy {
   }
 
   adjustAndRouteFromFilter() {
-    this.filter.beginDate = roundDateToBeginOfInterval(this.filter.beginDate, this.filter.interval);
-    this.filter.endDate = roundDateToEndOfInterval(this.filter.endDate, this.filter.interval);
-    this.filter.standardRange = getStandardRangeForBeginEndDate(this.filter);
+    this.filter.beginDate = dateUtil.roundDateToBeginOfInterval(this.filter.beginDate, this.filter.interval);
+    this.filter.endDate = dateUtil.roundDateToEndOfInterval(this.filter.endDate, this.filter.interval);
+    this.filter.standardRange = dateUtil.getStandardRangeForBeginEndDate(this.filter);
     this.routeFromFilter.emit(this.filter);
   }
 
   googleAnalyticsEvent(action: string, dateRange: FilterModel) {
-    const value = getAmountOfIntervals(dateRange.beginDate, dateRange.endDate, this.filter.interval);
+    const value = dateUtil.getAmountOfIntervals(dateRange.beginDate, dateRange.endDate, this.filter.interval);
     this.store.dispatch(new GoogleAnalyticsEventAction({gaAction: 'filter-' + action, value}));
   }
 }

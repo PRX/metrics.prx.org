@@ -10,7 +10,7 @@ import { INTERVAL_HOURLY } from '../../ngrx';
 import { reducers } from '../../ngrx/reducers';
 import { CastleFilterAction, CastlePodcastChartToggleAction, CastleEpisodeChartToggleAction } from '../actions';
 import { RoutingEffects } from './routing.effects';
-import { beginningOfThisMonthPlusTwoMonthsUTC, endOfTodayUTC, THIS_MONTH_PLUS_2_MONTHS, OTHER } from '../../shared/util/date.util';
+import * as dateUtil from '../../shared/util/date';
 
 describe('RoutingEffects', () => {
   let effects: RoutingEffects;
@@ -45,7 +45,7 @@ describe('RoutingEffects', () => {
                 seriesId: '37800',
                 interval: 'hourly',
                 page: '1',
-                standardRange: THIS_MONTH_PLUS_2_MONTHS
+                standardRange: dateUtil.THIS_MONTH_PLUS_2_MONTHS
               }
             }
           }
@@ -56,9 +56,9 @@ describe('RoutingEffects', () => {
       podcastSeriesId: 37800,
       page: 1,
       interval: INTERVAL_HOURLY,
-      beginDate: beginningOfThisMonthPlusTwoMonthsUTC().toDate(),
-      endDate: endOfTodayUTC().toDate(),
-      standardRange: THIS_MONTH_PLUS_2_MONTHS
+      beginDate: dateUtil.beginningOfThisMonthPlusTwoMonthsUTC().toDate(),
+      endDate: dateUtil.endOfTodayUTC().toDate(),
+      standardRange: dateUtil.THIS_MONTH_PLUS_2_MONTHS
     }});
     actions$.stream = hot('-a', { a: action });
     const expected = cold('-r', { r: result });
@@ -99,7 +99,7 @@ describe('RoutingEffects', () => {
         interval: INTERVAL_HOURLY,
         beginDate: new Date('2017-11-01T00:00:00.000Z'),
         endDate: new Date('2017-11-01T22:00:00.000'),
-        standardRange: OTHER
+        standardRange: dateUtil.OTHER
       }});
       actions$.stream = hot('-a', { a: action });
       expected = cold('-r', { r: result });

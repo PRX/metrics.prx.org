@@ -45,3 +45,11 @@ table.scroll-x th:nth-child(1), table.scroll-x th:nth-child(2) {
   white-space: normal;
   min-width: 75px;
 }
+prx-checkbox {
+  position: relative;
+  margin-top: -4px;
+  top: 4px;
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

@@ -6,7 +6,7 @@ import { FilterModel, EpisodeModel, PodcastMetricsModel, EpisodeMetricsModel,
   INTERVAL_MONTHLY, INTERVAL_WEEKLY, INTERVAL_DAILY, INTERVAL_HOURLY } from '../ngrx';
 import { selectFilter, selectEpisodes, selectPodcastMetrics, selectEpisodeMetrics } from '../ngrx/reducers';
 import { findPodcastMetrics, filterEpisodeMetricsPage, metricsData, getTotal } from '../shared/util/metrics.util';
-import { mapMetricsToTimeseriesData, subtractTimeseriesDatasets, neutralColor, generateShades } from '../shared/util/chart.util';
+import { mapMetricsToTimeseriesData, subtractTimeseriesDatasets, neutralColor } from '../shared/util/chart.util';
 import { UTCDateFormat, monthYearFormat, dayMonthDateFormat, hourlyDateFormat, getAmountOfIntervals } from '../shared/util/date.util';
 
 @Component({
@@ -28,7 +28,6 @@ export class DownloadsChartComponent implements OnDestroy {
   episodeChartData: TimeseriesChartModel[];
   podcastChartData: TimeseriesChartModel;
   chartData: TimeseriesChartModel[];
-  colors: string[];
 
   constructor(public store: Store<any>) {
     this.filterStoreSub = store.select(selectFilter).subscribe((newFilter: FilterModel) => {
@@ -69,7 +68,6 @@ export class DownloadsChartComponent implements OnDestroy {
   }
 
   updateEpisodeChartData() {
-    this.colors = generateShades(this.episodeMetrics.length);
     this.episodeChartData = this.episodeMetrics
       .filter(e => e.charted)
       .sort((a: EpisodeMetricsModel, b: EpisodeMetricsModel) => {
@@ -77,7 +75,7 @@ export class DownloadsChartComponent implements OnDestroy {
       })
       .map((metrics: EpisodeMetricsModel, i) => {
         const episode = this.allEpisodes.find(ep => ep.id === metrics.id);
-        return this.mapEpisodeData(episode, metricsData(this.filter, metrics, 'downloads'), this.colors[i]);
+        return this.mapEpisodeData(episode, metricsData(this.filter, metrics, 'downloads'));
       });
 
     this.updateChartData();
@@ -90,8 +88,8 @@ export class DownloadsChartComponent implements OnDestroy {
     if (this.episodeMetricsStoreSub) { this.episodeMetricsStoreSub.unsubscribe(); }
   }
 
-  mapEpisodeData(episode: EpisodeModel, metrics: any[][], color: string): TimeseriesChartModel {
-    return { data: mapMetricsToTimeseriesData(metrics), label: episode.title, color };
+  mapEpisodeData(episode: EpisodeModel, metrics: any[][]): TimeseriesChartModel {
+    return { data: mapMetricsToTimeseriesData(metrics), label: episode.title, color: episode.color };
   }
 
   mapPodcastData(metrics: any[][]): TimeseriesChartModel {
@@ -108,6 +106,8 @@ export class DownloadsChartComponent implements OnDestroy {
         // if we have episodes to combine with podcast total
         const episodeDatasets = this.episodeChartData.map(m => m.data);
         const allOtherEpisodesData: TimeseriesChartModel = {
+          // data: this.podcastChartData.data,
+          // label: this.podcastChartData.label,
           data: subtractTimeseriesDatasets(this.podcastChartData.data, episodeDatasets),
           label: 'All Other Episodes',
           color: neutralColor

@@ -65,6 +65,7 @@ export class CustomDateRangeDropdownComponent implements OnChanges {
   onCustomRangeChange(dateRange: {from: Date, to: Date}) {
     this.dateRange.beginDate = dateRange.from;
     this.dateRange.endDate = dateRange.to;
+    this.dateRange.standardRange = dateUtil.getStandardRangeForBeginEndDate(this.dateRange);
   }
 
   onStandardRangeChange(standardRange: string) {

@@ -6,7 +6,7 @@ import { EpisodeModel, FilterModel, EpisodeMetricsModel, PodcastMetricsModel,
 import { selectEpisodes, selectFilter, selectEpisodeMetrics, selectPodcastMetrics } from '../ngrx/reducers';
 import { findPodcastMetrics, filterPodcastEpisodePage, filterEpisodeMetricsPage, metricsData, getTotal } from '../shared/util/metrics.util';
 import { mapMetricsToTimeseriesData, neutralColor } from '../shared/util/chart.util';
-import { monthYearFormat, dayMonthDateFormat, hourlyDateFormat, monthDateYearFormat } from '../shared/util/date.util';
+import * as dateFormat from '../shared/util/date/date.format';
 import { isPodcastChanged } from '../shared/util/filter.util';
 import * as moment from 'moment';
 
@@ -159,7 +159,7 @@ export class DownloadsTableComponent implements OnDestroy {
             return {
               title: episode.title,
               publishedAt: episode.publishedAt,
-              releaseDate: monthDateYearFormat(episode.publishedAt),
+              releaseDate: dateFormat.monthDateYear(episode.publishedAt),
               color: episode.color,
               id: epMetric.id,
               downloads: mapMetricsToTimeseriesData(downloads),
@@ -201,17 +201,17 @@ export class DownloadsTableComponent implements OnDestroy {
     if (this.filter) {
       switch (this.filter.interval) {
         case INTERVAL_MONTHLY:
-          return monthYearFormat(date);
+          return dateFormat.monthYear(date);
         case INTERVAL_WEEKLY:
         case INTERVAL_DAILY:
-          return dayMonthDateFormat(date);
+          return dateFormat.monthDate(date);
         case INTERVAL_HOURLY:
-          return hourlyDateFormat(date).split(', ').join(',\n');
+          return dateFormat.hourly(date).split(', ').join(',\n');
         default:
-          return dayMonthDateFormat(date);
+          return dateFormat.monthDate(date);
       }
     } else {
-      return dayMonthDateFormat(date);
+      return dateFormat.monthDate(date);
     }
   }
 

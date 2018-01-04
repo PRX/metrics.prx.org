@@ -7,7 +7,8 @@ import { FilterModel, EpisodeModel, PodcastMetricsModel, EpisodeMetricsModel,
 import { selectFilter, selectEpisodes, selectPodcastMetrics, selectEpisodeMetrics } from '../ngrx/reducers';
 import { findPodcastMetrics, filterEpisodeMetricsPage, metricsData, getTotal } from '../shared/util/metrics.util';
 import { mapMetricsToTimeseriesData, subtractTimeseriesDatasets, neutralColor } from '../shared/util/chart.util';
-import { UTCDateFormat, monthYearFormat, dayMonthDateFormat, hourlyDateFormat, getAmountOfIntervals } from '../shared/util/date.util';
+import * as dateFormat from '../shared/util/date/date.format';
+import * as dateUtil from '../shared/util/date/date.util';
 
 @Component({
   selector: 'metrics-downloads-chart',
@@ -99,7 +100,7 @@ export class DownloadsChartComponent implements OnDestroy {
   updateChartData() {
     if (this.filter.beginDate && this.filter.endDate && this.filter.interval) {
       // no partial date range coverage charts, makes the loading UX too jerky
-      const expectedLength = getAmountOfIntervals(this.filter.beginDate, this.filter.endDate, this.filter.interval);
+      const expectedLength = dateUtil.getAmountOfIntervals(this.filter.beginDate, this.filter.endDate, this.filter.interval);
       if (this.podcastChartData && this.podcastChartData.data.length === expectedLength &&
         (this.episodeChartData && this.episodeChartData.length > 0 &&
         this.episodeChartData.every(chartData => chartData.data.length === expectedLength))) {
@@ -128,17 +129,17 @@ export class DownloadsChartComponent implements OnDestroy {
     if (this.filter) {
       switch (this.filter.interval) {
         case INTERVAL_MONTHLY:
-          return monthYearFormat;
+          return dateFormat.monthYear;
         case INTERVAL_WEEKLY:
         case INTERVAL_DAILY:
-          return dayMonthDateFormat;
+          return dateFormat.monthDate;
         case INTERVAL_HOURLY:
-          return hourlyDateFormat;
+          return dateFormat.hourly;
         default:
-          return UTCDateFormat;
+          return dateFormat.UTCString;
       }
     } else {
-      return UTCDateFormat;
+      return dateFormat.UTCString;
     }
   }
 

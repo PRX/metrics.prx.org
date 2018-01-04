@@ -6,14 +6,14 @@ import { reducers } from '../../ngrx/reducers';
 
 import { CastleFilterAction } from '../../ngrx/actions';
 import { FilterModel, INTERVAL_DAILY, INTERVAL_MONTHLY } from '../../ngrx';
-import { TODAY, YESTERDAY, LAST_WEEK, THIS_MONTH,
-  beginningOfTodayUTC, endOfTodayUTC, beginningOfLastWeekUTC, endOfLastWeekUTC, beginningOfThisMonthUTC } from '../util/date.util';
+import * as dateUtil from '../util/date';
 
 import { MenuBarComponent } from './menu-bar.component';
 import { ChartTypeComponent } from './chart-type.component';
 import { CustomDateRangeDropdownComponent } from './date/custom-date-range-dropdown.component';
 import { IntervalComponent } from './interval.component';
 import { PodcastsComponent } from './podcasts.component';
+import { StandardDateRangeDropdownComponent } from './date/standard-date-range-dropdown.component';
 import { StandardDateRangeComponent } from './date/standard-date-range.component';
 import { DatepickerModule, SelectModule } from 'ngx-prx-styleguide';
 
@@ -25,9 +25,9 @@ describe('MenuBarComponent', () => {
 
   const filter: FilterModel = {
     interval: INTERVAL_DAILY,
-    standardRange: TODAY,
-    beginDate: beginningOfTodayUTC().toDate(),
-    endDate: endOfTodayUTC().toDate()
+    standardRange: dateUtil.THIS_WEEK,
+    beginDate: dateUtil.beginningOfThisWeekUTC().toDate(),
+    endDate: dateUtil.endOfTodayUTC().toDate()
   };
 
   beforeEach(async(() => {
@@ -38,7 +38,8 @@ describe('MenuBarComponent', () => {
         CustomDateRangeDropdownComponent,
         IntervalComponent,
         PodcastsComponent,
-        StandardDateRangeComponent
+        StandardDateRangeComponent,
+        StandardDateRangeDropdownComponent
       ],
       imports: [
         DatepickerModule,
@@ -59,18 +60,19 @@ describe('MenuBarComponent', () => {
   }));
 
   it('keeps standard range in sync with custom range', () => {
-    comp.onDateRangeChange({beginDate: beginningOfLastWeekUTC().toDate(), endDate: endOfLastWeekUTC().toDate()});
-    expect(comp.filter.standardRange).toEqual(LAST_WEEK);
+    comp.onDateRangeChange({beginDate: dateUtil.beginningOfLastWeekUTC().toDate(), endDate: dateUtil.endOfLastWeekUTC().toDate()});
+    expect(comp.filter.standardRange).toEqual(dateUtil.LAST_WEEK);
   });
 
   it('keeps date range in sync with interval', () => {
+    comp.filter.beginDate = dateUtil.beginningOfTodayUTC().toDate();
     comp.onIntervalChange(INTERVAL_MONTHLY);
-    expect(comp.filter.beginDate.valueOf()).toEqual(beginningOfThisMonthUTC().valueOf());
-    expect(comp.filter.standardRange).toEqual(THIS_MONTH);
+    expect(comp.filter.beginDate.valueOf()).toEqual(dateUtil.beginningOfThisMonthUTC().valueOf());
+    expect(comp.filter.standardRange).toEqual(dateUtil.THIS_MONTH);
   });
 
   it('should send google analytics event when standard range is changed', () => {
-    comp.onStandardRangeChange(YESTERDAY);
+    comp.onStandardRangeChange(dateUtil.LAST_WEEK);
     expect(comp.googleAnalyticsEvent).toHaveBeenCalled();
   });
 });

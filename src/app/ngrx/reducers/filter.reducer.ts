@@ -18,7 +18,6 @@ export interface FilterModel {
   podcastSeriesId?: number;
   page?: number;
   standardRange?: string;
-  range?: any[];
   beginDate?: Date;
   endDate?: Date;
   interval?: IntervalModel;
@@ -43,13 +42,6 @@ export function FilterReducer(state: FilterModel = initialState, action: CastleF
         // standardRange can only be set with accompanying begin or end date
         // standardRange can be set to undefined if begin or end date is present but standardRange is not
         newState.standardRange = action.payload.filter.standardRange;
-      }
-      // the reason that there is a range separate from the standardRange
-      //  is because the standardRange value becomes undefined when the begin and end dates do not
-      //  match one of the valid options; however, the range sticks around so that prev/next
-      //  buttons can still be used to page through based on the last selected range and the date pickers
-      if (action.payload.filter.range) {
-        newState.range = action.payload.filter.range;
       }
       if (action.payload.filter.beginDate) {
         newState.beginDate = action.payload.filter.beginDate;

@@ -1,6 +1,6 @@
 import * as filterUtil from './filter.util';
 import { INTERVAL_DAILY, INTERVAL_MONTHLY } from '../../ngrx';
-import { beginningOfTodayUTC, endOfTodayUTC, beginningOfPriorTwoWeeksUTC, endOfPriorTwoWeeksUTC } from './date.util';
+import * as dateUtil from './date/date.util';
 
 describe('filter.util', () => {
   it('should check if podcast changed', () => {
@@ -29,20 +29,20 @@ describe('filter.util', () => {
   });
 
   it('should check if begin date changed', () => {
-    expect(filterUtil.isBeginDateChanged({beginDate: beginningOfTodayUTC().toDate()},
-      {beginDate: beginningOfPriorTwoWeeksUTC().toDate()})).toBeTruthy();
-    expect(filterUtil.isBeginDateChanged({beginDate: beginningOfTodayUTC().toDate()},
-      {beginDate: beginningOfTodayUTC().toDate()})).toBeFalsy();
-    expect(filterUtil.isBeginDateChanged({beginDate: beginningOfTodayUTC().toDate()}, {})).toBeTruthy();
+    expect(filterUtil.isBeginDateChanged({beginDate: dateUtil.beginningOfTodayUTC().toDate()},
+      {beginDate: dateUtil.beginningOfLastWeekUTC().toDate()})).toBeTruthy();
+    expect(filterUtil.isBeginDateChanged({beginDate: dateUtil.beginningOfTodayUTC().toDate()},
+      {beginDate: dateUtil.beginningOfTodayUTC().toDate()})).toBeFalsy();
+    expect(filterUtil.isBeginDateChanged({beginDate: dateUtil.beginningOfTodayUTC().toDate()}, {})).toBeTruthy();
     expect(filterUtil.isBeginDateChanged({}, {})).toBeFalsy();
   });
 
   it('should check if end date changed', () => {
-    expect(filterUtil.isEndDateChanged({endDate: endOfTodayUTC().toDate()},
-      {endDate: endOfPriorTwoWeeksUTC().toDate()})).toBeTruthy();
-    expect(filterUtil.isEndDateChanged({endDate: endOfTodayUTC().toDate()},
-      {endDate: endOfTodayUTC().toDate()})).toBeFalsy();
-    expect(filterUtil.isEndDateChanged({endDate: endOfTodayUTC().toDate()}, {})).toBeTruthy();
+    expect(filterUtil.isEndDateChanged({endDate: dateUtil.endOfTodayUTC().toDate()},
+      {endDate: dateUtil.endOfLastWeekUTC().toDate()})).toBeTruthy();
+    expect(filterUtil.isEndDateChanged({endDate: dateUtil.endOfTodayUTC().toDate()},
+      {endDate: dateUtil.endOfTodayUTC().toDate()})).toBeFalsy();
+    expect(filterUtil.isEndDateChanged({endDate: dateUtil.endOfTodayUTC().toDate()}, {})).toBeTruthy();
     expect(filterUtil.isEndDateChanged({}, {})).toBeFalsy();
   });
 });

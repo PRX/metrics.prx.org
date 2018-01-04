@@ -73,15 +73,4 @@ export function EpisodeReducer(state: EpisodeState = initialState, action: AllAc
   return state;
 }
 
-const sortEpisodesByReleaseDate = (episodes: EpisodeModel[]) => {
-  // sort the episodes by seriesId, publishedAt
-  episodes.sort((a: EpisodeModel, b: EpisodeModel) => {
-    if (a.seriesId !== b.seriesId) {
-      return a.seriesId - b.seriesId;
-    } else {
-      return b.publishedAt.valueOf() - a.publishedAt.valueOf();
-    }
-  });
-};
-
 export const getEpisodeEntities = (state: EpisodeState) => state.entities;

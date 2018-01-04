@@ -7,6 +7,11 @@
   max-height: 36px;
 }
 
+.dropdown-content {
+  margin-top: -38px;
+  box-shadow: 0 0 15px -5px rgba(0,0,0,.5);
+}
+
 .intervals {
   width: 100%;
   display: flex;

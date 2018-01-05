@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, OnChanges } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { FilterModel, INTERVAL_HOURLY, IntervalModel, IntervalList } from '../../../ngrx';
 import * as dateUtil from '../../util/date';
@@ -12,10 +12,10 @@ import { GoogleAnalyticsEventAction } from '../../../ngrx/actions';
       <div class="dropdown-button">
         <button class="btn-icon icon-calendar grey-dove" (click)="toggleOpen()" aria-label="Custom Date Range"></button>
       </div>
-      <div class="dropdown-content">
+      <div class="dropdown-content" *ngIf="tempFilter">
         <div class="intervals">
           <button *ngFor="let interval of intervalList"
-                  [class.btn-link]="tempFilter?.interval !== interval"
+                  [class.btn-link]="tempFilter.interval !== interval"
                   (click)="onIntervalChange(interval)">{{ interval.name }}
           </button>
         </div>
@@ -29,7 +29,7 @@ import { GoogleAnalyticsEventAction } from '../../../ngrx/actions';
             </div>
           </div>
           <div class="separator"></div>
-          <metrics-standard-date-range [standardRange]="tempFilter?.standardRange" [interval]="tempFilter?.interval"
+          <metrics-standard-date-range [standardRange]="tempFilter.standardRange" [interval]="tempFilter.interval"
                                        (standardRangeChange)="onStandardRangeChange($event)">
           </metrics-standard-date-range>
         </div>
@@ -43,7 +43,7 @@ import { GoogleAnalyticsEventAction } from '../../../ngrx/actions';
   styleUrls: ['../dropdown.css', './custom-date-range-dropdown.component.css']
 })
 
-export class CustomDateRangeDropdownComponent implements OnChanges {
+export class CustomDateRangeDropdownComponent {
   @Input() filter: FilterModel;
   @Output() dateRangeChange = new EventEmitter<FilterModel>();
   tempFilter: FilterModel;
@@ -54,10 +54,6 @@ export class CustomDateRangeDropdownComponent implements OnChanges {
   STANDARD_DATE = 'standard-date';
 
   constructor(public store: Store<any>) {}
-
-  ngOnChanges() {
-    this.tempFilter = this.filter;
-  }
 
   onIntervalChange(interval: IntervalModel) {
     this.tempFilter.interval = interval;

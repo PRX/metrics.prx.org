@@ -9,7 +9,7 @@ import { DatepickerModule } from 'ngx-prx-styleguide';
 import { StandardDateRangeComponent } from './standard-date-range.component';
 import { CustomDateRangeDropdownComponent } from './custom-date-range-dropdown.component';
 
-import { INTERVAL_DAILY, INTERVAL_HOURLY } from '../../../ngrx';
+import { INTERVAL_DAILY, INTERVAL_HOURLY, INTERVAL_MONTHLY } from '../../../ngrx';
 import * as dateUtil from '../../util/date';
 
 describe('CustomDateRangeDropdownComponent', () => {
@@ -90,5 +90,26 @@ describe('CustomDateRangeDropdownComponent', () => {
     comp.ngOnChanges();
     fix.detectChanges();
     expect(comp.invalid).toContain('dates in the past or present');
+  });
+
+  it('keeps tempFilter standard range in sync with custom range', () => {
+    comp.onCustomRangeChange({from: dateUtil.beginningOfLastWeekUTC().toDate(), to: dateUtil.endOfLastWeekUTC().toDate()});
+    expect(comp.tempFilter.standardRange).toEqual(dateUtil.LAST_WEEK);
+  });
+
+  it('keeps tempFilter date range in sync with interval', () => {
+    comp.filter.beginDate = dateUtil.beginningOfTodayUTC().toDate();
+    comp.onIntervalChange(INTERVAL_MONTHLY);
+    expect(comp.filter.beginDate.valueOf()).toEqual(dateUtil.beginningOfThisMonthUTC().valueOf());
+    expect(comp.filter.standardRange).toEqual(dateUtil.THIS_MONTH);
+  });
+
+  it('should send google analytics event on Apply for custom or standard range', () => {
+    comp.onStandardRangeChange(dateUtil.LAST_WEEK);
+    comp.onApply();
+    expect(comp.googleAnalyticsEvent).toHaveBeenCalledWith(comp.STANDARD_DATE, comp.tempFilter);
+    comp.onCustomRangeChange({from: dateUtil.beginningOfLastMonthUTC().toDate(), to: dateUtil.endOfLastMonthUTC().toDate()});
+    comp.onApply();
+    expect(comp.googleAnalyticsEvent).toHaveBeenCalledWith(comp.CUSTOM_DATE, comp.tempFilter);
   });
 });

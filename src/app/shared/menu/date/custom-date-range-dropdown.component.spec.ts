@@ -60,34 +60,31 @@ describe('CustomDateRangeDropdownComponent', () => {
   });
 
   it('should not allow users to select dates more than 40 days apart when interval is hourly', () => {
-    comp.filter = {
+    comp.tempFilter = {
       interval: INTERVAL_HOURLY,
       beginDate: dateUtil.beginningOfLast365DaysUTC().toDate(),
       endDate: dateUtil.endOfTodayUTC().toDate()
     };
-    comp.ngOnChanges();
     fix.detectChanges();
     expect(comp.invalid).toContain('cannot be more than 40 days apart');
   });
 
   it('should not allow to date before from date', () => {
-    comp.filter = {
+    comp.tempFilter = {
       interval: INTERVAL_DAILY,
       beginDate: dateUtil.endOfLastWeekUTC().toDate(),
       endDate: dateUtil.beginningOfLastWeekUTC().toDate()
     };
-    comp.ngOnChanges();
     fix.detectChanges();
     expect(comp.invalid).toContain('must come before');
   });
 
   it('should not allow dates in the future', () => {
-    comp.filter = {
+    comp.tempFilter = {
       interval: INTERVAL_DAILY,
       beginDate: dateUtil.beginningOfTodayUTC().toDate(),
       endDate: dateUtil.endOfTodayUTC().add(1, 'days').toDate()
     };
-    comp.ngOnChanges();
     fix.detectChanges();
     expect(comp.invalid).toContain('dates in the past or present');
   });

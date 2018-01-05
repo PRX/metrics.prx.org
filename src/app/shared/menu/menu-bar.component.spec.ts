@@ -60,7 +60,7 @@ describe('MenuBarComponent', () => {
   }));
 
   it('keeps standard range in sync with custom range', () => {
-    comp.onDateRangeChange({beginDate: dateUtil.beginningOfLastWeekUTC().toDate(), endDate: dateUtil.endOfLastWeekUTC().toDate()});
+    comp.onFilterChange({beginDate: dateUtil.beginningOfLastWeekUTC().toDate(), endDate: dateUtil.endOfLastWeekUTC().toDate()});
     expect(comp.filter.standardRange).toEqual(dateUtil.LAST_WEEK);
   });
 

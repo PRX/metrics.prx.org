@@ -6,9 +6,10 @@ import { By } from '@angular/platform-browser';
 import { reducers } from '../../../ngrx/reducers';
 
 import { DatepickerModule } from 'ngx-prx-styleguide';
+import { StandardDateRangeComponent } from './standard-date-range.component';
 import { CustomDateRangeDropdownComponent } from './custom-date-range-dropdown.component';
 
-import { INTERVAL_DAILY, INTERVAL_HOURLY } from '../../../ngrx';
+import { INTERVAL_DAILY, INTERVAL_HOURLY, INTERVAL_MONTHLY } from '../../../ngrx';
 import * as dateUtil from '../../util/date';
 
 describe('CustomDateRangeDropdownComponent', () => {
@@ -20,7 +21,8 @@ describe('CustomDateRangeDropdownComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [
-        CustomDateRangeDropdownComponent
+        CustomDateRangeDropdownComponent,
+        StandardDateRangeComponent
       ],
       imports: [
         DatepickerModule,
@@ -32,7 +34,7 @@ describe('CustomDateRangeDropdownComponent', () => {
       de = fix.debugElement;
       el = de.nativeElement;
 
-      comp.dateRange = comp.filter = {
+      comp.tempFilter = comp.filter = {
         interval: INTERVAL_DAILY,
         beginDate: dateUtil.beginningOfTodayUTC().toDate(),
         endDate: dateUtil.endOfTodayUTC().toDate()
@@ -51,42 +53,60 @@ describe('CustomDateRangeDropdownComponent', () => {
   });
 
   it('should show date range controls when open', () => {
-    expect(de.query(By.css('.custom-date-range-dropdown.open'))).toBeNull();
+    expect(de.query(By.css('.dropdown.open'))).toBeNull();
     comp.toggleOpen();
     fix.detectChanges();
-    expect(de.query(By.css('.custom-date-range-dropdown.open'))).not.toBeNull();
+    expect(de.query(By.css('.dropdown.open'))).not.toBeNull();
   });
 
   it('should not allow users to select dates more than 40 days apart when interval is hourly', () => {
-    comp.filter = {
+    comp.tempFilter = {
       interval: INTERVAL_HOURLY,
       beginDate: dateUtil.beginningOfLast365DaysUTC().toDate(),
       endDate: dateUtil.endOfTodayUTC().toDate()
     };
-    comp.ngOnChanges();
     fix.detectChanges();
     expect(comp.invalid).toContain('cannot be more than 40 days apart');
   });
 
   it('should not allow to date before from date', () => {
-    comp.filter = {
+    comp.tempFilter = {
       interval: INTERVAL_DAILY,
       beginDate: dateUtil.endOfLastWeekUTC().toDate(),
       endDate: dateUtil.beginningOfLastWeekUTC().toDate()
     };
-    comp.ngOnChanges();
     fix.detectChanges();
     expect(comp.invalid).toContain('must come before');
   });
 
   it('should not allow dates in the future', () => {
-    comp.filter = {
+    comp.tempFilter = {
       interval: INTERVAL_DAILY,
       beginDate: dateUtil.beginningOfTodayUTC().toDate(),
       endDate: dateUtil.endOfTodayUTC().add(1, 'days').toDate()
     };
-    comp.ngOnChanges();
     fix.detectChanges();
     expect(comp.invalid).toContain('dates in the past or present');
+  });
+
+  it('keeps tempFilter standard range in sync with custom range', () => {
+    comp.onCustomRangeChange({from: dateUtil.beginningOfLastWeekUTC().toDate(), to: dateUtil.endOfLastWeekUTC().toDate()});
+    expect(comp.tempFilter.standardRange).toEqual(dateUtil.LAST_WEEK);
+  });
+
+  it('keeps tempFilter date range in sync with interval', () => {
+    comp.filter.beginDate = dateUtil.beginningOfTodayUTC().toDate();
+    comp.onIntervalChange(INTERVAL_MONTHLY);
+    expect(comp.filter.beginDate.valueOf()).toEqual(dateUtil.beginningOfThisMonthUTC().valueOf());
+    expect(comp.filter.standardRange).toEqual(dateUtil.THIS_MONTH);
+  });
+
+  it('should send google analytics event on Apply for custom or standard range', () => {
+    comp.onStandardRangeChange(dateUtil.LAST_WEEK);
+    comp.onApply();
+    expect(comp.googleAnalyticsEvent).toHaveBeenCalledWith(comp.STANDARD_DATE, comp.tempFilter);
+    comp.onCustomRangeChange({from: dateUtil.beginningOfLastMonthUTC().toDate(), to: dateUtil.endOfLastMonthUTC().toDate()});
+    comp.onApply();
+    expect(comp.googleAnalyticsEvent).toHaveBeenCalledWith(comp.CUSTOM_DATE, comp.tempFilter);
   });
 });

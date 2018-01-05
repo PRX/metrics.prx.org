@@ -22,10 +22,11 @@ metrics-interval >>> button.dropdown-toggle, metrics-standard-date-range >>> but
   background-color: #f0f0f0;
   border: 0px;
 }
-metrics-interval, metrics-standard-date-range {
+metrics-interval {
   display: inline-block;
   border: 1px solid #a3a3a3;
   border-left-width: 0px;
   border-right-width: 0px;
+  max-height: 38px;
 }
 

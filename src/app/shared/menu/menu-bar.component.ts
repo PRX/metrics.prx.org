@@ -16,7 +16,7 @@ import * as dateUtil from '../util/date';
                                           (standardRangeChange)="onStandardRangeChange($event)"
                                           (custom)="custom.toggleOpen()"></metrics-standard-date-range-dropdown>
     <metrics-custom-date-range-dropdown [filter]="filter" #custom
-                               (dateRangeChange)="onDateRangeChange($event)"></metrics-custom-date-range-dropdown>
+                               (dateRangeChange)="onFilterChange($event)"></metrics-custom-date-range-dropdown>
   `,
   styleUrls: ['./menu-bar.component.css']
 })
@@ -49,13 +49,14 @@ export class MenuBarComponent implements OnInit, OnDestroy {
   onStandardRangeChange(standardRange: string) {
     const dateRange = dateUtil.getBeginEndDateFromStandardRange(standardRange);
     this.googleAnalyticsEvent('standard-date', dateRange);
-    this.onDateRangeChange({...this.filter, standardRange, ...dateRange});
+    this.onFilterChange({...this.filter, standardRange, ...dateRange});
   }
 
-  onDateRangeChange(dateRange: FilterModel) {
-    if (dateRange.beginDate.valueOf() !== this.filter.beginDate.valueOf() ||
-      dateRange.endDate.valueOf() !== this.filter.endDate.valueOf()) {
-      this.filter = {...this.filter, ...dateRange};
+  onFilterChange(newFilter: FilterModel) {
+    if (newFilter.beginDate.valueOf() !== this.filter.beginDate.valueOf() ||
+      newFilter.endDate.valueOf() !== this.filter.endDate.valueOf() ||
+      newFilter.interval !== this.filter.interval) {
+      this.filter = {...this.filter, ...newFilter};
       this.adjustAndRouteFromFilter();
     }
   }

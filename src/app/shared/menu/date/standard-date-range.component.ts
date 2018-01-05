@@ -7,7 +7,7 @@ import * as dateUtil from '../../util/date';
   template: `
     <ul *ngFor="let group of rangeOptions" class="group">
       <li *ngFor="let range of group">
-        <button class="btn-link" (click)="onStandardRangeChange(range)">
+        <button class="btn-link" [class.active]="standardRange === range" (click)="onStandardRangeChange(range)">
           {{range}} <span>{{ getRangeDesc(range) }}</span>
         </button>
       </li>

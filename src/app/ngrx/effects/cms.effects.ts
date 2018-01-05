@@ -1,15 +1,19 @@
 import { Injectable } from '@angular/core';
 import { Router, Params, RoutesRecognized } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/operator/mergeMap';
 import 'rxjs/add/operator/switchMap';
+
 import { Action, Store } from '@ngrx/store';
 import { Actions, Effect } from '@ngrx/effects';
-import { EpisodeModel, EPISODE_PAGE_SIZE, EpisodeMetricsModel } from '../';
-import { selectEpisodeMetrics } from '../reducers';
-import { CmsPodcastEpisodePageAction, CmsEpisodePagePayload,
-  CmsPodcastEpisodePageSuccessAction, CmsPodcastEpisodePageFailureAction, ActionTypes } from '../actions';
-import { getColor, getShade } from '../../shared/util/chart.util';
+
+import { AuthService } from 'ngx-prx-styleguide';
 import { CmsService, HalDoc } from '../../core';
+import { getColor } from '../../shared/util/chart.util';
+
+import { PodcastModel, EpisodeModel, EPISODE_PAGE_SIZE, EpisodeMetricsModel } from '../';
+import { selectEpisodeMetrics } from '../reducers';
+import * as ACTIONS from '../actions';
 
 @Injectable()
 export class CmsEffects {
@@ -17,10 +21,30 @@ export class CmsEffects {
   routeParams: Params;
 
   @Effect()
+  loadPodcasts$: Observable<Action> = this.actions$
+    .ofType(ACTIONS.ActionTypes.CMS_PODCASTS)
+    .switchMap(() => {
+      return this.cms.auth.mergeMap(auth => {
+        const count = auth.count('prx:series');
+        if (count === 0) {
+          const error = 'Looks like you don\'t have any podcasts.';
+          return Observable.of(new ACTIONS.CmsPodcastsFailureAction({error}));
+        } else {
+          const params = {per: count, filters: 'v4', zoom: 'prx:distributions'};
+          return auth.followItems('prx:series', params).mergeMap((docs: HalDoc[]) => {
+            return Observable.forkJoin(docs.map(d => this.docToPodcast(d))).map(podcasts => {
+              return new ACTIONS.CmsPodcastsSuccessAction({podcasts});
+            });
+          });
+        }
+      }).catch(error => Observable.of(new ACTIONS.CmsPodcastsFailureAction({error})));
+    });
+
+  @Effect()
   loadEpisodes$: Observable<Action> = this.actions$
-    .ofType(ActionTypes.CMS_PODCAST_EPISODE_PAGE)
-    .map((action: CmsPodcastEpisodePageAction) => action.payload)
-    .switchMap((payload: CmsEpisodePagePayload) => {
+    .ofType(ACTIONS.ActionTypes.CMS_PODCAST_EPISODE_PAGE)
+    .map((action: ACTIONS.CmsPodcastEpisodePageAction) => action.payload)
+    .switchMap((payload: ACTIONS.CmsEpisodePagePayload) => {
       return this.cms.follow('prx:series', {id: payload.podcast.seriesId})
         .flatMap((series: HalDoc) => {
           return series.followItems('prx:stories', {
@@ -50,16 +74,20 @@ export class CmsEffects {
             });
             this.routeWithEpisodeCharted(chartedEpisodes);
             const dist$ = episodes.map(e => this.getEpisodePodcastDistribution(e));
-            return Observable.forkJoin(...dist$).map(() => new CmsPodcastEpisodePageSuccessAction({episodes}));
+            return Observable.forkJoin(...dist$).map(() => new ACTIONS.CmsPodcastEpisodePageSuccessAction({episodes}));
           })
-          .catch(error => Observable.of(new CmsPodcastEpisodePageFailureAction({error})));
+          .catch(error => Observable.of(new ACTIONS.CmsPodcastEpisodePageFailureAction({error})));
       });
     });
 
   constructor(public store: Store<any>,
               private actions$: Actions,
+              private auth: AuthService,
               private cms: CmsService,
               private router: Router) {
+    auth.token.subscribe(token => {
+      console.log('AUTH got token', token);
+    });
     this.store.select(selectEpisodeMetrics).subscribe((episodeMetrics: EpisodeMetricsModel[]) => {
       this.episodeMetrics = episodeMetrics;
     });
@@ -93,5 +121,20 @@ export class CmsEffects {
     });
     params['episodes'] = episodeIds.join(',');
     this.router.navigate([this.routeParams['seriesId'], 'downloads', this.routeParams['interval'], params]);
+  }
+
+  private docToPodcast(doc: HalDoc): Observable<PodcastModel> {
+    const podcast: PodcastModel = {doc, seriesId: doc['id'], title: doc['title']};
+    return doc.followItems('prx:distributions').map(distros => {
+      const podcastDistro = distros.find(d => d['kind'] === 'podcast');
+      if (podcastDistro && podcastDistro['url']) {
+        podcast.feederUrl = podcastDistro['url'];
+        const urlParts = podcast.feederUrl.split('/');
+        if (urlParts.length > 1) {
+          podcast.feederId = urlParts[urlParts.length - 1];
+        }
+      }
+      return podcast;
+    });
   }
 }

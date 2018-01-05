@@ -34,7 +34,7 @@ describe('CustomDateRangeDropdownComponent', () => {
       de = fix.debugElement;
       el = de.nativeElement;
 
-      comp.dateRange = comp.filter = {
+      comp.tempFilter = comp.filter = {
         interval: INTERVAL_DAILY,
         beginDate: dateUtil.beginningOfTodayUTC().toDate(),
         endDate: dateUtil.endOfTodayUTC().toDate()

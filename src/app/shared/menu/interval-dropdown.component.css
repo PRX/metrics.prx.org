@@ -1,0 +1,16 @@
+.dropdown-button {
+  border-left: 0px;
+  border-right: 0px;
+}
+
+.dropdown-content {
+  right: auto;
+  left: 0;
+}
+
+li {
+  margin-top: 10px;
+}
+li:first-child {
+  margin-top: 0px;
+}

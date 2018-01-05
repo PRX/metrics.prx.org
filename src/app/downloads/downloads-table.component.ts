@@ -5,7 +5,7 @@ import { EpisodeModel, FilterModel, EpisodeMetricsModel, PodcastMetricsModel,
   INTERVAL_MONTHLY, INTERVAL_WEEKLY, INTERVAL_DAILY, INTERVAL_HOURLY } from '../ngrx';
 import { selectEpisodes, selectFilter, selectEpisodeMetrics, selectPodcastMetrics } from '../ngrx/reducers';
 import { findPodcastMetrics, filterPodcastEpisodePage, filterEpisodeMetricsPage, metricsData, getTotal } from '../shared/util/metrics.util';
-import { mapMetricsToTimeseriesData } from '../shared/util/chart.util';
+import { mapMetricsToTimeseriesData, neutralColor } from '../shared/util/chart.util';
 import * as dateFormat from '../shared/util/date/date.format';
 import { isPodcastChanged } from '../shared/util/filter.util';
 import * as moment from 'moment';
@@ -24,14 +24,14 @@ import * as moment from 'moment';
         <tbody>
           <tr>
             <td>
-              <input type="checkbox" (click)="toggleChartPodcast(!podcastTableData.charted)" [checked]="podcastTableData.charted">
-              {{podcastTableData.title}}
+              <prx-checkbox small [checked]="podcastTableData.charted" [color]="podcastTableData.color"
+                (change)="toggleChartPodcast($event)">{{podcastTableData.title}}</prx-checkbox>
             </td>
           </tr>
           <tr *ngFor="let episode of episodeTableData">
             <td>
-              <input type="checkbox" (click)="toggleChartEpisode(episode, !episode.charted)" [checked]="episode.charted">
-              {{episode.title}}
+              <prx-checkbox small [checked]="episode.charted" [color]="episode.color"
+                (change)="toggleChartEpisode(episode, $event)">{{episode.title}}</prx-checkbox>
             </td>
           </tr>
         </tbody>
@@ -141,6 +141,7 @@ export class DownloadsTableComponent implements OnDestroy {
       return {
         title: 'All Episodes',
         releaseDate: '',
+        color: neutralColor,
         downloads: mapMetricsToTimeseriesData(downloads),
         totalForPeriod: getTotal(downloads),
         charted: this.podcastMetrics.charted
@@ -159,6 +160,7 @@ export class DownloadsTableComponent implements OnDestroy {
               title: episode.title,
               publishedAt: episode.publishedAt,
               releaseDate: dateFormat.monthDateYear(episode.publishedAt),
+              color: episode.color,
               id: epMetric.id,
               downloads: mapMetricsToTimeseriesData(downloads),
               totalForPeriod: getTotal(downloads),

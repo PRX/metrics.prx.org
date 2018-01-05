@@ -32,3 +32,14 @@ export const generateShades = (length) => {
   }
   return shades;
 };
+
+const LINE_COLORS = [
+  '#ff7f00', '#1f78b4', '#33a02c', '#e31a1c', '#6a3d9a',
+  '#fdbf6f', '#a6cee3', '#b2df8a', '#fb9a99', '#cab2d6',
+];
+export const getColor = (total, index) => {
+  return LINE_COLORS[index % LINE_COLORS.length];
+};
+export const getShade = (total, index) => {
+  return generateShades(total)[index % total];
+};

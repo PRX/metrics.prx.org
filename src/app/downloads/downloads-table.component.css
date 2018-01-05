@@ -1,6 +1,7 @@
 .table-wrapper {
   display: flex;
   margin-left: -3px;
+  margin-right: -3px;
 }
 table {
   line-height: 14px;
@@ -23,16 +24,20 @@ td {
   white-space: nowrap;
 }
 table.sticky th, table.sticky td {
-  min-width: 150px;
-  max-width: 150px;
+  min-width: 200px;
+  max-width: 200px;
   border-right: none;
   text-overflow: ellipsis;
   overflow: hidden;
   text-align: left;
 }
 .scroll-x-wrapper {
-  max-width: calc(100% - 150px);
+  flex-grow: 1;
+  max-width: calc(100% - 200px);
   overflow-x: auto;
+}
+.scroll-x-wrapper > table {
+  min-width: 100%;
 }
 table.scroll-x tbody td:nth-child(2) {
   font-weight: 700;
@@ -44,4 +49,12 @@ table.scroll-x th {
 table.scroll-x th:nth-child(1), table.scroll-x th:nth-child(2) {
   white-space: normal;
   min-width: 75px;
+}
+prx-checkbox {
+  position: relative;
+  margin-top: -4px;
+  top: 4px;
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }

@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FancyFormModule } from 'ngx-prx-styleguide';
 
 import { SharedModule } from '../shared';
 import { DownloadsComponent } from './downloads.component';
@@ -17,6 +18,7 @@ import { downloadsRouting } from './downloads.routing';
   imports: [
     CommonModule,
     SharedModule,
+    FancyFormModule,
     downloadsRouting
   ],
   exports: [

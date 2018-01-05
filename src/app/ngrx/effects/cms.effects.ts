@@ -41,7 +41,6 @@ export class CmsEffects {
                 title: doc['title'],
                 publishedAt: doc['publishedAt'] ? new Date(doc['publishedAt']) : null,
                 color: getColor(EPISODE_PAGE_SIZE, i),
-                // color: getShade(EPISODE_PAGE_SIZE, i),
                 page: payload.page
               };
               if (chartIncomingEpisodes && i < 5) {

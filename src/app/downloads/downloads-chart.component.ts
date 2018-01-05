@@ -107,8 +107,6 @@ export class DownloadsChartComponent implements OnDestroy {
         // if we have episodes to combine with podcast total
         const episodeDatasets = this.episodeChartData.map(m => m.data);
         const allOtherEpisodesData: TimeseriesChartModel = {
-          // data: this.podcastChartData.data,
-          // label: this.podcastChartData.label,
           data: subtractTimeseriesDatasets(this.podcastChartData.data, episodeDatasets),
           label: 'All Other Episodes',
           color: neutralColor

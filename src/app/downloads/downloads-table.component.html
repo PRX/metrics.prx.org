@@ -32,7 +32,7 @@
           </td>
           <td>{{podcastTableData.releaseDate}}</td>
           <td>{{podcastTableData.totalForPeriod | largeNumber}}</td>
-          <td>(average for interval)</td>
+          <td>{{podcastTableData.avgPerIntervalForPeriod | largeNumber}}</td>
           <td>(all time downloads)</td>
         </tr>
         <tr *ngFor="let episode of episodeTableData">
@@ -42,7 +42,7 @@
           </td>
           <td>{{episode.releaseDate}}</td>
           <td>{{episode.totalForPeriod | largeNumber}}</td>
-          <td>(average for interval)</td>
+          <td>{{episode.avgPerIntervalForPeriod | largeNumber}}</td>
           <td>(all time downloads)</td>
         </tr>
       </tbody>

@@ -7,6 +7,7 @@ import { selectEpisodes, selectFilter, selectEpisodeMetrics, selectPodcastMetric
 import { findPodcastMetrics, filterPodcastEpisodePage, filterEpisodeMetricsPage, metricsData, getTotal } from '../shared/util/metrics.util';
 import { mapMetricsToTimeseriesData, neutralColor } from '../shared/util/chart.util';
 import * as dateFormat from '../shared/util/date/date.format';
+import { getAmountOfIntervals } from '../shared/util/date/date.util';
 import { isPodcastChanged } from '../shared/util/filter.util';
 import * as moment from 'moment';
 
@@ -85,26 +86,31 @@ export class DownloadsTableComponent implements OnDestroy {
   }
 
   mapPodcastData() {
+    const expectedLength = getAmountOfIntervals(this.filter.beginDate, this.filter.endDate, this.filter.interval);
     const downloads = metricsData(this.filter, this.podcastMetrics, 'downloads');
     if (downloads) {
+      const totalForPeriod = getTotal(downloads);
       return {
         title: 'All Episodes',
         releaseDate: '',
         color: neutralColor,
         downloads: mapMetricsToTimeseriesData(downloads),
-        totalForPeriod: getTotal(downloads),
+        totalForPeriod: totalForPeriod,
+        avgPerIntervalForPeriod: Math.floor(totalForPeriod / expectedLength),
         charted: this.podcastMetrics.charted
       };
     }
   }
 
   mapEpisodeData() {
+    const expectedLength = getAmountOfIntervals(this.filter.beginDate, this.filter.endDate, this.filter.interval);
     if (this.episodes && this.episodeMetrics && this.episodeMetrics.length) {
       return this.episodeMetrics
         .map((epMetric) => {
           const downloads = metricsData(this.filter, epMetric, 'downloads');
           const episode = this.episodes.find(ep => ep.id === epMetric.id);
           if (episode && epMetric && downloads) {
+            const totalForPeriod = getTotal(downloads);
             return {
               title: episode.title,
               publishedAt: episode.publishedAt,
@@ -112,7 +118,8 @@ export class DownloadsTableComponent implements OnDestroy {
               color: episode.color,
               id: epMetric.id,
               downloads: mapMetricsToTimeseriesData(downloads),
-              totalForPeriod: getTotal(downloads),
+              totalForPeriod: totalForPeriod,
+              avgPerIntervalForPeriod: Math.floor(totalForPeriod / expectedLength),
               charted: epMetric.charted
             };
           }

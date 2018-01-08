@@ -12,59 +12,7 @@ import * as moment from 'moment';
 
 @Component({
   selector: 'metrics-downloads-table',
-  template: `
-    <p *ngIf="podcastTableData && filter?.interval === bindToIntervalHourly"><em>Hourly data is shown in your local timezone</em></p>
-    <div class="table-wrapper" *ngIf="podcastTableData">
-      <table class="sticky">
-        <thead>
-          <tr>
-            <th>Episode</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>
-              <prx-checkbox small [checked]="podcastTableData.charted" [color]="podcastTableData.color"
-                (change)="toggleChartPodcast($event)">{{podcastTableData.title}}</prx-checkbox>
-            </td>
-          </tr>
-          <tr *ngFor="let episode of episodeTableData">
-            <td>
-              <prx-checkbox small [checked]="episode.charted" [color]="episode.color"
-                (change)="toggleChartEpisode(episode, $event)">{{episode.title}}</prx-checkbox>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-      <div class="scroll-x-wrapper">
-        <table class="scroll-x">
-          <thead>
-            <tr>
-              <th>Release Date</th>
-              <th>Total for Period</th>
-              <th *ngFor="let date of dateRange">{{date}}</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>{{podcastTableData.releaseDate}}</td>
-              <td>{{podcastTableData.totalForPeriod | largeNumber}}</td>
-              <td *ngFor="let download of podcastTableData.downloads">{{download.value | largeNumber}}</td>
-            </tr>
-            <tr *ngFor="let episode of episodeTableData">
-              <td>{{episode.releaseDate}}</td>
-              <td>{{episode.totalForPeriod | largeNumber}}</td>
-              <td *ngFor="let download of episode.downloads">{{download.value | largeNumber}}</td>
-            </tr>
-          </tbody>
-        </table>
-        <metrics-episode-page
-          [currentPage]="filter?.page"
-          [totalPages]="totalPages"
-          (pageChange)="pageChange.emit($event)"></metrics-episode-page>
-      </div>
-    </div>
-  `,
+  templateUrl: 'downloads-table.component.html',
   styleUrls: ['downloads-table.component.css']
 
 })

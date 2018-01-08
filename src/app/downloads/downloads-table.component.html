@@ -4,6 +4,10 @@
     <thead>
       <tr>
         <th>Episode</th>
+        <th>Release Date</th>
+        <th>Total for Period</th>
+        <th>{{filter.interval.name}} Average</th>
+        <th>All-Time Downloads</th>
       </tr>
     </thead>
     <tbody>
@@ -12,12 +16,20 @@
           <prx-checkbox small [checked]="podcastTableData.charted" [color]="podcastTableData.color"
             (change)="toggleChartPodcast($event)">{{podcastTableData.title}}</prx-checkbox>
         </td>
+        <td>{{podcastTableData.releaseDate}}</td>
+        <td>{{podcastTableData.totalForPeriod | largeNumber}}</td>
+        <td>(average for interval)</td>
+        <td>(all time downloads)</td>
       </tr>
       <tr *ngFor="let episode of episodeTableData">
         <td>
           <prx-checkbox small [checked]="episode.charted" [color]="episode.color"
             (change)="toggleChartEpisode(episode, $event)">{{episode.title}}</prx-checkbox>
         </td>
+        <td>{{episode.releaseDate}}</td>
+        <td>{{episode.totalForPeriod | largeNumber}}</td>
+        <td>(average for interval)</td>
+        <td>(all time downloads)</td>
       </tr>
     </tbody>
   </table>
@@ -25,20 +37,14 @@
     <table class="scroll-x">
       <thead>
         <tr>
-          <th>Release Date</th>
-          <th>Total for Period</th>
           <th *ngFor="let date of dateRange">{{date}}</th>
         </tr>
       </thead>
       <tbody>
         <tr>
-          <td>{{podcastTableData.releaseDate}}</td>
-          <td>{{podcastTableData.totalForPeriod | largeNumber}}</td>
           <td *ngFor="let download of podcastTableData.downloads">{{download.value | largeNumber}}</td>
         </tr>
         <tr *ngFor="let episode of episodeTableData">
-          <td>{{episode.releaseDate}}</td>
-          <td>{{episode.totalForPeriod | largeNumber}}</td>
           <td *ngFor="let download of episode.downloads">{{download.value | largeNumber}}</td>
         </tr>
       </tbody>

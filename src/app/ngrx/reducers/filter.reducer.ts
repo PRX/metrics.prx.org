@@ -14,6 +14,8 @@ export const INTERVAL_DAILY: IntervalModel = { value: '1d', name: 'Daily', key: 
 export const INTERVAL_HOURLY: IntervalModel = { value: '1h', name: 'Hourly', key: 'hourly' };
 export const IntervalList = [INTERVAL_HOURLY, INTERVAL_DAILY, INTERVAL_WEEKLY, INTERVAL_MONTHLY];
 
+export type ChartType = 'single-line' | 'multi-line' | 'stacked';
+
 export interface FilterModel {
   podcastSeriesId?: number;
   page?: number;
@@ -21,6 +23,7 @@ export interface FilterModel {
   beginDate?: Date;
   endDate?: Date;
   interval?: IntervalModel;
+  chartType?: ChartType;
 }
 
 const initialState = {};
@@ -51,6 +54,9 @@ export function FilterReducer(state: FilterModel = initialState, action: CastleF
       }
       if (action.payload.filter.interval) {
         newState.interval = action.payload.filter.interval;
+      }
+      if (action.payload.filter.chartType) {
+        newState.chartType = action.payload.filter.chartType;
       }
       // console.log('FilterReducer', action.type, newState);
       return newState;

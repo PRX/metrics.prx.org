@@ -9,7 +9,7 @@ import * as dateUtil from '../util/date';
 @Component({
   selector: 'metrics-menu-bar',
   template: `
-    <metrics-chart-type></metrics-chart-type>
+    <metrics-chart-type [selectedChartType]="filter?.chartType"></metrics-chart-type>
     <metrics-interval [filter]="filter" (intervalChange)="onIntervalChange($event)"></metrics-interval>
     <div class="empty"></div>
     <metrics-standard-date-range-dropdown [interval]="filter?.interval" [standardRange]="filter?.standardRange"

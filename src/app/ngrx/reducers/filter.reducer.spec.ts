@@ -64,4 +64,10 @@ describe('FilterReducer', () => {
     expect(newState.interval.key).toEqual('hourly');
     expect(newState.podcastSeriesId).toEqual(37800);
   });
+
+  it ('should update with new chart type', () => {
+    newState = FilterReducer(newState,
+      new CastleFilterAction({filter: {chartType: 'stacked'}}));
+    expect(newState.chartType).toEqual('stacked');
+  });
 });

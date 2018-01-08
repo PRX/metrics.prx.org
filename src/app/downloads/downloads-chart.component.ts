@@ -98,27 +98,41 @@ export class DownloadsChartComponent implements OnDestroy {
   }
 
   updateChartData() {
-    if (this.filter.beginDate && this.filter.endDate && this.filter.interval) {
+    if (this.filter.beginDate && this.filter.endDate && this.filter.interval && this.filter.chartType) {
+      this.chartData = null;
       // no partial date range coverage charts, makes the loading UX too jerky
       const expectedLength = dateUtil.getAmountOfIntervals(this.filter.beginDate, this.filter.endDate, this.filter.interval);
-      if (this.podcastChartData && this.podcastChartData.data.length === expectedLength &&
-        (this.episodeChartData && this.episodeChartData.length > 0 &&
-        this.episodeChartData.every(chartData => chartData.data.length === expectedLength))) {
-        // if we have episodes to combine with podcast total
-        const episodeDatasets = this.episodeChartData.map(m => m.data);
-        const allOtherEpisodesData: TimeseriesChartModel = {
-          data: subtractTimeseriesDatasets(this.podcastChartData.data, episodeDatasets),
-          label: 'All Other Episodes',
-          color: neutralColor
-        };
-        this.chartData = [...this.episodeChartData, allOtherEpisodesData];
-      } else if (this.podcastMetrics && this.podcastMetrics.charted && this.podcastChartData && this.podcastChartData.data.length > 0) {
-        this.chartData = [this.podcastChartData];
-      } else if (this.episodeChartData && this.episodeChartData.length > 0 &&
-        this.episodeChartData.every(chartData => chartData.data.length === expectedLength)) {
-        this.chartData = this.episodeChartData;
-      } else {
-        this.chartData = null;
+      switch (this.filter.chartType) {
+        case 'stacked':
+          if (this.podcastChartData && this.podcastChartData.data.length === expectedLength &&
+            (this.episodeChartData && this.episodeChartData.length > 0 &&
+            this.episodeChartData.every(chartData => chartData.data.length === expectedLength))) {
+            // if we have episodes to combine with podcast total
+            const episodeDatasets = this.episodeChartData.map(m => m.data);
+            const allOtherEpisodesData: TimeseriesChartModel = {
+              data: subtractTimeseriesDatasets(this.podcastChartData.data, episodeDatasets),
+              label: 'All Other Episodes',
+              color: neutralColor
+            };
+            this.chartData = [...this.episodeChartData, allOtherEpisodesData];
+          } else if (this.podcastMetrics && this.podcastMetrics.charted && this.podcastChartData && this.podcastChartData.data.length > 0) {
+            this.chartData = [this.podcastChartData];
+          } else if (this.episodeChartData && this.episodeChartData.length > 0 &&
+            this.episodeChartData.every(chartData => chartData.data.length === expectedLength)) {
+            this.chartData = this.episodeChartData;
+          }
+          break;
+        case 'single-line':
+          if (this.podcastMetrics && this.podcastMetrics.charted && this.podcastChartData && this.podcastChartData.data.length > 0) {
+            this.chartData = [this.podcastChartData];
+          }
+          break;
+        case 'multi-line':
+          if (this.episodeChartData && this.episodeChartData.length > 0 &&
+            this.episodeChartData.every(chartData => chartData.data.length === expectedLength)) {
+            this.chartData = this.episodeChartData;
+          }
+          break;
       }
     }
   }
@@ -142,10 +156,16 @@ export class DownloadsChartComponent implements OnDestroy {
   }
 
   get chartType(): string {
-    if (this.chartData && this.chartData.length && this.chartData[0].data.length < 4) {
-      return 'bar';
-    } else {
-      return 'area';
+    switch (this.filter.chartType) {
+      case 'single-line':
+      case 'multi-line':
+        return 'line';
+      case 'stacked':
+        if (this.chartData && this.chartData.length && this.chartData[0].data.length < 4) {
+          return 'bar';
+        } else {
+          return 'area';
+        }
     }
   }
 }

@@ -11,7 +11,7 @@ import { AuthService } from 'ngx-prx-styleguide';
 import { CmsService, HalDoc } from '../../core';
 import { getColor } from '../../shared/util/chart.util';
 
-import { PodcastModel, EpisodeModel, EPISODE_PAGE_SIZE, EpisodeMetricsModel } from '../';
+import { AccountModel, PodcastModel, EpisodeModel, EPISODE_PAGE_SIZE, EpisodeMetricsModel } from '../';
 import { selectEpisodeMetrics } from '../reducers';
 import * as ACTIONS from '../actions';
 
@@ -19,6 +19,20 @@ import * as ACTIONS from '../actions';
 export class CmsEffects {
   episodeMetrics: EpisodeMetricsModel[] = [];
   routeParams: Params;
+
+  @Effect()
+  loadAccount$: Observable<Action> = this.actions$
+    .ofType(ACTIONS.ActionTypes.CMS_ACCOUNT)
+    .switchMap(() => {
+      return this.cms.individualAccount.map(doc => {
+        if (doc) {
+          const account: AccountModel = {doc, id: doc.id, name: doc['name']};
+          return new ACTIONS.CmsAccountSuccessAction({account});
+        } else {
+          return new ACTIONS.CmsAccountFailureAction({error: 'You are not logged in'});
+        }
+      }).catch(error => Observable.of(new ACTIONS.CmsPodcastsFailureAction({error})));
+    });
 
   @Effect()
   loadPodcasts$: Observable<Action> = this.actions$
@@ -85,9 +99,6 @@ export class CmsEffects {
               private auth: AuthService,
               private cms: CmsService,
               private router: Router) {
-    auth.token.subscribe(token => {
-      console.log('AUTH got token', token);
-    });
     this.store.select(selectEpisodeMetrics).subscribe((episodeMetrics: EpisodeMetricsModel[]) => {
       this.episodeMetrics = episodeMetrics;
     });

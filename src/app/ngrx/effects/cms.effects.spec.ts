@@ -38,7 +38,8 @@ describe('CmsEffects', () => {
       ]
     });
     effects = TestBed.get(CmsEffects);
-    spyOn(effects, 'routeWithEpisodeCharted').and.callThrough();
+    spyOn(effects, 'routeWithEpisodeCharted').and.stub();
+    spyOn(effects, 'getEpisodeColor').and.returnValue('#fff');
   });
 
   describe('loadAccount', () => {
@@ -100,8 +101,7 @@ describe('CmsEffects', () => {
 
     it('fails to load podcasts', () => {
       const error = new Error('Whaaaa?');
-      const series = auth.mockItems('prx:series', [{id: 111, title: 'Series #1'}]);
-      series[0].mockError('prx:distributions', error);
+      const series = auth.mockError('prx:series', error);
       const action = new ACTIONS.CmsPodcastsAction();
       const completion = new ACTIONS.CmsPodcastsFailureAction({error});
       actions$ = hot('-a', {a: action});
@@ -114,6 +114,71 @@ describe('CmsEffects', () => {
       const completion = new ACTIONS.CmsPodcastsFailureAction({error: `Looks like you don't have any podcasts.`});
       actions$ = hot('-a', {a: action});
       expect(effects.loadPodcasts$).toBeObservable(cold('-r', {r: completion}));
+    });
+
+  });
+
+  describe('loadEpisodes', () => {
+
+    const podcast = {seriesId: 111, title: 'Series #1', feederUrl: 'http://my/podcast/url1', feederId: 'url1'};
+    const s1 = {id: 121, publishedAt: new Date('2018-01-01'), title: 'A Pet Talk Episode'};
+    const s2 = {id: 122, publishedAt: new Date('2018-01-02'), title: 'A More Recent Pet Talk Episode'};
+    const s3 = {id: 123, publishedAt: new Date('2018-01-03'), title: 'A Most Recent Pet Talk Episode'};
+    const s4 = {id: 124, publishedAt: new Date('2018-01-12'), title: 'Episode s4'};
+    const s5 = {id: 125, publishedAt: new Date('2018-01-19'), title: 'Episode s5'};
+    const s6 = {id: 126, publishedAt: new Date('2017-12-04'), title: 'Episode s6'};
+
+    it('successfully loads a page of episodes', () => {
+      const stories = cms.mock('prx:series', {}).mockItems('prx:stories', [s1, s2, s3, s4, s5, s6]);
+      stories[0].mockItems('prx:distributions', [{kind: 'episode', url: 'http://my/episode/guid1'}]);
+      stories[1].mockItems('prx:distributions', [{kind: 'episode', url: 'http://my/episode/guid2'}]);
+      stories[2].mockItems('prx:distributions', [{kind: 'whatev', url: 'http://my/episode/guid3'}]);
+      const episodes = [
+        {...s1, doc: stories[0], feederUrl: 'http://my/episode/guid1', guid: 'guid1'},
+        {...s2, doc: stories[1], feederUrl: 'http://my/episode/guid2', guid: 'guid2'},
+      ].map(episode => {
+        return {...episode, page: 1, seriesId: 111, color: '#fff'};
+      });
+      const action = new ACTIONS.CmsPodcastEpisodePageAction({podcast, page: 1});
+      const completion = new ACTIONS.CmsPodcastEpisodePageSuccessAction({episodes});
+      actions$ = hot('-a', {a: action});
+      expect(effects.loadEpisodes$).toBeObservable(cold('-r', {r: completion}));
+    });
+
+    it('fails to load a page of episodes', () => {
+      const error = new Error('Whaaaa?');
+      const stories = cms.mock('prx:series', {}).mockError('prx:stories', error);
+      const action = new ACTIONS.CmsPodcastEpisodePageAction({podcast, page: 1});
+      const completion = new ACTIONS.CmsPodcastEpisodePageFailureAction({error});
+      actions$ = hot('-a', {a: action});
+      expect(effects.loadEpisodes$).toBeObservable(cold('-r', {r: completion}));
+    });
+
+    it('updates the route to include the first five episodes', () => {
+      const allStories = [s1, s2, s3, s4, s5, s6];
+      const stories = cms.mock('prx:series', {}).mockItems('prx:stories', allStories);
+      stories.forEach((story, index) => {
+        story.mockItems('prx:distributions', [{kind: 'episode', url: `http://my/episode/guid${index}`}]);
+      });
+      const action = new ACTIONS.CmsPodcastEpisodePageAction({podcast, page: 1});
+      actions$ = hot('-a', {a: action});
+      effects.loadEpisodes$.subscribe(() => {
+        expect(effects.routeWithEpisodeCharted).toHaveBeenCalledWith([121, 122, 123, 124, 125]);
+      });
+    });
+
+    it('does not change the route if some episodes are selected', () => {
+      const allStories = [s1, s2, s3, s4, s5, s6];
+      const stories = cms.mock('prx:series', {}).mockItems('prx:stories', allStories);
+      stories.forEach((story, index) => {
+        story.mockItems('prx:distributions', [{kind: 'episode', url: `http://my/episode/guid${index}`}]);
+      });
+      const action = new ACTIONS.CmsPodcastEpisodePageAction({podcast, page: 1});
+      effects.episodeMetrics = [{seriesId: 111, id: 124, charted: true}];
+      actions$ = hot('-a', {a: action});
+      effects.loadEpisodes$.subscribe(() => {
+        expect(effects.routeWithEpisodeCharted).not.toHaveBeenCalled();
+      });
     });
 
   });

@@ -29,7 +29,6 @@ table.sticky th, table.sticky td {
   max-width: 100px;
   overflow: hidden;
   text-overflow: ellipsis;
-  text-align: right;
 }
 table.sticky th:first-child, table.sticky td:first-child {
   min-width: 200px;
@@ -51,6 +50,13 @@ table.scroll-x th {
 }
 table.scroll-x th:first-child, table.scroll-x td:first-child {
   border-left: none;
+}
+.table-navigation {
+  display: flex;
+  justify-content: space-between;
+}
+.table-navigation > button {
+  text-align: left;
 }
 
 prx-checkbox {

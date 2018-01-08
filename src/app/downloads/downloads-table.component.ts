@@ -33,6 +33,7 @@ export class DownloadsTableComponent implements OnDestroy {
   episodeTableData: any[];
   dateRange: string[];
   bindToIntervalHourly = INTERVAL_HOURLY;
+  expanded = false;
 
   constructor(public store: Store<any>) {
 
@@ -169,5 +170,12 @@ export class DownloadsTableComponent implements OnDestroy {
 
   toggleChartEpisode(episode, charted) {
     this.episodeChartToggle.emit({id: episode.id, charted});
+  }
+
+  toggleExpandedReport() {
+    this.expanded = !this.expanded;
+    if (this.expanded) {
+      // send GA event
+    }
   }
 }

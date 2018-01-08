@@ -1,14 +1,17 @@
 import { createSelector, createFeatureSelector, ActionReducerMap } from '@ngrx/store';
 import { FilterReducer, FilterModel } from './filter.reducer';
+import { AccountReducer } from './account.reducer';
 import { PodcastReducer } from './podcast.reducer';
 import { EpisodeReducer } from './episode.reducer';
 import { PodcastMetricsReducer, PodcastMetricsModel } from './podcast-metrics.reducer';
 import { EpisodeMetricsReducer, EpisodeMetricsModel } from './episode-metrics.reducer';
+import { AccountState, getAccountEntity, getAccountError } from './account.reducer';
 import { PodcastState, getPodcastEntities, getPodcastError } from './podcast.reducer';
 import { EpisodeState, getEpisodeEntities } from './episode.reducer';
 
 export interface RootState {
   filter: FilterModel;
+  account: AccountState;
   podcasts: PodcastState;
   episodes: EpisodeState;
   podcastMetrics: PodcastMetricsModel[];
@@ -18,6 +21,7 @@ export interface RootState {
 // TypeScript is complaining about this ActionReducerMap again, not sure why ugh
 export const reducers: ActionReducerMap<RootState> = {
   filter: FilterReducer,
+  account: AccountReducer,
   podcasts: PodcastReducer,
   episodes: EpisodeReducer,
   podcastMetrics: PodcastMetricsReducer,
@@ -30,6 +34,10 @@ export const selectFilter = createSelector(selectAppState, (state: RootState) =>
 export const selectPodcastFilter = createSelector(selectFilter, (filter: FilterModel) => filter.podcastSeriesId);
 export const selectPageFilter = createSelector(selectFilter, (filter: FilterModel) => filter.page);
 export const selectIntervalFilter = createSelector(selectFilter, (filter: FilterModel) => filter.interval);
+
+export const selectAccountState = createSelector(selectAppState, (state: RootState) => state.account);
+export const selectAccount = createSelector(selectAccountState, getAccountEntity);
+export const selectAccountError = createSelector(selectAccountState, getAccountError);
 
 export const selectPodcastState = createSelector(selectAppState, (state: RootState) => state.podcasts);
 export const selectPodcastEntities = createSelector(selectPodcastState, getPodcastEntities);
@@ -47,4 +55,3 @@ export const selectEpisodes = createSelector(selectEpisodeEntities, entities => 
 export const selectPodcastMetrics = createFeatureSelector<PodcastMetricsModel[]>('podcastMetrics');
 
 export const selectEpisodeMetrics = createFeatureSelector<EpisodeMetricsModel[]>('episodeMetrics');
-

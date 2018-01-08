@@ -31,7 +31,7 @@ export class CmsEffects {
         } else {
           return new ACTIONS.CmsAccountFailureAction({error: 'You are not logged in'});
         }
-      }).catch(error => Observable.of(new ACTIONS.CmsPodcastsFailureAction({error})));
+      }).catch(error => Observable.of(new ACTIONS.CmsAccountFailureAction({error})));
     });
 
   @Effect()
@@ -46,9 +46,9 @@ export class CmsEffects {
         } else {
           const params = {per: count, filters: 'v4', zoom: 'prx:distributions'};
           return auth.followItems('prx:series', params).mergeMap((docs: HalDoc[]) => {
-            return Observable.forkJoin(docs.map(d => this.docToPodcast(d))).map(podcasts => {
-              return new ACTIONS.CmsPodcastsSuccessAction({podcasts});
-            });
+            return Observable.forkJoin(docs.map(d => this.docToPodcast(d)))
+              .map(podcasts => podcasts.filter(p => p && p.feederId))
+              .map(podcasts => new ACTIONS.CmsPodcastsSuccessAction({podcasts}));
           });
         }
       }).catch(error => Observable.of(new ACTIONS.CmsPodcastsFailureAction({error})));

@@ -46,7 +46,7 @@ export class AppComponent implements OnInit, OnDestroy {
         this.userImageDoc = state.doc;
         this.userName = state.name;
       } else {
-        console.log('TODO: why is this initially being called with null?', state);
+        // console.log('TODO: why is this initially being called with null?', state);
         this.loggedIn = false;
         this.userImageDoc = null;
         this.userName = null;

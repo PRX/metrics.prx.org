@@ -24,14 +24,18 @@ import * as moment from 'moment';
         <tbody>
           <tr>
             <td>
-              <prx-checkbox small [checked]="podcastTableData.charted" [color]="podcastTableData.color"
+              <prx-checkbox *ngIf="filter?.chartType === 'stacked'; else podcastTitle"
+                small [checked]="podcastTableData.charted" [color]="podcastTableData.color"
                 (change)="toggleChartPodcast($event)">{{podcastTableData.title}}</prx-checkbox>
+              <ng-template #podcastTitle>{{podcastTableData.title}}</ng-template>
             </td>
           </tr>
           <tr *ngFor="let episode of episodeTableData">
             <td>
-              <prx-checkbox small [checked]="episode.charted" [color]="episode.color"
+              <prx-checkbox *ngIf="filter?.chartType !== 'podcast'; else episodeTitle"
+                small [checked]="episode.charted" [color]="episode.color"
                 (change)="toggleChartEpisode(episode, $event)">{{episode.title}}</prx-checkbox>
+              <ng-template #episodeTitle>{{episode.title}}</ng-template>
             </td>
           </tr>
         </tbody>

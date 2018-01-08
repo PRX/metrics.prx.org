@@ -60,7 +60,7 @@ export class DownloadsChartComponent implements OnDestroy {
 
   updatePodcastChartData(podcastMetrics: PodcastMetricsModel[]) {
     this.podcastMetrics = findPodcastMetrics(this.filter, podcastMetrics);
-    if (this.podcastMetrics && this.podcastMetrics.charted) {
+    if (this.podcastMetrics) {
       this.podcastChartData = this.mapPodcastData(metricsData(this.filter, this.podcastMetrics, 'downloads'));
     } else {
       this.podcastChartData = null;
@@ -104,7 +104,7 @@ export class DownloadsChartComponent implements OnDestroy {
       const expectedLength = dateUtil.getAmountOfIntervals(this.filter.beginDate, this.filter.endDate, this.filter.interval);
       switch (this.filter.chartType) {
         case 'stacked':
-          if (this.podcastChartData && this.podcastChartData.data.length === expectedLength &&
+          if (this.podcastChartData && this.podcastMetrics.charted && this.podcastChartData.data.length === expectedLength &&
             (this.episodeChartData && this.episodeChartData.length > 0 &&
             this.episodeChartData.every(chartData => chartData.data.length === expectedLength))) {
             // if we have episodes to combine with podcast total
@@ -115,19 +115,19 @@ export class DownloadsChartComponent implements OnDestroy {
               color: neutralColor
             };
             this.chartData = [...this.episodeChartData, allOtherEpisodesData];
-          } else if (this.podcastMetrics && this.podcastMetrics.charted && this.podcastChartData && this.podcastChartData.data.length > 0) {
+          } else if (this.podcastChartData && this.podcastChartData.data.length > 0 && this.episodeChartData.length === 0) {
             this.chartData = [this.podcastChartData];
           } else if (this.episodeChartData && this.episodeChartData.length > 0 &&
             this.episodeChartData.every(chartData => chartData.data.length === expectedLength)) {
             this.chartData = this.episodeChartData;
           }
           break;
-        case 'single-line':
-          if (this.podcastMetrics && this.podcastMetrics.charted && this.podcastChartData && this.podcastChartData.data.length > 0) {
+        case 'podcast':
+          if (this.podcastMetrics && this.podcastChartData && this.podcastChartData.data.length > 0) {
             this.chartData = [this.podcastChartData];
           }
           break;
-        case 'multi-line':
+        case 'episodes':
           if (this.episodeChartData && this.episodeChartData.length > 0 &&
             this.episodeChartData.every(chartData => chartData.data.length === expectedLength)) {
             this.chartData = this.episodeChartData;
@@ -157,8 +157,8 @@ export class DownloadsChartComponent implements OnDestroy {
 
   get chartType(): string {
     switch (this.filter.chartType) {
-      case 'single-line':
-      case 'multi-line':
+      case 'podcast':
+      case 'episodes':
         return 'line';
       case 'stacked':
         if (this.chartData && this.chartData.length && this.chartData[0].data.length < 4) {

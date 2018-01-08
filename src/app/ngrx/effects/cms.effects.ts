@@ -87,11 +87,11 @@ export class CmsEffects {
   routeWithEpisodeCharted(episodeIds: number[]) {
     const params = {};
     Object.keys(this.routeParams).forEach(key => {
-      if (key !== 'seriesId' && key !== 'interval') {
+      if (key !== 'seriesId' && key !== 'interval' && key !== 'chartType') {
         params[key] = this.routeParams[key];
       }
     });
     params['episodes'] = episodeIds.join(',');
-    this.router.navigate([this.routeParams['seriesId'], 'downloads', this.routeParams['interval'], params]);
+    this.router.navigate([this.routeParams['seriesId'], 'downloads', this.routeParams['chartType'], this.routeParams['interval'], params]);
   }
 }

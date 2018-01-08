@@ -81,6 +81,7 @@ export class DownloadsComponent implements OnInit, OnDestroy {
               }
               this.toggleLoading(true, true);
             }
+            this.filter.chartType = newFilter.chartType;
 
             if (isPodcastChanged(newFilter, this.filter)) {
               this.filter.podcastSeriesId = newFilter.podcastSeriesId;
@@ -173,7 +174,8 @@ export class DownloadsComponent implements OnInit, OnDestroy {
       standardRange: dateUtil.THIS_WEEK_PLUS_7_DAYS,
       beginDate: dateUtil.beginningOfThisWeekPlus7DaysUTC().toDate(),
       endDate: dateUtil.endOfTodayUTC().toDate(),
-      interval: INTERVAL_DAILY
+      interval: INTERVAL_DAILY,
+      chartType: 'podcast'
     };
     if (routingFilter.page) {
       this.filter.page = routingFilter.page;
@@ -230,7 +232,7 @@ export class DownloadsComponent implements OnInit, OnDestroy {
     } else if (this.chartedEpisodes) {
       params['episodes'] = this.chartedEpisodes.join(',');
     }
-    this.router.navigate([filter.podcastSeriesId, 'downloads', filter.interval.key, params]);
+    this.router.navigate([filter.podcastSeriesId, 'downloads', filter.chartType, filter.interval.key, params]);
   }
 
   getPodcastMetrics(podcast: PodcastModel) {

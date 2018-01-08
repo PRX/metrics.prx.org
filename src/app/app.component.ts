@@ -70,7 +70,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
         // Default select the first one by navigating to it. (It'll be the last one that was updated)
         if (!this.filteredPodcastSeriesId) {
-          this.router.navigate([this.podcasts[0].seriesId, 'downloads', 'daily']);
+          this.router.navigate([this.podcasts[0].seriesId, 'downloads', 'podcast', 'daily']);
         }
       }
     });

@@ -192,6 +192,9 @@ export class DownloadsComponent implements OnInit, OnDestroy {
     if (routingFilter.interval) {
       this.filter.interval = routingFilter.interval;
     }
+    if (routingFilter.chartType) {
+      this.filter.chartType = routingFilter.chartType;
+    }
     if (routingFilter.podcastSeriesId) {
       this.filter.podcastSeriesId = routingFilter.podcastSeriesId;
       this.routeFromFilter(this.filter, undefined, undefined);

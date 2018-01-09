@@ -1,9 +1,11 @@
 import { Component, OnDestroy, Input, Output, EventEmitter } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs/Subscription';
-import { EpisodeModel, FilterModel, EpisodeMetricsModel, PodcastMetricsModel,
+import { EpisodeModel, FilterModel, PodcastModel, EpisodeMetricsModel, PodcastMetricsModel,
   INTERVAL_MONTHLY, INTERVAL_WEEKLY, INTERVAL_DAILY, INTERVAL_HOURLY } from '../ngrx';
-import { selectEpisodes, selectFilter, selectEpisodeMetrics, selectPodcastMetrics } from '../ngrx/reducers';
+import { selectEpisodes, selectFilter, selectPodcasts, selectEpisodeMetrics, selectPodcastMetrics } from '../ngrx/reducers';
+import { CastlePodcastAllTimeMetricsLoadAction, GoogleAnalyticsEventAction } from '../ngrx/actions';
+
 import { findPodcastMetrics, filterPodcastEpisodePage, filterEpisodeMetricsPage, metricsData, getTotal } from '../shared/util/metrics.util';
 import { mapMetricsToTimeseriesData, neutralColor } from '../shared/util/chart.util';
 import * as dateFormat from '../shared/util/date/date.format';
@@ -22,8 +24,12 @@ export class DownloadsTableComponent implements OnDestroy {
   @Output() podcastChartToggle = new EventEmitter();
   @Output() episodeChartToggle = new EventEmitter();
   @Output() pageChange = new EventEmitter();
+  // ^ these should probably just dispatch actions now?
+
   filterStoreSub: Subscription;
   filter: FilterModel;
+  podcastStoreSub: Subscription;
+  podcasts: PodcastModel[];;
   allEpisodesSub: Subscription;
   episodes: EpisodeModel[];
   episodeMetricsStoreSub: Subscription;
@@ -50,9 +56,15 @@ export class DownloadsTableComponent implements OnDestroy {
         }
         if (this.podcastMetrics) {
           this.podcastMetrics = findPodcastMetrics(this.filter, [this.podcastMetrics]);
+
         }
         this.buildTableData();
       }
+    });
+
+    this.podcastStoreSub = this.store.select(selectPodcasts).subscribe((state: PodcastModel[]) => {
+      this.podcasts = state;
+      this.podcasts.forEach(podcast => this.store.dispatch(new CastlePodcastAllTimeMetricsLoadAction({podcast})))
     });
 
     this.allEpisodesSub = this.store.select(selectEpisodes).subscribe((allEpisodes: EpisodeModel[]) => {
@@ -86,9 +98,9 @@ export class DownloadsTableComponent implements OnDestroy {
   }
 
   mapPodcastData() {
-    const expectedLength = getAmountOfIntervals(this.filter.beginDate, this.filter.endDate, this.filter.interval);
     const downloads = metricsData(this.filter, this.podcastMetrics, 'downloads');
     if (downloads) {
+      const expectedLength = getAmountOfIntervals(this.filter.beginDate, this.filter.endDate, this.filter.interval);
       const totalForPeriod = getTotal(downloads);
       return {
         title: 'All Episodes',
@@ -103,8 +115,8 @@ export class DownloadsTableComponent implements OnDestroy {
   }
 
   mapEpisodeData() {
-    const expectedLength = getAmountOfIntervals(this.filter.beginDate, this.filter.endDate, this.filter.interval);
     if (this.episodes && this.episodeMetrics && this.episodeMetrics.length) {
+      const expectedLength = getAmountOfIntervals(this.filter.beginDate, this.filter.endDate, this.filter.interval);
       return this.episodeMetrics
         .map((epMetric) => {
           const downloads = metricsData(this.filter, epMetric, 'downloads');
@@ -182,7 +194,7 @@ export class DownloadsTableComponent implements OnDestroy {
   toggleExpandedReport() {
     this.expanded = !this.expanded;
     if (this.expanded) {
-      // send GA event
+      // this.store.dispatch(new GoogleAnalyticsEventAction({...}));
     }
   }
 }

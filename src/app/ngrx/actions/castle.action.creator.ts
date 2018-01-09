@@ -60,3 +60,13 @@ export class CastleEpisodeChartToggleAction implements Action {
 
   constructor(public payload: CastleEpisodeChartTogglePayload) {}
 }
+
+export interface CastlePodcastAllTimeMetricsLoadPayload {
+  podcast: PodcastModel;
+}
+
+export class CastlePodcastAllTimeMetricsLoadAction implements Action {
+  readonly type = ActionTypes.CASTLE_PODCAST_ALL_TIME_METRICS_LOAD;
+
+  constructor(public payload: CastlePodcastAllTimeMetricsLoadPayload) {}
+}

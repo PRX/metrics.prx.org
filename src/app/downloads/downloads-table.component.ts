@@ -35,7 +35,9 @@ import * as moment from 'moment';
               <prx-checkbox *ngIf="filter?.chartType !== 'podcast'; else episodeTitle"
                 small [checked]="episode.charted" [color]="episode.color"
                 (change)="toggleChartEpisode(episode, $event)">{{episode.title}}</prx-checkbox>
-              <ng-template #episodeTitle>{{episode.title}}</ng-template>
+              <ng-template #episodeTitle>
+                <button class="btn-link" (click)="OnChartSingleEpisode(episode)">{{episode.title}}</button>
+              </ng-template>
             </td>
           </tr>
         </tbody>
@@ -76,6 +78,7 @@ export class DownloadsTableComponent implements OnDestroy {
   @Input() totalPages;
   @Output() podcastChartToggle = new EventEmitter();
   @Output() episodeChartToggle = new EventEmitter();
+  @Output() chartSingleEpisode = new EventEmitter();
   @Output() pageChange = new EventEmitter();
   filterStoreSub: Subscription;
   filter: FilterModel;
@@ -225,5 +228,9 @@ export class DownloadsTableComponent implements OnDestroy {
 
   toggleChartEpisode(episode, charted) {
     this.episodeChartToggle.emit({id: episode.id, charted});
+  }
+
+  OnChartSingleEpisode(episode) {
+    this.chartSingleEpisode.emit(episode.id);
   }
 }

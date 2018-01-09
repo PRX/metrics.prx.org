@@ -22,7 +22,9 @@ import { isPodcastChanged, isBeginDateChanged, isEndDateChanged, isIntervalChang
       <metrics-downloads-chart></metrics-downloads-chart>
       <metrics-downloads-table
         [totalPages]="totalPages" (pageChange)="onPageChange($event)"
-        (podcastChartToggle)="onPodcastChartToggle($event)" (episodeChartToggle)="onEpisodeChartToggle($event)">
+        (podcastChartToggle)="onPodcastChartToggle($event)"
+        (episodeChartToggle)="onEpisodeChartToggle($event)"
+        (chartSingleEpisode)="onChartSingleEpisode($event)">
       </metrics-downloads-table>
       <p class="error" *ngFor="let error of errors">{{error}}</p>
     </section>
@@ -197,44 +199,30 @@ export class DownloadsComponent implements OnInit, OnDestroy {
     }
     if (routingFilter.podcastSeriesId) {
       this.filter.podcastSeriesId = routingFilter.podcastSeriesId;
-      this.routeFromFilter(this.filter, undefined, undefined);
+      this.routeFromFilter(this.filter);
     } else {
       this.store.dispatch(new CastleFilterAction({filter: this.filter}));
     }
   }
 
-  routeFromFilter(filter: FilterModel, podcastToggle: boolean, episodeToggle: {id: number, charted: boolean}) {
+  routeFromFilter(filter: FilterModel) {
     const params = {
       page: filter.page,
       beginDate: filter.beginDate.toISOString(),
       endDate: filter.endDate.toISOString(),
       standardRange: filter.standardRange
     };
-    if (podcastToggle !== undefined) {
-      params['chartPodcast'] = podcastToggle;
-    } else if (this.chartPodcast !== undefined) {
+
+    if (this.chartPodcast !== undefined) {
       params['chartPodcast'] = this.chartPodcast;
     } else {
       params['chartPodcast'] = true; // true is the default
     }
 
-    if (episodeToggle !== undefined && this.chartedEpisodes) {
-      if (episodeToggle.charted) {
-        // positive state changes on episodes are reflected in and dispatch through the route
-        params['episodes'] = this.chartedEpisodes.join(',') + ',' + episodeToggle.id;
-      } else {
-        // update the route and the state, negative state changes on episodes aren't reflected in route
-        this.chartedEpisodes = this.chartedEpisodes.filter(id => id !== episodeToggle.id);
-        params['episodes'] = this.chartedEpisodes.join(',');
-        this.store.dispatch(new CastleEpisodeChartToggleAction({id: episodeToggle.id, seriesId: filter.podcastSeriesId, charted: false}));
-      }
-    } else if (episodeToggle !== undefined) {
-      if (episodeToggle.charted) {
-        params['episodes'] = episodeToggle.id;
-      }
-    } else if (this.chartedEpisodes) {
+    if (this.chartedEpisodes) {
       params['episodes'] = this.chartedEpisodes.join(',');
     }
+
     this.router.navigate([filter.podcastSeriesId, 'downloads', filter.chartType, filter.interval.key, params]);
   }
 
@@ -304,14 +292,44 @@ export class DownloadsComponent implements OnInit, OnDestroy {
   }
 
   onPageChange(page: number) {
-    this.routeFromFilter({...this.filter, page}, undefined, undefined);
+    this.routeFromFilter({...this.filter, page});
   }
 
   onPodcastChartToggle(charted: boolean) {
-    this.routeFromFilter(this.filter, charted, undefined);
+    this.chartPodcast = charted;
+    this.routeFromFilter(this.filter);
+  }
+
+  updatedChartedEpisodesWithToggle(episodeToggle: {id: number, charted: boolean}) {
+    if (this.chartedEpisodes) {
+      if (episodeToggle.charted) {
+        // positive state changes on episodes are reflected in and dispatch through the route
+        this.chartedEpisodes = this.chartedEpisodes.concat(episodeToggle.id);
+      } else {
+        // update the route and the state, negative state changes on episodes aren't reflected in route
+        this.chartedEpisodes = this.chartedEpisodes.filter(id => id !== episodeToggle.id);
+        this.store.dispatch(new CastleEpisodeChartToggleAction({
+          id: episodeToggle.id, seriesId: this.filter.podcastSeriesId, charted: false}));
+      }
+    } else {
+      this.chartedEpisodes = [episodeToggle.id];
+    }
   }
 
   onEpisodeChartToggle(params: {id: number, charted: boolean}) {
-    this.routeFromFilter(this.filter, undefined, params);
+    this.updatedChartedEpisodesWithToggle(params);
+    this.routeFromFilter(this.filter);
+  }
+
+  onChartSingleEpisode(episodeId) {
+    // Do we care what was toggled on other pages at this point?
+    // * feel like overcomplicating an underestablished feature
+    // * If we get user feedback that it does matter, we will instead want to
+    // * only remove other episodes that were charted on the same page as this episode and keep the other pages of episodes
+    // --> so reset other episodes to default and just chart this one episode
+    this.chartedEpisodes.forEach(id => this.store.dispatch(new CastleEpisodeChartToggleAction({
+      id, seriesId: this.filter.podcastSeriesId, charted: false})));
+    this.chartedEpisodes = [episodeId];
+    this.routeFromFilter({...this.filter, chartType: 'episodes'});
   }
 }

@@ -22,9 +22,9 @@ export class ChartTypeComponent {
   getChartImg(chartType: ChartType): string {
     switch (chartType) {
       case 'podcast':
-        return '/assets/images/bt_stacked-chart.svg';
+        return '/assets/images/bt_single-line-chart.svg';
       case 'episodes':
-        return '/assets/images/bt_stacked-chart.svg';
+        return '/assets/images/bt_multi-line-chart.svg';
       case 'stacked':
         return '/assets/images/bt_stacked-chart.svg';
     }

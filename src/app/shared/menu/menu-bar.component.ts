@@ -10,7 +10,7 @@ import * as dateUtil from '../util/date';
   selector: 'metrics-menu-bar',
   template: `
     <metrics-chart-type></metrics-chart-type>
-    <metrics-interval [filter]="filter" (intervalChange)="onIntervalChange($event)"></metrics-interval>
+    <metrics-interval-dropdown [filter]="filter" (intervalChange)="onIntervalChange($event)"></metrics-interval-dropdown>
     <div class="empty"></div>
     <metrics-standard-date-range-dropdown [interval]="filter?.interval" [standardRange]="filter?.standardRange"
                                           (standardRangeChange)="onStandardRangeChange($event)"

@@ -1,28 +1,24 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { DebugElement } from '@angular/core';
 
-import { SelectModule } from 'ngx-prx-styleguide';
-import { IntervalComponent } from './interval.component';
+import { IntervalDropdownComponent } from './interval-dropdown.component';
 
 import { INTERVAL_DAILY } from '../../ngrx';
 import * as dateUtil from '../util/date';
 
-describe('IntervalComponent', () => {
-  let comp: IntervalComponent;
-  let fix: ComponentFixture<IntervalComponent>;
+describe('IntervalDropdownComponent', () => {
+  let comp: IntervalDropdownComponent;
+  let fix: ComponentFixture<IntervalDropdownComponent>;
   let de: DebugElement;
   let el: HTMLElement;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [
-        IntervalComponent
-      ],
-      imports: [
-        SelectModule
+        IntervalDropdownComponent
       ]
     }).compileComponents().then(() => {
-      fix = TestBed.createComponent(IntervalComponent);
+      fix = TestBed.createComponent(IntervalDropdownComponent);
       comp = fix.componentInstance;
       fix.detectChanges();
       de = fix.debugElement;

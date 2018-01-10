@@ -1,4 +1,5 @@
-import { ActionTypes, AllActions, CastlePodcastMetricsAction, CastlePodcastChartToggleAction } from '../actions';
+import { ActionTypes, AllActions, CastlePodcastMetricsAction, CastlePodcastChartToggleAction,
+  CastlePodcastAllTimeMetricsSuccessAction, CastlePodcastAllTimeMetricsFailureAction } from '../actions';
 import { getMetricsProperty } from './metrics.type';
 
 export interface PodcastMetricsModel {
@@ -9,6 +10,7 @@ export interface PodcastMetricsModel {
   weeklyDownloads?: any[][];
   dailyDownloads?: any[][];
   hourlyDownloads?: any[][];
+  allTimeDownloads?: number;
 }
 
 const initialState = [];
@@ -50,6 +52,27 @@ export function PodcastMetricsReducer(state: PodcastMetricsModel[] = initialStat
           newState = [podcast, ...state];
         }
         return newState;
+      }
+      break;
+    case ActionTypes.CASTLE_PODCAST_ALL_TIME_METRICS_SUCCESS:
+      if (action instanceof CastlePodcastAllTimeMetricsSuccessAction) {
+        const { seriesId } = action.payload.podcast;
+        const podcastIdx = podcastIndex(state, seriesId);
+
+        if (podcastIdx > -1) {
+          let podcast: PodcastMetricsModel, newState: PodcastMetricsModel[];
+          podcast = {...state[podcastIdx], allTimeDownloads: action.payload.allTimeDownloads};
+          newState = [...state.slice(0, podcastIdx), podcast, ...state.slice(podcastIdx + 1)];
+          console.log('newState!', newState);
+          return newState
+        } else {
+          return state;
+        }
+      }
+      break;
+    case ActionTypes.CASTLE_PODCAST_ALL_TIME_METRICS_FAILURE:
+      if (action instanceof CastlePodcastAllTimeMetricsFailureAction) {
+        console.log('error:', action.payload)
       }
       break;
   }

@@ -27,6 +27,8 @@ export { CastleFilterPayload, CastleFilterAction,
   CastlePodcastMetricsPayload, CastlePodcastMetricsAction,
   CastlePodcastChartTogglePayload, CastlePodcastChartToggleAction,
   CastlePodcastAllTimeMetricsLoadPayload, CastlePodcastAllTimeMetricsLoadAction,
+  CastlePodcastAllTimeMetricsSuccessPayload, CastlePodcastAllTimeMetricsSuccessAction,
+  CastlePodcastAllTimeMetricsFailureAction,
   CastleEpisodeMetricsPayload, CastleEpisodeMetricsAction,
   CastleEpisodeChartTogglePayload, CastleEpisodeChartToggleAction} from './castle.action.creator';
 export { GoogleAnalyticsEventPayload, GoogleAnalyticsEventAction } from './google-analytics.action.creator';

@@ -62,11 +62,28 @@ export class CastleEpisodeChartToggleAction implements Action {
 }
 
 export interface CastlePodcastAllTimeMetricsLoadPayload {
-  podcast: PodcastModel;
+  filter: FilterModel;
 }
 
 export class CastlePodcastAllTimeMetricsLoadAction implements Action {
   readonly type = ActionTypes.CASTLE_PODCAST_ALL_TIME_METRICS_LOAD;
 
   constructor(public payload: CastlePodcastAllTimeMetricsLoadPayload) {}
+}
+
+export interface CastlePodcastAllTimeMetricsSuccessPayload {
+  podcast: PodcastModel;
+  allTimeDownloads: number;
+}
+
+export class CastlePodcastAllTimeMetricsSuccessAction implements Action {
+  readonly type = ActionTypes.CASTLE_PODCAST_ALL_TIME_METRICS_SUCCESS;
+
+  constructor(public payload: CastlePodcastAllTimeMetricsSuccessPayload) {}
+}
+
+export class CastlePodcastAllTimeMetricsFailureAction implements Action {
+  readonly type = ActionTypes.CASTLE_PODCAST_ALL_TIME_METRICS_FAILURE;
+
+  constructor(public payload: any) {}
 }

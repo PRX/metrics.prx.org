@@ -1,6 +1,6 @@
-import { Component, OnDestroy, Input, Output, EventEmitter } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs/Subscription';
+import { Component, OnInit, OnDestroy, Input, Output, EventEmitter } from '@angular/core';
 import { EpisodeModel, FilterModel, PodcastModel, EpisodeMetricsModel, PodcastMetricsModel,
   INTERVAL_MONTHLY, INTERVAL_WEEKLY, INTERVAL_DAILY, INTERVAL_HOURLY } from '../ngrx';
 import { selectEpisodes, selectFilter, selectPodcasts, selectEpisodeMetrics, selectPodcastMetrics } from '../ngrx/reducers';
@@ -19,7 +19,7 @@ import * as moment from 'moment';
   styleUrls: ['downloads-table.component.css']
 
 })
-export class DownloadsTableComponent implements OnDestroy {
+export class DownloadsTableComponent implements OnInit, OnDestroy {
   @Input() totalPages;
   @Output() podcastChartToggle = new EventEmitter();
   @Output() episodeChartToggle = new EventEmitter();
@@ -46,6 +46,7 @@ export class DownloadsTableComponent implements OnDestroy {
 
     this.filterStoreSub = this.store.select(selectFilter).subscribe((newFilter: FilterModel) => {
       if (newFilter) {
+        this.store.dispatch(new CastlePodcastAllTimeMetricsLoadAction({ filter: newFilter }));
         if (isPodcastChanged(newFilter, this.filter)) {
           this.resetAllData();
         }
@@ -60,11 +61,6 @@ export class DownloadsTableComponent implements OnDestroy {
         }
         this.buildTableData();
       }
-    });
-
-    this.podcastStoreSub = this.store.select(selectPodcasts).subscribe((state: PodcastModel[]) => {
-      this.podcasts = state;
-      this.podcasts.forEach(podcast => this.store.dispatch(new CastlePodcastAllTimeMetricsLoadAction({podcast})))
     });
 
     this.allEpisodesSub = this.store.select(selectEpisodes).subscribe((allEpisodes: EpisodeModel[]) => {
@@ -90,6 +86,12 @@ export class DownloadsTableComponent implements OnDestroy {
     });
   }
 
+  ngOnInit() {
+    if (this.filter) {
+      this.store.dispatch(new CastlePodcastAllTimeMetricsLoadAction({ filter: this.filter }));
+    }
+  }
+
   resetAllData() {
     this.podcastTableData = null;
     this.episodeTableData = null;
@@ -109,6 +111,7 @@ export class DownloadsTableComponent implements OnDestroy {
         downloads: mapMetricsToTimeseriesData(downloads),
         totalForPeriod: totalForPeriod,
         avgPerIntervalForPeriod: Math.floor(totalForPeriod / expectedLength),
+        allTimeDownloads: this.podcastMetrics.allTimeDownloads,
         charted: this.podcastMetrics.charted
       };
     }

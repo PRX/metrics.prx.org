@@ -3,6 +3,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { provideMockActions } from '@ngrx/effects/testing';
 import { StoreModule } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
+import { ReplaySubject } from 'rxjs/ReplaySubject';
 
 import { hot, cold } from 'jasmine-marbles';
 import { AuthService, MockHalDoc, HalService, MockHalService } from 'ngx-prx-styleguide';
@@ -13,12 +14,16 @@ import * as ACTIONS from '../actions';
 import { CmsEffects } from './cms.effects';
 
 describe('CmsEffects', () => {
+  const authToken = new ReplaySubject<string>(1);
+
   let effects: CmsEffects;
   let actions$: Observable<any>;
+  let expect$: Observable<any>;
   let cms: MockHalService;
   let auth: MockHalDoc;
 
   beforeEach(() => {
+    authToken.next('some-auth-token');
     cms = new MockHalService();
     auth = cms.mock('prx:authorization', {});
   });
@@ -30,7 +35,7 @@ describe('CmsEffects', () => {
         StoreModule.forRoot(reducers)
       ],
       providers: [
-        AuthService,
+        {provide: AuthService, useValue: {token: authToken}},
         {provide: HalService, useValue: cms},
         CmsService,
         CmsEffects,
@@ -53,7 +58,8 @@ describe('CmsEffects', () => {
       const action = new ACTIONS.CmsAccountAction();
       const completion = new ACTIONS.CmsAccountSuccessAction({account});
       actions$ = hot('-a', {a: action});
-      expect(effects.loadAccount$).toBeObservable(cold('-r', {r: completion}));
+      expect$ = cold('-r', {r: completion});
+      expect(effects.loadAccount$).toBeObservable(expect$);
     });
 
     it('fails to load the account', () => {
@@ -62,15 +68,17 @@ describe('CmsEffects', () => {
       const action = new ACTIONS.CmsAccountAction();
       const completion = new ACTIONS.CmsAccountFailureAction({error});
       actions$ = hot('-a', {a: action});
-      expect(effects.loadAccount$).toBeObservable(cold('-r', {r: completion}));
+      expect$ = cold('-r', {r: completion});
+      expect(effects.loadAccount$).toBeObservable(expect$);
     });
 
     it('catches login errors', () => {
-      const accounts = auth.mockItems('prx:accounts', []);
       const action = new ACTIONS.CmsAccountAction();
       const completion = new ACTIONS.CmsAccountFailureAction({error: 'You are not logged in'});
+      authToken.next(null);
       actions$ = hot('-a', {a: action});
-      expect(effects.loadAccount$).toBeObservable(cold('-r', {r: completion}));
+      expect$ = cold('-r', {r: completion});
+      expect(effects.loadAccount$).toBeObservable(expect$);
     });
 
   });
@@ -96,7 +104,8 @@ describe('CmsEffects', () => {
       const action = new ACTIONS.CmsPodcastsAction();
       const completion = new ACTIONS.CmsPodcastsSuccessAction({podcasts});
       actions$ = hot('-a', {a: action});
-      expect(effects.loadPodcasts$).toBeObservable(cold('-r', {r: completion}));
+      expect$ = cold('-r', {r: completion});
+      expect(effects.loadPodcasts$).toBeObservable(expect$);
     });
 
     it('fails to load podcasts', () => {
@@ -105,7 +114,8 @@ describe('CmsEffects', () => {
       const action = new ACTIONS.CmsPodcastsAction();
       const completion = new ACTIONS.CmsPodcastsFailureAction({error});
       actions$ = hot('-a', {a: action});
-      expect(effects.loadPodcasts$).toBeObservable(cold('-r', {r: completion}));
+      expect$ = cold('-r', {r: completion});
+      expect(effects.loadPodcasts$).toBeObservable(expect$);
     });
 
     it('handles lack of podcasts', () => {
@@ -113,7 +123,17 @@ describe('CmsEffects', () => {
       const action = new ACTIONS.CmsPodcastsAction();
       const completion = new ACTIONS.CmsPodcastsFailureAction({error: `Looks like you don't have any podcasts.`});
       actions$ = hot('-a', {a: action});
-      expect(effects.loadPodcasts$).toBeObservable(cold('-r', {r: completion}));
+      expect$ = cold('-r', {r: completion});
+      expect(effects.loadPodcasts$).toBeObservable(expect$);
+    });
+
+    it('catches login errors', () => {
+      const action = new ACTIONS.CmsPodcastsAction();
+      const completion = new ACTIONS.CmsPodcastsFailureAction({error: 'You are not logged in'});
+      authToken.next(null);
+      actions$ = hot('-a', {a: action});
+      expect$ = cold('-r', {r: completion});
+      expect(effects.loadPodcasts$).toBeObservable(expect$);
     });
 
   });
@@ -142,7 +162,8 @@ describe('CmsEffects', () => {
       const action = new ACTIONS.CmsPodcastEpisodePageAction({podcast, page: 1});
       const completion = new ACTIONS.CmsPodcastEpisodePageSuccessAction({episodes});
       actions$ = hot('-a', {a: action});
-      expect(effects.loadEpisodes$).toBeObservable(cold('-r', {r: completion}));
+      expect$ = cold('-r', {r: completion});
+      expect(effects.loadEpisodes$).toBeObservable(expect$);
     });
 
     it('fails to load a page of episodes', () => {
@@ -151,7 +172,8 @@ describe('CmsEffects', () => {
       const action = new ACTIONS.CmsPodcastEpisodePageAction({podcast, page: 1});
       const completion = new ACTIONS.CmsPodcastEpisodePageFailureAction({error});
       actions$ = hot('-a', {a: action});
-      expect(effects.loadEpisodes$).toBeObservable(cold('-r', {r: completion}));
+      expect$ = cold('-r', {r: completion});
+      expect(effects.loadEpisodes$).toBeObservable(expect$);
     });
 
     it('updates the route to include the first five episodes', () => {

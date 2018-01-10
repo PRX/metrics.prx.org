@@ -6,7 +6,7 @@ import { Angulartics2GoogleAnalytics } from 'angulartics2';
 import { HalDoc } from './core';
 import { Env } from './core/core.env';
 import { AccountModel, PodcastModel, FilterModel } from './ngrx';
-import { selectAccount, selectPodcasts, selectFilter } from './ngrx/reducers';
+import { selectAccount, selectAccountError, selectPodcasts, selectFilter } from './ngrx/reducers';
 import * as ACTIONS from './ngrx/actions';
 
 @Component({
@@ -20,6 +20,7 @@ export class AppComponent implements OnInit, OnDestroy {
   authClient = Env.AUTH_CLIENT_ID;
 
   accountStoreSub: Subscription;
+  accountStoreErrorSub: Subscription;
   loggedIn = true; // until proven otherwise
   userName: string;
   userImageDoc: HalDoc;
@@ -45,8 +46,11 @@ export class AppComponent implements OnInit, OnDestroy {
         this.loggedIn = true;
         this.userImageDoc = state.doc;
         this.userName = state.name;
-      } else {
-        // console.log('TODO: why is this initially being called with null?', state);
+      }
+    });
+
+    this.accountStoreErrorSub = this.store.select(selectAccountError).subscribe((error: any) => {
+      if (error) {
         this.loggedIn = false;
         this.userImageDoc = null;
         this.userName = null;
@@ -83,6 +87,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     if (this.accountStoreSub) { this.accountStoreSub.unsubscribe(); }
+    if (this.accountStoreErrorSub) { this.accountStoreErrorSub.unsubscribe(); }
     if (this.podcastStoreSub) { this.podcastStoreSub.unsubscribe(); }
     if (this.filterStoreSub) { this.filterStoreSub.unsubscribe(); }
   }

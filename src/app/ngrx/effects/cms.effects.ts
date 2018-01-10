@@ -25,12 +25,14 @@ export class CmsEffects {
   loadAccount$: Observable<Action> = this.actions$
     .ofType(ACTIONS.ActionTypes.CMS_ACCOUNT)
     .switchMap(() => {
-      return this.cms.individualAccount.map(doc => {
-        if (doc) {
-          const account: AccountModel = {doc, id: doc.id, name: doc['name']};
-          return new ACTIONS.CmsAccountSuccessAction({account});
+      return this.auth.token.first().mergeMap(token => {
+        if (token) {
+          return this.cms.individualAccount.map(doc => {
+            const account: AccountModel = {doc, id: doc.id, name: doc['name']};
+            return new ACTIONS.CmsAccountSuccessAction({account});
+          });
         } else {
-          return new ACTIONS.CmsAccountFailureAction({error: 'You are not logged in'});
+          return Observable.of(new ACTIONS.CmsAccountFailureAction({error: 'You are not logged in'}));
         }
       }).catch(error => Observable.of(new ACTIONS.CmsAccountFailureAction({error})));
     });
@@ -39,18 +41,25 @@ export class CmsEffects {
   loadPodcasts$: Observable<Action> = this.actions$
     .ofType(ACTIONS.ActionTypes.CMS_PODCASTS)
     .switchMap(() => {
-      return this.cms.auth.mergeMap(auth => {
-        const count = auth.count('prx:series');
-        if (count === 0) {
-          const error = 'Looks like you don\'t have any podcasts.';
-          return Observable.of(new ACTIONS.CmsPodcastsFailureAction({error}));
-        } else {
-          const params = {per: count, filters: 'v4', zoom: 'prx:distributions'};
-          return auth.followItems('prx:series', params).mergeMap(docs => {
-            return Observable.forkJoin(docs.map(d => this.docToPodcast(d)))
-              .map(podcasts => podcasts.filter(p => p && p.feederId))
-              .map(podcasts => new ACTIONS.CmsPodcastsSuccessAction({podcasts}));
+      const num = Math.random();
+      return this.auth.token.first().mergeMap(token => {
+        if (token) {
+          return this.cms.auth.mergeMap(auth => {
+            const count = auth.count('prx:series');
+            if (count === 0) {
+              const error = 'Looks like you don\'t have any podcasts.';
+              return Observable.of(new ACTIONS.CmsPodcastsFailureAction({error}));
+            } else {
+              const params = {per: count, filters: 'v4', zoom: 'prx:distributions'};
+              return auth.followItems('prx:series', params).mergeMap(docs => {
+                return Observable.forkJoin(docs.map(d => this.docToPodcast(d)))
+                  .map(podcasts => podcasts.filter(p => p && p.feederId))
+                  .map(podcasts => new ACTIONS.CmsPodcastsSuccessAction({podcasts}));
+              });
+            }
           });
+        } else {
+          return Observable.of(new ACTIONS.CmsPodcastsFailureAction({error: 'You are not logged in'}));
         }
       }).catch(error => Observable.of(new ACTIONS.CmsPodcastsFailureAction({error})));
     });
@@ -62,7 +71,7 @@ export class CmsEffects {
     .switchMap((payload: ACTIONS.CmsEpisodePagePayload) => {
       const pageNum = payload.page;
       const seriesId = payload.podcast.seriesId;
-      const seriesParams = {id: seriesId, zoom: ''};
+      const seriesParams = {id: seriesId, zoom: false};
       const storyParams = {
         page: pageNum,
         per: EPISODE_PAGE_SIZE,

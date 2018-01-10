@@ -2,15 +2,12 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs/Subscription';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/observable/zip';
 import { Angulartics2GoogleAnalytics } from 'angulartics2';
-import { AuthService } from 'ngx-prx-styleguide';
-import { CmsService, HalDoc } from './core';
+import { HalDoc } from './core';
 import { Env } from './core/core.env';
-import { PodcastModel, FilterModel } from './ngrx';
-import { CmsPodcastsSuccessAction, CmsPodcastEpisodePageAction, CmsPodcastsAction, CmsPodcastsFailureAction } from './ngrx/actions';
-import { selectPodcasts, selectFilter } from './ngrx/reducers';
+import { AccountModel, PodcastModel, FilterModel } from './ngrx';
+import { selectAccount, selectAccountError, selectPodcasts, selectFilter } from './ngrx/reducers';
+import * as ACTIONS from './ngrx/actions';
 
 @Component({
   selector: 'metrics-root',
@@ -22,6 +19,8 @@ export class AppComponent implements OnInit, OnDestroy {
   authHost = Env.AUTH_HOST;
   authClient = Env.AUTH_CLIENT_ID;
 
+  accountStoreSub: Subscription;
+  accountStoreErrorSub: Subscription;
   loggedIn = true; // until proven otherwise
   userName: string;
   userImageDoc: HalDoc;
@@ -33,21 +32,31 @@ export class AppComponent implements OnInit, OnDestroy {
   episodePage: number;
 
   constructor(
-    private auth: AuthService,
-    private cms: CmsService,
     public store: Store<any>,
     private angulartics2GoogleAnalytics: Angulartics2GoogleAnalytics,
     private router: Router,
   ) {
-    auth.token.subscribe(token => {
-      this.loadAccount(token);
-      if (token) {
-        cms.auth.subscribe((cmsAuth) => this.loadCmsSeries(cmsAuth));
-      }
-    });
+    this.store.dispatch(new ACTIONS.CmsAccountAction());
+    this.store.dispatch(new ACTIONS.CmsPodcastsAction());
   }
 
   ngOnInit() {
+    this.accountStoreSub = this.store.select(selectAccount).subscribe((state: AccountModel) => {
+      if (state) {
+        this.loggedIn = true;
+        this.userImageDoc = state.doc;
+        this.userName = state.name;
+      }
+    });
+
+    this.accountStoreErrorSub = this.store.select(selectAccountError).subscribe((error: any) => {
+      if (error) {
+        this.loggedIn = false;
+        this.userImageDoc = null;
+        this.userName = null;
+      }
+    });
+
     this.podcastStoreSub = this.store.select(selectPodcasts).subscribe((state: PodcastModel[]) => {
       this.podcasts = state;
 
@@ -77,64 +86,13 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
+    if (this.accountStoreSub) { this.accountStoreSub.unsubscribe(); }
+    if (this.accountStoreErrorSub) { this.accountStoreErrorSub.unsubscribe(); }
     if (this.podcastStoreSub) { this.podcastStoreSub.unsubscribe(); }
     if (this.filterStoreSub) { this.filterStoreSub.unsubscribe(); }
   }
 
-  loadAccount(token: string) {
-    if (token) {
-      this.loggedIn = true;
-      this.cms.individualAccount.subscribe(doc => {
-        this.userImageDoc = doc;
-        this.userName = doc['name'];
-      });
-    } else {
-      this.loggedIn = false;
-      this.userImageDoc = null;
-      this.userName = null;
-    }
-  }
-
-  loadCmsSeries(auth: HalDoc) {
-    this.store.dispatch(new CmsPodcastsAction());
-    auth.followItems('prx:series',
-      {per: auth.count('prx:series'), filters: 'v4', zoom: 'prx:distributions'}).subscribe((series: HalDoc[]) => {
-      if (series && series.length === 0) {
-        this.store.dispatch(new CmsPodcastsFailureAction({error: 'Looks like you don\'t have any podcasts.'}));
-      } else {
-        const podcasts: PodcastModel[] = series.map(doc => {
-          return {
-            doc,
-            seriesId: doc['id'],
-            title: doc['title']
-          };
-        });
-        const distros$ = podcasts.map(p => this.getSeriesPodcastDistribution(p));
-        Observable.zip(...distros$).subscribe(() => {
-          this.store.dispatch(new CmsPodcastsSuccessAction({podcasts: podcasts.filter(p => p.feederId)}));
-        });
-      }
-    },
-    error => this.store.dispatch(new CmsPodcastsFailureAction({error})));
-  }
-
-  getSeriesPodcastDistribution(podcast: PodcastModel): Observable<HalDoc[]> {
-    const obsv$ = podcast.doc.followItems('prx:distributions');
-    obsv$.subscribe((distros: HalDoc[]) => {
-      const podcasts = distros.filter((doc => doc['kind'] === 'podcast'));
-      if (podcasts && podcasts.length > 0 && podcasts[0]['url']) {
-        podcast.feederUrl = podcasts[0]['url'];
-        const urlParts = podcast.feederUrl.split('/');
-        if (urlParts.length > 1) {
-          podcast.feederId = urlParts[urlParts.length - 1];
-        }
-      }
-    },
-    error => this.store.dispatch(new CmsPodcastsFailureAction({error})));
-    return obsv$;
-  }
-
   getEpisodes(podcast: PodcastModel, page: number) {
-    this.store.dispatch(new CmsPodcastEpisodePageAction({podcast, page}));
+    this.store.dispatch(new ACTIONS.CmsPodcastEpisodePageAction({podcast, page}));
   }
 }

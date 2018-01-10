@@ -201,7 +201,7 @@ export class DownloadsTableComponent implements OnInit, OnDestroy {
   toggleExpandedReport() {
     this.expanded = !this.expanded;
     if (this.expanded) {
-      // this.store.dispatch(new GoogleAnalyticsEventAction({...}));
+      this.store.dispatch(new GoogleAnalyticsEventAction({gaAction: 'table-expand'}));
     }
   }
 }

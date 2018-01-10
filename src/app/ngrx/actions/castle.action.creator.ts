@@ -87,3 +87,30 @@ export class CastlePodcastAllTimeMetricsFailureAction implements Action {
 
   constructor(public payload: any) {}
 }
+
+export interface CastleEpisodeAllTimeMetricsLoadPayload {
+  episode: EpisodeModel;
+}
+
+export class CastleEpisodeAllTimeMetricsLoadAction implements Action {
+  readonly type = ActionTypes.CASTLE_EPISODE_ALL_TIME_METRICS_LOAD;
+
+  constructor(public payload: CastleEpisodeAllTimeMetricsLoadPayload) {}
+}
+
+export interface CastleEpisodeAllTimeMetricsSuccessPayload {
+  episode: EpisodeModel;
+  allTimeDownloads: number;
+}
+
+export class CastleEpisodeAllTimeMetricsSuccessAction implements Action {
+  readonly type = ActionTypes.CASTLE_EPISODE_ALL_TIME_METRICS_SUCCESS;
+
+  constructor(public payload: CastleEpisodeAllTimeMetricsSuccessPayload) {}
+}
+
+export class CastleEpisodeAllTimeMetricsFailureAction implements Action {
+  readonly type = ActionTypes.CASTLE_EPISODE_ALL_TIME_METRICS_FAILURE;
+
+  constructor(public payload: any) {}
+}

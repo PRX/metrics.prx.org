@@ -8,10 +8,11 @@ import { getActions, TestActions } from './test.actions';
 import { MockHalService } from 'ngx-prx-styleguide';
 import { CastleService } from '../../core';
 
-import { PodcastModel, FilterModel } from '../';
+import { PodcastModel, FilterModel, EpisodeModel } from '../';
 import { reducers } from '../../ngrx/reducers';
 import { ActionTypes, CastlePodcastAllTimeMetricsLoadAction,
-  CastlePodcastAllTimeMetricsSuccessAction, CastlePodcastAllTimeMetricsFailureAction } from '../actions';
+  CastlePodcastAllTimeMetricsSuccessAction, CastlePodcastAllTimeMetricsFailureAction,
+  CastleEpisodeAllTimeMetricsSuccessAction } from '../actions';
 import { CastleEffects } from './castle.effects';
 
 describe('CastleEffects', () => {
@@ -24,10 +25,16 @@ describe('CastleEffects', () => {
     feederId: '70',
     title: 'Pet Talks Daily'
   }];
-
   const filter: FilterModel = {
     podcastSeriesId: 37800,
   };
+  const episode: EpisodeModel = {
+    id: 1,
+    guid: 'abcde',
+    seriesId: 37800,
+    title: 'A Pet Talks Episode',
+    publishedAt: new Date()
+  }
 
   beforeEach(async(() => {
     castle = new MockHalService();
@@ -35,6 +42,12 @@ describe('CastleEffects', () => {
       id: 37800,
       downloads: {
         total: 10
+      }
+    }]);
+    const episodeDownloads = castle.root.mockList('prx:episode', [{
+      guid: 'abcde',
+      downloads: {
+        total: 11
       }
     }]);
 
@@ -62,10 +75,10 @@ describe('CastleEffects', () => {
         filter: { podcastSeriesId: 37800 }
       }
     };
-      const success = new CastlePodcastAllTimeMetricsSuccessAction({
-        podcast: podcasts[0],
-        allTimeDownloads: 10
-      });
+    const success = new CastlePodcastAllTimeMetricsSuccessAction({
+      podcast: podcasts[0],
+      allTimeDownloads: 10
+    });
 
     actions$.stream = hot('-a', { a: action });
     const expected = cold('-r', { r: success });
@@ -73,21 +86,34 @@ describe('CastleEffects', () => {
   });
 
   it('should dispatch a failure action if no podcasts', () => {
-    it('should find the selected podcast from the payload filter', () => {
-      const action = {
-        type: ActionTypes.CASTLE_PODCAST_ALL_TIME_METRICS_LOAD,
-        payload: {
-          filter: { podcastSeriesId: 37801 }
-        }
-      };
-      const failure = new CastlePodcastAllTimeMetricsFailureAction({
-        error: 'No podcasts yet'
-      });
-
-      actions$.stream = hot('-a', { a: action });
-      const expected = cold('-r', { r: failure });
-      expect(effects.loadAllTimePodcastMetrics).toBeObservable(expected);
+    const action = {
+      type: ActionTypes.CASTLE_PODCAST_ALL_TIME_METRICS_LOAD,
+      payload: {
+        filter: { podcastSeriesId: 37801 }
+      }
+    };
+    const failure = new CastlePodcastAllTimeMetricsFailureAction({
+      error: 'No podcasts yet'
     });
-  })
+
+    actions$.stream = hot('-a', { a: action });
+    const expected = cold('-r', { r: failure });
+    expect(effects.loadAllTimePodcastMetrics).toBeObservable(expected);
+  });
+
+  it('should request episode all time metrics from castle', () => {
+    const action = {
+      type: ActionTypes.CASTLE_EPISODE_ALL_TIME_METRICS_LOAD,
+      payload: { episode }
+    };
+    const success = new CastleEpisodeAllTimeMetricsSuccessAction({
+      episode: episode,
+      allTimeDownloads: 11
+    });
+
+    actions$.stream = hot('-a', { a: action });
+    const expected = cold('-r', { r: success });
+    expect(effects.loadAllTimeEpisodeMetrics).toBeObservable(expected);
+  });
 
 });

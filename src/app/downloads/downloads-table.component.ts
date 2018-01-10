@@ -3,7 +3,7 @@ import { Subscription } from 'rxjs/Subscription';
 import { Component, OnInit, OnDestroy, Input, Output, EventEmitter } from '@angular/core';
 import { EpisodeModel, FilterModel, PodcastModel, EpisodeMetricsModel, PodcastMetricsModel,
   INTERVAL_MONTHLY, INTERVAL_WEEKLY, INTERVAL_DAILY, INTERVAL_HOURLY } from '../ngrx';
-import { selectEpisodes, selectFilter, selectPodcasts, selectEpisodeMetrics, selectPodcastMetrics } from '../ngrx/reducers';
+import { selectEpisodes, selectFilter, selectEpisodeMetrics, selectPodcastMetrics } from '../ngrx/reducers';
 import { CastlePodcastAllTimeMetricsLoadAction, GoogleAnalyticsEventAction } from '../ngrx/actions';
 
 import { findPodcastMetrics, filterPodcastEpisodePage, filterEpisodeMetricsPage, metricsData, getTotal } from '../shared/util/metrics.util';
@@ -24,12 +24,8 @@ export class DownloadsTableComponent implements OnInit, OnDestroy {
   @Output() podcastChartToggle = new EventEmitter();
   @Output() episodeChartToggle = new EventEmitter();
   @Output() pageChange = new EventEmitter();
-  // ^ these should probably just dispatch actions now?
-
   filterStoreSub: Subscription;
   filter: FilterModel;
-  podcastStoreSub: Subscription;
-  podcasts: PodcastModel[];;
   allEpisodesSub: Subscription;
   episodes: EpisodeModel[];
   episodeMetricsStoreSub: Subscription;
@@ -57,7 +53,6 @@ export class DownloadsTableComponent implements OnInit, OnDestroy {
         }
         if (this.podcastMetrics) {
           this.podcastMetrics = findPodcastMetrics(this.filter, [this.podcastMetrics]);
-
         }
         this.buildTableData();
       }

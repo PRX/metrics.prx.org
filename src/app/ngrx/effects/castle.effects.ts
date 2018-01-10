@@ -33,7 +33,6 @@ export class CastleEffects {
           )
         } else {
           return Observable.of(new CastlePodcastAllTimeMetricsFailureAction({error: 'No podcasts yet'}))
-
         }
     });
 
@@ -42,7 +41,6 @@ export class CastleEffects {
               public store: Store<any>) {
                 this.store.select(selectPodcasts).subscribe((state: PodcastModel[]) => {
                   this.podcasts = state;
-                  console.log('got some podcasts and they are', state)
                 });
               }
 }

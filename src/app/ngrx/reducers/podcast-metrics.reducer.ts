@@ -63,7 +63,6 @@ export function PodcastMetricsReducer(state: PodcastMetricsModel[] = initialStat
           let podcast: PodcastMetricsModel, newState: PodcastMetricsModel[];
           podcast = {...state[podcastIdx], allTimeDownloads: action.payload.allTimeDownloads};
           newState = [...state.slice(0, podcastIdx), podcast, ...state.slice(podcastIdx + 1)];
-          console.log('newState!', newState);
           return newState
         } else {
           return state;
@@ -71,9 +70,6 @@ export function PodcastMetricsReducer(state: PodcastMetricsModel[] = initialStat
       }
       break;
     case ActionTypes.CASTLE_PODCAST_ALL_TIME_METRICS_FAILURE:
-      if (action instanceof CastlePodcastAllTimeMetricsFailureAction) {
-        console.log('error:', action.payload)
-      }
       break;
   }
   return state;

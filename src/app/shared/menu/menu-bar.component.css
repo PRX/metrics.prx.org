@@ -2,13 +2,7 @@
   display: flex;
   background-color: white;
 }
-/* TODO: not sure min-width should be dictated by prx-select, seems like this should be sized to the content */
-@media only screen
-and (max-device-width: 768px) {
-  :host >>> prx-select {
-    min-width: 100px;
-  }
-}
+
 .empty {
   flex-basis: 300px;
   flex-grow: 1;

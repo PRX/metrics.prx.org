@@ -12,17 +12,6 @@
   border-bottom-color: transparent;
   height: 38px;
 }
-metrics-interval >>> button.dropdown-toggle, metrics-standard-date-range >>> button.dropdown-toggle {
-  background-color: #f0f0f0;
-  border: 0px;
-}
-metrics-interval {
-  display: inline-block;
-  border: 1px solid #a3a3a3;
-  border-left-width: 0px;
-  border-right-width: 0px;
-  max-height: 38px;
-}
 
 metrics-chart-type {
   max-height: 38px;

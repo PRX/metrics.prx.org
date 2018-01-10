@@ -41,6 +41,7 @@ export function PodcastReducer(state: PodcastState = initialState, action: AllAc
     case ActionTypes.CMS_PODCASTS: {
       return {
         ...state,
+        error: null,
         loading: true,
         loaded: false
       };
@@ -51,6 +52,7 @@ export function PodcastReducer(state: PodcastState = initialState, action: AllAc
         return {
           ...state,
           entities,
+          error: null,
           loading: false,
           loaded: true
         };

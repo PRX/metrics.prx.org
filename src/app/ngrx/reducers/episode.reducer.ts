@@ -1,4 +1,4 @@
-import { ActionTypes, CmsPodcastEpisodePageSuccessAction, AllActions  } from '../actions';
+import { ActionTypes, CmsPodcastEpisodePageSuccessAction, CmsPodcastEpisodePageFailureAction, AllActions  } from '../actions';
 import { HalDoc } from 'ngx-prx-styleguide';
 
 export const EPISODE_PAGE_SIZE = 10;
@@ -63,12 +63,14 @@ export function EpisodeReducer(state: EpisodeState = initialState, action: AllAc
       }
       break;
     case ActionTypes.CMS_PODCAST_EPISODE_PAGE_FAILURE: {
-      return {
-        ...state,
-        error: action.payload['error'],
-        loading: false,
-        loaded: false
-      };
+      if (action instanceof CmsPodcastEpisodePageFailureAction) {
+        return {
+          ...state,
+          error: action.payload.error,
+          loading: false,
+          loaded: false
+        };
+      }
     }
   }
   return state;

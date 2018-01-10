@@ -14,6 +14,9 @@ export const INTERVAL_DAILY: IntervalModel = { value: '1d', name: 'Daily', key: 
 export const INTERVAL_HOURLY: IntervalModel = { value: '1h', name: 'Hourly', key: 'hourly' };
 export const IntervalList = [INTERVAL_HOURLY, INTERVAL_DAILY, INTERVAL_WEEKLY, INTERVAL_MONTHLY];
 
+export const CHARTTYPE_PODCAST = 'podcast';
+export const CHARTTYPE_EPISODES = 'episodes';
+export const CHARTTYPE_STACKED = 'stacked';
 export type ChartType = 'podcast' | 'episodes' | 'stacked';
 
 export interface FilterModel {

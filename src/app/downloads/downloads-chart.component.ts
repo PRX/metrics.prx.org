@@ -3,7 +3,8 @@ import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs/Subscription';
 import { TimeseriesChartModel } from 'ngx-prx-styleguide';
 import { FilterModel, EpisodeModel, PodcastMetricsModel, EpisodeMetricsModel,
-  INTERVAL_MONTHLY, INTERVAL_WEEKLY, INTERVAL_DAILY, INTERVAL_HOURLY } from '../ngrx';
+  INTERVAL_MONTHLY, INTERVAL_WEEKLY, INTERVAL_DAILY, INTERVAL_HOURLY,
+  CHARTTYPE_PODCAST, CHARTTYPE_EPISODES, CHARTTYPE_STACKED } from '../ngrx';
 import { selectFilter, selectEpisodes, selectPodcastMetrics, selectEpisodeMetrics } from '../ngrx/reducers';
 import { findPodcastMetrics, filterEpisodeMetricsPage, metricsData, getTotal } from '../shared/util/metrics.util';
 import { mapMetricsToTimeseriesData, subtractTimeseriesDatasets, neutralColor } from '../shared/util/chart.util';
@@ -103,7 +104,7 @@ export class DownloadsChartComponent implements OnDestroy {
       // no partial date range coverage charts, makes the loading UX too jerky
       const expectedLength = dateUtil.getAmountOfIntervals(this.filter.beginDate, this.filter.endDate, this.filter.interval);
       switch (this.filter.chartType) {
-        case 'stacked':
+        case CHARTTYPE_STACKED:
           if (this.podcastChartData && this.podcastMetrics.charted && this.podcastChartData.data.length === expectedLength &&
             (this.episodeChartData && this.episodeChartData.length > 0 &&
             this.episodeChartData.every(chartData => chartData.data.length === expectedLength))) {
@@ -123,12 +124,12 @@ export class DownloadsChartComponent implements OnDestroy {
             this.chartData = this.episodeChartData;
           }
           break;
-        case 'podcast':
+        case CHARTTYPE_PODCAST:
           if (this.podcastMetrics && this.podcastChartData && this.podcastChartData.data.length > 0) {
             this.chartData = [this.podcastChartData];
           }
           break;
-        case 'episodes':
+        case CHARTTYPE_EPISODES:
           if (this.episodeChartData && this.episodeChartData.length > 0 &&
             this.episodeChartData.every(chartData => chartData.data.length === expectedLength)) {
             this.chartData = this.episodeChartData;
@@ -158,10 +159,10 @@ export class DownloadsChartComponent implements OnDestroy {
 
   get chartType(): string {
     switch (this.filter.chartType) {
-      case 'podcast':
-      case 'episodes':
+      case CHARTTYPE_PODCAST:
+      case CHARTTYPE_EPISODES:
         return 'line';
-      case 'stacked':
+      case CHARTTYPE_STACKED:
         if (this.chartData && this.chartData.length && this.chartData[0].data.length < 4) {
           return 'bar';
         } else {

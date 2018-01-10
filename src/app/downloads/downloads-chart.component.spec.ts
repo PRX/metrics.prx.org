@@ -7,7 +7,7 @@ import { SharedModule } from '../shared';
 import { DownloadsChartComponent } from './downloads-chart.component';
 
 import { reducers } from '../ngrx/reducers';
-import { PodcastModel, EpisodeModel, FilterModel, INTERVAL_DAILY } from '../ngrx';
+import { PodcastModel, EpisodeModel, FilterModel, INTERVAL_DAILY, CHARTTYPE_STACKED } from '../ngrx';
 import { CmsPodcastEpisodePageSuccessAction, CastleEpisodeChartToggleAction, CastlePodcastChartToggleAction,
   CastlePodcastMetricsAction, CastleEpisodeMetricsAction, CastleFilterAction } from '../ngrx/actions';
 
@@ -112,7 +112,7 @@ describe('DownloadsChartComponent', () => {
       beginDate: new Date('2017-08-27T00:00:00Z'),
       endDate: new Date('2017-09-07T00:00:00Z'),
       interval: INTERVAL_DAILY,
-      chartType: 'stacked'
+      chartType: CHARTTYPE_STACKED
     };
 
     beforeEach(() => {
@@ -261,7 +261,7 @@ describe('DownloadsChartComponent', () => {
       beginDate: new Date('2017-08-27T00:00:00Z'),
       endDate: new Date('2017-09-07T00:00:00Z'),
       interval: INTERVAL_DAILY,
-      chartType: 'stacked'
+      chartType: CHARTTYPE_STACKED
     };
 
     beforeEach(() => {

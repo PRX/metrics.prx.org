@@ -2,7 +2,8 @@ import { Component, OnDestroy, Input, Output, EventEmitter } from '@angular/core
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs/Subscription';
 import { EpisodeModel, FilterModel, EpisodeMetricsModel, PodcastMetricsModel,
-  INTERVAL_MONTHLY, INTERVAL_WEEKLY, INTERVAL_DAILY, INTERVAL_HOURLY } from '../ngrx';
+  INTERVAL_MONTHLY, INTERVAL_WEEKLY, INTERVAL_DAILY, INTERVAL_HOURLY,
+  CHARTTYPE_PODCAST, CHARTTYPE_EPISODES, CHARTTYPE_STACKED } from '../ngrx';
 import { selectEpisodes, selectFilter, selectEpisodeMetrics, selectPodcastMetrics } from '../ngrx/reducers';
 import { findPodcastMetrics, filterPodcastEpisodePage, filterEpisodeMetricsPage, metricsData, getTotal } from '../shared/util/metrics.util';
 import { mapMetricsToTimeseriesData, neutralColor } from '../shared/util/chart.util';
@@ -24,7 +25,7 @@ import * as moment from 'moment';
         <tbody>
           <tr>
             <td>
-              <prx-checkbox *ngIf="filter?.chartType === 'stacked'; else podcastTitle"
+              <prx-checkbox *ngIf="showPodcastToggle; else podcastTitle"
                 small [checked]="podcastTableData.charted" [color]="podcastTableData.color"
                 (change)="toggleChartPodcast($event)">{{podcastTableData.title}}</prx-checkbox>
               <ng-template #podcastTitle>{{podcastTableData.title}}</ng-template>
@@ -32,11 +33,11 @@ import * as moment from 'moment';
           </tr>
           <tr *ngFor="let episode of episodeTableData">
             <td>
-              <prx-checkbox *ngIf="filter?.chartType !== 'podcast'; else episodeTitle"
+              <prx-checkbox *ngIf="showEpisodeToggles; else episodeTitle"
                 small [checked]="episode.charted" [color]="episode.color"
                 (change)="toggleChartEpisode(episode, $event)">{{episode.title}}</prx-checkbox>
               <ng-template #episodeTitle>
-                <button class="btn-link" (click)="OnChartSingleEpisode(episode)">{{episode.title}}</button>
+                <button class="btn-link" (click)="onChartSingleEpisode(episode)">{{episode.title}}</button>
               </ng-template>
             </td>
           </tr>
@@ -222,6 +223,14 @@ export class DownloadsTableComponent implements OnDestroy {
     }
   }
 
+  get showPodcastToggle(): boolean {
+    return this.filter && this.filter.chartType === CHARTTYPE_STACKED;
+  }
+
+  get showEpisodeToggles(): boolean {
+    return this.filter && this.filter.chartType !== CHARTTYPE_PODCAST;
+  }
+
   toggleChartPodcast(charted: boolean) {
     this.podcastChartToggle.emit(charted);
   }
@@ -230,7 +239,7 @@ export class DownloadsTableComponent implements OnDestroy {
     this.episodeChartToggle.emit({id: episode.id, charted});
   }
 
-  OnChartSingleEpisode(episode) {
+  onChartSingleEpisode(episode) {
     this.chartSingleEpisode.emit(episode.id);
   }
 }

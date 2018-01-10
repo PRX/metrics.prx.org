@@ -1,5 +1,5 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { ChartType } from '../../ngrx';
+import { ChartType, CHARTTYPE_PODCAST, CHARTTYPE_EPISODES, CHARTTYPE_STACKED } from '../../ngrx';
 
 @Component({
   selector: 'metrics-chart-type',
@@ -21,11 +21,11 @@ export class ChartTypeComponent {
 
   getChartImg(chartType: ChartType): string {
     switch (chartType) {
-      case 'podcast':
+      case CHARTTYPE_PODCAST:
         return '/assets/images/bt_single-line-chart.svg';
-      case 'episodes':
+      case CHARTTYPE_EPISODES:
         return '/assets/images/bt_multi-line-chart.svg';
-      case 'stacked':
+      case CHARTTYPE_STACKED:
         return '/assets/images/bt_stacked-chart.svg';
     }
   }

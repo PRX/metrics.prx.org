@@ -156,7 +156,7 @@ describe('DownloadsChartComponent', () => {
       expect(comp.episodeChartData.length).toEqual(1);
     });
 
-    it('should only include podcast if charted but will include if nothing else charted', () => {
+    it('should only include podcast and episodes if charted', () => {
       expect(comp.chartData).not.toBeNull();
       comp.store.dispatch(new CastlePodcastChartToggleAction({seriesId: podcast.seriesId, charted: false}));
       expect(comp.chartData).not.toBeNull();
@@ -164,8 +164,7 @@ describe('DownloadsChartComponent', () => {
       expect(comp.chartData[0].label).toContain('Pet Talk');
       comp.store.dispatch(new CastleEpisodeChartToggleAction({id: episodes[0].id, seriesId: podcast.seriesId, charted: false}));
       comp.store.dispatch(new CastleEpisodeChartToggleAction({id: episodes[1].id, seriesId: podcast.seriesId, charted: false}));
-      expect(comp.chartData).not.toBeNull();
-      expect(comp.chartData[0].label).toContain('All Episodes');
+      expect(comp.chartData).toBeNull();
     });
 
     it('should sort episode chart data by total biggest to smallest', () => {

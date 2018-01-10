@@ -115,7 +115,8 @@ export class DownloadsChartComponent implements OnDestroy {
               color: neutralColor
             };
             this.chartData = [...this.episodeChartData, allOtherEpisodesData];
-          } else if (this.podcastChartData && this.podcastChartData.data.length > 0 && this.episodeChartData.length === 0) {
+          } else if (this.podcastChartData && this.podcastMetrics.charted &&
+            this.podcastChartData.data.length > 0 && this.episodeChartData.length === 0) {
             this.chartData = [this.podcastChartData];
           } else if (this.episodeChartData && this.episodeChartData.length > 0 &&
             this.episodeChartData.every(chartData => chartData.data.length === expectedLength)) {

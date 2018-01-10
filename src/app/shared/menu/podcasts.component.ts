@@ -2,8 +2,8 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs/Subscription';
-import { PodcastModel, IntervalModel } from '../../ngrx';
-import { selectPodcastFilter, selectPodcasts, selectIntervalFilter } from '../../ngrx/reducers';
+import { PodcastModel, IntervalModel, FilterModel, ChartType } from '../../ngrx';
+import { selectFilter, selectPodcasts } from '../../ngrx/reducers';
 
 @Component({
   selector: 'metrics-podcasts',
@@ -16,26 +16,25 @@ import { selectPodcastFilter, selectPodcasts, selectIntervalFilter } from '../..
   `
 })
 export class PodcastsComponent implements OnInit, OnDestroy {
-  podcastFilterSubscription: Subscription;
-  intervalFilterSubscription: Subscription;
-  podcastsSubscription: Subscription;
+  filterSub: Subscription;
+  podcastsSub: Subscription;
   selectedPodcastSeriesId: number;
   selectedPodcast: PodcastModel;
   selectedInterval: IntervalModel;
+  selectedChartType: ChartType;
   allPodcastOptions = [];
 
   constructor(public store: Store<any>,
               private router: Router) {}
 
   ngOnInit() {
-    this.podcastFilterSubscription = this.store.select(selectPodcastFilter).subscribe((selectedPodcastSeriesId: number) => {
-      this.selectedPodcastSeriesId = selectedPodcastSeriesId;
+    this.filterSub = this.store.select(selectFilter).subscribe((filter: FilterModel) => {
+      this.selectedPodcastSeriesId = filter.podcastSeriesId;
       this.selectedPodcast = this.allPodcastOptions.map(o => o[1]).find(p => p.seriesId === this.selectedPodcastSeriesId);
+      this.selectedInterval = filter.interval;
+      this.selectedChartType = filter.chartType;
     });
-    this.intervalFilterSubscription = this.store.select(selectIntervalFilter).subscribe((interval: IntervalModel) => {
-      this.selectedInterval = interval;
-    });
-    this.podcastsSubscription = this.store.select(selectPodcasts).subscribe((allPodcasts: PodcastModel[]) => {
+    this.podcastsSub = this.store.select(selectPodcasts).subscribe((allPodcasts: PodcastModel[]) => {
       if (allPodcasts && allPodcasts.length) {
         this.allPodcastOptions = allPodcasts.map((podcast: PodcastModel) => [podcast.title, podcast]);
         this.selectedPodcast = allPodcasts.find(p => p.seriesId === this.selectedPodcastSeriesId);
@@ -44,14 +43,13 @@ export class PodcastsComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    if (this.podcastFilterSubscription) { this.podcastFilterSubscription.unsubscribe(); }
-    if (this.intervalFilterSubscription) { this.intervalFilterSubscription.unsubscribe(); }
-    if (this.podcastsSubscription) { this.podcastsSubscription.unsubscribe(); }
+    if (this.filterSub) { this.filterSub.unsubscribe(); }
+    if (this.podcastsSub) { this.podcastsSub.unsubscribe(); }
   }
 
   onPodcastChange(val) {
     if (val && val.seriesId !== this.selectedPodcast.seriesId) {
-      this.router.navigate([val.seriesId, 'downloads', this.selectedInterval.key]);
+      this.router.navigate([val.seriesId, 'downloads', this.selectedChartType, this.selectedInterval.key]);
     }
   }
 }

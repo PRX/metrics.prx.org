@@ -40,7 +40,7 @@ describe('AppComponent', () => {
       ],
       imports: [
         RouterTestingModule.withRoutes([
-          { path: ':seriesId/downloads/daily', component: MockAuthComponent }
+          { path: ':seriesId/downloads/:chartType/:interval', component: MockAuthComponent }
         ]),
         CoreModule,
         SharedModule,

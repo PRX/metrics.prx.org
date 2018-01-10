@@ -117,7 +117,8 @@ describe('DownloadsTableComponent', () => {
     page: 1,
     beginDate: new Date('2017-08-27T00:00:00Z'),
     endDate: new Date('2017-09-07T00:00:00Z'),
-    interval: INTERVAL_DAILY
+    interval: INTERVAL_DAILY,
+    chartType: 'stacked'
   };
 
   beforeEach(async(() => {

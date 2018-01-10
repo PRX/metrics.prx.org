@@ -6,7 +6,7 @@ import { DownloadsComponent } from './downloads.component';
 
 export const downloadsRoutes: Routes = [
   {
-    path: `:seriesId/downloads/:interval`,
+    path: `:seriesId/downloads/:chartType/:interval`,
     component: DownloadsComponent,
     canActivate: [AuthGuard],
     canDeactivate: [DeactivateGuard],

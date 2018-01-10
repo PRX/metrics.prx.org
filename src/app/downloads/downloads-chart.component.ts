@@ -3,7 +3,8 @@ import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs/Subscription';
 import { TimeseriesChartModel } from 'ngx-prx-styleguide';
 import { FilterModel, EpisodeModel, PodcastMetricsModel, EpisodeMetricsModel,
-  INTERVAL_MONTHLY, INTERVAL_WEEKLY, INTERVAL_DAILY, INTERVAL_HOURLY } from '../ngrx';
+  INTERVAL_MONTHLY, INTERVAL_WEEKLY, INTERVAL_DAILY, INTERVAL_HOURLY,
+  CHARTTYPE_PODCAST, CHARTTYPE_EPISODES, CHARTTYPE_STACKED } from '../ngrx';
 import { selectFilter, selectEpisodes, selectPodcastMetrics, selectEpisodeMetrics } from '../ngrx/reducers';
 import { findPodcastMetrics, filterEpisodeMetricsPage, metricsData, getTotal } from '../shared/util/metrics.util';
 import { mapMetricsToTimeseriesData, subtractTimeseriesDatasets, neutralColor } from '../shared/util/chart.util';
@@ -60,7 +61,7 @@ export class DownloadsChartComponent implements OnDestroy {
 
   updatePodcastChartData(podcastMetrics: PodcastMetricsModel[]) {
     this.podcastMetrics = findPodcastMetrics(this.filter, podcastMetrics);
-    if (this.podcastMetrics && this.podcastMetrics.charted) {
+    if (this.podcastMetrics) {
       this.podcastChartData = this.mapPodcastData(metricsData(this.filter, this.podcastMetrics, 'downloads'));
     } else {
       this.podcastChartData = null;
@@ -98,27 +99,42 @@ export class DownloadsChartComponent implements OnDestroy {
   }
 
   updateChartData() {
-    if (this.filter.beginDate && this.filter.endDate && this.filter.interval) {
+    if (this.filter.beginDate && this.filter.endDate && this.filter.interval && this.filter.chartType) {
+      this.chartData = null;
       // no partial date range coverage charts, makes the loading UX too jerky
       const expectedLength = dateUtil.getAmountOfIntervals(this.filter.beginDate, this.filter.endDate, this.filter.interval);
-      if (this.podcastChartData && this.podcastChartData.data.length === expectedLength &&
-        (this.episodeChartData && this.episodeChartData.length > 0 &&
-        this.episodeChartData.every(chartData => chartData.data.length === expectedLength))) {
-        // if we have episodes to combine with podcast total
-        const episodeDatasets = this.episodeChartData.map(m => m.data);
-        const allOtherEpisodesData: TimeseriesChartModel = {
-          data: subtractTimeseriesDatasets(this.podcastChartData.data, episodeDatasets),
-          label: 'All Other Episodes',
-          color: neutralColor
-        };
-        this.chartData = [...this.episodeChartData, allOtherEpisodesData];
-      } else if (this.podcastMetrics && this.podcastMetrics.charted && this.podcastChartData && this.podcastChartData.data.length > 0) {
-        this.chartData = [this.podcastChartData];
-      } else if (this.episodeChartData && this.episodeChartData.length > 0 &&
-        this.episodeChartData.every(chartData => chartData.data.length === expectedLength)) {
-        this.chartData = this.episodeChartData;
-      } else {
-        this.chartData = null;
+      switch (this.filter.chartType) {
+        case CHARTTYPE_STACKED:
+          if (this.podcastChartData && this.podcastMetrics.charted && this.podcastChartData.data.length === expectedLength &&
+            (this.episodeChartData && this.episodeChartData.length > 0 &&
+            this.episodeChartData.every(chartData => chartData.data.length === expectedLength))) {
+            // if we have episodes to combine with podcast total
+            const episodeDatasets = this.episodeChartData.map(m => m.data);
+            const allOtherEpisodesData: TimeseriesChartModel = {
+              data: subtractTimeseriesDatasets(this.podcastChartData.data, episodeDatasets),
+              label: 'All Other Episodes',
+              color: neutralColor
+            };
+            this.chartData = [...this.episodeChartData, allOtherEpisodesData];
+          } else if (this.podcastChartData && this.podcastMetrics.charted &&
+            this.podcastChartData.data.length > 0 && this.episodeChartData.length === 0) {
+            this.chartData = [this.podcastChartData];
+          } else if (this.episodeChartData && this.episodeChartData.length > 0 &&
+            this.episodeChartData.every(chartData => chartData.data.length === expectedLength)) {
+            this.chartData = this.episodeChartData;
+          }
+          break;
+        case CHARTTYPE_PODCAST:
+          if (this.podcastMetrics && this.podcastChartData && this.podcastChartData.data.length > 0) {
+            this.chartData = [this.podcastChartData];
+          }
+          break;
+        case CHARTTYPE_EPISODES:
+          if (this.episodeChartData && this.episodeChartData.length > 0 &&
+            this.episodeChartData.every(chartData => chartData.data.length === expectedLength)) {
+            this.chartData = this.episodeChartData;
+          }
+          break;
       }
     }
   }
@@ -142,10 +158,16 @@ export class DownloadsChartComponent implements OnDestroy {
   }
 
   get chartType(): string {
-    if (this.chartData && this.chartData.length && this.chartData[0].data.length < 4) {
-      return 'bar';
-    } else {
-      return 'area';
+    switch (this.filter.chartType) {
+      case CHARTTYPE_PODCAST:
+      case CHARTTYPE_EPISODES:
+        return 'line';
+      case CHARTTYPE_STACKED:
+        if (this.chartData && this.chartData.length && this.chartData[0].data.length < 4) {
+          return 'bar';
+        } else {
+          return 'area';
+        }
     }
   }
 }

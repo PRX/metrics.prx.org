@@ -30,6 +30,9 @@ export class RoutingEffects {
         if (params['interval']) {
           filter.interval = IntervalList.find(i => i.key === params['interval']);
         }
+        if (params['chartType']) {
+          filter.chartType = params['chartType'];
+        }
         if (params['beginDate']) {
           filter.beginDate = new Date(params['beginDate']);
         }

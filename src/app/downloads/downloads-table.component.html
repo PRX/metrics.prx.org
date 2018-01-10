@@ -33,7 +33,8 @@
           <td>{{podcastTableData.releaseDate}}</td>
           <td>{{podcastTableData.totalForPeriod | largeNumber}}</td>
           <td>{{podcastTableData.avgPerIntervalForPeriod | largeNumber}}</td>
-          <td>{{podcastTableData.allTimeDownloads && podcastTableData.allTimeDownloads | largeNumber}}</td>
+          <td *ngIf="podcastTableData.allTimeDownloads">{{podcastTableData.allTimeDownloads | largeNumber}}</td>
+          <td *ngIf="!podcastTableData.allTimeDownloads"></td>
         </tr>
         <tr *ngFor="let episode of episodeTableData">
           <td>
@@ -43,7 +44,8 @@
           <td>{{episode.releaseDate}}</td>
           <td>{{episode.totalForPeriod | largeNumber}}</td>
           <td>{{episode.avgPerIntervalForPeriod | largeNumber}}</td>
-          <td>(all time downloads)</td>
+          <td *ngIf="episode.allTimeDownloads">{{episode.allTimeDownloads | largeNumber}}</td>
+          <td *ngIf="!episode.allTimeDownloads"></td>
         </tr>
       </tbody>
     </table>

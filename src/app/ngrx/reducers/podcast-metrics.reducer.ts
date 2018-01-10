@@ -1,5 +1,4 @@
-import { ActionTypes, AllActions, CastlePodcastMetricsAction, CastlePodcastChartToggleAction,
-  CastlePodcastAllTimeMetricsSuccessAction, CastlePodcastAllTimeMetricsFailureAction } from '../actions';
+import { ActionTypes, AllActions, CastlePodcastMetricsAction, CastlePodcastChartToggleAction, CastlePodcastAllTimeMetricsSuccessAction } from '../actions';
 import { getMetricsProperty } from './metrics.type';
 
 export interface PodcastMetricsModel {

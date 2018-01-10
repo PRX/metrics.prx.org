@@ -1,4 +1,4 @@
-import { ActionTypes, AllActions, CastleEpisodeMetricsAction, CastleEpisodeChartToggleAction } from '../actions';
+import { ActionTypes, AllActions, CastleEpisodeMetricsAction, CastleEpisodeChartToggleAction, CastleEpisodeAllTimeMetricsSuccessAction } from '../actions';
 import { MetricsType } from './metrics.type';
 import { IntervalModel } from './filter.reducer';
 import { getMetricsProperty } from './metrics.type';
@@ -13,6 +13,7 @@ export interface EpisodeMetricsModel {
   weeklyDownloads?: any[][];
   dailyDownloads?: any[][];
   hourlyDownloads?: any[][];
+  allTimeDownloads?: number;
 }
 
 const initialState = [];
@@ -61,6 +62,24 @@ export function EpisodeMetricsReducer(state: EpisodeMetricsModel[] = initialStat
         return newState;
       }
       break;
+    case ActionTypes.CASTLE_EPISODE_ALL_TIME_METRICS_SUCCESS:
+      if (action instanceof CastleEpisodeAllTimeMetricsSuccessAction) {
+        const { id, seriesId } = action.payload.episode;
+        const epIdx = episodeIndex(state, id, seriesId);
+
+        if (epIdx > -1) {
+          let episode: EpisodeMetricsModel, newState: EpisodeMetricsModel[];
+          episode = {...state[epIdx], allTimeDownloads: action.payload.allTimeDownloads};
+          newState = [...state.slice(0, epIdx), episode, ...state.slice(epIdx + 1)];
+          return newState
+        } else {
+          return state;
+        }
+      }
+      break;
+    case ActionTypes.CASTLE_EPISODE_ALL_TIME_METRICS_FAILURE:
+      break;
+
   }
   return state;
 }

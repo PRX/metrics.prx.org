@@ -4,7 +4,7 @@ import { Component, OnInit, OnDestroy, Input, Output, EventEmitter } from '@angu
 import { EpisodeModel, FilterModel, PodcastModel, EpisodeMetricsModel, PodcastMetricsModel,
   INTERVAL_MONTHLY, INTERVAL_WEEKLY, INTERVAL_DAILY, INTERVAL_HOURLY } from '../ngrx';
 import { selectEpisodes, selectFilter, selectEpisodeMetrics, selectPodcastMetrics } from '../ngrx/reducers';
-import { CastlePodcastAllTimeMetricsLoadAction, GoogleAnalyticsEventAction } from '../ngrx/actions';
+import { CastlePodcastAllTimeMetricsLoadAction, CastleEpisodeAllTimeMetricsLoadAction, GoogleAnalyticsEventAction } from '../ngrx/actions';
 
 import { findPodcastMetrics, filterPodcastEpisodePage, filterEpisodeMetricsPage, metricsData, getTotal } from '../shared/util/metrics.util';
 import { mapMetricsToTimeseriesData, neutralColor } from '../shared/util/chart.util';
@@ -62,6 +62,9 @@ export class DownloadsTableComponent implements OnInit, OnDestroy {
       const allPodcastEpisodes = filterPodcastEpisodePage(this.filter, allEpisodes);
       if (allPodcastEpisodes) {
         this.episodes = allPodcastEpisodes;
+        this.episodes.forEach(episode =>
+          this.store.dispatch(new CastleEpisodeAllTimeMetricsLoadAction({episode}))
+        )
         this.buildTableData();
       }
     });
@@ -84,6 +87,11 @@ export class DownloadsTableComponent implements OnInit, OnDestroy {
   ngOnInit() {
     if (this.filter) {
       this.store.dispatch(new CastlePodcastAllTimeMetricsLoadAction({ filter: this.filter }));
+    }
+    if (this.episodes) {
+      this.episodes.forEach(episode =>
+        this.store.dispatch(new CastleEpisodeAllTimeMetricsLoadAction({episode}))
+      )
     }
   }
 
@@ -130,6 +138,7 @@ export class DownloadsTableComponent implements OnInit, OnDestroy {
               downloads: mapMetricsToTimeseriesData(downloads),
               totalForPeriod: totalForPeriod,
               avgPerIntervalForPeriod: Math.floor(totalForPeriod / expectedLength),
+              allTimeDownloads: epMetric.allTimeDownloads,
               charted: epMetric.charted
             };
           }

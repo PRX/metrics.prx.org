@@ -14,7 +14,7 @@ import * as dateUtil from '../shared/util/date/date.util';
 @Component({
   selector: 'metrics-downloads-chart',
   template: `
-    <prx-timeseries-chart *ngIf="chartData" [type]="chartType" stacked="true" [datasets]="chartData" [formatX]="dateFormat()">
+    <prx-timeseries-chart *ngIf="chartData" [type]="chartType" [stacked]="stacked" [datasets]="chartData" [formatX]="dateFormat()">
     </prx-timeseries-chart>
   `
 })
@@ -169,5 +169,9 @@ export class DownloadsChartComponent implements OnDestroy {
           return 'area';
         }
     }
+  }
+
+  get stacked(): boolean {
+    return this.filter.chartType === CHARTTYPE_STACKED;
   }
 }

@@ -1,4 +1,4 @@
-import { CastleEpisodeMetricsAction } from '../actions';
+import { CastleEpisodeMetricsAction, CastleEpisodeAllTimeMetricsSuccessAction } from '../actions';
 import { INTERVAL_DAILY } from '../';
 import { EpisodeMetricsReducer } from './episode-metrics.reducer';
 
@@ -80,5 +80,15 @@ describe('EpisodeMetricsReducer', () => {
       })
     );
     expect(newState.filter(p => p.seriesId === 37800).length).toEqual(2);
+  });
+
+  it ('should add all-time episode metrics', () => {
+    newState = EpisodeMetricsReducer(newState,
+      new CastleEpisodeAllTimeMetricsSuccessAction({
+        episode,
+        allTimeDownloads: 10
+      })
+    );
+    expect(newState[0].allTimeDownloads).toEqual(10);
   });
 });

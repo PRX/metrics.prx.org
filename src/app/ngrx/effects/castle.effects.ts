@@ -5,11 +5,11 @@ import { Actions, Effect } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 
 import { ActionTypes,
-  CastlePodcastAllTimeMetricsLoadAction, CastlePodcastAllTimeMetricsLoadPayload, CastlePodcastAllTimeMetricsSuccessAction, CastlePodcastAllTimeMetricsFailureAction,
+  CastlePodcastAllTimeMetricsLoadAction, CastlePodcastAllTimeMetricsLoadPayload,
+  CastlePodcastAllTimeMetricsSuccessAction, CastlePodcastAllTimeMetricsFailureAction,
   CastleEpisodeAllTimeMetricsLoadAction, CastleEpisodeAllTimeMetricsLoadPayload,
   CastleEpisodeAllTimeMetricsSuccessAction, CastleEpisodeAllTimeMetricsFailureAction } from '../actions';
 import { selectPodcasts } from '../reducers';
-
 import { filterPodcasts } from '../../shared/util/metrics.util';
 import { CastleService } from '../../core';
 import { PodcastModel } from '../';

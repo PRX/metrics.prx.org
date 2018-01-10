@@ -1,4 +1,5 @@
-import { CastlePodcastMetricsAction, CastlePodcastAllTimeMetricsSuccessAction } from '../actions/castle.action.creator';
+import { CastlePodcastMetricsAction, CastlePodcastAllTimeMetricsSuccessAction,
+  CastlePodcastAllTimeMetricsFailureAction } from '../actions/castle.action.creator';
 import { INTERVAL_DAILY, FilterModel } from './filter.reducer';
 import { PodcastMetricsReducer } from './podcast-metrics.reducer';
 
@@ -86,5 +87,13 @@ describe('PodcastMetricsReducer', () => {
       })
     );
     expect(newState[0].allTimeDownloads).toEqual(10);
+  });
+
+  it ('won\t alter state on all time metrics failure', () => {
+    let oldState = newState;
+    newState = PodcastMetricsReducer(newState,
+      new CastlePodcastAllTimeMetricsFailureAction({error: 'Some error'})
+    );
+    expect(newState[0]).toEqual(oldState[0]);
   });
 });

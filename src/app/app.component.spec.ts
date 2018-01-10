@@ -52,7 +52,7 @@ describe('AppComponent', () => {
         SharedModule,
         StoreModule.forRoot(reducers),
         RouterTestingModule.withRoutes([
-          { path: ':seriesId/downloads/daily', component: DummyComponent }
+          { path: ':seriesId/downloads/:chartType/:interval', component: DummyComponent }
         ])
       ],
       providers: [

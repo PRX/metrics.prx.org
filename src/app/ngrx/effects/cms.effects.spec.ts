@@ -102,7 +102,8 @@ describe('CmsEffects', () => {
       interval: 'daily',
       page: '1',
       seriesId: '37800',
-      standardRange: '2 weeks'
+      standardRange: '2 weeks',
+      chartType: 'stacked'
     };
 
     const action = new CmsPodcastEpisodePageAction({podcast, page: 1});

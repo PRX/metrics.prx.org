@@ -21,10 +21,14 @@ describe('ChartTypeComponent', () => {
       de = fix.debugElement;
       el = de.nativeElement;
       fix.detectChanges();
+
+      spyOn(comp.chartTypeChange, 'emit').and.callThrough();
     });
   }));
 
-  xit('stacked chart should be the default active chart type', () => {
-    expect(de.query(By.css('a.active > img')).nativeElement.getAttribute('alt')).toEqual('Stacked Chart');
+  it('should emit chart type on button click', () => {
+    const buttons = de.queryAll(By.css('button'));
+    buttons.forEach(b => b.nativeElement.click());
+    expect(comp.chartTypeChange.emit).toHaveBeenCalledTimes(buttons.length);
   });
 });

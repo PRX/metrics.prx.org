@@ -81,6 +81,9 @@ export class DownloadsTableComponent implements OnInit, OnDestroy {
     this.podcastMetricsStoreSub = this.store.select(selectPodcastMetrics).subscribe((podcastMetrics: PodcastMetricsModel[]) => {
       this.podcastMetrics = findPodcastMetrics(this.filter, podcastMetrics);
       if (this.podcastMetrics) {
+        if (!this.podcastMetrics.allTimeDownloads) {
+          this.store.dispatch(new CastlePodcastAllTimeMetricsLoadAction({ filter: this.filter }));
+        }
         this.buildTableData();
       }
     });

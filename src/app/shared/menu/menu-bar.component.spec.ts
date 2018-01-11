@@ -11,6 +11,7 @@ import * as dateUtil from '../util/date';
 import { MenuBarComponent } from './menu-bar.component';
 import { ChartTypeComponent } from './chart-type.component';
 import { CustomDateRangeDropdownComponent } from './date/custom-date-range-dropdown.component';
+import { DateRangeSummaryComponent } from './date/date-range-summary.component';
 import { IntervalDropdownComponent } from './interval-dropdown.component';
 import { PodcastsComponent } from './podcasts.component';
 import { StandardDateRangeDropdownComponent } from './date/standard-date-range-dropdown.component';
@@ -36,14 +37,13 @@ describe('MenuBarComponent', () => {
         MenuBarComponent,
         ChartTypeComponent,
         CustomDateRangeDropdownComponent,
+        DateRangeSummaryComponent,
         IntervalDropdownComponent,
-        PodcastsComponent,
         StandardDateRangeComponent,
         StandardDateRangeDropdownComponent
       ],
       imports: [
         DatepickerModule,
-        SelectModule,
         StoreModule.forRoot(reducers)
       ]
     }).compileComponents().then(() => {

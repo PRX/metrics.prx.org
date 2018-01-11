@@ -9,14 +9,19 @@ import * as dateUtil from '../util/date';
 @Component({
   selector: 'metrics-menu-bar',
   template: `
-    <metrics-chart-type [selectedChartType]="filter?.chartType" (chartTypeChange)="onChartTypeChange($event)"></metrics-chart-type>
-    <metrics-interval-dropdown [filter]="filter" (intervalChange)="onIntervalChange($event)"></metrics-interval-dropdown>
-    <div class="empty"></div>
-    <metrics-standard-date-range-dropdown [interval]="filter?.interval" [standardRange]="filter?.standardRange"
-                                          (standardRangeChange)="onStandardRangeChange($event)"
-                                          (custom)="custom.toggleOpen()"></metrics-standard-date-range-dropdown>
-    <metrics-custom-date-range-dropdown [filter]="filter" #custom
-                               (dateRangeChange)="onFilterChange($event)"></metrics-custom-date-range-dropdown>
+    <div class="menu-bar">
+      <metrics-chart-type [selectedChartType]="filter?.chartType" (chartTypeChange)="onChartTypeChange($event)"></metrics-chart-type>
+      <metrics-interval-dropdown [filter]="filter" (intervalChange)="onIntervalChange($event)"></metrics-interval-dropdown>
+      <div class="empty"></div>
+      <metrics-standard-date-range-dropdown [interval]="filter?.interval" [standardRange]="filter?.standardRange"
+                                            (standardRangeChange)="onStandardRangeChange($event)"
+                                            (custom)="custom.toggleOpen()"></metrics-standard-date-range-dropdown>
+      <metrics-custom-date-range-dropdown [filter]="filter" #custom
+                                 (dateRangeChange)="onFilterChange($event)"></metrics-custom-date-range-dropdown>
+    </div>
+    <div class="summary">
+      <metrics-date-range-summary [filter]="filter"></metrics-date-range-summary>
+    </div>
   `,
   styleUrls: ['./menu-bar.component.css']
 })

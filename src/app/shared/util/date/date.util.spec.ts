@@ -102,7 +102,7 @@ describe('date util', () => {
     });
   });
 
-  it('LAST_7_DAYS range should be 7 days ago through today', () => {
+  it('LAST_7_DAYS range should be 6 days ago through today', () => {
     const last7Days = dateUtil.getBeginEndDateFromStandardRange(dateConst.LAST_7_DAYS);
     expect(last7Days.beginDate.valueOf()).toEqual(dateUtil.beginningOfLast7DaysUTC().valueOf());
     expect(last7Days.endDate.valueOf()).toEqual(dateUtil.endOfTodayUTC().valueOf());
@@ -115,13 +115,13 @@ describe('date util', () => {
     expect(twoWeeks.endDate.valueOf()).toEqual(dateUtil.endOfTodayUTC().valueOf());
   });
 
-  it('LAST_28_DAYS range should be 28 days ago through today', () => {
+  it('LAST_28_DAYS range should be 27 days ago through today', () => {
     const last28Days = dateUtil.getBeginEndDateFromStandardRange(dateConst.LAST_28_DAYS);
     expect(last28Days.beginDate.valueOf()).toEqual(dateUtil.beginningOfLast28DaysUTC().valueOf());
     expect(last28Days.endDate.valueOf()).toEqual(dateUtil.endOfTodayUTC().valueOf());
   });
 
-  it('LAST_30_DAYS range should be 30 days ago through today', () => {
+  it('LAST_30_DAYS range should be 29 days ago through today', () => {
     const last30Days = dateUtil.getBeginEndDateFromStandardRange(dateConst.LAST_30_DAYS);
     expect(last30Days.beginDate.valueOf()).toEqual(dateUtil.beginningOfLast30DaysUTC().valueOf());
     expect(last30Days.endDate.valueOf()).toEqual(dateUtil.endOfTodayUTC().valueOf());
@@ -141,7 +141,7 @@ describe('date util', () => {
     expect(threeMonths.endDate.valueOf()).toEqual(dateUtil.endOfTodayUTC().valueOf());
   });
 
-  it('LAST_365_DAYS range should be 365 days ago through today', () => {
+  it('LAST_365_DAYS range should be 364 days ago through today', () => {
     const last365Days = dateUtil.getBeginEndDateFromStandardRange(dateConst.LAST_365_DAYS);
     expect(last365Days.beginDate.valueOf()).toEqual(dateUtil.beginningOfLast365DaysUTC().valueOf());
     expect(last365Days.endDate.valueOf()).toEqual(dateUtil.endOfTodayUTC().valueOf());

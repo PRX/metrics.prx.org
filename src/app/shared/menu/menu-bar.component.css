@@ -1,6 +1,15 @@
 :host {
-  display: flex;
+  display: block;
   background-color: white;
+}
+
+.menu-bar {
+  display: flex;
+}
+
+.summary {
+  display: flex;
+  padding: 10px 20px;
 }
 
 .empty {

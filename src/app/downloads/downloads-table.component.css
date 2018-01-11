@@ -58,12 +58,16 @@ table.scroll-x th:first-child, table.scroll-x td:first-child {
 .table-navigation > button {
   text-align: left;
 }
-
-prx-checkbox {
+prx-checkbox, button {
   position: relative;
   margin-top: -4px;
   top: 4px;
   width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+button {
+  text-align: left;
+  margin-top: -2px;
+  top: 2px;
 }

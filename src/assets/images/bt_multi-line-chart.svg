@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="400px" height="400px" viewBox="0 0 400 400" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 48.2 (47327) - http://www.bohemiancoding.com/sketch -->
+    <title>400x400 multi-line</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="400x400-multi-line" stroke-width="20">
+            <path d="M39.5,123.5 L361.5,226.5" id="Line" stroke="#343434" stroke-linecap="square"></path>
+            <polyline id="Path-3" stroke="#818181" points="30 306.216797 106.982572 203.779823 186.23937 254.99831 370.28237 94"></polyline>
+        </g>
+    </g>
+</svg>

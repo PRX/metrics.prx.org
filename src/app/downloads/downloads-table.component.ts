@@ -2,7 +2,8 @@ import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs/Subscription';
 import { Component, OnInit, OnDestroy, Input, Output, EventEmitter } from '@angular/core';
 import { EpisodeModel, FilterModel, PodcastModel, EpisodeMetricsModel, PodcastMetricsModel,
-  INTERVAL_MONTHLY, INTERVAL_WEEKLY, INTERVAL_DAILY, INTERVAL_HOURLY } from '../ngrx';
+  INTERVAL_MONTHLY, INTERVAL_WEEKLY, INTERVAL_DAILY, INTERVAL_HOURLY,
+  CHARTTYPE_PODCAST, CHARTTYPE_EPISODES, CHARTTYPE_STACKED  } from '../ngrx';
 import { selectEpisodes, selectFilter, selectEpisodeMetrics, selectPodcastMetrics } from '../ngrx/reducers';
 import { CastlePodcastAllTimeMetricsLoadAction, CastleEpisodeAllTimeMetricsLoadAction, GoogleAnalyticsEventAction } from '../ngrx/actions';
 
@@ -23,6 +24,7 @@ export class DownloadsTableComponent implements OnInit, OnDestroy {
   @Input() totalPages;
   @Output() podcastChartToggle = new EventEmitter();
   @Output() episodeChartToggle = new EventEmitter();
+  @Output() chartSingleEpisode = new EventEmitter();
   @Output() pageChange = new EventEmitter();
   filterStoreSub: Subscription;
   filter: FilterModel;
@@ -190,12 +192,24 @@ export class DownloadsTableComponent implements OnInit, OnDestroy {
     }
   }
 
+  get showPodcastToggle(): boolean {
+    return this.filter && this.filter.chartType === CHARTTYPE_STACKED;
+  }
+
+  get showEpisodeToggles(): boolean {
+    return this.filter && this.filter.chartType !== CHARTTYPE_PODCAST;
+  }
+
   toggleChartPodcast(charted: boolean) {
     this.podcastChartToggle.emit(charted);
   }
 
   toggleChartEpisode(episode, charted) {
     this.episodeChartToggle.emit({id: episode.id, charted});
+  }
+
+  onChartSingleEpisode(episode) {
+    this.chartSingleEpisode.emit(episode.id);
   }
 
   toggleExpandedReport() {

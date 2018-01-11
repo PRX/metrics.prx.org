@@ -2,15 +2,15 @@ import { Component, OnInit, OnDestroy, Output, EventEmitter } from '@angular/cor
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs/Subscription';
 import { selectFilter } from '../../ngrx/reducers';
-import { FilterModel, IntervalModel } from '../../ngrx';
+import { FilterModel, IntervalModel, ChartType } from '../../ngrx';
 import { GoogleAnalyticsEventAction } from '../../ngrx/actions';
 import * as dateUtil from '../util/date';
 
 @Component({
   selector: 'metrics-menu-bar',
   template: `
-    <metrics-chart-type></metrics-chart-type>
-    <metrics-interval [filter]="filter" (intervalChange)="onIntervalChange($event)"></metrics-interval>
+    <metrics-chart-type [selectedChartType]="filter?.chartType" (chartTypeChange)="onChartTypeChange($event)"></metrics-chart-type>
+    <metrics-interval-dropdown [filter]="filter" (intervalChange)="onIntervalChange($event)"></metrics-interval-dropdown>
     <div class="empty"></div>
     <metrics-standard-date-range-dropdown [interval]="filter?.interval" [standardRange]="filter?.standardRange"
                                           (standardRangeChange)="onStandardRangeChange($event)"
@@ -66,6 +66,10 @@ export class MenuBarComponent implements OnInit, OnDestroy {
     this.filter.endDate = dateUtil.roundDateToEndOfInterval(this.filter.endDate, this.filter.interval);
     this.filter.standardRange = dateUtil.getStandardRangeForBeginEndDate(this.filter);
     this.routeFromFilter.emit(this.filter);
+  }
+
+  onChartTypeChange(chartType: ChartType) {
+    this.routeFromFilter.emit({...this.filter, chartType});
   }
 
   googleAnalyticsEvent(action: string, dateRange: FilterModel) {

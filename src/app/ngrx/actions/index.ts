@@ -1,12 +1,15 @@
 import { RouterNavigationAction } from '@ngrx/router-store';
-import { CmsPodcastsSuccessAction,
+import { CmsAccountAction, CmsAccountSuccessAction, CmsAccountFailureAction, CmsPodcastsSuccessAction,
   CmsPodcastEpisodePageAction, CmsPodcastEpisodePageSuccessAction, CmsPodcastEpisodePageFailureAction } from './cms.action.creator';
 import { CastleFilterAction, CastlePodcastMetricsAction, CastlePodcastChartToggleAction,
   CastleEpisodeMetricsAction, CastleEpisodeChartToggleAction, CastlePodcastAllTimeMetricsLoadAction, CastlePodcastAllTimeMetricsSuccessAction, CastlePodcastAllTimeMetricsFailureAction, CastleEpisodeAllTimeMetricsLoadAction, CastleEpisodeAllTimeMetricsSuccessAction, CastleEpisodeAllTimeMetricsFailureAction } from './castle.action.creator';
 import { GoogleAnalyticsEventAction } from './google-analytics.action.creator';
 
 export type AllActions
-  = CmsPodcastsSuccessAction
+  = CmsAccountAction
+  | CmsAccountSuccessAction
+  | CmsAccountFailureAction
+  | CmsPodcastsSuccessAction
   | CmsPodcastEpisodePageAction
   | CmsPodcastEpisodePageSuccessAction
   | CmsPodcastEpisodePageFailureAction
@@ -25,7 +28,9 @@ export type AllActions
   | GoogleAnalyticsEventAction;
 
 export { ActionTypes } from './action.types';
-export { CmsPodcastsSuccessPayload, CmsPodcastsSuccessAction,
+export { CmsAccountSuccessPayload, CmsAccountSuccessAction,
+  CmsAccountAction, CmsAccountFailureAction,
+  CmsPodcastsSuccessPayload, CmsPodcastsSuccessAction,
   CmsPodcastsAction, CmsPodcastsFailureAction,
   CmsEpisodePagePayload, CmsPodcastEpisodePageAction,
   CmsEpisodePageSuccessPayload, CmsPodcastEpisodePageSuccessAction, CmsPodcastEpisodePageFailureAction } from './cms.action.creator';

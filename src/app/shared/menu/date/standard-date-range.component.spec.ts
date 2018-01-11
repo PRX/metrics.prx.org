@@ -1,8 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { DebugElement } from '@angular/core';
-import { RouterTestingModule } from '@angular/router/testing';
 
-import { SelectModule } from 'ngx-prx-styleguide';
 import { StandardDateRangeComponent } from './standard-date-range.component';
 
 import { INTERVAL_HOURLY } from '../../../ngrx';
@@ -18,10 +16,6 @@ describe('StandardDateRangeComponent', () => {
     TestBed.configureTestingModule({
       declarations: [
         StandardDateRangeComponent
-      ],
-      imports: [
-        RouterTestingModule,
-        SelectModule
       ]
     }).compileComponents().then(() => {
       fix = TestBed.createComponent(StandardDateRangeComponent);

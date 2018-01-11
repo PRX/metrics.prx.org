@@ -1,0 +1,12 @@
+.label {
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-size: 0.8em;
+  line-height: 0.8em;
+}
+.range {
+  font-size: 1.2em;
+}
+.range > span {
+  color: #a3a3a3;
+}

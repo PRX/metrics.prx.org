@@ -11,7 +11,8 @@ import { DownloadsTableComponent } from './downloads-table.component';
 import { reducers } from '../ngrx/reducers';
 import { PodcastModel, EpisodeModel, FilterModel, INTERVAL_DAILY, INTERVAL_HOURLY } from '../ngrx';
 import { CastlePodcastMetricsAction, CastleEpisodeMetricsAction,
-  CastleFilterAction, CmsPodcastEpisodePageSuccessAction } from '../ngrx/actions';
+  CastleFilterAction, CmsPodcastEpisodePageSuccessAction,
+  CastlePodcastAllTimeMetricsSuccessAction, CastleEpisodeAllTimeMetricsSuccessAction } from '../ngrx/actions';
 
 describe('DownloadsTableComponent', () => {
   let comp: DownloadsTableComponent;
@@ -191,6 +192,19 @@ describe('DownloadsTableComponent', () => {
   it('should display episode total downloads for period', () => {
     comp.episodeTableData.forEach(e => {
       expect(e.totalForPeriod).not.toBeNull();
+    });
+  });
+
+  it('should display podcast all time total downloads', () => {
+    comp.store.dispatch(new CastlePodcastAllTimeMetricsSuccessAction({ podcast, allTimeDownloads: 10 }));
+    expect(comp.podcastTableData['allTimeDownloads']).toEqual(10);
+  });
+
+  it('should display episode all time total downloads', () => {
+    comp.store.dispatch(new CastleEpisodeAllTimeMetricsSuccessAction({episode: episodes[1], allTimeDownloads: 5}));
+    comp.store.dispatch(new CastleEpisodeAllTimeMetricsSuccessAction({episode: episodes[0], allTimeDownloads: 5}));
+    comp.episodeTableData.forEach(e => {
+      expect(e.allTimeDownloads).toEqual(5);
     });
   });
 

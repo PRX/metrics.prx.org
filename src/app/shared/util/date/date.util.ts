@@ -43,7 +43,7 @@ export const endOfLastWeekHourlyUTC = () => {
 };
 
 export const beginningOfLast7DaysUTC = () => {
-  return beginningOfTodayUTC().subtract(7, 'days');
+  return beginningOfTodayUTC().subtract(6, 'days');
 };
 
 export const beginningOfThisWeekPlus7DaysUTC = () => {
@@ -69,11 +69,11 @@ export const endOfLastMonthHourlyUTC = () => {
 };
 
 export const beginningOfLast28DaysUTC = () => {
-  return beginningOfTodayUTC().subtract(28, 'days');
+  return beginningOfTodayUTC().subtract(27, 'days');
 };
 
 export const beginningOfLast30DaysUTC = () => {
-  return beginningOfTodayUTC().subtract(30, 'days');
+  return beginningOfTodayUTC().subtract(29, 'days');
 };
 
 export const beginningOfThisMonthPlusTwoMonthsUTC = () => {
@@ -81,7 +81,7 @@ export const beginningOfThisMonthPlusTwoMonthsUTC = () => {
 };
 
 export const beginningOfLast90DaysUTC = () => {
-  return beginningOfTodayUTC().subtract(90, 'days');
+  return beginningOfTodayUTC().subtract(89, 'days');
 };
 
 export const beginningOfThisYearUTC = () => {
@@ -89,7 +89,7 @@ export const beginningOfThisYearUTC = () => {
 };
 
 export const beginningOfLast365DaysUTC = () => {
-  return beginningOfTodayUTC().subtract(365, 'days');
+  return beginningOfTodayUTC().subtract(364, 'days');
 };
 
 export const getBeginEndDateFromStandardRange = (standardRange: string): {beginDate: Date, endDate: Date} => {

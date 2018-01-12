@@ -1,0 +1,28 @@
+:host {
+  padding: 40px 20px 20px 20px;
+  min-height: 600px;
+  display: flex;
+}
+
+metrics-nav-menu {
+  flex-basis: 25%;
+  padding-right: 5px;
+}
+:host >>> .content {
+  flex-basis: 75%;
+  max-width: 75%;
+}
+
+@media only screen
+and (max-device-width: 767px) {
+  :host {
+    padding: 20px 10px 10px 10px;
+    display: block;
+  }
+  metrics-nav-menu {
+    display: none;
+  }
+  :host >>> .content {
+    max-width: 100%;
+  }
+}

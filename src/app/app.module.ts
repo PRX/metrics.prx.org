@@ -19,6 +19,8 @@ import { RoutingEffects } from './ngrx/effects/routing.effects';
 import { GoogleAnalyticsEffects } from './ngrx/effects/google-analytics.effects';
 
 import { DownloadsModule } from './downloads/downloads.module';
+import { GeoModule } from './geo/geo.module';
+import { UserAgentsModule } from './user-agents/user-agents.module';
 
 // AOT compile doesn't call reducer functions unless they are created with InjectionToken
 export function getReducers() {
@@ -45,7 +47,9 @@ export const reducerProvider = { provide: reducerToken, useFactory: getReducers 
     StoreRouterConnectingModule,
     EffectsModule.forRoot([CmsEffects, RoutingEffects, GoogleAnalyticsEffects]),
     routing,
-    DownloadsModule
+    DownloadsModule,
+    GeoModule,
+    UserAgentsModule
   ],
   providers: [
     {provide: ErrorHandler, useClass: ErrorService},

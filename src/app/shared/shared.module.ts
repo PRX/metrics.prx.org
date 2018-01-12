@@ -1,4 +1,5 @@
 import { NgModule } from '@angular/core';
+import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 
 import { AuthGuard, DeactivateGuard, UnauthGuard,
@@ -12,8 +13,11 @@ import { CustomDateRangeDropdownComponent } from './menu/date/custom-date-range-
 import { DateRangeSummaryComponent } from './menu/date/date-range-summary.component';
 import { StandardDateRangeComponent } from './menu/date/standard-date-range.component';
 import { StandardDateRangeDropdownComponent } from './menu/date/standard-date-range-dropdown.component';
+import { NavComponent } from './nav/nav.component';
+import { NavMenuComponent } from './nav/nav-menu.component';
 import { EpisodePageComponent } from './paging/episode-page.component';
 import { LargeNumberPipe } from './pipes/large-number.pipe';
+import { ProfileComponent } from './profile/profile.component';
 
 @NgModule({
   declarations: [
@@ -24,7 +28,10 @@ import { LargeNumberPipe } from './pipes/large-number.pipe';
     IntervalDropdownComponent,
     LargeNumberPipe,
     MenuBarComponent,
+    NavComponent,
+    NavMenuComponent,
     PodcastsComponent,
+    ProfileComponent,
     StandardDateRangeComponent,
     StandardDateRangeDropdownComponent
   ],
@@ -38,10 +45,12 @@ import { LargeNumberPipe } from './pipes/large-number.pipe';
     SpinnerModule,
     LargeNumberPipe,
     EpisodePageComponent,
+    NavComponent,
     PodcastsComponent
   ],
   imports: [
     CommonModule,
+    RouterModule,
     ChartsModule,
     DatepickerModule,
     ImageModule,

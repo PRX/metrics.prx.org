@@ -12,22 +12,21 @@ import * as dateUtil from '../shared/util/date';
 import { isPodcastChanged, isBeginDateChanged, isEndDateChanged, isIntervalChanged } from '../shared/util/filter.util';
 
 @Component({
-  selector: 'metrics-downloads',
   template: `
     <prx-spinner *ngIf="isPodcastLoading || isEpisodeLoading" overlay="true" loadingMessage="Please wait..."></prx-spinner>
-    <!--<section class="profile">
-    </section>-->
-    <section class="content">
-      <metrics-menu-bar *ngIf="!isPodcastLoading && !isEpisodeLoading" (routeFromFilter)="routeFromFilter($event)"></metrics-menu-bar>
-      <metrics-downloads-chart></metrics-downloads-chart>
-      <metrics-downloads-table
-        [totalPages]="totalPages" (pageChange)="onPageChange($event)"
-        (podcastChartToggle)="onPodcastChartToggle($event)"
-        (episodeChartToggle)="onEpisodeChartToggle($event)"
-        (chartSingleEpisode)="onChartSingleEpisode($event)">
-      </metrics-downloads-table>
-      <p class="error" *ngFor="let error of errors">{{error}}</p>
-    </section>
+    <metrics-nav>
+      <section class="content">
+        <metrics-menu-bar *ngIf="!isPodcastLoading && !isEpisodeLoading" (routeFromFilter)="routeFromFilter($event)"></metrics-menu-bar>
+        <metrics-downloads-chart></metrics-downloads-chart>
+        <metrics-downloads-table
+          [totalPages]="totalPages" (pageChange)="onPageChange($event)"
+          (podcastChartToggle)="onPodcastChartToggle($event)"
+          (episodeChartToggle)="onEpisodeChartToggle($event)"
+          (chartSingleEpisode)="onChartSingleEpisode($event)">
+        </metrics-downloads-table>
+        <p class="error" *ngFor="let error of errors">{{error}}</p>
+      </section>
+    </metrics-nav>
   `,
   styleUrls: ['downloads.component.css']
 })

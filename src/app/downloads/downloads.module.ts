@@ -20,11 +20,7 @@ import { downloadsRouting } from './downloads.routing';
     SharedModule,
     FancyFormModule,
     downloadsRouting
-  ],
-  exports: [
-    DownloadsComponent
-  ],
-  providers: []
+  ]
 })
 
 export class DownloadsModule { }

@@ -9,7 +9,7 @@ import { IntervalModel } from '../../../ngrx';
       <div class="dropdown-button" [class.open]="open">
         <button (click)="toggleOpen()" >{{ standardRange }}<span class="down-arrow"></span></button>
       </div>
-      <div class="dropdown-content">
+      <div class="dropdown-content rollout">
         <metrics-standard-date-range
           [standardRange]="standardRange" [interval]="interval"
           (standardRangeChange)="standardRangeChange.emit($event)">

@@ -11,7 +11,7 @@ import * as dateUtil from '../util/date';
       <div class="dropdown-button" [class.open]="open">
         <button (click)="toggleOpen()" >{{ selectedInterval?.name }}<span class="down-arrow"></span></button>
       </div>
-      <div class="dropdown-content">
+      <div class="dropdown-content rollout">
         <ul>
           <li *ngFor="let interval of intervalOptions">
             <button class="btn-link" [class.active]="interval === selectedInterval" (click)="onIntervalChange(interval)">

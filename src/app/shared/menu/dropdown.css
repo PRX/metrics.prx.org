@@ -43,8 +43,12 @@
 .open .dropdown-content {
   padding: 20px;
   max-height: initial;
-  transition: max-height;
-  transition: 0.5s;
+}
+
+.open .dropdown-content.rollout {
+  height: auto;
+  max-height: 500px;
+  transition: max-height 0.2s;
 }
 
 .overlay {

@@ -1,6 +1,6 @@
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs/Subscription';
-import { Component, OnInit, OnDestroy, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnDestroy, Input, Output, EventEmitter } from '@angular/core';
 import { EpisodeModel, FilterModel, PodcastModel, EpisodeMetricsModel, PodcastMetricsModel,
   INTERVAL_MONTHLY, INTERVAL_WEEKLY, INTERVAL_DAILY, INTERVAL_HOURLY,
   CHARTTYPE_PODCAST, CHARTTYPE_EPISODES, CHARTTYPE_STACKED  } from '../ngrx';
@@ -20,7 +20,7 @@ import * as moment from 'moment';
   styleUrls: ['downloads-table.component.css']
 
 })
-export class DownloadsTableComponent implements OnInit, OnDestroy {
+export class DownloadsTableComponent implements OnDestroy {
   @Input() totalPages;
   @Output() podcastChartToggle = new EventEmitter();
   @Output() episodeChartToggle = new EventEmitter();
@@ -44,8 +44,8 @@ export class DownloadsTableComponent implements OnInit, OnDestroy {
 
     this.filterStoreSub = this.store.select(selectFilter).subscribe((newFilter: FilterModel) => {
       if (newFilter) {
-        this.store.dispatch(new CastlePodcastAllTimeMetricsLoadAction({ filter: newFilter }));
         if (isPodcastChanged(newFilter, this.filter)) {
+          this.store.dispatch(new CastlePodcastAllTimeMetricsLoadAction({ filter: newFilter }));
           this.resetAllData();
         }
         // apply new filter to existing data so it's not showing stale data while loading
@@ -81,23 +81,9 @@ export class DownloadsTableComponent implements OnInit, OnDestroy {
     this.podcastMetricsStoreSub = this.store.select(selectPodcastMetrics).subscribe((podcastMetrics: PodcastMetricsModel[]) => {
       this.podcastMetrics = findPodcastMetrics(this.filter, podcastMetrics);
       if (this.podcastMetrics) {
-        if (!this.podcastMetrics.allTimeDownloads) {
-          this.store.dispatch(new CastlePodcastAllTimeMetricsLoadAction({ filter: this.filter }));
-        }
         this.buildTableData();
       }
     });
-  }
-
-  ngOnInit() {
-    if (this.filter) {
-      this.store.dispatch(new CastlePodcastAllTimeMetricsLoadAction({ filter: this.filter }));
-    }
-    if (this.episodes) {
-      this.episodes.forEach(episode =>
-        this.store.dispatch(new CastleEpisodeAllTimeMetricsLoadAction({episode}))
-      )
-    }
   }
 
   resetAllData() {

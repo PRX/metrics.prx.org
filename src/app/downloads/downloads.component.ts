@@ -20,7 +20,7 @@ import { isPodcastChanged, isBeginDateChanged, isEndDateChanged, isIntervalChang
     <section class="content">
       <metrics-menu-bar *ngIf="!isPodcastLoading && !isEpisodeLoading" (routeFromFilter)="routeFromFilter($event)"></metrics-menu-bar>
       <metrics-downloads-chart></metrics-downloads-chart>
-      <metrics-downloads-table
+      <metrics-downloads-table *ngIf="podcasts"
         [totalPages]="totalPages" (pageChange)="onPageChange($event)"
         (podcastChartToggle)="onPodcastChartToggle($event)"
         (episodeChartToggle)="onEpisodeChartToggle($event)"

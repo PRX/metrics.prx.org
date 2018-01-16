@@ -53,7 +53,6 @@ describe('NavMenuComponent', () => {
     TestBed.configureTestingModule({
       declarations: [
         NavMenuComponent,
-        NavMenuComponent,
         ProfileComponent,
         TestComponent
       ],

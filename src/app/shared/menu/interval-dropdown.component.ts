@@ -8,7 +8,7 @@ import * as dateUtil from '../util/date';
   template: `
     <div class="dropdown" [class.open]="open">
       <div class="overlay" (click)="toggleOpen()"></div>
-      <div class="dropdown-button" [class.open]="open">
+      <div class="dropdown-button">
         <button (click)="toggleOpen()" >{{ selectedInterval?.name }}<span class="down-arrow"></span></button>
       </div>
       <div class="dropdown-content rollout">

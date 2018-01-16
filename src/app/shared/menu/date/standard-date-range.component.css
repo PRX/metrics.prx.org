@@ -1,9 +1,6 @@
 .group {
   margin-bottom: 10px;
 }
-.group > li {
-  white-space: nowrap;
-}
 button > span {
   margin-left: 5px;
   text-transform: uppercase;

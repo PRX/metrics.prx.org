@@ -44,7 +44,9 @@
   padding: 20px;
   max-height: initial;
 }
-
+.dropdown-content >>> li {
+  white-space: nowrap;
+}
 .open .dropdown-content.rollout {
   height: auto;
   max-height: 500px;

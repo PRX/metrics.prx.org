@@ -3,6 +3,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { AuthGuard, DeactivateGuard } from 'ngx-prx-styleguide';
 
 import { UserAgentsComponent } from './user-agents.component';
+import { NavMenuComponent } from '../shared/nav';
 
 export const userAgentsRoutes: Routes = [
   {
@@ -10,6 +11,9 @@ export const userAgentsRoutes: Routes = [
     component: UserAgentsComponent,
     canActivate: [AuthGuard],
     canDeactivate: [DeactivateGuard],
+    children: [
+      { path: '', component: NavMenuComponent, outlet: 'sidenav'}
+    ]
   }
 ];
 

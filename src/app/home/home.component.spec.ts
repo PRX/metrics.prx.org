@@ -7,7 +7,6 @@ import { Angulartics2 } from 'angulartics2';
 import { HalService, MockHalService } from 'ngx-prx-styleguide';
 import { CastleService } from '../core';
 import { SharedModule } from '../shared';
-import { DownloadsModule } from '../downloads/downloads.module';
 import { HomeComponent } from './home.component';
 
 import { reducers } from '../ngrx/reducers';
@@ -25,7 +24,6 @@ describe('HomeComponent', () => {
       imports: [
         RouterTestingModule,
         SharedModule,
-        DownloadsModule,
         StoreModule.forRoot(reducers)
       ],
       declarations: [ HomeComponent ],

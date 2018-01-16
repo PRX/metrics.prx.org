@@ -13,7 +13,6 @@ import { CustomDateRangeDropdownComponent } from './menu/date/custom-date-range-
 import { DateRangeSummaryComponent } from './menu/date/date-range-summary.component';
 import { StandardDateRangeComponent } from './menu/date/standard-date-range.component';
 import { StandardDateRangeDropdownComponent } from './menu/date/standard-date-range-dropdown.component';
-import { NavComponent } from './nav/nav.component';
 import { NavMenuComponent } from './nav/nav-menu.component';
 import { EpisodePageComponent } from './paging/episode-page.component';
 import { LargeNumberPipe } from './pipes/large-number.pipe';
@@ -28,7 +27,6 @@ import { ProfileComponent } from './profile/profile.component';
     IntervalDropdownComponent,
     LargeNumberPipe,
     MenuBarComponent,
-    NavComponent,
     NavMenuComponent,
     PodcastsComponent,
     ProfileComponent,
@@ -45,7 +43,7 @@ import { ProfileComponent } from './profile/profile.component';
     SpinnerModule,
     LargeNumberPipe,
     EpisodePageComponent,
-    NavComponent,
+    NavMenuComponent,
     PodcastsComponent
   ],
   imports: [

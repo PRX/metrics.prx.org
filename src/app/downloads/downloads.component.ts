@@ -14,21 +14,20 @@ import { isPodcastChanged, isBeginDateChanged, isEndDateChanged, isIntervalChang
 @Component({
   template: `
     <prx-spinner *ngIf="isPodcastLoading || isEpisodeLoading" overlay="true" loadingMessage="Please wait..."></prx-spinner>
-    <metrics-nav>
-      <section class="content" *ngIf="podcasts">
-        <metrics-menu-bar *ngIf="!isPodcastLoading && !isEpisodeLoading" (routeFromFilter)="routeFromFilter($event)"></metrics-menu-bar>
-        <metrics-downloads-chart></metrics-downloads-chart>
-        <metrics-downloads-table
-          [totalPages]="totalPages" (pageChange)="onPageChange($event)"
-          (podcastChartToggle)="onPodcastChartToggle($event)"
-          (episodeChartToggle)="onEpisodeChartToggle($event)"
-          (chartSingleEpisode)="onChartSingleEpisode($event)">
-        </metrics-downloads-table>
-        <p class="error" *ngFor="let error of errors">{{error}}</p>
-      </section>
-    </metrics-nav>
+    <router-outlet name="sidenav"></router-outlet>
+    <section class="content" *ngIf="podcasts">
+      <metrics-menu-bar *ngIf="!isPodcastLoading && !isEpisodeLoading" (routeFromFilter)="routeFromFilter($event)"></metrics-menu-bar>
+      <metrics-downloads-chart></metrics-downloads-chart>
+      <metrics-downloads-table
+        [totalPages]="totalPages" (pageChange)="onPageChange($event)"
+        (podcastChartToggle)="onPodcastChartToggle($event)"
+        (episodeChartToggle)="onEpisodeChartToggle($event)"
+        (chartSingleEpisode)="onChartSingleEpisode($event)">
+      </metrics-downloads-table>
+      <p class="error" *ngFor="let error of errors">{{error}}</p>
+    </section>
   `,
-  styleUrls: ['downloads.component.css']
+  styleUrls: ['../shared/nav/nav-content.css', 'downloads.component.css']
 })
 export class DownloadsComponent implements OnInit, OnDestroy {
   podcastSub: Subscription;

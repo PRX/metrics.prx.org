@@ -3,6 +3,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { AuthGuard, DeactivateGuard } from 'ngx-prx-styleguide';
 
 import { GeoComponent } from './geo.component';
+import { NavMenuComponent } from '../shared/nav';
 
 export const geoRoutes: Routes = [
   {
@@ -10,6 +11,9 @@ export const geoRoutes: Routes = [
     component: GeoComponent,
     canActivate: [AuthGuard],
     canDeactivate: [DeactivateGuard],
+    children: [
+      { path: '', component: NavMenuComponent, outlet: 'sidenav'}
+    ]
   }
 ];
 

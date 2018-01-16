@@ -2,11 +2,10 @@ import { Component } from '@angular/core';
 
 @Component ({
   template: `
-    <metrics-nav>
-      <section class="content soon">coming soon</section>
-    </metrics-nav>
+    <router-outlet name="sidenav"></router-outlet>
+    <section class="content soon">coming soon</section>
   `,
-  styleUrls: ['../shared/nav/soon.css']
+  styleUrls: ['../shared/nav/nav-content.css', '../shared/nav/soon.css']
 })
 
 export class UserAgentsComponent {}

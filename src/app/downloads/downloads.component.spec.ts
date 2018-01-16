@@ -146,6 +146,8 @@ describe('DownloadsComponent', () => {
     });
 
     it('should show a downloads table of episodes', () => {
+      comp.podcasts = [podcast];
+      fix.detectChanges();
       expect(de.query(By.css('metrics-downloads-table'))).not.toBeNull();
     });
   });

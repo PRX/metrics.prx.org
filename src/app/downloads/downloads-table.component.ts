@@ -1,77 +1,22 @@
-import { Component, OnDestroy, Input, Output, EventEmitter } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs/Subscription';
-import { EpisodeModel, FilterModel, EpisodeMetricsModel, PodcastMetricsModel,
+import { Component, OnDestroy, Input, Output, EventEmitter } from '@angular/core';
+import { EpisodeModel, FilterModel, PodcastModel, EpisodeMetricsModel, PodcastMetricsModel,
   INTERVAL_MONTHLY, INTERVAL_WEEKLY, INTERVAL_DAILY, INTERVAL_HOURLY,
-  CHARTTYPE_PODCAST, CHARTTYPE_EPISODES, CHARTTYPE_STACKED } from '../ngrx';
+  CHARTTYPE_PODCAST, CHARTTYPE_EPISODES, CHARTTYPE_STACKED  } from '../ngrx';
 import { selectEpisodes, selectFilter, selectEpisodeMetrics, selectPodcastMetrics } from '../ngrx/reducers';
-import { findPodcastMetrics, filterPodcastEpisodePage, filterEpisodeMetricsPage, metricsData, getTotal } from '../shared/util/metrics.util';
+import { CastlePodcastAllTimeMetricsLoadAction, CastleEpisodeAllTimeMetricsLoadAction, GoogleAnalyticsEventAction } from '../ngrx/actions';
+
+import { findPodcastMetrics, filterPodcastEpisodePage, filterEpisodeMetricsPage, filterAllPodcastEpisodes, metricsData, getTotal } from '../shared/util/metrics.util';
 import { mapMetricsToTimeseriesData, neutralColor } from '../shared/util/chart.util';
 import * as dateFormat from '../shared/util/date/date.format';
+import { getAmountOfIntervals } from '../shared/util/date/date.util';
 import { isPodcastChanged } from '../shared/util/filter.util';
 import * as moment from 'moment';
 
 @Component({
   selector: 'metrics-downloads-table',
-  template: `
-    <p *ngIf="podcastTableData && filter?.interval === bindToIntervalHourly"><em>Hourly data is shown in your local timezone</em></p>
-    <div class="table-wrapper" *ngIf="podcastTableData">
-      <table class="sticky">
-        <thead>
-          <tr>
-            <th>Episode</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>
-              <prx-checkbox *ngIf="showPodcastToggle; else podcastTitle"
-                small [checked]="podcastTableData.charted" [color]="podcastTableData.color"
-                (change)="toggleChartPodcast($event)">{{podcastTableData.title}}</prx-checkbox>
-              <ng-template #podcastTitle>{{podcastTableData.title}}</ng-template>
-            </td>
-          </tr>
-          <tr *ngFor="let episode of episodeTableData">
-            <td>
-              <prx-checkbox *ngIf="showEpisodeToggles; else episodeTitle"
-                small [checked]="episode.charted" [color]="episode.color"
-                (change)="toggleChartEpisode(episode, $event)">{{episode.title}}</prx-checkbox>
-              <ng-template #episodeTitle>
-                <button class="btn-link" (click)="onChartSingleEpisode(episode)">{{episode.title}}</button>
-              </ng-template>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-      <div class="scroll-x-wrapper">
-        <table class="scroll-x">
-          <thead>
-            <tr>
-              <th>Release Date</th>
-              <th>Total for Period</th>
-              <th *ngFor="let date of dateRange">{{date}}</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>{{podcastTableData.releaseDate}}</td>
-              <td>{{podcastTableData.totalForPeriod | largeNumber}}</td>
-              <td *ngFor="let download of podcastTableData.downloads">{{download.value | largeNumber}}</td>
-            </tr>
-            <tr *ngFor="let episode of episodeTableData">
-              <td>{{episode.releaseDate}}</td>
-              <td>{{episode.totalForPeriod | largeNumber}}</td>
-              <td *ngFor="let download of episode.downloads">{{download.value | largeNumber}}</td>
-            </tr>
-          </tbody>
-        </table>
-        <metrics-episode-page
-          [currentPage]="filter?.page"
-          [totalPages]="totalPages"
-          (pageChange)="pageChange.emit($event)"></metrics-episode-page>
-      </div>
-    </div>
-  `,
+  templateUrl: 'downloads-table.component.html',
   styleUrls: ['downloads-table.component.css']
 
 })
@@ -93,12 +38,14 @@ export class DownloadsTableComponent implements OnDestroy {
   episodeTableData: any[];
   dateRange: string[];
   bindToIntervalHourly = INTERVAL_HOURLY;
+  expanded = false;
 
   constructor(public store: Store<any>) {
 
     this.filterStoreSub = this.store.select(selectFilter).subscribe((newFilter: FilterModel) => {
       if (newFilter) {
         if (isPodcastChanged(newFilter, this.filter)) {
+          this.store.dispatch(new CastlePodcastAllTimeMetricsLoadAction({ filter: newFilter }));
           this.resetAllData();
         }
         // apply new filter to existing data so it's not showing stale data while loading
@@ -117,6 +64,9 @@ export class DownloadsTableComponent implements OnDestroy {
       const allPodcastEpisodes = filterPodcastEpisodePage(this.filter, allEpisodes);
       if (allPodcastEpisodes) {
         this.episodes = allPodcastEpisodes;
+        this.episodes.forEach(episode =>
+          this.store.dispatch(new CastleEpisodeAllTimeMetricsLoadAction({episode}))
+        )
         this.buildTableData();
       }
     });
@@ -146,12 +96,16 @@ export class DownloadsTableComponent implements OnDestroy {
   mapPodcastData() {
     const downloads = metricsData(this.filter, this.podcastMetrics, 'downloads');
     if (downloads) {
+      const expectedLength = getAmountOfIntervals(this.filter.beginDate, this.filter.endDate, this.filter.interval);
+      const totalForPeriod = getTotal(downloads);
       return {
         title: 'All Episodes',
         releaseDate: '',
         color: neutralColor,
         downloads: mapMetricsToTimeseriesData(downloads),
-        totalForPeriod: getTotal(downloads),
+        totalForPeriod: totalForPeriod,
+        avgPerIntervalForPeriod: Math.floor(totalForPeriod / expectedLength),
+        allTimeDownloads: this.podcastMetrics.allTimeDownloads,
         charted: this.podcastMetrics.charted
       };
     }
@@ -159,11 +113,13 @@ export class DownloadsTableComponent implements OnDestroy {
 
   mapEpisodeData() {
     if (this.episodes && this.episodeMetrics && this.episodeMetrics.length) {
+      const expectedLength = getAmountOfIntervals(this.filter.beginDate, this.filter.endDate, this.filter.interval);
       return this.episodeMetrics
         .map((epMetric) => {
           const downloads = metricsData(this.filter, epMetric, 'downloads');
           const episode = this.episodes.find(ep => ep.id === epMetric.id);
           if (episode && epMetric && downloads) {
+            const totalForPeriod = getTotal(downloads);
             return {
               title: episode.title,
               publishedAt: episode.publishedAt,
@@ -171,7 +127,9 @@ export class DownloadsTableComponent implements OnDestroy {
               color: episode.color,
               id: epMetric.id,
               downloads: mapMetricsToTimeseriesData(downloads),
-              totalForPeriod: getTotal(downloads),
+              totalForPeriod: totalForPeriod,
+              avgPerIntervalForPeriod: Math.floor(totalForPeriod / expectedLength),
+              allTimeDownloads: epMetric.allTimeDownloads,
               charted: epMetric.charted
             };
           }
@@ -241,5 +199,12 @@ export class DownloadsTableComponent implements OnDestroy {
 
   onChartSingleEpisode(episode) {
     this.chartSingleEpisode.emit(episode.id);
+  }
+
+  toggleExpandedReport() {
+    this.expanded = !this.expanded;
+    if (this.expanded) {
+      this.store.dispatch(new GoogleAnalyticsEventAction({gaAction: 'table-expand'}));
+    }
   }
 }

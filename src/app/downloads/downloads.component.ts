@@ -15,7 +15,7 @@ import { isPodcastChanged, isBeginDateChanged, isEndDateChanged, isIntervalChang
   template: `
     <prx-spinner *ngIf="isPodcastLoading || isEpisodeLoading" overlay="true" loadingMessage="Please wait..."></prx-spinner>
     <metrics-nav>
-      <section class="content">
+      <section class="content" *ngIf="podcasts">
         <metrics-menu-bar *ngIf="!isPodcastLoading && !isEpisodeLoading" (routeFromFilter)="routeFromFilter($event)"></metrics-menu-bar>
         <metrics-downloads-chart></metrics-downloads-chart>
         <metrics-downloads-table

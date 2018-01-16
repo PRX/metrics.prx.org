@@ -23,34 +23,42 @@ td {
   font-size: 12px;
   white-space: nowrap;
 }
+
 table.sticky th, table.sticky td {
+  min-width: 100px;
+  max-width: 100px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+table.sticky th:first-child, table.sticky td:first-child {
   min-width: 200px;
   max-width: 200px;
-  border-right: none;
-  text-overflow: ellipsis;
-  overflow: hidden;
   text-align: left;
 }
+
 .scroll-x-wrapper {
   flex-grow: 1;
-  max-width: calc(100% - 200px);
+  max-width: calc(100% - 600px);
   overflow-x: auto;
 }
 .scroll-x-wrapper > table {
   min-width: 100%;
 }
-table.scroll-x tbody td:nth-child(2) {
-  font-weight: 700;
-}
 table.scroll-x th {
   white-space: pre;
   min-width: 45px;
 }
-table.scroll-x th:nth-child(1), table.scroll-x th:nth-child(2) {
-  white-space: normal;
-  min-width: 75px;
+table.scroll-x th:first-child, table.scroll-x td:first-child {
+  border-left: none;
 }
-prx-checkbox, button {
+.table-navigation {
+  display: flex;
+  justify-content: space-between;
+}
+.table-navigation > button {
+  text-align: left;
+}
+prx-checkbox, #episodeTitle button, #podcastTitle button {
   position: relative;
   margin-top: -4px;
   top: 4px;

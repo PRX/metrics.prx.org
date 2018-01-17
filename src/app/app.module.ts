@@ -14,11 +14,14 @@ import { CoreModule } from './core';
 import { SharedModule } from './shared';
 
 import { reducers, RootState } from './ngrx/reducers';
+import { CastleEffects } from './ngrx/effects/castle.effects';
 import { CmsEffects } from './ngrx/effects/cms.effects';
-import { RoutingEffects } from './ngrx/effects/routing.effects';
 import { GoogleAnalyticsEffects } from './ngrx/effects/google-analytics.effects';
+import { RoutingEffects } from './ngrx/effects/routing.effects';
 
 import { DownloadsModule } from './downloads/downloads.module';
+import { GeoModule } from './geo/geo.module';
+import { UserAgentsModule } from './user-agents/user-agents.module';
 
 // AOT compile doesn't call reducer functions unless they are created with InjectionToken
 export function getReducers() {
@@ -43,9 +46,11 @@ export const reducerProvider = { provide: reducerToken, useFactory: getReducers 
     StoreModule.forRoot(reducerToken),
     Angulartics2Module.forRoot([ Angulartics2GoogleAnalytics ]),
     StoreRouterConnectingModule,
-    EffectsModule.forRoot([CmsEffects, RoutingEffects, GoogleAnalyticsEffects]),
+    EffectsModule.forRoot([CastleEffects, CmsEffects, RoutingEffects, GoogleAnalyticsEffects]),
     routing,
-    DownloadsModule
+    DownloadsModule,
+    GeoModule,
+    UserAgentsModule
   ],
   providers: [
     {provide: ErrorHandler, useClass: ErrorService},
@@ -56,4 +61,3 @@ export const reducerProvider = { provide: reducerToken, useFactory: getReducers 
 })
 
 export class AppModule { }
-

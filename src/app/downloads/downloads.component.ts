@@ -12,12 +12,10 @@ import * as dateUtil from '../shared/util/date';
 import { isPodcastChanged, isBeginDateChanged, isEndDateChanged, isIntervalChanged } from '../shared/util/filter.util';
 
 @Component({
-  selector: 'metrics-downloads',
   template: `
     <prx-spinner *ngIf="isPodcastLoading || isEpisodeLoading" overlay="true" loadingMessage="Please wait..."></prx-spinner>
-    <!--<section class="profile">
-    </section>-->
-    <section class="content">
+    <router-outlet name="sidenav"></router-outlet>
+    <section class="content" *ngIf="podcasts">
       <metrics-menu-bar *ngIf="!isPodcastLoading && !isEpisodeLoading" (routeFromFilter)="routeFromFilter($event)"></metrics-menu-bar>
       <metrics-downloads-chart></metrics-downloads-chart>
       <metrics-downloads-table
@@ -29,7 +27,7 @@ import { isPodcastChanged, isBeginDateChanged, isEndDateChanged, isIntervalChang
       <p class="error" *ngFor="let error of errors">{{error}}</p>
     </section>
   `,
-  styleUrls: ['downloads.component.css']
+  styleUrls: ['../shared/nav/nav-content.css', 'downloads.component.css']
 })
 export class DownloadsComponent implements OnInit, OnDestroy {
   podcastSub: Subscription;

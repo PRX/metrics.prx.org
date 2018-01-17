@@ -42,7 +42,6 @@ export class CmsEffects {
   loadPodcasts$: Observable<Action> = this.actions$
     .ofType(ACTIONS.ActionTypes.CMS_PODCASTS)
     .switchMap(() => {
-      const num = Math.random();
       return this.auth.token.first().mergeMap(token => {
         if (token) {
           return this.cms.auth.mergeMap(auth => {

@@ -1,0 +1,8 @@
+.soon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-transform: uppercase;
+  font-size: 1.2em;
+  letter-spacing: .05em;
+}

@@ -1,0 +1,21 @@
+:host {
+  padding: 40px 20px 20px 20px;
+  min-height: 600px;
+  display: flex;
+}
+
+.content {
+  flex-basis: 75%;
+  max-width: 75%;
+}
+
+@media only screen
+and (max-device-width: 767px) {
+  :host {
+    padding: 20px 10px 10px 10px;
+    display: block;
+  }
+  .content {
+    max-width: 100%;
+  }
+}

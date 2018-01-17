@@ -1,0 +1,76 @@
+<div *ngIf="podcastTableData">
+  <p *ngIf="filter?.interval === bindToIntervalHourly"><em>Hourly data is shown in your local timezone</em></p>
+
+  <div class="table-navigation">
+    <button (click)="toggleExpandedReport()" class="btn-link">
+      <p *ngIf="!expanded">Show more &gt;&gt;</p>
+      <p *ngIf="expanded">Show less &lt;&lt;</p>
+    </button>
+
+    <metrics-episode-page
+    [currentPage]="filter?.page"
+    [totalPages]="totalPages"
+    (pageChange)="pageChange.emit($event)"></metrics-episode-page>
+  </div>
+
+  <div class="table-wrapper">
+    <table class="sticky">
+      <thead>
+        <tr>
+          <th>Episode</th>
+          <th>Release Date</th>
+          <th>Total for Period</th>
+          <th>{{filter.interval.name}} Average</th>
+          <th>All-Time Downloads</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <prx-checkbox *ngIf="showPodcastToggle; else podcastTitle"
+              small [checked]="podcastTableData.charted" [color]="podcastTableData.color"
+              (change)="toggleChartPodcast($event)">{{podcastTableData.title}}</prx-checkbox>
+            <ng-template #podcastTitle>{{podcastTableData.title}}</ng-template>
+          </td>
+          <td>{{podcastTableData.releaseDate}}</td>
+          <td>{{podcastTableData.totalForPeriod | largeNumber}}</td>
+          <td>{{podcastTableData.avgPerIntervalForPeriod | largeNumber}}</td>
+          <td *ngIf="podcastTableData.allTimeDownloads">{{podcastTableData.allTimeDownloads | largeNumber}}</td>
+          <td *ngIf="!podcastTableData.allTimeDownloads"></td>
+        </tr>
+        <tr *ngFor="let episode of episodeTableData">
+          <td>
+            <prx-checkbox *ngIf="showEpisodeToggles; else episodeTitle"
+              small [checked]="episode.charted" [color]="episode.color"
+              (change)="toggleChartEpisode(episode, $event)">{{episode.title}}</prx-checkbox>
+            <ng-template #episodeTitle>
+              <button class="btn-link" (click)="onChartSingleEpisode(episode)">{{episode.title}}</button>
+            </ng-template>
+          </td>
+          <td>{{episode.releaseDate}}</td>
+          <td>{{episode.totalForPeriod | largeNumber}}</td>
+          <td>{{episode.avgPerIntervalForPeriod | largeNumber}}</td>
+          <td *ngIf="episode.allTimeDownloads">{{episode.allTimeDownloads | largeNumber}}</td>
+          <td *ngIf="!episode.allTimeDownloads"></td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="scroll-x-wrapper">
+      <table class="scroll-x" *ngIf="expanded">
+        <thead>
+          <tr>
+            <th *ngFor="let date of dateRange">{{date}}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td *ngFor="let download of podcastTableData.downloads">{{download.value | largeNumber}}</td>
+          </tr>
+          <tr *ngFor="let episode of episodeTableData">
+            <td *ngFor="let download of episode.downloads">{{download.value | largeNumber}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

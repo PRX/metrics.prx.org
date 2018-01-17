@@ -2,7 +2,7 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { PodcastModel } from '../../ngrx';
 
 @Component({
-  selector: 'metrics-podcasts-nav-list',
+  selector: 'metrics-podcast-nav-list',
   template: `
     <ul>
       <li *ngFor="let podcast of podcasts">

@@ -10,11 +10,11 @@ import { PodcastModel } from '../../ngrx';
         <button (click)="toggleOpen()" >{{ selectedPodcast?.title }}<span class="down-arrow"></span></button>
       </div>
       <div class="dropdown-content rollout">
-        <metrics-podcasts-nav-list
+        <metrics-podcast-nav-list
           [selectedPodcast]="selectedPodcast"
           [podcasts]="podcasts"
           (podcastChange)="onPodcastChange($event)">
-        </metrics-podcasts-nav-list>
+        </metrics-podcast-nav-list>
       </div>
     </div>
     <span *ngIf="podcasts?.length === 1 && selectedPodcast">{{ selectedPodcast.title }}</span>

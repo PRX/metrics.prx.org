@@ -2,12 +2,14 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { AuthGuard, DeactivateGuard, UnauthGuard,
-  ChartsModule, DatepickerModule, ImageModule, SelectModule, SpinnerModule } from 'ngx-prx-styleguide';
+  ChartsModule, DatepickerModule, ImageModule, SpinnerModule } from 'ngx-prx-styleguide';
 
 import { ChartTypeComponent } from './menu/chart-type.component';
 import { IntervalDropdownComponent } from './menu/interval-dropdown.component';
 import { MenuBarComponent } from './menu/menu-bar.component';
-import { PodcastsComponent } from './menu/podcasts.component';
+import { PodcastNavComponent } from './podcast-nav/podcast-nav.component';
+import { PodcastNavDropdownComponent } from './podcast-nav/podcast-nav-dropdown.component';
+import { PodcastNavListComponent } from './podcast-nav/podcast-nav-list.component';
 import { CustomDateRangeDropdownComponent } from './menu/date/custom-date-range-dropdown.component';
 import { DateRangeSummaryComponent } from './menu/date/date-range-summary.component';
 import { StandardDateRangeComponent } from './menu/date/standard-date-range.component';
@@ -24,7 +26,9 @@ import { LargeNumberPipe } from './pipes/large-number.pipe';
     IntervalDropdownComponent,
     LargeNumberPipe,
     MenuBarComponent,
-    PodcastsComponent,
+    PodcastNavDropdownComponent,
+    PodcastNavListComponent,
+    PodcastNavComponent,
     StandardDateRangeComponent,
     StandardDateRangeDropdownComponent
   ],
@@ -34,18 +38,16 @@ import { LargeNumberPipe } from './pipes/large-number.pipe';
     DatepickerModule,
     ImageModule,
     MenuBarComponent,
-    SelectModule,
     SpinnerModule,
     LargeNumberPipe,
     EpisodePageComponent,
-    PodcastsComponent
+    PodcastNavComponent
   ],
   imports: [
     CommonModule,
     ChartsModule,
     DatepickerModule,
     ImageModule,
-    SelectModule,
     SpinnerModule
   ],
   providers: [

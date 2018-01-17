@@ -1,0 +1,7 @@
+.dropdown-button, .open .dropdown-button {
+  border: 1px solid #f0f0f0;
+  background-color: transparent;
+}
+span {
+  color: #a3a3a3;
+}

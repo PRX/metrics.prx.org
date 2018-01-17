@@ -22,6 +22,7 @@
   height: 24px;
   margin: 6px;
   padding: 0px;
+  white-space: nowrap;
 }
 .down-arrow {
   border-left: 8px solid transparent;
@@ -43,14 +44,16 @@
 .open .dropdown-content {
   padding: 20px;
   max-height: initial;
-}
-.dropdown-content >>> li {
-  white-space: nowrap;
+  overflow-y: auto;
 }
 .open .dropdown-content.rollout {
   height: auto;
   max-height: 500px;
   transition: max-height 0.2s;
+}
+
+.dropdown-content >>> li {
+  white-space: nowrap;
 }
 
 .overlay {

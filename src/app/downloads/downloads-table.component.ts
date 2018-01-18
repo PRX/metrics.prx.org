@@ -128,7 +128,7 @@ export class DownloadsTableComponent implements OnDestroy {
               id: epMetric.id,
               downloads: mapMetricsToTimeseriesData(downloads),
               totalForPeriod: totalForPeriod,
-              avgPerIntervalForPeriod: Math.floor(totalForPeriod / expectedLength),
+              avgPerIntervalForPeriod: Math.round(totalForPeriod / expectedLength),
               allTimeDownloads: epMetric.allTimeDownloads,
               charted: epMetric.charted
             };

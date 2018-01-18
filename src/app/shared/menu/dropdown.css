@@ -15,13 +15,14 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  width: calc(100% - 12px);
+  width: 100%;
   border: 0px;
   background-color: transparent;
   color: #676767;
   height: 24px;
-  margin: 6px;
-  padding: 0px;
+  padding: 0px 6px;
+  line-height: 36px;
+  white-space: nowrap;
 }
 .down-arrow {
   border-left: 8px solid transparent;
@@ -43,8 +44,16 @@
 .open .dropdown-content {
   padding: 20px;
   max-height: initial;
-  transition: max-height;
-  transition: 0.5s;
+  overflow-y: auto;
+}
+.open .dropdown-content.rollout {
+  height: auto;
+  max-height: 500px;
+  transition: max-height 0.2s;
+}
+
+.dropdown-content >>> li {
+  white-space: nowrap;
 }
 
 .overlay {

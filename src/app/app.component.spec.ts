@@ -67,10 +67,10 @@ describe('AppComponent', () => {
   }));
 
   it(`should show podcasts when logged in`, async(() => {
-    expect(de.query(By.css('metrics-podcasts'))).toBeTruthy();
+    expect(de.query(By.css('metrics-podcast-nav'))).toBeTruthy();
     comp.store.dispatch(new ACTIONS.CmsAccountFailureAction({error: 'whatevs'}));
     fix.detectChanges();
-    expect(de.query(By.css('metrics-podcasts'))).toBeNull();
+    expect(de.query(By.css('metrics-podcast-nav'))).toBeNull();
   }));
 
   it('should show user info when logged in', async(() => {

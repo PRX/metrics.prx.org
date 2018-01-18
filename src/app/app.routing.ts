@@ -1,18 +1,15 @@
 import { ModuleWithProviders } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
-import { AuthGuard, UnauthGuard } from 'ngx-prx-styleguide';
+import { AuthGuard } from 'ngx-prx-styleguide';
 import { HomeComponent } from './home';
-import { LoginComponent } from './login';
 
 export const routes: Routes = [
-  { path: '',          component: HomeComponent,  canActivate: [AuthGuard] },
-  { path: 'login',     component: LoginComponent, canActivate: [UnauthGuard] }
+  { path: '', component: HomeComponent,  canActivate: [AuthGuard] }
 ];
 
 export const routingComponents: any[] = [
-  HomeComponent,
-  LoginComponent
+  HomeComponent
 ];
 
 export const routingProviders: any[] = [];

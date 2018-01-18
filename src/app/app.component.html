@@ -1,6 +1,6 @@
 <prx-auth [host]="authHost" [client]="authClient"></prx-auth>
 <prx-header>
-  <metrics-podcasts *ngIf="loggedIn"></metrics-podcasts>
+  <metrics-podcast-nav *ngIf="loggedIn"></metrics-podcast-nav>
   <prx-navuser *ngIf="loggedIn" [userName]="userName">
     <prx-spinner class="user-loading" inverse=true></prx-spinner>
     <prx-image *ngIf="userImageDoc" class="user-loaded" [imageDoc]="userImageDoc"></prx-image>

@@ -21,6 +21,7 @@ import * as dateUtil from '../util/date';
     </div>
     <div class="summary">
       <metrics-date-range-summary [filter]="filter"></metrics-date-range-summary>
+      <metrics-downloads-summary></metrics-downloads-summary>
     </div>
   `,
   styleUrls: ['./menu-bar.component.css']

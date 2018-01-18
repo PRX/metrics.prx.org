@@ -19,12 +19,16 @@ import { NavMenuComponent } from './nav/nav-menu.component';
 import { EpisodePageComponent } from './paging/episode-page.component';
 import { LargeNumberPipe } from './pipes/large-number.pipe';
 import { ProfileComponent } from './profile/profile.component';
+import { DownloadsSummaryContainerComponent } from './summary/downloads-summary-container.component';
+import { DownloadsSummaryItemComponent } from './summary/downloads-summary-item.component';
 
 @NgModule({
   declarations: [
     ChartTypeComponent,
     CustomDateRangeDropdownComponent,
     DateRangeSummaryComponent,
+    DownloadsSummaryContainerComponent,
+    DownloadsSummaryItemComponent,
     EpisodePageComponent,
     IntervalDropdownComponent,
     LargeNumberPipe,

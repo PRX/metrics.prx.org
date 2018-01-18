@@ -26,15 +26,16 @@ describe('DownloadsSummaryItemComponent', () => {
     });
   }));
 
-  it('should show label', () => {
+  it('should show label with text transform', () => {
     comp.label = 'some data';
     fix.detectChanges();
-    expect(de.query(By.css(.label)).nativeElement.innerText).toEqual('some data');
+    expect(de.query(By.css('.label')).nativeElement.innerText).toEqual(String('some data').toUpperCase());
   });
 
   it('should show value', () => {
+    const pipe = new LargeNumberPipe();
     comp.value = 1234567;
     fix.detectChanges();
-    expect(de.query(By.css('.value')).nativeElement.innerText).toEqual(LargeNumberPipe.transform(1234567));
+    expect(de.query(By.css('.value')).nativeElement.innerText).toEqual(pipe.transform(1234567));
   });
 });

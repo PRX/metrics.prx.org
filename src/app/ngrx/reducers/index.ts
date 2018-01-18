@@ -9,6 +9,9 @@ import { AccountState, getAccountEntity, getAccountError } from './account.reduc
 import { PodcastState, getPodcastEntities, getPodcastError } from './podcast.reducer';
 import { EpisodeState, getEpisodeEntities } from './episode.reducer';
 
+import { getMetricsProperty } from './metrics.type';
+import * as metricsUtil from '../../shared/util/metrics.util';
+
 export interface RootState {
   filter: FilterModel;
   account: AccountState;
@@ -52,6 +55,24 @@ export const selectEpisodes = createSelector(selectEpisodeEntities, entities => 
   return Object.keys(entities).map(id => entities[parseInt(id, 10)]);
 });
 
-export const selectPodcastMetrics = createFeatureSelector<PodcastMetricsModel[]>('podcastMetrics');
+export const selectPodcastMetrics = createSelector(selectAppState, (state: RootState) => state.podcastMetrics);
+export const selectPodcastMetricsFilteredAverage = createSelector(selectPodcastMetrics, selectFilter,
+  (metrics: PodcastMetricsModel[], filter: FilterModel) => {
+    // TODO: should zero value data points be included in the average? for some of these zeroes, there just is no data
+    // for episodes, including the zero data points before the release date brings the average down
+    const filteredMetrics = metricsUtil.findPodcastMetrics(filter, metrics);
+    if (filteredMetrics) {
+      const data = filteredMetrics[getMetricsProperty(filter.interval, 'downloads')];
+      return Math.round(metricsUtil.getTotal(data) / (data && data.length || 1));
+    }
+  });
+export const selectPodcastMetricsFilteredTotal = createSelector(selectPodcastMetrics, selectFilter,
+  (metrics: PodcastMetricsModel[], filter: FilterModel) => {
+    const filteredMetrics = metricsUtil.findPodcastMetrics(filter, metrics);
+    if (filteredMetrics) {
+      const data = filteredMetrics[getMetricsProperty(filter.interval, 'downloads')];
+      return metricsUtil.getTotal(data);
+    }
+  });
 
 export const selectEpisodeMetrics = createFeatureSelector<EpisodeMetricsModel[]>('episodeMetrics');

@@ -104,7 +104,7 @@ export class DownloadsTableComponent implements OnDestroy {
         color: neutralColor,
         downloads: mapMetricsToTimeseriesData(downloads),
         totalForPeriod: totalForPeriod,
-        avgPerIntervalForPeriod: Math.floor(totalForPeriod / expectedLength),
+        avgPerIntervalForPeriod: Math.round(totalForPeriod / expectedLength),
         allTimeDownloads: this.podcastMetrics.allTimeDownloads,
         charted: this.podcastMetrics.charted
       };

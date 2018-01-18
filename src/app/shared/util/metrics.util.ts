@@ -82,7 +82,7 @@ export const metricsData = (filter: FilterModel, metrics: PodcastMetricsModel | 
 };
 
 export const getTotal = (metrics: any[][]): number => {
-  if (metrics.length) {
+  if (metrics && metrics.length) {
     return metrics.map(d => d[1]).reduce((acc: number, value: number) => {
       return acc + value;
     });

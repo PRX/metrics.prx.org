@@ -4,10 +4,7 @@
   font-size: 0.8em;
   line-height: 0.8em;
 }
-.range {
+.value {
   font-size: 1.2em;
   line-height: 1.2em;
-}
-.range > span {
-  color: #a3a3a3;
 }

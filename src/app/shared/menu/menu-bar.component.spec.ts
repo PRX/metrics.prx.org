@@ -13,10 +13,9 @@ import { ChartTypeComponent } from './chart-type.component';
 import { CustomDateRangeDropdownComponent } from './date/custom-date-range-dropdown.component';
 import { DateRangeSummaryComponent } from './date/date-range-summary.component';
 import { IntervalDropdownComponent } from './interval-dropdown.component';
-import { PodcastsComponent } from './podcasts.component';
 import { StandardDateRangeDropdownComponent } from './date/standard-date-range-dropdown.component';
 import { StandardDateRangeComponent } from './date/standard-date-range.component';
-import { DatepickerModule, SelectModule } from 'ngx-prx-styleguide';
+import { DatepickerModule } from 'ngx-prx-styleguide';
 
 describe('MenuBarComponent', () => {
   let comp: MenuBarComponent;

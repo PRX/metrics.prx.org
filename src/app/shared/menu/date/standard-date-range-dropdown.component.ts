@@ -6,10 +6,10 @@ import { IntervalModel } from '../../../ngrx';
   template: `
     <div class="dropdown" [class.open]="open">
       <div class="overlay" (click)="toggleOpen()"></div>
-      <div class="dropdown-button" [class.open]="open">
+      <div class="dropdown-button">
         <button (click)="toggleOpen()" >{{ standardRange }}<span class="down-arrow"></span></button>
       </div>
-      <div class="dropdown-content">
+      <div class="dropdown-content rollout">
         <metrics-standard-date-range
           [standardRange]="standardRange" [interval]="interval"
           (standardRangeChange)="standardRangeChange.emit($event)">
@@ -24,7 +24,7 @@ import { IntervalModel } from '../../../ngrx';
       </div>
     </div>
   `,
-  styleUrls: ['../dropdown.css', './standard-date-range.component.css', './standard-date-range-dropdown.component.css']
+  styleUrls: ['../dropdown.css', './standard-date-range-dropdown.component.css']
 })
 export class StandardDateRangeDropdownComponent {
   @Input() standardRange: string;

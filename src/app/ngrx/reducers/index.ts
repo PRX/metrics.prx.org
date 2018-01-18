@@ -34,6 +34,7 @@ export const selectFilter = createSelector(selectAppState, (state: RootState) =>
 export const selectPodcastFilter = createSelector(selectFilter, (filter: FilterModel) => filter.podcastSeriesId);
 export const selectPageFilter = createSelector(selectFilter, (filter: FilterModel) => filter.page);
 export const selectIntervalFilter = createSelector(selectFilter, (filter: FilterModel) => filter.interval);
+export const selectChartTypeFilter = createSelector(selectFilter, (filter: FilterModel) => filter.chartType);
 
 export const selectAccountState = createSelector(selectAppState, (state: RootState) => state.account);
 export const selectAccount = createSelector(selectAccountState, getAccountEntity);
@@ -45,6 +46,7 @@ export const selectPodcasts = createSelector(selectPodcastEntities, entities => 
   return Object.keys(entities).map(seriesId => entities[parseInt(seriesId, 10)]);
 });
 export const selectPodcastsError = createSelector(selectPodcastState, getPodcastError);
+export const selectSelectedPodcast = createSelector(selectPodcastEntities, selectPodcastFilter, (entities, podcastSeriesId) => entities[podcastSeriesId]);
 
 export const selectEpisodeState = createSelector(selectAppState, (state: RootState) => state.episodes);
 export const selectEpisodeEntities = createSelector(selectEpisodeState, getEpisodeEntities);

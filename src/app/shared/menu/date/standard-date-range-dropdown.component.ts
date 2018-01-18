@@ -24,7 +24,7 @@ import { IntervalModel } from '../../../ngrx';
       </div>
     </div>
   `,
-  styleUrls: ['../dropdown.css', './standard-date-range.component.css', './standard-date-range-dropdown.component.css']
+  styleUrls: ['../dropdown.css', './standard-date-range-dropdown.component.css']
 })
 export class StandardDateRangeDropdownComponent {
   @Input() standardRange: string;

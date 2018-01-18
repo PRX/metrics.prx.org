@@ -5,6 +5,8 @@
   border: 0px;
   max-width: 24px;
   max-height: 36px;
+  padding: 0px;
+  margin: 6px;
 }
 
 .dropdown-content {

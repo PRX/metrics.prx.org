@@ -15,13 +15,13 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  width: calc(100% - 12px);
+  width: 100%;
   border: 0px;
   background-color: transparent;
   color: #676767;
   height: 24px;
-  margin: 6px;
-  padding: 0px;
+  padding: 0px 6px;
+  line-height: 36px;
   white-space: nowrap;
 }
 .down-arrow {

@@ -2,11 +2,10 @@
   min-width: 36px;
 }
 .dropdown-button > button {
-  border: 0px;
-  max-width: 24px;
-  max-height: 36px;
+  border: 6px solid transparent;
+  max-width: 36px;
   padding: 0px;
-  margin: 6px;
+  margin: 0px;
 }
 
 .dropdown-content {

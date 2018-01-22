@@ -66,7 +66,7 @@ export class DownloadsTableComponent implements OnDestroy {
         this.episodes = allPodcastEpisodes;
         this.episodes.forEach(episode =>
           this.store.dispatch(new CastleEpisodeAllTimeMetricsLoadAction({episode}))
-        )
+        );
         this.buildTableData();
       }
     });

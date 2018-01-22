@@ -1,23 +1,6 @@
 import { ActionTypes, CastleFilterAction } from '../actions';
-import { FilterModel } from '../';
 import { isPodcastChanged } from '../../shared/util/filter.util';
-
-export interface IntervalModel {
-  value: string;
-  name: string;
-  key: string;
-}
-
-export const INTERVAL_MONTHLY: IntervalModel = { value: '1M', name: 'Monthly', key: 'monthly' };
-export const INTERVAL_WEEKLY: IntervalModel = { value: '1w', name: 'Weekly', key: 'weekly' };
-export const INTERVAL_DAILY: IntervalModel = { value: '1d', name: 'Daily', key: 'daily' };
-export const INTERVAL_HOURLY: IntervalModel = { value: '1h', name: 'Hourly', key: 'hourly' };
-export const IntervalList = [INTERVAL_HOURLY, INTERVAL_DAILY, INTERVAL_WEEKLY, INTERVAL_MONTHLY];
-
-export const CHARTTYPE_PODCAST = 'podcast';
-export const CHARTTYPE_EPISODES = 'episodes';
-export const CHARTTYPE_STACKED = 'stacked';
-export type ChartType = 'podcast' | 'episodes' | 'stacked';
+import { IntervalModel, ChartType } from './models';
 
 export interface FilterModel {
   podcastSeriesId?: number;

@@ -5,9 +5,8 @@ import { Observable } from 'rxjs/Observable';
 import { Action, Store } from '@ngrx/store';
 import { ROUTER_NAVIGATION, RouterNavigationPayload, RouterNavigationAction } from '@ngrx/router-store';
 import { Actions, Effect } from '@ngrx/effects';
-import { FilterModel, IntervalList } from '../';
+import { FilterModel } from '../';
 import { CastleFilterAction, CastlePodcastChartToggleAction, CastleEpisodeChartToggleAction } from '../actions';
-import * as dateUtil from '../../shared/util/date';
 
 @Injectable()
 export class RoutingEffects {
@@ -16,54 +15,26 @@ export class RoutingEffects {
     .ofType(ROUTER_NAVIGATION)
     .map((action: RouterNavigationAction) => action.payload)
     .switchMap((payload: RouterNavigationPayload<RouterStateSnapshot>) => {
-      const filter: FilterModel = {};
-      if (payload.routerState.root.firstChild.params &&
-        payload.routerState.url && payload.routerState.url.length > 1) {
-        const { params } = payload.routerState.root.firstChild; // ActivatedRoute params equiv
-        const url = payload.routerState.url.split('/');
-        if (params['seriesId'] && !isNaN(parseInt(params['seriesId'], 10))) {
-          filter.podcastSeriesId = +params['seriesId'];
-        }
-        if (url.length >= 3 && url[2]) {
-          const type = url[2]; // "downloads" MetricsType
-        }
-        if (params['interval']) {
-          filter.interval = IntervalList.find(i => i.key === params['interval']);
-        }
-        if (params['chartType']) {
-          filter.chartType = params['chartType'];
-        }
-        if (params['beginDate']) {
-          filter.beginDate = new Date(params['beginDate']);
-        }
-        if (params['endDate']) {
-          filter.endDate = new Date(params['endDate']);
-        }
-        // begin and end date take precendence over standard range because "users want to use urls to pass around reports"
-        // "users want to bookmark common parameters" is mutually exclusive with the idea of using these date based urls
-        // because dates (and episodes) are temporal parameters that would change over time
-        if (filter.beginDate && filter.endDate) {
-          // maybe these shouldn't even go in the url if they are being overridden, but "all things must go in the url"
-          filter.standardRange = dateUtil.getStandardRangeForBeginEndDate(filter);
-        } else if (params['standardRange']) {
-          filter.standardRange = params['standardRange'];
-          const { beginDate, endDate } = dateUtil.getBeginEndDateFromStandardRange(filter.standardRange);
-          filter.beginDate = beginDate;
-          filter.endDate = endDate;
-        }
-        if (params['episodes']) {
-          params['episodes'].split(',').map(stringValue => +stringValue).forEach(episodeId => {
-            this.store.dispatch(new CastleEpisodeChartToggleAction({id: episodeId, seriesId: filter.podcastSeriesId, charted: true}));
-          });
-        }
-        if (params['page']) {
-          filter.page = +params['page'];
-        }
-        if (params['chartPodcast']) {
-          const charted = params['chartPodcast'] === 'true';
-          this.store.dispatch(new CastlePodcastChartToggleAction({seriesId: filter.podcastSeriesId, charted}));
-        }
+      const filter: FilterModel = {...payload.routerState};
+
+      // Please note that this is not correct, but it is temporary
+      // because of our RouterStateSerializer, what we're getting here is our custom defined RouterModel
+      // instead of the RouterNavigationPayload<RouterStateSnapShot> action payload that ROUTER_NAVIGATION expects
+      // TypeScript complains about it,
+      // but when FilterModel is replaced with our RouterModel CustomSerializer
+      // and we can combine selectors with these charted route params
+      // we won't be storing charted with the metrics entry and won't need this effect anymore, so meh
+      if (payload.routerState['episodeIds']) {
+        payload.routerState['episodeIds'].forEach(episodeId => {
+          this.store.dispatch(new CastleEpisodeChartToggleAction({id: episodeId, seriesId: filter.podcastSeriesId, charted: true}));
+        });
       }
+
+      if (payload.routerState['chartPodcast']) {
+        this.store.dispatch(new CastlePodcastChartToggleAction({
+          seriesId: filter.podcastSeriesId, charted: payload.routerState['chartPodcast']}));
+      }
+
       return Observable.of(new CastleFilterAction({filter}));
     });
 

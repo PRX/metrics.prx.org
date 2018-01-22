@@ -159,6 +159,8 @@ export const getBeginEndDateFromStandardRange = (standardRange: string): {beginD
   }
 };
 
+
+// TODO, pass begin date, end date, and interval
 export const getStandardRangeForBeginEndDate = (dateRange: FilterModel) => {
   if (dateRange.beginDate.valueOf() === beginningOfThisWeekUTC().valueOf() &&
     (dateRange.endDate.valueOf() === endOfTodayUTC().valueOf() ||

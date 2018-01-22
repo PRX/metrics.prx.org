@@ -1,7 +1,6 @@
-import { ActionTypes, AllActions, CastleEpisodeMetricsAction, CastleEpisodeChartToggleAction, CastleEpisodeAllTimeMetricsSuccessAction } from '../actions';
-import { MetricsType } from './metrics.type';
-import { IntervalModel } from './filter.reducer';
-import { getMetricsProperty } from './metrics.type';
+import { ActionTypes, AllActions,
+  CastleEpisodeMetricsAction, CastleEpisodeChartToggleAction, CastleEpisodeAllTimeMetricsSuccessAction } from '../actions';
+import { IntervalModel, MetricsType, getMetricsProperty } from './models';
 
 export interface EpisodeMetricsModel {
   seriesId: number;
@@ -53,7 +52,7 @@ export function EpisodeMetricsReducer(state: EpisodeMetricsModel[] = initialStat
         const epIdx = episodeIndex(state, id, seriesId);
         let episode: EpisodeMetricsModel, newState: EpisodeMetricsModel[];
         if (epIdx > -1) {
-          episode = {...state[epIdx], charted: action.payload.charted};
+          episode = {id, seriesId, ...state[epIdx], charted: action.payload.charted};
           newState = [...state.slice(0, epIdx), episode, ...state.slice(epIdx + 1)];
         } else {
           episode = {seriesId, id, charted: action.payload.charted};
@@ -69,9 +68,9 @@ export function EpisodeMetricsReducer(state: EpisodeMetricsModel[] = initialStat
 
         if (epIdx > -1) {
           let episode: EpisodeMetricsModel, newState: EpisodeMetricsModel[];
-          episode = {...state[epIdx], allTimeDownloads: action.payload.allTimeDownloads};
+          episode = {id, seriesId, ...state[epIdx], allTimeDownloads: action.payload.allTimeDownloads};
           newState = [...state.slice(0, epIdx), episode, ...state.slice(epIdx + 1)];
-          return newState
+          return newState;
         } else {
           return state;
         }

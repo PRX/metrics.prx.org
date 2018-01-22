@@ -1,6 +1,7 @@
 import { CastlePodcastMetricsAction, CastlePodcastAllTimeMetricsSuccessAction,
   CastlePodcastAllTimeMetricsFailureAction } from '../actions/castle.action.creator';
-import { INTERVAL_DAILY, FilterModel } from './filter.reducer';
+import { INTERVAL_DAILY } from './models';
+import { FilterModel } from './filter.reducer';
 import { PodcastMetricsReducer } from './podcast-metrics.reducer';
 
 describe('PodcastMetricsReducer', () => {
@@ -90,7 +91,7 @@ describe('PodcastMetricsReducer', () => {
   });
 
   it ('won\t alter state on all time metrics failure', () => {
-    let oldState = newState;
+    const oldState = newState;
     newState = PodcastMetricsReducer(newState,
       new CastlePodcastAllTimeMetricsFailureAction({error: 'Some error'})
     );

@@ -1,5 +1,6 @@
-import { ActionTypes, AllActions, CastlePodcastMetricsAction, CastlePodcastChartToggleAction, CastlePodcastAllTimeMetricsSuccessAction } from '../actions';
-import { getMetricsProperty } from './metrics.type';
+import { ActionTypes, AllActions,
+  CastlePodcastMetricsAction, CastlePodcastChartToggleAction, CastlePodcastAllTimeMetricsSuccessAction } from '../actions';
+import { getMetricsProperty } from './models';
 
 export interface PodcastMetricsModel {
   seriesId: number;
@@ -60,9 +61,9 @@ export function PodcastMetricsReducer(state: PodcastMetricsModel[] = initialStat
 
         if (podcastIdx > -1) {
           let podcast: PodcastMetricsModel, newState: PodcastMetricsModel[];
-          podcast = {...state[podcastIdx], allTimeDownloads: action.payload.allTimeDownloads};
+          podcast = {seriesId, ...state[podcastIdx], allTimeDownloads: action.payload.allTimeDownloads};
           newState = [...state.slice(0, podcastIdx), podcast, ...state.slice(podcastIdx + 1)];
-          return newState
+          return newState;
         } else {
           return state;
         }

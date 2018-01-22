@@ -7,8 +7,9 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { StoreModule } from '@ngrx/store';
 
 import { reducers } from '../../ngrx/reducers';
-import { FilterModel, ChartType, CHARTTYPE_PODCAST, INTERVAL_DAILY } from '../../ngrx';
-import { CastleFilterAction } from '../../ngrx/actions';
+import { RouterModel, ChartType, MetricsType,
+  CHARTTYPE_PODCAST, INTERVAL_DAILY, METRICSTYPE_DOWNLOADS } from '../../ngrx';
+import { CustomRouterNavigationAction } from '../../ngrx/actions';
 
 import { NavMenuComponent } from './nav-menu.component';
 import { ProfileComponent } from '../profile/profile.component';
@@ -28,10 +29,17 @@ describe('NavMenuComponent', () => {
   let location: Location;
   let navLinks;
 
-  const filter: FilterModel = {
+  const routerState: RouterModel = {
     podcastSeriesId: 37800,
-    interval: INTERVAL_DAILY,
-    chartType: <ChartType>CHARTTYPE_PODCAST
+    metricsType: <MetricsType>METRICSTYPE_DOWNLOADS,
+    chartType: <ChartType>CHARTTYPE_PODCAST,
+    interval: INTERVAL_DAILY
+  };
+
+  const event = {
+    id: -1, // doesn't matter
+    url: '/37800/downloads/podcast/daily',
+    urlAfterRedirects: '/37800/downloads/podcast/daily'
   };
 
   const routes: Route[] = [
@@ -73,7 +81,12 @@ describe('NavMenuComponent', () => {
       location = TestBed.get(Location);
       router.initialNavigation();
 
-      comp.store.dispatch(new CastleFilterAction({filter}));
+      // This action is normally sent out by the ngrx StoreRouterConnectingModule
+      // and _not_ by the application
+      // We're mocking it up here so our custom router reducer reducer runs and the router selector gives us the state
+      // Need to mock `event` because the Ngrx router reducer needs the RoutesRecognized event
+      // The application only uses routerState, our serialized custom RouterState
+      comp.store.dispatch(new CustomRouterNavigationAction({routerState, event}));
       fix.detectChanges();
       navLinks = de.queryAll(By.css('a'));
     });

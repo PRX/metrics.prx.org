@@ -1,4 +1,5 @@
 import { createSelector, createFeatureSelector, ActionReducerMap } from '@ngrx/store';
+import { RouterReducerState, routerReducer } from '@ngrx/router-store';
 import { FilterReducer, FilterModel } from './filter.reducer';
 import { AccountReducer } from './account.reducer';
 import { PodcastReducer } from './podcast.reducer';
@@ -8,12 +9,16 @@ import { EpisodeMetricsReducer, EpisodeMetricsModel } from './episode-metrics.re
 import { AccountState, getAccountEntity, getAccountError } from './account.reducer';
 import { PodcastState, getPodcastEntities, getPodcastError } from './podcast.reducer';
 import { EpisodeState, getEpisodeEntities } from './episode.reducer';
+import { RouterModel } from './router.serializer';
+import { CustomRouterReducer } from './router.reducer';
 
-import { getMetricsProperty } from './metrics.type';
+import { getMetricsProperty } from './models/metrics.type';
 import * as metricsUtil from '../../shared/util/metrics.util';
 
 export interface RootState {
   filter: FilterModel;
+  routerSerializer: RouterReducerState<RouterModel>;
+  router: RouterModel;
   account: AccountState;
   podcasts: PodcastState;
   episodes: EpisodeState;
@@ -24,6 +29,8 @@ export interface RootState {
 // TypeScript is complaining about this ActionReducerMap again, not sure why ugh
 export const reducers: ActionReducerMap<RootState> = {
   filter: FilterReducer,
+  routerSerializer: routerReducer,
+  router: CustomRouterReducer,
   account: AccountReducer,
   podcasts: PodcastReducer,
   episodes: EpisodeReducer,
@@ -31,7 +38,11 @@ export const reducers: ActionReducerMap<RootState> = {
   episodeMetrics: EpisodeMetricsReducer
 };
 
+export { CustomSerializer } from './router.serializer';
+
 export const selectAppState = (state: RootState) => state;
+
+export const selectRouter = createSelector(selectAppState, (state: RootState) => state.router);
 
 export const selectFilter = createSelector(selectAppState, (state: RootState) => state.filter);
 export const selectPodcastFilter = createSelector(selectFilter, (filter: FilterModel) => filter.podcastSeriesId);

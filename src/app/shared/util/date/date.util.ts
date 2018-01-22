@@ -1,6 +1,6 @@
 import * as moment from 'moment';
 import * as dateConst from './date.constants';
-import { FilterModel, IntervalModel, INTERVAL_HOURLY, INTERVAL_DAILY, INTERVAL_WEEKLY, INTERVAL_MONTHLY } from '../../../ngrx';
+import { IntervalModel, INTERVAL_HOURLY, INTERVAL_DAILY, INTERVAL_WEEKLY, INTERVAL_MONTHLY } from '../../../ngrx';
 
 export const isMoreThanXDays = (x: number, beginDate, endDate): boolean => {
   return endDate.valueOf() - beginDate.valueOf() > (1000 * 60 * 60 * 24 * x); // x days
@@ -159,56 +159,54 @@ export const getBeginEndDateFromStandardRange = (standardRange: string): {beginD
   }
 };
 
-
-// TODO, pass begin date, end date, and interval
-export const getStandardRangeForBeginEndDate = (dateRange: FilterModel) => {
-  if (dateRange.beginDate.valueOf() === beginningOfThisWeekUTC().valueOf() &&
-    (dateRange.endDate.valueOf() === endOfTodayUTC().valueOf() ||
-    (dateRange.interval === INTERVAL_HOURLY && dateRange.endDate.valueOf() === endOfTodayHourlyUTC().valueOf()))) {
+export const getStandardRangeForBeginEndDate = (beginDate: Date, endDate: Date, interval: IntervalModel) => {
+  if (beginDate.valueOf() === beginningOfThisWeekUTC().valueOf() &&
+    (endDate.valueOf() === endOfTodayUTC().valueOf() ||
+    (interval === INTERVAL_HOURLY && endDate.valueOf() === endOfTodayHourlyUTC().valueOf()))) {
     return dateConst.THIS_WEEK;
-  } else if (dateRange.beginDate.valueOf() === beginningOfLastWeekUTC().valueOf() &&
-    (dateRange.endDate.valueOf() === endOfLastWeekUTC().valueOf() ||
-    (dateRange.interval === INTERVAL_HOURLY && dateRange.endDate.valueOf() === endOfLastWeekHourlyUTC().valueOf()))) {
+  } else if (beginDate.valueOf() === beginningOfLastWeekUTC().valueOf() &&
+    (endDate.valueOf() === endOfLastWeekUTC().valueOf() ||
+    (interval === INTERVAL_HOURLY && endDate.valueOf() === endOfLastWeekHourlyUTC().valueOf()))) {
     return dateConst.LAST_WEEK;
-  } else if (dateRange.beginDate.valueOf() === beginningOfLast7DaysUTC().valueOf() &&
-    (dateRange.endDate.valueOf() === endOfTodayUTC().valueOf() ||
-    (dateRange.interval === INTERVAL_HOURLY && dateRange.endDate.valueOf() === endOfTodayHourlyUTC().valueOf()))) {
+  } else if (beginDate.valueOf() === beginningOfLast7DaysUTC().valueOf() &&
+    (endDate.valueOf() === endOfTodayUTC().valueOf() ||
+    (interval === INTERVAL_HOURLY && endDate.valueOf() === endOfTodayHourlyUTC().valueOf()))) {
     return dateConst.LAST_7_DAYS;
-  } else if (dateRange.beginDate.valueOf() === beginningOfThisWeekPlus7DaysUTC().valueOf() &&
-    (dateRange.endDate.valueOf() === endOfTodayUTC().valueOf() ||
-    (dateRange.interval === INTERVAL_HOURLY && dateRange.endDate.valueOf() === endOfTodayHourlyUTC().valueOf()))) {
+  } else if (beginDate.valueOf() === beginningOfThisWeekPlus7DaysUTC().valueOf() &&
+    (endDate.valueOf() === endOfTodayUTC().valueOf() ||
+    (interval === INTERVAL_HOURLY && endDate.valueOf() === endOfTodayHourlyUTC().valueOf()))) {
     return dateConst.THIS_WEEK_PLUS_7_DAYS;
-  } else if (dateRange.beginDate.valueOf() === beginningOfThisMonthUTC().valueOf() &&
-    (dateRange.endDate.valueOf() === endOfTodayUTC().valueOf() ||
-    (dateRange.interval === INTERVAL_HOURLY && dateRange.endDate.valueOf() === endOfTodayHourlyUTC().valueOf()))) {
+  } else if (beginDate.valueOf() === beginningOfThisMonthUTC().valueOf() &&
+    (endDate.valueOf() === endOfTodayUTC().valueOf() ||
+    (interval === INTERVAL_HOURLY && endDate.valueOf() === endOfTodayHourlyUTC().valueOf()))) {
     return dateConst.THIS_MONTH;
-  } else if (dateRange.beginDate.valueOf() === beginningOfLastMonthUTC().valueOf() &&
-    (dateRange.endDate.valueOf() === endOfLastMonthUTC().valueOf() ||
-    (dateRange.interval === INTERVAL_HOURLY && dateRange.endDate.valueOf() === endOfLastMonthHourlyUTC().valueOf()))) {
+  } else if (beginDate.valueOf() === beginningOfLastMonthUTC().valueOf() &&
+    (endDate.valueOf() === endOfLastMonthUTC().valueOf() ||
+    (interval === INTERVAL_HOURLY && endDate.valueOf() === endOfLastMonthHourlyUTC().valueOf()))) {
     return dateConst.LAST_MONTH;
-  } else if (dateRange.beginDate.valueOf() === beginningOfLast28DaysUTC().valueOf() &&
-    (dateRange.endDate.valueOf() === endOfTodayUTC().valueOf() ||
-    (dateRange.interval === INTERVAL_HOURLY && dateRange.endDate.valueOf() === endOfTodayHourlyUTC().valueOf()))) {
+  } else if (beginDate.valueOf() === beginningOfLast28DaysUTC().valueOf() &&
+    (endDate.valueOf() === endOfTodayUTC().valueOf() ||
+    (interval === INTERVAL_HOURLY && endDate.valueOf() === endOfTodayHourlyUTC().valueOf()))) {
     return dateConst.LAST_28_DAYS;
-  } else if (dateRange.beginDate.valueOf() === beginningOfLast30DaysUTC().valueOf() &&
-    (dateRange.endDate.valueOf() === endOfTodayUTC().valueOf() ||
-    (dateRange.interval === INTERVAL_HOURLY && dateRange.endDate.valueOf() === endOfTodayHourlyUTC().valueOf()))) {
+  } else if (beginDate.valueOf() === beginningOfLast30DaysUTC().valueOf() &&
+    (endDate.valueOf() === endOfTodayUTC().valueOf() ||
+    (interval === INTERVAL_HOURLY && endDate.valueOf() === endOfTodayHourlyUTC().valueOf()))) {
     return dateConst.LAST_30_DAYS;
-  } else if (dateRange.beginDate.valueOf() === beginningOfThisMonthPlusTwoMonthsUTC().valueOf() &&
-    (dateRange.endDate.valueOf() === endOfTodayUTC().valueOf() ||
-    (dateRange.interval === INTERVAL_HOURLY && dateRange.endDate.valueOf() === endOfTodayHourlyUTC().valueOf()))) {
+  } else if (beginDate.valueOf() === beginningOfThisMonthPlusTwoMonthsUTC().valueOf() &&
+    (endDate.valueOf() === endOfTodayUTC().valueOf() ||
+    (interval === INTERVAL_HOURLY && endDate.valueOf() === endOfTodayHourlyUTC().valueOf()))) {
     return dateConst.THIS_MONTH_PLUS_2_MONTHS;
-  } else if (dateRange.beginDate.valueOf() === beginningOfLast90DaysUTC().valueOf() &&
-    (dateRange.endDate.valueOf() === endOfTodayUTC().valueOf() ||
-    (dateRange.interval === INTERVAL_HOURLY && dateRange.endDate.valueOf() === endOfTodayHourlyUTC().valueOf()))) {
+  } else if (beginDate.valueOf() === beginningOfLast90DaysUTC().valueOf() &&
+    (endDate.valueOf() === endOfTodayUTC().valueOf() ||
+    (interval === INTERVAL_HOURLY && endDate.valueOf() === endOfTodayHourlyUTC().valueOf()))) {
     return dateConst.LAST_90_DAYS;
-  } else if (dateRange.beginDate.valueOf() === beginningOfThisYearUTC().valueOf() &&
-    (dateRange.endDate.valueOf() === endOfTodayUTC().valueOf() ||
-    (dateRange.interval === INTERVAL_HOURLY && dateRange.endDate.valueOf() === endOfTodayHourlyUTC().valueOf()))) {
+  } else if (beginDate.valueOf() === beginningOfThisYearUTC().valueOf() &&
+    (endDate.valueOf() === endOfTodayUTC().valueOf() ||
+    (interval === INTERVAL_HOURLY && endDate.valueOf() === endOfTodayHourlyUTC().valueOf()))) {
     return dateConst.THIS_YEAR;
-  } else if (dateRange.beginDate.valueOf() === beginningOfLast365DaysUTC().valueOf() &&
-    (dateRange.endDate.valueOf() === endOfTodayUTC().valueOf() ||
-    (dateRange.interval === INTERVAL_HOURLY && dateRange.endDate.valueOf() === endOfTodayHourlyUTC().valueOf()))) {
+  } else if (beginDate.valueOf() === beginningOfLast365DaysUTC().valueOf() &&
+    (endDate.valueOf() === endOfTodayUTC().valueOf() ||
+    (interval === INTERVAL_HOURLY && endDate.valueOf() === endOfTodayHourlyUTC().valueOf()))) {
     return dateConst.LAST_365_DAYS;
   } else {
     return dateConst.OTHER;

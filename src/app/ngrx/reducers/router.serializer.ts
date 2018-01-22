@@ -4,7 +4,7 @@ import { RouterStateSerializer } from '@ngrx/router-store';
 import { IntervalModel, IntervalList, ChartType,
   METRICSTYPE_DEMOGRAPHICS, METRICSTYPE_DOWNLOADS, METRICSTYPE_TRAFFICSOURCES, MetricsType } from './models';
 
-import { getBeginEndDateFromStandardRange, getStandardRangeForBeginEndDate } from '../../shared/util/date';
+import { getBeginEndDateFromStandardRange, getStandardRangeForBeginEndDate } from '../../shared/util/date/date.util';
 
 export interface RouterModel {
   metricsType?: MetricsType;
@@ -67,14 +67,14 @@ export class CustomSerializer implements RouterStateSerializer<RouterModel> {
         if (range && (range.beginDate.valueOf() !== router.beginDate.valueOf() ||
           range.endDate.valueOf() !== router.endDate.valueOf())) {
           // route has standard range that does not match begin/end dates
-          router.standardRange = getStandardRangeForBeginEndDate(router);
+          router.standardRange = getStandardRangeForBeginEndDate(router.beginDate, router.endDate, router.interval);
         } else {
           // standardRange matches being/end dates
           router.standardRange = params['standardRange'];
         }
       } else if (router.beginDate && router.endDate && !params['standardRange']) {
         // missing standard range, so set it from begin/end date
-        router.standardRange = getStandardRangeForBeginEndDate(router);
+        router.standardRange = getStandardRangeForBeginEndDate(router.beginDate, router.endDate, router.interval);
       } else if (params['standardRange']) {
         // missing begin and/or end dates, so set from standardRange
         router.standardRange = params['standardRange'];

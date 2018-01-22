@@ -70,7 +70,7 @@ export class MenuBarComponent implements OnInit, OnDestroy {
   adjustAndRouteFromFilter() {
     this.filter.beginDate = dateUtil.roundDateToBeginOfInterval(this.filter.beginDate, this.filter.interval);
     this.filter.endDate = dateUtil.roundDateToEndOfInterval(this.filter.endDate, this.filter.interval);
-    this.filter.standardRange = dateUtil.getStandardRangeForBeginEndDate(this.filter);
+    this.filter.standardRange = dateUtil.getStandardRangeForBeginEndDate(this.filter.beginDate, this.filter.endDate, this.filter.interval);
     this.routeFromFilter.emit(this.filter);
   }
 

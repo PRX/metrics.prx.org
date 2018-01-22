@@ -10,8 +10,8 @@ import { PodcastNavListComponent } from './podcast-nav-list.component';
 
 import { reducers, RootState } from '../../ngrx/reducers';
 
-import { CastleFilterAction, CmsPodcastsSuccessAction } from '../../ngrx/actions';
-import { FilterModel } from '../../ngrx';
+import { CustomRouterNavigationAction, CmsPodcastsSuccessAction } from '../../ngrx/actions';
+import { RouterModel } from '../../ngrx';
 
 describe('PodcastNavComponent', () => {
   let store: Store<RootState>;
@@ -32,8 +32,13 @@ describe('PodcastNavComponent', () => {
       feederId: '72'
     }
   ];
-  const filter: FilterModel = {
+  const routerState: RouterModel = {
     podcastSeriesId: podcasts[0].seriesId
+  };
+  const event = {
+    id: -1,
+    url: '/37800',
+    urlAfterRedirects: '/37800'
   };
 
   beforeEach(async(() => {
@@ -58,7 +63,7 @@ describe('PodcastNavComponent', () => {
 
       store = TestBed.get(Store);
 
-      store.dispatch(new CastleFilterAction({filter}));
+      store.dispatch(new CustomRouterNavigationAction({routerState, event}));
       store.dispatch(new CmsPodcastsSuccessAction({podcasts: podcasts.slice(0, 1)}));
     });
   }));

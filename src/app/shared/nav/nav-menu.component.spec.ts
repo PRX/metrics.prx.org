@@ -85,7 +85,7 @@ describe('NavMenuComponent', () => {
       // and _not_ by the application
       // We're mocking it up here so our custom router reducer reducer runs and the router selector gives us the state
       // Need to mock `event` because the Ngrx router reducer needs the RoutesRecognized event
-      // The application only uses routerState, our serialized custom RouterState
+      // The application only uses routerState, our serialized custom RouterModel
       comp.store.dispatch(new CustomRouterNavigationAction({routerState, event}));
       fix.detectChanges();
       navLinks = de.queryAll(By.css('a'));

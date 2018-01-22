@@ -43,9 +43,9 @@ export { CustomSerializer } from './router.serializer';
 export const selectAppState = (state: RootState) => state;
 
 export const selectRouter = createSelector(selectAppState, (state: RootState) => state.router);
+export const selectPodcastRoute = createSelector(selectRouter, (routerState: RouterModel) => routerState.podcastSeriesId);
 
 export const selectFilter = createSelector(selectAppState, (state: RootState) => state.filter);
-export const selectPodcastFilter = createSelector(selectFilter, (filter: FilterModel) => filter.podcastSeriesId);
 export const selectPageFilter = createSelector(selectFilter, (filter: FilterModel) => filter.page);
 export const selectIntervalFilter = createSelector(selectFilter, (filter: FilterModel) => filter.interval);
 export const selectChartTypeFilter = createSelector(selectFilter, (filter: FilterModel) => filter.chartType);
@@ -60,7 +60,7 @@ export const selectPodcasts = createSelector(selectPodcastEntities, entities => 
   return Object.keys(entities).map(seriesId => entities[parseInt(seriesId, 10)]);
 });
 export const selectPodcastsError = createSelector(selectPodcastState, getPodcastError);
-export const selectSelectedPodcast = createSelector(selectPodcastEntities, selectPodcastFilter, (entities, podcastSeriesId) => entities[podcastSeriesId]);
+export const selectSelectedPodcast = createSelector(selectPodcastEntities, selectPodcastRoute, (entities, podcastSeriesId) => entities[podcastSeriesId]);
 
 export const selectEpisodeState = createSelector(selectAppState, (state: RootState) => state.episodes);
 export const selectEpisodeEntities = createSelector(selectEpisodeState, getEpisodeEntities);

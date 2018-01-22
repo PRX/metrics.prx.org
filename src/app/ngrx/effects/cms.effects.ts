@@ -13,7 +13,8 @@ import { AuthService } from 'ngx-prx-styleguide';
 import { CmsService, HalDoc } from '../../core';
 import { getColor } from '../../shared/util/chart.util';
 
-import { AccountModel, PodcastModel, EpisodeModel, EPISODE_PAGE_SIZE, EpisodeMetricsModel } from '../';
+import { AccountModel, PodcastModel, EpisodeModel, EPISODE_PAGE_SIZE, EpisodeMetricsModel,
+  CHARTTYPE_PODCAST, INTERVAL_DAILY, METRICSTYPE_DOWNLOADS } from '../';
 import { selectEpisodeMetrics } from '../reducers';
 import * as ACTIONS from '../actions';
 
@@ -52,6 +53,11 @@ export class CmsEffects {
             } else {
               const params = {per: count, filters: 'v4', zoom: 'prx:distributions'};
               return auth.followItems('prx:series', params).mergeMap(docs => {
+                if (!this.routeParams || !this.routeParams['seriesId']) {
+                  // Default select the first podcast by navigating to it. (It'll be the last one that was updated)
+                  this.router.navigate([docs[0]['id'], METRICSTYPE_DOWNLOADS, CHARTTYPE_PODCAST, INTERVAL_DAILY.key]);
+                }
+
                 return Observable.forkJoin(docs.map(d => this.docToPodcast(d)))
                   .map(podcasts => podcasts.filter(p => p && p.feederId))
                   .map(podcasts => new ACTIONS.CmsPodcastsSuccessAction({podcasts}));
@@ -70,7 +76,7 @@ export class CmsEffects {
     .map((action: ACTIONS.CmsPodcastEpisodePageAction) => action.payload)
     .switchMap((payload: ACTIONS.CmsEpisodePagePayload) => {
       const pageNum = payload.page;
-      const seriesId = payload.podcast.seriesId;
+      const seriesId = payload.seriesId;
       const seriesParams = {id: seriesId, zoom: false};
       const storyParams = {
         page: pageNum,

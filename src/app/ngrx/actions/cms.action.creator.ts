@@ -41,7 +41,7 @@ export class CmsPodcastsFailureAction implements Action {
 }
 
 export interface CmsEpisodePagePayload {
-  podcast: PodcastModel;
+  seriesId: number;
   page: number;
 }
 

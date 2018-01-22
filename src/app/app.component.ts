@@ -5,8 +5,8 @@ import { Subscription } from 'rxjs/Subscription';
 import { Angulartics2GoogleAnalytics } from 'angulartics2';
 import { HalDoc } from './core';
 import { Env } from './core/core.env';
-import { AccountModel, PodcastModel, FilterModel } from './ngrx';
-import { selectAccount, selectAccountError, selectPodcasts, selectFilter } from './ngrx/reducers';
+import { AccountModel, RouterModel } from './ngrx';
+import { selectAccount, selectAccountError, selectRouter } from './ngrx/reducers';
 import * as ACTIONS from './ngrx/actions';
 
 @Component({
@@ -25,11 +25,8 @@ export class AppComponent implements OnInit, OnDestroy {
   userName: string;
   userImageDoc: HalDoc;
 
-  podcastStoreSub: Subscription;
-  podcasts: PodcastModel[];
-  filterStoreSub: Subscription;
-  filteredPodcastSeriesId: number;
-  episodePage: number;
+  routerSub: Subscription;
+  routerState: RouterModel;
 
   constructor(
     public store: Store<any>,
@@ -57,29 +54,15 @@ export class AppComponent implements OnInit, OnDestroy {
       }
     });
 
-    this.podcastStoreSub = this.store.select(selectPodcasts).subscribe((state: PodcastModel[]) => {
-      this.podcasts = state;
-
-      if (this.podcasts && this.podcasts.length > 0) {
-        if (!this.filterStoreSub) {
-          this.filterStoreSub = this.store.select(selectFilter).subscribe((newFilter: FilterModel) => {
-            const newPodcastSeriesId = newFilter.podcastSeriesId;
-            const newEpisodePage = newFilter.page;
-            if (newPodcastSeriesId && newPodcastSeriesId !== this.filteredPodcastSeriesId ||
-                newEpisodePage !== this.episodePage) {
-              const selectedPodcast = this.podcasts.find(p => p.seriesId === newPodcastSeriesId);
-              if (selectedPodcast) {
-                this.getEpisodes(selectedPodcast, newEpisodePage ? newEpisodePage : 1);
-              }
-            }
-            this.filteredPodcastSeriesId = newPodcastSeriesId;
-            this.episodePage = newEpisodePage;
-          });
-        }
-
-        // Default select the first one by navigating to it. (It'll be the last one that was updated)
-        if (!this.filteredPodcastSeriesId) {
-          this.router.navigate([this.podcasts[0].seriesId, 'downloads', 'podcast', 'daily']);
+    this.routerSub = this.store.select(selectRouter).subscribe((newRouterState: RouterModel) => {
+      const newPodcastSeriesId = newRouterState.podcastSeriesId;
+      const newEpisodePage = newRouterState.page;
+      if (!this.routerState ||
+        newPodcastSeriesId !== this.routerState.podcastSeriesId ||
+        newEpisodePage !== this.routerState.page) {
+        this.routerState = newRouterState;
+        if (newPodcastSeriesId && newEpisodePage) {
+          this.getEpisodes(newPodcastSeriesId, newEpisodePage || 1);
         }
       }
     });
@@ -88,11 +71,9 @@ export class AppComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     if (this.accountStoreSub) { this.accountStoreSub.unsubscribe(); }
     if (this.accountStoreErrorSub) { this.accountStoreErrorSub.unsubscribe(); }
-    if (this.podcastStoreSub) { this.podcastStoreSub.unsubscribe(); }
-    if (this.filterStoreSub) { this.filterStoreSub.unsubscribe(); }
   }
 
-  getEpisodes(podcast: PodcastModel, page: number) {
-    this.store.dispatch(new ACTIONS.CmsPodcastEpisodePageAction({podcast, page}));
+  getEpisodes(seriesId: number, page: number) {
+    this.store.dispatch(new ACTIONS.CmsPodcastEpisodePageAction({seriesId, page}));
   }
 }

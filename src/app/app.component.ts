@@ -54,6 +54,7 @@ export class AppComponent implements OnInit, OnDestroy {
       }
     });
 
+    // getEpisodes/CmsPodcastEpisodePageAction should actually happen as a result of CmsPodcastsSuccessAction
     this.routerSub = this.store.select(selectRouter).subscribe((newRouterState: RouterModel) => {
       const newPodcastSeriesId = newRouterState.podcastSeriesId;
       const newEpisodePage = newRouterState.page;

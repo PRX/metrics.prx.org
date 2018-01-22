@@ -1,8 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { Router } from '@angular/router';
 import { provideMockActions } from '@ngrx/effects/testing';
-import { StoreModule } from '@ngrx/store';
+import { StoreModule, Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
 import { ReplaySubject } from 'rxjs/ReplaySubject';
 
@@ -12,8 +11,8 @@ import { CmsService } from '../../core';
 
 import { reducers } from '../reducers';
 import * as ACTIONS from '../actions';
-import { CHARTTYPE_PODCAST, INTERVAL_DAILY, METRICSTYPE_DOWNLOADS } from '../';
 import { CmsEffects } from './cms.effects';
+import {RouteEpisodesChartedAction} from "../actions/router.action.creator";
 
 describe('CmsEffects', () => {
   const authToken = new ReplaySubject<string>(1);
@@ -23,7 +22,7 @@ describe('CmsEffects', () => {
   let expect$: Observable<any>;
   let cms: MockHalService;
   let auth: MockHalDoc;
-  let router: Router;
+  let store: Store<any>;
 
   beforeEach(() => {
     authToken.next('some-auth-token');
@@ -46,10 +45,9 @@ describe('CmsEffects', () => {
       ]
     });
     effects = TestBed.get(CmsEffects);
-    router = TestBed.get(Router);
-    spyOn(effects, 'routeWithEpisodeCharted').and.stub();
+    store = TestBed.get(Store);
     spyOn(effects, 'getEpisodeColor').and.returnValue('#fff');
-    spyOn(router, 'navigate').and.callThrough();
+    spyOn(store, 'dispatch').and.callThrough();
   });
 
   describe('loadAccount', () => {
@@ -111,7 +109,7 @@ describe('CmsEffects', () => {
       actions$ = hot('-a', {a: action});
       expect$ = cold('-r', {r: completion});
       expect(effects.loadPodcasts$).toBeObservable(expect$);
-      expect(router.navigate).toHaveBeenCalledWith([111, METRICSTYPE_DOWNLOADS, CHARTTYPE_PODCAST, INTERVAL_DAILY.key]);
+      expect(store.dispatch).toHaveBeenCalledWith(new ACTIONS.RouteSeriesAction({podcastSeriesId: 111}));
     });
 
     it('fails to load podcasts', () => {
@@ -191,7 +189,7 @@ describe('CmsEffects', () => {
       const action = new ACTIONS.CmsPodcastEpisodePageAction({seriesId, page: 1});
       actions$ = hot('-a', {a: action});
       effects.loadEpisodes$.subscribe(() => {
-        expect(effects.routeWithEpisodeCharted).toHaveBeenCalledWith([121, 122, 123, 124, 125]);
+        expect(store.dispatch).toHaveBeenCalledWith(new RouteEpisodesChartedAction({episodeIds: [121, 122, 123, 124, 125]}));
       });
     });
 
@@ -205,7 +203,7 @@ describe('CmsEffects', () => {
       effects.episodeMetrics = [{seriesId: 111, id: 124, charted: true}];
       actions$ = hot('-a', {a: action});
       effects.loadEpisodes$.subscribe(() => {
-        expect(effects.routeWithEpisodeCharted).not.toHaveBeenCalled();
+        expect(store.dispatch).not.toHaveBeenCalled();
       });
     });
 

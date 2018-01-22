@@ -6,7 +6,8 @@ import { CastlePodcastAllTimeMetricsLoadAction, CastlePodcastAllTimeMetricsSucce
   CastleFilterAction, CastlePodcastChartToggleAction, CastleEpisodeChartToggleAction,
   CastlePodcastMetricsAction, CastleEpisodeMetricsAction } from './castle.action.creator';
 import { GoogleAnalyticsEventAction } from './google-analytics.action.creator';
-import { CustomRouterNavigationAction } from './router.action.creator';
+import { CustomRouterNavigationAction,
+  RouteEpisodesChartedAction, RouteSeriesAction, RouteAdvancedAction } from './router.action.creator';
 
 export type AllActions
   = CmsAccountAction
@@ -29,7 +30,10 @@ export type AllActions
   | CastleEpisodeAllTimeMetricsFailureAction
   | RouterNavigationAction
   | GoogleAnalyticsEventAction
-  | CustomRouterNavigationAction;
+  | CustomRouterNavigationAction
+  | RouteEpisodesChartedAction
+  | RouteSeriesAction
+  | RouteAdvancedAction;
 
 export { ActionTypes } from './action.types';
 export { CmsAccountSuccessPayload, CmsAccountSuccessAction,
@@ -50,4 +54,7 @@ export { CastleFilterPayload, CastleFilterAction,
   CastleEpisodeMetricsPayload, CastleEpisodeMetricsAction,
   CastleEpisodeChartTogglePayload, CastleEpisodeChartToggleAction} from './castle.action.creator';
 export { GoogleAnalyticsEventPayload, GoogleAnalyticsEventAction } from './google-analytics.action.creator';
-export { CustomRouterNavigationPayload, CustomRouterNavigationAction } from './router.action.creator';
+export { CustomRouterNavigationPayload, CustomRouterNavigationAction,
+  RouteEpisodesChartedPayload, RouteEpisodesChartedAction,
+  RouteSeriesPayload, RouteSeriesAction,
+  RouteAdvancedPayload, RouteAdvancedAction } from './router.action.creator';

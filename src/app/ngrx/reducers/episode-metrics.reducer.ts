@@ -88,7 +88,7 @@ export function EpisodeMetricsReducer(state: EpisodeMetricsModel[] = initialStat
           const epIdx = episodeIndex(newState, id, podcastSeriesId);
           if (epIdx > -1) {
             episode = {id, seriesId: podcastSeriesId, ...newState[epIdx], charted: true};
-            newState = [...newState.slice(0, epIdx), episode, ...state.slice(epIdx + 1)];
+            newState = [...newState.slice(0, epIdx), episode, ...newState.slice(epIdx + 1)];
           } else {
             episode = {id, seriesId: podcastSeriesId, charted: true};
             newState = [episode, ...newState];

@@ -1,50 +1,33 @@
 import { Injectable } from '@angular/core';
-import { RouterStateSnapshot, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import 'rxjs/add/operator/switchMap';
 import { Observable } from 'rxjs/Observable';
 import { Action, Store } from '@ngrx/store';
-import { ROUTER_NAVIGATION, RouterNavigationPayload, RouterNavigationAction } from '@ngrx/router-store';
+import { ROUTER_NAVIGATION } from '@ngrx/router-store';
 import { Actions, Effect } from '@ngrx/effects';
-import { FilterModel, RouterModel, ChartType, MetricsType,
+import { RouterModel, ChartType, MetricsType,
   CHARTTYPE_PODCAST, INTERVAL_DAILY, METRICSTYPE_DOWNLOADS } from '../';
 import { ActionTypes } from '../actions';
 import { selectRouter } from '../reducers';
-import { CastleFilterAction, CastlePodcastChartToggleAction, CastleEpisodeChartToggleAction } from '../actions';
-import { RouteSeriesAction, RouteSeriesPayload } from '../actions';
-import {RouteEpisodesChartedAction, RouteEpisodesChartedPayload} from "../actions/router.action.creator";
+import { CustomRouterNavigationAction, CustomRouterNavigationPayload,
+  RouteSeriesAction, RouteSeriesPayload,
+  RouteEpisodesChartedAction, RouteEpisodesChartedPayload } from '../actions';
 
 @Injectable()
 export class RoutingEffects {
   routerState: RouterModel;
 
   @Effect()
-  filterFromRoute$: Observable<Action> = this.actions$
+  customRouterNavigation$: Observable<Action> = this.actions$
     .ofType(ROUTER_NAVIGATION)
-    .map((action: RouterNavigationAction) => action.payload)
-    .switchMap((payload: RouterNavigationPayload<RouterStateSnapshot>) => {
-      const filter: FilterModel = {...payload.routerState};
+    .map((action: CustomRouterNavigationAction) => action.payload)
+    .switchMap((payload: CustomRouterNavigationPayload) => {
+      const routerState: RouterModel = {...payload.routerState};
 
-      // Please note that this is not correct, but it is temporary
-      // because of our RouterStateSerializer, what we're getting here is our custom defined RouterModel
-      // instead of the RouterNavigationPayload<RouterStateSnapShot> action payload that ROUTER_NAVIGATION expects
-      // TypeScript complains about it,
-      // but when FilterModel is replaced with our RouterModel CustomSerializer
-      // and we can combine selectors with these charted route params
-      // we won't be storing charted with the metrics entry and won't need this effect anymore, so meh
-      if (payload.routerState['episodeIds']) {
-        payload.routerState['episodeIds'].forEach(episodeId => {
-          this.store.dispatch(new CastleEpisodeChartToggleAction({id: episodeId, seriesId: filter.podcastSeriesId, charted: true}));
-        });
-      }
+      console.log('Routing effect', routerState);
 
-      if (payload.routerState['chartPodcast']) {
-        this.store.dispatch(new CastlePodcastChartToggleAction({
-          seriesId: filter.podcastSeriesId, charted: payload.routerState['chartPodcast']}));
-      }
-
-      // eventually will get rid of FilterModel, but until then
-      // we are still creating the FilterModel state from the route, but because of the serializer the types match up
-      return Observable.of(new CastleFilterAction({filter}));
+      // map to an action with our CUSTOM_ROUTER_NAVIGATION type
+      return Observable.of(new CustomRouterNavigationAction(payload));
     });
 
   @Effect({dispatch: false})
@@ -86,25 +69,25 @@ export class RoutingEffects {
     }
 
     const params = {};
-    if (newRouteParams.page) {
-      params['page'] = newRouteParams.page;
+    if (combinedRouterState.page) {
+      params['page'] = combinedRouterState.page;
     }
-    if (newRouteParams.standardRange) {
-      params['standardRange'] = newRouteParams.standardRange;
+    if (combinedRouterState.standardRange) {
+      params['standardRange'] = combinedRouterState.standardRange;
     }
-    if (newRouteParams.beginDate) {
-      params['beginDate'] = newRouteParams.beginDate;
+    if (combinedRouterState.beginDate) {
+      params['beginDate'] = combinedRouterState.beginDate;
     }
-    if (newRouteParams.endDate) {
-      params['endDate'] = newRouteParams.endDate;
+    if (combinedRouterState.endDate) {
+      params['endDate'] = combinedRouterState.endDate;
     }
-    if (newRouteParams.chartPodcast !== undefined) {
-      params['chartPodcast'] = newRouteParams.chartPodcast;
+    if (combinedRouterState.chartPodcast !== undefined) {
+      params['chartPodcast'] = combinedRouterState.chartPodcast;
     } else if (combinedRouterState.metricsType === METRICSTYPE_DOWNLOADS) {
       params['chartPodcast'] = true; // true is the default for downloads
     }
-    if (newRouteParams.episodeIds) {
-      params['episodes'] = newRouteParams.episodeIds.join(',');
+    if (combinedRouterState.episodeIds) {
+      params['episodes'] = combinedRouterState.episodeIds.join(',');
     }
 
     this.router.navigate([

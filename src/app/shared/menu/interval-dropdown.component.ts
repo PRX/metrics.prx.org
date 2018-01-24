@@ -1,5 +1,5 @@
 import { Component, Input, Output, EventEmitter, OnChanges } from '@angular/core';
-import { FilterModel, IntervalModel,
+import { RouterModel, IntervalModel,
   INTERVAL_MONTHLY, INTERVAL_WEEKLY, INTERVAL_DAILY, INTERVAL_HOURLY } from '../../ngrx';
 import * as dateUtil from '../util/date';
 
@@ -25,7 +25,7 @@ import * as dateUtil from '../util/date';
   styleUrls: ['./dropdown.css', './interval-dropdown.component.css']
 })
 export class IntervalDropdownComponent implements OnChanges {
-  @Input() filter: FilterModel;
+  @Input() routerState: RouterModel;
   @Output() intervalChange = new EventEmitter<IntervalModel>();
   intervalOptions: IntervalModel[] = [];
   selectedInterval: IntervalModel;
@@ -33,8 +33,8 @@ export class IntervalDropdownComponent implements OnChanges {
 
 
   ngOnChanges() {
-    if (this.filter && this.filter.interval && this.filter.beginDate && this.filter.endDate) {
-      this.selectedInterval = this.filter.interval;
+    if (this.routerState && this.routerState.interval && this.routerState.beginDate && this.routerState.endDate) {
+      this.selectedInterval = this.routerState.interval;
       this.intervalOptions = this.getIntervalOptions();
     }
   }
@@ -45,7 +45,7 @@ export class IntervalDropdownComponent implements OnChanges {
      40 days at 1h
      2.7 years at 1d
      */
-    if (dateUtil.isMoreThanXDays(40, this.filter.beginDate, this.filter.endDate)) {
+    if (dateUtil.isMoreThanXDays(40, this.routerState.beginDate, this.routerState.endDate)) {
       return [INTERVAL_DAILY, INTERVAL_WEEKLY, INTERVAL_MONTHLY];
     } else {
       return [INTERVAL_HOURLY, INTERVAL_DAILY, INTERVAL_WEEKLY, INTERVAL_MONTHLY];
@@ -57,7 +57,7 @@ export class IntervalDropdownComponent implements OnChanges {
   }
 
   onIntervalChange(value: IntervalModel) {
-    if (value) {
+    if (value && value !== this.routerState.interval) {
       this.intervalChange.emit(value);
     }
   }

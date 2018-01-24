@@ -98,7 +98,7 @@ describe('metrics util', () => {
     }
   ];
 
-  it('should get podcast that matches filter or nothing if no match', () => {
+  it('should get podcast that matches routerState or nothing if no match', () => {
     expect(filterPodcasts(filter, podcasts).seriesId).toEqual(37800);
     const emptyFilter = {};
     expect(filterPodcasts(emptyFilter, podcasts)).toBeUndefined();
@@ -112,11 +112,11 @@ describe('metrics util', () => {
     expect(filterAllPodcastEpisodes(filter, episodes).length).toEqual(2);
   });
 
-  it('should find podcast metrics matching filter', () => {
+  it('should find podcast metrics matching routerState', () => {
     expect(findPodcastMetrics(filter, podcastMetrics).seriesId).toEqual(37800);
   });
 
-  it('should get episode metrics matching filter', () => {
+  it('should get episode metrics matching routerState', () => {
     expect(filterEpisodeMetricsPage(filter, episodeMetrics, 'downloads').length).toEqual(1);
   });
 
@@ -129,7 +129,7 @@ describe('metrics util', () => {
     expect(getTotal(metrics)).toEqual(52522 + 162900 + 46858 + 52522 + 162900 + 46858 + 52522 + 162900 + 46858 + 52522 + 162900 + 46858);
   });
 
-  it('should filter metrics by date', () => {
+  it('should routerState metrics by date', () => {
     expect(filterMetricsByDate(filter.beginDate, filter.endDate, filter.interval, metrics).length).toEqual(7);
   });
 });

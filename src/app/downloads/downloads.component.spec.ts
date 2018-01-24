@@ -124,7 +124,7 @@ describe('DownloadsComponent', () => {
       expect(comp.store.dispatch).toHaveBeenCalled();
     });
 
-    it('should reload podcast and episode data if filter parameters change', () => {
+    it('should reload podcast and episode data if routerState parameters change', () => {
       const beginDate = new Date();
       comp.store.dispatch(new CastleFilterAction({filter: {page: 1}}));
       comp.store.dispatch(new CmsPodcastEpisodePageSuccessAction({episodes:

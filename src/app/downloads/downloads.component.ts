@@ -1,22 +1,25 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs/Subscription';
 import { CastleService } from '../core';
-import { CastleFilterAction, CastlePodcastMetricsAction, CastleEpisodeMetricsAction,
+import { CastlePodcastMetricsAction, CastleEpisodeMetricsAction,
   GoogleAnalyticsEventAction, CastleEpisodeChartToggleAction } from '../ngrx/actions';
-import { FilterModel, EpisodeModel, PodcastModel, INTERVAL_DAILY, EPISODE_PAGE_SIZE } from '../ngrx';
-import { selectFilter, selectEpisodes, selectPodcasts } from '../ngrx/reducers';
+import { RouterModel, EpisodeModel, PodcastModel, ChartType, MetricsType,
+  CHARTTYPE_PODCAST, INTERVAL_DAILY, EPISODE_PAGE_SIZE, METRICSTYPE_DOWNLOADS, getMetricsProperty } from '../ngrx';
+import { selectRouter, selectEpisodes, selectPodcasts } from '../ngrx/reducers';
 import { filterPodcastEpisodePage } from '../shared/util/metrics.util';
 import * as dateUtil from '../shared/util/date';
 import { isPodcastChanged, isBeginDateChanged, isEndDateChanged, isIntervalChanged } from '../shared/util/filter.util';
 
 @Component({
   template: `
-    <prx-spinner *ngIf="isPodcastLoading || isEpisodeLoading" overlay="true" loadingMessage="Please wait..."></prx-spinner>
+    <prx-spinner *ngIf="isPodcastLoading || isEpisodeLoading" overlay="true"
+                 loadingMessage="Please wait..."></prx-spinner>
     <router-outlet name="sidenav"></router-outlet>
     <section class="content" *ngIf="podcasts">
-      <metrics-menu-bar *ngIf="!isPodcastLoading && !isEpisodeLoading" (routeFromFilter)="routeFromFilter($event)"></metrics-menu-bar>
+      <metrics-menu-bar *ngIf="!isPodcastLoading && !isEpisodeLoading"
+                        (routeFromFilter)="routeFromModel($event)"></metrics-menu-bar>
       <metrics-downloads-chart></metrics-downloads-chart>
       <metrics-downloads-table
         [totalPages]="totalPages" (pageChange)="onPageChange($event)"
@@ -36,79 +39,69 @@ export class DownloadsComponent implements OnInit, OnDestroy {
   episodeSub: Subscription;
   pageEpisodes: EpisodeModel[];
   totalPages: number;
-  filterSub: Subscription;
-  filter: FilterModel;
+  routerSub: Subscription;
+  routerState: RouterModel;
   updatePodcast: boolean;
   updateEpisodes: boolean;
   isPodcastLoading = true;
   isEpisodeLoading = true;
   errors: string[] = [];
-  chartPodcast: boolean;
-  chartedEpisodes: number[];
 
   constructor(private castle: CastleService,
               public store: Store<any>,
-              private router: Router,
-              private route: ActivatedRoute) {
-    route.params.subscribe(params => {
-      if (params['chartPodcast']) {
-        this.chartPodcast = params['chartPodcast'] === 'true';
-      }
-      if (params['episodes']) {
-        this.chartedEpisodes = params['episodes'].split(',').map(id => +id);
-      }
-    });
-  }
+              private router: Router) {}
 
   ngOnInit() {
     this.toggleLoading(true, true);
 
-    this.subPodcastsAndFilter();
+    this.subPodcastsAndRoute();
   }
 
-  subPodcastsAndFilter() {
+  subPodcastsAndRoute() {
     this.podcastSub = this.store.select(selectPodcasts).subscribe((podcasts: PodcastModel[]) => {
       if (podcasts && podcasts.length) {
         this.podcasts = podcasts;
 
-        if (!this.filterSub) {
-          this.filterSub = this.store.select(selectFilter).subscribe((newFilter: FilterModel) => {
-            if (!this.filter) {
-              this.setDefaultFilterFromRoute(newFilter);
+        if (!this.routerSub) {
+          this.routerSub = this.store.select(selectRouter).subscribe((newRouterState: RouterModel) => {
+            if (!this.routerState) {
+              this.setDefaultRouteFromExistingRoute(newRouterState);
               this.updatePodcast = this.updateEpisodes = true;
               if (!this.episodeSub) {
                 this.subEpisodes();
               }
               this.toggleLoading(true, true);
             }
-            this.filter.chartType = newFilter.chartType;
+            this.routerState.chartType = newRouterState.chartType;
+            this.routerState.chartPodcast = newRouterState.chartPodcast;
+            this.routerState.episodeIds = newRouterState.episodeIds;
 
-            if (isPodcastChanged(newFilter, this.filter)) {
-              this.filter.podcastSeriesId = newFilter.podcastSeriesId;
+            if (isPodcastChanged(newRouterState, this.routerState)) {
+              this.routerState.podcastSeriesId = newRouterState.podcastSeriesId;
               this.resetEpisodes();
               this.toggleLoading(true, true);
               this.updatePodcast = this.updateEpisodes = true;
             }
-            if (newFilter.page !== this.filter.page) {
-              this.filter.page = newFilter.page;
+            if (newRouterState.page !== this.routerState.page) {
+              this.routerState.page = newRouterState.page;
               this.resetEpisodes();
               this.updateEpisodes = true;
             }
-            if (isBeginDateChanged(newFilter, this.filter)) {
-              this.filter.beginDate = newFilter.beginDate;
+            if (isBeginDateChanged(newRouterState, this.routerState)) {
+              this.routerState.beginDate = newRouterState.beginDate;
               this.updatePodcast = this.updateEpisodes = true;
             }
-            if (isEndDateChanged(newFilter, this.filter)) {
-              this.filter.endDate = newFilter.endDate;
+            if (isEndDateChanged(newRouterState, this.routerState)) {
+              this.routerState.endDate = newRouterState.endDate;
               this.updatePodcast = this.updateEpisodes = true;
             }
-            if (isIntervalChanged(newFilter, this.filter)) {
-              this.filter.interval = newFilter.interval;
+            if (isIntervalChanged(newRouterState, this.routerState)) {
+              this.routerState.interval = newRouterState.interval;
               this.updatePodcast = this.updateEpisodes = true;
             }
 
-            if (this.updatePodcast && this.filter.podcastSeriesId) {
-              this.podcast = this.podcasts.find(p => p.seriesId === this.filter.podcastSeriesId);
+            if (this.updatePodcast && this.routerState.podcastSeriesId) {
+              this.podcast = this.podcasts.find(p => p.seriesId === this.routerState.podcastSeriesId);
               this.totalPages = this.podcast.doc.count('prx:stories') / EPISODE_PAGE_SIZE;
               if (this.podcast.doc.count('prx:stories') % EPISODE_PAGE_SIZE > 0) {
                 this.totalPages++;
@@ -119,7 +112,7 @@ export class DownloadsComponent implements OnInit, OnDestroy {
               }
             }
 
-            // if episodes were already loaded, update episode metrics with filter change
+            // if episodes were already loaded, update episode metrics with routerState change
             if (this.updateEpisodes && this.pageEpisodes) {
               this.getEpisodeMetrics();
               this.updateEpisodes = false;
@@ -131,9 +124,9 @@ export class DownloadsComponent implements OnInit, OnDestroy {
   }
 
   subEpisodes() {
-    // update episodes separate from filter change when we're waiting on the episodes to load
+    // update episodes separate from routerState change when we're waiting on the episodes to load
     this.episodeSub = this.store.select(selectEpisodes).subscribe((allAvailableEpisodes: EpisodeModel[]) => {
-      const episodes = filterPodcastEpisodePage(this.filter, allAvailableEpisodes);
+      const episodes = filterPodcastEpisodePage(this.routerState, allAvailableEpisodes);
       if (episodes && episodes.length) {
         this.pageEpisodes = episodes;
         if (this.updateEpisodes) {
@@ -162,75 +155,74 @@ export class DownloadsComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    if (this.filterSub) { this.filterSub.unsubscribe(); }
+    if (this.routerSub) { this.routerSub.unsubscribe(); }
     if (this.podcastSub) { this.podcastSub.unsubscribe(); }
     if (this.episodeSub) { this.episodeSub.unsubscribe(); }
   }
 
-  setDefaultFilterFromRoute(routingFilter: FilterModel) {
+  setDefaultRouteFromExistingRoute(existingRouterState: RouterModel) {
     // dispatch some default values for the dates and interval
-    this.filter = {
+    this.routerState = {
       page: 1,
       standardRange: dateUtil.THIS_WEEK_PLUS_7_DAYS,
       beginDate: dateUtil.beginningOfThisWeekPlus7DaysUTC().toDate(),
       endDate: dateUtil.endOfTodayUTC().toDate(),
       interval: INTERVAL_DAILY,
-      chartType: 'podcast'
+      metricsType: <MetricsType>METRICSTYPE_DOWNLOADS,
+      chartType: <ChartType>CHARTTYPE_PODCAST
     };
-    if (routingFilter.page) {
-      this.filter.page = routingFilter.page;
+    if (existingRouterState.page) {
+      this.routerState.page = existingRouterState.page;
     }
-    if (routingFilter.standardRange) {
-      this.filter.standardRange = routingFilter.standardRange;
+    if (existingRouterState.standardRange) {
+      this.routerState.standardRange = existingRouterState.standardRange;
     }
-    if (routingFilter.beginDate) {
-      this.filter.beginDate = routingFilter.beginDate;
+    if (existingRouterState.beginDate) {
+      this.routerState.beginDate = existingRouterState.beginDate;
     }
-    if (routingFilter.endDate) {
-      this.filter.endDate = routingFilter.endDate;
+    if (existingRouterState.endDate) {
+      this.routerState.endDate = existingRouterState.endDate;
     }
-    if (routingFilter.interval) {
-      this.filter.interval = routingFilter.interval;
+    if (existingRouterState.interval) {
+      this.routerState.interval = existingRouterState.interval;
     }
-    if (routingFilter.chartType) {
-      this.filter.chartType = routingFilter.chartType;
+    if (existingRouterState.chartType) {
+      this.routerState.chartType = existingRouterState.chartType;
     }
-    if (routingFilter.podcastSeriesId) {
-      this.filter.podcastSeriesId = routingFilter.podcastSeriesId;
-      this.routeFromFilter(this.filter);
-    } else {
-      this.store.dispatch(new CastleFilterAction({filter: this.filter}));
+    if (existingRouterState.podcastSeriesId) {
+      this.routerState.podcastSeriesId = existingRouterState.podcastSeriesId;
+      this.routeFromModel(this.routerState);
     }
   }
 
-  routeFromFilter(filter: FilterModel) {
+  routeFromModel(routerState: RouterModel) {
     const params = {
-      page: filter.page,
-      beginDate: filter.beginDate.toISOString(),
-      endDate: filter.endDate.toISOString(),
-      standardRange: filter.standardRange
+      page: routerState.page,
+      beginDate: routerState.beginDate.toISOString(),
+      endDate: routerState.endDate.toISOString(),
+      standardRange: routerState.standardRange
     };
 
-    if (this.chartPodcast !== undefined) {
-      params['chartPodcast'] = this.chartPodcast;
+    if (routerState.chartPodcast !== undefined) {
+      params['chartPodcast'] = routerState.chartPodcast;
     } else {
       params['chartPodcast'] = true; // true is the default
     }
 
-    if (this.chartedEpisodes) {
-      params['episodes'] = this.chartedEpisodes.join(',');
+    if (routerState.episodeIds) {
+      params['episodes'] = routerState.episodeIds.join(',');
     }
-
-    this.router.navigate([filter.podcastSeriesId, 'downloads', filter.chartType, filter.interval.key, params]);
+    console.log('routeFromModel', routerState);
+    this.router.navigate([routerState.podcastSeriesId, 'downloads', routerState.chartType, routerState.interval.key, params]);
   }
 
   getPodcastMetrics(podcast: PodcastModel) {
     this.toggleLoading(true);
     this.castle.followList('prx:podcast-downloads', {
       id: podcast.feederId,
-      from: this.filter.beginDate.toISOString(),
-      to: this.filter.endDate.toISOString(),
-      interval: this.filter.interval.value
+      from: this.routerState.beginDate.toISOString(),
+      to: this.routerState.endDate.toISOString(),
+      interval: this.routerState.interval.value
     }).subscribe(
       metrics => this.setPodcastMetrics(podcast, metrics),
       err => {
@@ -245,8 +237,7 @@ export class DownloadsComponent implements OnInit, OnDestroy {
     if (metrics && metrics.length && metrics[0]['downloads']) {
       this.store.dispatch(new CastlePodcastMetricsAction({
         podcast,
-        filter: this.filter,
-        metricsType: 'downloads',
+        metricsPropertyName: getMetricsProperty(this.routerState.interval, this.routerState.metricsType),
         metrics: metrics[0]['downloads']
       }));
       this.googleAnalyticsEvent('load', metrics[0]['downloads'].length);
@@ -263,9 +254,9 @@ export class DownloadsComponent implements OnInit, OnDestroy {
       if (episode && episode.guid) {
         this.castle.followList('prx:episode-downloads', {
           guid: episode.guid,
-          from: this.filter.beginDate.toISOString(),
-          to: this.filter.endDate.toISOString(),
-          interval: this.filter.interval.value
+          from: this.routerState.beginDate.toISOString(),
+          to: this.routerState.endDate.toISOString(),
+          interval: this.routerState.interval.value
         }).subscribe(
           metrics => this.setEpisodeMetrics(episode, metrics),
           err => {
@@ -282,41 +273,33 @@ export class DownloadsComponent implements OnInit, OnDestroy {
     if (metrics && metrics.length && metrics[0]['downloads']) {
       this.store.dispatch(new CastleEpisodeMetricsAction({
         episode,
-        filter: this.filter,
-        metricsType: 'downloads',
+        metricsPropertyName: getMetricsProperty(this.routerState.interval, this.routerState.metricsType),
         metrics: metrics[0]['downloads']
       }));
     }
   }
 
   onPageChange(page: number) {
-    this.routeFromFilter({...this.filter, page});
+    this.routeFromModel({...this.routerState, page});
   }
 
   onPodcastChartToggle(charted: boolean) {
-    this.chartPodcast = charted;
-    this.routeFromFilter(this.filter);
+    this.routeFromModel({...this.routerState, chartPodcast: charted});
   }
 
-  updatedChartedEpisodesWithToggle(episodeToggle: {id: number, charted: boolean}) {
-    if (this.chartedEpisodes) {
-      if (episodeToggle.charted) {
-        // positive state changes on episodes are reflected in and dispatch through the route
-        this.chartedEpisodes = this.chartedEpisodes.concat(episodeToggle.id);
-      } else {
-        // update the route and the state, negative state changes on episodes aren't reflected in route
-        this.chartedEpisodes = this.chartedEpisodes.filter(id => id !== episodeToggle.id);
-        this.store.dispatch(new CastleEpisodeChartToggleAction({
-          id: episodeToggle.id, seriesId: this.filter.podcastSeriesId, charted: false}));
-      }
+  updatedChartedEpisodesWithToggle(episodeToggle: {id: number, charted: boolean}): number[] {
+    if (!episodeToggle.charted) {
+      this.store.dispatch(new CastleEpisodeChartToggleAction({
+        id: episodeToggle.id, seriesId: this.routerState.podcastSeriesId, charted: false}));
+      return this.routerState.episodeIds ? this.routerState.episodeIds.filter(id => id !== episodeToggle.id) : [];
     } else {
-      this.chartedEpisodes = [episodeToggle.id];
+      return this.routerState.episodeIds ? this.routerState.episodeIds.concat(episodeToggle.id) : [episodeToggle.id];
     }
   }
 
   onEpisodeChartToggle(params: {id: number, charted: boolean}) {
-    this.updatedChartedEpisodesWithToggle(params);
-    this.routeFromFilter(this.filter);
+    const episodeIds = this.updatedChartedEpisodesWithToggle(params);
+    this.routeFromModel({...this.routerState, episodeIds});
   }
 
   onChartSingleEpisode(episodeId) {
@@ -325,9 +308,11 @@ export class DownloadsComponent implements OnInit, OnDestroy {
     // * If we get user feedback that it does matter, we will instead want to
     // * only remove other episodes that were charted on the same page as this episode and keep the other pages of episodes
     // --> so reset other episodes to default and just chart this one episode
-    this.chartedEpisodes.forEach(id => this.store.dispatch(new CastleEpisodeChartToggleAction({
-      id, seriesId: this.filter.podcastSeriesId, charted: false})));
-    this.chartedEpisodes = [episodeId];
-    this.routeFromFilter({...this.filter, chartType: 'episodes'});
+    if (this.routerState.episodeIds) {
+      this.routerState.episodeIds.forEach(id => this.store.dispatch(new CastleEpisodeChartToggleAction({
+        id, seriesId: this.routerState.podcastSeriesId, charted: false
+      })));
+    }
+    this.routeFromModel({...this.routerState, chartType: 'episodes', episodeIds: [episodeId]});
   }
 }

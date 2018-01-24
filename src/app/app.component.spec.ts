@@ -34,11 +34,6 @@ describe('AppComponent', () => {
     endDate: new Date('2017-09-07T00:00:00Z'),
     interval: INTERVAL_DAILY
   };
-  const event = {
-    id: -1, // doesn't matter
-    url: '/37800/downloads/podcast/daily',
-    urlAfterRedirects: '/37800/downloads/podcast/daily'
-  };
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -92,7 +87,7 @@ describe('AppComponent', () => {
 
   it('should dispatch episode load action when series or page has changed', () => {
     spyOn(comp.store, 'dispatch').and.callThrough();
-    comp.store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerState, event}));
+    comp.store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerState}));
     expect(comp.store.dispatch).toHaveBeenCalledWith(jasmine.any(ACTIONS.CmsPodcastEpisodePageAction));
   });
 });

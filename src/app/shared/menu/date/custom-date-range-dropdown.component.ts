@@ -1,6 +1,6 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { FilterModel, INTERVAL_HOURLY, IntervalModel, IntervalList } from '../../../ngrx';
+import { RouterModel, INTERVAL_HOURLY, IntervalModel, IntervalList } from '../../../ngrx';
 import * as dateUtil from '../../util/date';
 import { GoogleAnalyticsEventAction } from '../../../ngrx/actions';
 
@@ -12,24 +12,24 @@ import { GoogleAnalyticsEventAction } from '../../../ngrx/actions';
       <div class="dropdown-button">
         <button class="btn-icon icon-calendar grey-dove" (click)="toggleOpen()" aria-label="Custom Date Range"></button>
       </div>
-      <div class="dropdown-content" *ngIf="tempFilter">
+      <div class="dropdown-content" *ngIf="tempRange">
         <div class="intervals">
           <button *ngFor="let interval of intervalList"
-                  [class.btn-link]="tempFilter.interval !== interval"
+                  [class.btn-link]="tempRange.interval !== interval"
                   (click)="onIntervalChange(interval)">{{ interval.name }}
           </button>
         </div>
         <hr>
         <div class="ranges">
           <div class="pickers">
-            <prx-daterange [from]="tempFilter.beginDate" [to]="tempFilter.endDate" UTC="true"
+            <prx-daterange [from]="tempRange.beginDate" [to]="tempRange.endDate" UTC="true"
                            (rangeChange)="onCustomRangeChange($event)"></prx-daterange>
             <div class="invalid" *ngIf="invalid">
               {{ invalid }}
             </div>
           </div>
           <div class="separator"></div>
-          <metrics-standard-date-range [standardRange]="tempFilter.standardRange" [interval]="tempFilter.interval"
+          <metrics-standard-date-range [standardRange]="tempRange.standardRange" [interval]="tempRange.interval"
                                        (standardRangeChange)="onStandardRangeChange($event)">
           </metrics-standard-date-range>
         </div>
@@ -44,9 +44,9 @@ import { GoogleAnalyticsEventAction } from '../../../ngrx/actions';
 })
 
 export class CustomDateRangeDropdownComponent {
-  @Input() filter: FilterModel;
-  @Output() dateRangeChange = new EventEmitter<FilterModel>();
-  tempFilter: FilterModel;
+  @Input() routerState: RouterModel;
+  @Output() dateRangeChange = new EventEmitter<RouterModel>();
+  tempRange: RouterModel;
   open = false;
   intervalList = IntervalList;
   userChoseRange: string;
@@ -56,56 +56,58 @@ export class CustomDateRangeDropdownComponent {
   constructor(public store: Store<any>) {}
 
   onIntervalChange(interval: IntervalModel) {
-    this.tempFilter.interval = interval;
-    this.tempFilter.beginDate = dateUtil.roundDateToBeginOfInterval(this.tempFilter.beginDate, interval);
-    this.tempFilter.endDate = dateUtil.roundDateToEndOfInterval(this.tempFilter.endDate, interval);
-    this.tempFilter.standardRange = dateUtil.getStandardRangeForBeginEndDate(this.tempFilter.beginDate, this.tempFilter.endDate, this.tempFilter.interval);
+    this.tempRange.interval = interval;
+    this.tempRange.beginDate = dateUtil.roundDateToBeginOfInterval(this.tempRange.beginDate, interval);
+    this.tempRange.endDate = dateUtil.roundDateToEndOfInterval(this.tempRange.endDate, interval);
+    this.tempRange.standardRange = dateUtil.getStandardRangeForBeginEndDate(
+      this.tempRange.beginDate, this.tempRange.endDate, this.tempRange.interval);
   }
 
   onCustomRangeChange(dateRange: {from: Date, to: Date}) {
-    if (dateRange.from.valueOf() !== this.tempFilter.beginDate.valueOf() ||
-      dateRange.to.valueOf() !== this.tempFilter.endDate.valueOf()) {
-      this.tempFilter.beginDate = dateRange.from;
-      this.tempFilter.endDate = dateRange.to;
-      this.tempFilter.standardRange = dateUtil.getStandardRangeForBeginEndDate(this.tempFilter.beginDate, this.tempFilter.endDate, this.tempFilter.interval);
+    if (dateRange.from.valueOf() !== this.tempRange.beginDate.valueOf() ||
+      dateRange.to.valueOf() !== this.tempRange.endDate.valueOf()) {
+      this.tempRange.beginDate = dateRange.from;
+      this.tempRange.endDate = dateRange.to;
+      this.tempRange.standardRange = dateUtil.getStandardRangeForBeginEndDate(
+        this.tempRange.beginDate, this.tempRange.endDate, this.tempRange.interval);
       this.userChoseRange = this.CUSTOM_DATE;
     }
   }
 
   onStandardRangeChange(standardRange: string) {
     const { beginDate, endDate } = dateUtil.getBeginEndDateFromStandardRange(standardRange);
-    this.tempFilter.standardRange = standardRange;
-    this.tempFilter.beginDate = beginDate;
-    this.tempFilter.endDate = endDate;
+    this.tempRange.standardRange = standardRange;
+    this.tempRange.beginDate = beginDate;
+    this.tempRange.endDate = endDate;
     this.userChoseRange = this.STANDARD_DATE;
   }
 
-  googleAnalyticsEvent(action: string, dateRange: FilterModel) {
-    const value = dateUtil.getAmountOfIntervals(dateRange.beginDate, dateRange.endDate, this.filter.interval);
-    this.store.dispatch(new GoogleAnalyticsEventAction({gaAction: 'filter-' + action, value}));
+  googleAnalyticsEvent(action: string, dateRange: RouterModel) {
+    const value = dateUtil.getAmountOfIntervals(dateRange.beginDate, dateRange.endDate, dateRange.interval);
+    this.store.dispatch(new GoogleAnalyticsEventAction({gaAction: 'routerState-' + action, value}));
   }
 
   toggleOpen() {
-    this.tempFilter = {...this.filter};
+    this.tempRange = {...this.routerState};
     this.open = !this.open;
   }
 
   onApply() {
     if (!this.invalid) {
-      this.googleAnalyticsEvent(this.userChoseRange || this.CUSTOM_DATE, this.tempFilter);
-      this.dateRangeChange.emit({...this.tempFilter});
+      this.googleAnalyticsEvent(this.userChoseRange || this.CUSTOM_DATE, this.tempRange);
+      this.dateRangeChange.emit({...this.tempRange});
       this.open = false;
     }
   }
 
   get invalid(): string {
-    if (this.tempFilter.beginDate && this.tempFilter.endDate) {
-      if (this.tempFilter.beginDate.valueOf() > this.tempFilter.endDate.valueOf()) {
+    if (this.tempRange.beginDate && this.tempRange.endDate) {
+      if (this.tempRange.beginDate.valueOf() > this.tempRange.endDate.valueOf()) {
         return 'From date must come before To date';
-      } else if (this.tempFilter.interval === INTERVAL_HOURLY &&
-        dateUtil.isMoreThanXDays(40, this.tempFilter.beginDate, this.tempFilter.endDate)) {
+      } else if (this.tempRange.interval === INTERVAL_HOURLY &&
+        dateUtil.isMoreThanXDays(40, this.tempRange.beginDate, this.tempRange.endDate)) {
         return 'From date and To date cannot be more than 40 days apart for hourly interval';
-      } else if (this.tempFilter.endDate.valueOf() > dateUtil.endOfTodayUTC().valueOf() + 1 + (60 * 1000)) {
+      } else if (this.tempRange.endDate.valueOf() > dateUtil.endOfTodayUTC().valueOf() + 1 + (60 * 1000)) {
         // + 1 to roll milliseconds into the next day at midnight
         // + 60 * 1000 on endDate because seconds value is retained at :59
         // not sure what to do about the timepicker support but at least let the user select midnight tomorrow for thru end of current day

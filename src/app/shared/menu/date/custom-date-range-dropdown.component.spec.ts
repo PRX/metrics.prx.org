@@ -34,7 +34,7 @@ describe('CustomDateRangeDropdownComponent', () => {
       de = fix.debugElement;
       el = de.nativeElement;
 
-      comp.tempFilter = comp.filter = {
+      comp.tempRange = comp.routerState = {
         interval: INTERVAL_DAILY,
         beginDate: dateUtil.beginningOfTodayUTC().toDate(),
         endDate: dateUtil.endOfTodayUTC().toDate()
@@ -60,7 +60,7 @@ describe('CustomDateRangeDropdownComponent', () => {
   });
 
   it('should not allow users to select dates more than 40 days apart when interval is hourly', () => {
-    comp.tempFilter = {
+    comp.tempRange = {
       interval: INTERVAL_HOURLY,
       beginDate: dateUtil.beginningOfLast365DaysUTC().toDate(),
       endDate: dateUtil.endOfTodayUTC().toDate()
@@ -70,7 +70,7 @@ describe('CustomDateRangeDropdownComponent', () => {
   });
 
   it('should not allow to date before from date', () => {
-    comp.tempFilter = {
+    comp.tempRange = {
       interval: INTERVAL_DAILY,
       beginDate: dateUtil.endOfLastWeekUTC().toDate(),
       endDate: dateUtil.beginningOfLastWeekUTC().toDate()
@@ -80,7 +80,7 @@ describe('CustomDateRangeDropdownComponent', () => {
   });
 
   it('should not allow dates in the future', () => {
-    comp.tempFilter = {
+    comp.tempRange = {
       interval: INTERVAL_DAILY,
       beginDate: dateUtil.beginningOfTodayUTC().toDate(),
       endDate: dateUtil.endOfTodayUTC().add(1, 'days').toDate()
@@ -89,24 +89,24 @@ describe('CustomDateRangeDropdownComponent', () => {
     expect(comp.invalid).toContain('dates in the past or present');
   });
 
-  it('keeps tempFilter standard range in sync with custom range', () => {
+  it('keeps tempRange standard range in sync with custom range', () => {
     comp.onCustomRangeChange({from: dateUtil.beginningOfLastWeekUTC().toDate(), to: dateUtil.endOfLastWeekUTC().toDate()});
-    expect(comp.tempFilter.standardRange).toEqual(dateUtil.LAST_WEEK);
+    expect(comp.tempRange.standardRange).toEqual(dateUtil.LAST_WEEK);
   });
 
-  it('keeps tempFilter date range in sync with interval', () => {
-    comp.filter.beginDate = dateUtil.beginningOfTodayUTC().toDate();
+  it('keeps tempRange date range in sync with interval', () => {
+    comp.routerState.beginDate = dateUtil.beginningOfTodayUTC().toDate();
     comp.onIntervalChange(INTERVAL_MONTHLY);
-    expect(comp.filter.beginDate.valueOf()).toEqual(dateUtil.beginningOfThisMonthUTC().valueOf());
-    expect(comp.filter.standardRange).toEqual(dateUtil.THIS_MONTH);
+    expect(comp.routerState.beginDate.valueOf()).toEqual(dateUtil.beginningOfThisMonthUTC().valueOf());
+    expect(comp.routerState.standardRange).toEqual(dateUtil.THIS_MONTH);
   });
 
   it('should send google analytics event on Apply for custom or standard range', () => {
     comp.onStandardRangeChange(dateUtil.LAST_WEEK);
     comp.onApply();
-    expect(comp.googleAnalyticsEvent).toHaveBeenCalledWith(comp.STANDARD_DATE, comp.tempFilter);
+    expect(comp.googleAnalyticsEvent).toHaveBeenCalledWith(comp.STANDARD_DATE, comp.tempRange);
     comp.onCustomRangeChange({from: dateUtil.beginningOfLastMonthUTC().toDate(), to: dateUtil.endOfLastMonthUTC().toDate()});
     comp.onApply();
-    expect(comp.googleAnalyticsEvent).toHaveBeenCalledWith(comp.CUSTOM_DATE, comp.tempFilter);
+    expect(comp.googleAnalyticsEvent).toHaveBeenCalledWith(comp.CUSTOM_DATE, comp.tempRange);
   });
 });

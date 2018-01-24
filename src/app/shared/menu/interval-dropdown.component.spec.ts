@@ -24,7 +24,7 @@ describe('IntervalDropdownComponent', () => {
       de = fix.debugElement;
       el = de.nativeElement;
 
-      comp.filter = {
+      comp.routerState = {
         beginDate: dateUtil.beginningOfLastMonthUTC().toDate(),
         endDate: dateUtil.endOfLastMonthUTC().toDate(),
         interval: INTERVAL_DAILY
@@ -33,7 +33,7 @@ describe('IntervalDropdownComponent', () => {
     });
   }));
 
-  it('should initialize interval according to default filter', () => {
+  it('should initialize interval according to default routerState', () => {
     expect(comp.selectedInterval).toEqual(INTERVAL_DAILY);
   });
 

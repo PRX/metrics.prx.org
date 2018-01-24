@@ -31,7 +31,7 @@ describe('RoutingEffects', () => {
     actions$ = TestBed.get(Actions);
   }));
 
-  xit('should provide filter for begin and end date corresponding to standard range when dates not present', () => {
+  xit('should provide routerState for begin and end date corresponding to standard range when dates not present', () => {
     const action = {
       type: ROUTER_NAVIGATION,
       payload: {

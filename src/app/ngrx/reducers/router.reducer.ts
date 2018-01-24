@@ -1,5 +1,4 @@
-import { ROUTER_NAVIGATION } from '@ngrx/router-store';
-import { CustomRouterNavigationAction } from '../actions';
+import { ActionTypes, CustomRouterNavigationAction } from '../actions';
 import { isPodcastChanged } from '../../shared/util/filter.util';
 import { RouterModel } from './router.serializer';
 
@@ -11,7 +10,7 @@ const initialState = {};
 // Still to be decided if the date range for downloads carries over to demographics or traffic sources
 export function CustomRouterReducer(state: RouterModel = initialState, action: CustomRouterNavigationAction): RouterModel {
   switch (action.type) {
-    case ROUTER_NAVIGATION:
+    case ActionTypes.CUSTOM_ROUTER_NAVIGATION:
       const newState: RouterModel = {...state};
       if (action.payload.routerState.podcastSeriesId) {
         newState.podcastSeriesId = action.payload.routerState.podcastSeriesId;
@@ -48,6 +47,7 @@ export function CustomRouterReducer(state: RouterModel = initialState, action: C
       if (action.payload.routerState.episodeIds) {
         newState.episodeIds = [...action.payload.routerState.episodeIds];
       }
+      console.log('ROUTER_REDUCER', newState);
       return newState;
     default:
       return state;

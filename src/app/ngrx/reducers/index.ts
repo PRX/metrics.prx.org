@@ -43,12 +43,18 @@ export { CustomSerializer } from './router.serializer';
 export const selectAppState = (state: RootState) => state;
 
 export const selectRouter = createSelector(selectAppState, (state: RootState) => state.router);
+export const selectMetricsTypeRoute = createSelector(selectRouter, (routerState: RouterModel) => routerState.metricsType);
 export const selectPodcastRoute = createSelector(selectRouter, (routerState: RouterModel) => routerState.podcastSeriesId);
+export const selectChartTypeRoute = createSelector(selectRouter, (routerState: RouterModel) => routerState.chartType);
+export const selectIntervalRoute = createSelector(selectRouter, (routerState: RouterModel) => routerState.interval);
+export const selectPageRoute = createSelector(selectRouter, (routerState: RouterModel) => routerState.page);
+export const selectStandardRangeRoute = createSelector(selectRouter, (routerState: RouterModel) => routerState.standardRange);
+export const selectBeginDateRoute = createSelector(selectRouter, (routerState: RouterModel) => routerState.beginDate);
+export const selectEndDateRoute = createSelector(selectRouter, (routerState: RouterModel) => routerState.endDate);
+export const selectChartPodcastRoute = createSelector(selectRouter, (routerState: RouterModel) => routerState.chartPodcast);
+export const selectChartedEpisodeIdsRoute = createSelector(selectRouter, (routerState: RouterModel) => routerState.episodeIds);
 
 export const selectFilter = createSelector(selectAppState, (state: RootState) => state.filter);
-export const selectPageFilter = createSelector(selectFilter, (filter: FilterModel) => filter.page);
-export const selectIntervalFilter = createSelector(selectFilter, (filter: FilterModel) => filter.interval);
-export const selectChartTypeFilter = createSelector(selectFilter, (filter: FilterModel) => filter.chartType);
 
 export const selectAccountState = createSelector(selectAppState, (state: RootState) => state.account);
 export const selectAccount = createSelector(selectAccountState, getAccountEntity);
@@ -69,21 +75,21 @@ export const selectEpisodes = createSelector(selectEpisodeEntities, entities => 
 });
 
 export const selectPodcastMetrics = createSelector(selectAppState, (state: RootState) => state.podcastMetrics);
-export const selectPodcastMetricsFilteredAverage = createSelector(selectPodcastMetrics, selectFilter,
-  (metrics: PodcastMetricsModel[], filter: FilterModel) => {
+export const selectPodcastMetricsFilteredAverage = createSelector(selectPodcastMetrics, selectRouter,
+  (metrics: PodcastMetricsModel[], routerState: RouterModel) => {
     // TODO: should zero value data points be included in the average? for some of these zeroes, there just is no data
     // for episodes, including the zero data points before the release date brings the average down
-    const filteredMetrics = metricsUtil.findPodcastMetrics(filter, metrics);
+    const filteredMetrics = metricsUtil.findPodcastMetrics(routerState, metrics);
     if (filteredMetrics) {
-      const data = filteredMetrics[getMetricsProperty(filter.interval, 'downloads')];
+      const data = filteredMetrics[getMetricsProperty(routerState.interval, 'downloads')];
       return Math.round(metricsUtil.getTotal(data) / (data && data.length || 1));
     }
   });
-export const selectPodcastMetricsFilteredTotal = createSelector(selectPodcastMetrics, selectFilter,
-  (metrics: PodcastMetricsModel[], filter: FilterModel) => {
-    const filteredMetrics = metricsUtil.findPodcastMetrics(filter, metrics);
+export const selectPodcastMetricsFilteredTotal = createSelector(selectPodcastMetrics, selectRouter,
+  (metrics: PodcastMetricsModel[], routerState: RouterModel) => {
+    const filteredMetrics = metricsUtil.findPodcastMetrics(routerState, metrics);
     if (filteredMetrics) {
-      const data = filteredMetrics[getMetricsProperty(filter.interval, 'downloads')];
+      const data = filteredMetrics[getMetricsProperty(routerState.interval, 'downloads')];
       return metricsUtil.getTotal(data);
     }
   });

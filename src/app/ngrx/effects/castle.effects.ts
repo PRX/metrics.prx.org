@@ -5,38 +5,29 @@ import { Actions, Effect } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 
 import { ActionTypes,
-  CastlePodcastAllTimeMetricsLoadAction, CastlePodcastAllTimeMetricsLoadPayload,
   CastlePodcastAllTimeMetricsSuccessAction, CastlePodcastAllTimeMetricsFailureAction,
   CastleEpisodeAllTimeMetricsLoadAction, CastleEpisodeAllTimeMetricsLoadPayload,
   CastleEpisodeAllTimeMetricsSuccessAction, CastleEpisodeAllTimeMetricsFailureAction } from '../actions';
-import { selectPodcasts } from '../reducers';
-import { filterPodcasts } from '../../shared/util/metrics.util';
+import { selectSelectedPodcast } from '../reducers';
 import { CastleService } from '../../core';
 import { PodcastModel } from '../';
 
 @Injectable()
 export class CastleEffects {
-  podcasts: PodcastModel[] = [];
+  selectedPodcast: PodcastModel;
 
   @Effect()
   loadAllTimePodcastMetrics = this.actions$
     .ofType(ActionTypes.CASTLE_PODCAST_ALL_TIME_METRICS_LOAD)
-    .map((action: CastlePodcastAllTimeMetricsLoadAction) => action.payload)
-    .switchMap((payload: CastlePodcastAllTimeMetricsLoadPayload) => {
-      const podcast = filterPodcasts(payload.filter, this.podcasts);
-      if (podcast) {
-        const feederId = { podcast };
-        return this.castle.followList('prx:podcast', {id: podcast.feederId})
-          .map(
-            metrics => {
-              const allTimeDownloads = metrics[0]['downloads']['total'];
-              return new CastlePodcastAllTimeMetricsSuccessAction({podcast, allTimeDownloads});
-            },
-            error => Observable.of(new CastlePodcastAllTimeMetricsFailureAction({error}))
-          )
-        } else {
-          return Observable.of(new CastlePodcastAllTimeMetricsFailureAction({error: 'No podcasts yet'}))
-        }
+    .switchMap(() => {
+      return this.castle.followList('prx:podcast', {id: this.selectedPodcast.feederId})
+        .map(
+          metrics => {
+            const allTimeDownloads = metrics[0]['downloads']['total'];
+            return new CastlePodcastAllTimeMetricsSuccessAction({podcast: this.selectedPodcast, allTimeDownloads});
+          },
+          error => Observable.of(new CastlePodcastAllTimeMetricsFailureAction({error}))
+        );
     });
 
   @Effect()
@@ -50,15 +41,15 @@ export class CastleEffects {
             const allTimeDownloads = metrics[0]['downloads']['total'];
             return new CastleEpisodeAllTimeMetricsSuccessAction({ episode: payload.episode, allTimeDownloads});
           },
-          error => Observable.of(new CastlePodcastAllTimeMetricsFailureAction({error}))
-        )
+          error => Observable.of(new CastleEpisodeAllTimeMetricsFailureAction({error}))
+        );
     });
 
   constructor(private actions$: Actions,
               private castle: CastleService,
               public store: Store<any>) {
-                this.store.select(selectPodcasts).subscribe((state: PodcastModel[]) => {
-                  this.podcasts = state;
+                this.store.select(selectSelectedPodcast).subscribe((podcast: PodcastModel) => {
+                  this.selectedPodcast = podcast;
                 });
               }
 }

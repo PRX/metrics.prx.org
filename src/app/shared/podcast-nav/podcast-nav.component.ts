@@ -3,8 +3,8 @@ import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
-import { PodcastModel, IntervalModel, FilterModel, ChartType } from '../../ngrx';
-import { selectFilter, selectPodcasts, selectSelectedPodcast } from '../../ngrx/reducers';
+import { PodcastModel, IntervalModel, RouterModel, ChartType } from '../../ngrx';
+import { selectRouter, selectPodcasts, selectSelectedPodcast } from '../../ngrx/reducers';
 
 @Component({
   selector: 'metrics-podcast-nav',
@@ -27,9 +27,9 @@ export class PodcastNavComponent implements OnInit, OnDestroy {
               private router: Router) {}
 
   ngOnInit() {
-    this.filterSub = this.store.select(selectFilter).subscribe((filter: FilterModel) => {
-      this.selectedInterval = filter.interval;
-      this.selectedChartType = filter.chartType;
+    this.filterSub = this.store.select(selectRouter).subscribe((routerState: RouterModel) => {
+      this.selectedInterval = routerState.interval;
+      this.selectedChartType = routerState.chartType;
     });
     this.podcasts$ = this.store.select(selectPodcasts);
     this.selectedPodcast$ = this.store.select(selectSelectedPodcast);

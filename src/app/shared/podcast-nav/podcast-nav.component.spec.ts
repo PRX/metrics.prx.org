@@ -35,11 +35,6 @@ describe('PodcastNavComponent', () => {
   const routerState: RouterModel = {
     podcastSeriesId: podcasts[0].seriesId
   };
-  const event = {
-    id: -1,
-    url: '/37800',
-    urlAfterRedirects: '/37800'
-  };
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -63,12 +58,12 @@ describe('PodcastNavComponent', () => {
 
       store = TestBed.get(Store);
 
-      store.dispatch(new CustomRouterNavigationAction({routerState, event}));
+      store.dispatch(new CustomRouterNavigationAction({routerState}));
       store.dispatch(new CmsPodcastsSuccessAction({podcasts: podcasts.slice(0, 1)}));
     });
   }));
 
-  it('should initialize selected podcast according to filter', () => {
+  it('should initialize selected podcast according to routerState', () => {
     let result;
     comp.selectedPodcast$.subscribe(value => result = value);
     expect(result).toEqual(podcasts[0]);

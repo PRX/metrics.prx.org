@@ -92,7 +92,7 @@ export class CustomSerializer implements RouterStateSerializer<RouterModel> {
         router.chartPodcast = params['chartPodcast'] === 'true';
       }
     }
-
+    console.log('Router Serializer', router);
     return router;
   }
 }

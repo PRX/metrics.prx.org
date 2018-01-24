@@ -1,5 +1,5 @@
 <div *ngIf="podcastTableData">
-  <p *ngIf="filter?.interval === bindToIntervalHourly"><em>Hourly data is shown in your local timezone</em></p>
+  <p *ngIf="routerState?.interval === bindToIntervalHourly"><em>Hourly data is shown in your local timezone</em></p>
 
   <div class="table-navigation">
     <button (click)="toggleExpandedReport()" class="btn-link">
@@ -8,7 +8,7 @@
     </button>
 
     <metrics-episode-page
-    [currentPage]="filter?.page"
+    [currentPage]="routerState?.page"
     [totalPages]="totalPages"
     (pageChange)="pageChange.emit($event)"></metrics-episode-page>
   </div>
@@ -20,7 +20,7 @@
           <th>Episode</th>
           <th>Release Date</th>
           <th>Total for Period</th>
-          <th>{{filter.interval.name}} Average</th>
+          <th>{{routerState.interval.name}} Average</th>
           <th>All-Time Downloads</th>
         </tr>
       </thead>

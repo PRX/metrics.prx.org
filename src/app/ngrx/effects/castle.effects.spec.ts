@@ -34,7 +34,7 @@ describe('CastleEffects', () => {
     seriesId: 37800,
     title: 'A Pet Talks Episode',
     publishedAt: new Date()
-  }
+  };
 
   beforeEach(async(() => {
     castle = new MockHalService();
@@ -68,7 +68,7 @@ describe('CastleEffects', () => {
     effects.podcasts = podcasts;
   }));
 
-  it('should find the selected podcast from the payload filter', () => {
+  it('should find the selected podcast from the payload routerState', () => {
     const action = {
       type: ActionTypes.CASTLE_PODCAST_ALL_TIME_METRICS_LOAD,
       payload: {

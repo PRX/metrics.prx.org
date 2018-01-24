@@ -1,8 +1,9 @@
-import { Component, OnInit, OnDestroy, Output, EventEmitter } from '@angular/core';
+import { Component, Output, EventEmitter } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { Subscription } from 'rxjs/Subscription';
-import { selectFilter } from '../../ngrx/reducers';
-import { FilterModel, IntervalModel, ChartType } from '../../ngrx';
+import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/operator/take';
+import { selectRouter, selectChartTypeRoute, selectIntervalRoute, selectStandardRangeRoute } from '../../ngrx/reducers';
+import { RouterModel, IntervalModel, ChartType } from '../../ngrx';
 import { GoogleAnalyticsEventAction } from '../../ngrx/actions';
 import * as dateUtil from '../util/date';
 
@@ -10,76 +11,78 @@ import * as dateUtil from '../util/date';
   selector: 'metrics-menu-bar',
   template: `
     <div class="menu-bar">
-      <metrics-chart-type [selectedChartType]="filter?.chartType" (chartTypeChange)="onChartTypeChange($event)"></metrics-chart-type>
-      <metrics-interval-dropdown [filter]="filter" (intervalChange)="onIntervalChange($event)"></metrics-interval-dropdown>
+      <metrics-chart-type [selectedChartType]="chartType$ | async"
+                          (chartTypeChange)="onChartTypeChange($event)"></metrics-chart-type>
+      <metrics-interval-dropdown [routerState]="routerState$ | async"
+                                 (intervalChange)="onIntervalChange($event)"></metrics-interval-dropdown>
       <div class="empty"></div>
-      <metrics-standard-date-range-dropdown [interval]="filter?.interval" [standardRange]="filter?.standardRange"
+      <metrics-standard-date-range-dropdown [interval]="interval$ | async" [standardRange]="standardRange$ | async"
                                             (standardRangeChange)="onStandardRangeChange($event)"
                                             (custom)="custom.toggleOpen()"></metrics-standard-date-range-dropdown>
-      <metrics-custom-date-range-dropdown [filter]="filter" #custom
-                                 (dateRangeChange)="onFilterChange($event)"></metrics-custom-date-range-dropdown>
+      <metrics-custom-date-range-dropdown [routerState]="routerState$ | async" #custom
+                                          (dateRangeChange)="onAdvancedChange($event)"></metrics-custom-date-range-dropdown>
     </div>
     <div class="summary">
-      <metrics-date-range-summary [filter]="filter"></metrics-date-range-summary>
+      <metrics-date-range-summary [routerState]="routerState$ | async"></metrics-date-range-summary>
       <metrics-downloads-summary></metrics-downloads-summary>
     </div>
   `,
   styleUrls: ['./menu-bar.component.css']
 })
-export class MenuBarComponent implements OnInit, OnDestroy {
+export class MenuBarComponent {
   @Output() routeFromFilter = new EventEmitter();
-  filter: FilterModel;
-  filterSub: Subscription;
+  routerState$: Observable<RouterModel>;
+  chartType$: Observable<ChartType>;
+  interval$: Observable<IntervalModel>;
+  standardRange$: Observable<string>;
 
-  constructor(public store: Store<any>) {}
-
-  ngOnInit() {
-    this.filterSub = this.store.select(selectFilter).subscribe((newFilter: FilterModel) => {
-      if (newFilter) {
-        this.filter = newFilter;
-      }
-    });
-  }
-
-  ngOnDestroy() {
-    if (this.filterSub) { this.filterSub.unsubscribe(); }
+  constructor(public store: Store<any>) {
+    this.routerState$ = this.store.select(selectRouter);
+    this.chartType$ = this.store.select(selectChartTypeRoute);
+    this.interval$ = this.store.select(selectIntervalRoute);
+    this.standardRange$ = this.store.select(selectStandardRangeRoute);
   }
 
   onIntervalChange(interval: IntervalModel) {
-    if (this.filter.interval !== interval) {
-      this.filter.interval = interval;
-      this.adjustAndRouteFromFilter();
-    }
+    this.routerState$.take(1).subscribe((routerState: RouterModel) => {
+      this.adjustAndRoute({...routerState, interval});
+    });
   }
 
   onStandardRangeChange(standardRange: string) {
     const dateRange = dateUtil.getBeginEndDateFromStandardRange(standardRange);
-    this.googleAnalyticsEvent('standard-date', dateRange);
-    this.onFilterChange({...this.filter, standardRange, ...dateRange});
+    this.routerState$.subscribe((routerState: RouterModel) => {
+      this.googleAnalyticsEvent('standard-date', dateRange, routerState.interval);
+      this.onAdvancedChange({...routerState, standardRange, ...dateRange});
+    });
   }
 
-  onFilterChange(newFilter: FilterModel) {
-    if (newFilter.beginDate.valueOf() !== this.filter.beginDate.valueOf() ||
-      newFilter.endDate.valueOf() !== this.filter.endDate.valueOf() ||
-      newFilter.interval !== this.filter.interval) {
-      this.filter = {...this.filter, ...newFilter};
-      this.adjustAndRouteFromFilter();
-    }
+  onAdvancedChange(newRouterState: RouterModel) {
+    this.routerState$.take(1).subscribe((routerState: RouterModel) => {
+      if (newRouterState.beginDate.valueOf() !== routerState.beginDate.valueOf() ||
+        newRouterState.endDate.valueOf() !== routerState.endDate.valueOf() ||
+        newRouterState.interval !== routerState.interval) {
+        this.adjustAndRoute({...routerState, ...newRouterState});
+      }
+    });
   }
 
-  adjustAndRouteFromFilter() {
-    this.filter.beginDate = dateUtil.roundDateToBeginOfInterval(this.filter.beginDate, this.filter.interval);
-    this.filter.endDate = dateUtil.roundDateToEndOfInterval(this.filter.endDate, this.filter.interval);
-    this.filter.standardRange = dateUtil.getStandardRangeForBeginEndDate(this.filter.beginDate, this.filter.endDate, this.filter.interval);
-    this.routeFromFilter.emit(this.filter);
+  adjustAndRoute(routerState: RouterModel) {
+    routerState.beginDate = dateUtil.roundDateToBeginOfInterval(routerState.beginDate, routerState.interval);
+    routerState.endDate = dateUtil.roundDateToEndOfInterval(routerState.endDate, routerState.interval);
+    routerState.standardRange = dateUtil.getStandardRangeForBeginEndDate(routerState.beginDate, routerState.endDate, routerState.interval);
+    this.routeFromFilter.emit(routerState);
   }
 
   onChartTypeChange(chartType: ChartType) {
-    this.routeFromFilter.emit({...this.filter, chartType});
+    this.routerState$.take(1).subscribe((routerState: RouterModel) => {
+      console.log('onChartTypeChange', routerState);
+      this.routeFromFilter.emit({...routerState, chartType});
+    });
   }
 
-  googleAnalyticsEvent(action: string, dateRange: FilterModel) {
-    const value = dateUtil.getAmountOfIntervals(dateRange.beginDate, dateRange.endDate, this.filter.interval);
-    this.store.dispatch(new GoogleAnalyticsEventAction({gaAction: 'filter-' + action, value}));
+  googleAnalyticsEvent(action: string, dateRange: {beginDate, endDate}, interval: IntervalModel) {
+    const value = dateUtil.getAmountOfIntervals(dateRange.beginDate, dateRange.endDate, interval);
+    this.store.dispatch(new GoogleAnalyticsEventAction({gaAction: 'routerState-' + action, value}));
   }
 }

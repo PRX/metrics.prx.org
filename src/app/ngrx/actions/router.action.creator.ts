@@ -1,17 +1,16 @@
 import { Action } from '@ngrx/store';
-import { ROUTER_NAVIGATION } from '@ngrx/router-store';
 import { ActionTypes } from './action.types';
 import { RouterModel, ChartType, IntervalModel, MetricsType } from '../';
 
-// CustomRouterNavigation happens as a result of the StoreRouterConnectingModule and the RouterStateSerializer
-// It is not to be used directly by the application
+// CustomRouterNavigation happens as a result of
+// the StoreRouterConnectingModule and the RouterStateSerializer and the customRouterNavigation$ routing effect
+// It is otherwise not to be used directly by the application
 export interface CustomRouterNavigationPayload {
-  event?: any; // type is RoutesRecognized but only used by Angular, typed any so can be mocked
   routerState: RouterModel;
 }
 
 export class CustomRouterNavigationAction implements Action {
-  readonly type = ROUTER_NAVIGATION;
+  readonly type = ActionTypes.CUSTOM_ROUTER_NAVIGATION;
 
   constructor(public payload: CustomRouterNavigationPayload) {}
 }

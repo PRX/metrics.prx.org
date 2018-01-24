@@ -169,7 +169,7 @@ describe('DownloadsTableComponent', () => {
     expect(de.query(By.css('table'))).toBeNull();
   });
 
-  it('should show only the episodes in filter', () => {
+  it('should show only the episodes in routerState', () => {
     const episode = {
       seriesId: 37800,
       id: 120,

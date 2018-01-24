@@ -17,7 +17,7 @@ describe('FilterReducer', () => {
       }));
   });
 
-  it('should update with new filter', () => {
+  it('should update with new routerState', () => {
     expect(newState.podcastSeriesId).toEqual(37800);
   });
 

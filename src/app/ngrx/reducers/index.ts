@@ -1,6 +1,5 @@
 import { createSelector, createFeatureSelector, ActionReducerMap } from '@ngrx/store';
 import { RouterReducerState, routerReducer } from '@ngrx/router-store';
-import { FilterReducer, FilterModel } from './filter.reducer';
 import { AccountReducer } from './account.reducer';
 import { PodcastReducer } from './podcast.reducer';
 import { EpisodeReducer } from './episode.reducer';
@@ -16,7 +15,6 @@ import { getMetricsProperty } from './models/metrics.type';
 import * as metricsUtil from '../../shared/util/metrics.util';
 
 export interface RootState {
-  filter: FilterModel;
   routerSerializer: RouterReducerState<RouterModel>;
   router: RouterModel;
   account: AccountState;
@@ -28,7 +26,6 @@ export interface RootState {
 
 // TypeScript is complaining about this ActionReducerMap again, not sure why ugh
 export const reducers: ActionReducerMap<RootState> = {
-  filter: FilterReducer,
   routerSerializer: routerReducer,
   router: CustomRouterReducer,
   account: AccountReducer,
@@ -53,8 +50,6 @@ export const selectBeginDateRoute = createSelector(selectRouter, (routerState: R
 export const selectEndDateRoute = createSelector(selectRouter, (routerState: RouterModel) => routerState.endDate);
 export const selectChartPodcastRoute = createSelector(selectRouter, (routerState: RouterModel) => routerState.chartPodcast);
 export const selectChartedEpisodeIdsRoute = createSelector(selectRouter, (routerState: RouterModel) => routerState.episodeIds);
-
-export const selectFilter = createSelector(selectAppState, (state: RootState) => state.filter);
 
 export const selectAccountState = createSelector(selectAppState, (state: RootState) => state.account);
 export const selectAccount = createSelector(selectAccountState, getAccountEntity);

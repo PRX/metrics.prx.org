@@ -1,16 +1,6 @@
 import { Action } from '@ngrx/store';
 import { ActionTypes } from './action.types';
-import { FilterModel, EpisodeModel, PodcastModel } from '../';
-
-export interface CastleFilterPayload {
-  filter: FilterModel;
-}
-
-export class CastleFilterAction implements Action {
-  readonly type = ActionTypes.CASTLE_FILTER;
-
-  constructor(public payload: CastleFilterPayload) {}
-}
+import { EpisodeModel, PodcastModel } from '../';
 
 export interface CastlePodcastMetricsPayload {
   podcast: PodcastModel;

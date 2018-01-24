@@ -3,7 +3,7 @@ import { CmsAccountAction, CmsAccountSuccessAction, CmsAccountFailureAction, Cms
   CmsPodcastEpisodePageAction, CmsPodcastEpisodePageSuccessAction, CmsPodcastEpisodePageFailureAction } from './cms.action.creator';
 import { CastlePodcastAllTimeMetricsLoadAction, CastlePodcastAllTimeMetricsSuccessAction, CastlePodcastAllTimeMetricsFailureAction,
   CastleEpisodeAllTimeMetricsLoadAction, CastleEpisodeAllTimeMetricsSuccessAction, CastleEpisodeAllTimeMetricsFailureAction,
-  CastleFilterAction, CastlePodcastChartToggleAction, CastleEpisodeChartToggleAction,
+  CastlePodcastChartToggleAction, CastleEpisodeChartToggleAction,
   CastlePodcastMetricsAction, CastleEpisodeMetricsAction } from './castle.action.creator';
 import { GoogleAnalyticsEventAction } from './google-analytics.action.creator';
 import { CustomRouterNavigationAction,
@@ -17,7 +17,6 @@ export type AllActions
   | CmsPodcastEpisodePageAction
   | CmsPodcastEpisodePageSuccessAction
   | CmsPodcastEpisodePageFailureAction
-  | CastleFilterAction
   | CastlePodcastMetricsAction
   | CastlePodcastChartToggleAction
   | CastleEpisodeMetricsAction
@@ -42,8 +41,7 @@ export { CmsAccountSuccessPayload, CmsAccountSuccessAction,
   CmsPodcastsAction, CmsPodcastsFailureAction,
   CmsEpisodePagePayload, CmsPodcastEpisodePageAction,
   CmsEpisodePageSuccessPayload, CmsPodcastEpisodePageSuccessAction, CmsPodcastEpisodePageFailureAction } from './cms.action.creator';
-export { CastleFilterPayload, CastleFilterAction,
-  CastlePodcastMetricsPayload, CastlePodcastMetricsAction,
+export { CastlePodcastMetricsPayload, CastlePodcastMetricsAction,
   CastlePodcastChartTogglePayload, CastlePodcastChartToggleAction,
   CastlePodcastAllTimeMetricsLoadAction,
   CastlePodcastAllTimeMetricsSuccessPayload, CastlePodcastAllTimeMetricsSuccessAction,

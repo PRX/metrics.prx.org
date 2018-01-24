@@ -23,7 +23,7 @@ interface Nav {
   `,
   styleUrls: ['nav-menu.component.css']
 })
-export class NavMenuComponent{
+export class NavMenuComponent {
   nav$: Observable<Nav[]>;
 
   constructor(public store: Store<any>) {

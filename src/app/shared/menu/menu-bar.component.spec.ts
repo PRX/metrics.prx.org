@@ -1,11 +1,11 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { DebugElement } from '@angular/core';
-import { StoreModule } from '@ngrx/store';
+import { StoreModule, Store } from '@ngrx/store';
 
 import { reducers } from '../../ngrx/reducers';
 
-import { CastleFilterAction } from '../../ngrx/actions';
-import { FilterModel, INTERVAL_DAILY, INTERVAL_MONTHLY } from '../../ngrx';
+import { CustomRouterNavigationAction } from '../../ngrx/actions';
+import { RouterModel, INTERVAL_DAILY, INTERVAL_MONTHLY } from '../../ngrx';
 import * as dateUtil from '../util/date';
 
 import { MenuBarComponent } from './menu-bar.component';
@@ -25,8 +25,9 @@ describe('MenuBarComponent', () => {
   let fix: ComponentFixture<MenuBarComponent>;
   let de: DebugElement;
   let el: HTMLElement;
+  let store: Store<any>;
 
-  const filter: FilterModel = {
+  const routerState: RouterModel = {
     interval: INTERVAL_DAILY,
     standardRange: dateUtil.THIS_WEEK,
     beginDate: dateUtil.beginningOfThisWeekUTC().toDate(),
@@ -57,23 +58,28 @@ describe('MenuBarComponent', () => {
       fix.detectChanges();
       de = fix.debugElement;
       el = de.nativeElement;
+      store = TestBed.get(Store);
 
-      comp.store.dispatch(new CastleFilterAction({filter}));
+      store.dispatch(new CustomRouterNavigationAction({routerState}));
 
       spyOn(comp, 'googleAnalyticsEvent').and.callThrough();
     });
   }));
 
-  it('keeps standard range in sync with custom range', () => {
-    comp.onFilterChange({beginDate: dateUtil.beginningOfLastWeekUTC().toDate(), endDate: dateUtil.endOfLastWeekUTC().toDate()});
-    expect(comp.filter.standardRange).toEqual(dateUtil.LAST_WEEK);
+  xit('keeps standard range in sync with custom range', () => {
+    comp.onAdvancedChange({beginDate: dateUtil.beginningOfLastWeekUTC().toDate(), endDate: dateUtil.endOfLastWeekUTC().toDate()});
+    let result;
+    comp.routerState$.subscribe(r => result = r);
+    expect(routerState.standardRange).toEqual(dateUtil.LAST_WEEK);
   });
 
-  it('keeps date range in sync with interval', () => {
-    comp.filter.beginDate = dateUtil.beginningOfTodayUTC().toDate();
+  xit('keeps date range in sync with interval', () => {
+    store.dispatch(new CustomRouterNavigationAction({routerState: {beginDate: dateUtil.beginningOfTodayUTC().toDate()}}));
     comp.onIntervalChange(INTERVAL_MONTHLY);
-    expect(comp.filter.beginDate.valueOf()).toEqual(dateUtil.beginningOfThisMonthUTC().valueOf());
-    expect(comp.filter.standardRange).toEqual(dateUtil.THIS_MONTH);
+    let result;
+    comp.routerState$.subscribe(r => result = r);
+    expect(result.beginDate.valueOf()).toEqual(dateUtil.beginningOfThisMonthUTC().valueOf());
+    expect(result.standardRange).toEqual(dateUtil.THIS_MONTH);
   });
 
   it('should send google analytics event when standard range is changed', () => {

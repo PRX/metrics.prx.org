@@ -21,10 +21,10 @@ describe('DateRangeSummaryComponent', () => {
       de = fix.debugElement;
       el = de.nativeElement;
 
-      comp.filter = {
+      comp.routerState = {
         beginDate: new Date(Date.UTC(2018, 0, 1)),
         endDate: new Date(Date.UTC(2018, 0, 7))
-      }
+      };
     });
   }));
 
@@ -35,7 +35,7 @@ describe('DateRangeSummaryComponent', () => {
 
   it('should show number of days', () => {
     expect(comp.numDays).toEqual('7 days');
-    comp.filter.endDate = new Date(Date.UTC(2018, 0, 1));
+    comp.routerState.endDate = new Date(Date.UTC(2018, 0, 1));
     fix.detectChanges();
     expect(comp.numDays).toEqual('1 day');
   });

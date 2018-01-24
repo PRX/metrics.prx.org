@@ -47,7 +47,7 @@ export class CastleEffects {
 
   constructor(private actions$: Actions,
               private castle: CastleService,
-              public store: Store<any>) {
+              private store: Store<any>) {
                 this.store.select(selectSelectedPodcast).subscribe((podcast: PodcastModel) => {
                   this.selectedPodcast = podcast;
                 });

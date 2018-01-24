@@ -36,7 +36,7 @@ export class MenuBarComponent {
   interval$: Observable<IntervalModel>;
   standardRange$: Observable<string>;
 
-  constructor(public store: Store<any>) {
+  constructor(private store: Store<any>) {
     this.routerState$ = this.store.select(selectRouter);
     this.chartType$ = this.store.select(selectChartTypeRoute);
     this.interval$ = this.store.select(selectIntervalRoute);

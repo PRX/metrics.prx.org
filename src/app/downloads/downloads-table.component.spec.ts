@@ -9,9 +9,10 @@ import { SharedModule } from '../shared';
 import { DownloadsTableComponent } from './downloads-table.component';
 
 import { reducers } from '../ngrx/reducers';
-import { PodcastModel, EpisodeModel, FilterModel, INTERVAL_DAILY, INTERVAL_HOURLY } from '../ngrx';
+import { PodcastModel, EpisodeModel, RouterModel, ChartType, MetricsType,
+  CHARTTYPE_STACKED, INTERVAL_DAILY, INTERVAL_HOURLY, METRICSTYPE_DOWNLOADS, getMetricsProperty } from '../ngrx';
 import { CastlePodcastMetricsAction, CastleEpisodeMetricsAction,
-  CastleFilterAction, CmsPodcastEpisodePageSuccessAction,
+  CustomRouterNavigationAction, CmsPodcastEpisodePageSuccessAction,
   CastlePodcastAllTimeMetricsSuccessAction, CastleEpisodeAllTimeMetricsSuccessAction } from '../ngrx/actions';
 
 describe('DownloadsTableComponent', () => {
@@ -113,14 +114,16 @@ describe('DownloadsTableComponent', () => {
       color: '#00ff00'
     }
   ];
-  const filter: FilterModel = {
+  const routerState: RouterModel = {
     podcastSeriesId: podcast.seriesId,
     page: 1,
     beginDate: new Date('2017-08-27T00:00:00Z'),
     endDate: new Date('2017-09-07T00:00:00Z'),
     interval: INTERVAL_DAILY,
-    chartType: 'stacked'
+    chartType: <ChartType>CHARTTYPE_STACKED,
+    metricsType: <MetricsType>METRICSTYPE_DOWNLOADS,
   };
+  const metricsPropertyName = getMetricsProperty(routerState.interval, routerState.metricsType);
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -141,16 +144,16 @@ describe('DownloadsTableComponent', () => {
       el = de.nativeElement;
 
       // call episode and episode metrics to prime the store
-      comp.store.dispatch(new CastleFilterAction({filter}));
-      comp.store.dispatch(new CastleEpisodeMetricsAction({episode: episodes[0], filter, metricsType: 'downloads', metrics: ep0Downloads}));
-      comp.store.dispatch(new CastleEpisodeMetricsAction({episode: episodes[1], filter, metricsType: 'downloads', metrics: ep1Downloads}));
+      comp.store.dispatch(new CustomRouterNavigationAction({routerState}));
+      comp.store.dispatch(new CastleEpisodeMetricsAction({episode: episodes[0], metricsPropertyName, metrics: ep0Downloads}));
+      comp.store.dispatch(new CastleEpisodeMetricsAction({episode: episodes[1], metricsPropertyName, metrics: ep1Downloads}));
       comp.store.dispatch(new CmsPodcastEpisodePageSuccessAction({episodes}));
-      comp.store.dispatch(new CastlePodcastMetricsAction({podcast, filter, metricsType: 'downloads', metrics: podDownloads}));
+      comp.store.dispatch(new CastlePodcastMetricsAction({podcast, metricsPropertyName, metrics: podDownloads}));
     });
   }));
 
   it('should transform episode and podcast data to table data', () => {
-    expect(comp.episodeTableData.length).toEqual(episodes.filter(e => e.page === filter.page).length);
+    expect(comp.episodeTableData.length).toEqual(episodes.filter(e => e.page === routerState.page).length);
     expect(comp.episodeTableData[0].totalForPeriod).not.toBeNull();
     expect(comp.podcastTableData['title']).toEqual('All Episodes');
     expect(comp.podcastTableData['totalForPeriod']).not.toBeNull();
@@ -169,7 +172,7 @@ describe('DownloadsTableComponent', () => {
     expect(de.query(By.css('table'))).toBeNull();
   });
 
-  it('should show only the episodes in routerState', () => {
+  it('should show only the episodes in route', () => {
     const episode = {
       seriesId: 37800,
       id: 120,
@@ -178,15 +181,15 @@ describe('DownloadsTableComponent', () => {
       guid: 'aaa',
       page: 2
     };
-    comp.store.dispatch(new CastleFilterAction({filter: {page: 2}}));
+    comp.store.dispatch(new CustomRouterNavigationAction({routerState: {page: 2}}));
     comp.store.dispatch(new CmsPodcastEpisodePageSuccessAction({episodes: [episode]}));
-    comp.store.dispatch(new CastleEpisodeMetricsAction({episode: episode, filter, metricsType: 'downloads', metrics: ep0Downloads}));
+    comp.store.dispatch(new CastleEpisodeMetricsAction({episode: episode, metricsPropertyName, metrics: ep0Downloads}));
     expect(comp.episodeTableData.length).toEqual(1);
   });
 
   it('should clear out episode table data when podcast changes', () => {
     spyOn(comp, 'resetAllData').and.callThrough();
-    comp.store.dispatch(new CastleFilterAction({filter: {podcastSeriesId: 37801}}));
+    comp.store.dispatch(new CustomRouterNavigationAction({routerState: {podcastSeriesId: 37801}}));
     expect(comp.resetAllData).toHaveBeenCalled();
   });
 
@@ -210,14 +213,15 @@ describe('DownloadsTableComponent', () => {
   });
 
   it('should show message about local timezone translation for hourly data', () => {
-    const hourlyFilter = {
+    const newRouterState = {
+      metricsType: <MetricsType>METRICSTYPE_DOWNLOADS,
       interval: INTERVAL_HOURLY,
       beginDate: new Date('2017-09-07T00:00:00Z'),
       endDate: new Date('2017-09-07T23:00:00Z')
     };
-    comp.store.dispatch(new CastleFilterAction({filter: hourlyFilter}));
-    comp.store.dispatch(new CastlePodcastMetricsAction({podcast,
-      filter: hourlyFilter, metricsType: 'downloads', metrics: podHourlyDownloads}));
+    const property = getMetricsProperty(newRouterState.interval, newRouterState.metricsType);
+    comp.store.dispatch(new CustomRouterNavigationAction({routerState: newRouterState}));
+    comp.store.dispatch(new CastlePodcastMetricsAction({podcast, metricsPropertyName: property, metrics: podHourlyDownloads}));
     fix.detectChanges();
     expect(de.query(By.css('em')).nativeElement.textContent).toContain('local timezone');
   });

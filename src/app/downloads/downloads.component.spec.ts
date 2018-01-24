@@ -15,7 +15,7 @@ import { DownloadsTableComponent } from './downloads-table.component';
 import { downloadsRouting } from './downloads.routing';
 
 import { reducers } from '../ngrx/reducers';
-import { CastleFilterAction, CmsPodcastsSuccessAction, CmsPodcastEpisodePageSuccessAction,
+import { CustomRouterNavigationAction, CmsPodcastsSuccessAction, CmsPodcastEpisodePageSuccessAction,
   CastlePodcastMetricsAction, CastleEpisodeMetricsAction} from '../ngrx/actions';
 
 describe('DownloadsComponent', () => {
@@ -96,8 +96,8 @@ describe('DownloadsComponent', () => {
   describe('after loading podcasts...', () => {
     beforeEach(() => {
       spyOn(comp, 'googleAnalyticsEvent').and.callThrough();
-      comp.store.dispatch(new CastleFilterAction({
-        filter: {podcastSeriesId: 37800, page: 1}
+      comp.store.dispatch(new CustomRouterNavigationAction({
+        routerState: {podcastSeriesId: 37800, page: 1}
       }));
       comp.store.dispatch(new CmsPodcastsSuccessAction({podcasts: [podcast]}));
     });
@@ -109,7 +109,7 @@ describe('DownloadsComponent', () => {
     });
 
     it('should load episode downloads and call CASTLE action', () => {
-      comp.store.dispatch(new CastleFilterAction({filter: {page: 1}}));
+      comp.store.dispatch(new CustomRouterNavigationAction({routerState: {page: 1}}));
       comp.store.dispatch(new CmsPodcastEpisodePageSuccessAction({episodes:
         [{
           id: 123,
@@ -126,7 +126,7 @@ describe('DownloadsComponent', () => {
 
     it('should reload podcast and episode data if routerState parameters change', () => {
       const beginDate = new Date();
-      comp.store.dispatch(new CastleFilterAction({filter: {page: 1}}));
+      comp.store.dispatch(new CustomRouterNavigationAction({routerState: {page: 1}}));
       comp.store.dispatch(new CmsPodcastEpisodePageSuccessAction({episodes:
         [{
           id: 123,
@@ -137,7 +137,7 @@ describe('DownloadsComponent', () => {
           page: 1
         }]
       }));
-      comp.store.dispatch(new CastleFilterAction({filter: {beginDate}}));
+      comp.store.dispatch(new CustomRouterNavigationAction({routerState: {beginDate}}));
       expect(comp.setPodcastMetrics).toHaveBeenCalledTimes(2);
       expect(comp.setEpisodeMetrics).toHaveBeenCalledTimes(2);
       expect(comp.googleAnalyticsEvent).toHaveBeenCalledTimes(2);

@@ -1,14 +1,15 @@
 import { Actions } from '@ngrx/effects';
 import { TestBed, async } from '@angular/core/testing';
+import { RouterTestingModule } from '@angular/router/testing';
 import { cold, hot } from 'jasmine-marbles';
 import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
 import { routerReducer } from '@ngrx/router-store';
 import { ROUTER_NAVIGATION } from '@ngrx/router-store';
 import { getActions, TestActions } from './test.actions';
-import { INTERVAL_HOURLY } from '../../ngrx';
-import { reducers } from '../../ngrx/reducers';
-import { CastleFilterAction, CastlePodcastChartToggleAction, CastleEpisodeChartToggleAction } from '../actions';
+import { ChartType, MetricsType, CHARTTYPE_PODCAST, INTERVAL_HOURLY, METRICSTYPE_DOWNLOADS } from '../';
+import { reducers } from '../reducers';
+import { CustomRouterNavigationAction, CastlePodcastChartToggleAction, CastleEpisodeChartToggleAction } from '../actions';
 import { RoutingEffects } from './routing.effects';
 import * as dateUtil from '../../shared/util/date';
 
@@ -19,6 +20,7 @@ describe('RoutingEffects', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [
+        RouterTestingModule,
         StoreModule.forRoot({...reducers, routerReducer: routerReducer}),
         EffectsModule.forRoot([RoutingEffects]),
       ],
@@ -30,6 +32,28 @@ describe('RoutingEffects', () => {
     effects = TestBed.get(RoutingEffects);
     actions$ = TestBed.get(Actions);
   }));
+
+  it('should map ROUTER_NAVIGATION to CustomRouterNavigationAction', () => {
+    const routerState = {
+      podcastSeriesId: 37800,
+      metricsType: <MetricsType>METRICSTYPE_DOWNLOADS,
+      chartType: <ChartType>CHARTTYPE_PODCAST,
+      page: 1,
+      interval: INTERVAL_HOURLY,
+      beginDate: new Date('2017-11-01T00:00:00.000Z'),
+      endDate: new Date('2017-11-01T22:00:00.000'),
+      episodeIds: [123, 1234],
+      chartPodcast: true
+    };
+    const action = {
+      type: ROUTER_NAVIGATION,
+      payload: {routerState}
+    };
+    const result = new CustomRouterNavigationAction({routerState});
+    actions$.stream = hot('-a', { a: action });
+    const expected = cold('-r', { r: result });
+    expect(effects.customRouterNavigation$).toBeObservable(expected);
+  });
 
   xit('should provide routerState for begin and end date corresponding to standard range when dates not present', () => {
     const action = {
@@ -52,7 +76,7 @@ describe('RoutingEffects', () => {
         }
       }
     };
-    const result = new CastleFilterAction({filter: {
+    const result = new CustomRouterNavigationAction({routerState: {
       podcastSeriesId: 37800,
       page: 1,
       interval: INTERVAL_HOURLY,
@@ -62,7 +86,7 @@ describe('RoutingEffects', () => {
     }});
     actions$.stream = hot('-a', { a: action });
     const expected = cold('-r', { r: result });
-    expect(effects.filterFromRoute$).toBeObservable(expected);
+    expect(effects.customRouterNavigation$).toBeObservable(expected);
   });
 
   describe('routing to specific begin and end dates', () => {
@@ -93,7 +117,7 @@ describe('RoutingEffects', () => {
           }
         }
       };
-      const result = new CastleFilterAction({filter: {
+      const result = new CustomRouterNavigationAction({routerState: {
         podcastSeriesId: 37800,
         page: 1,
         interval: INTERVAL_HOURLY,
@@ -106,12 +130,12 @@ describe('RoutingEffects', () => {
     });
 
     xit('should create a CastleFilterAction from a RouterNavigationAction', () => {
-      expect(effects.filterFromRoute$).toBeObservable(expected);
+      expect(effects.customRouterNavigation$).toBeObservable(expected);
     });
 
     xit('should dispatch toggle chart podcast and episode actions', () => {
       spyOn(effects.store, 'dispatch').and.callThrough();
-      expect(effects.filterFromRoute$).toBeObservable(expected);
+      expect(effects.customRouterNavigation$).toBeObservable(expected);
       expect(effects.store.dispatch).toHaveBeenCalledWith(jasmine.any(CastlePodcastChartToggleAction));
       expect(effects.store.dispatch).toHaveBeenCalledWith(jasmine.any(CastleEpisodeChartToggleAction));
     });

@@ -61,7 +61,8 @@ export const selectPodcasts = createSelector(selectPodcastEntities, entities => 
   return Object.keys(entities).map(seriesId => entities[parseInt(seriesId, 10)]);
 });
 export const selectPodcastsError = createSelector(selectPodcastState, getPodcastError);
-export const selectSelectedPodcast = createSelector(selectPodcastEntities, selectPodcastRoute, (entities, podcastSeriesId) => entities[podcastSeriesId]);
+export const selectSelectedPodcast = createSelector(selectPodcastEntities, selectPodcastRoute,
+  (entities, podcastSeriesId) => entities[podcastSeriesId]);
 
 export const selectEpisodeState = createSelector(selectAppState, (state: RootState) => state.episodes);
 export const selectEpisodeEntities = createSelector(selectEpisodeState, getEpisodeEntities);

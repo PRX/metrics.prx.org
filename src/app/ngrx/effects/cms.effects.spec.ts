@@ -1,5 +1,4 @@
 import { TestBed } from '@angular/core/testing';
-import { RouterTestingModule } from '@angular/router/testing';
 import { provideMockActions } from '@ngrx/effects/testing';
 import { StoreModule, Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
@@ -12,7 +11,6 @@ import { CmsService } from '../../core';
 import { reducers } from '../reducers';
 import * as ACTIONS from '../actions';
 import { CmsEffects } from './cms.effects';
-import {RouteEpisodesChartedAction} from "../actions/router.action.creator";
 
 describe('CmsEffects', () => {
   const authToken = new ReplaySubject<string>(1);
@@ -33,7 +31,6 @@ describe('CmsEffects', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
-        RouterTestingModule,
         StoreModule.forRoot(reducers)
       ],
       providers: [
@@ -189,7 +186,7 @@ describe('CmsEffects', () => {
       const action = new ACTIONS.CmsPodcastEpisodePageAction({seriesId, page: 1});
       actions$ = hot('-a', {a: action});
       effects.loadEpisodes$.subscribe(() => {
-        expect(store.dispatch).toHaveBeenCalledWith(new RouteEpisodesChartedAction({episodeIds: [121, 122, 123, 124, 125]}));
+        expect(store.dispatch).toHaveBeenCalledWith(new ACTIONS.RouteEpisodesChartedAction({episodeIds: [121, 122, 123, 124, 125]}));
       });
     });
 

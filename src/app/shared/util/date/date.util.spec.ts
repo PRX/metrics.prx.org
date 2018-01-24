@@ -1,6 +1,6 @@
 import * as dateUtil from './date.util';
 import * as dateConst from './date.constants';
-import { FilterModel, INTERVAL_MONTHLY, INTERVAL_WEEKLY, INTERVAL_DAILY, INTERVAL_HOURLY } from '../../../ngrx';
+import { RouterModel, INTERVAL_MONTHLY, INTERVAL_WEEKLY, INTERVAL_DAILY, INTERVAL_HOURLY } from '../../../ngrx';
 
 describe('date util', () => {
   it('should tell us if dates are more than a specified number of days apart', () => {
@@ -47,19 +47,19 @@ describe('date util', () => {
   });
 
   it('should get standard range from begin and end dates', () => {
-    const thisWeek: FilterModel = {
+    const thisWeek: RouterModel = {
       interval: INTERVAL_DAILY,
       beginDate: dateUtil.beginningOfThisWeekUTC().toDate(),
       endDate: dateUtil.endOfTodayUTC().toDate()
     };
     expect(dateUtil.getStandardRangeForBeginEndDate(thisWeek.beginDate, thisWeek.endDate, thisWeek.interval)).toEqual(dateConst.THIS_WEEK);
-    const lastWeek: FilterModel = {
+    const lastWeek: RouterModel = {
       interval: INTERVAL_DAILY,
       beginDate: dateUtil.beginningOfLastWeekUTC().toDate(),
       endDate: dateUtil.endOfLastWeekUTC().toDate()
     };
     expect(dateUtil.getStandardRangeForBeginEndDate(lastWeek.beginDate, lastWeek.endDate, lastWeek.interval)).toEqual(dateConst.LAST_WEEK);
-    const other: FilterModel = {
+    const other: RouterModel = {
       interval: INTERVAL_DAILY,
       beginDate: dateUtil.beginningOfTodayUTC().toDate(),
       endDate: dateUtil.endOfTodayUTC().toDate()

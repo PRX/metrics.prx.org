@@ -10,7 +10,7 @@
     <metrics-episode-page
     [currentPage]="routerState?.page"
     [totalPages]="totalPages"
-    (pageChange)="pageChange.emit($event)"></metrics-episode-page>
+    (pageChange)="onPageChange($event)"></metrics-episode-page>
   </div>
 
   <div class="table-wrapper">

@@ -10,7 +10,7 @@ import { PodcastNavListComponent } from './podcast-nav-list.component';
 
 import { reducers, RootState } from '../../ngrx/reducers';
 
-import { CustomRouterNavigationAction, CmsPodcastsSuccessAction } from '../../ngrx/actions';
+import { CustomRouterNavigationAction, CmsPodcastsSuccessAction, RouteSeriesAction } from '../../ngrx/actions';
 import { RouterModel } from '../../ngrx';
 
 describe('PodcastNavComponent', () => {
@@ -63,7 +63,7 @@ describe('PodcastNavComponent', () => {
     });
   }));
 
-  it('should initialize selected podcast according to routerState', () => {
+  it('should set selected podcast according to routerState', () => {
     let result;
     comp.selectedPodcast$.subscribe(value => result = value);
     expect(result).toEqual(podcasts[0]);
@@ -75,5 +75,11 @@ describe('PodcastNavComponent', () => {
     expect(result).toEqual([podcasts[0]]);
     store.dispatch(new CmsPodcastsSuccessAction({podcasts: podcasts}));
     expect(result).toEqual(podcasts);
+  });
+
+  it('should dispatch routing action when podcast is changed', () => {
+    spyOn(store, 'dispatch');
+    comp.onPodcastChange(podcasts[1]);
+    expect(store.dispatch).toHaveBeenCalledWith(new RouteSeriesAction({podcastSeriesId: podcasts[1].seriesId}));
   });
 });

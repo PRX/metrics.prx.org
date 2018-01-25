@@ -1,6 +1,8 @@
-import { Component, Input, Output, EventEmitter, OnChanges } from '@angular/core';
+import { Component, Input, OnChanges } from '@angular/core';
+import { Store } from '@ngrx/store';
 import { RouterModel, IntervalModel,
   INTERVAL_MONTHLY, INTERVAL_WEEKLY, INTERVAL_DAILY, INTERVAL_HOURLY } from '../../ngrx';
+import { RouteIntervalAction } from '../../ngrx/actions';
 import * as dateUtil from '../util/date';
 
 @Component({
@@ -26,11 +28,11 @@ import * as dateUtil from '../util/date';
 })
 export class IntervalDropdownComponent implements OnChanges {
   @Input() routerState: RouterModel;
-  @Output() intervalChange = new EventEmitter<IntervalModel>();
   intervalOptions: IntervalModel[] = [];
   selectedInterval: IntervalModel;
   open = false;
 
+  constructor(private store: Store<any>) {}
 
   ngOnChanges() {
     if (this.routerState && this.routerState.interval && this.routerState.beginDate && this.routerState.endDate) {
@@ -56,9 +58,9 @@ export class IntervalDropdownComponent implements OnChanges {
     this.open = !this.open;
   }
 
-  onIntervalChange(value: IntervalModel) {
-    if (value && value !== this.routerState.interval) {
-      this.intervalChange.emit(value);
+  onIntervalChange(interval: IntervalModel) {
+    if (interval && interval !== this.routerState.interval) {
+      this.store.dispatch(new RouteIntervalAction({interval}));
     }
   }
 }

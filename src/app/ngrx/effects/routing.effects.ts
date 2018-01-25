@@ -7,11 +7,10 @@ import { ROUTER_NAVIGATION } from '@ngrx/router-store';
 import { Actions, Effect } from '@ngrx/effects';
 import { RouterModel, ChartType, MetricsType,
   CHARTTYPE_PODCAST, INTERVAL_DAILY, METRICSTYPE_DOWNLOADS } from '../';
-import { ActionTypes } from '../actions';
 import { selectRouter } from '../reducers';
-import { CustomRouterNavigationAction, CustomRouterNavigationPayload,
-  RouteSeriesAction, RouteSeriesPayload,
-  RouteEpisodesChartedAction, RouteEpisodesChartedPayload } from '../actions';
+import { ActionTypes } from '../actions';
+import * as ACTIONS from '../actions';
+import * as dateUtil from '../../shared/util/date';
 
 @Injectable()
 export class RoutingEffects {
@@ -20,33 +19,132 @@ export class RoutingEffects {
   @Effect()
   customRouterNavigation$: Observable<Action> = this.actions$
     .ofType(ROUTER_NAVIGATION)
-    .map((action: CustomRouterNavigationAction) => action.payload)
-    .switchMap((payload: CustomRouterNavigationPayload) => {
+    .map((action: ACTIONS.CustomRouterNavigationAction) => action.payload)
+    .switchMap((payload: ACTIONS.CustomRouterNavigationPayload) => {
       const routerState: RouterModel = {...payload.routerState};
-
-      console.log('Routing effect', routerState);
-
       // map to an action with our CUSTOM_ROUTER_NAVIGATION type
-      return Observable.of(new CustomRouterNavigationAction(payload));
+      return Observable.of(new ACTIONS.CustomRouterNavigationAction(payload));
     });
 
   @Effect({dispatch: false})
   routeSeries$: Observable<void> = this.actions$
     .ofType(ActionTypes.ROUTE_SERIES)
-    .map((action: RouteSeriesAction) => action.payload)
-    .switchMap((payload: RouteSeriesPayload) => {
+    .map((action: ACTIONS.RouteSeriesAction) => action.payload)
+    .switchMap((payload: ACTIONS.RouteSeriesPayload) => {
       const { podcastSeriesId } = payload;
       this.routeFromNewRouterState({podcastSeriesId});
       return Observable.of(null);
     });
 
   @Effect({dispatch: false})
+  routePodcastCharted$: Observable<void> = this.actions$
+    .ofType(ActionTypes.ROUTE_PODCAST_CHARTED)
+    .map((action: ACTIONS.RoutePodcastChartedAction) => action.payload)
+    .switchMap((payload: ACTIONS.RoutePodcastChartedPayload) => {
+      const { chartPodcast } = payload;
+      this.routeFromNewRouterState({chartPodcast});
+      return Observable.of(null);
+    });
+
+  @Effect({dispatch: false})
+  routeEpisodePage$: Observable<void> = this.actions$
+    .ofType(ActionTypes.ROUTE_EPISODE_PAGE)
+    .map((action: ACTIONS.RouteEpisodePageAction) => action.payload)
+    .switchMap((payload: ACTIONS.RouteEpisodePagePayload) => {
+      const { page } = payload;
+      this.routeFromNewRouterState({page});
+      return Observable.of(null);
+    });
+
+  @Effect({dispatch: false})
   routeEpisodesCharted$: Observable<void> = this.actions$
     .ofType(ActionTypes.ROUTE_EPISODES_CHARTED)
-    .map((action: RouteEpisodesChartedAction) => action.payload)
-    .switchMap((payload: RouteEpisodesChartedPayload) => {
+    .map((action: ACTIONS.RouteEpisodesChartedAction) => action.payload)
+    .switchMap((payload: ACTIONS.RouteEpisodesChartedPayload) => {
       const { episodeIds } = payload;
       this.routeFromNewRouterState({episodeIds});
+      return Observable.of(null);
+    });
+
+  @Effect({dispatch: false})
+  routeSingleEpisodeCharted$: Observable<void> = this.actions$
+    .ofType(ActionTypes.ROUTE_SINGLE_EPISODE_CHARTED)
+    .map((action: ACTIONS.RouteSingleEpisodeChartedAction) => action.payload)
+    .switchMap((payload: ACTIONS.RouteSingleEpisodeChartedPayload) => {
+     const { episodeId, chartType } = payload;
+     this.routeFromNewRouterState({episodeIds: [episodeId], chartType});
+      return Observable.of(null);
+    });
+
+  // note that this is an Observable<void> dispatch: false because it only needs to dispatch when charted is false
+  // so toggle off is handled via manual dispatch rather than by transform and dispatch an action from the effect
+  @Effect({dispatch: false})
+  routeToggleEpisodeCharted$: Observable<void> = this.actions$
+    .ofType(ActionTypes.ROUTE_TOGGLE_EPISODE_CHARTED)
+    .map((action: ACTIONS.RouteToggleEpisodeChartedAction) => action.payload)
+    .switchMap((payload: ACTIONS.RouteToggleEpisodeChartedPayload) => {
+      const { episodeId, charted } = payload;
+      let episodeIds;
+      if (!charted) {
+        this.store.dispatch(new ACTIONS.CastleEpisodeChartToggleAction({
+          id: episodeId, seriesId: this.routerState.podcastSeriesId, charted}));
+        episodeIds = this.routerState.episodeIds ? this.routerState.episodeIds.filter(id => id !== episodeId) : [];
+      } else {
+        episodeIds = this.routerState.episodeIds ? this.routerState.episodeIds.concat(episodeId) : [episodeId];
+      }
+      this.routeFromNewRouterState({episodeIds});
+      return Observable.of(null);
+    });
+
+  @Effect({dispatch: false})
+  routeChartType$: Observable<void> = this.actions$
+    .ofType(ActionTypes.ROUTE_CHART_TYPE)
+    .map((action: ACTIONS.RouteChartTypeAction) => action.payload)
+    .switchMap((payload: ACTIONS.RouteChartTypePayload) => {
+      const { chartType } = payload;
+      this.routeFromNewRouterState({chartType});
+      return Observable.of(null);
+    });
+
+  @Effect({dispatch: false})
+  routeInterval$: Observable<void> = this.actions$
+    .ofType(ActionTypes.ROUTE_INTERVAL)
+    .map((action: ACTIONS.RouteIntervalAction) => action.payload)
+    .switchMap((payload: ACTIONS.RouteIntervalPayload) => {
+      const { interval } = payload;
+      this.routeFromNewRouterState({interval});
+      return Observable.of(null);
+    });
+
+  @Effect({dispatch: false})
+  routeStandardRange$: Observable<void> = this.actions$
+    .ofType(ActionTypes.ROUTE_STANDARD_RANGE)
+    .map((action: ACTIONS.RouteStandardRangeAction) => action.payload)
+    .switchMap((payload: ACTIONS.RouteStandardRangePayload) => {
+      const { standardRange } = payload;
+      const range = dateUtil.getBeginEndDateFromStandardRange(standardRange);
+      this.routeFromNewRouterState({standardRange, ...range});
+      return Observable.of(null);
+    });
+
+  @Effect({dispatch: false})
+  routeAdvancedRange$: Observable<void> = this.actions$
+    .ofType(ActionTypes.ROUTE_ADVANCED_RANGE)
+    .map((action: ACTIONS.RouteAdvancedRangeAction) => action.payload)
+    .switchMap((payload: ACTIONS.RouteAdvancedRangePayload) => {
+      // just keep doing this for now. soon.
+      const { interval } = payload;
+      const beginDate = dateUtil.roundDateToBeginOfInterval(payload.beginDate, interval);
+      const endDate = dateUtil.roundDateToEndOfInterval(payload.endDate, interval);
+      let standardRange = dateUtil.getStandardRangeForBeginEndDate(payload.beginDate, payload.endDate, interval);
+      // if the dates for the given range are the same but the resulting string does match what is given, keep don't override
+      const payloadRange = dateUtil.getBeginEndDateFromStandardRange(payload.standardRange);
+      if (payload.standardRange !== standardRange &&
+        payloadRange.beginDate.valueOf() === beginDate.valueOf() &&
+        payloadRange.endDate.valueOf() === endDate.valueOf()) {
+        standardRange = payload.standardRange;
+      }
+      this.routeFromNewRouterState({beginDate, endDate, interval, standardRange});
       return Observable.of(null);
     });
 
@@ -76,10 +174,10 @@ export class RoutingEffects {
       params['standardRange'] = combinedRouterState.standardRange;
     }
     if (combinedRouterState.beginDate) {
-      params['beginDate'] = combinedRouterState.beginDate;
+      params['beginDate'] = combinedRouterState.beginDate.toUTCString();
     }
     if (combinedRouterState.endDate) {
-      params['endDate'] = combinedRouterState.endDate;
+      params['endDate'] = combinedRouterState.endDate.toUTCString();
     }
     if (combinedRouterState.chartPodcast !== undefined) {
       params['chartPodcast'] = combinedRouterState.chartPodcast;

@@ -18,15 +18,9 @@ import { isPodcastChanged, isBeginDateChanged, isEndDateChanged, isIntervalChang
                  loadingMessage="Please wait..."></prx-spinner>
     <router-outlet name="sidenav"></router-outlet>
     <section class="content" *ngIf="podcasts">
-      <metrics-menu-bar *ngIf="!isPodcastLoading && !isEpisodeLoading"
-                        (routeFromFilter)="routeFromModel($event)"></metrics-menu-bar>
+      <metrics-menu-bar *ngIf="!isPodcastLoading && !isEpisodeLoading"></metrics-menu-bar>
       <metrics-downloads-chart></metrics-downloads-chart>
-      <metrics-downloads-table
-        [totalPages]="totalPages" (pageChange)="onPageChange($event)"
-        (podcastChartToggle)="onPodcastChartToggle($event)"
-        (episodeChartToggle)="onEpisodeChartToggle($event)"
-        (chartSingleEpisode)="onChartSingleEpisode($event)">
-      </metrics-downloads-table>
+      <metrics-downloads-table [totalPages]="totalPages"></metrics-downloads-table>
       <p class="error" *ngFor="let error of errors">{{error}}</p>
     </section>
   `,
@@ -212,7 +206,6 @@ export class DownloadsComponent implements OnInit, OnDestroy {
     if (routerState.episodeIds) {
       params['episodes'] = routerState.episodeIds.join(',');
     }
-    console.log('routeFromModel', routerState);
     this.router.navigate([routerState.podcastSeriesId, 'downloads', routerState.chartType, routerState.interval.key, params]);
   }
 
@@ -277,42 +270,5 @@ export class DownloadsComponent implements OnInit, OnDestroy {
         metrics: metrics[0]['downloads']
       }));
     }
-  }
-
-  onPageChange(page: number) {
-    this.routeFromModel({...this.routerState, page});
-  }
-
-  onPodcastChartToggle(charted: boolean) {
-    this.routeFromModel({...this.routerState, chartPodcast: charted});
-  }
-
-  updatedChartedEpisodesWithToggle(episodeToggle: {id: number, charted: boolean}): number[] {
-    if (!episodeToggle.charted) {
-      this.store.dispatch(new CastleEpisodeChartToggleAction({
-        id: episodeToggle.id, seriesId: this.routerState.podcastSeriesId, charted: false}));
-      return this.routerState.episodeIds ? this.routerState.episodeIds.filter(id => id !== episodeToggle.id) : [];
-    } else {
-      return this.routerState.episodeIds ? this.routerState.episodeIds.concat(episodeToggle.id) : [episodeToggle.id];
-    }
-  }
-
-  onEpisodeChartToggle(params: {id: number, charted: boolean}) {
-    const episodeIds = this.updatedChartedEpisodesWithToggle(params);
-    this.routeFromModel({...this.routerState, episodeIds});
-  }
-
-  onChartSingleEpisode(episodeId) {
-    // Do we care what was toggled on other pages at this point?
-    // * feel like overcomplicating an underestablished feature
-    // * If we get user feedback that it does matter, we will instead want to
-    // * only remove other episodes that were charted on the same page as this episode and keep the other pages of episodes
-    // --> so reset other episodes to default and just chart this one episode
-    if (this.routerState.episodeIds) {
-      this.routerState.episodeIds.forEach(id => this.store.dispatch(new CastleEpisodeChartToggleAction({
-        id, seriesId: this.routerState.podcastSeriesId, charted: false
-      })));
-    }
-    this.routeFromModel({...this.routerState, chartType: 'episodes', episodeIds: [episodeId]});
   }
 }

@@ -1,5 +1,7 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input } from '@angular/core';
+import { Store } from '@ngrx/store';
 import { ChartType, CHARTTYPE_PODCAST, CHARTTYPE_EPISODES, CHARTTYPE_STACKED } from '../../ngrx';
+import { RouteChartTypeAction } from '../../ngrx/actions';
 
 @Component({
   selector: 'metrics-chart-type',
@@ -12,11 +14,12 @@ import { ChartType, CHARTTYPE_PODCAST, CHARTTYPE_EPISODES, CHARTTYPE_STACKED } f
 })
 export class ChartTypeComponent {
   @Input() selectedChartType: ChartType;
-  @Output() chartTypeChange = new EventEmitter<ChartType>();
   chartTypes: ChartType[] = ['podcast', 'episodes', 'stacked'];
 
+  constructor(private store: Store<any>) {}
+
   onChartType(chartType: ChartType) {
-    this.chartTypeChange.emit(chartType);
+    this.store.dispatch(new RouteChartTypeAction({chartType}));
   }
 
   getChartImg(chartType: ChartType): string {

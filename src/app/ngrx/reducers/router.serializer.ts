@@ -60,7 +60,10 @@ export class CustomSerializer implements RouterStateSerializer<RouterModel> {
         router.beginDate = new Date(params['beginDate']);
       }
       if (params['endDate']) {
+        // Hmmm... params from the RouterStateSnanshot have date strings without milliseconds even though they're in the url
+        // For our purposes, end date is always 999 milliseconds, so... add it I guess
         router.endDate = new Date(params['endDate']);
+        router.endDate.setMilliseconds(999);
       }
       if (router.beginDate && router.endDate && params['standardRange']) {
         const range = getBeginEndDateFromStandardRange(params['standardRange']);
@@ -69,7 +72,7 @@ export class CustomSerializer implements RouterStateSerializer<RouterModel> {
           // route has standard range that does not match begin/end dates
           router.standardRange = getStandardRangeForBeginEndDate(router.beginDate, router.endDate, router.interval);
         } else {
-          // standardRange matches being/end dates
+          // standardRange matches begin/end dates
           router.standardRange = params['standardRange'];
         }
       } else if (router.beginDate && router.endDate && !params['standardRange']) {

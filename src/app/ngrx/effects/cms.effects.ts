@@ -51,14 +51,15 @@ export class CmsEffects {
             } else {
               const params = {per: count, filters: 'v4', zoom: 'prx:distributions'};
               return auth.followItems('prx:series', params).mergeMap(docs => {
-                if (!this.routedPodcastSeriesId) {
-                  // Default select the first podcast by navigating to it. (It'll be the last one that was updated)
-                  this.store.dispatch(new ACTIONS.RouteSeriesAction({podcastSeriesId: docs[0]['id']}));
-                }
-
                 return Observable.forkJoin(docs.map(d => this.docToPodcast(d)))
                   .map(podcasts => podcasts.filter(p => p && p.feederId))
-                  .map(podcasts => new ACTIONS.CmsPodcastsSuccessAction({podcasts}));
+                  .map(podcasts => {
+                    if (!this.routedPodcastSeriesId) {
+                      // Default select the first podcast by navigating to it. (It'll be the last one that was updated)
+                      this.store.dispatch(new ACTIONS.RouteSeriesAction({podcastSeriesId: podcasts[0].seriesId}));
+                    }
+                    return new ACTIONS.CmsPodcastsSuccessAction({podcasts});
+                  });
               });
             }
           });

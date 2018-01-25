@@ -88,6 +88,23 @@ describe('CastleEffects', () => {
     expect(effects.loadAllTimePodcastMetrics).toBeObservable(expected);
   });
 
+  it('should dispatch a failure action if no selected podcast', () => {
+    const newRouterState: RouterModel = {
+      podcastSeriesId: 37801
+    };
+    store.dispatch(new CustomRouterNavigationAction({routerState: newRouterState}));
+    const action = {
+      type: ActionTypes.CASTLE_PODCAST_ALL_TIME_METRICS_LOAD
+    };
+    const failure = new CastlePodcastAllTimeMetricsFailureAction({
+      error: 'No selected podcast yet'
+    });
+
+    actions$.stream = hot('-a', { a: action });
+    const expected = cold('-r', { r: failure });
+    expect(effects.loadAllTimePodcastMetrics).toBeObservable(expected);
+  });
+
   it('should request episode all time metrics from castle', () => {
     const action = {
       type: ActionTypes.CASTLE_EPISODE_ALL_TIME_METRICS_LOAD,

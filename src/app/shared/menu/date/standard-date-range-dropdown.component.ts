@@ -1,5 +1,8 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Store } from '@ngrx/store';
 import { IntervalModel } from '../../../ngrx';
+import { GoogleAnalyticsEventAction, RouteStandardRangeAction } from '../../../ngrx/actions';
+import * as dateUtil from '../../util/date';
 
 @Component({
   selector: 'metrics-standard-date-range-dropdown',
@@ -12,7 +15,7 @@ import { IntervalModel } from '../../../ngrx';
       <div class="dropdown-content rollout">
         <metrics-standard-date-range
           [standardRange]="standardRange" [interval]="interval"
-          (standardRangeChange)="standardRangeChange.emit($event)">
+          (standardRangeChange)="onStandardRangeChange($event)">
         </metrics-standard-date-range>
         <ul>
           <li>
@@ -29,16 +32,28 @@ import { IntervalModel } from '../../../ngrx';
 export class StandardDateRangeDropdownComponent {
   @Input() standardRange: string;
   @Input() interval: IntervalModel;
-  @Output() standardRangeChange = new EventEmitter<string>();
   @Output() custom = new EventEmitter();
   open = false;
+
+  constructor(private store: Store<any>) {}
 
   toggleOpen() {
     this.open = !this.open;
   }
 
+  onStandardRangeChange(standardRange: string) {
+    this.googleAnalyticsEvent('standard-date', standardRange);
+    this.store.dispatch(new RouteStandardRangeAction({standardRange}));
+  }
+
   onCustom() {
     this.custom.emit();
     this.toggleOpen();
+  }
+
+  googleAnalyticsEvent(action: string, standardRange: string) {
+    const dateRange = dateUtil.getBeginEndDateFromStandardRange(standardRange);
+    const value = dateUtil.getAmountOfIntervals(dateRange.beginDate, dateRange.endDate, this.interval);
+    this.store.dispatch(new GoogleAnalyticsEventAction({gaAction: 'filter-' + action, value}));
   }
 }

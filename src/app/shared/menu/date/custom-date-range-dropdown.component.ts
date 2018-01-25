@@ -1,8 +1,8 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { RouterModel, INTERVAL_HOURLY, IntervalModel, IntervalList } from '../../../ngrx';
 import * as dateUtil from '../../util/date';
-import { GoogleAnalyticsEventAction } from '../../../ngrx/actions';
+import { GoogleAnalyticsEventAction, RouteAdvancedRangeAction } from '../../../ngrx/actions';
 
 @Component({
   selector: 'metrics-custom-date-range-dropdown',
@@ -45,7 +45,6 @@ import { GoogleAnalyticsEventAction } from '../../../ngrx/actions';
 
 export class CustomDateRangeDropdownComponent {
   @Input() routerState: RouterModel;
-  @Output() dateRangeChange = new EventEmitter<RouterModel>();
   tempRange: RouterModel;
   open = false;
   intervalList = IntervalList;
@@ -95,7 +94,7 @@ export class CustomDateRangeDropdownComponent {
   onApply() {
     if (!this.invalid) {
       this.googleAnalyticsEvent(this.userChoseRange || this.CUSTOM_DATE, this.tempRange);
-      this.dateRangeChange.emit({...this.tempRange});
+      this.store.dispatch(new RouteAdvancedRangeAction({...this.tempRange}));
       this.open = false;
     }
   }

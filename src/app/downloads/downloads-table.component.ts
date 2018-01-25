@@ -1,11 +1,11 @@
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs/Subscription';
-import { Component, OnDestroy, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnDestroy, Input } from '@angular/core';
 import { EpisodeModel, RouterModel, EpisodeMetricsModel, PodcastMetricsModel,
   INTERVAL_MONTHLY, INTERVAL_WEEKLY, INTERVAL_DAILY, INTERVAL_HOURLY,
-  CHARTTYPE_PODCAST, CHARTTYPE_STACKED  } from '../ngrx';
+  CHARTTYPE_PODCAST, CHARTTYPE_EPISODES, CHARTTYPE_STACKED  } from '../ngrx';
 import { selectEpisodes, selectRouter, selectEpisodeMetrics, selectPodcastMetrics } from '../ngrx/reducers';
-import { CastlePodcastAllTimeMetricsLoadAction, CastleEpisodeAllTimeMetricsLoadAction, GoogleAnalyticsEventAction } from '../ngrx/actions';
+import * as ACTIONS from '../ngrx/actions';
 
 import { findPodcastMetrics, filterPodcastEpisodePage, filterEpisodeMetricsPage, metricsData, getTotal } from '../shared/util/metrics.util';
 import { mapMetricsToTimeseriesData, neutralColor } from '../shared/util/chart.util';
@@ -22,10 +22,6 @@ import * as moment from 'moment';
 })
 export class DownloadsTableComponent implements OnDestroy {
   @Input() totalPages;
-  @Output() podcastChartToggle = new EventEmitter();
-  @Output() episodeChartToggle = new EventEmitter();
-  @Output() chartSingleEpisode = new EventEmitter();
-  @Output() pageChange = new EventEmitter();
   routerSub: Subscription;
   routerState: RouterModel;
   allEpisodesSub: Subscription;
@@ -45,7 +41,7 @@ export class DownloadsTableComponent implements OnDestroy {
     this.routerSub = this.store.select(selectRouter).subscribe((newRouterState: RouterModel) => {
       if (newRouterState) {
         if (isPodcastChanged(newRouterState, this.routerState)) {
-          this.store.dispatch(new CastlePodcastAllTimeMetricsLoadAction());
+          this.store.dispatch(new ACTIONS.CastlePodcastAllTimeMetricsLoadAction());
           this.resetAllData();
         }
         // apply new routerState to existing data so it's not showing stale data while loading
@@ -65,7 +61,7 @@ export class DownloadsTableComponent implements OnDestroy {
       if (allPodcastEpisodes) {
         this.episodes = allPodcastEpisodes;
         this.episodes.forEach(episode =>
-          this.store.dispatch(new CastleEpisodeAllTimeMetricsLoadAction({episode}))
+          this.store.dispatch(new ACTIONS.CastleEpisodeAllTimeMetricsLoadAction({episode}))
         );
         this.buildTableData();
       }
@@ -190,22 +186,26 @@ export class DownloadsTableComponent implements OnDestroy {
     return this.routerState && this.routerState.chartType !== CHARTTYPE_PODCAST;
   }
 
-  toggleChartPodcast(charted: boolean) {
-    this.podcastChartToggle.emit(charted);
+  toggleChartPodcast(chartPodcast: boolean) {
+    this.store.dispatch(new ACTIONS.RoutePodcastChartedAction({chartPodcast}));
   }
 
   toggleChartEpisode(episode, charted) {
-    this.episodeChartToggle.emit({id: episode.id, charted});
+    this.store.dispatch(new ACTIONS.RouteToggleEpisodeChartedAction({episodeId: episode.id, charted}));
   }
 
   onChartSingleEpisode(episode) {
-    this.chartSingleEpisode.emit(episode.id);
+    this.store.dispatch(new ACTIONS.RouteSingleEpisodeChartedAction({episodeId: episode.id, chartType: CHARTTYPE_EPISODES}));
+  }
+
+  onPageChange(page) {
+    this.store.dispatch(new ACTIONS.RouteEpisodePageAction({page}));
   }
 
   toggleExpandedReport() {
     this.expanded = !this.expanded;
     if (this.expanded) {
-      this.store.dispatch(new GoogleAnalyticsEventAction({gaAction: 'table-expand'}));
+      this.store.dispatch(new ACTIONS.GoogleAnalyticsEventAction({gaAction: 'table-expand'}));
     }
   }
 }

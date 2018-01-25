@@ -1,7 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { DebugElement } from '@angular/core';
 import { RouterTestingModule } from '@angular/router/testing';
-import { StoreModule } from '@ngrx/store';
+import { StoreModule, Store } from '@ngrx/store';
 import { By } from '@angular/platform-browser';
 import { FancyFormModule } from 'ngx-prx-styleguide';
 
@@ -10,16 +10,15 @@ import { DownloadsTableComponent } from './downloads-table.component';
 
 import { reducers } from '../ngrx/reducers';
 import { PodcastModel, EpisodeModel, RouterModel, ChartType, MetricsType,
-  CHARTTYPE_STACKED, INTERVAL_DAILY, INTERVAL_HOURLY, METRICSTYPE_DOWNLOADS, getMetricsProperty } from '../ngrx';
-import { CastlePodcastMetricsAction, CastleEpisodeMetricsAction,
-  CustomRouterNavigationAction, CmsPodcastEpisodePageSuccessAction,
-  CastlePodcastAllTimeMetricsSuccessAction, CastleEpisodeAllTimeMetricsSuccessAction } from '../ngrx/actions';
+  CHARTTYPE_STACKED, CHARTTYPE_EPISODES, INTERVAL_DAILY, INTERVAL_HOURLY, METRICSTYPE_DOWNLOADS, getMetricsProperty } from '../ngrx';
+import * as ACTIONS from '../ngrx/actions';
 
 describe('DownloadsTableComponent', () => {
   let comp: DownloadsTableComponent;
   let fix: ComponentFixture<DownloadsTableComponent>;
   let de: DebugElement;
   let el: HTMLElement;
+  let store: Store<any>;
 
   const podDownloads = [
     ['2017-08-27T00:00:00Z', 52522],
@@ -142,13 +141,16 @@ describe('DownloadsTableComponent', () => {
       fix.detectChanges();
       de = fix.debugElement;
       el = de.nativeElement;
+      store = TestBed.get(Store);
 
       // call episode and episode metrics to prime the store
-      comp.store.dispatch(new CustomRouterNavigationAction({routerState}));
-      comp.store.dispatch(new CastleEpisodeMetricsAction({episode: episodes[0], metricsPropertyName, metrics: ep0Downloads}));
-      comp.store.dispatch(new CastleEpisodeMetricsAction({episode: episodes[1], metricsPropertyName, metrics: ep1Downloads}));
-      comp.store.dispatch(new CmsPodcastEpisodePageSuccessAction({episodes}));
-      comp.store.dispatch(new CastlePodcastMetricsAction({podcast, metricsPropertyName, metrics: podDownloads}));
+      store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerState}));
+      store.dispatch(new ACTIONS.CastleEpisodeMetricsAction({episode: episodes[0], metricsPropertyName, metrics: ep0Downloads}));
+      store.dispatch(new ACTIONS.CastleEpisodeMetricsAction({episode: episodes[1], metricsPropertyName, metrics: ep1Downloads}));
+      store.dispatch(new ACTIONS.CmsPodcastEpisodePageSuccessAction({episodes}));
+      store.dispatch(new ACTIONS.CastlePodcastMetricsAction({podcast, metricsPropertyName, metrics: podDownloads}));
+
+      spyOn(store, 'dispatch').and.callThrough();
     });
   }));
 
@@ -181,15 +183,15 @@ describe('DownloadsTableComponent', () => {
       guid: 'aaa',
       page: 2
     };
-    comp.store.dispatch(new CustomRouterNavigationAction({routerState: {page: 2}}));
-    comp.store.dispatch(new CmsPodcastEpisodePageSuccessAction({episodes: [episode]}));
-    comp.store.dispatch(new CastleEpisodeMetricsAction({episode: episode, metricsPropertyName, metrics: ep0Downloads}));
+    store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerState: {page: 2}}));
+    store.dispatch(new ACTIONS.CmsPodcastEpisodePageSuccessAction({episodes: [episode]}));
+    store.dispatch(new ACTIONS.CastleEpisodeMetricsAction({episode: episode, metricsPropertyName, metrics: ep0Downloads}));
     expect(comp.episodeTableData.length).toEqual(1);
   });
 
   it('should clear out episode table data when podcast changes', () => {
     spyOn(comp, 'resetAllData').and.callThrough();
-    comp.store.dispatch(new CustomRouterNavigationAction({routerState: {podcastSeriesId: 37801}}));
+    store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerState: {podcastSeriesId: 37801}}));
     expect(comp.resetAllData).toHaveBeenCalled();
   });
 
@@ -200,13 +202,13 @@ describe('DownloadsTableComponent', () => {
   });
 
   it('should display podcast all time total downloads', () => {
-    comp.store.dispatch(new CastlePodcastAllTimeMetricsSuccessAction({ podcast, allTimeDownloads: 10 }));
+    store.dispatch(new ACTIONS.CastlePodcastAllTimeMetricsSuccessAction({ podcast, allTimeDownloads: 10 }));
     expect(comp.podcastTableData['allTimeDownloads']).toEqual(10);
   });
 
   it('should display episode all time total downloads', () => {
-    comp.store.dispatch(new CastleEpisodeAllTimeMetricsSuccessAction({episode: episodes[1], allTimeDownloads: 5}));
-    comp.store.dispatch(new CastleEpisodeAllTimeMetricsSuccessAction({episode: episodes[0], allTimeDownloads: 5}));
+    store.dispatch(new ACTIONS.CastleEpisodeAllTimeMetricsSuccessAction({episode: episodes[1], allTimeDownloads: 5}));
+    store.dispatch(new ACTIONS.CastleEpisodeAllTimeMetricsSuccessAction({episode: episodes[0], allTimeDownloads: 5}));
     comp.episodeTableData.forEach(e => {
       expect(e.allTimeDownloads).toEqual(5);
     });
@@ -220,18 +222,38 @@ describe('DownloadsTableComponent', () => {
       endDate: new Date('2017-09-07T23:00:00Z')
     };
     const property = getMetricsProperty(newRouterState.interval, newRouterState.metricsType);
-    comp.store.dispatch(new CustomRouterNavigationAction({routerState: newRouterState}));
-    comp.store.dispatch(new CastlePodcastMetricsAction({podcast, metricsPropertyName: property, metrics: podHourlyDownloads}));
+    store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerState: newRouterState}));
+    store.dispatch(new ACTIONS.CastlePodcastMetricsAction({podcast, metricsPropertyName: property, metrics: podHourlyDownloads}));
     fix.detectChanges();
     expect(de.query(By.css('em')).nativeElement.textContent).toContain('local timezone');
   });
 
   it('toggles episode display when checkbox is clicked', () => {
-    spyOn(comp.episodeChartToggle, 'emit');
     fix.detectChanges();
     const checks = de.queryAll(By.css('input[type="checkbox"]'));
     expect(checks.length).toEqual(3);
     checks[2].nativeElement.click();
-    expect(comp.episodeChartToggle.emit).toHaveBeenCalledWith({id: 123, charted: true});
+    expect(store.dispatch).toHaveBeenCalledWith(new ACTIONS.RouteToggleEpisodeChartedAction({episodeId: 123, charted: true}));
+  });
+
+  it('should dispatch routing action on podcast chart toggle', () => {
+    comp.toggleChartPodcast(false);
+    expect(store.dispatch).toHaveBeenCalledWith(new ACTIONS.RoutePodcastChartedAction({chartPodcast: false}));
+  });
+
+  it('should dispatch routing action on episode chart toggle', () => {
+    comp.toggleChartEpisode(episodes[0], false);
+    expect(store.dispatch).toHaveBeenCalledWith(new ACTIONS.RouteToggleEpisodeChartedAction({episodeId: 123, charted: false}));
+  });
+
+  it('should dispatch routing action on chart single episode', () => {
+    comp.onChartSingleEpisode(episodes[1]);
+    expect(store.dispatch).toHaveBeenCalledWith(new ACTIONS.RouteSingleEpisodeChartedAction(
+      {episodeId: 124, chartType: CHARTTYPE_EPISODES}));
+  });
+
+  it('should dispatch routing action on page change', () => {
+    comp.onPageChange(2);
+    expect(store.dispatch).toHaveBeenCalledWith(new ACTIONS.RouteEpisodePageAction({page: 2}));
   });
 });

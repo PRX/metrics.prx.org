@@ -47,7 +47,6 @@ export function CustomRouterReducer(state: RouterModel = initialState, action: C
       if (action.payload.routerState.episodeIds) {
         newState.episodeIds = [...action.payload.routerState.episodeIds];
       }
-      console.log('ROUTER_REDUCER', newState);
       return newState;
     default:
       return state;

@@ -5,7 +5,7 @@ import { StoreModule, Store } from '@ngrx/store';
 import { reducers } from '../../ngrx/reducers';
 
 import { CustomRouterNavigationAction } from '../../ngrx/actions';
-import { RouterModel, INTERVAL_DAILY, INTERVAL_MONTHLY } from '../../ngrx';
+import { RouterModel, ChartType, CHARTTYPE_PODCAST, INTERVAL_DAILY } from '../../ngrx';
 import * as dateUtil from '../util/date';
 
 import { MenuBarComponent } from './menu-bar.component';
@@ -28,6 +28,7 @@ describe('MenuBarComponent', () => {
   let store: Store<any>;
 
   const routerState: RouterModel = {
+    chartType: <ChartType>CHARTTYPE_PODCAST,
     interval: INTERVAL_DAILY,
     standardRange: dateUtil.THIS_WEEK,
     beginDate: dateUtil.beginningOfThisWeekUTC().toDate(),
@@ -61,29 +62,30 @@ describe('MenuBarComponent', () => {
       store = TestBed.get(Store);
 
       store.dispatch(new CustomRouterNavigationAction({routerState}));
-
-      spyOn(comp, 'googleAnalyticsEvent').and.callThrough();
     });
   }));
 
-  xit('keeps standard range in sync with custom range', () => {
-    comp.onAdvancedChange({beginDate: dateUtil.beginningOfLastWeekUTC().toDate(), endDate: dateUtil.endOfLastWeekUTC().toDate()});
+  it('should have routerState', () => {
     let result;
-    comp.routerState$.subscribe(r => result = r);
-    expect(routerState.standardRange).toEqual(dateUtil.LAST_WEEK);
+    comp.routerState$.subscribe(value => result = value);
+    expect(result).toEqual(routerState);
   });
 
-  xit('keeps date range in sync with interval', () => {
-    store.dispatch(new CustomRouterNavigationAction({routerState: {beginDate: dateUtil.beginningOfTodayUTC().toDate()}}));
-    comp.onIntervalChange(INTERVAL_MONTHLY);
+  it('should have chart type', () => {
     let result;
-    comp.routerState$.subscribe(r => result = r);
-    expect(result.beginDate.valueOf()).toEqual(dateUtil.beginningOfThisMonthUTC().valueOf());
-    expect(result.standardRange).toEqual(dateUtil.THIS_MONTH);
+    comp.chartType$.subscribe(value => result = value);
+    expect(result).toEqual(CHARTTYPE_PODCAST);
   });
 
-  it('should send google analytics event when standard range is changed', () => {
-    comp.onStandardRangeChange(dateUtil.LAST_WEEK);
-    expect(comp.googleAnalyticsEvent).toHaveBeenCalled();
+  it('should have interval', () => {
+    let result;
+    comp.interval$.subscribe(value => result = value);
+    expect(result).toEqual(INTERVAL_DAILY);
+  });
+
+  it('should have standard range', () => {
+    let result;
+    comp.standardRange$.subscribe(value => result = value);
+    expect(result).toEqual(dateUtil.THIS_WEEK);
   });
 });

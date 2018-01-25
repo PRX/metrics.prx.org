@@ -20,14 +20,18 @@ export class CastleEffects {
   loadAllTimePodcastMetrics = this.actions$
     .ofType(ActionTypes.CASTLE_PODCAST_ALL_TIME_METRICS_LOAD)
     .switchMap(() => {
-      return this.castle.followList('prx:podcast', {id: this.selectedPodcast.feederId})
-        .map(
-          metrics => {
-            const allTimeDownloads = metrics[0]['downloads']['total'];
-            return new CastlePodcastAllTimeMetricsSuccessAction({podcast: this.selectedPodcast, allTimeDownloads});
-          },
-          error => Observable.of(new CastlePodcastAllTimeMetricsFailureAction({error}))
-        );
+      if (this.selectedPodcast) {
+        return this.castle.followList('prx:podcast', {id: this.selectedPodcast.feederId})
+          .map(
+            metrics => {
+              const allTimeDownloads = metrics[0]['downloads']['total'];
+              return new CastlePodcastAllTimeMetricsSuccessAction({podcast: this.selectedPodcast, allTimeDownloads});
+            },
+            error => Observable.of(new CastlePodcastAllTimeMetricsFailureAction({error}))
+          );
+      } else {
+        return Observable.of(new CastlePodcastAllTimeMetricsFailureAction({error: 'No selected podcast yet'}));
+      }
     });
 
   @Effect()

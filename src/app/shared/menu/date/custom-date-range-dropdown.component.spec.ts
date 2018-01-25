@@ -1,22 +1,29 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { DebugElement } from '@angular/core';
-import { StoreModule } from '@ngrx/store';
+import { StoreModule, Store } from '@ngrx/store';
 import { By } from '@angular/platform-browser';
 
 import { reducers } from '../../../ngrx/reducers';
+import { RouteAdvancedRangeAction, GoogleAnalyticsEventAction } from '../../../ngrx/actions';
+import { INTERVAL_DAILY, INTERVAL_HOURLY, INTERVAL_MONTHLY } from '../../../ngrx';
+import * as dateUtil from '../../util/date';
 
 import { DatepickerModule } from 'ngx-prx-styleguide';
 import { StandardDateRangeComponent } from './standard-date-range.component';
 import { CustomDateRangeDropdownComponent } from './custom-date-range-dropdown.component';
-
-import { INTERVAL_DAILY, INTERVAL_HOURLY, INTERVAL_MONTHLY } from '../../../ngrx';
-import * as dateUtil from '../../util/date';
 
 describe('CustomDateRangeDropdownComponent', () => {
   let comp: CustomDateRangeDropdownComponent;
   let fix: ComponentFixture<CustomDateRangeDropdownComponent>;
   let de: DebugElement;
   let el: HTMLElement;
+  let store: Store<any>;
+
+  const routerState = {
+    interval: INTERVAL_DAILY,
+    beginDate: dateUtil.beginningOfTodayUTC().toDate(),
+    endDate: dateUtil.endOfTodayUTC().toDate()
+  };
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -33,12 +40,9 @@ describe('CustomDateRangeDropdownComponent', () => {
       comp = fix.componentInstance;
       de = fix.debugElement;
       el = de.nativeElement;
+      store = TestBed.get(Store);
 
-      comp.tempRange = comp.routerState = {
-        interval: INTERVAL_DAILY,
-        beginDate: dateUtil.beginningOfTodayUTC().toDate(),
-        endDate: dateUtil.endOfTodayUTC().toDate()
-      };
+      comp.tempRange = comp.routerState = routerState;
       fix.detectChanges();
 
       spyOn(comp, 'googleAnalyticsEvent').and.callThrough();
@@ -101,7 +105,16 @@ describe('CustomDateRangeDropdownComponent', () => {
     expect(comp.routerState.standardRange).toEqual(dateUtil.THIS_MONTH);
   });
 
-  it('should send google analytics event on Apply for custom or standard range', () => {
+  it('should dispatch routing and google analytics actions onApply', () => {
+    spyOn(store, 'dispatch');
+    comp.onIntervalChange(INTERVAL_MONTHLY);
+    comp.onStandardRangeChange(dateUtil.LAST_MONTH);
+    comp.onApply();
+    expect(store.dispatch).toHaveBeenCalledWith(jasmine.any(GoogleAnalyticsEventAction));
+    expect(store.dispatch).toHaveBeenCalledWith(jasmine.any(RouteAdvancedRangeAction));
+  });
+
+  it('should send google analytics event or custom or standard range', () => {
     comp.onStandardRangeChange(dateUtil.LAST_WEEK);
     comp.onApply();
     expect(comp.googleAnalyticsEvent).toHaveBeenCalledWith(comp.STANDARD_DATE, comp.tempRange);

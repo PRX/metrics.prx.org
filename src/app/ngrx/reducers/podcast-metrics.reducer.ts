@@ -1,5 +1,5 @@
 import { ActionTypes, AllActions,
-  CastlePodcastMetricsAction, CastlePodcastChartToggleAction, CastlePodcastAllTimeMetricsSuccessAction,
+  CastlePodcastMetricsSuccessAction, CastlePodcastChartToggleAction, CastlePodcastAllTimeMetricsSuccessAction,
   CustomRouterNavigationPayload } from '../actions';
 
 export interface PodcastMetricsModel {
@@ -21,19 +21,18 @@ const podcastIndex = (state: PodcastMetricsModel[], seriesId: number) => {
 
 export function PodcastMetricsReducer(state: PodcastMetricsModel[] = initialState, action: AllActions) {
   switch (action.type) {
-    case ActionTypes.CASTLE_PODCAST_METRICS:
-      if (action instanceof CastlePodcastMetricsAction) {
-        const { seriesId, feederId } = action.payload.podcast;
-        const { metricsPropertyName } = action.payload;
+    case ActionTypes.CASTLE_PODCAST_METRICS_SUCCESS:
+      if (action instanceof CastlePodcastMetricsSuccessAction) {
+        const { seriesId, feederId, metricsPropertyName, metrics } = action.payload;
         const podcastIdx = podcastIndex(state, seriesId);
         let podcast: PodcastMetricsModel, newState: PodcastMetricsModel[];
         if (podcastIdx > -1) {
           podcast = {...state[podcastIdx], seriesId};
-          podcast[metricsPropertyName] = action.payload.metrics;
+          podcast[metricsPropertyName] = metrics;
           newState = [...state.slice(0, podcastIdx), podcast, ...state.slice(podcastIdx + 1)];
         } else {
           podcast = {seriesId, feederId};
-          podcast[metricsPropertyName] = action.payload.metrics;
+          podcast[metricsPropertyName] = metrics;
           newState = [podcast, ...state];
         }
         return newState;

@@ -1,5 +1,5 @@
 import { ActionTypes, AllActions,
-  CastleEpisodeMetricsAction, CastleEpisodeChartToggleAction, CastleEpisodeAllTimeMetricsSuccessAction,
+  CastleEpisodeMetricsSuccessAction, CastleEpisodeChartToggleAction, CastleEpisodeAllTimeMetricsSuccessAction,
   CustomRouterNavigationPayload } from '../actions';
 
 export interface EpisodeMetricsModel {
@@ -23,19 +23,18 @@ const episodeIndex = (state: EpisodeMetricsModel[], id: number, seriesId: number
 
 export function EpisodeMetricsReducer(state: EpisodeMetricsModel[] = initialState, action: AllActions) {
   switch (action.type) {
-    case ActionTypes.CASTLE_EPISODE_METRICS:
-      if (action instanceof CastleEpisodeMetricsAction) {
-        const {id, seriesId, guid, page} = action.payload.episode;
-        const { metricsPropertyName } = action.payload;
+    case ActionTypes.CASTLE_EPISODE_METRICS_SUCCESS:
+      if (action instanceof CastleEpisodeMetricsSuccessAction) {
+        const { id, seriesId, guid, page, metricsPropertyName, metrics } = action.payload;
         const epIdx = episodeIndex(state, id, seriesId);
         let episode: EpisodeMetricsModel, newState: EpisodeMetricsModel[];
         if (epIdx > -1) {
           episode = {...state[epIdx], id, seriesId, guid, page};
-          episode[metricsPropertyName] = action.payload.metrics;
+          episode[metricsPropertyName] = metrics;
           newState = [...state.slice(0, epIdx), episode, ...state.slice(epIdx + 1)];
         } else {
           episode = {seriesId, id, guid, page};
-          episode[metricsPropertyName] = action.payload.metrics;
+          episode[metricsPropertyName] = metrics;
           newState = [episode, ...state];
         }
         return newState;

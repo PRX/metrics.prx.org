@@ -3,8 +3,7 @@ import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs/Subscription';
 import { CastleService } from '../core';
-import { CastlePodcastMetricsAction, CastleEpisodeMetricsAction,
-  GoogleAnalyticsEventAction, CastleEpisodeChartToggleAction } from '../ngrx/actions';
+import { CastlePodcastMetricsSuccessAction, CastleEpisodeMetricsSuccessAction, GoogleAnalyticsEventAction } from '../ngrx/actions';
 import { RouterModel, EpisodeModel, PodcastModel, ChartType, MetricsType,
   CHARTTYPE_PODCAST, INTERVAL_DAILY, EPISODE_PAGE_SIZE, METRICSTYPE_DOWNLOADS, getMetricsProperty } from '../ngrx';
 import { selectRouter, selectEpisodes, selectPodcasts } from '../ngrx/reducers';
@@ -228,8 +227,9 @@ export class DownloadsComponent implements OnInit, OnDestroy {
   setPodcastMetrics(podcast: PodcastModel, metrics: any) {
     this.toggleLoading(false);
     if (metrics && metrics.length && metrics[0]['downloads']) {
-      this.store.dispatch(new CastlePodcastMetricsAction({
-        podcast,
+      this.store.dispatch(new CastlePodcastMetricsSuccessAction({
+        seriesId: podcast.seriesId,
+        feederId: podcast.feederId,
         metricsPropertyName: getMetricsProperty(this.routerState.interval, this.routerState.metricsType),
         metrics: metrics[0]['downloads']
       }));
@@ -264,8 +264,11 @@ export class DownloadsComponent implements OnInit, OnDestroy {
   setEpisodeMetrics(episode: EpisodeModel, metrics: any) {
     this.toggleLoading(this.isPodcastLoading, false);
     if (metrics && metrics.length && metrics[0]['downloads']) {
-      this.store.dispatch(new CastleEpisodeMetricsAction({
-        episode,
+      this.store.dispatch(new CastleEpisodeMetricsSuccessAction({
+        seriesId: episode.seriesId,
+        page: episode.page,
+        id: episode.id,
+        guid: episode.guid,
         metricsPropertyName: getMetricsProperty(this.routerState.interval, this.routerState.metricsType),
         metrics: metrics[0]['downloads']
       }));

@@ -1,4 +1,4 @@
-import { CastleEpisodeMetricsAction, CastleEpisodeAllTimeMetricsSuccessAction,
+import { CastleEpisodeMetricsSuccessAction, CastleEpisodeAllTimeMetricsSuccessAction,
   CastleEpisodeAllTimeMetricsFailureAction } from '../actions';
 import { INTERVAL_DAILY, MetricsType, METRICSTYPE_DOWNLOADS, RouterModel, getMetricsProperty } from '../';
 import { EpisodeMetricsReducer } from './episode-metrics.reducer';
@@ -7,6 +7,7 @@ describe('EpisodeMetricsReducer', () => {
   let newState;
   const episode = {
     seriesId: 37800,
+    page: 1,
     id: 123,
     publishedAt: new Date(),
     title: 'A Pet Talk Episode',
@@ -21,8 +22,8 @@ describe('EpisodeMetricsReducer', () => {
   const metricsPropertyName = getMetricsProperty(routerState.interval, routerState.metricsType);
   beforeEach(() => {
     newState = EpisodeMetricsReducer(undefined,
-      new CastleEpisodeMetricsAction({
-        episode,
+      new CastleEpisodeMetricsSuccessAction({
+        seriesId: episode.seriesId, page: episode.page, id: episode.id, guid: episode.guid,
         metricsPropertyName,
         metrics: []
       })
@@ -38,8 +39,9 @@ describe('EpisodeMetricsReducer', () => {
 
   it('should update existing episode metrics keyed by seriesId and episode id', () => {
     newState = EpisodeMetricsReducer(newState,
-      new CastleEpisodeMetricsAction({
-        episode: {...episode, guid: 'gfedcba'},
+      new CastleEpisodeMetricsSuccessAction({
+        seriesId: episode.seriesId, page: episode.page, id: episode.id,
+        guid: 'gfedcba',
         metricsPropertyName,
         metrics: [
           ['2017-08-27T00:00:00Z', 52522],
@@ -67,14 +69,11 @@ describe('EpisodeMetricsReducer', () => {
 
   it ('should add new episode metrics', () => {
     newState = EpisodeMetricsReducer(newState,
-      new CastleEpisodeMetricsAction({
-        episode: {
-          seriesId: 37800,
-          id: 1234,
-          publishedAt: new Date(),
-          title: 'A New Pet Talk Episode',
-          guid: 'hijklmn'
-        },
+      new CastleEpisodeMetricsSuccessAction({
+        seriesId: 37800,
+        page: 1,
+        id: 1234,
+        guid: 'hijklmn',
         metricsPropertyName,
         metrics: []
       })

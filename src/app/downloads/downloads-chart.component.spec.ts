@@ -10,7 +10,7 @@ import { reducers } from '../ngrx/reducers';
 import { PodcastModel, EpisodeModel, RouterModel, ChartType, MetricsType,
   INTERVAL_DAILY, CHARTTYPE_STACKED, METRICSTYPE_DOWNLOADS, getMetricsProperty } from '../ngrx';
 import { CmsPodcastEpisodePageSuccessAction, CastleEpisodeChartToggleAction, CastlePodcastChartToggleAction,
-  CastlePodcastMetricsAction, CastleEpisodeMetricsAction, CustomRouterNavigationAction } from '../ngrx/actions';
+  CastlePodcastMetricsSuccessAction, CastleEpisodeMetricsSuccessAction, CustomRouterNavigationAction } from '../ngrx/actions';
 
 import { getTotal } from '../shared/util/metrics.util';
 import { TimeseriesDatumModel } from 'ngx-prx-styleguide';
@@ -122,11 +122,16 @@ describe('DownloadsChartComponent', () => {
       // call episode and podcast metrics to prime the store
       comp.store.dispatch(new CustomRouterNavigationAction({routerState}));
       comp.store.dispatch(new CmsPodcastEpisodePageSuccessAction({episodes}));
-      comp.store.dispatch(new CastleEpisodeMetricsAction({episode: episodes[0], metricsPropertyName, metrics: ep0Downloads}));
+      comp.store.dispatch(new CastleEpisodeMetricsSuccessAction({
+        seriesId: episodes[0].seriesId, page: episodes[0].page, id: episodes[0].id, guid: episodes[0].guid,
+        metricsPropertyName, metrics: ep0Downloads}));
       comp.store.dispatch(new CastleEpisodeChartToggleAction({id: episodes[0].id, seriesId: podcast.seriesId, charted: true}));
-      comp.store.dispatch(new CastleEpisodeMetricsAction({episode: episodes[1], metricsPropertyName, metrics: ep1Downloads}));
+      comp.store.dispatch(new CastleEpisodeMetricsSuccessAction({
+        seriesId: episodes[1].seriesId, page: episodes[1].page, id: episodes[1].id, guid: episodes[1].guid,
+        metricsPropertyName, metrics: ep1Downloads}));
       comp.store.dispatch(new CastleEpisodeChartToggleAction({id: episodes[1].id, seriesId: podcast.seriesId, charted: true}));
-      comp.store.dispatch(new CastlePodcastMetricsAction({podcast, metricsPropertyName, metrics: podDownloads}));
+      comp.store.dispatch(new CastlePodcastMetricsSuccessAction({
+        seriesId: podcast.seriesId, feederId: podcast.feederId, metricsPropertyName, metrics: podDownloads}));
       comp.store.dispatch(new CastlePodcastChartToggleAction({seriesId: podcast.seriesId, charted: true}));
     });
 
@@ -214,8 +219,9 @@ describe('DownloadsChartComponent', () => {
     beforeEach(() => {
       // call episode and podcast metrics to prime the store
       comp.store.dispatch(new CustomRouterNavigationAction({routerState}));
-      comp.store.dispatch(new CastlePodcastMetricsAction({
-        podcast,
+      comp.store.dispatch(new CastlePodcastMetricsSuccessAction({
+        seriesId: podcast.seriesId,
+        feederId: podcast.feederId,
         metricsPropertyName,
         metrics: podDownloads
       }));
@@ -274,9 +280,13 @@ describe('DownloadsChartComponent', () => {
       // call episode and podcast metrics to prime the store
       comp.store.dispatch(new CustomRouterNavigationAction({routerState}));
       comp.store.dispatch(new CmsPodcastEpisodePageSuccessAction({episodes}));
-      comp.store.dispatch(new CastleEpisodeMetricsAction({episode: episodes[0], metricsPropertyName, metrics: ep0Downloads}));
+      comp.store.dispatch(new CastleEpisodeMetricsSuccessAction({
+        seriesId: episodes[0].seriesId, page: episodes[0].page, id: episodes[0].id, guid: episodes[0].guid,
+        metricsPropertyName, metrics: ep0Downloads}));
       comp.store.dispatch(new CastleEpisodeChartToggleAction({id: episodes[0].id, seriesId: episodes[0].seriesId, charted: true}));
-      comp.store.dispatch(new CastleEpisodeMetricsAction({episode: episodes[1], metricsPropertyName, metrics: ep1Downloads}));
+      comp.store.dispatch(new CastleEpisodeMetricsSuccessAction({
+        seriesId: episodes[1].seriesId, page: episodes[1].page, id: episodes[1].id, guid: episodes[1].guid,
+        metricsPropertyName, metrics: ep1Downloads}));
       comp.store.dispatch(new CastleEpisodeChartToggleAction({id: episodes[1].id, seriesId: episodes[0].seriesId, charted: true}));
     });
 

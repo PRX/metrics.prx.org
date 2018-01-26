@@ -16,7 +16,7 @@ import { downloadsRouting } from './downloads.routing';
 
 import { reducers } from '../ngrx/reducers';
 import { CustomRouterNavigationAction, CmsPodcastsSuccessAction, CmsPodcastEpisodePageSuccessAction,
-  CastlePodcastMetricsAction, CastleEpisodeMetricsAction} from '../ngrx/actions';
+  CastlePodcastMetricsSuccessAction, CastleEpisodeMetricsSuccessAction } from '../ngrx/actions';
 
 describe('DownloadsComponent', () => {
   let comp: DownloadsComponent;
@@ -141,8 +141,8 @@ describe('DownloadsComponent', () => {
       expect(comp.setPodcastMetrics).toHaveBeenCalledTimes(2);
       expect(comp.setEpisodeMetrics).toHaveBeenCalledTimes(2);
       expect(comp.googleAnalyticsEvent).toHaveBeenCalledTimes(2);
-      expect(comp.store.dispatch).toHaveBeenCalledWith(jasmine.any(CastlePodcastMetricsAction));
-      expect(comp.store.dispatch).toHaveBeenCalledWith(jasmine.any(CastleEpisodeMetricsAction));
+      expect(comp.store.dispatch).toHaveBeenCalledWith(jasmine.any(CastlePodcastMetricsSuccessAction));
+      expect(comp.store.dispatch).toHaveBeenCalledWith(jasmine.any(CastleEpisodeMetricsSuccessAction));
     });
 
     it('should show a downloads table of episodes', () => {

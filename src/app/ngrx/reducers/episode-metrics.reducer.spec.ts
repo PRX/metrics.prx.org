@@ -1,6 +1,6 @@
 import { CastleEpisodeMetricsAction, CastleEpisodeAllTimeMetricsSuccessAction,
   CastleEpisodeAllTimeMetricsFailureAction } from '../actions';
-import { INTERVAL_DAILY } from '../';
+import { INTERVAL_DAILY, MetricsType, METRICSTYPE_DOWNLOADS, RouterModel, getMetricsProperty } from '../';
 import { EpisodeMetricsReducer } from './episode-metrics.reducer';
 
 describe('EpisodeMetricsReducer', () => {
@@ -12,17 +12,18 @@ describe('EpisodeMetricsReducer', () => {
     title: 'A Pet Talk Episode',
     guid: 'abcdefg'
   };
-  const filter = {
+  const routerState: RouterModel = {
+    metricsType: <MetricsType>METRICSTYPE_DOWNLOADS,
     beginDate: new Date('2017-08-27T00:00:00Z'),
     endDate: new Date('2017-09-07T00:00:00Z'),
     interval: INTERVAL_DAILY
   };
+  const metricsPropertyName = getMetricsProperty(routerState.interval, routerState.metricsType);
   beforeEach(() => {
     newState = EpisodeMetricsReducer(undefined,
       new CastleEpisodeMetricsAction({
         episode,
-        filter,
-        metricsType: 'downloads',
+        metricsPropertyName,
         metrics: []
       })
     );
@@ -39,8 +40,7 @@ describe('EpisodeMetricsReducer', () => {
     newState = EpisodeMetricsReducer(newState,
       new CastleEpisodeMetricsAction({
         episode: {...episode, guid: 'gfedcba'},
-        filter,
-        metricsType: 'downloads',
+        metricsPropertyName,
         metrics: [
           ['2017-08-27T00:00:00Z', 52522],
           ['2017-08-28T00:00:00Z', 162900],
@@ -75,8 +75,7 @@ describe('EpisodeMetricsReducer', () => {
           title: 'A New Pet Talk Episode',
           guid: 'hijklmn'
         },
-        filter,
-        metricsType: 'downloads',
+        metricsPropertyName,
         metrics: []
       })
     );
@@ -93,8 +92,8 @@ describe('EpisodeMetricsReducer', () => {
     expect(newState[0].allTimeDownloads).toEqual(10);
   });
 
-  it ('won\t alter state on all time metrics failure', () => {
-    let oldState = newState;
+  it ('should not alter state on all time metrics failure', () => {
+    const oldState = newState;
     newState = EpisodeMetricsReducer(newState,
       new CastleEpisodeAllTimeMetricsFailureAction({error: 'Some error'})
     );

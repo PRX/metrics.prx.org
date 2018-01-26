@@ -1,7 +1,6 @@
 import { TestBed } from '@angular/core/testing';
-import { RouterTestingModule } from '@angular/router/testing';
 import { provideMockActions } from '@ngrx/effects/testing';
-import { StoreModule } from '@ngrx/store';
+import { StoreModule, Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
 import { ReplaySubject } from 'rxjs/ReplaySubject';
 
@@ -21,6 +20,7 @@ describe('CmsEffects', () => {
   let expect$: Observable<any>;
   let cms: MockHalService;
   let auth: MockHalDoc;
+  let store: Store<any>;
 
   beforeEach(() => {
     authToken.next('some-auth-token');
@@ -31,7 +31,6 @@ describe('CmsEffects', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
-        RouterTestingModule,
         StoreModule.forRoot(reducers)
       ],
       providers: [
@@ -43,8 +42,9 @@ describe('CmsEffects', () => {
       ]
     });
     effects = TestBed.get(CmsEffects);
-    spyOn(effects, 'routeWithEpisodeCharted').and.stub();
+    store = TestBed.get(Store);
     spyOn(effects, 'getEpisodeColor').and.returnValue('#fff');
+    spyOn(store, 'dispatch').and.callThrough();
   });
 
   describe('loadAccount', () => {
@@ -85,7 +85,7 @@ describe('CmsEffects', () => {
 
   describe('loadPodcasts', () => {
 
-    it('successfully loads podcasts', () => {
+    it('successfully loads podcasts and navigates to the first one', () => {
       const series = auth.mockItems('prx:series', [
         {id: 111, title: 'Series #1'},
         {id: 222, title: 'Series #2'},
@@ -106,6 +106,7 @@ describe('CmsEffects', () => {
       actions$ = hot('-a', {a: action});
       expect$ = cold('-r', {r: completion});
       expect(effects.loadPodcasts$).toBeObservable(expect$);
+      expect(store.dispatch).toHaveBeenCalledWith(new ACTIONS.RouteSeriesAction({podcastSeriesId: 111}));
     });
 
     it('fails to load podcasts', () => {
@@ -140,7 +141,7 @@ describe('CmsEffects', () => {
 
   describe('loadEpisodes', () => {
 
-    const podcast = {seriesId: 111, title: 'Series #1', feederUrl: 'http://my/podcast/url1', feederId: 'url1'};
+    const seriesId = 111;
     const s1 = {id: 121, publishedAt: new Date('2018-01-01'), title: 'A Pet Talk Episode'};
     const s2 = {id: 122, publishedAt: new Date('2018-01-02'), title: 'A More Recent Pet Talk Episode'};
     const s3 = {id: 123, publishedAt: new Date('2018-01-03'), title: 'A Most Recent Pet Talk Episode'};
@@ -159,7 +160,7 @@ describe('CmsEffects', () => {
       ].map(episode => {
         return {...episode, page: 1, seriesId: 111, color: '#fff'};
       });
-      const action = new ACTIONS.CmsPodcastEpisodePageAction({podcast, page: 1});
+      const action = new ACTIONS.CmsPodcastEpisodePageAction({seriesId, page: 1});
       const completion = new ACTIONS.CmsPodcastEpisodePageSuccessAction({episodes});
       actions$ = hot('-a', {a: action});
       expect$ = cold('-r', {r: completion});
@@ -169,7 +170,7 @@ describe('CmsEffects', () => {
     it('fails to load a page of episodes', () => {
       const error = new Error('Whaaaa?');
       const stories = cms.mock('prx:series', {}).mockError('prx:stories', error);
-      const action = new ACTIONS.CmsPodcastEpisodePageAction({podcast, page: 1});
+      const action = new ACTIONS.CmsPodcastEpisodePageAction({seriesId, page: 1});
       const completion = new ACTIONS.CmsPodcastEpisodePageFailureAction({error});
       actions$ = hot('-a', {a: action});
       expect$ = cold('-r', {r: completion});
@@ -182,10 +183,10 @@ describe('CmsEffects', () => {
       stories.forEach((story, index) => {
         story.mockItems('prx:distributions', [{kind: 'episode', url: `http://my/episode/guid${index}`}]);
       });
-      const action = new ACTIONS.CmsPodcastEpisodePageAction({podcast, page: 1});
+      const action = new ACTIONS.CmsPodcastEpisodePageAction({seriesId, page: 1});
       actions$ = hot('-a', {a: action});
       effects.loadEpisodes$.subscribe(() => {
-        expect(effects.routeWithEpisodeCharted).toHaveBeenCalledWith([121, 122, 123, 124, 125]);
+        expect(store.dispatch).toHaveBeenCalledWith(new ACTIONS.RouteEpisodesChartedAction({episodeIds: [121, 122, 123, 124, 125]}));
       });
     });
 
@@ -195,11 +196,11 @@ describe('CmsEffects', () => {
       stories.forEach((story, index) => {
         story.mockItems('prx:distributions', [{kind: 'episode', url: `http://my/episode/guid${index}`}]);
       });
-      const action = new ACTIONS.CmsPodcastEpisodePageAction({podcast, page: 1});
+      const action = new ACTIONS.CmsPodcastEpisodePageAction({seriesId, page: 1});
       effects.episodeMetrics = [{seriesId: 111, id: 124, charted: true}];
       actions$ = hot('-a', {a: action});
       effects.loadEpisodes$.subscribe(() => {
-        expect(effects.routeWithEpisodeCharted).not.toHaveBeenCalled();
+        expect(store.dispatch).not.toHaveBeenCalled();
       });
     });
 

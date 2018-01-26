@@ -10,8 +10,8 @@ import { PodcastNavListComponent } from './podcast-nav-list.component';
 
 import { reducers, RootState } from '../../ngrx/reducers';
 
-import { CastleFilterAction, CmsPodcastsSuccessAction } from '../../ngrx/actions';
-import { FilterModel } from '../../ngrx';
+import { CustomRouterNavigationAction, CmsPodcastsSuccessAction, RouteSeriesAction } from '../../ngrx/actions';
+import { RouterModel } from '../../ngrx';
 
 describe('PodcastNavComponent', () => {
   let store: Store<RootState>;
@@ -32,7 +32,7 @@ describe('PodcastNavComponent', () => {
       feederId: '72'
     }
   ];
-  const filter: FilterModel = {
+  const routerState: RouterModel = {
     podcastSeriesId: podcasts[0].seriesId
   };
 
@@ -58,12 +58,12 @@ describe('PodcastNavComponent', () => {
 
       store = TestBed.get(Store);
 
-      store.dispatch(new CastleFilterAction({filter}));
+      store.dispatch(new CustomRouterNavigationAction({routerState}));
       store.dispatch(new CmsPodcastsSuccessAction({podcasts: podcasts.slice(0, 1)}));
     });
   }));
 
-  it('should initialize selected podcast according to filter', () => {
+  it('should set selected podcast according to routerState', () => {
     let result;
     comp.selectedPodcast$.subscribe(value => result = value);
     expect(result).toEqual(podcasts[0]);
@@ -75,5 +75,11 @@ describe('PodcastNavComponent', () => {
     expect(result).toEqual([podcasts[0]]);
     store.dispatch(new CmsPodcastsSuccessAction({podcasts: podcasts}));
     expect(result).toEqual(podcasts);
+  });
+
+  it('should dispatch routing action when podcast is changed', () => {
+    spyOn(store, 'dispatch');
+    comp.onPodcastChange(podcasts[1]);
+    expect(store.dispatch).toHaveBeenCalledWith(new RouteSeriesAction({podcastSeriesId: podcasts[1].seriesId}));
   });
 });

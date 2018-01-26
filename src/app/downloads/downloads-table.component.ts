@@ -1,13 +1,13 @@
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs/Subscription';
-import { Component, OnDestroy, Input, Output, EventEmitter } from '@angular/core';
-import { EpisodeModel, FilterModel, PodcastModel, EpisodeMetricsModel, PodcastMetricsModel,
+import { Component, OnDestroy, Input } from '@angular/core';
+import { EpisodeModel, RouterModel, EpisodeMetricsModel, PodcastMetricsModel,
   INTERVAL_MONTHLY, INTERVAL_WEEKLY, INTERVAL_DAILY, INTERVAL_HOURLY,
   CHARTTYPE_PODCAST, CHARTTYPE_EPISODES, CHARTTYPE_STACKED  } from '../ngrx';
-import { selectEpisodes, selectFilter, selectEpisodeMetrics, selectPodcastMetrics } from '../ngrx/reducers';
-import { CastlePodcastAllTimeMetricsLoadAction, CastleEpisodeAllTimeMetricsLoadAction, GoogleAnalyticsEventAction } from '../ngrx/actions';
+import { selectEpisodes, selectRouter, selectEpisodeMetrics, selectPodcastMetrics } from '../ngrx/reducers';
+import * as ACTIONS from '../ngrx/actions';
 
-import { findPodcastMetrics, filterPodcastEpisodePage, filterEpisodeMetricsPage, filterAllPodcastEpisodes, metricsData, getTotal } from '../shared/util/metrics.util';
+import { findPodcastMetrics, filterPodcastEpisodePage, filterEpisodeMetricsPage, metricsData, getTotal } from '../shared/util/metrics.util';
 import { mapMetricsToTimeseriesData, neutralColor } from '../shared/util/chart.util';
 import * as dateFormat from '../shared/util/date/date.format';
 import { getAmountOfIntervals } from '../shared/util/date/date.util';
@@ -22,12 +22,8 @@ import * as moment from 'moment';
 })
 export class DownloadsTableComponent implements OnDestroy {
   @Input() totalPages;
-  @Output() podcastChartToggle = new EventEmitter();
-  @Output() episodeChartToggle = new EventEmitter();
-  @Output() chartSingleEpisode = new EventEmitter();
-  @Output() pageChange = new EventEmitter();
-  filterStoreSub: Subscription;
-  filter: FilterModel;
+  routerSub: Subscription;
+  routerState: RouterModel;
   allEpisodesSub: Subscription;
   episodes: EpisodeModel[];
   episodeMetricsStoreSub: Subscription;
@@ -42,44 +38,44 @@ export class DownloadsTableComponent implements OnDestroy {
 
   constructor(public store: Store<any>) {
 
-    this.filterStoreSub = this.store.select(selectFilter).subscribe((newFilter: FilterModel) => {
-      if (newFilter) {
-        if (isPodcastChanged(newFilter, this.filter)) {
-          this.store.dispatch(new CastlePodcastAllTimeMetricsLoadAction({ filter: newFilter }));
+    this.routerSub = this.store.select(selectRouter).subscribe((newRouterState: RouterModel) => {
+      if (newRouterState) {
+        if (isPodcastChanged(newRouterState, this.routerState)) {
+          this.store.dispatch(new ACTIONS.CastlePodcastAllTimeMetricsLoadAction());
           this.resetAllData();
         }
-        // apply new filter to existing data so it's not showing stale data while loading
-        this.filter = newFilter;
+        // apply new routerState to existing data so it's not showing stale data while loading
+        this.routerState = newRouterState;
         if (this.episodeMetrics) {
-          this.episodeMetrics = filterEpisodeMetricsPage(this.filter, this.episodeMetrics, 'downloads');
+          this.episodeMetrics = filterEpisodeMetricsPage(this.routerState, this.episodeMetrics);
         }
         if (this.podcastMetrics) {
-          this.podcastMetrics = findPodcastMetrics(this.filter, [this.podcastMetrics]);
+          this.podcastMetrics = findPodcastMetrics(this.routerState, [this.podcastMetrics]);
         }
         this.buildTableData();
       }
     });
 
     this.allEpisodesSub = this.store.select(selectEpisodes).subscribe((allEpisodes: EpisodeModel[]) => {
-      const allPodcastEpisodes = filterPodcastEpisodePage(this.filter, allEpisodes);
+      const allPodcastEpisodes = filterPodcastEpisodePage(this.routerState, allEpisodes);
       if (allPodcastEpisodes) {
         this.episodes = allPodcastEpisodes;
         this.episodes.forEach(episode =>
-          this.store.dispatch(new CastleEpisodeAllTimeMetricsLoadAction({episode}))
-        )
+          this.store.dispatch(new ACTIONS.CastleEpisodeAllTimeMetricsLoadAction({episode}))
+        );
         this.buildTableData();
       }
     });
 
     this.episodeMetricsStoreSub = this.store.select(selectEpisodeMetrics).subscribe((episodeMetrics: EpisodeMetricsModel[]) => {
-      this.episodeMetrics = filterEpisodeMetricsPage(this.filter, episodeMetrics, 'downloads');
+      this.episodeMetrics = filterEpisodeMetricsPage(this.routerState, episodeMetrics);
       if (this.episodeMetrics) {
         this.buildTableData();
       }
     });
 
     this.podcastMetricsStoreSub = this.store.select(selectPodcastMetrics).subscribe((podcastMetrics: PodcastMetricsModel[]) => {
-      this.podcastMetrics = findPodcastMetrics(this.filter, podcastMetrics);
+      this.podcastMetrics = findPodcastMetrics(this.routerState, podcastMetrics);
       if (this.podcastMetrics) {
         this.buildTableData();
       }
@@ -94,9 +90,9 @@ export class DownloadsTableComponent implements OnDestroy {
   }
 
   mapPodcastData() {
-    const downloads = metricsData(this.filter, this.podcastMetrics, 'downloads');
+    const downloads = metricsData(this.routerState, this.podcastMetrics);
     if (downloads) {
-      const expectedLength = getAmountOfIntervals(this.filter.beginDate, this.filter.endDate, this.filter.interval);
+      const expectedLength = getAmountOfIntervals(this.routerState.beginDate, this.routerState.endDate, this.routerState.interval);
       const totalForPeriod = getTotal(downloads);
       return {
         title: 'All Episodes',
@@ -113,10 +109,11 @@ export class DownloadsTableComponent implements OnDestroy {
 
   mapEpisodeData() {
     if (this.episodes && this.episodeMetrics && this.episodeMetrics.length) {
-      const expectedLength = getAmountOfIntervals(this.filter.beginDate, this.filter.endDate, this.filter.interval);
+      const expectedLength = getAmountOfIntervals(this.routerState.beginDate, this.routerState.endDate, this.routerState.interval);
       return this.episodeMetrics
+        .filter(epMetric => this.episodes.find(ep => ep.id === epMetric.id))
         .map((epMetric) => {
-          const downloads = metricsData(this.filter, epMetric, 'downloads');
+          const downloads = metricsData(this.routerState, epMetric);
           const episode = this.episodes.find(ep => ep.id === epMetric.id);
           if (episode && epMetric && downloads) {
             const totalForPeriod = getTotal(downloads);
@@ -157,15 +154,15 @@ export class DownloadsTableComponent implements OnDestroy {
   }
 
   ngOnDestroy() {
-    if (this.filterStoreSub) { this.filterStoreSub.unsubscribe(); }
+    if (this.routerSub) { this.routerSub.unsubscribe(); }
     if (this.allEpisodesSub) { this.allEpisodesSub.unsubscribe(); }
     if (this.episodeMetricsStoreSub) { this.episodeMetricsStoreSub.unsubscribe(); }
     if (this.podcastMetricsStoreSub) { this.podcastMetricsStoreSub.unsubscribe(); }
   }
 
   dateFormat(date: Date): string {
-    if (this.filter) {
-      switch (this.filter.interval) {
+    if (this.routerState) {
+      switch (this.routerState.interval) {
         case INTERVAL_MONTHLY:
           return dateFormat.monthYear(date);
         case INTERVAL_WEEKLY:
@@ -182,29 +179,33 @@ export class DownloadsTableComponent implements OnDestroy {
   }
 
   get showPodcastToggle(): boolean {
-    return this.filter && this.filter.chartType === CHARTTYPE_STACKED;
+    return this.routerState && this.routerState.chartType === CHARTTYPE_STACKED;
   }
 
   get showEpisodeToggles(): boolean {
-    return this.filter && this.filter.chartType !== CHARTTYPE_PODCAST;
+    return this.routerState && this.routerState.chartType !== CHARTTYPE_PODCAST;
   }
 
-  toggleChartPodcast(charted: boolean) {
-    this.podcastChartToggle.emit(charted);
+  toggleChartPodcast(chartPodcast: boolean) {
+    this.store.dispatch(new ACTIONS.RoutePodcastChartedAction({chartPodcast}));
   }
 
   toggleChartEpisode(episode, charted) {
-    this.episodeChartToggle.emit({id: episode.id, charted});
+    this.store.dispatch(new ACTIONS.RouteToggleEpisodeChartedAction({episodeId: episode.id, charted}));
   }
 
   onChartSingleEpisode(episode) {
-    this.chartSingleEpisode.emit(episode.id);
+    this.store.dispatch(new ACTIONS.RouteSingleEpisodeChartedAction({episodeId: episode.id, chartType: CHARTTYPE_EPISODES}));
+  }
+
+  onPageChange(page) {
+    this.store.dispatch(new ACTIONS.RouteEpisodePageAction({page}));
   }
 
   toggleExpandedReport() {
     this.expanded = !this.expanded;
     if (this.expanded) {
-      this.store.dispatch(new GoogleAnalyticsEventAction({gaAction: 'table-expand'}));
+      this.store.dispatch(new ACTIONS.GoogleAnalyticsEventAction({gaAction: 'table-expand'}));
     }
   }
 }

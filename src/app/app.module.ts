@@ -1,6 +1,6 @@
 import { NgModule, ErrorHandler, InjectionToken } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { StoreRouterConnectingModule, routerReducer } from '@ngrx/router-store';
+import { StoreRouterConnectingModule, RouterStateSerializer } from '@ngrx/router-store';
 import { EffectsModule } from '@ngrx/effects';
 import { AuthModule } from 'ngx-prx-styleguide';
 import { StoreModule, ActionReducerMap } from '@ngrx/store';
@@ -13,7 +13,7 @@ import { ErrorService } from './error';
 import { CoreModule } from './core';
 import { SharedModule } from './shared';
 
-import { reducers, RootState } from './ngrx/reducers';
+import { reducers, RootState, CustomSerializer } from './ngrx/reducers';
 import { CastleEffects } from './ngrx/effects/castle.effects';
 import { CmsEffects } from './ngrx/effects/cms.effects';
 import { GoogleAnalyticsEffects } from './ngrx/effects/google-analytics.effects';
@@ -26,7 +26,7 @@ import { UserAgentsModule } from './user-agents/user-agents.module';
 
 // AOT compile doesn't call reducer functions unless they are created with InjectionToken
 export function getReducers() {
-  return {...reducers, routerReducer: routerReducer};
+  return {...reducers};
 }
 
 export const reducerToken: InjectionToken<ActionReducerMap<RootState>> =
@@ -57,7 +57,8 @@ export const reducerProvider = { provide: reducerToken, useFactory: getReducers 
   providers: [
     {provide: ErrorHandler, useClass: ErrorService},
     routingProviders,
-    reducerProvider
+    reducerProvider,
+    {provide: RouterStateSerializer, useClass: CustomSerializer}
   ],
   bootstrap: [AppComponent]
 })

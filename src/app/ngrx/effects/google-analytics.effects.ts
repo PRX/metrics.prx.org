@@ -5,13 +5,13 @@ import { Actions, Effect } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import { Angulartics2 } from 'angulartics2';
 import { ActionTypes, GoogleAnalyticsEventAction } from '../actions';
-import { PodcastModel, FilterModel } from '../';
-import { selectPodcasts, selectFilter } from '../reducers';
+import { PodcastModel, RouterModel } from '../';
+import { selectPodcasts, selectRouter } from '../reducers';
 
 @Injectable()
 export class GoogleAnalyticsEffects {
   podcasts: PodcastModel[];
-  filter: FilterModel;
+  routerState: RouterModel;
 
   @Effect({dispatch: false})
   fromGAEvent$: Observable<void> = this.actions$
@@ -23,15 +23,15 @@ export class GoogleAnalyticsEffects {
       if (action.payload.category) {
         event['category'] = action.payload.category;
       } else {
-        if (this.filter && this.filter.interval) {
-          event['category'] = 'Downloads/' + this.filter.interval.name;
+        if (this.routerState && this.routerState.interval) {
+          event['category'] = 'Downloads/' + this.routerState.interval.name;
         }
       }
       if (action.payload.label) {
         event['label'] = action.payload.label;
       } else {
-        if (this.filter && this.filter.podcastSeriesId && this.podcasts) {
-          const podcast = this.podcasts.find(p => p.seriesId === this.filter.podcastSeriesId);
+        if (this.routerState && this.routerState.podcastSeriesId && this.podcasts) {
+          const podcast = this.podcasts.find(p => p.seriesId === this.routerState.podcastSeriesId);
           if (podcast) {
             event['label'] = podcast.title;
           }
@@ -49,8 +49,8 @@ export class GoogleAnalyticsEffects {
     this.store.select(selectPodcasts).subscribe(podcasts => {
       this.podcasts = podcasts;
     });
-    this.store.select(selectFilter).subscribe(filter => {
-      this.filter = filter;
+    this.store.select(selectRouter).subscribe(routerState => {
+      this.routerState = routerState;
     });
   }
 }

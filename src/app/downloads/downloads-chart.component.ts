@@ -2,10 +2,10 @@ import { Component, OnDestroy } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs/Subscription';
 import { TimeseriesChartModel } from 'ngx-prx-styleguide';
-import { FilterModel, EpisodeModel, PodcastMetricsModel, EpisodeMetricsModel,
+import { RouterModel, EpisodeModel, PodcastMetricsModel, EpisodeMetricsModel,
   INTERVAL_MONTHLY, INTERVAL_WEEKLY, INTERVAL_DAILY, INTERVAL_HOURLY,
   CHARTTYPE_PODCAST, CHARTTYPE_EPISODES, CHARTTYPE_STACKED } from '../ngrx';
-import { selectFilter, selectEpisodes, selectPodcastMetrics, selectEpisodeMetrics } from '../ngrx/reducers';
+import { selectRouter, selectEpisodes, selectPodcastMetrics, selectEpisodeMetrics } from '../ngrx/reducers';
 import { findPodcastMetrics, filterEpisodeMetricsPage, metricsData, getTotal } from '../shared/util/metrics.util';
 import { mapMetricsToTimeseriesData, subtractTimeseriesDatasets, neutralColor } from '../shared/util/chart.util';
 import * as dateFormat from '../shared/util/date/date.format';
@@ -19,8 +19,8 @@ import * as dateUtil from '../shared/util/date/date.util';
   `
 })
 export class DownloadsChartComponent implements OnDestroy {
-  filterStoreSub: Subscription;
-  filter: FilterModel;
+  routerSub: Subscription;
+  routerState: RouterModel;
   episodesSub: Subscription;
   allEpisodes: EpisodeModel[];
   podcastMetricsStoreSub: Subscription;
@@ -32,8 +32,8 @@ export class DownloadsChartComponent implements OnDestroy {
   chartData: TimeseriesChartModel[];
 
   constructor(public store: Store<any>) {
-    this.filterStoreSub = store.select(selectFilter).subscribe((newFilter: FilterModel) => {
-      this.filter = newFilter;
+    this.routerSub = store.select(selectRouter).subscribe((newRouterState: RouterModel) => {
+      this.routerState = newRouterState;
       this.applyFilterToExistingData();
     });
 
@@ -46,7 +46,7 @@ export class DownloadsChartComponent implements OnDestroy {
     });
 
     this.episodeMetricsStoreSub = store.select(selectEpisodeMetrics).subscribe((episodeMetrics: EpisodeMetricsModel[]) => {
-      this.episodeMetrics = filterEpisodeMetricsPage(this.filter, episodeMetrics, 'downloads');
+      this.episodeMetrics = filterEpisodeMetricsPage(this.routerState, episodeMetrics);
       this.updateEpisodeChartData();
     });
   }
@@ -55,14 +55,14 @@ export class DownloadsChartComponent implements OnDestroy {
     if (this.podcastMetrics) {
       this.updatePodcastChartData([this.podcastMetrics]);
     }
-    this.episodeMetrics = filterEpisodeMetricsPage(this.filter, this.episodeMetrics, 'downloads');
+    this.episodeMetrics = filterEpisodeMetricsPage(this.routerState, this.episodeMetrics);
     this.updateEpisodeChartData();
   }
 
   updatePodcastChartData(podcastMetrics: PodcastMetricsModel[]) {
-    this.podcastMetrics = findPodcastMetrics(this.filter, podcastMetrics);
+    this.podcastMetrics = findPodcastMetrics(this.routerState, podcastMetrics);
     if (this.podcastMetrics) {
-      this.podcastChartData = this.mapPodcastData(metricsData(this.filter, this.podcastMetrics, 'downloads'));
+      this.podcastChartData = this.mapPodcastData(metricsData(this.routerState, this.podcastMetrics));
     } else {
       this.podcastChartData = null;
     }
@@ -73,18 +73,18 @@ export class DownloadsChartComponent implements OnDestroy {
     this.episodeChartData = this.episodeMetrics
       .filter(e => e.charted)
       .sort((a: EpisodeMetricsModel, b: EpisodeMetricsModel) => {
-        return getTotal(metricsData(this.filter, b, 'downloads')) - getTotal(metricsData(this.filter, a, 'downloads'));
+        return getTotal(metricsData(this.routerState, b)) - getTotal(metricsData(this.routerState, a));
       })
       .map((metrics: EpisodeMetricsModel, i) => {
         const episode = this.allEpisodes.find(ep => ep.id === metrics.id);
-        return this.mapEpisodeData(episode, metricsData(this.filter, metrics, 'downloads'));
+        return this.mapEpisodeData(episode, metricsData(this.routerState, metrics));
       });
 
     this.updateChartData();
   }
 
   ngOnDestroy() {
-    if (this.filterStoreSub) { this.filterStoreSub.unsubscribe(); }
+    if (this.routerSub) { this.routerSub.unsubscribe(); }
     if (this.episodesSub) { this.episodesSub.unsubscribe(); }
     if (this.podcastMetricsStoreSub) { this.podcastMetricsStoreSub.unsubscribe(); }
     if (this.episodeMetricsStoreSub) { this.episodeMetricsStoreSub.unsubscribe(); }
@@ -99,11 +99,11 @@ export class DownloadsChartComponent implements OnDestroy {
   }
 
   updateChartData() {
-    if (this.filter.beginDate && this.filter.endDate && this.filter.interval && this.filter.chartType) {
+    if (this.routerState.beginDate && this.routerState.endDate && this.routerState.interval && this.routerState.chartType) {
       this.chartData = null;
       // no partial date range coverage charts, makes the loading UX too jerky
-      const expectedLength = dateUtil.getAmountOfIntervals(this.filter.beginDate, this.filter.endDate, this.filter.interval);
-      switch (this.filter.chartType) {
+      const expectedLength = dateUtil.getAmountOfIntervals(this.routerState.beginDate, this.routerState.endDate, this.routerState.interval);
+      switch (this.routerState.chartType) {
         case CHARTTYPE_STACKED:
           if (this.podcastChartData && this.podcastMetrics.charted && this.podcastChartData.data.length === expectedLength &&
             (this.episodeChartData && this.episodeChartData.length > 0 &&
@@ -140,8 +140,8 @@ export class DownloadsChartComponent implements OnDestroy {
   }
 
   dateFormat(): Function {
-    if (this.filter) {
-      switch (this.filter.interval) {
+    if (this.routerState) {
+      switch (this.routerState.interval) {
         case INTERVAL_MONTHLY:
           return dateFormat.monthYear;
         case INTERVAL_WEEKLY:
@@ -158,7 +158,7 @@ export class DownloadsChartComponent implements OnDestroy {
   }
 
   get chartType(): string {
-    switch (this.filter.chartType) {
+    switch (this.routerState.chartType) {
       case CHARTTYPE_PODCAST:
       case CHARTTYPE_EPISODES:
         return 'line';
@@ -172,6 +172,6 @@ export class DownloadsChartComponent implements OnDestroy {
   }
 
   get stacked(): boolean {
-    return this.filter.chartType === CHARTTYPE_STACKED;
+    return this.routerState.chartType === CHARTTYPE_STACKED;
   }
 }

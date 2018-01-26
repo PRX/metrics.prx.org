@@ -1,16 +1,16 @@
 import { Actions } from '@ngrx/effects';
 import { TestBed, async } from '@angular/core/testing';
 import { cold, hot } from 'jasmine-marbles';
-import { StoreModule } from '@ngrx/store';
+import { StoreModule, Store } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
 import { getActions, TestActions } from './test.actions';
 
 import { MockHalService } from 'ngx-prx-styleguide';
 import { CastleService } from '../../core';
 
-import { PodcastModel, FilterModel, EpisodeModel } from '../';
+import { PodcastModel, RouterModel, EpisodeModel } from '../';
 import { reducers } from '../../ngrx/reducers';
-import { ActionTypes, CastlePodcastAllTimeMetricsLoadAction,
+import { ActionTypes, CustomRouterNavigationAction, CmsPodcastsSuccessAction,
   CastlePodcastAllTimeMetricsSuccessAction, CastlePodcastAllTimeMetricsFailureAction,
   CastleEpisodeAllTimeMetricsSuccessAction } from '../actions';
 import { CastleEffects } from './castle.effects';
@@ -19,13 +19,14 @@ describe('CastleEffects', () => {
   let effects: CastleEffects;
   let actions$: TestActions;
   let castle: MockHalService;
+  let store: Store<any>;
 
   const podcasts: PodcastModel[] = [{
     seriesId: 37800,
     feederId: '70',
     title: 'Pet Talks Daily'
   }];
-  const filter: FilterModel = {
+  const routerState: RouterModel = {
     podcastSeriesId: 37800,
   };
   const episode: EpisodeModel = {
@@ -34,7 +35,7 @@ describe('CastleEffects', () => {
     seriesId: 37800,
     title: 'A Pet Talks Episode',
     publishedAt: new Date()
-  }
+  };
 
   beforeEach(async(() => {
     castle = new MockHalService();
@@ -64,11 +65,13 @@ describe('CastleEffects', () => {
     });
     effects = TestBed.get(CastleEffects);
     actions$ = TestBed.get(Actions);
+    store = TestBed.get(Store);
 
-    effects.podcasts = podcasts;
+    store.dispatch(new CmsPodcastsSuccessAction({podcasts}));
+    store.dispatch(new CustomRouterNavigationAction({routerState}));
   }));
 
-  it('should find the selected podcast from the payload filter', () => {
+  it('should find the selected podcast from the payload routerState', () => {
     const action = {
       type: ActionTypes.CASTLE_PODCAST_ALL_TIME_METRICS_LOAD,
       payload: {
@@ -85,15 +88,16 @@ describe('CastleEffects', () => {
     expect(effects.loadAllTimePodcastMetrics).toBeObservable(expected);
   });
 
-  it('should dispatch a failure action if no podcasts', () => {
+  it('should dispatch a failure action if no selected podcast', () => {
+    const newRouterState: RouterModel = {
+      podcastSeriesId: 37801
+    };
+    store.dispatch(new CustomRouterNavigationAction({routerState: newRouterState}));
     const action = {
-      type: ActionTypes.CASTLE_PODCAST_ALL_TIME_METRICS_LOAD,
-      payload: {
-        filter: { podcastSeriesId: 37801 }
-      }
+      type: ActionTypes.CASTLE_PODCAST_ALL_TIME_METRICS_LOAD
     };
     const failure = new CastlePodcastAllTimeMetricsFailureAction({
-      error: 'No podcasts yet'
+      error: 'No selected podcast yet'
     });
 
     actions$.stream = hot('-a', { a: action });

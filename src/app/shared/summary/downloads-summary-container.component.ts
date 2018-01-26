@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
 import { IntervalModel, INTERVAL_HOURLY, INTERVAL_DAILY, INTERVAL_WEEKLY, INTERVAL_MONTHLY } from '../../ngrx';
-import { selectPodcastMetricsFilteredAverage, selectPodcastMetricsFilteredTotal, selectIntervalFilter } from '../../ngrx/reducers';
+import { selectPodcastMetricsFilteredAverage, selectPodcastMetricsFilteredTotal, selectIntervalRoute } from '../../ngrx/reducers';
 
 @Component({
   selector: 'metrics-downloads-summary',
@@ -22,7 +22,7 @@ export class DownloadsSummaryContainerComponent {
 
   constructor(private store: Store<any>) {
     this.average$ = store.select(selectPodcastMetricsFilteredAverage);
-    this.averageLabel$ = store.select(selectIntervalFilter).map((interval: IntervalModel) => {
+    this.averageLabel$ = store.select(selectIntervalRoute).map((interval: IntervalModel) => {
       switch (interval) {
         case INTERVAL_HOURLY:
           return 'average / hour';

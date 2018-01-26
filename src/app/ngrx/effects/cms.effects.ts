@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { Router, Params, RoutesRecognized } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/of';
 import 'rxjs/add/operator/first';
@@ -14,13 +13,13 @@ import { CmsService, HalDoc } from '../../core';
 import { getColor } from '../../shared/util/chart.util';
 
 import { AccountModel, PodcastModel, EpisodeModel, EPISODE_PAGE_SIZE, EpisodeMetricsModel } from '../';
-import { selectEpisodeMetrics } from '../reducers';
+import { selectEpisodeMetrics, selectPodcastRoute } from '../reducers';
 import * as ACTIONS from '../actions';
 
 @Injectable()
 export class CmsEffects {
+  routedPodcastSeriesId: number;
   episodeMetrics: EpisodeMetricsModel[] = [];
-  routeParams: Params;
 
   @Effect()
   loadAccount$: Observable<Action> = this.actions$
@@ -54,7 +53,13 @@ export class CmsEffects {
               return auth.followItems('prx:series', params).mergeMap(docs => {
                 return Observable.forkJoin(docs.map(d => this.docToPodcast(d)))
                   .map(podcasts => podcasts.filter(p => p && p.feederId))
-                  .map(podcasts => new ACTIONS.CmsPodcastsSuccessAction({podcasts}));
+                  .map(podcasts => {
+                    if (!this.routedPodcastSeriesId) {
+                      // Default select the first podcast by navigating to it. (It'll be the last one that was updated)
+                      this.store.dispatch(new ACTIONS.RouteSeriesAction({podcastSeriesId: podcasts[0].seriesId}));
+                    }
+                    return new ACTIONS.CmsPodcastsSuccessAction({podcasts});
+                  });
               });
             }
           });
@@ -70,7 +75,7 @@ export class CmsEffects {
     .map((action: ACTIONS.CmsPodcastEpisodePageAction) => action.payload)
     .switchMap((payload: ACTIONS.CmsEpisodePagePayload) => {
       const pageNum = payload.page;
-      const seriesId = payload.podcast.seriesId;
+      const seriesId = payload.seriesId;
       const seriesParams = {id: seriesId, zoom: false};
       const storyParams = {
         page: pageNum,
@@ -92,16 +97,12 @@ export class CmsEffects {
   constructor(public store: Store<any>,
               private actions$: Actions,
               private auth: AuthService,
-              private cms: CmsService,
-              private router: Router) {
+              private cms: CmsService) {
     this.store.select(selectEpisodeMetrics).subscribe((episodeMetrics: EpisodeMetricsModel[]) => {
       this.episodeMetrics = episodeMetrics;
     });
-    // subscribing to ActivateRoute doesn't seem to work here, so I'm looking for the router events to get params
-    router.events.subscribe((data) => {
-      if (data instanceof RoutesRecognized) {
-        this.routeParams = data.state.root.firstChild.params; // ActivatedRoute params equiv
-      }
+    this.store.select(selectPodcastRoute).subscribe(podcastSeriesId => {
+      this.routedPodcastSeriesId = podcastSeriesId;
     });
   }
 
@@ -114,19 +115,8 @@ export class CmsEffects {
     const incomingIds = episodes.map(e => e.id);
     const chartedIds = this.episodeMetrics.filter(e => e.charted).map(e => e.id);
     if (incomingIds.every(id => chartedIds.indexOf(id) === -1)) {
-      this.routeWithEpisodeCharted(chartedIds.concat(incomingIds.slice(0, 5)));
+      this.store.dispatch(new ACTIONS.RouteEpisodesChartedAction({episodeIds: chartedIds.concat(incomingIds.slice(0, 5))}));
     }
-  }
-
-  routeWithEpisodeCharted(episodeIds: number[]) {
-    const params = {};
-    Object.keys(this.routeParams).forEach(key => {
-      if (key !== 'seriesId' && key !== 'interval' && key !== 'chartType') {
-        params[key] = this.routeParams[key];
-      }
-    });
-    params['episodes'] = episodeIds.join(',');
-    this.router.navigate([this.routeParams['seriesId'], 'downloads', this.routeParams['chartType'], this.routeParams['interval'], params]);
   }
 
   private docToPodcast(doc: HalDoc): Observable<PodcastModel> {

@@ -1,5 +1,5 @@
-import { PodcastModel, EpisodeModel, FilterModel, PodcastMetricsModel, EpisodeMetricsModel,
-  INTERVAL_DAILY, INTERVAL_HOURLY } from '../../ngrx';
+import { PodcastModel, EpisodeModel, RouterModel, PodcastMetricsModel, EpisodeMetricsModel,
+  INTERVAL_DAILY, INTERVAL_HOURLY, MetricsType, METRICSTYPE_DOWNLOADS } from '../../ngrx';
 import { filterPodcasts, filterAllPodcastEpisodes, filterMetricsByDate,
   findPodcastMetrics, filterEpisodeMetricsPage, metricsData, getTotal } from './metrics.util';
 
@@ -41,8 +41,9 @@ describe('metrics util', () => {
       guid: 'hijklmn'
     }
   ];
-  const filter: FilterModel = {
+  const routerState: RouterModel = {
     podcastSeriesId: podcasts[0].seriesId,
+    metricsType: <MetricsType>METRICSTYPE_DOWNLOADS,
     page: 1,
     beginDate: new Date('2017-09-01T00:00:00Z'),
     endDate: new Date('2017-09-07T00:00:00Z'),
@@ -98,38 +99,38 @@ describe('metrics util', () => {
     }
   ];
 
-  it('should get podcast that matches filter or nothing if no match', () => {
-    expect(filterPodcasts(filter, podcasts).seriesId).toEqual(37800);
+  it('should get podcast that matches routerState or nothing if no match', () => {
+    expect(filterPodcasts(routerState, podcasts).seriesId).toEqual(37800);
     const emptyFilter = {};
     expect(filterPodcasts(emptyFilter, podcasts)).toBeUndefined();
-    const nonMatchingFilter: FilterModel = {
+    const nonMatchingFilter: RouterModel = {
       podcastSeriesId: 1
     };
     expect(filterPodcasts(nonMatchingFilter, podcasts)).toBeUndefined();
   });
 
   it('should get all episodes of the filtered podcast', () => {
-    expect(filterAllPodcastEpisodes(filter, episodes).length).toEqual(2);
+    expect(filterAllPodcastEpisodes(routerState, episodes).length).toEqual(2);
   });
 
-  it('should find podcast metrics matching filter', () => {
-    expect(findPodcastMetrics(filter, podcastMetrics).seriesId).toEqual(37800);
+  it('should find podcast metrics matching routerState', () => {
+    expect(findPodcastMetrics(routerState, podcastMetrics).seriesId).toEqual(37800);
   });
 
-  it('should get episode metrics matching filter', () => {
-    expect(filterEpisodeMetricsPage(filter, episodeMetrics, 'downloads').length).toEqual(1);
+  it('should get episode metrics matching routerState', () => {
+    expect(filterEpisodeMetricsPage(routerState, episodeMetrics).length).toEqual(1);
   });
 
-  it('should get metrics array according to interval', () => {
-    expect(metricsData(filter, podcastMetrics[0], 'downloads').length).toEqual(12);
-    expect(metricsData({interval: INTERVAL_HOURLY}, episodeMetrics[0], 'downloads')).toBeUndefined(); // no hourly
+  it('should get metrics array according to interval and metrics type', () => {
+    expect(metricsData(routerState, podcastMetrics[0]).length).toEqual(12);
+    expect(metricsData({interval: INTERVAL_HOURLY, metricsType: <MetricsType>METRICSTYPE_DOWNLOADS}, episodeMetrics[0])).toBeUndefined(); // no hourly
   });
 
   it('should get total of metrics datapoints', () => {
     expect(getTotal(metrics)).toEqual(52522 + 162900 + 46858 + 52522 + 162900 + 46858 + 52522 + 162900 + 46858 + 52522 + 162900 + 46858);
   });
 
-  it('should filter metrics by date', () => {
-    expect(filterMetricsByDate(filter.beginDate, filter.endDate, filter.interval, metrics).length).toEqual(7);
+  it('should routerState metrics by date', () => {
+    expect(filterMetricsByDate(routerState.beginDate, routerState.endDate, routerState.interval, metrics).length).toEqual(7);
   });
 });

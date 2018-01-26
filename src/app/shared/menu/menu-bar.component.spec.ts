@@ -1,11 +1,11 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { DebugElement } from '@angular/core';
-import { StoreModule } from '@ngrx/store';
+import { StoreModule, Store } from '@ngrx/store';
 
 import { reducers } from '../../ngrx/reducers';
 
-import { CastleFilterAction } from '../../ngrx/actions';
-import { FilterModel, INTERVAL_DAILY, INTERVAL_MONTHLY } from '../../ngrx';
+import { CustomRouterNavigationAction } from '../../ngrx/actions';
+import { RouterModel, ChartType, CHARTTYPE_PODCAST, INTERVAL_DAILY } from '../../ngrx';
 import * as dateUtil from '../util/date';
 
 import { MenuBarComponent } from './menu-bar.component';
@@ -25,8 +25,10 @@ describe('MenuBarComponent', () => {
   let fix: ComponentFixture<MenuBarComponent>;
   let de: DebugElement;
   let el: HTMLElement;
+  let store: Store<any>;
 
-  const filter: FilterModel = {
+  const routerState: RouterModel = {
+    chartType: <ChartType>CHARTTYPE_PODCAST,
     interval: INTERVAL_DAILY,
     standardRange: dateUtil.THIS_WEEK,
     beginDate: dateUtil.beginningOfThisWeekUTC().toDate(),
@@ -57,27 +59,33 @@ describe('MenuBarComponent', () => {
       fix.detectChanges();
       de = fix.debugElement;
       el = de.nativeElement;
+      store = TestBed.get(Store);
 
-      comp.store.dispatch(new CastleFilterAction({filter}));
-
-      spyOn(comp, 'googleAnalyticsEvent').and.callThrough();
+      store.dispatch(new CustomRouterNavigationAction({routerState}));
     });
   }));
 
-  it('keeps standard range in sync with custom range', () => {
-    comp.onFilterChange({beginDate: dateUtil.beginningOfLastWeekUTC().toDate(), endDate: dateUtil.endOfLastWeekUTC().toDate()});
-    expect(comp.filter.standardRange).toEqual(dateUtil.LAST_WEEK);
+  it('should have routerState', () => {
+    let result;
+    comp.routerState$.subscribe(value => result = value);
+    expect(result).toEqual(routerState);
   });
 
-  it('keeps date range in sync with interval', () => {
-    comp.filter.beginDate = dateUtil.beginningOfTodayUTC().toDate();
-    comp.onIntervalChange(INTERVAL_MONTHLY);
-    expect(comp.filter.beginDate.valueOf()).toEqual(dateUtil.beginningOfThisMonthUTC().valueOf());
-    expect(comp.filter.standardRange).toEqual(dateUtil.THIS_MONTH);
+  it('should have chart type', () => {
+    let result;
+    comp.chartType$.subscribe(value => result = value);
+    expect(result).toEqual(CHARTTYPE_PODCAST);
   });
 
-  it('should send google analytics event when standard range is changed', () => {
-    comp.onStandardRangeChange(dateUtil.LAST_WEEK);
-    expect(comp.googleAnalyticsEvent).toHaveBeenCalled();
+  it('should have interval', () => {
+    let result;
+    comp.interval$.subscribe(value => result = value);
+    expect(result).toEqual(INTERVAL_DAILY);
+  });
+
+  it('should have standard range', () => {
+    let result;
+    comp.standardRange$.subscribe(value => result = value);
+    expect(result).toEqual(dateUtil.THIS_WEEK);
   });
 });

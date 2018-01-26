@@ -1,9 +1,17 @@
 import { RouterNavigationAction } from '@ngrx/router-store';
 import { CmsAccountAction, CmsAccountSuccessAction, CmsAccountFailureAction, CmsPodcastsSuccessAction,
   CmsPodcastEpisodePageAction, CmsPodcastEpisodePageSuccessAction, CmsPodcastEpisodePageFailureAction } from './cms.action.creator';
-import { CastleFilterAction, CastlePodcastMetricsAction, CastlePodcastChartToggleAction,
-  CastleEpisodeMetricsAction, CastleEpisodeChartToggleAction, CastlePodcastAllTimeMetricsLoadAction, CastlePodcastAllTimeMetricsSuccessAction, CastlePodcastAllTimeMetricsFailureAction, CastleEpisodeAllTimeMetricsLoadAction, CastleEpisodeAllTimeMetricsSuccessAction, CastleEpisodeAllTimeMetricsFailureAction } from './castle.action.creator';
+import { CastlePodcastAllTimeMetricsLoadAction, CastlePodcastAllTimeMetricsSuccessAction, CastlePodcastAllTimeMetricsFailureAction,
+  CastleEpisodeAllTimeMetricsLoadAction, CastleEpisodeAllTimeMetricsSuccessAction, CastleEpisodeAllTimeMetricsFailureAction,
+  CastlePodcastChartToggleAction, CastleEpisodeChartToggleAction,
+  CastlePodcastMetricsAction, CastleEpisodeMetricsAction } from './castle.action.creator';
 import { GoogleAnalyticsEventAction } from './google-analytics.action.creator';
+import { CustomRouterNavigationAction,
+  RouteSeriesAction, RoutePodcastChartedAction,
+  RouteEpisodePageAction, RouteEpisodesChartedAction,
+  RouteSingleEpisodeChartedAction, RouteToggleEpisodeChartedAction,
+  RouteChartTypeAction, RouteIntervalAction,
+  RouteStandardRangeAction, RouteAdvancedRangeAction } from './router.action.creator';
 
 export type AllActions
   = CmsAccountAction
@@ -13,7 +21,6 @@ export type AllActions
   | CmsPodcastEpisodePageAction
   | CmsPodcastEpisodePageSuccessAction
   | CmsPodcastEpisodePageFailureAction
-  | CastleFilterAction
   | CastlePodcastMetricsAction
   | CastlePodcastChartToggleAction
   | CastleEpisodeMetricsAction
@@ -25,7 +32,18 @@ export type AllActions
   | CastleEpisodeAllTimeMetricsSuccessAction
   | CastleEpisodeAllTimeMetricsFailureAction
   | RouterNavigationAction
-  | GoogleAnalyticsEventAction;
+  | GoogleAnalyticsEventAction
+  | CustomRouterNavigationAction
+  | RouteSeriesAction
+  | RoutePodcastChartedAction
+  | RouteEpisodePageAction
+  | RouteEpisodesChartedAction
+  | RouteSingleEpisodeChartedAction
+  | RouteToggleEpisodeChartedAction
+  | RouteChartTypeAction
+  | RouteIntervalAction
+  | RouteStandardRangeAction
+  | RouteAdvancedRangeAction;
 
 export { ActionTypes } from './action.types';
 export { CmsAccountSuccessPayload, CmsAccountSuccessAction,
@@ -34,10 +52,9 @@ export { CmsAccountSuccessPayload, CmsAccountSuccessAction,
   CmsPodcastsAction, CmsPodcastsFailureAction,
   CmsEpisodePagePayload, CmsPodcastEpisodePageAction,
   CmsEpisodePageSuccessPayload, CmsPodcastEpisodePageSuccessAction, CmsPodcastEpisodePageFailureAction } from './cms.action.creator';
-export { CastleFilterPayload, CastleFilterAction,
-  CastlePodcastMetricsPayload, CastlePodcastMetricsAction,
+export { CastlePodcastMetricsPayload, CastlePodcastMetricsAction,
   CastlePodcastChartTogglePayload, CastlePodcastChartToggleAction,
-  CastlePodcastAllTimeMetricsLoadPayload, CastlePodcastAllTimeMetricsLoadAction,
+  CastlePodcastAllTimeMetricsLoadAction,
   CastlePodcastAllTimeMetricsSuccessPayload, CastlePodcastAllTimeMetricsSuccessAction,
   CastlePodcastAllTimeMetricsFailureAction,
   CastleEpisodeAllTimeMetricsLoadPayload, CastleEpisodeAllTimeMetricsLoadAction,
@@ -46,3 +63,14 @@ export { CastleFilterPayload, CastleFilterAction,
   CastleEpisodeMetricsPayload, CastleEpisodeMetricsAction,
   CastleEpisodeChartTogglePayload, CastleEpisodeChartToggleAction} from './castle.action.creator';
 export { GoogleAnalyticsEventPayload, GoogleAnalyticsEventAction } from './google-analytics.action.creator';
+export { CustomRouterNavigationPayload, CustomRouterNavigationAction,
+  RouteSeriesPayload, RouteSeriesAction,
+  RoutePodcastChartedPayload, RoutePodcastChartedAction,
+  RouteEpisodePagePayload, RouteEpisodePageAction,
+  RouteEpisodesChartedPayload, RouteEpisodesChartedAction,
+  RouteSingleEpisodeChartedPayload, RouteSingleEpisodeChartedAction,
+  RouteToggleEpisodeChartedPayload, RouteToggleEpisodeChartedAction,
+  RouteChartTypePayload, RouteChartTypeAction,
+  RouteIntervalPayload, RouteIntervalAction,
+  RouteAdvancedRangePayload, RouteAdvancedRangeAction,
+  RouteStandardRangePayload, RouteStandardRangeAction } from './router.action.creator';

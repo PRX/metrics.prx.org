@@ -1,8 +1,8 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { Subscription } from 'rxjs/Subscription';
-import { FilterModel } from '../../ngrx';
-import { selectFilter } from '../../ngrx/reducers';
+import { Observable } from 'rxjs/Observable';
+import { RouterModel } from '../../ngrx';
+import { selectRouter } from '../../ngrx/reducers';
 
 interface Nav {
   link: string;
@@ -15,7 +15,7 @@ interface Nav {
   template: `
     <metrics-profile></metrics-profile>
     <nav>
-      <a *ngFor="let item of nav"
+      <a *ngFor="let item of nav$ | async"
          [routerLink]="item.link"
          routerLinkActive="active"
          [routerLinkActiveOptions]="{exact: item.exact}">{{item.name}}</a>
@@ -23,37 +23,43 @@ interface Nav {
   `,
   styleUrls: ['nav-menu.component.css']
 })
-export class NavMenuComponent implements OnInit, OnDestroy {
-  filterSub: Subscription;
-  nav: Nav[];
+export class NavMenuComponent {
+  nav$: Observable<Nav[]>;
 
-  constructor(public store: Store<any>) {}
+  constructor(public store: Store<any>) {
+    this.nav$ = this.store.select(selectRouter).map((routerState: RouterModel) => {
+      if (routerState.podcastSeriesId) {
+        let routes;
 
-  ngOnInit() {
-    this.filterSub = this.store.select(selectFilter).subscribe((filter: FilterModel) => {
-      if (filter.podcastSeriesId && filter.chartType && filter.interval) {
-        this.nav = [
-          {
-            link: `/${filter.podcastSeriesId}/downloads/${filter.chartType}/${filter.interval.key}`,
+        if (routerState.chartType && routerState.interval) {
+          routes = [{
+            link: `/${routerState.podcastSeriesId}/downloads/${routerState.chartType}/${routerState.interval.key}`,
             name: 'Downloads',
             exact: false
-          },
+          }];
+        } else {
+          routes = [{
+            link: `/${routerState.podcastSeriesId}/downloads`,
+            name: 'Downloads',
+            exact: false
+          }];
+        }
+
+        routes.push(
           {
-            link: `/${filter.podcastSeriesId}/demographics`,
+            link: `/${routerState.podcastSeriesId}/demographics`,
             name: 'Demographics',
             exact: false
           },
           {
-            link: `/${filter.podcastSeriesId}/traffic-sources`,
+            link: `/${routerState.podcastSeriesId}/traffic-sources`,
             name: 'Traffic Sources',
             exact: false
           }
-        ];
+        );
+
+        return routes;
       }
     });
-  }
-
-  ngOnDestroy() {
-    if (this.filterSub) { this.filterSub.unsubscribe(); }
   }
 }

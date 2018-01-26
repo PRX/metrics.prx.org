@@ -7,8 +7,9 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { StoreModule } from '@ngrx/store';
 
 import { reducers } from '../../ngrx/reducers';
-import { FilterModel, ChartType, CHARTTYPE_PODCAST, INTERVAL_DAILY } from '../../ngrx';
-import { CastleFilterAction } from '../../ngrx/actions';
+import { RouterModel, ChartType, MetricsType,
+  CHARTTYPE_PODCAST, INTERVAL_DAILY, METRICSTYPE_DOWNLOADS } from '../../ngrx';
+import { CustomRouterNavigationAction } from '../../ngrx/actions';
 
 import { NavMenuComponent } from './nav-menu.component';
 import { ProfileComponent } from '../profile/profile.component';
@@ -28,10 +29,11 @@ describe('NavMenuComponent', () => {
   let location: Location;
   let navLinks;
 
-  const filter: FilterModel = {
+  const routerState: RouterModel = {
     podcastSeriesId: 37800,
-    interval: INTERVAL_DAILY,
-    chartType: <ChartType>CHARTTYPE_PODCAST
+    metricsType: <MetricsType>METRICSTYPE_DOWNLOADS,
+    chartType: <ChartType>CHARTTYPE_PODCAST,
+    interval: INTERVAL_DAILY
   };
 
   const routes: Route[] = [
@@ -73,7 +75,7 @@ describe('NavMenuComponent', () => {
       location = TestBed.get(Location);
       router.initialNavigation();
 
-      comp.store.dispatch(new CastleFilterAction({filter}));
+      comp.store.dispatch(new CustomRouterNavigationAction({routerState}));
       fix.detectChanges();
       navLinks = de.queryAll(By.css('a'));
     });

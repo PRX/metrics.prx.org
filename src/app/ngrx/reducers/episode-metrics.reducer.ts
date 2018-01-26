@@ -1,7 +1,6 @@
-import { ActionTypes, AllActions, CastleEpisodeMetricsAction, CastleEpisodeChartToggleAction, CastleEpisodeAllTimeMetricsSuccessAction } from '../actions';
-import { MetricsType } from './metrics.type';
-import { IntervalModel } from './filter.reducer';
-import { getMetricsProperty } from './metrics.type';
+import { ActionTypes, AllActions,
+  CastleEpisodeMetricsAction, CastleEpisodeChartToggleAction, CastleEpisodeAllTimeMetricsSuccessAction,
+  CustomRouterNavigationPayload } from '../actions';
 
 export interface EpisodeMetricsModel {
   seriesId: number;
@@ -18,30 +17,25 @@ export interface EpisodeMetricsModel {
 
 const initialState = [];
 
-const setEpisodeMetrics = (interval: IntervalModel, metricsType: MetricsType, episode: EpisodeMetricsModel, metrics: any[][]) => {
-  const metricsProperty = getMetricsProperty(interval, metricsType);
-  episode[metricsProperty] = metrics;
-};
-
 const episodeIndex = (state: EpisodeMetricsModel[], id: number, seriesId: number) => {
   return state.findIndex(e => e.seriesId === seriesId && e.id === id);
 };
-
 
 export function EpisodeMetricsReducer(state: EpisodeMetricsModel[] = initialState, action: AllActions) {
   switch (action.type) {
     case ActionTypes.CASTLE_EPISODE_METRICS:
       if (action instanceof CastleEpisodeMetricsAction) {
         const {id, seriesId, guid, page} = action.payload.episode;
+        const { metricsPropertyName } = action.payload;
         const epIdx = episodeIndex(state, id, seriesId);
         let episode: EpisodeMetricsModel, newState: EpisodeMetricsModel[];
         if (epIdx > -1) {
           episode = {...state[epIdx], id, seriesId, guid, page};
-          setEpisodeMetrics(action.payload.filter.interval, action.payload.metricsType, episode, action.payload.metrics);
+          episode[metricsPropertyName] = action.payload.metrics;
           newState = [...state.slice(0, epIdx), episode, ...state.slice(epIdx + 1)];
         } else {
           episode = {seriesId, id, guid, page};
-          setEpisodeMetrics(action.payload.filter.interval, action.payload.metricsType, episode, action.payload.metrics);
+          episode[metricsPropertyName] = action.payload.metrics;
           newState = [episode, ...state];
         }
         return newState;
@@ -53,7 +47,7 @@ export function EpisodeMetricsReducer(state: EpisodeMetricsModel[] = initialStat
         const epIdx = episodeIndex(state, id, seriesId);
         let episode: EpisodeMetricsModel, newState: EpisodeMetricsModel[];
         if (epIdx > -1) {
-          episode = {...state[epIdx], charted: action.payload.charted};
+          episode = {id, seriesId, ...state[epIdx], charted: action.payload.charted};
           newState = [...state.slice(0, epIdx), episode, ...state.slice(epIdx + 1)];
         } else {
           episode = {seriesId, id, charted: action.payload.charted};
@@ -69,9 +63,9 @@ export function EpisodeMetricsReducer(state: EpisodeMetricsModel[] = initialStat
 
         if (epIdx > -1) {
           let episode: EpisodeMetricsModel, newState: EpisodeMetricsModel[];
-          episode = {...state[epIdx], allTimeDownloads: action.payload.allTimeDownloads};
+          episode = {id, seriesId, ...state[epIdx], allTimeDownloads: action.payload.allTimeDownloads};
           newState = [...state.slice(0, epIdx), episode, ...state.slice(epIdx + 1)];
-          return newState
+          return newState;
         } else {
           return state;
         }
@@ -79,7 +73,30 @@ export function EpisodeMetricsReducer(state: EpisodeMetricsModel[] = initialStat
       break;
     case ActionTypes.CASTLE_EPISODE_ALL_TIME_METRICS_FAILURE:
       break;
-
+    // TODO: TLDR; charted does not really belong here.
+    // It belongs in the router state and should be combined with metrics state using a selector to get charted data
+    // Not yet able to make the chart selector changes (release priority)
+    // so am handling the ROUTER_NAVIGATION event here to catch changes to charted episodes via the route
+    case ActionTypes.CUSTOM_ROUTER_NAVIGATION:
+      const payload: CustomRouterNavigationPayload = action['payload'];
+      let newState: EpisodeMetricsModel[];
+      if (payload.routerState.episodeIds && payload.routerState.episodeIds.length > 0) {
+        newState = [...state];
+        const { podcastSeriesId, episodeIds } = payload.routerState;
+        let episode: EpisodeMetricsModel;
+        episodeIds.forEach(id => {
+          const epIdx = episodeIndex(newState, id, podcastSeriesId);
+          if (epIdx > -1) {
+            episode = {id, seriesId: podcastSeriesId, ...newState[epIdx], charted: true};
+            newState = [...newState.slice(0, epIdx), episode, ...newState.slice(epIdx + 1)];
+          } else {
+            episode = {id, seriesId: podcastSeriesId, charted: true};
+            newState = [episode, ...newState];
+          }
+        });
+        return newState;
+      }
+      break;
   }
   return state;
 }

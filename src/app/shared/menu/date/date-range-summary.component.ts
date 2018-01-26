@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { FilterModel, INTERVAL_DAILY } from '../../../ngrx';
+import { RouterModel, INTERVAL_DAILY } from '../../../ngrx';
 import * as dateUtil from '../../util/date';
 
 @Component({
@@ -12,20 +12,20 @@ import * as dateUtil from '../../util/date';
 })
 
 export class DateRangeSummaryComponent {
-  @Input() filter: FilterModel;
+  @Input() routerState: RouterModel;
 
   get beginDate(): string {
-    return this.filter && this.filter.beginDate && dateUtil.monthDateYear(this.filter.beginDate);
+    return this.routerState && this.routerState.beginDate && dateUtil.monthDateYear(this.routerState.beginDate);
   }
 
   get endDate(): string {
-    return this.filter && this.filter.endDate && dateUtil.monthDateYear(this.filter.endDate);
+    return this.routerState && this.routerState.endDate && dateUtil.monthDateYear(this.routerState.endDate);
   }
 
   get numDays(): string {
-    if (this.filter && this.filter.beginDate && this.filter.endDate) {
+    if (this.routerState && this.routerState.beginDate && this.routerState.endDate) {
       // the summary is always number of days regardless if the interval is hours, weeks, or months
-      const days = this.filter && dateUtil.getAmountOfIntervals(this.filter.beginDate, this.filter.endDate, INTERVAL_DAILY);
+      const days = this.routerState && dateUtil.getAmountOfIntervals(this.routerState.beginDate, this.routerState.endDate, INTERVAL_DAILY);
       return days === 1 ? days + ' day' : days + ' days';
     }
   }

@@ -85,7 +85,7 @@ describe('CmsEffects', () => {
 
   describe('loadPodcasts', () => {
 
-    it('successfully loads podcasts and navigates to the first one', () => {
+    it('successfully loads podcasts', () => {
       const series = auth.mockItems('prx:series', [
         {id: 111, title: 'Series #1'},
         {id: 222, title: 'Series #2'},
@@ -106,6 +106,19 @@ describe('CmsEffects', () => {
       actions$ = hot('-a', {a: action});
       expect$ = cold('-r', {r: completion});
       expect(effects.loadPodcasts$).toBeObservable(expect$);
+    });
+
+    it('navigates to the first podcast on success', () => {
+      const podcasts = [{
+        seriesId: 111,
+        title: 'Series #1',
+        feederUrl: 'http://my/podcast/url1',
+        feederId: 'url1',
+      }];
+      const action = new ACTIONS.CmsPodcastsSuccessAction({podcasts});
+      actions$ = hot('-a', { a: action });
+      expect$ = cold('-r', { r: null });
+      expect(effects.loadPodcastsSuccess$).toBeObservable(expect$);
       expect(store.dispatch).toHaveBeenCalledWith(new ACTIONS.RouteSeriesAction({podcastSeriesId: 111}));
     });
 

@@ -53,13 +53,7 @@ export class CmsEffects {
               return auth.followItems('prx:series', params).mergeMap(docs => {
                 return Observable.forkJoin(docs.map(d => this.docToPodcast(d)))
                   .map(podcasts => podcasts.filter(p => p && p.feederId))
-                  .map(podcasts => {
-                    if (!this.routedPodcastSeriesId) {
-                      // Default select the first podcast by navigating to it. (It'll be the last one that was updated)
-                      this.store.dispatch(new ACTIONS.RouteSeriesAction({podcastSeriesId: podcasts[0].seriesId}));
-                    }
-                    return new ACTIONS.CmsPodcastsSuccessAction({podcasts});
-                  });
+                  .map(podcasts => new ACTIONS.CmsPodcastsSuccessAction({podcasts}));
               });
             }
           });
@@ -67,6 +61,19 @@ export class CmsEffects {
           return Observable.of(new ACTIONS.CmsPodcastsFailureAction({error: 'You are not logged in'}));
         }
       }).catch(error => Observable.of(new ACTIONS.CmsPodcastsFailureAction({error})));
+    });
+
+  @Effect({dispatch: false})
+  loadPodcastsSuccess$: Observable<void> = this.actions$
+    .ofType(ACTIONS.ActionTypes.CMS_PODCASTS_SUCCESS)
+    .map((action: ACTIONS.CmsPodcastsSuccessAction) => action.payload)
+    .switchMap((payload: ACTIONS.CmsPodcastsSuccessPayload) => {
+    // only dispatches a routing action when there is not already a routed :seriesId
+      if (!this.routedPodcastSeriesId) {
+        const {podcasts} = payload;
+        this.store.dispatch(new ACTIONS.RouteSeriesAction({podcastSeriesId: podcasts[0].seriesId}));
+      }
+      return Observable.of(null);
     });
 
   @Effect()

@@ -1,23 +1,10 @@
 import { ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 import { RouterStateSerializer } from '@ngrx/router-store';
 
-import { IntervalModel, IntervalList, ChartType,
+import { RouterModel, IntervalList,
   INTERVAL_HOURLY, METRICSTYPE_DEMOGRAPHICS, METRICSTYPE_DOWNLOADS, METRICSTYPE_TRAFFICSOURCES, MetricsType } from './models';
 
 import { getBeginEndDateFromStandardRange, getStandardRangeForBeginEndDate } from '../../shared/util/date/date.util';
-
-export interface RouterModel {
-  metricsType?: MetricsType;
-  podcastSeriesId?: number;
-  page?: number;
-  standardRange?: string;
-  beginDate?: Date;
-  endDate?: Date;
-  interval?: IntervalModel;
-  chartType?: ChartType;
-  chartPodcast?: boolean;
-  episodeIds?: number[];
-}
 
 export class CustomSerializer implements RouterStateSerializer<RouterModel> {
   serialize(routerState: RouterStateSnapshot | any): RouterModel {

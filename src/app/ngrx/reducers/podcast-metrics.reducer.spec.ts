@@ -1,7 +1,6 @@
 import { CastlePodcastMetricsAction, CastlePodcastAllTimeMetricsSuccessAction,
   CastlePodcastAllTimeMetricsFailureAction } from '../actions/castle.action.creator';
-import { INTERVAL_DAILY, MetricsType, METRICSTYPE_DOWNLOADS, getMetricsProperty } from './models';
-import { RouterModel } from './router.serializer';
+import { RouterModel, INTERVAL_DAILY, MetricsType, METRICSTYPE_DOWNLOADS, getMetricsProperty } from './models';
 import { PodcastMetricsReducer } from './podcast-metrics.reducer';
 
 describe('PodcastMetricsReducer', () => {

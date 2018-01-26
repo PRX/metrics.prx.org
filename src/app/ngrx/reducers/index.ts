@@ -8,10 +8,9 @@ import { EpisodeMetricsReducer, EpisodeMetricsModel } from './episode-metrics.re
 import { AccountState, getAccountEntity, getAccountError } from './account.reducer';
 import { PodcastState, getPodcastEntities, getPodcastError } from './podcast.reducer';
 import { EpisodeState, getEpisodeEntities } from './episode.reducer';
-import { RouterModel } from './router.serializer';
 import { CustomRouterReducer } from './router.reducer';
 
-import { getMetricsProperty } from './models/metrics.type';
+import { RouterModel, getMetricsProperty } from './models';
 import * as metricsUtil from '../../shared/util/metrics.util';
 
 export interface RootState {

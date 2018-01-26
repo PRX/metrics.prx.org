@@ -11,6 +11,7 @@ import { selectRouter } from '../reducers';
 import { ActionTypes } from '../actions';
 import * as ACTIONS from '../actions';
 import * as dateUtil from '../../shared/util/date';
+import {METRICSTYPE_DEMOGRAPHICS, METRICSTYPE_TRAFFICSOURCES} from "../reducers/models/metrics.type";
 
 @Injectable()
 export class RoutingEffects {
@@ -188,11 +189,24 @@ export class RoutingEffects {
       params['episodes'] = combinedRouterState.episodeIds.join(',');
     }
 
-    this.router.navigate([
-      combinedRouterState.podcastSeriesId,
-      combinedRouterState.metricsType,
-      combinedRouterState.chartType,
-      combinedRouterState.interval.key,
-      params]);
+    switch (combinedRouterState.metricsType) {
+      case METRICSTYPE_DOWNLOADS:
+        this.router.navigate([
+            combinedRouterState.podcastSeriesId,
+            combinedRouterState.metricsType,
+            combinedRouterState.chartType,
+            combinedRouterState.interval.key,
+            params
+          ]);
+        break;
+      case METRICSTYPE_DEMOGRAPHICS:
+      case METRICSTYPE_TRAFFICSOURCES:
+        this.router.navigate([
+            combinedRouterState.podcastSeriesId,
+            combinedRouterState.metricsType,
+            params
+          ]);
+        break;
+    }
   }
 }

@@ -1,26 +1,65 @@
+import { Component } from '@angular/core';
 import { Actions } from '@ngrx/effects';
 import { TestBed, async } from '@angular/core/testing';
+import { Route } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { cold, hot } from 'jasmine-marbles';
-import { StoreModule } from '@ngrx/store';
+import { StoreModule, Store } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
 import { routerReducer } from '@ngrx/router-store';
 import { ROUTER_NAVIGATION } from '@ngrx/router-store';
 import { getActions, TestActions } from './test.actions';
-import { ChartType, MetricsType, CHARTTYPE_PODCAST, INTERVAL_HOURLY, METRICSTYPE_DOWNLOADS } from '../';
+import { ChartType, MetricsType, CHARTTYPE_PODCAST, CHARTTYPE_EPISODES, INTERVAL_HOURLY, METRICSTYPE_DOWNLOADS } from '../';
 import { reducers } from '../reducers';
-import { CustomRouterNavigationAction, CastlePodcastChartToggleAction, CastleEpisodeChartToggleAction } from '../actions';
+import * as ACTIONS from '../actions';
 import { RoutingEffects } from './routing.effects';
 import * as dateUtil from '../../shared/util/date';
+
+@Component({
+  selector: 'metrics-test-component',
+  template: ``
+})
+class TestComponent {}
 
 describe('RoutingEffects', () => {
   let effects: RoutingEffects;
   let actions$: TestActions;
+  let store: Store<any>;
+
+  const routerState = {
+    podcastSeriesId: 37800,
+    metricsType: <MetricsType>METRICSTYPE_DOWNLOADS,
+    chartType: <ChartType>CHARTTYPE_PODCAST,
+    page: 1,
+    interval: INTERVAL_HOURLY,
+    beginDate: new Date('2017-11-01T00:00:00.000Z'),
+    endDate: new Date('2017-11-01T22:00:00.000'),
+    episodeIds: [123, 1234],
+    chartPodcast: true
+  };
+
+  const routes: Route[] = [
+    {
+      path: ':seriesId/downloads/:chartType/:interval',
+      component: TestComponent
+    },
+    {
+      path: ':seriesId/demographics',
+      component: TestComponent
+    },
+    {
+      path: ':seriesId/traffic-sources',
+      component: TestComponent
+    }
+  ];
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
+      declarations: [
+        TestComponent
+      ],
       imports: [
-        RouterTestingModule,
+        RouterTestingModule.withRoutes(routes),
         StoreModule.forRoot({...reducers, routerReducer: routerReducer}),
         EffectsModule.forRoot([RoutingEffects]),
       ],
@@ -31,113 +70,123 @@ describe('RoutingEffects', () => {
     });
     effects = TestBed.get(RoutingEffects);
     actions$ = TestBed.get(Actions);
+    store = TestBed.get(Store);
+
+    store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerState}));
+
+    spyOn(effects, 'routeFromNewRouterState').and.callThrough();
   }));
 
   it('should map ROUTER_NAVIGATION to CustomRouterNavigationAction', () => {
-    const routerState = {
-      podcastSeriesId: 37800,
-      metricsType: <MetricsType>METRICSTYPE_DOWNLOADS,
-      chartType: <ChartType>CHARTTYPE_PODCAST,
-      page: 1,
-      interval: INTERVAL_HOURLY,
-      beginDate: new Date('2017-11-01T00:00:00.000Z'),
-      endDate: new Date('2017-11-01T22:00:00.000'),
-      episodeIds: [123, 1234],
-      chartPodcast: true
-    };
     const action = {
       type: ROUTER_NAVIGATION,
       payload: {routerState}
     };
-    const result = new CustomRouterNavigationAction({routerState});
+    const result = new ACTIONS.CustomRouterNavigationAction({routerState});
     actions$.stream = hot('-a', { a: action });
     const expected = cold('-r', { r: result });
     expect(effects.customRouterNavigation$).toBeObservable(expected);
   });
 
-  xit('should provide routerState for begin and end date corresponding to standard range when dates not present', () => {
-    const action = {
-      type: ROUTER_NAVIGATION,
-      payload: {
-        routerState: {
-          url: '/37800/downloads/hourly;' +
-          'standardRange=3%20months;' +
-          'episodes=123,1234',
-          root: {
-            firstChild: {
-              params: {
-                seriesId: '37800',
-                interval: 'hourly',
-                page: '1',
-                standardRange: dateUtil.THIS_MONTH_PLUS_2_MONTHS
-              }
-            }
-          }
-        }
-      }
-    };
-    const result = new CustomRouterNavigationAction({routerState: {
-      podcastSeriesId: 37800,
-      page: 1,
+  it('should route to series', () => {
+    const action = new ACTIONS.RouteSeriesAction({podcastSeriesId: 37800});
+    effects.store.dispatch(action);
+    actions$.stream = hot('-a', { a: action });
+    const expected = cold('-r', { r: null });
+    expect(effects.routeSeries$).toBeObservable(expected);
+    expect(effects.routeFromNewRouterState).toHaveBeenCalledWith({podcastSeriesId: 37800});
+  });
+
+  it('should route to podcast charted', () => {
+    const action = new ACTIONS.RoutePodcastChartedAction({chartPodcast: false});
+    effects.store.dispatch(action);
+    actions$.stream = hot('-a', { a: action });
+    const expected = cold('-r', { r: null });
+    expect(effects.routePodcastCharted$).toBeObservable(expected);
+    expect(effects.routeFromNewRouterState).toHaveBeenCalledWith({chartPodcast: false});
+  });
+
+  it('should route to episode page', () => {
+    const action = new ACTIONS.RouteEpisodePageAction({page: 1});
+    effects.store.dispatch(action);
+    actions$.stream = hot('-a', { a: action });
+    const expected = cold('-r', { r: null });
+    expect(effects.routeEpisodePage$).toBeObservable(expected);
+    expect(effects.routeFromNewRouterState).toHaveBeenCalledWith({page: 1});
+  });
+
+  it('should route to episodes charted', () => {
+    const action = new ACTIONS.RouteEpisodesChartedAction({episodeIds: [123, 1234]});
+    effects.store.dispatch(action);
+    actions$.stream = hot('-a', { a: action });
+    const expected = cold('-r', { r: null });
+    expect(effects.routeEpisodesCharted$).toBeObservable(expected);
+    expect(effects.routeFromNewRouterState).toHaveBeenCalledWith({episodeIds: [123, 1234]});
+  });
+
+  it('should route to single episode charted', () => {
+    const action = new ACTIONS.RouteSingleEpisodeChartedAction({episodeId: 123, chartType: CHARTTYPE_EPISODES});
+    effects.store.dispatch(action);
+    actions$.stream = hot('-a', { a: action });
+    const expected = cold('-r', { r: null });
+    expect(effects.routeSingleEpisodeCharted$).toBeObservable(expected);
+    expect(effects.routeFromNewRouterState).toHaveBeenCalledWith({episodeIds: [123], chartType: CHARTTYPE_EPISODES});
+  });
+
+  it('should route to toggle episode charted and dispatch toggle event if not charted', () => {
+    spyOn(store, 'dispatch');
+    const action = new ACTIONS.RouteToggleEpisodeChartedAction({episodeId: 123, charted: false});
+    effects.store.dispatch(action);
+    actions$.stream = hot('-a', { a: action });
+    const expected = cold('-r', { r: null });
+    expect(effects.routeToggleEpisodeCharted$).toBeObservable(expected);
+    expect(store.dispatch).toHaveBeenCalledWith(
+      new ACTIONS.CastleEpisodeChartToggleAction({id: 123, seriesId: routerState.podcastSeriesId, charted: false}));
+    expect(effects.routeFromNewRouterState).toHaveBeenCalledWith({episodeIds: routerState.episodeIds.filter(id => id !== 123)});
+  });
+
+  it('should route to chart type', () => {
+    const action = new ACTIONS.RouteChartTypeAction({chartType: CHARTTYPE_EPISODES});
+    effects.store.dispatch(action);
+    actions$.stream = hot('-a', { a: action });
+    const expected = cold('-r', { r: null });
+    expect(effects.routeChartType$).toBeObservable(expected);
+    expect(effects.routeFromNewRouterState).toHaveBeenCalledWith({chartType: CHARTTYPE_EPISODES});
+  });
+
+  it('should route to interval', () => {
+    const action = new ACTIONS.RouteIntervalAction({interval: INTERVAL_HOURLY});
+    effects.store.dispatch(action);
+    actions$.stream = hot('-a', { a: action });
+    const expected = cold('-r', { r: null });
+    expect(effects.routeInterval$).toBeObservable(expected);
+    expect(effects.routeFromNewRouterState).toHaveBeenCalledWith({interval: INTERVAL_HOURLY});
+  });
+
+  it('should route to standard range and include begin and end dates', () => {
+    const action = new ACTIONS.RouteStandardRangeAction({standardRange: dateUtil.LAST_WEEK});
+    effects.store.dispatch(action);
+    actions$.stream = hot('-a', { a: action });
+    const expected = cold('-r', { r: null });
+    expect(effects.routeStandardRange$).toBeObservable(expected);
+    expect(effects.routeFromNewRouterState).toHaveBeenCalledWith({
+      standardRange: dateUtil.LAST_WEEK,
+      beginDate: dateUtil.beginningOfLastWeekUTC().toDate(),
+      endDate: dateUtil.endOfLastWeekUTC().toDate()
+    });
+  });
+
+  it('should route to advanced range', () => {
+    const action = new ACTIONS.RouteAdvancedRangeAction({
       interval: INTERVAL_HOURLY,
-      beginDate: dateUtil.beginningOfThisMonthPlusTwoMonthsUTC().toDate(),
-      endDate: dateUtil.endOfTodayUTC().toDate(),
-      standardRange: dateUtil.THIS_MONTH_PLUS_2_MONTHS
-    }});
+      standardRange: dateUtil.LAST_WEEK,
+      beginDate: dateUtil.beginningOfLastWeekUTC().toDate(),
+      endDate: dateUtil.endOfLastWeekUTC().toDate()
+    });
+    effects.store.dispatch(action);
     actions$.stream = hot('-a', { a: action });
-    const expected = cold('-r', { r: result });
-    expect(effects.customRouterNavigation$).toBeObservable(expected);
-  });
-
-  describe('routing to specific begin and end dates', () => {
-    let expected;
-
-    beforeEach(() => {
-      // not sure how to get RouterNavigationAction from comp.router.navigate but it should look like this
-      const action = {
-        type: ROUTER_NAVIGATION,
-        payload: {
-          routerState: {
-            url: '/37800/downloads/hourly;' +
-            'beginDate=2017-11-09T00:00:00.000Z;endDate=2017-11-09T22:00:00.000Z;' +
-            'episodes=123,1234,chartPodcast=true',
-            root: {
-              firstChild: {
-                params: {
-                  seriesId: '37800',
-                  interval: 'hourly',
-                  page: '1',
-                  beginDate: '2017-11-01T00:00:00.000Z',
-                  endDate: '2017-11-01T22:00:00.000',
-                  episodes: '123,1234',
-                  chartPodcast: 'true'
-                }
-              }
-            }
-          }
-        }
-      };
-      const result = new CustomRouterNavigationAction({routerState: {
-        podcastSeriesId: 37800,
-        page: 1,
-        interval: INTERVAL_HOURLY,
-        beginDate: new Date('2017-11-01T00:00:00.000Z'),
-        endDate: new Date('2017-11-01T22:00:00.000'),
-        standardRange: dateUtil.OTHER
-      }});
-      actions$.stream = hot('-a', { a: action });
-      expected = cold('-r', { r: result });
-    });
-
-    xit('should create a CastleFilterAction from a RouterNavigationAction', () => {
-      expect(effects.customRouterNavigation$).toBeObservable(expected);
-    });
-
-    xit('should dispatch toggle chart podcast and episode actions', () => {
-      spyOn(effects.store, 'dispatch').and.callThrough();
-      expect(effects.customRouterNavigation$).toBeObservable(expected);
-      expect(effects.store.dispatch).toHaveBeenCalledWith(jasmine.any(CastlePodcastChartToggleAction));
-      expect(effects.store.dispatch).toHaveBeenCalledWith(jasmine.any(CastleEpisodeChartToggleAction));
-    });
+    const expected = cold('-r', { r: null });
+    expect(effects.routeAdvancedRange$).toBeObservable(expected);
+    expect(effects.routeFromNewRouterState).toHaveBeenCalled();
   });
 });

@@ -2,7 +2,7 @@ import { ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 import { RouterStateSerializer } from '@ngrx/router-store';
 
 import { IntervalModel, IntervalList, ChartType,
-  METRICSTYPE_DEMOGRAPHICS, METRICSTYPE_DOWNLOADS, METRICSTYPE_TRAFFICSOURCES, MetricsType } from './models';
+  INTERVAL_HOURLY, METRICSTYPE_DEMOGRAPHICS, METRICSTYPE_DOWNLOADS, METRICSTYPE_TRAFFICSOURCES, MetricsType } from './models';
 
 import { getBeginEndDateFromStandardRange, getStandardRangeForBeginEndDate } from '../../shared/util/date/date.util';
 
@@ -20,7 +20,7 @@ export interface RouterModel {
 }
 
 export class CustomSerializer implements RouterStateSerializer<RouterModel> {
-  serialize(routerState: RouterStateSnapshot): RouterModel {
+  serialize(routerState: RouterStateSnapshot | any): RouterModel {
     const router: RouterModel = {};
     const { url } = routerState;
 
@@ -61,9 +61,11 @@ export class CustomSerializer implements RouterStateSerializer<RouterModel> {
       }
       if (params['endDate']) {
         // Hmmm... params from the RouterStateSnanshot have date strings without milliseconds even though they're in the url
-        // For our purposes, end date is always 999 milliseconds, so... add it I guess
+        // For our purposes, end date is 999 milliseconds except when hourly, so... add it I guess
         router.endDate = new Date(params['endDate']);
-        router.endDate.setMilliseconds(999);
+        if (router.interval !== INTERVAL_HOURLY) {
+          router.endDate.setMilliseconds(999);
+        }
       }
       if (router.beginDate && router.endDate && params['standardRange']) {
         const range = getBeginEndDateFromStandardRange(params['standardRange']);
@@ -95,7 +97,6 @@ export class CustomSerializer implements RouterStateSerializer<RouterModel> {
         router.chartPodcast = params['chartPodcast'] === 'true';
       }
     }
-    console.log('Router Serializer', router);
     return router;
   }
 }

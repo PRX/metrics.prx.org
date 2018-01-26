@@ -16,6 +16,13 @@ import * as dateUtil from '../../shared/util/date';
 export class RoutingEffects {
   routerState: RouterModel;
 
+  // ROUTER_NAVIGATION/RouterNavigationAction originates from the ngrx StoreRouterConnectingModule.
+  // It is serialized from a RouterStateSnapshot by the custom RouterStateSerializer to a custom RouterModel
+  // after serialize, a RouterNavigationAction still has router event extras attached
+  // so here in the effect it is mapped to a CustomRouterNavigationAction to strip it down.
+  // The router reducer captures the CustomRouterNavigationAction to save routing state.
+  // The CustomRouterNavigationAction is mocked by tests but is _not_ otherwise ever manually called by the application,
+  // only through routing and the router-store connecting module.
   @Effect()
   customRouterNavigation$: Observable<Action> = this.actions$
     .ofType(ROUTER_NAVIGATION)
@@ -23,7 +30,7 @@ export class RoutingEffects {
     .switchMap((payload: ACTIONS.CustomRouterNavigationPayload) => {
       const routerState: RouterModel = {...payload.routerState};
       // map to an action with our CUSTOM_ROUTER_NAVIGATION type
-      return Observable.of(new ACTIONS.CustomRouterNavigationAction(payload));
+      return Observable.of(new ACTIONS.CustomRouterNavigationAction({routerState}));
     });
 
   @Effect({dispatch: false})
@@ -78,6 +85,7 @@ export class RoutingEffects {
 
   // note that this is an Observable<void> dispatch: false because it only needs to dispatch when charted is false
   // so toggle off is handled via manual dispatch rather than by transform and dispatch an action from the effect
+  // thought about doing this differently but it will go away soon enuf
   @Effect({dispatch: false})
   routeToggleEpisodeCharted$: Observable<void> = this.actions$
     .ofType(ActionTypes.ROUTE_TOGGLE_EPISODE_CHARTED)

@@ -6,6 +6,7 @@ import { RouterModel, IntervalList,
 
 import { getBeginEndDateFromStandardRange, getStandardRangeForBeginEndDate } from '../../shared/util/date/date.util';
 
+// serialize the route snapshot to our RouterModel
 export class CustomSerializer implements RouterStateSerializer<RouterModel> {
   serialize(routerState: RouterStateSnapshot | any): RouterModel {
     const router: RouterModel = {};

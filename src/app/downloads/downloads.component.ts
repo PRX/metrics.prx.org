@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs/Subscription';
 import { CastleService } from '../core';
-import { CastlePodcastMetricsSuccessAction, CastleEpisodeMetricsSuccessAction, GoogleAnalyticsEventAction } from '../ngrx/actions';
+import * as ACTIONS from '../ngrx/actions';
 import { RouterModel, EpisodeModel, PodcastModel, ChartType, MetricsType,
   CHARTTYPE_PODCAST, INTERVAL_DAILY, EPISODE_PAGE_SIZE, METRICSTYPE_DOWNLOADS, getMetricsProperty } from '../ngrx';
 import { selectRouter, selectEpisodes, selectPodcasts } from '../ngrx/reducers';
@@ -210,6 +210,14 @@ export class DownloadsComponent implements OnInit, OnDestroy {
 
   getPodcastMetrics(podcast: PodcastModel) {
     this.toggleLoading(true);
+    this.store.dispatch(new ACTIONS.CastlePodcastMetricsLoadAction({
+      seriesId: podcast.seriesId,
+      feederId: podcast.feederId,
+      metricsType: this.routerState.metricsType,
+      interval: this.routerState.interval,
+      beginDate: this.routerState.beginDate,
+      endDate: this.routerState.endDate
+    }));
     this.castle.followList('prx:podcast-downloads', {
       id: podcast.feederId,
       from: this.routerState.beginDate.toISOString(),
@@ -217,9 +225,11 @@ export class DownloadsComponent implements OnInit, OnDestroy {
       interval: this.routerState.interval.value
     }).subscribe(
       metrics => this.setPodcastMetrics(podcast, metrics),
-      err => {
+      error => {
         this.toggleLoading(false);
-        this.showError(err.status, 'podcast', podcast.title);
+        this.showError(error.status, 'podcast', podcast.title);
+        this.store.dispatch(new ACTIONS.CastlePodcastMetricsFailureAction({
+          seriesId: podcast.seriesId, feederId: podcast.feederId, error}));
       }
     );
   }
@@ -227,7 +237,7 @@ export class DownloadsComponent implements OnInit, OnDestroy {
   setPodcastMetrics(podcast: PodcastModel, metrics: any) {
     this.toggleLoading(false);
     if (metrics && metrics.length && metrics[0]['downloads']) {
-      this.store.dispatch(new CastlePodcastMetricsSuccessAction({
+      this.store.dispatch(new ACTIONS.CastlePodcastMetricsSuccessAction({
         seriesId: podcast.seriesId,
         feederId: podcast.feederId,
         metricsPropertyName: getMetricsProperty(this.routerState.interval, this.routerState.metricsType),
@@ -238,13 +248,23 @@ export class DownloadsComponent implements OnInit, OnDestroy {
   }
 
   googleAnalyticsEvent(gaAction, value) {
-    this.store.dispatch(new GoogleAnalyticsEventAction({gaAction, value}));
+    this.store.dispatch(new ACTIONS.GoogleAnalyticsEventAction({gaAction, value}));
   }
 
   getEpisodeMetrics() {
     this.toggleLoading(this.isPodcastLoading, true);
     this.pageEpisodes.forEach((episode: EpisodeModel) => {
       if (episode && episode.guid) {
+        this.store.dispatch(new ACTIONS.CastleEpisodeMetricsLoadAction({
+          seriesId: episode.seriesId,
+          page: episode.page,
+          id: episode.id,
+          guid: episode.guid,
+          metricsType: this.routerState.metricsType,
+          interval: this.routerState.interval,
+          beginDate: this.routerState.beginDate,
+          endDate: this.routerState.endDate
+        }));
         this.castle.followList('prx:episode-downloads', {
           guid: episode.guid,
           from: this.routerState.beginDate.toISOString(),
@@ -252,9 +272,16 @@ export class DownloadsComponent implements OnInit, OnDestroy {
           interval: this.routerState.interval.value
         }).subscribe(
           metrics => this.setEpisodeMetrics(episode, metrics),
-          err => {
+          error => {
             this.toggleLoading(this.isPodcastLoading, false);
-            this.showError(err.status, 'episode', episode.title);
+            this.showError(error.status, 'episode', episode.title);
+            this.store.dispatch(new ACTIONS.CastleEpisodeMetricsFailureAction({
+              seriesId: episode.seriesId,
+              page: episode.page,
+              id: episode.id,
+              guid: episode.guid,
+              error
+            }));
           }
         );
       }
@@ -264,7 +291,7 @@ export class DownloadsComponent implements OnInit, OnDestroy {
   setEpisodeMetrics(episode: EpisodeModel, metrics: any) {
     this.toggleLoading(this.isPodcastLoading, false);
     if (metrics && metrics.length && metrics[0]['downloads']) {
-      this.store.dispatch(new CastleEpisodeMetricsSuccessAction({
+      this.store.dispatch(new ACTIONS.CastleEpisodeMetricsSuccessAction({
         seriesId: episode.seriesId,
         page: episode.page,
         id: episode.id,

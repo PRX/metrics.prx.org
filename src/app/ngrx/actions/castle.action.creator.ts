@@ -30,10 +30,16 @@ export class CastlePodcastMetricsSuccessAction implements Action {
   constructor(public payload: CastlePodcastMetricsSuccessPayload) {}
 }
 
+export interface CastlePodcastMetricsFailurePayload {
+  seriesId: number;
+  feederId: string;
+  error: any;
+}
+
 export class CastlePodcastMetricsFailureAction implements Action {
   readonly type = ActionTypes.CASTLE_PODCAST_METRICS_FAILURE;
 
-  constructor(public payload: any) {}
+  constructor(public payload: CastlePodcastMetricsFailurePayload) {}
 }
 
 export interface CastleEpisodeMetricsLoadPayload {
@@ -68,10 +74,18 @@ export class CastleEpisodeMetricsSuccessAction implements Action {
   constructor(public payload: CastleEpisodeMetricsSuccessPayload) {}
 }
 
+export interface CastleEpisodeAllTimeMetricsFailurePayload {
+  seriesId: number;
+  page: number;
+  id: number;
+  guid: string;
+  error: any;
+}
+
 export class CastleEpisodeMetricsFailureAction implements Action {
   readonly type = ActionTypes.CASTLE_EPISODE_METRICS_FAILURE;
 
-  constructor(public payload: any) {}
+  constructor(public payload: CastleEpisodeAllTimeMetricsFailurePayload) {}
 }
 
 export interface CastlePodcastChartTogglePayload {

@@ -1,6 +1,4 @@
-import { ActionTypes, AllActions,
-  CastlePodcastMetricsSuccessAction, CastlePodcastChartToggleAction, CastlePodcastAllTimeMetricsSuccessAction,
-  CustomRouterNavigationPayload } from '../actions';
+import * as ACTIONS from '../actions';
 
 export interface PodcastMetricsModel {
   seriesId: number;
@@ -10,7 +8,13 @@ export interface PodcastMetricsModel {
   weeklyDownloads?: any[][];
   dailyDownloads?: any[][];
   hourlyDownloads?: any[][];
+  loaded?: boolean;
+  loading?: boolean;
+  error?: any;
   allTimeDownloads?: number;
+  allTimeLoaded?: boolean;
+  allTimeLoading?: boolean;
+  allTimeError?: any;
 }
 
 const initialState = [];
@@ -19,27 +23,57 @@ const podcastIndex = (state: PodcastMetricsModel[], seriesId: number) => {
   return state.findIndex(p => p.seriesId === seriesId);
 };
 
-export function PodcastMetricsReducer(state: PodcastMetricsModel[] = initialState, action: AllActions) {
+export function PodcastMetricsReducer(state: PodcastMetricsModel[] = initialState, action: ACTIONS.AllActions) {
   switch (action.type) {
-    case ActionTypes.CASTLE_PODCAST_METRICS_SUCCESS:
-      if (action instanceof CastlePodcastMetricsSuccessAction) {
+    case ACTIONS.ActionTypes.CASTLE_PODCAST_METRICS_LOAD:
+      if (action instanceof ACTIONS.CastlePodcastMetricsLoadAction) {
+        const { seriesId, feederId} = action.payload;
+        const podcastIdx = podcastIndex(state, seriesId);
+        let podcast: PodcastMetricsModel, newState: PodcastMetricsModel[];
+        if (podcastIdx > -1) {
+          podcast = {...state[podcastIdx], seriesId, loading: true, loaded: false};
+          newState = [...state.slice(0, podcastIdx), podcast, ...state.slice(podcastIdx + 1)];
+        } else {
+          podcast = {seriesId, feederId, loading: true, loaded: false};
+          newState = [podcast, ...state];
+        }
+        return newState;
+      }
+      break;
+    case ACTIONS.ActionTypes.CASTLE_PODCAST_METRICS_SUCCESS:
+      if (action instanceof ACTIONS.CastlePodcastMetricsSuccessAction) {
         const { seriesId, feederId, metricsPropertyName, metrics } = action.payload;
         const podcastIdx = podcastIndex(state, seriesId);
         let podcast: PodcastMetricsModel, newState: PodcastMetricsModel[];
         if (podcastIdx > -1) {
-          podcast = {...state[podcastIdx], seriesId};
+          podcast = {...state[podcastIdx], seriesId, loading: false, loaded: false};
           podcast[metricsPropertyName] = metrics;
           newState = [...state.slice(0, podcastIdx), podcast, ...state.slice(podcastIdx + 1)];
         } else {
-          podcast = {seriesId, feederId};
+          podcast = {seriesId, feederId, loading: false, loaded: false};
           podcast[metricsPropertyName] = metrics;
           newState = [podcast, ...state];
         }
         return newState;
       }
-    break;
-    case ActionTypes.CASTLE_PODCAST_CHART_TOGGLE:
-      if (action instanceof CastlePodcastChartToggleAction) {
+      break;
+    case ACTIONS.ActionTypes.CASTLE_PODCAST_METRICS_FAILURE:
+      if (action instanceof ACTIONS.CastlePodcastMetricsFailureAction) {
+        const { seriesId, feederId, error } = action.payload;
+        const podcastIdx = podcastIndex(state, seriesId);
+        let podcast: PodcastMetricsModel, newState: PodcastMetricsModel[];
+        if (podcastIdx > -1) {
+          podcast = {...state[podcastIdx], seriesId, error, loading: false, loaded: false};
+          newState = [...state.slice(0, podcastIdx), podcast, ...state.slice(podcastIdx + 1)];
+        } else {
+          podcast = {seriesId, error, loading: false, loaded: false};
+          newState = [podcast, ...state];
+        }
+        return newState;
+      }
+      break;
+    case ACTIONS.ActionTypes.CASTLE_PODCAST_CHART_TOGGLE:
+      if (action instanceof ACTIONS.CastlePodcastChartToggleAction) {
         const { seriesId } = action.payload;
         const podcastIdx = podcastIndex(state, seriesId);
         let podcast: PodcastMetricsModel, newState: PodcastMetricsModel[];
@@ -53,8 +87,8 @@ export function PodcastMetricsReducer(state: PodcastMetricsModel[] = initialStat
         return newState;
       }
       break;
-    case ActionTypes.CASTLE_PODCAST_ALL_TIME_METRICS_SUCCESS:
-      if (action instanceof CastlePodcastAllTimeMetricsSuccessAction) {
+    case ACTIONS.ActionTypes.CASTLE_PODCAST_ALL_TIME_METRICS_SUCCESS:
+      if (action instanceof ACTIONS.CastlePodcastAllTimeMetricsSuccessAction) {
         const { seriesId } = action.payload.podcast;
         const podcastIdx = podcastIndex(state, seriesId);
 
@@ -68,14 +102,14 @@ export function PodcastMetricsReducer(state: PodcastMetricsModel[] = initialStat
         }
       }
       break;
-    case ActionTypes.CASTLE_PODCAST_ALL_TIME_METRICS_FAILURE:
+    case ACTIONS.ActionTypes.CASTLE_PODCAST_ALL_TIME_METRICS_FAILURE:
       break;
     // TODO: TLDR; charted does not really belong here.
     // It belongs in the router state and should be combined with metrics state using a selector to get charted data
     // Not yet able to make the chart selector changes (release priority)
     // so am handling the ROUTER_NAVIGATION event here to catch changes to whether the podcast is charted via the route
-    case ActionTypes.CUSTOM_ROUTER_NAVIGATION:
-      const payload: CustomRouterNavigationPayload = action['payload'];
+    case ACTIONS.ActionTypes.CUSTOM_ROUTER_NAVIGATION: {
+      const payload: ACTIONS.CustomRouterNavigationPayload = action['payload'];
       const seriesId = payload.routerState.podcastSeriesId;
       const charted = payload.routerState.chartPodcast;
       const podcastIdx = podcastIndex(state, seriesId);
@@ -88,6 +122,7 @@ export function PodcastMetricsReducer(state: PodcastMetricsModel[] = initialStat
         newState = [podcast, ...state];
       }
       return newState;
+    }
   }
   return state;
 }

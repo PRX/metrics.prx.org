@@ -42,24 +42,9 @@ export class RoutingEffects {
     .map((action: ACTIONS.RouteSeriesAction) => action.payload)
     .switchMap((payload: ACTIONS.RouteSeriesPayload) => {
       const { podcastSeriesId } = payload;
-      const upcomingRouterState = this.routeFromNewRouterState({podcastSeriesId});
-      this.loadPodcastMetricsAction(upcomingRouterState);
+      this.routeFromNewRouterState({podcastSeriesId});
       return Observable.of(null);
     });
-
-  loadPodcastMetricsAction(routerState: RouterModel) {
-    const podcast = metricsUtil.filterPodcasts(routerState, this.podcasts);
-    if (podcast) {
-      this.store.dispatch(new ACTIONS.CastlePodcastMetricsLoadAction({
-        seriesId: podcast.seriesId,
-        feederId: podcast.feederId,
-        metricsType: routerState.metricsType,
-        interval: routerState.interval,
-        beginDate: routerState.beginDate,
-        endDate: routerState.endDate
-      }));
-    }
-  }
 
   @Effect({dispatch: false})
   routePodcastCharted$: Observable<void> = this.actions$

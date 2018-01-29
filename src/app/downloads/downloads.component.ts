@@ -209,35 +209,6 @@ export class DownloadsComponent implements OnInit, OnDestroy {
       beginDate: this.routerState.beginDate,
       endDate: this.routerState.endDate
     }));
-    this.castle.followList('prx:podcast-downloads', {
-      id: podcast.feederId,
-      from: this.routerState.beginDate.toISOString(),
-      to: this.routerState.endDate.toISOString(),
-      interval: this.routerState.interval.value
-    }).subscribe(
-      metrics => this.setPodcastMetrics(podcast, metrics),
-      error => {
-        this.showError(error.status, 'podcast', podcast.title);
-        this.store.dispatch(new ACTIONS.CastlePodcastMetricsFailureAction({
-          seriesId: podcast.seriesId, feederId: podcast.feederId, error}));
-      }
-    );
-  }
-
-  setPodcastMetrics(podcast: PodcastModel, metrics: any) {
-    if (metrics && metrics.length && metrics[0]['downloads']) {
-      this.store.dispatch(new ACTIONS.CastlePodcastMetricsSuccessAction({
-        seriesId: podcast.seriesId,
-        feederId: podcast.feederId,
-        metricsPropertyName: getMetricsProperty(this.routerState.interval, this.routerState.metricsType),
-        metrics: metrics[0]['downloads']
-      }));
-      this.googleAnalyticsEvent('load', metrics[0]['downloads'].length);
-    }
-  }
-
-  googleAnalyticsEvent(gaAction, value) {
-    this.store.dispatch(new ACTIONS.GoogleAnalyticsEventAction({gaAction, value}));
   }
 
   getEpisodeMetrics() {
@@ -253,38 +224,7 @@ export class DownloadsComponent implements OnInit, OnDestroy {
           beginDate: this.routerState.beginDate,
           endDate: this.routerState.endDate
         }));
-        this.castle.followList('prx:episode-downloads', {
-          guid: episode.guid,
-          from: this.routerState.beginDate.toISOString(),
-          to: this.routerState.endDate.toISOString(),
-          interval: this.routerState.interval.value
-        }).subscribe(
-          metrics => this.setEpisodeMetrics(episode, metrics),
-          error => {
-            this.showError(error.status, 'episode', episode.title);
-            this.store.dispatch(new ACTIONS.CastleEpisodeMetricsFailureAction({
-              seriesId: episode.seriesId,
-              page: episode.page,
-              id: episode.id,
-              guid: episode.guid,
-              error
-            }));
-          }
-        );
       }
     });
-  }
-
-  setEpisodeMetrics(episode: EpisodeModel, metrics: any) {
-    if (metrics && metrics.length && metrics[0]['downloads']) {
-      this.store.dispatch(new ACTIONS.CastleEpisodeMetricsSuccessAction({
-        seriesId: episode.seriesId,
-        page: episode.page,
-        id: episode.id,
-        guid: episode.guid,
-        metricsPropertyName: getMetricsProperty(this.routerState.interval, this.routerState.metricsType),
-        metrics: metrics[0]['downloads']
-      }));
-    }
   }
 }

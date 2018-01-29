@@ -30,7 +30,7 @@
             <prx-checkbox *ngIf="showPodcastToggle; else podcastTitle"
               small [checked]="podcastTableData.charted" [color]="podcastTableData.color"
               (change)="toggleChartPodcast($event)">{{podcastTableData.title}}</prx-checkbox>
-            <ng-template #podcastTitle>{{podcastTableData.title}}</ng-template>
+            <ng-template #podcastTitle><span class="title">{{podcastTableData.title}}</span></ng-template>
           </td>
           <td>{{podcastTableData.releaseDate}}</td>
           <td>{{podcastTableData.totalForPeriod | largeNumber}}</td>
@@ -44,7 +44,7 @@
               small [checked]="episode.charted" [color]="episode.color"
               (change)="toggleChartEpisode(episode, $event)">{{episode.title}}</prx-checkbox>
             <ng-template #episodeTitle>
-              <button class="btn-link" (click)="onChartSingleEpisode(episode)">{{episode.title}}</button>
+              <button class="btn-link title" (click)="onChartSingleEpisode(episode)">{{episode.title}}</button>
             </ng-template>
           </td>
           <td>{{episode.releaseDate}}</td>

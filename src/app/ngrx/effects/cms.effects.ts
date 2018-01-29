@@ -12,8 +12,8 @@ import { AuthService } from 'ngx-prx-styleguide';
 import { CmsService, HalDoc } from '../../core';
 import { getColor } from '../../shared/util/chart.util';
 
-import { AccountModel, PodcastModel, EpisodeModel, EPISODE_PAGE_SIZE, EpisodeMetricsModel} from '../';
-import {selectEpisodeMetrics, selectPodcastRoute} from '../reducers';
+import { AccountModel, PodcastModel, EpisodeModel, EPISODE_PAGE_SIZE, EpisodeMetricsModel } from '../';
+import { selectEpisodeMetrics, selectPodcastRoute } from '../reducers';
 import * as ACTIONS from '../actions';
 
 @Injectable()

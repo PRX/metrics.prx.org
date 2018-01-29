@@ -77,3 +77,6 @@ export function EpisodeReducer(state: EpisodeState = initialState, action: AllAc
 }
 
 export const getEpisodeEntities = (state: EpisodeState) => state.entities;
+export const getEpisodesLoading = (state: EpisodeState) => state.loading;
+export const getEpisodesLoaded = (state: EpisodeState) => state.loaded;
+export const getEpisodesError = (state: EpisodeState) => state.error;

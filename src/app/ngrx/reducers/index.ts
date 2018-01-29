@@ -6,8 +6,8 @@ import { EpisodeReducer } from './episode.reducer';
 import { PodcastMetricsReducer, PodcastMetricsModel } from './podcast-metrics.reducer';
 import { EpisodeMetricsReducer, EpisodeMetricsModel } from './episode-metrics.reducer';
 import { AccountState, getAccountEntity, getAccountError } from './account.reducer';
-import { PodcastState, getPodcastEntities, getPodcastError } from './podcast.reducer';
-import { EpisodeState, getEpisodeEntities } from './episode.reducer';
+import { PodcastState, getPodcastEntities, getPodcastsLoaded, getPodcastsLoading, getPodcastsError } from './podcast.reducer';
+import { EpisodeModel, EpisodeState, getEpisodeEntities, getEpisodesLoaded, getEpisodesLoading, getEpisodesError } from './episode.reducer';
 import { CustomRouterReducer } from './router.reducer';
 
 import { RouterModel, getMetricsProperty } from './models';
@@ -59,7 +59,9 @@ export const selectPodcastEntities = createSelector(selectPodcastState, getPodca
 export const selectPodcasts = createSelector(selectPodcastEntities, entities => {
   return Object.keys(entities).map(seriesId => entities[parseInt(seriesId, 10)]);
 });
-export const selectPodcastsError = createSelector(selectPodcastState, getPodcastError);
+export const selectPodcastsLoaded = createSelector(selectPodcastState, getPodcastsLoaded);
+export const selectPodcastsLoading = createSelector(selectPodcastState, getPodcastsLoading);
+export const selectPodcastsError = createSelector(selectPodcastState, getPodcastsError);
 export const selectSelectedPodcast = createSelector(selectPodcastEntities, selectPodcastRoute,
   (entities, podcastSeriesId) => entities[podcastSeriesId]);
 
@@ -67,6 +69,12 @@ export const selectEpisodeState = createSelector(selectAppState, (state: RootSta
 export const selectEpisodeEntities = createSelector(selectEpisodeState, getEpisodeEntities);
 export const selectEpisodes = createSelector(selectEpisodeEntities, entities => {
   return Object.keys(entities).map(id => entities[parseInt(id, 10)]);
+});
+export const selectEpisodesLoaded = createSelector(selectEpisodeState, getEpisodesLoaded);
+export const selectEpisodesLoading = createSelector(selectEpisodeState, getEpisodesLoading);
+export const selectEpisodesError = createSelector(selectEpisodeState, getEpisodesError);
+export const selectSelectedPageEpisodes = createSelector(selectEpisodes, selectPageRoute, (episodes: EpisodeModel[], page: number) => {
+  return episodes.filter(episode => episode.page === page);
 });
 
 export const selectPodcastMetrics = createSelector(selectAppState, (state: RootState) => state.podcastMetrics);
@@ -88,5 +96,24 @@ export const selectPodcastMetricsFilteredTotal = createSelector(selectPodcastMet
       return metricsUtil.getTotal(data);
     }
   });
+export const selectPodcastMetricsLoading = createSelector(selectPodcastMetrics, (metrics: PodcastMetricsModel[]) => {
+  return metrics.some((m: PodcastMetricsModel) => m.loading);
+});
+export const selectPodcastMetricsLoaded = createSelector(selectPodcastMetrics, (metrics: PodcastMetricsModel[]) => {
+  return metrics.every((m: PodcastMetricsModel) => m.loaded || m.loaded === undefined);
+});
 
 export const selectEpisodeMetrics = createFeatureSelector<EpisodeMetricsModel[]>('episodeMetrics');
+export const selectEpisodeMetricsLoading = createSelector(selectEpisodeMetrics, (metrics: EpisodeMetricsModel[]) => {
+  return metrics.some((m: EpisodeMetricsModel) => m.loading);
+});
+export const selectEpisodeMetricsLoaded = createSelector(selectEpisodeMetrics, (metrics: EpisodeMetricsModel[]) => {
+  return metrics.every((m: EpisodeMetricsModel) => m.loaded || m.loaded === undefined);
+});
+
+export const selectCmsLoading = createSelector(selectEpisodesLoading, selectPodcastsLoading, (episodes, podcasts) => episodes || podcasts);
+export const selectCastleLoading = createSelector(selectEpisodeMetricsLoading, selectPodcastMetricsLoading, (episodes, podcasts) => episodes || podcasts);
+export const selectLoading = createSelector(selectCmsLoading, selectCastleLoading, (cms, castle) => cms || castle);
+export const selectCmsLoaded = createSelector(selectEpisodesLoaded, selectPodcastsLoaded, (episodes, podcasts) => episodes && podcasts);
+export const selectCastleLoaded = createSelector(selectEpisodeMetricsLoaded, selectPodcastMetricsLoaded, (episodes, podcasts) => episodes && podcasts);
+export const selectLoaded = createSelector(selectCmsLoaded, selectCastleLoaded, (cms, castle) => cms && castle);

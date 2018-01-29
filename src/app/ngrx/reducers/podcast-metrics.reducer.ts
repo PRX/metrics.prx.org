@@ -46,11 +46,11 @@ export function PodcastMetricsReducer(state: PodcastMetricsModel[] = initialStat
         const podcastIdx = podcastIndex(state, seriesId);
         let podcast: PodcastMetricsModel, newState: PodcastMetricsModel[];
         if (podcastIdx > -1) {
-          podcast = {...state[podcastIdx], seriesId, loading: false, loaded: false};
+          podcast = {...state[podcastIdx], seriesId, loading: false, loaded: true};
           podcast[metricsPropertyName] = metrics;
           newState = [...state.slice(0, podcastIdx), podcast, ...state.slice(podcastIdx + 1)];
         } else {
-          podcast = {seriesId, feederId, loading: false, loaded: false};
+          podcast = {seriesId, feederId, loading: false, loaded: true};
           podcast[metricsPropertyName] = metrics;
           newState = [podcast, ...state];
         }

@@ -2,22 +2,23 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs/Subscription';
+import { Observable } from 'rxjs/Observable';
 import { CastleService } from '../core';
 import * as ACTIONS from '../ngrx/actions';
 import { RouterModel, EpisodeModel, PodcastModel, ChartType, MetricsType,
   CHARTTYPE_PODCAST, INTERVAL_DAILY, EPISODE_PAGE_SIZE, METRICSTYPE_DOWNLOADS, getMetricsProperty } from '../ngrx';
-import { selectRouter, selectEpisodes, selectPodcasts } from '../ngrx/reducers';
+import { selectRouter, selectEpisodes, selectPodcasts, selectLoading, selectLoaded } from '../ngrx/reducers';
 import { filterPodcastEpisodePage } from '../shared/util/metrics.util';
 import * as dateUtil from '../shared/util/date';
 import { isPodcastChanged, isBeginDateChanged, isEndDateChanged, isIntervalChanged } from '../shared/util/filter.util';
 
 @Component({
   template: `
-    <prx-spinner *ngIf="isPodcastLoading || isEpisodeLoading" overlay="true"
+    <prx-spinner *ngIf="loading$ | async" overlay="true"
                  loadingMessage="Please wait..."></prx-spinner>
     <router-outlet name="sidenav"></router-outlet>
-    <section class="content" *ngIf="podcasts">
-      <metrics-menu-bar *ngIf="!isPodcastLoading && !isEpisodeLoading"></metrics-menu-bar>
+    <section class="content" *ngIf="loaded$ | async">
+      <metrics-menu-bar></metrics-menu-bar>
       <metrics-downloads-chart></metrics-downloads-chart>
       <metrics-downloads-table [totalPages]="totalPages"></metrics-downloads-table>
       <p class="error" *ngFor="let error of errors">{{error}}</p>
@@ -36,17 +37,18 @@ export class DownloadsComponent implements OnInit, OnDestroy {
   routerState: RouterModel;
   updatePodcast: boolean;
   updateEpisodes: boolean;
-  isPodcastLoading = true;
-  isEpisodeLoading = true;
+  loading$: Observable<boolean>;
+  loaded$: Observable<boolean>;
   errors: string[] = [];
 
   constructor(private castle: CastleService,
               public store: Store<any>,
-              private router: Router) {}
+              private router: Router) {
+    this.loading$ = this.store.select(selectLoading);
+    this.loaded$ = this.store.select(selectLoaded);
+  }
 
   ngOnInit() {
-    this.toggleLoading(true, true);
-
     this.subPodcastsAndRoute();
   }
 
@@ -63,7 +65,6 @@ export class DownloadsComponent implements OnInit, OnDestroy {
               if (!this.episodeSub) {
                 this.subEpisodes();
               }
-              this.toggleLoading(true, true);
             }
             this.routerState.chartType = newRouterState.chartType;
             this.routerState.chartPodcast = newRouterState.chartPodcast;
@@ -72,7 +73,6 @@ export class DownloadsComponent implements OnInit, OnDestroy {
             if (isPodcastChanged(newRouterState, this.routerState)) {
               this.routerState.podcastSeriesId = newRouterState.podcastSeriesId;
               this.resetEpisodes();
-              this.toggleLoading(true, true);
               this.updatePodcast = this.updateEpisodes = true;
             }
             if (newRouterState.page !== this.routerState.page) {
@@ -132,14 +132,6 @@ export class DownloadsComponent implements OnInit, OnDestroy {
 
   resetEpisodes() {
     this.pageEpisodes = null;
-  }
-
-  toggleLoading(isPodcastLoading, isEpisodeLoading = this.isEpisodeLoading) {
-    this.isPodcastLoading = isPodcastLoading;
-    this.isEpisodeLoading = isEpisodeLoading;
-    if (this.isPodcastLoading && this.isEpisodeLoading) {
-      this.errors = [];
-    }
   }
 
   showError(errorCode: number, type: 'podcast' | 'episode', title: string) {
@@ -209,7 +201,6 @@ export class DownloadsComponent implements OnInit, OnDestroy {
   }
 
   getPodcastMetrics(podcast: PodcastModel) {
-    this.toggleLoading(true);
     this.store.dispatch(new ACTIONS.CastlePodcastMetricsLoadAction({
       seriesId: podcast.seriesId,
       feederId: podcast.feederId,
@@ -226,7 +217,6 @@ export class DownloadsComponent implements OnInit, OnDestroy {
     }).subscribe(
       metrics => this.setPodcastMetrics(podcast, metrics),
       error => {
-        this.toggleLoading(false);
         this.showError(error.status, 'podcast', podcast.title);
         this.store.dispatch(new ACTIONS.CastlePodcastMetricsFailureAction({
           seriesId: podcast.seriesId, feederId: podcast.feederId, error}));
@@ -235,7 +225,6 @@ export class DownloadsComponent implements OnInit, OnDestroy {
   }
 
   setPodcastMetrics(podcast: PodcastModel, metrics: any) {
-    this.toggleLoading(false);
     if (metrics && metrics.length && metrics[0]['downloads']) {
       this.store.dispatch(new ACTIONS.CastlePodcastMetricsSuccessAction({
         seriesId: podcast.seriesId,
@@ -252,7 +241,6 @@ export class DownloadsComponent implements OnInit, OnDestroy {
   }
 
   getEpisodeMetrics() {
-    this.toggleLoading(this.isPodcastLoading, true);
     this.pageEpisodes.forEach((episode: EpisodeModel) => {
       if (episode && episode.guid) {
         this.store.dispatch(new ACTIONS.CastleEpisodeMetricsLoadAction({
@@ -273,7 +261,6 @@ export class DownloadsComponent implements OnInit, OnDestroy {
         }).subscribe(
           metrics => this.setEpisodeMetrics(episode, metrics),
           error => {
-            this.toggleLoading(this.isPodcastLoading, false);
             this.showError(error.status, 'episode', episode.title);
             this.store.dispatch(new ACTIONS.CastleEpisodeMetricsFailureAction({
               seriesId: episode.seriesId,
@@ -289,7 +276,6 @@ export class DownloadsComponent implements OnInit, OnDestroy {
   }
 
   setEpisodeMetrics(episode: EpisodeModel, metrics: any) {
-    this.toggleLoading(this.isPodcastLoading, false);
     if (metrics && metrics.length && metrics[0]['downloads']) {
       this.store.dispatch(new ACTIONS.CastleEpisodeMetricsSuccessAction({
         seriesId: episode.seriesId,

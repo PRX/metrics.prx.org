@@ -69,7 +69,7 @@ export { CastlePodcastMetricsLoadPayload, CastlePodcastMetricsLoadAction,
   CastleEpisodeAllTimeMetricsFailureAction,
   CastleEpisodeMetricsLoadPayload, CastleEpisodeMetricsLoadAction,
   CastleEpisodeMetricsSuccessPayload, CastleEpisodeMetricsSuccessAction,
-  CastleEpisodeAllTimeMetricsFailurePayload, CastleEpisodeMetricsFailureAction,
+  CastleEpisodeMetricsFailurePayload, CastleEpisodeMetricsFailureAction,
   CastleEpisodeChartTogglePayload, CastleEpisodeChartToggleAction } from './castle.action.creator';
 export { GoogleAnalyticsEventPayload, GoogleAnalyticsEventAction } from './google-analytics.action.creator';
 export { CustomRouterNavigationPayload, CustomRouterNavigationAction,

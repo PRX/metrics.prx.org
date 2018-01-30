@@ -74,7 +74,7 @@ export class CastleEpisodeMetricsSuccessAction implements Action {
   constructor(public payload: CastleEpisodeMetricsSuccessPayload) {}
 }
 
-export interface CastleEpisodeAllTimeMetricsFailurePayload {
+export interface CastleEpisodeMetricsFailurePayload {
   seriesId: number;
   page: number;
   id: number;
@@ -85,7 +85,7 @@ export interface CastleEpisodeAllTimeMetricsFailurePayload {
 export class CastleEpisodeMetricsFailureAction implements Action {
   readonly type = ActionTypes.CASTLE_EPISODE_METRICS_FAILURE;
 
-  constructor(public payload: CastleEpisodeAllTimeMetricsFailurePayload) {}
+  constructor(public payload: CastleEpisodeMetricsFailurePayload) {}
 }
 
 export interface CastlePodcastChartTogglePayload {

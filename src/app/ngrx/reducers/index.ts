@@ -102,6 +102,12 @@ export const selectPodcastMetricsLoading = createSelector(selectPodcastMetrics, 
 export const selectPodcastMetricsLoaded = createSelector(selectPodcastMetrics, (metrics: PodcastMetricsModel[]) => {
   return metrics.every((m: PodcastMetricsModel) => m.loaded || m.loaded === undefined);
 });
+const errorType = (code) => code === 401 ? 'Authorization' : 'Unknown';
+export const selectPodcastMetricsError = createSelector(selectPodcastMetrics, (metrics: PodcastMetricsModel[]) => {
+  return metrics.filter(m => m.error).map(m => {
+    return `${errorType(m.error.status)} error occurred while requesting podcast metrics`;
+  });
+});
 
 export const selectEpisodeMetrics = createFeatureSelector<EpisodeMetricsModel[]>('episodeMetrics');
 export const selectEpisodeMetricsLoading = createSelector(selectEpisodeMetrics, (metrics: EpisodeMetricsModel[]) => {
@@ -110,10 +116,31 @@ export const selectEpisodeMetricsLoading = createSelector(selectEpisodeMetrics, 
 export const selectEpisodeMetricsLoaded = createSelector(selectEpisodeMetrics, (metrics: EpisodeMetricsModel[]) => {
   return metrics.every((m: EpisodeMetricsModel) => m.loaded || m.loaded === undefined);
 });
+export const selectEpisodeMetricsError = createSelector(selectEpisodeMetrics, (metrics: EpisodeMetricsModel[]) => {
+  return metrics.filter(m => m.error).map(m => {
+    return `${errorType(m.error.status)} error occurred while requesting episode metrics for ${m.guid}`;
+  });
+});
 
 export const selectCmsLoading = createSelector(selectEpisodesLoading, selectPodcastsLoading, (episodes, podcasts) => episodes || podcasts);
-export const selectCastleLoading = createSelector(selectEpisodeMetricsLoading, selectPodcastMetricsLoading, (episodes, podcasts) => episodes || podcasts);
+export const selectCastleLoading = createSelector(selectEpisodeMetricsLoading, selectPodcastMetricsLoading,
+  (episodes, podcasts) => episodes || podcasts);
 export const selectLoading = createSelector(selectCmsLoading, selectCastleLoading, (cms, castle) => cms || castle);
 export const selectCmsLoaded = createSelector(selectEpisodesLoaded, selectPodcastsLoaded, (episodes, podcasts) => episodes && podcasts);
-export const selectCastleLoaded = createSelector(selectEpisodeMetricsLoaded, selectPodcastMetricsLoaded, (episodes, podcasts) => episodes && podcasts);
+export const selectCastleLoaded = createSelector(selectEpisodeMetricsLoaded, selectPodcastMetricsLoaded,
+  (episodes, podcasts) => episodes && podcasts);
 export const selectLoaded = createSelector(selectCmsLoaded, selectCastleLoaded, (cms, castle) => cms && castle);
+
+export const selectCmsErrors = createSelector(selectPodcastsError, selectEpisodesError, (podcastError, episodeError) => {
+  const errors = [];
+  if (podcastError) {
+    this.errors.push(`${errorType(podcastError.code)} error occurred while requesting podcast series`);
+  }
+  if (episodeError) {
+    this.errors.push(`${errorType(episodeError.code)} error occurred while requesting episode data`);
+  }
+  return errors;
+});
+export const selectCastleErrors = createSelector(selectPodcastMetricsError, selectEpisodeMetricsError,
+  (podcasts, episodes) => podcasts.concat(episodes));
+export const selectErrors = createSelector(selectCmsErrors, selectCastleErrors, (cms, castle) => cms.concat(castle));

@@ -7,7 +7,7 @@ import { CastleService } from '../core';
 import * as ACTIONS from '../ngrx/actions';
 import { RouterModel, EpisodeModel, PodcastModel, ChartType, MetricsType,
   CHARTTYPE_PODCAST, INTERVAL_DAILY, EPISODE_PAGE_SIZE, METRICSTYPE_DOWNLOADS, getMetricsProperty } from '../ngrx';
-import { selectRouter, selectEpisodes, selectPodcasts, selectLoading, selectLoaded } from '../ngrx/reducers';
+import { selectRouter, selectEpisodes, selectPodcasts, selectLoading, selectLoaded, selectErrors } from '../ngrx/reducers';
 import { filterPodcastEpisodePage } from '../shared/util/metrics.util';
 import * as dateUtil from '../shared/util/date';
 import { isPodcastChanged, isBeginDateChanged, isEndDateChanged, isIntervalChanged } from '../shared/util/filter.util';
@@ -21,7 +21,7 @@ import { isPodcastChanged, isBeginDateChanged, isEndDateChanged, isIntervalChang
       <metrics-menu-bar></metrics-menu-bar>
       <metrics-downloads-chart></metrics-downloads-chart>
       <metrics-downloads-table [totalPages]="totalPages"></metrics-downloads-table>
-      <p class="error" *ngFor="let error of errors">{{error}}</p>
+      <p class="error" *ngFor="let error of errors$ | async">{{error}}</p>
     </section>
   `,
   styleUrls: ['../shared/nav/nav-content.css', 'downloads.component.css']
@@ -39,13 +39,14 @@ export class DownloadsComponent implements OnInit, OnDestroy {
   updateEpisodes: boolean;
   loading$: Observable<boolean>;
   loaded$: Observable<boolean>;
-  errors: string[] = [];
+  errors$: Observable<string[]>;
 
   constructor(private castle: CastleService,
               public store: Store<any>,
               private router: Router) {
     this.loading$ = this.store.select(selectLoading);
     this.loaded$ = this.store.select(selectLoaded);
+    this.errors$ = this.store.select(selectErrors);
   }
 
   ngOnInit() {
@@ -132,11 +133,6 @@ export class DownloadsComponent implements OnInit, OnDestroy {
 
   resetEpisodes() {
     this.pageEpisodes = null;
-  }
-
-  showError(errorCode: number, type: 'podcast' | 'episode', title: string) {
-    const errorType = errorCode === 401 ? 'Authorization' : 'Unknown';
-    this.errors.push(`${errorType} error occurred while requesting ${type} metrics on ${title}`);
   }
 
   ngOnDestroy() {

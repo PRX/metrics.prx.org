@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import 'rxjs/add/operator/switchMap';
 import { Observable } from 'rxjs/Observable';
 import { Actions, Effect } from '@ngrx/effects';
-import { Store } from '@ngrx/store';
+import { Action, Store } from '@ngrx/store';
 
 import * as ACTIONS from '../actions';
 import { selectSelectedPodcast } from '../reducers';
@@ -33,10 +33,9 @@ export class CastleEffects {
             metricsPropertyName: getMetricsProperty(interval, metricsType),
             metrics: metrics[0]['downloads']
           });
-        },
-        error => Observable.of(new ACTIONS.CastlePodcastMetricsFailureAction({
-          seriesId, feederId, error}))
-      );
+        }
+      ).catch(error => Observable.of(new ACTIONS.CastlePodcastMetricsFailureAction({
+          seriesId, feederId, error})));
     });
 
   @Effect()
@@ -60,21 +59,20 @@ export class CastleEffects {
             metricsPropertyName: getMetricsProperty(interval, metricsType),
             metrics: metrics[0]['downloads']
           });
-        },
-        error => {
-          this.store.dispatch(new ACTIONS.CastleEpisodeMetricsFailureAction({
-            seriesId,
-            page,
-            id,
-            guid,
-            error
-          }));
         }
-      );
+      ).catch(error => {
+        return Observable.of(new ACTIONS.CastleEpisodeMetricsFailureAction({
+          seriesId,
+          page,
+          id,
+          guid,
+          error
+        }));
+      });
     });
 
   @Effect()
-  loadAllTimePodcastMetrics$ = this.actions$
+  loadAllTimePodcastMetrics$: Observable<Action> = this.actions$
     .ofType(ACTIONS.ActionTypes.CASTLE_PODCAST_ALL_TIME_METRICS_LOAD)
     .switchMap(() => {
       if (this.selectedPodcast) {
@@ -83,11 +81,11 @@ export class CastleEffects {
             metrics => {
               const allTimeDownloads = metrics[0]['downloads']['total'];
               return new ACTIONS.CastlePodcastAllTimeMetricsSuccessAction({podcast: this.selectedPodcast, allTimeDownloads});
-            },
-            error => Observable.of(new ACTIONS.CastlePodcastAllTimeMetricsFailureAction({error}))
-          );
+            }
+          ).catch(error => Observable.of(new ACTIONS.CastlePodcastAllTimeMetricsFailureAction({podcast: this.selectedPodcast, error})));
       } else {
-        return Observable.of(new ACTIONS.CastlePodcastAllTimeMetricsFailureAction({error: 'No selected podcast yet'}));
+        // gonna be difficult to capture this error without changing shape of podcast metrics state since it's just an array
+        return Observable.of(new ACTIONS.CastlePodcastAllTimeMetricsFailureAction({podcast: undefined, error: 'No selected podcast yet'}));
       }
     });
 
@@ -96,14 +94,14 @@ export class CastleEffects {
     .ofType(ACTIONS.ActionTypes.CASTLE_EPISODE_ALL_TIME_METRICS_LOAD)
     .map((action: ACTIONS.CastleEpisodeAllTimeMetricsLoadAction) => action.payload)
     .flatMap((payload: ACTIONS.CastleEpisodeAllTimeMetricsLoadPayload) => {
-      return this.castle.followList('prx:episode', {guid: payload.episode.guid})
+    const { episode } = payload;
+      return this.castle.followList('prx:episode', {guid: episode.guid})
         .map(
           metrics => {
             const allTimeDownloads = metrics[0]['downloads']['total'];
-            return new ACTIONS.CastleEpisodeAllTimeMetricsSuccessAction({ episode: payload.episode, allTimeDownloads});
-          },
-          error => Observable.of(new ACTIONS.CastleEpisodeAllTimeMetricsFailureAction({error}))
-        );
+            return new ACTIONS.CastleEpisodeAllTimeMetricsSuccessAction({episode, allTimeDownloads});
+          }
+        ).catch(error => Observable.of(new ACTIONS.CastleEpisodeAllTimeMetricsFailureAction({episode, error})));
     });
 
   constructor(private actions$: Actions,

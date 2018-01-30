@@ -10,13 +10,10 @@ export interface EpisodeMetricsModel {
   weeklyDownloads?: any[][];
   dailyDownloads?: any[][];
   hourlyDownloads?: any[][];
+  allTimeDownloads?: number;
   loaded?: boolean;
   loading?: boolean;
   error?: any;
-  allTimeDownloads?: number;
-  allTimeLoaded?: boolean;
-  allTimeLoading?: boolean;
-  allTimeError?: any;
 }
 
 const initialState = [];
@@ -105,6 +102,19 @@ export function EpisodeMetricsReducer(state: EpisodeMetricsModel[] = initialStat
       }
       break;
     case ACTIONS.ActionTypes.CASTLE_EPISODE_ALL_TIME_METRICS_FAILURE:
+      if (action instanceof ACTIONS.CastleEpisodeAllTimeMetricsFailureAction) {
+        const { error } = action.payload;
+        if (action.payload['episode']) {
+          const { id, seriesId } = action.payload['episode'];
+          const epIdx = episodeIndex(state, id, seriesId);
+          if (epIdx > -1) {
+            let episode: EpisodeMetricsModel, newState: EpisodeMetricsModel[];
+            episode = {id, seriesId, ...state[epIdx], error};
+            newState = [...state.slice(0, epIdx), episode, ...state.slice(epIdx + 1)];
+            return newState;
+          }
+        }
+      }
       break;
     // TODO: TLDR; charted does not really belong here.
     // It belongs in the router state and should be combined with metrics state using a selector to get charted data

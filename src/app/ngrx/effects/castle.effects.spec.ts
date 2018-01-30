@@ -119,6 +119,7 @@ describe('CastleEffects', () => {
       type: ACTIONS.ActionTypes.CASTLE_PODCAST_ALL_TIME_METRICS_LOAD
     };
     const failure = new ACTIONS.CastlePodcastAllTimeMetricsFailureAction({
+      podcast: undefined,
       error: 'No selected podcast yet'
     });
 

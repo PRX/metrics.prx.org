@@ -1,6 +1,9 @@
 button {
   margin-left: 4px;
 }
+button.active {
+  text-decoration: underline;
+}
 div {
   text-align: right;
 }

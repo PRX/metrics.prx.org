@@ -12,7 +12,6 @@ import { selectRouter, selectPodcasts } from '../reducers';
 import { ActionTypes } from '../actions';
 import * as ACTIONS from '../actions';
 import * as dateUtil from '../../shared/util/date';
-import * as metricsUtil from '../../shared/util/metrics.util';
 
 @Injectable()
 export class RoutingEffects {

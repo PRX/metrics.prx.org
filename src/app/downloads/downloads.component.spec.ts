@@ -14,10 +14,12 @@ import { DownloadsChartComponent } from './downloads-chart.component';
 import { DownloadsTableComponent } from './downloads-table.component';
 import { downloadsRouting } from './downloads.routing';
 
-import { EpisodeModel, PodcastModel, MetricsType,
-  METRICSTYPE_DOWNLOADS, INTERVAL_DAILY, getMetricsProperty } from '../ngrx';
+import { EpisodeModel, PodcastModel, RouterModel, ChartType, MetricsType,
+  CHARTTYPE_STACKED, METRICSTYPE_DOWNLOADS, INTERVAL_DAILY, getMetricsProperty } from '../ngrx';
 import { reducers } from '../ngrx/reducers';
 import * as ACTIONS from '../ngrx/actions';
+
+import { selectCmsLoading, selectCastleLoading, selectCmsLoaded, selectCastleLoaded } from '../ngrx/reducers';
 
 describe('DownloadsComponent', () => {
   let comp: DownloadsComponent;
@@ -40,6 +42,15 @@ describe('DownloadsComponent', () => {
     seriesId: 37800,
     title: 'A Pet Talks Episode',
     publishedAt: new Date()
+  };
+  const routerState:RouterModel = {
+    podcastSeriesId: 37800,
+      page: 1,
+      beginDate: new Date('2017-08-27T00:00:00Z'),
+      endDate: new Date('2017-09-07T00:00:00Z'),
+      interval: INTERVAL_DAILY,
+      chartType: <ChartType>CHARTTYPE_STACKED,
+      metricsType: <MetricsType>METRICSTYPE_DOWNLOADS
   };
   const downloads = [
     ['2017-08-27T00:00:00Z', 52522],
@@ -102,6 +113,18 @@ describe('DownloadsComponent', () => {
     }));
   }
 
+  function dispatchRouterNavigation() {
+    store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerState}));
+  }
+
+  function dispatchPodcasts() {
+    store.dispatch(new ACTIONS.CmsPodcastsSuccessAction({podcasts: [podcast]}));
+  }
+
+  function dispatchEpisodePage() {
+    store.dispatch(new ACTIONS.CmsPodcastEpisodePageSuccessAction({episodes: [episode]}));
+  }
+
   function dispatchPodcastMetrics() {
     store.dispatch(new ACTIONS.CastlePodcastMetricsSuccessAction({
       seriesId: podcast.seriesId,
@@ -113,7 +136,7 @@ describe('DownloadsComponent', () => {
 
   function dispatchEpisodeMetrics() {
     store.dispatch(new ACTIONS.CastleEpisodeMetricsSuccessAction({
-      seriesId: podcast.seriesId,
+      seriesId: episode.seriesId,
       page: episode.page,
       id: episode.id,
       guid: episode.guid,
@@ -133,31 +156,27 @@ describe('DownloadsComponent', () => {
 
   describe('after loading podcasts...', () => {
     beforeEach(() => {
-      store.dispatch(new ACTIONS.CustomRouterNavigationAction({
-        routerState: {podcastSeriesId: 37800, page: 1}
-      }));
-      store.dispatch(new ACTIONS.CmsPodcastsSuccessAction({podcasts: [podcast]}));
-      store.dispatch(new ACTIONS.CmsPodcastEpisodePageSuccessAction({episodes: [episode]}));
+      spyOn(comp, 'getPodcastMetrics').and.callThrough();
+      spyOn(comp, 'getEpisodeMetrics').and.callThrough();
+      dispatchPodcasts();
+      dispatchRouterNavigation();
+      dispatchEpisodePage();
       dispatchPodcastMetrics();
       dispatchEpisodeMetrics();
-      comp.podcasts = [podcast];
       fix.detectChanges();
     });
 
     it('should load podcast downloads', () => {
-      spyOn(comp, 'getPodcastMetrics').and.callThrough();
       expect(comp.getPodcastMetrics).toHaveBeenCalled();
     });
 
     it('should load episode downloads', () => {
-      spyOn(comp, 'getEpisodeMetrics').and.callThrough();
       expect(comp.getEpisodeMetrics).toHaveBeenCalled();
     });
 
-/*
     it('should reload podcast and episode data if routerState parameters change', () => {
       const beginDate = new Date();
-      comp.store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerState: {page: 1}}));
+      comp.store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerState: {page: 2}}));
       comp.store.dispatch(new ACTIONS.CmsPodcastEpisodePageSuccessAction({episodes:
         [{
           id: 123,
@@ -165,19 +184,19 @@ describe('DownloadsComponent', () => {
           title: 'A New Pet Talk Episode',
           publishedAt: new Date(),
           guid: 'abcdefg',
-          page: 1
+          page: 2
         }]
       }));
       comp.store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerState: {beginDate}}));
-      expect(comp.setPodcastMetrics).toHaveBeenCalledTimes(2);
-      expect(comp.setEpisodeMetrics).toHaveBeenCalledTimes(2);
-      expect(comp.googleAnalyticsEvent).toHaveBeenCalledTimes(2);
-      expect(comp.store.dispatch).toHaveBeenCalledWith(jasmine.any(ACTIONS.CastlePodcastMetricsSuccessAction));
-      expect(comp.store.dispatch).toHaveBeenCalledWith(jasmine.any(ACTIONS.CastleEpisodeMetricsSuccessAction));
-    });*/
+      expect(comp.getPodcastMetrics).toHaveBeenCalled();
+      expect(comp.getEpisodeMetrics).toHaveBeenCalled();
+    });
 
     it('should show a downloads table of episodes', () => {
-      console.log(de.nativeElement);
+      // dispatch metrics again because this component sends the load action when updating itself
+      dispatchPodcastMetrics();
+      dispatchEpisodeMetrics();
+      fix.detectChanges();
       expect(de.query(By.css('metrics-downloads-table'))).not.toBeNull();
     });
   });

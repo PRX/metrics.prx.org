@@ -92,12 +92,16 @@ export class CmsEffects {
         zoom: 'prx:distributions'
       };
       return this.cms.follow('prx:series', seriesParams).followItems('prx:stories', storyParams).mergeMap(docs => {
-        return Observable.forkJoin(docs.map((doc, index) => this.docToEpisode(doc, seriesId, index, pageNum)))
-          .map(episodes => episodes.filter(e => e && e.guid))
-          .map(episodes => {
-            this.chartIncomingEpisodes(episodes);
-            return new ACTIONS.CmsPodcastEpisodePageSuccessAction({episodes});
-          });
+        if (docs.length) {
+          return Observable.forkJoin(docs.map((doc, index) => this.docToEpisode(doc, seriesId, index, pageNum)))
+            .map(episodes => episodes.filter(e => e && e.guid))
+            .map(episodes => {
+              this.chartIncomingEpisodes(episodes);
+              return new ACTIONS.CmsPodcastEpisodePageSuccessAction({episodes});
+            });
+        } else {
+          return Observable.of(new ACTIONS.CmsPodcastEpisodePageSuccessAction({episodes: []}));
+        }
       }).catch(error => Observable.of(new ACTIONS.CmsPodcastEpisodePageFailureAction({error})));
     });
 

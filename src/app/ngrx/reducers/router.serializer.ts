@@ -48,12 +48,11 @@ export class CustomSerializer implements RouterStateSerializer<RouterModel> {
         router.beginDate = new Date(params['beginDate']);
       }
       if (params['endDate']) {
-        // Hmmm... params from the RouterStateSnanshot have date strings without milliseconds even though they're in the url
-        // For our purposes, end date is 999 milliseconds except when hourly, so... add it I guess
         router.endDate = new Date(params['endDate']);
-        if (router.interval !== INTERVAL_HOURLY) {
-          router.endDate.setMilliseconds(999);
-        }
+        // Hmmm... params from the RouterStateSnanshot have date strings without milliseconds even though they're in the url
+        // For our purposes, end date is 999 milliseconds, so... add it I guess
+        // This could get weird for hourly data if we ever bring back time pickers
+        router.endDate.setMilliseconds(999);
       }
       if (router.beginDate && router.endDate && params['standardRange']) {
         const range = getBeginEndDateFromStandardRange(params['standardRange']);

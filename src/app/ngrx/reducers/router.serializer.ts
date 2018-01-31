@@ -2,7 +2,7 @@ import { ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 import { RouterStateSerializer } from '@ngrx/router-store';
 
 import { RouterModel, IntervalList,
-  INTERVAL_HOURLY, METRICSTYPE_DEMOGRAPHICS, METRICSTYPE_DOWNLOADS, METRICSTYPE_TRAFFICSOURCES, MetricsType } from './models';
+  METRICSTYPE_DEMOGRAPHICS, METRICSTYPE_DOWNLOADS, METRICSTYPE_TRAFFICSOURCES, MetricsType } from './models';
 
 import { getBeginEndDateFromStandardRange, getStandardRangeForBeginEndDate } from '../../shared/util/date/date.util';
 
@@ -48,26 +48,25 @@ export class CustomSerializer implements RouterStateSerializer<RouterModel> {
         router.beginDate = new Date(params['beginDate']);
       }
       if (params['endDate']) {
-        // Hmmm... params from the RouterStateSnanshot have date strings without milliseconds even though they're in the url
-        // For our purposes, end date is 999 milliseconds except when hourly, so... add it I guess
         router.endDate = new Date(params['endDate']);
-        if (router.interval !== INTERVAL_HOURLY) {
-          router.endDate.setMilliseconds(999);
-        }
+        // Hmmm... params from the RouterStateSnanshot have date strings without milliseconds even though they're in the url
+        // For our purposes, end date is 999 milliseconds, so... add it I guess
+        // This could get weird for hourly data if we ever bring back time pickers
+        router.endDate.setMilliseconds(999);
       }
       if (router.beginDate && router.endDate && params['standardRange']) {
         const range = getBeginEndDateFromStandardRange(params['standardRange']);
         if (range && (range.beginDate.valueOf() !== router.beginDate.valueOf() ||
           range.endDate.valueOf() !== router.endDate.valueOf())) {
           // route has standard range that does not match begin/end dates
-          router.standardRange = getStandardRangeForBeginEndDate(router.beginDate, router.endDate, router.interval);
+          router.standardRange = getStandardRangeForBeginEndDate(router.beginDate, router.endDate);
         } else {
           // standardRange matches begin/end dates
           router.standardRange = params['standardRange'];
         }
       } else if (router.beginDate && router.endDate && !params['standardRange']) {
         // missing standard range, so set it from begin/end date
-        router.standardRange = getStandardRangeForBeginEndDate(router.beginDate, router.endDate, router.interval);
+        router.standardRange = getStandardRangeForBeginEndDate(router.beginDate, router.endDate);
       } else if (params['standardRange']) {
         // missing begin and/or end dates, so set from standardRange
         router.standardRange = params['standardRange'];

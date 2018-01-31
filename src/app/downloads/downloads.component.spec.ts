@@ -19,8 +19,6 @@ import { EpisodeModel, PodcastModel, RouterModel, ChartType, MetricsType,
 import { reducers } from '../ngrx/reducers';
 import * as ACTIONS from '../ngrx/actions';
 
-import { selectCmsLoading, selectCastleLoading, selectCmsLoaded, selectCastleLoaded } from '../ngrx/reducers';
-
 describe('DownloadsComponent', () => {
   let comp: DownloadsComponent;
   let fix: ComponentFixture<DownloadsComponent>;
@@ -43,7 +41,7 @@ describe('DownloadsComponent', () => {
     title: 'A Pet Talks Episode',
     publishedAt: new Date()
   };
-  const routerState:RouterModel = {
+  const routerState: RouterModel = {
     podcastSeriesId: 37800,
       page: 1,
       beginDate: new Date('2017-08-27T00:00:00Z'),

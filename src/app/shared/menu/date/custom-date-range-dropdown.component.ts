@@ -56,10 +56,6 @@ export class CustomDateRangeDropdownComponent {
 
   onIntervalChange(interval: IntervalModel) {
     this.tempRange.interval = interval;
-    this.tempRange.beginDate = dateUtil.roundDateToBeginOfInterval(this.tempRange.beginDate, interval);
-    this.tempRange.endDate = dateUtil.roundDateToEndOfInterval(this.tempRange.endDate, interval);
-    this.tempRange.standardRange = dateUtil.getStandardRangeForBeginEndDate(
-      this.tempRange.beginDate, this.tempRange.endDate, this.tempRange.interval);
   }
 
   onCustomRangeChange(dateRange: {from: Date, to: Date}) {
@@ -68,7 +64,7 @@ export class CustomDateRangeDropdownComponent {
       this.tempRange.beginDate = dateRange.from;
       this.tempRange.endDate = dateRange.to;
       this.tempRange.standardRange = dateUtil.getStandardRangeForBeginEndDate(
-        this.tempRange.beginDate, this.tempRange.endDate, this.tempRange.interval);
+        this.tempRange.beginDate, this.tempRange.endDate);
       this.userChoseRange = this.CUSTOM_DATE;
     }
   }

@@ -19,7 +19,7 @@ describe('CustomSerializer', () => {
             interval: INTERVAL_HOURLY.key,
             page: '1',
             beginDate: '2017-11-09T00:00:00.000Z',
-            endDate: '2017-11-09T22:00:00.000Z',
+            endDate: '2017-11-09T23:59:59.999Z',
             episodes: '123,1234',
             chartPodcast: 'true'
           }
@@ -33,7 +33,7 @@ describe('CustomSerializer', () => {
       interval: INTERVAL_HOURLY,
       page: 1,
       beginDate: new Date('2017-11-09T00:00:00.000Z'),
-      endDate: new Date('2017-11-09T22:00:00.000Z'),
+      endDate: new Date('2017-11-09T23:59:59.999Z'),
       standardRange: dateUtil.OTHER,
       episodeIds: [123, 1234],
       chartPodcast: true

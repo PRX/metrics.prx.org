@@ -146,18 +146,7 @@ export class RoutingEffects {
     .ofType(ActionTypes.ROUTE_ADVANCED_RANGE)
     .map((action: ACTIONS.RouteAdvancedRangeAction) => action.payload)
     .switchMap((payload: ACTIONS.RouteAdvancedRangePayload) => {
-      // just keep doing this for now. soon.
-      const { interval } = payload;
-      const beginDate = dateUtil.roundDateToBeginOfInterval(payload.beginDate, interval);
-      const endDate = dateUtil.roundDateToEndOfInterval(payload.endDate, interval);
-      let standardRange = dateUtil.getStandardRangeForBeginEndDate(payload.beginDate, payload.endDate, interval);
-      // if the dates for the given range are the same but the resulting string does match what is given, keep don't override
-      const payloadRange = dateUtil.getBeginEndDateFromStandardRange(payload.standardRange);
-      if (payload.standardRange !== standardRange &&
-        payloadRange.beginDate.valueOf() === beginDate.valueOf() &&
-        payloadRange.endDate.valueOf() === endDate.valueOf()) {
-        standardRange = payload.standardRange;
-      }
+      const { interval, beginDate, endDate, standardRange } = payload;
       this.routeFromNewRouterState({beginDate, endDate, interval, standardRange});
       return Observable.of(null);
     });

@@ -1,6 +1,6 @@
 import * as dateUtil from './date.util';
 import * as dateConst from './date.constants';
-import { RouterModel, INTERVAL_MONTHLY, INTERVAL_WEEKLY, INTERVAL_DAILY, INTERVAL_HOURLY } from '../../../ngrx';
+import { INTERVAL_DAILY, INTERVAL_HOURLY } from '../../../ngrx';
 
 describe('date util', () => {
   it('should tell us if dates are more than a specified number of days apart', () => {
@@ -47,25 +47,22 @@ describe('date util', () => {
   });
 
   it('should get standard range from begin and end dates', () => {
-    const thisWeek: RouterModel = {
-      interval: INTERVAL_DAILY,
+    const thisWeek = {
       beginDate: dateUtil.beginningOfThisWeekUTC().toDate(),
       endDate: dateUtil.endOfTodayUTC().toDate()
     };
-    expect(dateUtil.getStandardRangeForBeginEndDate(thisWeek.beginDate, thisWeek.endDate, thisWeek.interval)).toEqual(dateConst.THIS_WEEK);
-    const lastWeek: RouterModel = {
-      interval: INTERVAL_DAILY,
+    expect(dateUtil.getStandardRangeForBeginEndDate(thisWeek.beginDate, thisWeek.endDate)).toEqual(dateConst.THIS_WEEK);
+    const lastWeek = {
       beginDate: dateUtil.beginningOfLastWeekUTC().toDate(),
       endDate: dateUtil.endOfLastWeekUTC().toDate()
     };
-    expect(dateUtil.getStandardRangeForBeginEndDate(lastWeek.beginDate, lastWeek.endDate, lastWeek.interval)).toEqual(dateConst.LAST_WEEK);
-    const other: RouterModel = {
-      interval: INTERVAL_DAILY,
+    expect(dateUtil.getStandardRangeForBeginEndDate(lastWeek.beginDate, lastWeek.endDate)).toEqual(dateConst.LAST_WEEK);
+    const other = {
       beginDate: dateUtil.beginningOfTodayUTC().toDate(),
       endDate: dateUtil.endOfTodayUTC().toDate()
     };
     // TODAY is no longer a valid option, so should match OTHER
-    expect(dateUtil.getStandardRangeForBeginEndDate(other.beginDate, other.endDate, other.interval)).toEqual(dateConst.OTHER);
+    expect(dateUtil.getStandardRangeForBeginEndDate(other.beginDate, other.endDate)).toEqual(dateConst.OTHER);
   });
 
   it('should get amount of milliseconds in interval', () => {
@@ -79,27 +76,6 @@ describe('date util', () => {
     expect(daily.valueOf()).toEqual(dateUtil.beginningOfTodayUTC().valueOf());
     expect(hourly.getHours()).toEqual(today.getHours());
     expect(hourly.getMinutes()).toEqual(0);
-  });
-
-  describe('roundDateToEndOfInterval', () => {
-    it('should round date to end of interval', () => {
-      expect(dateUtil.roundDateToEndOfInterval(dateUtil.beginningOfLastWeekUTC().toDate(), INTERVAL_WEEKLY).valueOf())
-        .toEqual(dateUtil.endOfLastWeekUTC().valueOf());
-    });
-    it('except for dates in the present, which should be rounded to the end of today utc', () => {
-      expect(dateUtil.roundDateToEndOfInterval(dateUtil.beginningOfThisMonthUTC().toDate(), INTERVAL_MONTHLY).valueOf())
-        .toEqual(dateUtil.endOfTodayUTC().valueOf());
-    });
-    it('except for hourly and 15m, which should be rounded to the beginning of the interval', () => {
-      expect(dateUtil.roundDateToEndOfInterval(new Date(2017, 9, 27, 8, 32), INTERVAL_HOURLY).getMinutes()).toEqual(0);
-    });
-    it('dates in the future will be rounded to end of today UTC', () => {
-      const future = new Date();
-      future.setDate(future.getDate() + 1);
-      expect(dateUtil.roundDateToEndOfInterval(future, INTERVAL_DAILY).valueOf()).toEqual(dateUtil.endOfTodayUTC().valueOf());
-      expect(dateUtil.roundDateToEndOfInterval(future, INTERVAL_WEEKLY).valueOf()).toEqual(dateUtil.endOfTodayUTC().valueOf());
-      expect(dateUtil.roundDateToEndOfInterval(future, INTERVAL_MONTHLY).valueOf()).toEqual(dateUtil.endOfTodayUTC().valueOf());
-    });
   });
 
   it('LAST_7_DAYS range should be 6 days ago through today', () => {

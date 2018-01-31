@@ -98,13 +98,6 @@ describe('CustomDateRangeDropdownComponent', () => {
     expect(comp.tempRange.standardRange).toEqual(dateUtil.LAST_WEEK);
   });
 
-  it('keeps tempRange date range in sync with interval', () => {
-    comp.routerState.beginDate = dateUtil.beginningOfTodayUTC().toDate();
-    comp.onIntervalChange(INTERVAL_MONTHLY);
-    expect(comp.routerState.beginDate.valueOf()).toEqual(dateUtil.beginningOfThisMonthUTC().valueOf());
-    expect(comp.routerState.standardRange).toEqual(dateUtil.THIS_MONTH);
-  });
-
   it('should dispatch routing and google analytics actions onApply', () => {
     spyOn(store, 'dispatch');
     comp.onIntervalChange(INTERVAL_MONTHLY);

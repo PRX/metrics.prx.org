@@ -60,14 +60,14 @@ export class CustomSerializer implements RouterStateSerializer<RouterModel> {
         if (range && (range.beginDate.valueOf() !== router.beginDate.valueOf() ||
           range.endDate.valueOf() !== router.endDate.valueOf())) {
           // route has standard range that does not match begin/end dates
-          router.standardRange = getStandardRangeForBeginEndDate(router.beginDate, router.endDate, router.interval);
+          router.standardRange = getStandardRangeForBeginEndDate(router.beginDate, router.endDate);
         } else {
           // standardRange matches begin/end dates
           router.standardRange = params['standardRange'];
         }
       } else if (router.beginDate && router.endDate && !params['standardRange']) {
         // missing standard range, so set it from begin/end date
-        router.standardRange = getStandardRangeForBeginEndDate(router.beginDate, router.endDate, router.interval);
+        router.standardRange = getStandardRangeForBeginEndDate(router.beginDate, router.endDate);
       } else if (params['standardRange']) {
         // missing begin and/or end dates, so set from standardRange
         router.standardRange = params['standardRange'];

@@ -64,7 +64,7 @@ export class CustomDateRangeDropdownComponent {
       this.tempRange.beginDate = dateRange.from;
       this.tempRange.endDate = dateRange.to;
       this.tempRange.standardRange = dateUtil.getStandardRangeForBeginEndDate(
-        this.tempRange.beginDate, this.tempRange.endDate, this.tempRange.interval);
+        this.tempRange.beginDate, this.tempRange.endDate);
       this.userChoseRange = this.CUSTOM_DATE;
     }
   }

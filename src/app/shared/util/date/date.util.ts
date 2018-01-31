@@ -159,54 +159,42 @@ export const getBeginEndDateFromStandardRange = (standardRange: string): {beginD
   }
 };
 
-export const getStandardRangeForBeginEndDate = (beginDate: Date, endDate: Date, interval: IntervalModel) => {
+export const getStandardRangeForBeginEndDate = (beginDate: Date, endDate: Date) => {
   if (beginDate.valueOf() === beginningOfThisWeekUTC().valueOf() &&
-    (endDate.valueOf() === endOfTodayUTC().valueOf() ||
-    (interval === INTERVAL_HOURLY && endDate.valueOf() === endOfTodayHourlyUTC().valueOf()))) {
+    endDate.valueOf() === endOfTodayUTC().valueOf()) {
     return dateConst.THIS_WEEK;
   } else if (beginDate.valueOf() === beginningOfLastWeekUTC().valueOf() &&
-    (endDate.valueOf() === endOfLastWeekUTC().valueOf() ||
-    (interval === INTERVAL_HOURLY && endDate.valueOf() === endOfLastWeekHourlyUTC().valueOf()))) {
+    endDate.valueOf() === endOfLastWeekUTC().valueOf()) {
     return dateConst.LAST_WEEK;
   } else if (beginDate.valueOf() === beginningOfLast7DaysUTC().valueOf() &&
-    (endDate.valueOf() === endOfTodayUTC().valueOf() ||
-    (interval === INTERVAL_HOURLY && endDate.valueOf() === endOfTodayHourlyUTC().valueOf()))) {
+    endDate.valueOf() === endOfTodayUTC().valueOf()) {
     return dateConst.LAST_7_DAYS;
   } else if (beginDate.valueOf() === beginningOfThisWeekPlus7DaysUTC().valueOf() &&
-    (endDate.valueOf() === endOfTodayUTC().valueOf() ||
-    (interval === INTERVAL_HOURLY && endDate.valueOf() === endOfTodayHourlyUTC().valueOf()))) {
+    endDate.valueOf() === endOfTodayUTC().valueOf()) {
     return dateConst.THIS_WEEK_PLUS_7_DAYS;
   } else if (beginDate.valueOf() === beginningOfThisMonthUTC().valueOf() &&
-    (endDate.valueOf() === endOfTodayUTC().valueOf() ||
-    (interval === INTERVAL_HOURLY && endDate.valueOf() === endOfTodayHourlyUTC().valueOf()))) {
+    endDate.valueOf() === endOfTodayUTC().valueOf()) {
     return dateConst.THIS_MONTH;
   } else if (beginDate.valueOf() === beginningOfLastMonthUTC().valueOf() &&
-    (endDate.valueOf() === endOfLastMonthUTC().valueOf() ||
-    (interval === INTERVAL_HOURLY && endDate.valueOf() === endOfLastMonthHourlyUTC().valueOf()))) {
+    endDate.valueOf() === endOfLastMonthUTC().valueOf()) {
     return dateConst.LAST_MONTH;
   } else if (beginDate.valueOf() === beginningOfLast28DaysUTC().valueOf() &&
-    (endDate.valueOf() === endOfTodayUTC().valueOf() ||
-    (interval === INTERVAL_HOURLY && endDate.valueOf() === endOfTodayHourlyUTC().valueOf()))) {
+    endDate.valueOf() === endOfTodayUTC().valueOf()) {
     return dateConst.LAST_28_DAYS;
   } else if (beginDate.valueOf() === beginningOfLast30DaysUTC().valueOf() &&
-    (endDate.valueOf() === endOfTodayUTC().valueOf() ||
-    (interval === INTERVAL_HOURLY && endDate.valueOf() === endOfTodayHourlyUTC().valueOf()))) {
+    endDate.valueOf() === endOfTodayUTC().valueOf()) {
     return dateConst.LAST_30_DAYS;
   } else if (beginDate.valueOf() === beginningOfThisMonthPlusTwoMonthsUTC().valueOf() &&
-    (endDate.valueOf() === endOfTodayUTC().valueOf() ||
-    (interval === INTERVAL_HOURLY && endDate.valueOf() === endOfTodayHourlyUTC().valueOf()))) {
+    endDate.valueOf() === endOfTodayUTC().valueOf()) {
     return dateConst.THIS_MONTH_PLUS_2_MONTHS;
   } else if (beginDate.valueOf() === beginningOfLast90DaysUTC().valueOf() &&
-    (endDate.valueOf() === endOfTodayUTC().valueOf() ||
-    (interval === INTERVAL_HOURLY && endDate.valueOf() === endOfTodayHourlyUTC().valueOf()))) {
+    endDate.valueOf() === endOfTodayUTC().valueOf()) {
     return dateConst.LAST_90_DAYS;
   } else if (beginDate.valueOf() === beginningOfThisYearUTC().valueOf() &&
-    (endDate.valueOf() === endOfTodayUTC().valueOf() ||
-    (interval === INTERVAL_HOURLY && endDate.valueOf() === endOfTodayHourlyUTC().valueOf()))) {
+    endDate.valueOf() === endOfTodayUTC().valueOf()) {
     return dateConst.THIS_YEAR;
   } else if (beginDate.valueOf() === beginningOfLast365DaysUTC().valueOf() &&
-    (endDate.valueOf() === endOfTodayUTC().valueOf() ||
-    (interval === INTERVAL_HOURLY && endDate.valueOf() === endOfTodayHourlyUTC().valueOf()))) {
+    endDate.valueOf() === endOfTodayUTC().valueOf()) {
     return dateConst.LAST_365_DAYS;
   } else {
     return dateConst.OTHER;
@@ -244,31 +232,6 @@ export const roundDateToBeginOfInterval = (date: Date, interval: IntervalModel):
     } else {
       return date;
     }
-  }
-};
-
-export const roundDateToEndOfInterval = (date: Date, interval: IntervalModel): Date => {
-  if (interval === INTERVAL_MONTHLY) {
-    return moment.min(
-      moment(date.valueOf()).utc()
-      .add(1, 'months')
-      .date(1).hours(23).minutes(59).seconds(59).milliseconds(999)
-      .subtract(1, 'days'),
-      endOfTodayUTC()).toDate();
-  } else if (interval === INTERVAL_WEEKLY) {
-    const daysIntoWeek = date.getUTCDay();
-    // if date goes negative, the overflow gets normalized
-    return moment.min(
-      moment(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate() + (6 - daysIntoWeek), 23, 59, 59, 999)).utc(),
-      endOfTodayUTC()).toDate();
-  } else if (interval === INTERVAL_DAILY) {
-    return moment.min(
-      moment(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(), 23, 59, 59, 999)).utc(),
-      endOfTodayUTC()).toDate();
-  } else {
-    // hourly data should just show the beginning of the interval
-    // (and there is where extracting these helper functions could lead to later trouble...)
-    return roundDateToBeginOfInterval(date, interval);
   }
 };
 

@@ -35,18 +35,13 @@ export class StandardDateRangeComponent implements OnChanges {
         ];
       case INTERVAL_DAILY:
       case INTERVAL_WEEKLY:
+      case INTERVAL_MONTHLY:
         return [
           [dateUtil.THIS_WEEK, dateUtil.LAST_WEEK, dateUtil.LAST_7_DAYS],
           [dateUtil.THIS_WEEK_PLUS_7_DAYS],
           [dateUtil.THIS_MONTH, dateUtil.LAST_MONTH, dateUtil.LAST_28_DAYS, dateUtil.LAST_30_DAYS],
           [dateUtil.THIS_MONTH_PLUS_2_MONTHS, dateUtil.LAST_90_DAYS],
           [dateUtil.THIS_YEAR, dateUtil.LAST_365_DAYS]
-        ];
-      case INTERVAL_MONTHLY:
-        return [
-          [dateUtil.THIS_MONTH, dateUtil.LAST_MONTH],
-          [dateUtil.THIS_MONTH_PLUS_2_MONTHS],
-          [dateUtil.THIS_YEAR]
         ];
     }
   }

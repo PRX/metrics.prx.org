@@ -1,4 +1,4 @@
-import { CastlePodcastMetricsAction, CastlePodcastAllTimeMetricsSuccessAction,
+import { CastlePodcastMetricsSuccessAction, CastlePodcastAllTimeMetricsSuccessAction,
   CastlePodcastAllTimeMetricsFailureAction } from '../actions/castle.action.creator';
 import { RouterModel, INTERVAL_DAILY, MetricsType, METRICSTYPE_DOWNLOADS, getMetricsProperty } from './models';
 import { PodcastMetricsReducer } from './podcast-metrics.reducer';
@@ -19,8 +19,9 @@ describe('PodcastMetricsReducer', () => {
   const metricsPropertyName = getMetricsProperty(routerState.interval, routerState.metricsType);
   beforeEach(() => {
     newState = PodcastMetricsReducer(undefined,
-      new CastlePodcastMetricsAction({
-        podcast,
+      new CastlePodcastMetricsSuccessAction({
+        seriesId: podcast.seriesId,
+        feederId: podcast.feederId,
         metricsPropertyName,
         metrics: []
       })
@@ -34,8 +35,9 @@ describe('PodcastMetricsReducer', () => {
 
   it('should update existing podcast metrics keyed by seriesId', () => {
     newState = PodcastMetricsReducer(newState,
-      new CastlePodcastMetricsAction({
-        podcast,
+      new CastlePodcastMetricsSuccessAction({
+        seriesId: podcast.seriesId,
+        feederId: podcast.feederId,
         metricsPropertyName,
         metrics: [
           ['2017-08-27T00:00:00Z', 52522],
@@ -61,12 +63,9 @@ describe('PodcastMetricsReducer', () => {
 
   it ('should add new podcast metrics', () => {
     newState = PodcastMetricsReducer(newState,
-      new CastlePodcastMetricsAction({
-        podcast: {
-          seriesId: 37801,
-          feederId: '71',
-          title: 'Totally Not Pet Talks Daily'
-        },
+      new CastlePodcastMetricsSuccessAction({
+        seriesId: 37801,
+        feederId: '71',
         metricsPropertyName,
         metrics: []
       })

@@ -145,10 +145,15 @@ describe('DownloadsTableComponent', () => {
 
       // call episode and episode metrics to prime the store
       store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerState}));
-      store.dispatch(new ACTIONS.CastleEpisodeMetricsAction({episode: episodes[0], metricsPropertyName, metrics: ep0Downloads}));
-      store.dispatch(new ACTIONS.CastleEpisodeMetricsAction({episode: episodes[1], metricsPropertyName, metrics: ep1Downloads}));
+      store.dispatch(new ACTIONS.CastleEpisodeMetricsSuccessAction({
+        seriesId: episodes[0].seriesId, page: episodes[0].page, id: episodes[0].id, guid: episodes[0].guid,
+        metricsPropertyName, metrics: ep0Downloads}));
+      store.dispatch(new ACTIONS.CastleEpisodeMetricsSuccessAction({
+        seriesId: episodes[1].seriesId, page: episodes[1].page, id: episodes[1].id, guid: episodes[1].guid,
+        metricsPropertyName, metrics: ep1Downloads}));
       store.dispatch(new ACTIONS.CmsPodcastEpisodePageSuccessAction({episodes}));
-      store.dispatch(new ACTIONS.CastlePodcastMetricsAction({podcast, metricsPropertyName, metrics: podDownloads}));
+      store.dispatch(new ACTIONS.CastlePodcastMetricsSuccessAction({
+        seriesId: podcast.seriesId, feederId: podcast.feederId, metricsPropertyName, metrics: podDownloads}));
 
       spyOn(store, 'dispatch').and.callThrough();
     });
@@ -185,7 +190,8 @@ describe('DownloadsTableComponent', () => {
     };
     store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerState: {page: 2}}));
     store.dispatch(new ACTIONS.CmsPodcastEpisodePageSuccessAction({episodes: [episode]}));
-    store.dispatch(new ACTIONS.CastleEpisodeMetricsAction({episode: episode, metricsPropertyName, metrics: ep0Downloads}));
+    store.dispatch(new ACTIONS.CastleEpisodeMetricsSuccessAction({
+      seriesId: episode.seriesId, page: episode.page, id: episode.id, guid: episode.guid, metricsPropertyName, metrics: ep0Downloads}));
     expect(comp.episodeTableData.length).toEqual(1);
   });
 
@@ -223,7 +229,8 @@ describe('DownloadsTableComponent', () => {
     };
     const property = getMetricsProperty(newRouterState.interval, newRouterState.metricsType);
     store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerState: newRouterState}));
-    store.dispatch(new ACTIONS.CastlePodcastMetricsAction({podcast, metricsPropertyName: property, metrics: podHourlyDownloads}));
+    store.dispatch(new ACTIONS.CastlePodcastMetricsSuccessAction({
+      seriesId: podcast.seriesId, feederId: podcast.feederId, metricsPropertyName: property, metrics: podHourlyDownloads}));
     fix.detectChanges();
     expect(de.query(By.css('em')).nativeElement.textContent).toContain('local timezone');
   });

@@ -74,4 +74,6 @@ export function PodcastReducer(state: PodcastState = initialState, action: AllAc
 }
 
 export const getPodcastEntities = (state: PodcastState) => state.entities;
-export const getPodcastError = (state: PodcastState) => state.error;
+export const getPodcastsLoading = (state: PodcastState) => state.loading;
+export const getPodcastsLoaded = (state: PodcastState) => state.loaded;
+export const getPodcastsError = (state: PodcastState) => state.error;

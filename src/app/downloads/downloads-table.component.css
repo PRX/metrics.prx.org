@@ -58,11 +58,16 @@ table.scroll-x th:first-child, table.scroll-x td:first-child {
 .table-navigation > button {
   text-align: left;
 }
-prx-checkbox, #episodeTitle button, #podcastTitle button {
+prx-checkbox {
   position: relative;
   margin-top: -4px;
   top: 4px;
   width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.title {
+  max-width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;
 }

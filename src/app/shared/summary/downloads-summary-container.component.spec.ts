@@ -4,7 +4,7 @@ import { StoreModule, Store } from '@ngrx/store';
 
 import { reducers, RootState } from '../../ngrx/reducers';
 
-import { CustomRouterNavigationAction, CastlePodcastMetricsAction } from '../../ngrx/actions';
+import { CustomRouterNavigationAction, CastlePodcastMetricsSuccessAction } from '../../ngrx/actions';
 import { RouterModel, INTERVAL_DAILY, MetricsType, METRICSTYPE_DOWNLOADS, getMetricsProperty } from '../../ngrx';
 
 import * as metricsUtil from '../util/metrics.util';
@@ -68,7 +68,8 @@ describe('DownloadsSummaryContainerComponent', () => {
 
       const metricsPropertyName = getMetricsProperty(routerState.interval, routerState.metricsType);
       store.dispatch(new CustomRouterNavigationAction({routerState}));
-      store.dispatch(new CastlePodcastMetricsAction({podcast, metricsPropertyName, metrics: podDownloads}));
+      store.dispatch(new CastlePodcastMetricsSuccessAction({
+        seriesId: podcast.seriesId, feederId: podcast.feederId, metricsPropertyName, metrics: podDownloads}));
     });
   }));
 

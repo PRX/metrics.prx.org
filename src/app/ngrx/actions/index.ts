@@ -4,7 +4,8 @@ import { CmsAccountAction, CmsAccountSuccessAction, CmsAccountFailureAction, Cms
 import { CastlePodcastAllTimeMetricsLoadAction, CastlePodcastAllTimeMetricsSuccessAction, CastlePodcastAllTimeMetricsFailureAction,
   CastleEpisodeAllTimeMetricsLoadAction, CastleEpisodeAllTimeMetricsSuccessAction, CastleEpisodeAllTimeMetricsFailureAction,
   CastlePodcastChartToggleAction, CastleEpisodeChartToggleAction,
-  CastlePodcastMetricsAction, CastleEpisodeMetricsAction } from './castle.action.creator';
+  CastlePodcastMetricsLoadAction, CastlePodcastMetricsSuccessAction, CastlePodcastMetricsFailureAction,
+  CastleEpisodeMetricsLoadAction, CastleEpisodeMetricsSuccessAction, CastleEpisodeMetricsFailureAction } from './castle.action.creator';
 import { GoogleAnalyticsEventAction } from './google-analytics.action.creator';
 import { CustomRouterNavigationAction,
   RouteSeriesAction, RoutePodcastChartedAction,
@@ -21,9 +22,13 @@ export type AllActions
   | CmsPodcastEpisodePageAction
   | CmsPodcastEpisodePageSuccessAction
   | CmsPodcastEpisodePageFailureAction
-  | CastlePodcastMetricsAction
+  | CastlePodcastMetricsLoadAction
+  | CastlePodcastMetricsSuccessAction
+  | CastlePodcastMetricsFailureAction
   | CastlePodcastChartToggleAction
-  | CastleEpisodeMetricsAction
+  | CastleEpisodeMetricsLoadAction
+  | CastleEpisodeMetricsSuccessAction
+  | CastleEpisodeMetricsFailureAction
   | CastleEpisodeChartToggleAction
   | CastlePodcastAllTimeMetricsLoadAction
   | CastlePodcastAllTimeMetricsSuccessAction
@@ -52,7 +57,9 @@ export { CmsAccountSuccessPayload, CmsAccountSuccessAction,
   CmsPodcastsAction, CmsPodcastsFailureAction,
   CmsEpisodePagePayload, CmsPodcastEpisodePageAction,
   CmsEpisodePageSuccessPayload, CmsPodcastEpisodePageSuccessAction, CmsPodcastEpisodePageFailureAction } from './cms.action.creator';
-export { CastlePodcastMetricsPayload, CastlePodcastMetricsAction,
+export { CastlePodcastMetricsLoadPayload, CastlePodcastMetricsLoadAction,
+  CastlePodcastMetricsSuccessPayload, CastlePodcastMetricsSuccessAction,
+  CastlePodcastMetricsFailurePayload, CastlePodcastMetricsFailureAction,
   CastlePodcastChartTogglePayload, CastlePodcastChartToggleAction,
   CastlePodcastAllTimeMetricsLoadAction,
   CastlePodcastAllTimeMetricsSuccessPayload, CastlePodcastAllTimeMetricsSuccessAction,
@@ -60,8 +67,10 @@ export { CastlePodcastMetricsPayload, CastlePodcastMetricsAction,
   CastleEpisodeAllTimeMetricsLoadPayload, CastleEpisodeAllTimeMetricsLoadAction,
   CastleEpisodeAllTimeMetricsSuccessPayload, CastleEpisodeAllTimeMetricsSuccessAction,
   CastleEpisodeAllTimeMetricsFailureAction,
-  CastleEpisodeMetricsPayload, CastleEpisodeMetricsAction,
-  CastleEpisodeChartTogglePayload, CastleEpisodeChartToggleAction} from './castle.action.creator';
+  CastleEpisodeMetricsLoadPayload, CastleEpisodeMetricsLoadAction,
+  CastleEpisodeMetricsSuccessPayload, CastleEpisodeMetricsSuccessAction,
+  CastleEpisodeMetricsFailurePayload, CastleEpisodeMetricsFailureAction,
+  CastleEpisodeChartTogglePayload, CastleEpisodeChartToggleAction } from './castle.action.creator';
 export { GoogleAnalyticsEventPayload, GoogleAnalyticsEventAction } from './google-analytics.action.creator';
 export { CustomRouterNavigationPayload, CustomRouterNavigationAction,
   RouteSeriesPayload, RouteSeriesAction,

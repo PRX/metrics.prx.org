@@ -14,10 +14,6 @@ export const endOfTodayUTC = () => {
   return moment().utc().hours(23).minutes(59).seconds(59).milliseconds(999);
 };
 
-export const endOfTodayHourlyUTC = () => {
-  return moment().utc().hours(23).minutes(0).seconds(0).milliseconds(0);
-};
-
 export const beginningOfThisWeekUTC = () => {
   const utcDate = beginningOfTodayUTC();
   const daysIntoWeek = utcDate.day();
@@ -32,12 +28,6 @@ export const beginningOfLastWeekUTC = () => {
 
 export const endOfLastWeekUTC = () => {
   const utcDate = endOfTodayUTC();
-  const daysIntoWeek = utcDate.day();
-  return utcDate.subtract(daysIntoWeek + 1, 'days');
-};
-
-export const endOfLastWeekHourlyUTC = () => {
-  const utcDate = endOfTodayHourlyUTC();
   const daysIntoWeek = utcDate.day();
   return utcDate.subtract(daysIntoWeek + 1, 'days');
 };
@@ -62,10 +52,6 @@ export const beginningOfLastMonthUTC = () => {
 
 export const endOfLastMonthUTC = () => {
   return endOfTodayUTC().date(1).subtract(1, 'days'); // 1st of month - 1 day
-};
-
-export const endOfLastMonthHourlyUTC = () => {
-  return endOfTodayHourlyUTC().date(1).subtract(1, 'days'); // 1st of month - 1 day
 };
 
 export const beginningOfLast28DaysUTC = () => {

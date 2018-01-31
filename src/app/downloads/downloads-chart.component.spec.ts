@@ -191,9 +191,17 @@ describe('DownloadsChartComponent', () => {
     it('should show bar chart if there are less than 4 data points; otherwise, area', () => {
       expect(comp.chartType).toEqual('area');
       comp.store.dispatch(new CustomRouterNavigationAction({routerState: {
-        beginDate: new Date('2017-09-05T00:00:00Z'),
-        endDate: new Date('2017-09-07T00:00:00Z')
+        beginDate: new Date(podDownloads[0][0].toString()),
+        endDate: new Date(podDownloads[2][0].toString())
       }}));
+      comp.store.dispatch(new CastlePodcastMetricsSuccessAction({
+        seriesId: podcast.seriesId, feederId: podcast.feederId, metricsPropertyName, metrics: podDownloads.slice(0, 3)}));
+      comp.store.dispatch(new CastleEpisodeMetricsSuccessAction({
+        seriesId: episodes[1].seriesId, page: episodes[1].page, id: episodes[1].id, guid: episodes[1].guid,
+        metricsPropertyName, metrics: ep1Downloads.slice(0, 3)}));
+      comp.store.dispatch(new CastleEpisodeMetricsSuccessAction({
+        seriesId: episodes[1].seriesId, page: episodes[1].page, id: episodes[1].id, guid: episodes[1].guid,
+        metricsPropertyName, metrics: ep1Downloads.slice(0, 3)}));
       fix.detectChanges();
       expect(comp.chartType).toEqual('bar');
     });

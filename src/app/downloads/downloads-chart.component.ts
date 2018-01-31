@@ -9,7 +9,6 @@ import { selectRouter, selectEpisodes, selectPodcastMetrics, selectEpisodeMetric
 import { findPodcastMetrics, filterEpisodeMetricsPage, metricsData, getTotal } from '../shared/util/metrics.util';
 import { mapMetricsToTimeseriesData, subtractTimeseriesDatasets, neutralColor } from '../shared/util/chart.util';
 import * as dateFormat from '../shared/util/date/date.format';
-import * as dateUtil from '../shared/util/date/date.util';
 
 @Component({
   selector: 'metrics-downloads-chart',
@@ -101,13 +100,10 @@ export class DownloadsChartComponent implements OnDestroy {
   updateChartData() {
     if (this.routerState.beginDate && this.routerState.endDate && this.routerState.interval && this.routerState.chartType) {
       this.chartData = null;
-      // no partial date range coverage charts, makes the loading UX too jerky
-      const expectedLength = dateUtil.getAmountOfIntervals(this.routerState.beginDate, this.routerState.endDate, this.routerState.interval);
       switch (this.routerState.chartType) {
         case CHARTTYPE_STACKED:
-          if (this.podcastChartData && this.podcastMetrics.charted && this.podcastChartData.data.length === expectedLength &&
-            (this.episodeChartData && this.episodeChartData.length > 0 &&
-            this.episodeChartData.every(chartData => chartData.data.length === expectedLength))) {
+          if (this.podcastChartData && this.podcastMetrics.charted &&
+            (this.episodeChartData && this.episodeChartData.length > 0)) {
             // if we have episodes to combine with podcast total
             const episodeDatasets = this.episodeChartData.map(m => m.data);
             const allOtherEpisodesData: TimeseriesChartModel = {
@@ -119,8 +115,7 @@ export class DownloadsChartComponent implements OnDestroy {
           } else if (this.podcastChartData && this.podcastMetrics.charted &&
             this.podcastChartData.data.length > 0 && this.episodeChartData.length === 0) {
             this.chartData = [this.podcastChartData];
-          } else if (this.episodeChartData && this.episodeChartData.length > 0 &&
-            this.episodeChartData.every(chartData => chartData.data.length === expectedLength)) {
+          } else if (this.episodeChartData && this.episodeChartData.length > 0) {
             this.chartData = this.episodeChartData;
           }
           break;
@@ -130,8 +125,7 @@ export class DownloadsChartComponent implements OnDestroy {
           }
           break;
         case CHARTTYPE_EPISODES:
-          if (this.episodeChartData && this.episodeChartData.length > 0 &&
-            this.episodeChartData.every(chartData => chartData.data.length === expectedLength)) {
+          if (this.episodeChartData && this.episodeChartData.length > 0) {
             this.chartData = this.episodeChartData;
           }
           break;

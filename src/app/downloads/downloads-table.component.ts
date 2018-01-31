@@ -10,7 +10,6 @@ import * as ACTIONS from '../ngrx/actions';
 import { findPodcastMetrics, filterPodcastEpisodePage, filterEpisodeMetricsPage, metricsData, getTotal } from '../shared/util/metrics.util';
 import { mapMetricsToTimeseriesData, neutralColor } from '../shared/util/chart.util';
 import * as dateFormat from '../shared/util/date/date.format';
-import { getAmountOfIntervals } from '../shared/util/date/date.util';
 import { isPodcastChanged } from '../shared/util/filter.util';
 import * as moment from 'moment';
 

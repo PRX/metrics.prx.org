@@ -2,7 +2,7 @@ import { ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 import { RouterStateSerializer } from '@ngrx/router-store';
 
 import { RouterModel, IntervalList,
-  INTERVAL_HOURLY, METRICSTYPE_DEMOGRAPHICS, METRICSTYPE_DOWNLOADS, METRICSTYPE_TRAFFICSOURCES, MetricsType } from './models';
+  METRICSTYPE_DEMOGRAPHICS, METRICSTYPE_DOWNLOADS, METRICSTYPE_TRAFFICSOURCES, MetricsType } from './models';
 
 import { getBeginEndDateFromStandardRange, getStandardRangeForBeginEndDate } from '../../shared/util/date/date.util';
 

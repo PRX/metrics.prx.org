@@ -143,7 +143,7 @@ export class DownloadsChartComponent implements OnDestroy {
     if (this.routerState) {
       switch (this.routerState.interval) {
         case INTERVAL_MONTHLY:
-          return dateFormat.monthYear;
+          return dateFormat.monthDateYear;
         case INTERVAL_WEEKLY:
         case INTERVAL_DAILY:
           return dateFormat.monthDate;

@@ -92,7 +92,6 @@ export class DownloadsTableComponent implements OnDestroy {
   mapPodcastData() {
     const downloads = metricsData(this.routerState, this.podcastMetrics);
     if (downloads) {
-      const expectedLength = getAmountOfIntervals(this.routerState.beginDate, this.routerState.endDate, this.routerState.interval);
       const totalForPeriod = getTotal(downloads);
       return {
         title: 'All Episodes',
@@ -100,7 +99,7 @@ export class DownloadsTableComponent implements OnDestroy {
         color: neutralColor,
         downloads: mapMetricsToTimeseriesData(downloads),
         totalForPeriod: totalForPeriod,
-        avgPerIntervalForPeriod: Math.round(totalForPeriod / expectedLength),
+        avgPerIntervalForPeriod: Math.round(totalForPeriod / downloads.length),
         allTimeDownloads: this.podcastMetrics.allTimeDownloads,
         charted: this.podcastMetrics.charted
       };
@@ -109,7 +108,6 @@ export class DownloadsTableComponent implements OnDestroy {
 
   mapEpisodeData() {
     if (this.episodes && this.episodeMetrics && this.episodeMetrics.length) {
-      const expectedLength = getAmountOfIntervals(this.routerState.beginDate, this.routerState.endDate, this.routerState.interval);
       return this.episodeMetrics
         .filter(epMetric => this.episodes.find(ep => ep.id === epMetric.id))
         .map((epMetric) => {
@@ -125,7 +123,7 @@ export class DownloadsTableComponent implements OnDestroy {
               id: epMetric.id,
               downloads: mapMetricsToTimeseriesData(downloads),
               totalForPeriod: totalForPeriod,
-              avgPerIntervalForPeriod: Math.round(totalForPeriod / expectedLength),
+              avgPerIntervalForPeriod: Math.round(totalForPeriod / downloads.length),
               allTimeDownloads: epMetric.allTimeDownloads,
               charted: epMetric.charted
             };
@@ -164,7 +162,7 @@ export class DownloadsTableComponent implements OnDestroy {
     if (this.routerState) {
       switch (this.routerState.interval) {
         case INTERVAL_MONTHLY:
-          return dateFormat.monthYear(date);
+          return dateFormat.monthDateYear(date);
         case INTERVAL_WEEKLY:
         case INTERVAL_DAILY:
           return dateFormat.monthDate(date);

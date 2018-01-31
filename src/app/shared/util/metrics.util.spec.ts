@@ -1,6 +1,6 @@
 import { PodcastModel, EpisodeModel, RouterModel, PodcastMetricsModel, EpisodeMetricsModel,
   INTERVAL_DAILY, INTERVAL_HOURLY, MetricsType, METRICSTYPE_DOWNLOADS } from '../../ngrx';
-import { filterPodcasts, filterAllPodcastEpisodes, filterMetricsByDate,
+import { filterPodcasts, filterAllPodcastEpisodes,
   findPodcastMetrics, filterEpisodeMetricsPage, metricsData, getTotal } from './metrics.util';
 
 describe('metrics util', () => {
@@ -123,14 +123,11 @@ describe('metrics util', () => {
 
   it('should get metrics array according to interval and metrics type', () => {
     expect(metricsData(routerState, podcastMetrics[0]).length).toEqual(12);
-    expect(metricsData({interval: INTERVAL_HOURLY, metricsType: <MetricsType>METRICSTYPE_DOWNLOADS}, episodeMetrics[0])).toBeUndefined(); // no hourly
+    // no hourly
+    expect(metricsData({interval: INTERVAL_HOURLY, metricsType: <MetricsType>METRICSTYPE_DOWNLOADS}, episodeMetrics[0])).toBeUndefined();
   });
 
   it('should get total of metrics datapoints', () => {
     expect(getTotal(metrics)).toEqual(52522 + 162900 + 46858 + 52522 + 162900 + 46858 + 52522 + 162900 + 46858 + 52522 + 162900 + 46858);
-  });
-
-  it('should routerState metrics by date', () => {
-    expect(filterMetricsByDate(routerState.beginDate, routerState.endDate, routerState.interval, metrics).length).toEqual(7);
   });
 });

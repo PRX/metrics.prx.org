@@ -1,6 +1,5 @@
-import { PodcastModel, EpisodeModel, RouterModel, IntervalModel,
-  PodcastMetricsModel, EpisodeMetricsModel, MetricsType, getMetricsProperty } from '../../ngrx';
-import * as dateUtil from './date/date.util';
+import { PodcastModel, EpisodeModel, RouterModel,
+  PodcastMetricsModel, EpisodeMetricsModel, getMetricsProperty } from '../../ngrx';
 
 export const filterPodcasts = (filter: RouterModel, podcasts: PodcastModel[]): PodcastModel => {
   if (filter && filter.podcastSeriesId && podcasts) {
@@ -23,34 +22,13 @@ export const filterPodcastEpisodePage = (filter: RouterModel, episodes: EpisodeM
   }
 };
 
-export const filterMetricsByDate = (beginDate: Date, endDate: Date, interval: IntervalModel, metrics: any[][]): any[][] => {
-  const findEntryByDate = (date: Date) => {
-    return metrics.findIndex(m => {
-      return new Date(m[0]).valueOf() === dateUtil.roundDateToBeginOfInterval(date, interval).valueOf();
-    });
-  };
-  const begin = findEntryByDate(beginDate);
-  const end = findEntryByDate(endDate);
-  if (begin !== -1 && end !== -1) {
-    return metrics.slice(begin, end + 1);
-  } else {
-    return null; // no partial data
-  }
-};
-
 export const findPodcastMetrics =
   (filter: RouterModel, podcastMetrics: PodcastMetricsModel[]): PodcastMetricsModel => {
   if (filter && filter.podcastSeriesId && filter.interval && filter.beginDate && filter.endDate && podcastMetrics) {
     const metricsProperty = getMetricsProperty(filter.interval, filter.metricsType);
     const metrics = podcastMetrics
       .filter((metric: PodcastMetricsModel) => metric.seriesId === filter.podcastSeriesId &&
-        metric[metricsProperty] &&
-        filterMetricsByDate(filter.beginDate, filter.endDate, filter.interval, metric[metricsProperty]))
-      .map((metric: PodcastMetricsModel) => {
-        const filteredMetric = {...metric};
-        filteredMetric[metricsProperty] = filterMetricsByDate(filter.beginDate, filter.endDate, filter.interval, metric[metricsProperty]);
-        return filteredMetric;
-      });
+        metric[metricsProperty]);
     if (metrics && metrics.length) {
       return metrics[0]; // only one entry should match the series id
     }
@@ -64,13 +42,7 @@ export const filterEpisodeMetricsPage =
     return episodeMetrics
       .filter((metric: EpisodeMetricsModel) => metric.seriesId === filter.podcastSeriesId &&
       filter.page === metric.page &&
-      metric[metricsProperty] &&
-      filterMetricsByDate(filter.beginDate, filter.endDate, filter.interval, metric[metricsProperty]))
-      .map((metric: EpisodeMetricsModel) => {
-        const filteredMetric: EpisodeMetricsModel = {...metric};
-        filteredMetric[metricsProperty] = filterMetricsByDate(filter.beginDate, filter.endDate, filter.interval, metric[metricsProperty]);
-        return filteredMetric;
-      });
+      metric[metricsProperty]);
   } else {
     return [];
   }

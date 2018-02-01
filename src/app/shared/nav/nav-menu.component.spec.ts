@@ -5,11 +5,12 @@ import { Location } from '@angular/common';
 import { Router, Route } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { StoreModule } from '@ngrx/store';
+import { ImageModule } from 'ngx-prx-styleguide';
 
 import { reducers } from '../../ngrx/reducers';
 import { RouterModel, ChartType, MetricsType,
   CHARTTYPE_PODCAST, INTERVAL_DAILY, METRICSTYPE_DOWNLOADS } from '../../ngrx';
-import { CustomRouterNavigationAction } from '../../ngrx/actions';
+import { CustomRouterNavigationAction, CmsPodcastsSuccessAction, CmsPodcastEpisodePageSuccessAction } from '../../ngrx/actions';
 
 import { NavMenuComponent } from './nav-menu.component';
 import { ProfileComponent } from '../profile/profile.component';
@@ -29,8 +30,19 @@ describe('NavMenuComponent', () => {
   let location: Location;
   let navLinks;
 
+  const podcasts: any[] = [
+    {seriesId: 37800, title: 'Podcast 1', feederId: '70'},
+    {seriesId: 37801, title: 'Podcast 2', feederId: '72'}
+  ];
+
+  const episodes: any[] = [
+    {seriesId: 37800, id: 1, title: 'Episode 1', publishedAt: new Date('2017-08-27T00:00:00Z')},
+    {seriesId: 37800, id: 2, title: 'Episode 2', publishedAt: new Date('2017-09-21T00:00:00Z')},
+    {seriesId: 37800, id: 3, title: 'Episode 3', publishedAt: new Date('2017-08-29T00:00:00Z')}
+  ];
+
   const routerState: RouterModel = {
-    podcastSeriesId: 37800,
+    podcastSeriesId: podcasts[0].seriesId,
     metricsType: <MetricsType>METRICSTYPE_DOWNLOADS,
     chartType: <ChartType>CHARTTYPE_PODCAST,
     interval: INTERVAL_DAILY
@@ -59,6 +71,7 @@ describe('NavMenuComponent', () => {
         TestComponent
       ],
       imports: [
+        ImageModule,
         RouterTestingModule.withRoutes(routes),
         StoreModule.forRoot(reducers),
       ],
@@ -76,10 +89,24 @@ describe('NavMenuComponent', () => {
       router.initialNavigation();
 
       comp.store.dispatch(new CustomRouterNavigationAction({routerState}));
+      comp.store.dispatch(new CmsPodcastsSuccessAction({podcasts}));
+      comp.store.dispatch(new CmsPodcastEpisodePageSuccessAction({episodes}));
       fix.detectChanges();
       navLinks = de.queryAll(By.css('a'));
     });
   }));
+
+  it('should set selected podcast according to routerState', () => {
+    let result;
+    comp.selectedPodcast$.subscribe(value => result = value);
+    expect(result).toEqual(podcasts[0]);
+  });
+
+  it('should set the most recent episode for a podcast', () => {
+    let result;
+    comp.mostRecentEpisode$.subscribe(value => result = value);
+    expect(result).toEqual(episodes[1]);
+  });
 
   it('should have navigation to podcast Downloads', fakeAsync(() => {
     const downloadsLink = navLinks.find(link => link.nativeElement.innerText === 'Downloads');

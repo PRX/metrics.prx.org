@@ -152,6 +152,30 @@ describe('CmsEffects', () => {
 
   });
 
+  describe('loadMostRecentEpisode', () => {
+
+    it('successfully loads an episode', () => {
+      const s1 = {id: 121, publishedAt: new Date('2018-01-01'), title: 'A Pet Talk Episode'};
+      const stories = cms.mock('prx:series', {id: 111}).mockItems('prx:stories', [s1]);
+      const episode = {...s1, doc: stories[0], seriesId: 111, color: '#fff', page: 1, feederUrl: null, guid: null};
+      const action = new ACTIONS.CmsRecentEpisodeAction({seriesId: 111});
+      const completion = new ACTIONS.CmsRecentEpisodeSuccessAction({episode});
+      actions$ = hot('-a', {a: action});
+      expect$ = cold('-r', {r: completion});
+      expect(effects.loadMostRecentEpisode$).toBeObservable(expect$);
+    });
+
+    it('throws an error if no episodes', () => {
+      cms.mock('prx:series', {id: 111}).mockItems('prx:stories', []);
+      const action = new ACTIONS.CmsRecentEpisodeAction({seriesId: 111});
+      const completion = new ACTIONS.CmsRecentEpisodeFailureAction({error: `Looks like you don't have any published episodes`});
+      actions$ = hot('-a', {a: action});
+      expect$ = cold('-r', {r: completion});
+      expect(effects.loadMostRecentEpisode$).toBeObservable(expect$);
+    });
+
+  });
+
   describe('loadEpisodes', () => {
 
     const seriesId = 111;

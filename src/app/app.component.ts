@@ -56,15 +56,12 @@ export class AppComponent implements OnInit, OnDestroy {
 
     // TODO: seems like getEpisodes/CmsPodcastEpisodePageAction should actually happen as a result of CmsPodcastsSuccessAction
     this.routerSub = this.store.select(selectRouter).subscribe((newRouterState: RouterModel) => {
-      const newPodcastSeriesId = newRouterState.podcastSeriesId;
-      const newEpisodePage = newRouterState.page;
-      if (!this.routerState ||
-        newPodcastSeriesId !== this.routerState.podcastSeriesId ||
-        newEpisodePage !== this.routerState.page) {
-        this.routerState = newRouterState;
-        if (newPodcastSeriesId && newEpisodePage) {
-          this.getEpisodes(newPodcastSeriesId, newEpisodePage || 1);
-        }
+      if (!this.routerState) {
+        this.getEpisodesAndRecent(newRouterState);
+      } else if (newRouterState.podcastSeriesId !== this.routerState.podcastSeriesId) {
+        this.getEpisodesAndRecent(newRouterState);
+      } else if (newRouterState.page !== this.routerState.page) {
+        this.getEpisodes(newRouterState);
       }
     });
   }
@@ -74,7 +71,16 @@ export class AppComponent implements OnInit, OnDestroy {
     if (this.accountStoreErrorSub) { this.accountStoreErrorSub.unsubscribe(); }
   }
 
-  getEpisodes(seriesId: number, page: number) {
+  getEpisodes(state: RouterModel) {
+    this.routerState = state;
+    const seriesId = state.podcastSeriesId;
+    const page = state.page;
     this.store.dispatch(new ACTIONS.CmsPodcastEpisodePageAction({seriesId, page}));
+  }
+
+  getEpisodesAndRecent(state: RouterModel) {
+    this.getEpisodes(state);
+    const seriesId = state.podcastSeriesId;
+    this.store.dispatch(new ACTIONS.CmsRecentEpisodeAction({seriesId}));
   }
 }

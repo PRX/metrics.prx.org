@@ -5,9 +5,12 @@ import { PodcastReducer } from './podcast.reducer';
 import { EpisodeReducer } from './episode.reducer';
 import { PodcastMetricsReducer, PodcastMetricsModel } from './podcast-metrics.reducer';
 import { EpisodeMetricsReducer, EpisodeMetricsModel } from './episode-metrics.reducer';
+import { RecentEpisodeReducer } from './recent-episode.reducer';
 import { AccountState, getAccountEntity, getAccountError } from './account.reducer';
 import { PodcastModel, PodcastState, getPodcastEntities, getPodcastsLoaded, getPodcastsLoading, getPodcastsError } from './podcast.reducer';
 import { EpisodeModel, EpisodeState, getEpisodeEntities, getEpisodesLoaded, getEpisodesLoading, getEpisodesError } from './episode.reducer';
+import { RecentEpisodeState, getRecentEpisodeEntities, getRecentEpisodeLoaded,
+  getRecentEpisodeLoading, getRecentEpisodeError } from './recent-episode.reducer';
 import { CustomRouterReducer } from './router.reducer';
 
 import { RouterModel, getMetricsProperty } from './models';
@@ -21,6 +24,7 @@ export interface RootState {
   episodes: EpisodeState;
   podcastMetrics: PodcastMetricsModel[];
   episodeMetrics: EpisodeMetricsModel[];
+  recentEpisodes: RecentEpisodeState;
 }
 
 // TypeScript is complaining about this ActionReducerMap again, not sure why ugh
@@ -31,7 +35,8 @@ export const reducers: ActionReducerMap<RootState> = {
   podcasts: PodcastReducer,
   episodes: EpisodeReducer,
   podcastMetrics: PodcastMetricsReducer,
-  episodeMetrics: EpisodeMetricsReducer
+  episodeMetrics: EpisodeMetricsReducer,
+  recentEpisodes: RecentEpisodeReducer
 };
 
 export { CustomSerializer } from './router.serializer';
@@ -75,18 +80,6 @@ export const selectEpisodesLoading = createSelector(selectEpisodeState, getEpiso
 export const selectEpisodesError = createSelector(selectEpisodeState, getEpisodesError);
 export const selectSelectedPageEpisodes = createSelector(selectEpisodes, selectPageRoute, (episodes: EpisodeModel[], page: number) => {
   return episodes.filter(episode => episode.page === page);
-});
-export const selectMostRecentEpisode = createSelector(selectSelectedPodcast, selectEpisodes, (pod: PodcastModel, eps: EpisodeModel[]) => {
-  // TODO: if you didn't start on the first page, this isn't the most recent
-  let recent: EpisodeModel;
-  eps.forEach(episode => {
-    if (episode.seriesId === pod.seriesId) {
-      if (!recent || recent.publishedAt < episode.publishedAt) {
-        recent = episode;
-      }
-    }
-  });
-  return recent;
 });
 
 export const selectPodcastMetrics = createSelector(selectAppState, (state: RootState) => state.podcastMetrics);
@@ -133,6 +126,15 @@ export const selectEpisodeMetricsError = createSelector(selectEpisodeMetrics, (m
     return `${errorType(m.error.status)} error occurred while requesting episode metrics for ${m.guid}`;
   });
 });
+
+export const selectRecentEpisodeState = createSelector(selectAppState, (state: RootState) => state.recentEpisodes);
+export const selectRecentEpisodeEntities = createSelector(selectRecentEpisodeState, getRecentEpisodeEntities);
+export const selectRecentEpisode = createSelector(selectRecentEpisodeEntities, selectPodcastRoute, (entities, seriesId) => {
+  return entities[seriesId];
+});
+export const selectRecentEpisodeLoaded = createSelector(selectRecentEpisodeState, getRecentEpisodeLoaded);
+export const selectRecentEpisodeLoading = createSelector(selectRecentEpisodeState, getRecentEpisodeLoading);
+export const selectRecentEpisodeError = createSelector(selectRecentEpisodeState, getRecentEpisodeError);
 
 export const selectCmsLoading = createSelector(selectEpisodesLoading, selectPodcastsLoading, (episodes, podcasts) => episodes || podcasts);
 export const selectCastleLoading = createSelector(selectEpisodeMetricsLoading, selectPodcastMetricsLoading,

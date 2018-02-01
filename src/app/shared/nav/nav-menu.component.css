@@ -2,6 +2,7 @@
   flex-basis: 25%;
   padding-right: 5px;
   margin-left: 5px;
+  min-width: 0;
 }
 @media only screen
 and (max-device-width: 767px) {

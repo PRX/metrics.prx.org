@@ -38,6 +38,7 @@ export class RouteEpisodesChartedAction implements Action {
 export interface RouteSingleEpisodeChartedPayload {
   episodeId: number;
   chartType?: ChartType;
+  page?: number;
 }
 
 export class RouteSingleEpisodeChartedAction implements Action {

@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
 import { PodcastModel, EpisodeModel, RouterModel, CHARTTYPE_EPISODES } from '../../ngrx';
-import { selectSelectedPodcast, selectMostRecentEpisode, selectRouter } from '../../ngrx/reducers';
+import { selectSelectedPodcast, selectRecentEpisode, selectRouter } from '../../ngrx/reducers';
 import { RouteSingleEpisodeChartedAction } from '../../ngrx/actions';
 
 interface Nav {
@@ -34,7 +34,7 @@ export class NavMenuComponent {
 
   constructor(public store: Store<any>) {
     this.selectedPodcast$ = this.store.select(selectSelectedPodcast);
-    this.mostRecentEpisode$ = this.store.select(selectMostRecentEpisode);
+    this.mostRecentEpisode$ = this.store.select(selectRecentEpisode);
     this.nav$ = this.store.select(selectRouter).map((routerState: RouterModel) => {
       if (routerState.podcastSeriesId) {
         let routes;
@@ -74,7 +74,8 @@ export class NavMenuComponent {
   onChartSingleEpisode(episodeId) {
     this.store.dispatch(new RouteSingleEpisodeChartedAction({
       episodeId: episodeId,
-      chartType: CHARTTYPE_EPISODES
+      chartType: CHARTTYPE_EPISODES,
+      page: 1
     }));
   }
 }

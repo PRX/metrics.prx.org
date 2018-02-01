@@ -76,6 +76,16 @@ export const selectEpisodesError = createSelector(selectEpisodeState, getEpisode
 export const selectSelectedPageEpisodes = createSelector(selectEpisodes, selectPageRoute, (episodes: EpisodeModel[], page: number) => {
   return episodes.filter(episode => episode.page === page);
 });
+export const selectMostRecentEpisode = createSelector(selectEpisodes, (episodes: EpisodeModel[]) => {
+  // TODO: if you didn't start on the first page, this isn't the most recent
+  let recent = episodes[0];
+  episodes.forEach(e => {
+    if (e.publishedAt.valueOf() > recent.publishedAt.valueOf()) {
+      recent = e;
+    }
+  });
+  return recent;
+});
 
 export const selectPodcastMetrics = createSelector(selectAppState, (state: RootState) => state.podcastMetrics);
 export const selectPodcastMetricsFilteredAverage = createSelector(selectPodcastMetrics, selectRouter,

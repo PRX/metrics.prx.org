@@ -7,13 +7,17 @@ import { RouterModel, EpisodeModel, PodcastMetricsModel, EpisodeMetricsModel,
   CHARTTYPE_PODCAST, CHARTTYPE_EPISODES, CHARTTYPE_STACKED } from '../ngrx';
 import { selectRouter, selectEpisodes, selectPodcastMetrics, selectEpisodeMetrics } from '../ngrx/reducers';
 import { findPodcastMetrics, filterEpisodeMetricsPage, metricsData, getTotal } from '../shared/util/metrics.util';
-import { mapMetricsToTimeseriesData, subtractTimeseriesDatasets, neutralColor } from '../shared/util/chart.util';
+import { mapMetricsToTimeseriesData, subtractTimeseriesDatasets, neutralColor, standardColor } from '../shared/util/chart.util';
 import * as dateFormat from '../shared/util/date/date.format';
+import { largeNumberFormat } from '../shared/pipes/large-number.pipe';
 
 @Component({
   selector: 'metrics-downloads-chart',
   template: `
-    <prx-timeseries-chart *ngIf="chartData" [type]="chartType" [stacked]="stacked" [datasets]="chartData" [formatX]="dateFormat()">
+    <prx-timeseries-chart *ngIf="chartData" [type]="chartType" [stacked]="stacked" [datasets]="chartData"
+                          [formatX]="dateFormat()" [formatY]="largeNumberFormat"
+                          [showPoints]="showPoints" [strokeWidth]="strokeWidth"
+                          [pointRadius]="pointRadius" [pointRadiusOnHover]="pointRadiusOnHover">
     </prx-timeseries-chart>
   `
 })
@@ -29,6 +33,7 @@ export class DownloadsChartComponent implements OnDestroy {
   episodeChartData: TimeseriesChartModel[];
   podcastChartData: TimeseriesChartModel;
   chartData: TimeseriesChartModel[];
+  largeNumberFormat = largeNumberFormat;
 
   constructor(public store: Store<any>) {
     this.routerSub = store.select(selectRouter).subscribe((newRouterState: RouterModel) => {
@@ -94,7 +99,8 @@ export class DownloadsChartComponent implements OnDestroy {
   }
 
   mapPodcastData(metrics: any[][]): TimeseriesChartModel {
-    return { data: mapMetricsToTimeseriesData(metrics), label: 'All Episodes', color: neutralColor };
+    return { data: mapMetricsToTimeseriesData(metrics), label: 'All Episodes',
+      color: this.routerState.chartType === CHARTTYPE_PODCAST ? standardColor : neutralColor };
   }
 
   updateChartData() {
@@ -167,5 +173,49 @@ export class DownloadsChartComponent implements OnDestroy {
 
   get stacked(): boolean {
     return this.routerState.chartType === CHARTTYPE_STACKED;
+  }
+
+  get showPoints(): boolean {
+    switch (this.routerState.chartType) {
+      case CHARTTYPE_PODCAST:
+        return this.chartData && this.chartData.length && this.chartData[0].data.length <= 45;
+      case CHARTTYPE_EPISODES:
+        return this.chartData && this.chartData.length && this.chartData[0].data.length <= 20;
+      case CHARTTYPE_STACKED:
+        return false;
+    }
+  }
+
+  get strokeWidth(): number {
+    switch (this.routerState.chartType) {
+      case CHARTTYPE_PODCAST:
+        return 3;
+      case CHARTTYPE_EPISODES:
+        return 2.5;
+      case CHARTTYPE_STACKED:
+        return 1;
+    }
+  }
+
+  get pointRadius(): number{
+    switch (this.routerState.chartType) {
+      case CHARTTYPE_PODCAST:
+        return 2.5;
+      case CHARTTYPE_EPISODES:
+        return 2;
+      case CHARTTYPE_STACKED:
+        return 1;
+    }
+  }
+
+  get pointRadiusOnHover(): number{
+    switch (this.routerState.chartType) {
+      case CHARTTYPE_PODCAST:
+        return 3.75;
+      case CHARTTYPE_EPISODES:
+        return 3.25;
+      case CHARTTYPE_STACKED:
+        return 1;
+    }
   }
 }

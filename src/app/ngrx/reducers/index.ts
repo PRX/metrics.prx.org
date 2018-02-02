@@ -148,10 +148,10 @@ export const selectLoaded = createSelector(selectCmsLoaded, selectCastleLoaded, 
 export const selectCmsErrors = createSelector(selectPodcastsError, selectEpisodesError, (podcastError, episodeError) => {
   const errors = [];
   if (podcastError) {
-    this.errors.push(`${errorType(podcastError.code)} error occurred while requesting podcast series`);
+    errors.push(`${errorType(podcastError.code)} error occurred while requesting podcast series`);
   }
   if (episodeError) {
-    this.errors.push(`${errorType(episodeError.code)} error occurred while requesting episode data`);
+    errors.push(`${errorType(episodeError.code)} error occurred while requesting episode data`);
   }
   return errors;
 });

@@ -143,6 +143,22 @@ describe('CastleEffects', () => {
     expect(effects.loadAllTimeEpisodeMetrics$).toBeObservable(expected);
   });
 
+  it('should return 0 on 404s for all time episode metrics', () => {
+    castle.root.mockError('prx:episode', <any> {status: 404, message: 'this is an error'});
+    const action = {
+      type: ACTIONS.ActionTypes.CASTLE_EPISODE_ALL_TIME_METRICS_LOAD,
+      payload: { episode }
+    };
+    const success = new ACTIONS.CastleEpisodeAllTimeMetricsSuccessAction({
+      episode: episode,
+      allTimeDownloads: 0
+    });
+
+    actions$.stream = hot('-a', { a: action });
+    const expected = cold('-r', { r: success });
+    expect(effects.loadAllTimeEpisodeMetrics$).toBeObservable(expected);
+  });
+
   it('should load podcast metrics', () => {
     const action = {
       type: ACTIONS.ActionTypes.CASTLE_PODCAST_METRICS_LOAD,

@@ -1,5 +1,6 @@
 import { RouterNavigationAction } from '@ngrx/router-store';
 import { CmsAccountAction, CmsAccountSuccessAction, CmsAccountFailureAction, CmsPodcastsSuccessAction,
+  CmsRecentEpisodePayload, CmsRecentEpisodeAction, CmsRecentEpisodeSuccessAction, CmsRecentEpisodeFailureAction,
   CmsPodcastEpisodePageAction, CmsPodcastEpisodePageSuccessAction, CmsPodcastEpisodePageFailureAction } from './cms.action.creator';
 import { CastlePodcastAllTimeMetricsLoadAction, CastlePodcastAllTimeMetricsSuccessAction, CastlePodcastAllTimeMetricsFailureAction,
   CastleEpisodeAllTimeMetricsLoadAction, CastleEpisodeAllTimeMetricsSuccessAction, CastleEpisodeAllTimeMetricsFailureAction,
@@ -19,6 +20,8 @@ export type AllActions
   | CmsAccountSuccessAction
   | CmsAccountFailureAction
   | CmsPodcastsSuccessAction
+  | CmsRecentEpisodeSuccessAction
+  | CmsRecentEpisodeFailureAction
   | CmsPodcastEpisodePageAction
   | CmsPodcastEpisodePageSuccessAction
   | CmsPodcastEpisodePageFailureAction
@@ -55,6 +58,8 @@ export { CmsAccountSuccessPayload, CmsAccountSuccessAction,
   CmsAccountAction, CmsAccountFailureAction,
   CmsPodcastsSuccessPayload, CmsPodcastsSuccessAction,
   CmsPodcastsAction, CmsPodcastsFailureAction,
+  CmsRecentEpisodePayload, CmsRecentEpisodeAction,
+  CmsRecentEpisodeSuccessAction, CmsRecentEpisodeFailureAction,
   CmsEpisodePagePayload, CmsPodcastEpisodePageAction,
   CmsEpisodePageSuccessPayload, CmsPodcastEpisodePageSuccessAction, CmsPodcastEpisodePageFailureAction } from './cms.action.creator';
 export { CastlePodcastMetricsLoadPayload, CastlePodcastMetricsLoadAction,

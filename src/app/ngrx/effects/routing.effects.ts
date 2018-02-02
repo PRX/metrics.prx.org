@@ -80,8 +80,12 @@ export class RoutingEffects {
     .ofType(ActionTypes.ROUTE_SINGLE_EPISODE_CHARTED)
     .map((action: ACTIONS.RouteSingleEpisodeChartedAction) => action.payload)
     .switchMap((payload: ACTIONS.RouteSingleEpisodeChartedPayload) => {
-      const { episodeId, chartType } = payload;
-      this.routeFromNewRouterState({episodeIds: [episodeId], chartType});
+      const { episodeId, chartType, page } = payload;
+      if (page) {
+        this.routeFromNewRouterState({episodeIds: [episodeId], chartType, page});
+      } else {
+        this.routeFromNewRouterState({episodeIds: [episodeId], chartType});
+      }
       this.routerState.episodeIds.filter(id => id !== episodeId).forEach(id => {
         this.store.dispatch(new ACTIONS.CastleEpisodeChartToggleAction({
           id, seriesId: this.routerState.podcastSeriesId, charted: false}));

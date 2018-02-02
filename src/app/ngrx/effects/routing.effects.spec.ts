@@ -133,6 +133,15 @@ describe('RoutingEffects', () => {
     expect(effects.routeFromNewRouterState).toHaveBeenCalledWith({episodeIds: [123], chartType: CHARTTYPE_EPISODES});
   });
 
+  it('routes to single episode on a specific page', () => {
+    const action = new ACTIONS.RouteSingleEpisodeChartedAction({episodeId: 123, chartType: CHARTTYPE_EPISODES, page: 2});
+    effects.store.dispatch(action);
+    actions$.stream = hot('-a', { a: action });
+    const expected = cold('-r', { r: null });
+    expect(effects.routeSingleEpisodeCharted$).toBeObservable(expected);
+    expect(effects.routeFromNewRouterState).toHaveBeenCalledWith({episodeIds: [123], chartType: CHARTTYPE_EPISODES, page: 2});
+  });
+
   it('should route to toggle episode charted and dispatch toggle event if not charted', () => {
     spyOn(store, 'dispatch');
     const action = new ACTIONS.RouteToggleEpisodeChartedAction({episodeId: 123, charted: false});

@@ -1,0 +1,88 @@
+.profile {
+  margin-bottom: 5px;
+}
+
+.info {
+  display: flex;
+  margin-left: 5px;
+}
+.info .logo {
+  flex-basis: 30%;
+  min-width: 30%;
+}
+.info prx-image {
+  width: 100%;
+  padding-top: 100%;
+  border-radius: 50%;
+  border: 1px solid #a3a3a3;
+  background-color: #fff;
+}
+.info .title {
+  margin-left: 4px;
+  overflow: hidden;
+  flex-grow: 1;
+  padding-top: 15%;
+  margin-top: -1.8em;
+}
+.info h2 {
+  font-weight: 400;
+  font-size: 1.6em;
+  line-height: 1.6em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.stats {
+  background: #fff;
+  min-height: 60px;
+  margin-top: -15%;
+}
+.stats .podstats {
+  display: flex;
+  justify-content: space-around;
+  width: 100%;
+  padding-left: 24%;
+}
+.podstat {
+  text-align: center;
+  border-right: 1px solid #a3a3a3;
+  flex-grow: 1;
+  margin: 10px 0;
+}
+.podstat:last-child {
+  border-right: none;
+}
+.podstat p {
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-size: 0.8em;
+  line-height: 0.8em;
+}
+.podstat b {
+  font-size: 1.8em;
+  line-height: 1.2em;
+  font-weight: 600;
+  color: #464646;
+}
+.epstats {
+  padding: 0 10px 10px;
+  overflow: hidden;
+  width: 100%;
+}
+.epstats button {
+  font-weight: 400;
+  font-size: 1em;
+  line-height: 2em;
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: left;
+}
+.epstats p {
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-size: 0.8em;
+  line-height: 1.0em;
+}

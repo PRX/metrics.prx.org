@@ -90,4 +90,10 @@ describe('AppComponent', () => {
     comp.store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerState}));
     expect(comp.store.dispatch).toHaveBeenCalledWith(jasmine.any(ACTIONS.CmsPodcastEpisodePageAction));
   });
+
+  it('should dispatch recent episode action when series has changed', () => {
+    spyOn(comp.store, 'dispatch').and.callThrough();
+    comp.store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerState}));
+    expect(comp.store.dispatch).toHaveBeenCalledWith(jasmine.any(ACTIONS.CmsRecentEpisodeAction));
+  });
 });

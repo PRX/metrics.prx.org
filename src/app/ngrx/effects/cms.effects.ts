@@ -77,6 +77,30 @@ export class CmsEffects {
     });
 
   @Effect()
+  loadMostRecentEpisode$: Observable<Action> = this.actions$
+    .ofType(ACTIONS.ActionTypes.CMS_RECENT_EPISODE)
+    .map((action: ACTIONS.CmsRecentEpisodeAction) => action.payload)
+    .switchMap((payload: ACTIONS.CmsRecentEpisodePayload) => {
+      const seriesParams = {id: payload.seriesId, zoom: false};
+      const storyParams = {
+        per: 1,
+        sorts: 'published_at: desc',
+        filters: 'v4',
+        zoom: 'prx:distributions'
+      };
+      return this.cms.follow('prx:series', seriesParams).followItems('prx:stories', storyParams).mergeMap(docs => {
+        if (docs.length) {
+          return this.docToEpisode(docs[0], payload.seriesId).map(episode => {
+            return new ACTIONS.CmsRecentEpisodeSuccessAction({episode});
+          });
+        } else {
+          const error = 'Looks like you don\'t have any published episodes';
+          return Observable.of(new ACTIONS.CmsRecentEpisodeFailureAction({error}));
+        }
+      }).catch(error => Observable.of(new ACTIONS.CmsRecentEpisodeFailureAction({error})));
+    });
+
+  @Effect()
   loadEpisodes$: Observable<Action> = this.actions$
     .ofType(ACTIONS.ActionTypes.CMS_PODCAST_EPISODE_PAGE)
     .map((action: ACTIONS.CmsPodcastEpisodePageAction) => action.payload)
@@ -139,15 +163,15 @@ export class CmsEffects {
     });
   }
 
-  private docToEpisode(doc: HalDoc, seriesId: number, index, pageNum: number): Observable<EpisodeModel> {
+  private docToEpisode(doc: HalDoc, seriesId: number, index?: number, pageNum?: number): Observable<EpisodeModel> {
     const episode: EpisodeModel = {
       doc,
       id: doc.id,
       seriesId: seriesId,
       title: doc['title'],
       publishedAt: doc['publishedAt'] ? new Date(doc['publishedAt']) : null,
-      color: this.getEpisodeColor(index),
-      page: pageNum
+      color: this.getEpisodeColor(index || 0),
+      page: pageNum || 1
     };
     return this.getDistribution(doc, 'episode').map(distro => {
       episode.feederUrl = distro.url;

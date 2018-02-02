@@ -40,6 +40,29 @@ export class CmsPodcastsFailureAction implements Action {
   constructor(public payload: any) {}
 }
 
+export interface CmsRecentEpisodePayload {
+  seriesId: number;
+}
+
+export class CmsRecentEpisodeAction implements Action {
+  readonly type = ActionTypes.CMS_RECENT_EPISODE;
+  constructor(public payload: CmsRecentEpisodePayload) {}
+}
+
+export interface CmsRecentEpisodeSuccessPayload {
+  episode: EpisodeModel;
+}
+
+export class CmsRecentEpisodeSuccessAction implements Action {
+  readonly type = ActionTypes.CMS_RECENT_EPISODE_SUCCESS;
+  constructor(public payload: CmsRecentEpisodeSuccessPayload) {}
+}
+
+export class CmsRecentEpisodeFailureAction implements Action {
+  readonly type = ActionTypes.CMS_RECENT_EPISODE_FAILURE;
+  constructor(public payload: any) {}
+}
+
 export interface CmsEpisodePagePayload {
   seriesId: number;
   page: number;

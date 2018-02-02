@@ -58,7 +58,7 @@ describe('date util', () => {
     };
     expect(dateUtil.getStandardRangeForBeginEndDate(lastWeek.beginDate, lastWeek.endDate)).toEqual(dateConst.LAST_WEEK);
     const other = {
-      beginDate: dateUtil.beginningOfTodayUTC().toDate(),
+      beginDate: dateUtil.beginningOfTodayUTC().add({hours: 1}).toDate(),
       endDate: dateUtil.endOfTodayUTC().toDate()
     };
     // TODAY is no longer a valid option, so should match OTHER

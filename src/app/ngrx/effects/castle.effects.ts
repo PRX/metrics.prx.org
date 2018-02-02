@@ -76,13 +76,20 @@ export class CastleEffects {
     .ofType(ACTIONS.ActionTypes.CASTLE_PODCAST_ALL_TIME_METRICS_LOAD)
     .switchMap(() => {
       if (this.selectedPodcast) {
-        return this.castle.followList('prx:podcast', {id: this.selectedPodcast.feederId})
-          .map(
-            metrics => {
-              const allTimeDownloads = metrics[0]['downloads']['total'];
-              return new ACTIONS.CastlePodcastAllTimeMetricsSuccessAction({podcast: this.selectedPodcast, allTimeDownloads});
+        return this.castle
+          .followList('prx:podcast', {id: this.selectedPodcast.feederId})
+          .map(metrics => {
+            const allTimeDownloads = metrics[0]['downloads']['total'];
+            return new ACTIONS.CastlePodcastAllTimeMetricsSuccessAction({podcast: this.selectedPodcast, allTimeDownloads});
+          })
+          .catch(error => {
+            if (error.status === 404) {
+              const allTimeDownloads = 0;
+              return Observable.of(new ACTIONS.CastlePodcastAllTimeMetricsSuccessAction({podcast: this.selectedPodcast, allTimeDownloads}));
+            } else {
+              Observable.of(new ACTIONS.CastlePodcastAllTimeMetricsFailureAction({podcast: this.selectedPodcast, error}));
             }
-          ).catch(error => Observable.of(new ACTIONS.CastlePodcastAllTimeMetricsFailureAction({podcast: this.selectedPodcast, error})));
+          });
       } else {
         // gonna be difficult to capture this error without changing shape of podcast metrics state since it's just an array
         return Observable.of(new ACTIONS.CastlePodcastAllTimeMetricsFailureAction({podcast: undefined, error: 'No selected podcast yet'}));
@@ -94,14 +101,21 @@ export class CastleEffects {
     .ofType(ACTIONS.ActionTypes.CASTLE_EPISODE_ALL_TIME_METRICS_LOAD)
     .map((action: ACTIONS.CastleEpisodeAllTimeMetricsLoadAction) => action.payload)
     .flatMap((payload: ACTIONS.CastleEpisodeAllTimeMetricsLoadPayload) => {
-    const { episode } = payload;
-      return this.castle.followList('prx:episode', {guid: episode.guid})
-        .map(
-          metrics => {
-            const allTimeDownloads = metrics[0]['downloads']['total'];
-            return new ACTIONS.CastleEpisodeAllTimeMetricsSuccessAction({episode, allTimeDownloads});
+      const { episode } = payload;
+      return this.castle
+        .followList('prx:episode', {guid: episode.guid})
+        .map(metrics => {
+          const allTimeDownloads = metrics[0]['downloads']['total'];
+          return new ACTIONS.CastleEpisodeAllTimeMetricsSuccessAction({episode, allTimeDownloads});
+        })
+        .catch(error => {
+          if (error.status === 404) {
+            const allTimeDownloads = 0;
+            return Observable.of(new ACTIONS.CastleEpisodeAllTimeMetricsSuccessAction({episode, allTimeDownloads}));
+          } else {
+            return Observable.of(new ACTIONS.CastleEpisodeAllTimeMetricsFailureAction({episode, error}));
           }
-        ).catch(error => Observable.of(new ACTIONS.CastleEpisodeAllTimeMetricsFailureAction({episode, error})));
+        });
     });
 
   constructor(private actions$: Actions,

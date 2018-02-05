@@ -178,9 +178,8 @@ export class DownloadsChartComponent implements OnDestroy {
   get showPoints(): boolean {
     switch (this.routerState.chartType) {
       case CHARTTYPE_PODCAST:
-        return this.chartData && this.chartData.length && this.chartData[0].data.length <= 45;
       case CHARTTYPE_EPISODES:
-        return this.chartData && this.chartData.length && this.chartData[0].data.length <= 20;
+        return true;
       case CHARTTYPE_STACKED:
         return false;
     }
@@ -200,9 +199,9 @@ export class DownloadsChartComponent implements OnDestroy {
   get pointRadius(): number{
     switch (this.routerState.chartType) {
       case CHARTTYPE_PODCAST:
-        return 2.5;
+        return this.chartData && this.chartData.length && this.chartData[0].data.length <= 40 ? 3.75 : 0;
       case CHARTTYPE_EPISODES:
-        return 2;
+        return this.chartData && this.chartData.length && this.chartData[0].data.length <= 20 ? 3.25 : 0;
       case CHARTTYPE_STACKED:
         return 1;
     }

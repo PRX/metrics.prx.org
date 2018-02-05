@@ -200,10 +200,8 @@ export class DownloadsChartComponent implements OnDestroy {
     switch (this.routerState.chartType) {
       case CHARTTYPE_PODCAST:
         return this.chartData && this.chartData.length && this.chartData[0].data.length <= 40 ? 3.75 : 0;
-        // return 3.75;
       case CHARTTYPE_EPISODES:
         return this.chartData && this.chartData.length && this.chartData[0].data.length <= 20 ? 3.25 : 0;
-        // return 3.25;
       case CHARTTYPE_STACKED:
         return 1;
     }

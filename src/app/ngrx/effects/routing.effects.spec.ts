@@ -130,7 +130,8 @@ describe('RoutingEffects', () => {
     actions$.stream = hot('-a', { a: action });
     const expected = cold('-r', { r: null });
     expect(effects.routeSingleEpisodeCharted$).toBeObservable(expected);
-    expect(effects.routeFromNewRouterState).toHaveBeenCalledWith({episodeIds: [123], chartType: CHARTTYPE_EPISODES});
+    expect(effects.routeFromNewRouterState).toHaveBeenCalledWith(
+      {episodeIds: [123], chartType: CHARTTYPE_EPISODES, metricsType: METRICSTYPE_DOWNLOADS});
   });
 
   it('routes to single episode on a specific page', () => {
@@ -139,7 +140,8 @@ describe('RoutingEffects', () => {
     actions$.stream = hot('-a', { a: action });
     const expected = cold('-r', { r: null });
     expect(effects.routeSingleEpisodeCharted$).toBeObservable(expected);
-    expect(effects.routeFromNewRouterState).toHaveBeenCalledWith({episodeIds: [123], chartType: CHARTTYPE_EPISODES, page: 2});
+    expect(effects.routeFromNewRouterState).toHaveBeenCalledWith(
+      {episodeIds: [123], chartType: CHARTTYPE_EPISODES, page: 2, metricsType: METRICSTYPE_DOWNLOADS});
   });
 
   it('should route to toggle episode charted ', () => {

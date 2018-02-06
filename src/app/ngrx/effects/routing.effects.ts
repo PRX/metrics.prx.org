@@ -81,10 +81,11 @@ export class RoutingEffects {
     .map((action: ACTIONS.RouteSingleEpisodeChartedAction) => action.payload)
     .switchMap((payload: ACTIONS.RouteSingleEpisodeChartedPayload) => {
       const { episodeId, chartType, page } = payload;
+      const metricsType = METRICSTYPE_DOWNLOADS;
       if (page) {
-        this.routeFromNewRouterState({episodeIds: [episodeId], chartType, page});
+        this.routeFromNewRouterState({episodeIds: [episodeId], chartType, metricsType, page});
       } else {
-        this.routeFromNewRouterState({episodeIds: [episodeId], chartType});
+        this.routeFromNewRouterState({episodeIds: [episodeId], chartType, metricsType});
       }
       this.routerState.episodeIds.filter(id => id !== episodeId).forEach(id => {
         this.store.dispatch(new ACTIONS.CastleEpisodeChartToggleAction({

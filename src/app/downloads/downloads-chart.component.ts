@@ -6,6 +6,7 @@ import { RouterModel, EpisodeModel, PodcastMetricsModel, EpisodeMetricsModel,
   INTERVAL_MONTHLY, INTERVAL_WEEKLY, INTERVAL_DAILY, INTERVAL_HOURLY,
   CHARTTYPE_PODCAST, CHARTTYPE_EPISODES, CHARTTYPE_STACKED } from '../ngrx';
 import { selectRouter, selectEpisodes, selectPodcastMetrics, selectEpisodeMetrics } from '../ngrx/reducers';
+import { RouteChartTypeAction } from '../ngrx/actions';
 import { findPodcastMetrics, filterEpisodeMetricsPage, metricsData, getTotal } from '../shared/util/metrics.util';
 import { mapMetricsToTimeseriesData, subtractTimeseriesDatasets, neutralColor, standardColor } from '../shared/util/chart.util';
 import * as dateFormat from '../shared/util/date/date.format';
@@ -19,7 +20,11 @@ import { largeNumberFormat } from '../shared/pipes/large-number.pipe';
                           [showPoints]="showPoints" [strokeWidth]="strokeWidth"
                           [pointRadius]="pointRadius" [pointRadiusOnHover]="pointRadiusOnHover">
     </prx-timeseries-chart>
-  `
+    <div class="placeholder" *ngIf="!chartData">
+      You have no data selected. Would you like to view the <button class="btn-link" (click)="routeToPodcastChart()">Podcast chart</button>? 
+    </div>
+  `,
+  styleUrls: ['downloads-chart.component.css']
 })
 export class DownloadsChartComponent implements OnDestroy {
   routerSub: Subscription;
@@ -196,7 +201,7 @@ export class DownloadsChartComponent implements OnDestroy {
     }
   }
 
-  get pointRadius(): number{
+  get pointRadius(): number {
     switch (this.routerState.chartType) {
       case CHARTTYPE_PODCAST:
         return this.chartData && this.chartData.length && this.chartData[0].data.length <= 40 ? 3.75 : 0;
@@ -207,7 +212,7 @@ export class DownloadsChartComponent implements OnDestroy {
     }
   }
 
-  get pointRadiusOnHover(): number{
+  get pointRadiusOnHover(): number {
     switch (this.routerState.chartType) {
       case CHARTTYPE_PODCAST:
         return 3.75;
@@ -216,5 +221,9 @@ export class DownloadsChartComponent implements OnDestroy {
       case CHARTTYPE_STACKED:
         return 1;
     }
+  }
+
+  routeToPodcastChart(): void {
+    this.store.dispatch(new RouteChartTypeAction({chartType: CHARTTYPE_PODCAST}));
   }
 }

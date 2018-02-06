@@ -9,8 +9,8 @@ import { DownloadsChartComponent } from './downloads-chart.component';
 import { reducers } from '../ngrx/reducers';
 import { PodcastModel, EpisodeModel, RouterModel, ChartType, MetricsType,
   INTERVAL_DAILY, CHARTTYPE_STACKED, METRICSTYPE_DOWNLOADS, getMetricsProperty } from '../ngrx';
-import { CmsPodcastEpisodePageSuccessAction, CastleEpisodeChartToggleAction, CastlePodcastChartToggleAction,
-  CastlePodcastMetricsSuccessAction, CastleEpisodeMetricsSuccessAction, CustomRouterNavigationAction } from '../ngrx/actions';
+import { CmsPodcastEpisodePageSuccessAction, CastlePodcastMetricsSuccessAction,
+  CastleEpisodeMetricsSuccessAction, CustomRouterNavigationAction } from '../ngrx/actions';
 
 import { getTotal } from '../shared/util/metrics.util';
 import { TimeseriesDatumModel } from 'ngx-prx-styleguide';
@@ -114,7 +114,9 @@ describe('DownloadsChartComponent', () => {
       endDate: new Date('2017-09-07T00:00:00Z'),
       interval: INTERVAL_DAILY,
       chartType: <ChartType>CHARTTYPE_STACKED,
-      metricsType: <MetricsType>METRICSTYPE_DOWNLOADS
+      metricsType: <MetricsType>METRICSTYPE_DOWNLOADS,
+      chartPodcast: true,
+      episodeIds: [123, 124]
     };
     const metricsPropertyName = getMetricsProperty(routerState.interval, routerState.metricsType);
 
@@ -125,14 +127,11 @@ describe('DownloadsChartComponent', () => {
       comp.store.dispatch(new CastleEpisodeMetricsSuccessAction({
         seriesId: episodes[0].seriesId, page: episodes[0].page, id: episodes[0].id, guid: episodes[0].guid,
         metricsPropertyName, metrics: ep0Downloads}));
-      comp.store.dispatch(new CastleEpisodeChartToggleAction({id: episodes[0].id, seriesId: podcast.seriesId, charted: true}));
       comp.store.dispatch(new CastleEpisodeMetricsSuccessAction({
         seriesId: episodes[1].seriesId, page: episodes[1].page, id: episodes[1].id, guid: episodes[1].guid,
         metricsPropertyName, metrics: ep1Downloads}));
-      comp.store.dispatch(new CastleEpisodeChartToggleAction({id: episodes[1].id, seriesId: podcast.seriesId, charted: true}));
       comp.store.dispatch(new CastlePodcastMetricsSuccessAction({
         seriesId: podcast.seriesId, feederId: podcast.feederId, metricsPropertyName, metrics: podDownloads}));
-      comp.store.dispatch(new CastlePodcastChartToggleAction({seriesId: podcast.seriesId, charted: true}));
     });
 
     it('should transform podcast and episode data to chart models', () => {
@@ -160,18 +159,16 @@ describe('DownloadsChartComponent', () => {
 
     it('should only include charted episodes', () => {
       expect(comp.episodeChartData.length).toEqual(2);
-      comp.store.dispatch(new CastleEpisodeChartToggleAction({id: episodes[0].id, seriesId: podcast.seriesId, charted: false}));
+      comp.store.dispatch(new CustomRouterNavigationAction({routerState: {...routerState, episodeIds: [episodes[1].id]}}));
       expect(comp.episodeChartData.length).toEqual(1);
     });
 
     it('should only include podcast and episodes if charted', () => {
       expect(comp.chartData).not.toBeNull();
-      comp.store.dispatch(new CastlePodcastChartToggleAction({seriesId: podcast.seriesId, charted: false}));
       expect(comp.chartData).not.toBeNull();
       expect(comp.chartData[0].label).not.toContain('All');
       expect(comp.chartData[0].label).toContain('Pet Talk');
-      comp.store.dispatch(new CastleEpisodeChartToggleAction({id: episodes[0].id, seriesId: podcast.seriesId, charted: false}));
-      comp.store.dispatch(new CastleEpisodeChartToggleAction({id: episodes[1].id, seriesId: podcast.seriesId, charted: false}));
+      comp.store.dispatch(new CustomRouterNavigationAction({routerState: {...routerState, chartPodcast: false, episodeIds: undefined}}));
       expect(comp.chartData).toBeNull();
     });
 
@@ -220,7 +217,8 @@ describe('DownloadsChartComponent', () => {
       endDate: new Date('2017-09-07T00:00:00Z'),
       interval: INTERVAL_DAILY,
       chartType: 'podcast',
-      metricsType: <MetricsType>METRICSTYPE_DOWNLOADS
+      metricsType: <MetricsType>METRICSTYPE_DOWNLOADS,
+      chartPodcast: true
     };
     const metricsPropertyName = getMetricsProperty(routerState.interval, routerState.metricsType);
 
@@ -233,7 +231,6 @@ describe('DownloadsChartComponent', () => {
         metricsPropertyName,
         metrics: podDownloads
       }));
-      comp.store.dispatch(new CastlePodcastChartToggleAction({seriesId: podcast.seriesId, charted: true}));
     });
 
     it('should transform podcast data to chart model', () => {
@@ -248,7 +245,6 @@ describe('DownloadsChartComponent', () => {
 
     it('should include podcast regardless of whether or not it is set to charted', () => {
       expect(comp.chartData).not.toBeNull();
-      comp.store.dispatch(new CastlePodcastChartToggleAction({seriesId: podcast.seriesId, charted: false}));
       expect(comp.chartData).not.toBeNull();
       expect(comp.chartData[0].label).toContain('All Episodes');
     });
@@ -280,7 +276,9 @@ describe('DownloadsChartComponent', () => {
       endDate: new Date('2017-09-07T00:00:00Z'),
       interval: INTERVAL_DAILY,
       chartType: <ChartType>CHARTTYPE_STACKED,
-      metricsType: <MetricsType>METRICSTYPE_DOWNLOADS
+      metricsType: <MetricsType>METRICSTYPE_DOWNLOADS,
+      chartPodcast: true,
+      episodeIds: [123, 124]
     };
     const metricsPropertyName = getMetricsProperty(routerState.interval, routerState.metricsType);
 
@@ -291,11 +289,9 @@ describe('DownloadsChartComponent', () => {
       comp.store.dispatch(new CastleEpisodeMetricsSuccessAction({
         seriesId: episodes[0].seriesId, page: episodes[0].page, id: episodes[0].id, guid: episodes[0].guid,
         metricsPropertyName, metrics: ep0Downloads}));
-      comp.store.dispatch(new CastleEpisodeChartToggleAction({id: episodes[0].id, seriesId: episodes[0].seriesId, charted: true}));
       comp.store.dispatch(new CastleEpisodeMetricsSuccessAction({
         seriesId: episodes[1].seriesId, page: episodes[1].page, id: episodes[1].id, guid: episodes[1].guid,
         metricsPropertyName, metrics: ep1Downloads}));
-      comp.store.dispatch(new CastleEpisodeChartToggleAction({id: episodes[1].id, seriesId: episodes[0].seriesId, charted: true}));
     });
 
     it('should transform episode data to chart model', () => {
@@ -318,7 +314,7 @@ describe('DownloadsChartComponent', () => {
 
     it('should only include charted episodes', () => {
       expect(comp.episodeChartData.length).toEqual(2);
-      comp.store.dispatch(new CastleEpisodeChartToggleAction({id: episodes[0].id, seriesId: episodes[0].seriesId, charted: false}));
+      comp.store.dispatch(new CustomRouterNavigationAction({routerState: {...routerState, episodeIds: [episodes[1].id]}}));
       expect(comp.episodeChartData.length).toEqual(1);
     });
 

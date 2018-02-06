@@ -12,14 +12,14 @@ import { AuthService } from 'ngx-prx-styleguide';
 import { CmsService, HalDoc } from '../../core';
 import { getColor } from '../../shared/util/chart.util';
 
-import { AccountModel, PodcastModel, EpisodeModel, EPISODE_PAGE_SIZE, EpisodeMetricsModel } from '../';
-import { selectEpisodeMetrics, selectPodcastRoute } from '../reducers';
+import { AccountModel, PodcastModel, EpisodeModel, EPISODE_PAGE_SIZE } from '../';
+import { selectPodcastRoute, selectChartedEpisodeIdsRoute } from '../reducers';
 import * as ACTIONS from '../actions';
 
 @Injectable()
 export class CmsEffects {
   routedPodcastSeriesId: number;
-  episodeMetrics: EpisodeMetricsModel[] = [];
+  routedEpisodeIds: number[];
 
   @Effect()
   loadAccount$: Observable<Action> = this.actions$
@@ -133,24 +133,24 @@ export class CmsEffects {
               private actions$: Actions,
               private auth: AuthService,
               private cms: CmsService) {
-    this.store.select(selectEpisodeMetrics).subscribe((episodeMetrics: EpisodeMetricsModel[]) => {
-      this.episodeMetrics = episodeMetrics;
-    });
     this.store.select(selectPodcastRoute).subscribe(podcastSeriesId => {
       this.routedPodcastSeriesId = podcastSeriesId;
     });
+    this.store.select(selectChartedEpisodeIdsRoute).subscribe(episodes => this.routedEpisodeIds = episodes);
   }
 
   getEpisodeColor(episodeIndex: number): string {
     return getColor(EPISODE_PAGE_SIZE, episodeIndex);
   }
 
-  // if none of the incoming episodes are already on the route, we want to add the first 5
+  // if there are episodes on this page to be charted, put those on the route
+  // if there are not episodes on this page to be charted, chart the first 5 via route change
+  // with recent changes to reset episode state, the episodes to be charted from the route are
+  // chart a single episode or charting episode ids via the url/page refresh/ load from url
   chartIncomingEpisodes(episodes: EpisodeModel[]) {
-    const incomingIds = episodes.map(e => e.id);
-    const chartedIds = this.episodeMetrics.filter(e => e.charted).map(e => e.id);
-    if (incomingIds.every(id => chartedIds.indexOf(id) === -1)) {
-      this.store.dispatch(new ACTIONS.RouteEpisodesChartedAction({episodeIds: chartedIds.concat(incomingIds.slice(0, 5))}));
+    if (!this.routedEpisodeIds || this.routedEpisodeIds.length === 0) {
+      const episodeIds = episodes.map(e => e.id).slice(0, 5);
+      this.store.dispatch(new ACTIONS.RouteEpisodesChartedAction({episodeIds}));
     }
   }
 

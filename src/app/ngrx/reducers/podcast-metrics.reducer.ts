@@ -69,21 +69,6 @@ export function PodcastMetricsReducer(state: PodcastMetricsModel[] = initialStat
         return newState;
       }
       break;
-    case ACTIONS.ActionTypes.CASTLE_PODCAST_CHART_TOGGLE:
-      if (action instanceof ACTIONS.CastlePodcastChartToggleAction) {
-        const { seriesId } = action.payload;
-        const podcastIdx = podcastIndex(state, seriesId);
-        let podcast: PodcastMetricsModel, newState: PodcastMetricsModel[];
-        if (podcastIdx > -1) {
-          podcast = {...state[podcastIdx], charted: action.payload.charted, seriesId};
-          newState = [...state.slice(0, podcastIdx), podcast, ...state.slice(podcastIdx + 1)];
-        } else {
-          podcast = {seriesId, charted: action.payload.charted};
-          newState = [podcast, ...state];
-        }
-        return newState;
-      }
-      break;
     case ACTIONS.ActionTypes.CASTLE_PODCAST_ALL_TIME_METRICS_SUCCESS:
       if (action instanceof ACTIONS.CastlePodcastAllTimeMetricsSuccessAction) {
         const { seriesId } = action.payload.podcast;

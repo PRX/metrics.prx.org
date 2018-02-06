@@ -14,9 +14,6 @@ export function CustomRouterReducer(state: RouterModel = initialState, action: C
       const newState: RouterModel = {...state};
       if (action.payload.routerState.podcastSeriesId) {
         newState.podcastSeriesId = action.payload.routerState.podcastSeriesId;
-        if (isPodcastChanged(action.payload.routerState, state)) {
-          newState.page = 1;
-        }
       }
       if (action.payload.routerState.metricsType) {
         newState.metricsType = action.payload.routerState.metricsType;
@@ -45,7 +42,7 @@ export function CustomRouterReducer(state: RouterModel = initialState, action: C
         newState.chartPodcast = action.payload.routerState.chartPodcast;
       }
       if (action.payload.routerState.episodeIds) {
-        newState.episodeIds = [...action.payload.routerState.episodeIds];
+        newState.episodeIds = action.payload.routerState.episodeIds;
       }
       return newState;
     default:

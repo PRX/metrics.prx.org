@@ -71,21 +71,6 @@ export function EpisodeMetricsReducer(state: EpisodeMetricsModel[] = initialStat
         return newState;
       }
       break;
-    case ACTIONS.ActionTypes.CASTLE_EPISODE_CHART_TOGGLE:
-      if (action instanceof ACTIONS.CastleEpisodeChartToggleAction) {
-        const {id, seriesId} = action.payload;
-        const epIdx = episodeIndex(state, id, seriesId);
-        let episode: EpisodeMetricsModel, newState: EpisodeMetricsModel[];
-        if (epIdx > -1) {
-          episode = {id, seriesId, ...state[epIdx], charted: action.payload.charted};
-          newState = [...state.slice(0, epIdx), episode, ...state.slice(epIdx + 1)];
-        } else {
-          episode = {seriesId, id, charted: action.payload.charted};
-          newState = [episode, ...state];
-        }
-        return newState;
-      }
-      break;
     case ACTIONS.ActionTypes.CASTLE_EPISODE_ALL_TIME_METRICS_SUCCESS:
       if (action instanceof ACTIONS.CastleEpisodeAllTimeMetricsSuccessAction) {
         const { id, seriesId } = action.payload.episode;
@@ -122,25 +107,26 @@ export function EpisodeMetricsReducer(state: EpisodeMetricsModel[] = initialStat
     // so am handling the ROUTER_NAVIGATION event here to catch changes to charted episodes via the route
     case ACTIONS.ActionTypes.CUSTOM_ROUTER_NAVIGATION: {
       const payload: ACTIONS.CustomRouterNavigationPayload = action['payload'];
-      let newState: EpisodeMetricsModel[];
-      if (payload.routerState.episodeIds && payload.routerState.episodeIds.length > 0) {
-        newState = [...state];
-        const {podcastSeriesId, episodeIds} = payload.routerState;
-        let episode: EpisodeMetricsModel;
-        episodeIds.forEach(id => {
-          const epIdx = episodeIndex(newState, id, podcastSeriesId);
-          if (epIdx > -1) {
-            episode = {id, seriesId: podcastSeriesId, ...newState[epIdx], charted: true};
-            newState = [...newState.slice(0, epIdx), episode, ...newState.slice(epIdx + 1)];
-          } else {
-            episode = {id, seriesId: podcastSeriesId, charted: true};
-            newState = [episode, ...newState];
-          }
-        });
-        return newState;
+      // update existing entries
+      let newState: EpisodeMetricsModel[] = state.map(episodeMetrics => {
+        if (!payload.routerState.episodeIds || payload.routerState.episodeIds.indexOf(episodeMetrics.id) === -1) {
+          return {id: episodeMetrics.id, seriesId: episodeMetrics.seriesId, ...episodeMetrics, charted: false};
+        } else {
+          return {id: episodeMetrics.id, seriesId: episodeMetrics.seriesId, ...episodeMetrics, charted: true};
+        }
+      });
+      // chart any entries on route but not yet on state
+      if (payload.routerState.episodeIds) {
+        const newIds = payload.routerState.episodeIds.filter(id => state.find(e => e.id === id) === undefined);
+        newState = [
+          ...newState,
+          ...newIds.map(id => {
+            return {id, seriesId: payload.routerState.podcastSeriesId, page: payload.routerState.page, charted: true};
+          })
+        ];
       }
+      return newState;
     }
-      break;
   }
   return state;
 }

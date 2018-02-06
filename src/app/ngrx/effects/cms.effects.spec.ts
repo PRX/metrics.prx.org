@@ -227,14 +227,14 @@ describe('CmsEffects', () => {
       });
     });
 
-    it('does not change the route if some episodes are selected', () => {
+    it('does not change the route if some episodes are on it already', () => {
       const allStories = [s1, s2, s3, s4, s5, s6];
       const stories = cms.mock('prx:series', {}).mockItems('prx:stories', allStories);
       stories.forEach((story, index) => {
         story.mockItems('prx:distributions', [{kind: 'episode', url: `http://my/episode/guid${index}`}]);
       });
       const action = new ACTIONS.CmsPodcastEpisodePageAction({seriesId, page: 1});
-      effects.episodeMetrics = [{seriesId: 111, id: 124, charted: true}];
+      effects.routedEpisodeIds = [124];
       actions$ = hot('-a', {a: action});
       effects.loadEpisodes$.subscribe(() => {
         expect(store.dispatch).not.toHaveBeenCalled();

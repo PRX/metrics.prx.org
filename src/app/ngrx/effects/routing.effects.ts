@@ -41,7 +41,7 @@ export class RoutingEffects {
     .map((action: ACTIONS.RouteSeriesAction) => action.payload)
     .switchMap((payload: ACTIONS.RouteSeriesPayload) => {
       const { podcastSeriesId } = payload;
-      this.routeFromNewRouterState({podcastSeriesId});
+      this.routeFromNewRouterState({podcastSeriesId, page: 1, episodeIds: []});
       return Observable.of(null);
     });
 
@@ -61,7 +61,8 @@ export class RoutingEffects {
     .map((action: ACTIONS.RouteEpisodePageAction) => action.payload)
     .switchMap((payload: ACTIONS.RouteEpisodePagePayload) => {
       const { page } = payload;
-      this.routeFromNewRouterState({page});
+      // route to no episodes so that incoming episodes will be charted again by default (reset state)
+      this.routeFromNewRouterState({page, episodeIds: []});
       return Observable.of(null);
     });
 
@@ -86,10 +87,6 @@ export class RoutingEffects {
       } else {
         this.routeFromNewRouterState({episodeIds: [episodeId], chartType});
       }
-      this.routerState.episodeIds.filter(id => id !== episodeId).forEach(id => {
-        this.store.dispatch(new ACTIONS.CastleEpisodeChartToggleAction({
-          id, seriesId: this.routerState.podcastSeriesId, charted: false}));
-      });
       return Observable.of(null);
     });
 
@@ -103,12 +100,10 @@ export class RoutingEffects {
     .switchMap((payload: ACTIONS.RouteToggleEpisodeChartedPayload) => {
       const { episodeId, charted } = payload;
       let episodeIds;
-      if (!charted) {
-        this.store.dispatch(new ACTIONS.CastleEpisodeChartToggleAction({
-          id: episodeId, seriesId: this.routerState.podcastSeriesId, charted}));
-        episodeIds = this.routerState.episodeIds ? this.routerState.episodeIds.filter(id => id !== episodeId) : [];
-      } else {
+      if (charted) {
         episodeIds = this.routerState.episodeIds ? this.routerState.episodeIds.concat(episodeId) : [episodeId];
+      } else {
+        episodeIds = this.routerState.episodeIds ? this.routerState.episodeIds.filter(id => id !== episodeId) : [];
       }
       this.routeFromNewRouterState({episodeIds});
       return Observable.of(null);

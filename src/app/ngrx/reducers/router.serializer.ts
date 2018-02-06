@@ -76,6 +76,8 @@ export class CustomSerializer implements RouterStateSerializer<RouterModel> {
       }
       if (params['episodes']) {
         router.episodeIds = params['episodes'].split(',').map(stringValue => +stringValue);
+      } else if (params['episodes'] === '') {
+        router.episodeIds = [];
       }
       if (params['page']) {
         router.page = +params['page'];

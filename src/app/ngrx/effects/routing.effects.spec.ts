@@ -88,13 +88,13 @@ describe('RoutingEffects', () => {
     expect(effects.customRouterNavigation$).toBeObservable(expected);
   });
 
-  it('should route to series', () => {
+  it('should route to series on page 1 and reset episodes', () => {
     const action = new ACTIONS.RouteSeriesAction({podcastSeriesId: 37800});
     effects.store.dispatch(action);
     actions$.stream = hot('-a', { a: action });
     const expected = cold('-r', { r: null });
     expect(effects.routeSeries$).toBeObservable(expected);
-    expect(effects.routeFromNewRouterState).toHaveBeenCalledWith({podcastSeriesId: 37800});
+    expect(effects.routeFromNewRouterState).toHaveBeenCalledWith({podcastSeriesId: 37800, page: 1, episodeIds: []});
   });
 
   it('should route to podcast charted', () => {
@@ -106,13 +106,13 @@ describe('RoutingEffects', () => {
     expect(effects.routeFromNewRouterState).toHaveBeenCalledWith({chartPodcast: false});
   });
 
-  it('should route to episode page', () => {
+  it('should route to episode page and reset episode route', () => {
     const action = new ACTIONS.RouteEpisodePageAction({page: 1});
     effects.store.dispatch(action);
     actions$.stream = hot('-a', { a: action });
     const expected = cold('-r', { r: null });
     expect(effects.routeEpisodePage$).toBeObservable(expected);
-    expect(effects.routeFromNewRouterState).toHaveBeenCalledWith({page: 1});
+    expect(effects.routeFromNewRouterState).toHaveBeenCalledWith({page: 1, episodeIds: []});
   });
 
   it('should route to episodes charted', () => {
@@ -142,15 +142,13 @@ describe('RoutingEffects', () => {
     expect(effects.routeFromNewRouterState).toHaveBeenCalledWith({episodeIds: [123], chartType: CHARTTYPE_EPISODES, page: 2});
   });
 
-  it('should route to toggle episode charted and dispatch toggle event if not charted', () => {
+  it('should route to toggle episode charted ', () => {
     spyOn(store, 'dispatch');
     const action = new ACTIONS.RouteToggleEpisodeChartedAction({episodeId: 123, charted: false});
     effects.store.dispatch(action);
     actions$.stream = hot('-a', { a: action });
     const expected = cold('-r', { r: null });
     expect(effects.routeToggleEpisodeCharted$).toBeObservable(expected);
-    expect(store.dispatch).toHaveBeenCalledWith(
-      new ACTIONS.CastleEpisodeChartToggleAction({id: 123, seriesId: routerState.podcastSeriesId, charted: false}));
     expect(effects.routeFromNewRouterState).toHaveBeenCalledWith({episodeIds: routerState.episodeIds.filter(id => id !== 123)});
   });
 

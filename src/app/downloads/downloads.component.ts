@@ -155,6 +155,9 @@ export class DownloadsComponent implements OnInit, OnDestroy {
     if (existingRouterState.page) {
       this.routerState.page = existingRouterState.page;
     }
+    if (existingRouterState.episodeIds) {
+      this.routerState.episodeIds = existingRouterState.episodeIds;
+    }
     if (existingRouterState.standardRange) {
       this.routerState.standardRange = existingRouterState.standardRange;
     }

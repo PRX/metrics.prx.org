@@ -88,29 +88,6 @@ export class CastleEpisodeMetricsFailureAction implements Action {
   constructor(public payload: CastleEpisodeMetricsFailurePayload) {}
 }
 
-export interface CastlePodcastChartTogglePayload {
-  seriesId: number;
-  charted: boolean;
-}
-
-export class CastlePodcastChartToggleAction implements Action {
-  readonly type = ActionTypes.CASTLE_PODCAST_CHART_TOGGLE;
-
-  constructor(public payload: CastlePodcastChartTogglePayload) {}
-}
-
-export interface CastleEpisodeChartTogglePayload {
-  id: number;
-  seriesId: number;
-  charted: boolean;
-}
-
-export class CastleEpisodeChartToggleAction implements Action {
-  readonly type = ActionTypes.CASTLE_EPISODE_CHART_TOGGLE;
-
-  constructor(public payload: CastleEpisodeChartTogglePayload) {}
-}
-
 export class CastlePodcastAllTimeMetricsLoadAction implements Action {
   readonly type = ActionTypes.CASTLE_PODCAST_ALL_TIME_METRICS_LOAD;
 }

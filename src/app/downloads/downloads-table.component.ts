@@ -7,7 +7,8 @@ import { EpisodeModel, RouterModel, EpisodeMetricsModel, PodcastMetricsModel,
 import { selectEpisodes, selectRouter, selectEpisodeMetrics, selectPodcastMetrics } from '../ngrx/reducers';
 import * as ACTIONS from '../ngrx/actions';
 
-import { findPodcastMetrics, filterPodcastEpisodePage, filterEpisodeMetricsPage, metricsData, getTotal } from '../shared/util/metrics.util';
+import { findPodcastMetrics, filterPodcastEpisodePage, filterEpisodeMetricsPage,
+  metricsData, getTotal, getWeightedAverage } from '../shared/util/metrics.util';
 import { mapMetricsToTimeseriesData, neutralColor } from '../shared/util/chart.util';
 import * as dateFormat from '../shared/util/date/date.format';
 import { isPodcastChanged } from '../shared/util/filter.util';
@@ -91,14 +92,16 @@ export class DownloadsTableComponent implements OnDestroy {
   mapPodcastData() {
     const downloads = metricsData(this.routerState, this.podcastMetrics);
     if (downloads) {
+      const avgPerIntervalForPeriod =
+        getWeightedAverage(downloads, this.routerState.beginDate, this.routerState.endDate, this.routerState.interval);
       const totalForPeriod = getTotal(downloads);
       return {
         title: 'All Episodes',
         releaseDate: '',
         color: neutralColor,
         downloads: mapMetricsToTimeseriesData(downloads),
-        totalForPeriod: totalForPeriod,
-        avgPerIntervalForPeriod: Math.round(totalForPeriod / downloads.length),
+        totalForPeriod,
+        avgPerIntervalForPeriod,
         allTimeDownloads: this.podcastMetrics.allTimeDownloads,
         charted: this.podcastMetrics.charted
       };
@@ -114,6 +117,24 @@ export class DownloadsTableComponent implements OnDestroy {
           const episode = this.episodes.find(ep => ep.id === epMetric.id);
           if (episode && epMetric && downloads) {
             const totalForPeriod = getTotal(downloads);
+            let avgPerIntervalForPeriod;
+            if (episode.publishedAt.valueOf() > this.routerState.endDate.valueOf()) {
+              avgPerIntervalForPeriod = 0;
+            } else if (episode.publishedAt.valueOf() > this.routerState.beginDate.valueOf()) {
+              const beginDate = moment(episode.publishedAt.valueOf()).utc();
+              if (this.routerState.interval === INTERVAL_HOURLY) {
+                // if hourly, use a begin date at the beginning of the hour the episode was published
+                beginDate.minutes(0).seconds(0).milliseconds(0);
+              } else {
+                // otherwise, use a begin date at the beginning of the day on the publish date
+                beginDate.hours(0).minutes(0).seconds(0).milliseconds(0);
+              }
+              avgPerIntervalForPeriod =
+                getWeightedAverage(downloads, beginDate.toDate(), this.routerState.endDate, this.routerState.interval);
+            } else {
+              avgPerIntervalForPeriod =
+                getWeightedAverage(downloads, this.routerState.beginDate, this.routerState.endDate, this.routerState.interval);
+            }
             return {
               title: episode.title,
               publishedAt: episode.publishedAt,
@@ -121,8 +142,8 @@ export class DownloadsTableComponent implements OnDestroy {
               color: episode.color,
               id: epMetric.id,
               downloads: mapMetricsToTimeseriesData(downloads),
-              totalForPeriod: totalForPeriod,
-              avgPerIntervalForPeriod: Math.round(totalForPeriod / downloads.length),
+              totalForPeriod,
+              avgPerIntervalForPeriod,
               allTimeDownloads: epMetric.allTimeDownloads,
               charted: epMetric.charted
             };

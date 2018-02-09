@@ -6,6 +6,10 @@ export const isMoreThanXDays = (x: number, beginDate, endDate): boolean => {
   return endDate.valueOf() - beginDate.valueOf() > (1000 * 60 * 60 * 24 * x); // x days
 };
 
+export const beginningOfThisHourUTC = () => {
+  return moment().utc().minutes(0).seconds(0).milliseconds(0);
+};
+
 export const beginningOfTodayUTC = () => {
   return moment().utc().hours(0).minutes(0).seconds(0).milliseconds(0);
 };
@@ -221,6 +225,24 @@ export const roundDateToBeginOfInterval = (date: Date, interval: IntervalModel):
   }
 };
 
+export const roundDateToEndOfInterval = (date: Date, interval: IntervalModel): Date => {
+  switch (interval) {
+    case INTERVAL_MONTHLY:
+      return moment(date.valueOf()).utc()
+          .add(1, 'months')
+          .date(1).hours(23).minutes(59).seconds(59).milliseconds(999)
+          .subtract(1, 'days').toDate();
+    case INTERVAL_WEEKLY:
+      const daysIntoWeek = date.getUTCDay();
+      // if date goes negative, the overflow gets normalized
+      return new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate() + (6 - daysIntoWeek), 23, 59, 59, 999));
+    case INTERVAL_DAILY:
+      return new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(), 23, 59, 59, 999));
+    case INTERVAL_HOURLY:
+      return new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(), date.getUTCHours(), 59, 59, 999));
+  }
+};
+
 export const getAmountOfIntervals = (beginDate: Date, endDate: Date, interval: IntervalModel): number => {
   const duration = roundDateToBeginOfInterval(endDate, interval).valueOf() - roundDateToBeginOfInterval(beginDate, interval).valueOf();
   // plus 1 because we actually want number of data points in duration, i.e. hourly 23 - 0 is 24 data points
@@ -236,4 +258,10 @@ export const getAmountOfIntervals = (beginDate: Date, endDate: Date, interval: I
     default:
       break;
   }
+};
+
+export const getDaysInMonth = (date: Date): number => {
+  // The end of the month is the beginning of the following month minus 1 day
+  const endOfMonth = moment(date.valueOf()).utc().add(1, 'months').date(1).subtract(1, 'days');
+  return endOfMonth.date();
 };

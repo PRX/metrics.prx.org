@@ -129,12 +129,41 @@ export const selectEpisodeMetricsError = createSelector(selectEpisodeMetrics, (m
 
 export const selectRecentEpisodeState = createSelector(selectAppState, (state: RootState) => state.recentEpisodes);
 export const selectRecentEpisodeEntities = createSelector(selectRecentEpisodeState, getRecentEpisodeEntities);
-export const selectRecentEpisode = createSelector(selectRecentEpisodeEntities, selectPodcastRoute, (entities, seriesId) => {
+export const selectRecentEpisode = createSelector(selectRecentEpisodeEntities, selectPodcastRoute, (entities, seriesId): EpisodeModel => {
   return entities[seriesId];
 });
 export const selectRecentEpisodeLoaded = createSelector(selectRecentEpisodeState, getRecentEpisodeLoaded);
 export const selectRecentEpisodeLoading = createSelector(selectRecentEpisodeState, getRecentEpisodeLoading);
 export const selectRecentEpisodeError = createSelector(selectRecentEpisodeState, getRecentEpisodeError);
+
+export const selectPodcastProfileMetrics = createSelector(selectPodcastRoute, selectPodcastMetrics,
+  (podcastSeriesId: number, podcastMetrics: PodcastMetricsModel[]) => {
+  const metric = podcastMetrics.find((m: PodcastMetricsModel) => m.seriesId === podcastSeriesId);
+  if (metric) {
+    return {
+      allTimeDownloads: metric.allTimeDownloads,
+      previous7days: metric.previous7days,
+      this7days: metric.this7days,
+      yesterday: metric.yesterday,
+      today: metric.today
+    };
+  }
+});
+export const selectRecentEpisodeProfileMetrics = createSelector(selectRecentEpisode, selectEpisodeMetrics,
+  (episode: EpisodeModel, episodeMetrics: EpisodeMetricsModel[]) => {
+  if (episode) {
+    const metric = episodeMetrics.find((m: EpisodeMetricsModel) => m.seriesId === episode.seriesId && m.id === episode.id);
+    if (metric) {
+      return {
+        allTimeDownloads: metric.allTimeDownloads,
+        previous7days: metric.previous7days,
+        this7days: metric.this7days,
+        yesterday: metric.yesterday,
+        today: metric.today
+      };
+    }
+  }
+});
 
 export const selectCmsLoading = createSelector(selectEpisodesLoading, selectPodcastsLoading, (episodes, podcasts) => episodes || podcasts);
 export const selectCastleLoading = createSelector(selectEpisodeMetricsLoading, selectPodcastMetricsLoading,

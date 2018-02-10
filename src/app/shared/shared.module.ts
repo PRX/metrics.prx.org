@@ -17,6 +17,7 @@ import { StandardDateRangeComponent } from './menu/date/standard-date-range.comp
 import { StandardDateRangeDropdownComponent } from './menu/date/standard-date-range-dropdown.component';
 import { NavMenuComponent } from './nav/nav-menu.component';
 import { EpisodePageComponent } from './paging/episode-page.component';
+import { AbrevNumberPipe } from './pipes/abrev-number.pipe';
 import { LargeNumberPipe } from './pipes/large-number.pipe';
 import { ProfileComponent } from './profile/profile.component';
 import { DownloadsSummaryContainerComponent } from './summary/downloads-summary-container.component';
@@ -24,6 +25,7 @@ import { DownloadsSummaryItemComponent } from './summary/downloads-summary-item.
 
 @NgModule({
   declarations: [
+    AbrevNumberPipe,
     ChartTypeComponent,
     CustomDateRangeDropdownComponent,
     DateRangeSummaryComponent,
@@ -46,6 +48,7 @@ import { DownloadsSummaryItemComponent } from './summary/downloads-summary-item.
     ChartsModule,
     DatepickerModule,
     ImageModule,
+    AbrevNumberPipe,
     MenuBarComponent,
     SpinnerModule,
     LargeNumberPipe,

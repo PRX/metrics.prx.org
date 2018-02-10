@@ -80,12 +80,14 @@ export class CastleEffects {
           .followList('prx:podcast', {id: this.selectedPodcast.feederId})
           .map(metrics => {
             const allTimeDownloads = metrics[0]['downloads']['total'];
-            return new ACTIONS.CastlePodcastAllTimeMetricsSuccessAction({podcast: this.selectedPodcast, allTimeDownloads});
+            const { previous7days, this7days, yesterday, today } = metrics[0]['downloads'];
+            return new ACTIONS.CastlePodcastAllTimeMetricsSuccessAction({podcast: this.selectedPodcast,
+              allTimeDownloads, previous7days, this7days, yesterday, today});
           })
           .catch(error => {
             if (error.status === 404) {
-              const allTimeDownloads = 0;
-              return Observable.of(new ACTIONS.CastlePodcastAllTimeMetricsSuccessAction({podcast: this.selectedPodcast, allTimeDownloads}));
+              return Observable.of(new ACTIONS.CastlePodcastAllTimeMetricsSuccessAction({podcast: this.selectedPodcast,
+                allTimeDownloads: 0, previous7days: 0, this7days: 0, yesterday: 0, today: 0}));
             } else {
               Observable.of(new ACTIONS.CastlePodcastAllTimeMetricsFailureAction({podcast: this.selectedPodcast, error}));
             }
@@ -106,12 +108,15 @@ export class CastleEffects {
         .followList('prx:episode', {guid: episode.guid})
         .map(metrics => {
           const allTimeDownloads = metrics[0]['downloads']['total'];
-          return new ACTIONS.CastleEpisodeAllTimeMetricsSuccessAction({episode, allTimeDownloads});
+          const { previous7days, this7days, yesterday, today } = metrics[0]['downloads'];
+          return new ACTIONS.CastleEpisodeAllTimeMetricsSuccessAction({episode,
+            allTimeDownloads, previous7days, this7days, yesterday, today});
         })
         .catch(error => {
           if (error.status === 404) {
             const allTimeDownloads = 0;
-            return Observable.of(new ACTIONS.CastleEpisodeAllTimeMetricsSuccessAction({episode, allTimeDownloads}));
+            return Observable.of(new ACTIONS.CastleEpisodeAllTimeMetricsSuccessAction({episode,
+              allTimeDownloads: 0, previous7days: 0, this7days: 0, yesterday: 0, today: 0}));
           } else {
             return Observable.of(new ACTIONS.CastleEpisodeAllTimeMetricsFailureAction({episode, error}));
           }

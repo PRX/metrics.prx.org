@@ -9,6 +9,10 @@ export interface PodcastMetricsModel {
   dailyDownloads?: any[][];
   hourlyDownloads?: any[][];
   allTimeDownloads?: number;
+  previous7days?: number;
+  this7days?: number;
+  yesterday?: number;
+  today?: number;
   loaded?: boolean;
   loading?: boolean;
   error?: any;
@@ -73,10 +77,10 @@ export function PodcastMetricsReducer(state: PodcastMetricsModel[] = initialStat
       if (action instanceof ACTIONS.CastlePodcastAllTimeMetricsSuccessAction) {
         const { seriesId } = action.payload.podcast;
         const podcastIdx = podcastIndex(state, seriesId);
-
+        const { allTimeDownloads, previous7days, this7days, yesterday, today } = action.payload;
         if (podcastIdx > -1) {
           let podcast: PodcastMetricsModel, newState: PodcastMetricsModel[];
-          podcast = {seriesId, ...state[podcastIdx], allTimeDownloads: action.payload.allTimeDownloads};
+          podcast = {seriesId, ...state[podcastIdx], allTimeDownloads, previous7days, this7days, yesterday, today};
           newState = [...state.slice(0, podcastIdx), podcast, ...state.slice(podcastIdx + 1)];
           return newState;
         } else {

@@ -20,11 +20,11 @@ import { PodcastModel, EpisodeModel } from '../../ngrx';
         <div class="podstats">
           <div class="podstat">
             <p class="label">Today</p>
-            <b class="value">{{podcastDownloadsToday}}</b>
+            <b class="value">{{podcastDownloadsToday | abrevNumber}}</b>
           </div>
           <div class="podstat">
             <p class="label">7 Days</p>
-            <b class="value">{{podcastDownloads7day}}</b>
+            <b class="value">{{podcastDownloads7day | abrevNumber}}</b>
           </div>
         </div>
 
@@ -32,9 +32,9 @@ import { PodcastModel, EpisodeModel } from '../../ngrx';
           <p>Most Recent</p>
           <button class="btn-link" (click)="episodeClicked()">{{episode?.title || "-"}}</button>
           <p>
-            {{episodeDownloadsToday}} Today
+            {{episodeDownloadsToday | abrevNumber}} Today
             &mdash;
-            {{episodeDownloadsAllTime}} All Time
+            {{episodeDownloadsAllTime | abrevNumber}} All Time
           </p>
         </div>
       </div>
@@ -47,13 +47,11 @@ export class ProfileComponent {
 
   @Input() podcast: PodcastModel;
   @Input() episode: EpisodeModel;
+  @Input() podcastDownloadsToday: number;
+  @Input() podcastDownloads7day: number;
+  @Input() episodeDownloadsToday: number;
+  @Input() episodeDownloadsAllTime: number;
   @Output() chartEpisode = new EventEmitter<number>();
-
-  // TODO: get the real numbers, formatted as decimals + K/M
-  podcastDownloadsToday = '-';
-  podcastDownloads7day = '-';
-  episodeDownloadsToday = '-';
-  episodeDownloadsAllTime = '-';
 
   episodeClicked() {
     if (this.episode) {

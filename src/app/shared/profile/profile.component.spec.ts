@@ -2,6 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { DebugElement } from '@angular/core';
 import { By } from '@angular/platform-browser';
 import { ImageModule } from 'ngx-prx-styleguide';
+import { abrevNumberFormat } from '../pipes/abrev-number.pipe';
 
 import { ProfileComponent } from './profile.component';
 
@@ -30,22 +31,22 @@ describe('ProfileComponent', () => {
 
   it('renders the podcast info', async(() => {
     comp.podcast = <any> {seriesId: 1, title: 'My Podcast'};
-    comp.podcastDownloadsToday = '1234';
-    comp.podcastDownloads7day = '5678';
+    comp.podcastDownloadsToday = 1234;
+    comp.podcastDownloads7day = 5678;
     fix.detectChanges();
     expect(el.textContent).toContain('My Podcast');
-    expect(el.textContent).toContain('1234');
-    expect(el.textContent).toContain('5678');
+    expect(el.textContent).toContain(abrevNumberFormat(1234));
+    expect(el.textContent).toContain(abrevNumberFormat(5678));
   }));
 
   it('renders the episode info', async(() => {
     comp.episode = <any> {seriesId: 1, id: 2, title: 'My Episode', publishedAt: new Date()};
-    comp.episodeDownloadsToday = '1234';
-    comp.episodeDownloadsAllTime = '5678';
+    comp.episodeDownloadsToday = 1234;
+    comp.episodeDownloadsAllTime = 5678;
     fix.detectChanges();
     expect(el.textContent).toContain('My Episode');
-    expect(el.textContent).toContain('1234');
-    expect(el.textContent).toContain('5678');
+    expect(el.textContent).toContain(abrevNumberFormat(1234));
+    expect(el.textContent).toContain(abrevNumberFormat(5678));
   }));
 
   it('outputs button clicks', async(() => {

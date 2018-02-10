@@ -95,6 +95,10 @@ export class CastlePodcastAllTimeMetricsLoadAction implements Action {
 export interface CastlePodcastAllTimeMetricsSuccessPayload {
   podcast: PodcastModel;
   allTimeDownloads: number;
+  previous7days: number;
+  this7days: number;
+  yesterday: number;
+  today: number;
 }
 
 export class CastlePodcastAllTimeMetricsSuccessAction implements Action {
@@ -122,6 +126,10 @@ export class CastleEpisodeAllTimeMetricsLoadAction implements Action {
 export interface CastleEpisodeAllTimeMetricsSuccessPayload {
   episode: EpisodeModel;
   allTimeDownloads: number;
+  previous7days: number;
+  this7days: number;
+  yesterday: number;
+  today: number;
 }
 
 export class CastleEpisodeAllTimeMetricsSuccessAction implements Action {

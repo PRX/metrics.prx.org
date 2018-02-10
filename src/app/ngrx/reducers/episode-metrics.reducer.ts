@@ -11,6 +11,10 @@ export interface EpisodeMetricsModel {
   dailyDownloads?: any[][];
   hourlyDownloads?: any[][];
   allTimeDownloads?: number;
+  previous7days?: number;
+  this7days?: number;
+  yesterday?: number;
+  today?: number;
   loaded?: boolean;
   loading?: boolean;
   error?: any;
@@ -74,11 +78,12 @@ export function EpisodeMetricsReducer(state: EpisodeMetricsModel[] = initialStat
     case ACTIONS.ActionTypes.CASTLE_EPISODE_ALL_TIME_METRICS_SUCCESS:
       if (action instanceof ACTIONS.CastleEpisodeAllTimeMetricsSuccessAction) {
         const { id, seriesId } = action.payload.episode;
+        const { allTimeDownloads, previous7days, this7days, yesterday, today } = action.payload;
         const epIdx = episodeIndex(state, id, seriesId);
 
         if (epIdx > -1) {
           let episode: EpisodeMetricsModel, newState: EpisodeMetricsModel[];
-          episode = {id, seriesId, ...state[epIdx], allTimeDownloads: action.payload.allTimeDownloads};
+          episode = {id, seriesId, ...state[epIdx], allTimeDownloads, previous7days, this7days, yesterday, today};
           newState = [...state.slice(0, epIdx), episode, ...state.slice(epIdx + 1)];
           return newState;
         } else {

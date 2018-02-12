@@ -1,5 +1,5 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { PodcastModel, EpisodeModel } from '../../ngrx';
+import { PodcastModel, EpisodeModel, PodcastPerformanceMetricsModel, EpisodePerformanceMetricsModel } from '../../ngrx';
 
 @Component ({
   selector: 'metrics-profile',
@@ -47,10 +47,8 @@ export class ProfileComponent {
 
   @Input() podcast: PodcastModel;
   @Input() episode: EpisodeModel;
-  @Input() podcastDownloadsToday: number;
-  @Input() podcastDownloads7day: number;
-  @Input() episodeDownloadsToday: number;
-  @Input() episodeDownloadsAllTime: number;
+  @Input() podcastPerformance: PodcastPerformanceMetricsModel;
+  @Input() episodePerformance: EpisodePerformanceMetricsModel;
   @Output() chartEpisode = new EventEmitter<number>();
 
   episodeClicked() {
@@ -59,4 +57,19 @@ export class ProfileComponent {
     }
   }
 
+  get podcastDownloadsToday(): number {
+    return this.podcastPerformance && this.podcastPerformance.today;
+  }
+
+  get podcastDownloads7day(): number {
+    return this.podcastPerformance && this.podcastPerformance.this7days;
+  }
+
+  get episodeDownloadsToday(): number {
+    return this.episodePerformance && this.episodePerformance.today;
+  }
+
+  get episodeDownloadsAllTime(): number {
+    return this.episodePerformance && this.episodePerformance.total;
+  }
 }

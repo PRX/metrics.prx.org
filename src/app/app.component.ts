@@ -58,9 +58,9 @@ export class AppComponent implements OnInit, OnDestroy {
     this.routerSub = this.store.select(selectRouter).subscribe((newRouterState: RouterModel) => {
       if (newRouterState && newRouterState.podcastSeriesId) {
         if (!this.routerState) {
-          this.getEpisodesAndRecentAndProfile(newRouterState);
+          this.getEpisodesAndRecent(newRouterState);
         } else if (newRouterState.podcastSeriesId !== this.routerState.podcastSeriesId) {
-          this.getEpisodesAndRecentAndProfile(newRouterState);
+          this.getEpisodesAndRecent(newRouterState);
         } else if (newRouterState.page !== this.routerState.page) {
           this.getEpisodes(newRouterState);
         }
@@ -80,15 +80,9 @@ export class AppComponent implements OnInit, OnDestroy {
     this.store.dispatch(new ACTIONS.CmsPodcastEpisodePageAction({seriesId, page}));
   }
 
-  getEpisodesAndRecentAndProfile(state: RouterModel) {
+  getEpisodesAndRecent(state: RouterModel) {
     this.getEpisodes(state);
     const seriesId = state.podcastSeriesId;
     this.store.dispatch(new ACTIONS.CmsRecentEpisodeAction({seriesId}));
-    this.store.dispatch(new ACTIONS.CastlePodcastAllTimeMetricsLoadAction());
-    /* TODO: needs episode, id should be enuf
-    maybe time to pull these all time metrics, etc to their own reducer
-    ... could use entity pattern
-    this.store.dispatch(new ACTIONS.CastleEpisodeAllTimeMetricsLoadAction());
-    */
   }
 }

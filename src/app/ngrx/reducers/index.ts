@@ -4,7 +4,9 @@ import { AccountReducer } from './account.reducer';
 import { PodcastReducer } from './podcast.reducer';
 import { EpisodeReducer } from './episode.reducer';
 import { PodcastMetricsReducer, PodcastMetricsModel } from './podcast-metrics.reducer';
+import { PodcastPerformanceMetricsReducer, PodcastPerformanceMetricsModel, PodcastPerformanceMetricsState, getPodcastPerformanceMetricsEntities } from './podcast-performance-metrics.reducer';
 import { EpisodeMetricsReducer, EpisodeMetricsModel } from './episode-metrics.reducer';
+import { EpisodePerformanceMetricsReducer, EpisodePerformanceMetricsModel, EpisodePerformanceMetricsState, getEpisodePerformanceMetricsEntities } from './episode-performance-metrics.reducer';
 import { RecentEpisodeReducer } from './recent-episode.reducer';
 import { AccountState, getAccountEntity, getAccountError } from './account.reducer';
 import { PodcastModel, PodcastState, getPodcastEntities, getPodcastsLoaded, getPodcastsLoading, getPodcastsError } from './podcast.reducer';
@@ -23,7 +25,9 @@ export interface RootState {
   podcasts: PodcastState;
   episodes: EpisodeState;
   podcastMetrics: PodcastMetricsModel[];
+  podcastPerformanceMetrics: PodcastPerformanceMetricsState;
   episodeMetrics: EpisodeMetricsModel[];
+  episodePerformanceMetrics: EpisodePerformanceMetricsState;
   recentEpisodes: RecentEpisodeState;
 }
 
@@ -35,7 +39,9 @@ export const reducers: ActionReducerMap<RootState> = {
   podcasts: PodcastReducer,
   episodes: EpisodeReducer,
   podcastMetrics: PodcastMetricsReducer,
+  podcastPerformanceMetrics: PodcastPerformanceMetricsReducer,
   episodeMetrics: EpisodeMetricsReducer,
+  episodePerformanceMetrics: EpisodePerformanceMetricsReducer,
   recentEpisodes: RecentEpisodeReducer
 };
 
@@ -136,32 +142,19 @@ export const selectRecentEpisodeLoaded = createSelector(selectRecentEpisodeState
 export const selectRecentEpisodeLoading = createSelector(selectRecentEpisodeState, getRecentEpisodeLoading);
 export const selectRecentEpisodeError = createSelector(selectRecentEpisodeState, getRecentEpisodeError);
 
-export const selectPodcastProfileMetrics = createSelector(selectPodcastRoute, selectPodcastMetrics,
-  (podcastSeriesId: number, podcastMetrics: PodcastMetricsModel[]) => {
-  const metric = podcastMetrics.find((m: PodcastMetricsModel) => m.seriesId === podcastSeriesId);
-  if (metric) {
-    return {
-      allTimeDownloads: metric.allTimeDownloads,
-      previous7days: metric.previous7days,
-      this7days: metric.this7days,
-      yesterday: metric.yesterday,
-      today: metric.today
-    };
-  }
+export const selectPodcastPerformanceMetricsState = createSelector(selectAppState, (state: RootState) => state.podcastPerformanceMetrics);
+export const selectPodcastPerformanceMetricsEntities = createSelector(selectPodcastPerformanceMetricsState, getPodcastPerformanceMetricsEntities);
+export const selectSelectedPodcastPerformanceMetrics = createSelector(selectPodcastRoute, selectPodcastPerformanceMetricsEntities,
+  (podcastSeriesId: number, entities) => {
+  return entities[podcastSeriesId];
 });
-export const selectRecentEpisodeProfileMetrics = createSelector(selectRecentEpisode, selectEpisodeMetrics,
-  (episode: EpisodeModel, episodeMetrics: EpisodeMetricsModel[]) => {
+
+export const selectEpisodePerforamnceMetricsState = createSelector(selectAppState, (state: RootState) => state.episodePerformanceMetrics);
+export const selectEpisodePerformanceMetricsEntities = createSelector(selectEpisodePerforamnceMetricsState, getEpisodePerformanceMetricsEntities);
+export const selectRecentEpisodePerformanceMetrics = createSelector(selectRecentEpisode, selectEpisodePerformanceMetricsEntities,
+  (episode: EpisodeModel, entities) => {
   if (episode) {
-    const metric = episodeMetrics.find((m: EpisodeMetricsModel) => m.seriesId === episode.seriesId && m.id === episode.id);
-    if (metric) {
-      return {
-        allTimeDownloads: metric.allTimeDownloads,
-        previous7days: metric.previous7days,
-        this7days: metric.this7days,
-        yesterday: metric.yesterday,
-        today: metric.today
-      };
-    }
+    return entities[episode.id];
   }
 });
 

@@ -7,3 +7,5 @@ export { RouterModel,
   METRICSTYPE_DOWNLOADS, METRICSTYPE_DEMOGRAPHICS, METRICSTYPE_TRAFFICSOURCES, MetricsType, getMetricsProperty } from './reducers/models';
 export { PodcastMetricsModel } from './reducers/podcast-metrics.reducer';
 export { EpisodeMetricsModel } from './reducers/episode-metrics.reducer';
+export { PodcastPerformanceMetricsModel } from './reducers/podcast-performance-metrics.reducer';
+export { EpisodePerformanceMetricsModel } from './reducers/episode-performance-metrics.reducer';

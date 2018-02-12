@@ -2,7 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { DebugElement } from '@angular/core';
 import { By } from '@angular/platform-browser';
 import { ImageModule } from 'ngx-prx-styleguide';
-import { abrevNumberFormat } from '../pipes/abrev-number.pipe';
+import { AbrevNumberPipe, abrevNumberFormat } from '../pipes/abrev-number.pipe';
 
 import { ProfileComponent } from './profile.component';
 
@@ -14,7 +14,9 @@ describe('ProfileComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ProfileComponent],
+      declarations: [
+        ProfileComponent,
+        AbrevNumberPipe],
       imports: [ImageModule]
     }).compileComponents().then(() => {
       fix = TestBed.createComponent(ProfileComponent);
@@ -31,8 +33,12 @@ describe('ProfileComponent', () => {
 
   it('renders the podcast info', async(() => {
     comp.podcast = <any> {seriesId: 1, title: 'My Podcast'};
-    comp.podcastDownloadsToday = 1234;
-    comp.podcastDownloads7day = 5678;
+    comp.podcastPerformance = {
+      seriesId: 1,
+      feederId: '70',
+      today: 1234,
+      this7days: 5678
+    };
     fix.detectChanges();
     expect(el.textContent).toContain('My Podcast');
     expect(el.textContent).toContain(abrevNumberFormat(1234));
@@ -41,8 +47,13 @@ describe('ProfileComponent', () => {
 
   it('renders the episode info', async(() => {
     comp.episode = <any> {seriesId: 1, id: 2, title: 'My Episode', publishedAt: new Date()};
-    comp.episodeDownloadsToday = 1234;
-    comp.episodeDownloadsAllTime = 5678;
+    comp.episodePerformance = {
+      id: 2,
+      seriesId: 1,
+      guid: 'abcdef',
+      today: 1234,
+      total: 5678
+    };
     fix.detectChanges();
     expect(el.textContent).toContain('My Episode');
     expect(el.textContent).toContain(abrevNumberFormat(1234));

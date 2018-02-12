@@ -40,7 +40,7 @@ export class DownloadsTableComponent implements OnDestroy {
     this.routerSub = this.store.select(selectRouter).subscribe((newRouterState: RouterModel) => {
       if (newRouterState) {
         if (isPodcastChanged(newRouterState, this.routerState)) {
-          this.store.dispatch(new ACTIONS.CastlePodcastAllTimeMetricsLoadAction());
+          // this.store.dispatch(new ACTIONS.CastlePodcastAllTimeMetricsLoadAction());
           this.resetAllData();
         }
         // apply new routerState to existing data so it's not showing stale data while loading
@@ -59,9 +59,10 @@ export class DownloadsTableComponent implements OnDestroy {
       const allPodcastEpisodes = filterPodcastEpisodePage(this.routerState, allEpisodes);
       if (allPodcastEpisodes) {
         this.episodes = allPodcastEpisodes;
-        this.episodes.forEach(episode =>
-          this.store.dispatch(new ACTIONS.CastleEpisodeAllTimeMetricsLoadAction({episode}))
-        );
+        this.episodes.forEach(episode => {
+          const { id, seriesId, guid } = episode;
+          this.store.dispatch(new ACTIONS.CastleEpisodePerformanceMetricsLoadAction({id, seriesId, guid}));
+        });
         this.buildTableData();
       }
     });
@@ -99,6 +100,7 @@ export class DownloadsTableComponent implements OnDestroy {
         downloads: mapMetricsToTimeseriesData(downloads),
         totalForPeriod: totalForPeriod,
         avgPerIntervalForPeriod: Math.round(totalForPeriod / downloads.length),
+        // TODO: leaving allTimeDownloads in PodcastMetrics until can do #141 & #142
         allTimeDownloads: this.podcastMetrics.allTimeDownloads,
         charted: this.podcastMetrics.charted
       };
@@ -123,6 +125,7 @@ export class DownloadsTableComponent implements OnDestroy {
               downloads: mapMetricsToTimeseriesData(downloads),
               totalForPeriod: totalForPeriod,
               avgPerIntervalForPeriod: Math.round(totalForPeriod / downloads.length),
+              // TODO: leaving allTimeDownloads in EpisodeMetrics until can do #141 & #142
               allTimeDownloads: epMetric.allTimeDownloads,
               charted: epMetric.charted
             };

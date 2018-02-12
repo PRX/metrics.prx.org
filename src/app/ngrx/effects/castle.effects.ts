@@ -5,9 +5,9 @@ import { Actions, Effect } from '@ngrx/effects';
 import { Action, Store } from '@ngrx/store';
 
 import * as ACTIONS from '../actions';
-import { selectSelectedPodcast } from '../reducers';
+import { selectSelectedPodcast, selectRecentEpisode } from '../reducers';
 import { CastleService } from '../../core';
-import { PodcastModel, getMetricsProperty } from '../';
+import { PodcastModel, EpisodeModel, getMetricsProperty } from '../';
 
 @Injectable()
 export class CastleEffects {
@@ -72,53 +72,47 @@ export class CastleEffects {
     });
 
   @Effect()
-  loadAllTimePodcastMetrics$: Observable<Action> = this.actions$
-    .ofType(ACTIONS.ActionTypes.CASTLE_PODCAST_ALL_TIME_METRICS_LOAD)
-    .switchMap(() => {
-      if (this.selectedPodcast) {
-        return this.castle
-          .followList('prx:podcast', {id: this.selectedPodcast.feederId})
-          .map(metrics => {
-            const allTimeDownloads = metrics[0]['downloads']['total'];
-            const { previous7days, this7days, yesterday, today } = metrics[0]['downloads'];
-            return new ACTIONS.CastlePodcastAllTimeMetricsSuccessAction({podcast: this.selectedPodcast,
-              allTimeDownloads, previous7days, this7days, yesterday, today});
-          })
-          .catch(error => {
-            if (error.status === 404) {
-              return Observable.of(new ACTIONS.CastlePodcastAllTimeMetricsSuccessAction({podcast: this.selectedPodcast,
-                allTimeDownloads: 0, previous7days: 0, this7days: 0, yesterday: 0, today: 0}));
-            } else {
-              Observable.of(new ACTIONS.CastlePodcastAllTimeMetricsFailureAction({podcast: this.selectedPodcast, error}));
-            }
-          });
-      } else {
-        // gonna be difficult to capture this error without changing shape of podcast metrics state since it's just an array
-        return Observable.of(new ACTIONS.CastlePodcastAllTimeMetricsFailureAction({podcast: undefined, error: 'No selected podcast yet'}));
-      }
-    });
-
-  @Effect()
-  loadAllTimeEpisodeMetrics$ = this.actions$
-    .ofType(ACTIONS.ActionTypes.CASTLE_EPISODE_ALL_TIME_METRICS_LOAD)
-    .map((action: ACTIONS.CastleEpisodeAllTimeMetricsLoadAction) => action.payload)
-    .flatMap((payload: ACTIONS.CastleEpisodeAllTimeMetricsLoadPayload) => {
-      const { episode } = payload;
+  loadPodcastPerformanceMetrics$: Observable<Action> = this.actions$
+    .ofType(ACTIONS.ActionTypes.CASTLE_PODCAST_PERFORMANCE_METRICS_LOAD)
+    .map((action: ACTIONS.CastlePodcastPerformanceMetricsLoadAction) => action.payload)
+    .switchMap((payload: ACTIONS.CastlePodcastPerformanceMetricsLoadPayload) => {
+    const { seriesId, feederId } = payload;
       return this.castle
-        .followList('prx:episode', {guid: episode.guid})
+        .followList('prx:podcast', {id: feederId})
         .map(metrics => {
-          const allTimeDownloads = metrics[0]['downloads']['total'];
-          const { previous7days, this7days, yesterday, today } = metrics[0]['downloads'];
-          return new ACTIONS.CastleEpisodeAllTimeMetricsSuccessAction({episode,
-            allTimeDownloads, previous7days, this7days, yesterday, today});
+          const { total, previous7days, this7days, yesterday, today } = metrics[0]['downloads'];
+          return new ACTIONS.CastlePodcastPerformanceMetricsSuccessAction({seriesId, feederId,
+            total, previous7days, this7days, yesterday, today});
         })
         .catch(error => {
           if (error.status === 404) {
-            const allTimeDownloads = 0;
-            return Observable.of(new ACTIONS.CastleEpisodeAllTimeMetricsSuccessAction({episode,
-              allTimeDownloads: 0, previous7days: 0, this7days: 0, yesterday: 0, today: 0}));
+            return Observable.of(new ACTIONS.CastlePodcastPerformanceMetricsSuccessAction({seriesId, feederId,
+              total: 0, previous7days: 0, this7days: 0, yesterday: 0, today: 0}));
           } else {
-            return Observable.of(new ACTIONS.CastleEpisodeAllTimeMetricsFailureAction({episode, error}));
+            Observable.of(new ACTIONS.CastlePodcastPerformanceMetricsFailureAction({seriesId, feederId, error}));
+          }
+        });
+    });
+
+  @Effect()
+  loadEpisodePerformanceMetrics$: Observable<Action> = this.actions$
+    .ofType(ACTIONS.ActionTypes.CASTLE_EPISODE_PERFORMANCE_METRICS_LOAD)
+    .map((action: ACTIONS.CastleEpisodePerformanceMetricsLoadAction) => action.payload)
+    .flatMap((payload: ACTIONS.CastleEpisodePerformanceMetricsLoadPayload) => {
+      const { id, seriesId, guid } = payload;
+      return this.castle
+        .followList('prx:episode', {guid})
+        .map(metrics => {
+          const { total, previous7days, this7days, yesterday, today } = metrics[0]['downloads'];
+          return new ACTIONS.CastleEpisodePerformanceMetricsSuccessAction({id, seriesId, guid,
+            total, previous7days, this7days, yesterday, today});
+        })
+        .catch(error => {
+          if (error.status === 404) {
+            return Observable.of(new ACTIONS.CastleEpisodePerformanceMetricsSuccessAction({id, seriesId, guid,
+              total: 0, previous7days: 0, this7days: 0, yesterday: 0, today: 0}));
+          } else {
+            return Observable.of(new ACTIONS.CastleEpisodePerformanceMetricsFailureAction({id, seriesId, guid, error}));
           }
         });
     });
@@ -126,8 +120,18 @@ export class CastleEffects {
   constructor(private actions$: Actions,
               private castle: CastleService,
               private store: Store<any>) {
-                this.store.select(selectSelectedPodcast).subscribe((podcast: PodcastModel) => {
-                  this.selectedPodcast = podcast;
-                });
-              }
+    this.store.select(selectSelectedPodcast).subscribe((podcast: PodcastModel) => {
+      this.selectedPodcast = podcast;
+      if (this.selectedPodcast) {
+        const {seriesId, feederId} = this.selectedPodcast;
+        this.store.dispatch(new ACTIONS.CastlePodcastPerformanceMetricsLoadAction({seriesId, feederId}));
+      }
+    });
+    this.store.select(selectRecentEpisode).subscribe((episode: EpisodeModel) => {
+      if (episode) {
+        const {id, seriesId, guid} = episode;
+        this.store.dispatch(new ACTIONS.CastleEpisodePerformanceMetricsLoadAction({id, seriesId, guid}));
+      }
+    });
+  }
 }

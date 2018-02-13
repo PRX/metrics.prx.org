@@ -149,7 +149,7 @@ export class CmsEffects {
   // chart a single episode or charting episode ids via the url/page refresh/ load from url
   chartIncomingEpisodes(episodes: EpisodeModel[]) {
     if (!this.routedEpisodeIds || this.routedEpisodeIds.length === 0) {
-      const episodeIds = episodes.map(e => e.id).slice(0, 5);
+      const episodeIds = episodes.map(e => e.id);
       this.store.dispatch(new ACTIONS.RouteEpisodesChartedAction({episodeIds}));
     }
   }

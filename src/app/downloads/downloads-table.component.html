@@ -20,7 +20,6 @@
           <th>Episode</th>
           <th>Release Date</th>
           <th>Total for Range</th>
-          <th>{{routerState.interval.name}} Average</th>
           <th>All-Time Downloads</th>
         </tr>
       </thead>
@@ -34,7 +33,6 @@
           </td>
           <td>{{podcastTableData.releaseDate}}</td>
           <td>{{podcastTableData.totalForPeriod | largeNumber}}</td>
-          <td>{{podcastTableData.avgPerIntervalForPeriod | largeNumber}}</td>
           <td *ngIf="podcastTableData.allTimeDownloads !== undefined">{{podcastTableData.allTimeDownloads | largeNumber}}</td>
           <td *ngIf="podcastTableData.allTimeDownloads === undefined"></td>
         </tr>
@@ -42,14 +40,13 @@
           <td>
             <prx-checkbox *ngIf="showEpisodeToggles; else episodeTitle"
               small [checked]="episode.charted" [color]="episode.color"
-              (change)="toggleChartEpisode(episode, $event)">{{episode.title}}</prx-checkbox>
+                          (change)="toggleChartEpisode(episode, $event)"><span [title]="episode.title">{{episode.title}}</span></prx-checkbox>
             <ng-template #episodeTitle>
-              <button class="btn-link title" (click)="onChartSingleEpisode(episode)">{{episode.title}}</button>
+              <button class="btn-link title" (click)="onChartSingleEpisode(episode)" [title]="episode.title">{{episode.title}}</button>
             </ng-template>
           </td>
           <td>{{episode.releaseDate}}</td>
           <td>{{episode.totalForPeriod | largeNumber}}</td>
-          <td>{{episode.avgPerIntervalForPeriod | largeNumber}}</td>
           <td *ngIf="episode.allTimeDownloads !== undefined">{{episode.allTimeDownloads | largeNumber}}</td>
           <td *ngIf="episode.allTimeDownloads === undefined"></td>
         </tr>

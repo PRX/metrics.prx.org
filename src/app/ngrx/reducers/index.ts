@@ -96,7 +96,7 @@ export const selectPodcastMetricsFilteredAverage = createSelector(selectPodcastM
     const filteredMetrics = metricsUtil.findPodcastMetrics(routerState, metrics);
     if (filteredMetrics) {
       const data = filteredMetrics[getMetricsProperty(routerState.interval, 'downloads')];
-      return Math.round(metricsUtil.getTotal(data) / (data && data.length || 1));
+      return metricsUtil.getWeightedAverage(data, routerState.beginDate, routerState.endDate, routerState.interval);
     }
   });
 export const selectPodcastMetricsFilteredTotal = createSelector(selectPodcastMetrics, selectRouter,

@@ -1,7 +1,7 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
 export const largeNumberFormat = (value: number) => {
-  return Number(value).toLocaleString(undefined, {useGrouping: true});
+  return value && !isNaN(value) ? Number(value).toLocaleString(undefined, {useGrouping: true}) : '0';
 };
 
 @Pipe({name: 'largeNumber'})

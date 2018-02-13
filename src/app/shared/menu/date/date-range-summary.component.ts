@@ -6,7 +6,7 @@ import * as dateUtil from '../../util/date';
   selector: 'metrics-date-range-summary',
   template: `
     <div class="label">in this range</div>
-    <div class="range">{{beginDate}} - {{endDate}} <span>({{numDays}})</span></div>
+    <div class="range">{{beginDate}} &#x2015; {{endDate}} <span>({{numDays}})</span></div>
   `,
   styleUrls: ['./date-range-summary.component.css']
 })

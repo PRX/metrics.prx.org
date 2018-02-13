@@ -72,4 +72,16 @@ describe('ProfileComponent', () => {
     expect(chartedId).toEqual(2);
   }));
 
+  it('should show trend arrows for podcast trends', () => {
+    comp.podcastPerformance = {
+      seriesId: 1,
+      feederId: '70',
+      today: 1234,
+      yesterday: 1233,
+      this7days: 5678,
+      previous7days: 5677
+    };
+    fix.detectChanges();
+    expect(de.queryAll(By.css('.trend-up')).length).toEqual(2);
+  });
 });

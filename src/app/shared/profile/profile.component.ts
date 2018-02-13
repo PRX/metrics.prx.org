@@ -20,11 +20,19 @@ import { PodcastModel, EpisodeModel, PodcastPerformanceMetricsModel, EpisodePerf
         <div class="podstats">
           <div class="podstat">
             <p class="label">Today</p>
+            <span class="trend-container trend-left">
+              <span *ngIf="podcast1DayTrend > 0" class="trend-up"></span>
+              <span *ngIf="podcast1DayTrend < 0" class="trend-down"></span>
+            </span>
             <b class="value">{{podcastDownloadsToday | abrevNumber}}</b>
           </div>
           <div class="podstat">
             <p class="label">7 Days</p>
             <b class="value">{{podcastDownloads7day | abrevNumber}}</b>
+            <span class="trend-container">
+              <span *ngIf="podcast7DayTrend > 0" class="trend-up"></span>
+              <span *ngIf="podcast7DayTrend < 0" class="trend-down"></span>
+            </span>
           </div>
         </div>
 
@@ -71,5 +79,24 @@ export class ProfileComponent {
 
   get episodeDownloadsAllTime(): number {
     return this.episodePerformance && this.episodePerformance.total;
+  }
+
+  get podcast1DayTrend(): number {
+    if (this.podcastPerformance) {
+      const now = new Date();
+      // between midnight and 1am is hour 1 to avoid zeroing out yesterday's number
+      return this.podcastPerformance.today - (this.podcastPerformance.yesterday * (now.getHours() + 1) / 24);
+    } else {
+      return 0;
+    }
+  }
+
+  get podcast7DayTrend(): number {
+    if (this.podcastPerformance) {
+      const now = new Date();
+      return this.podcastPerformance.this7days - (this.podcastPerformance.previous7days * ((6 * 24) + (now.getHours() + 1)) / (7 * 24));
+    } else {
+      return 0;
+    }
   }
 }

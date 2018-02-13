@@ -214,7 +214,7 @@ describe('CmsEffects', () => {
       expect(effects.loadEpisodes$).toBeObservable(expect$);
     });
 
-    it('updates the route to include the first five episodes', () => {
+    it('updates the route to include the episodes', () => {
       const allStories = [s1, s2, s3, s4, s5, s6];
       const stories = cms.mock('prx:series', {}).mockItems('prx:stories', allStories);
       stories.forEach((story, index) => {
@@ -223,7 +223,7 @@ describe('CmsEffects', () => {
       const action = new ACTIONS.CmsPodcastEpisodePageAction({seriesId, page: 1});
       actions$ = hot('-a', {a: action});
       effects.loadEpisodes$.subscribe(() => {
-        expect(store.dispatch).toHaveBeenCalledWith(new ACTIONS.RouteEpisodesChartedAction({episodeIds: [121, 122, 123, 124, 125]}));
+        expect(store.dispatch).toHaveBeenCalledWith(new ACTIONS.RouteEpisodesChartedAction({episodeIds: [121, 122, 123, 124, 125, 126]}));
       });
     });
 

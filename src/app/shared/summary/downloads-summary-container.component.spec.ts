@@ -78,16 +78,4 @@ describe('DownloadsSummaryContainerComponent', () => {
     comp.total$.subscribe(value => result = value);
     expect(result).toEqual(metricsUtil.getTotal(podDownloads));
   });
-
-  it('should have average downloads according to interval filtered by date range ', () => {
-    let result;
-    comp.average$.subscribe(value => result = value);
-    expect(result).toEqual(Math.round(metricsUtil.getTotal(podDownloads) / podDownloads.length));
-  });
-
-  it('should label average according to interval', () => {
-    let result;
-    comp.averageLabel$.subscribe(value => result = value);
-    expect(result).toEqual('average / day');
-  });
 });

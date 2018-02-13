@@ -40,7 +40,6 @@ export class DownloadsTableComponent implements OnDestroy {
     this.routerSub = this.store.select(selectRouter).subscribe((newRouterState: RouterModel) => {
       if (newRouterState) {
         if (isPodcastChanged(newRouterState, this.routerState)) {
-          // this.store.dispatch(new ACTIONS.CastlePodcastAllTimeMetricsLoadAction());
           this.resetAllData();
         }
         // apply new routerState to existing data so it's not showing stale data while loading

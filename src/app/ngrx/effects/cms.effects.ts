@@ -51,9 +51,14 @@ export class CmsEffects {
             } else {
               const params = {per: count, filters: 'v4', zoom: 'prx:distributions'};
               return auth.followItems('prx:series', params).mergeMap(docs => {
-                return Observable.forkJoin(docs.map(d => this.docToPodcast(d)))
-                  .map(podcasts => podcasts.filter(p => p && p.feederId))
-                  .map(podcasts => new ACTIONS.CmsPodcastsSuccessAction({podcasts}));
+                if (docs.length === 0) {
+                  const error = 'Looks like you don\'t have any podcasts.';
+                  return Observable.of(new ACTIONS.CmsPodcastsFailureAction({error}));
+                } else {
+                  return Observable.forkJoin(docs.map(d => this.docToPodcast(d)))
+                    .map(podcasts => podcasts.filter(p => p && p.feederId))
+                    .map(podcasts => new ACTIONS.CmsPodcastsSuccessAction({podcasts}));
+                }
               });
             }
           });

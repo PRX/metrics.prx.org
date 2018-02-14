@@ -3,14 +3,8 @@
   border-right: 0px;
 }
 
-.dropdown-content {
+.open .dropdown-content {
   right: auto;
   left: 0;
-}
-
-li {
-  margin-top: 10px;
-}
-li:first-child {
-  margin-top: 0px;
+  padding: 10px 0;
 }

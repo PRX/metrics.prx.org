@@ -8,9 +8,10 @@
   margin: 0px;
 }
 
-.dropdown-content {
+.open .dropdown-content {
   margin-top: -38px;
   box-shadow: 0 0 15px -5px rgba(0,0,0,.5);
+  padding: 20px;
 }
 
 .intervals {
@@ -21,6 +22,11 @@
 }
 .intervals > button {
   max-width: 100px;
+  padding: 10px;
+  border: 1px solid transparent;
+}
+.intervals > button.btn-link:hover {
+  background-color: #ddd;
 }
 
 .ranges {

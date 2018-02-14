@@ -44,6 +44,7 @@ export class StandardDateRangeDropdownComponent {
   onStandardRangeChange(standardRange: string) {
     this.googleAnalyticsEvent('standard-date', standardRange);
     this.store.dispatch(new RouteStandardRangeAction({standardRange}));
+    this.toggleOpen();
   }
 
   onCustom() {

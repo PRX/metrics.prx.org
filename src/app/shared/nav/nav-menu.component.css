@@ -24,4 +24,5 @@ a {
 }
 a:hover, a:focus, a.active {
   background-color: #ddd;
+  color: #2b7187;
 }

@@ -63,6 +63,6 @@ describe('EpisodePageComponent', () => {
     comp.pager.currentPage = 5;
     comp.pager.totalPages = 2 * comp.pager.showNumPages;
     fix.detectChanges();
-    expect(comp.pager.pagesEnd).toEqual(10);
+    expect(comp.pager.pagesEnd).toEqual(comp.pager.showNumPages);
   });
 });

@@ -42,7 +42,7 @@
   box-shadow: 0 5px 15px -5px rgba(0,0,0,.5);
 }
 .open .dropdown-content {
-  padding: 20px;
+  padding: 20px 0;
   max-height: initial;
   overflow-y: auto;
 }
@@ -54,6 +54,16 @@
 
 .dropdown-content >>> li {
   white-space: nowrap;
+}
+
+.dropdown-content >>> li .btn-link {
+  width: 100%;
+  text-align: left;
+  padding: 5px 20px;
+}
+
+.dropdown-content >>> li .btn-link:hover, .dropdown-content >>> li .btn-link:focus, .dropdown-content >>> li .btn-link.active {
+  background-color: #ddd;
 }
 
 .overlay {

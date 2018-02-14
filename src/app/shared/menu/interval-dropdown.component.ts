@@ -62,5 +62,6 @@ export class IntervalDropdownComponent implements OnChanges {
     if (interval && interval !== this.routerState.interval) {
       this.store.dispatch(new RouteIntervalAction({interval}));
     }
+    this.toggleOpen();
   }
 }

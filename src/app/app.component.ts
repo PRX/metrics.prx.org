@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs/Subscription';
 import { Angulartics2GoogleAnalytics } from 'angulartics2';
@@ -30,8 +30,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
   constructor(
     public store: Store<any>,
-    private angulartics2GoogleAnalytics: Angulartics2GoogleAnalytics,
-    private router: Router,
+    private angulartics2GoogleAnalytics: Angulartics2GoogleAnalytics
   ) {
     this.store.dispatch(new ACTIONS.CmsAccountAction());
     this.store.dispatch(new ACTIONS.CmsPodcastsAction());

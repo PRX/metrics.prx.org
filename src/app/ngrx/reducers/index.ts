@@ -4,7 +4,9 @@ import { AccountReducer } from './account.reducer';
 import { PodcastReducer } from './podcast.reducer';
 import { EpisodeReducer } from './episode.reducer';
 import { PodcastMetricsReducer, PodcastMetricsModel } from './podcast-metrics.reducer';
+import { PodcastPerformanceMetricsReducer, PodcastPerformanceMetricsModel, PodcastPerformanceMetricsState, getPodcastPerformanceMetricsEntities } from './podcast-performance-metrics.reducer';
 import { EpisodeMetricsReducer, EpisodeMetricsModel } from './episode-metrics.reducer';
+import { EpisodePerformanceMetricsReducer, EpisodePerformanceMetricsModel, EpisodePerformanceMetricsState, getEpisodePerformanceMetricsEntities } from './episode-performance-metrics.reducer';
 import { RecentEpisodeReducer } from './recent-episode.reducer';
 import { AccountState, getAccountEntity, getAccountError } from './account.reducer';
 import { PodcastModel, PodcastState, getPodcastEntities, getPodcastsLoaded, getPodcastsLoading, getPodcastsError } from './podcast.reducer';
@@ -23,7 +25,9 @@ export interface RootState {
   podcasts: PodcastState;
   episodes: EpisodeState;
   podcastMetrics: PodcastMetricsModel[];
+  podcastPerformanceMetrics: PodcastPerformanceMetricsState;
   episodeMetrics: EpisodeMetricsModel[];
+  episodePerformanceMetrics: EpisodePerformanceMetricsState;
   recentEpisodes: RecentEpisodeState;
 }
 
@@ -35,7 +39,9 @@ export const reducers: ActionReducerMap<RootState> = {
   podcasts: PodcastReducer,
   episodes: EpisodeReducer,
   podcastMetrics: PodcastMetricsReducer,
+  podcastPerformanceMetrics: PodcastPerformanceMetricsReducer,
   episodeMetrics: EpisodeMetricsReducer,
+  episodePerformanceMetrics: EpisodePerformanceMetricsReducer,
   recentEpisodes: RecentEpisodeReducer
 };
 
@@ -129,12 +135,28 @@ export const selectEpisodeMetricsError = createSelector(selectEpisodeMetrics, (m
 
 export const selectRecentEpisodeState = createSelector(selectAppState, (state: RootState) => state.recentEpisodes);
 export const selectRecentEpisodeEntities = createSelector(selectRecentEpisodeState, getRecentEpisodeEntities);
-export const selectRecentEpisode = createSelector(selectRecentEpisodeEntities, selectPodcastRoute, (entities, seriesId) => {
+export const selectRecentEpisode = createSelector(selectRecentEpisodeEntities, selectPodcastRoute, (entities, seriesId): EpisodeModel => {
   return entities[seriesId];
 });
 export const selectRecentEpisodeLoaded = createSelector(selectRecentEpisodeState, getRecentEpisodeLoaded);
 export const selectRecentEpisodeLoading = createSelector(selectRecentEpisodeState, getRecentEpisodeLoading);
 export const selectRecentEpisodeError = createSelector(selectRecentEpisodeState, getRecentEpisodeError);
+
+export const selectPodcastPerformanceMetricsState = createSelector(selectAppState, (state: RootState) => state.podcastPerformanceMetrics);
+export const selectPodcastPerformanceMetricsEntities = createSelector(selectPodcastPerformanceMetricsState, getPodcastPerformanceMetricsEntities);
+export const selectSelectedPodcastPerformanceMetrics = createSelector(selectPodcastRoute, selectPodcastPerformanceMetricsEntities,
+  (podcastSeriesId: number, entities) => {
+  return entities[podcastSeriesId];
+});
+
+export const selectEpisodePerforamnceMetricsState = createSelector(selectAppState, (state: RootState) => state.episodePerformanceMetrics);
+export const selectEpisodePerformanceMetricsEntities = createSelector(selectEpisodePerforamnceMetricsState, getEpisodePerformanceMetricsEntities);
+export const selectRecentEpisodePerformanceMetrics = createSelector(selectRecentEpisode, selectEpisodePerformanceMetricsEntities,
+  (episode: EpisodeModel, entities) => {
+  if (episode) {
+    return entities[episode.id];
+  }
+});
 
 export const selectCmsLoading = createSelector(selectEpisodesLoading, selectPodcastsLoading, (episodes, podcasts) => episodes || podcasts);
 export const selectCastleLoading = createSelector(selectEpisodeMetricsLoading, selectPodcastMetricsLoading,

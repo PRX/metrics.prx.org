@@ -71,35 +71,29 @@ export function EpisodeMetricsReducer(state: EpisodeMetricsModel[] = initialStat
         return newState;
       }
       break;
-    case ACTIONS.ActionTypes.CASTLE_EPISODE_ALL_TIME_METRICS_SUCCESS:
-      if (action instanceof ACTIONS.CastleEpisodeAllTimeMetricsSuccessAction) {
-        const { id, seriesId } = action.payload.episode;
-        const epIdx = episodeIndex(state, id, seriesId);
+    // TODO: #141 & #142 should remove from this state and combine with performance metrics state
+    case ACTIONS.ActionTypes.CASTLE_EPISODE_PERFORMANCE_METRICS_SUCCESS: {
+      const { id, seriesId, guid, total } = action['payload'];
+      const epIdx = episodeIndex(state, id, seriesId);
 
-        if (epIdx > -1) {
-          let episode: EpisodeMetricsModel, newState: EpisodeMetricsModel[];
-          episode = {id, seriesId, ...state[epIdx], allTimeDownloads: action.payload.allTimeDownloads};
-          newState = [...state.slice(0, epIdx), episode, ...state.slice(epIdx + 1)];
-          return newState;
-        } else {
-          return state;
-        }
+      if (epIdx > -1) {
+        let episode: EpisodeMetricsModel, newState: EpisodeMetricsModel[];
+        episode = {id, seriesId, guid, ...state[epIdx], allTimeDownloads: total};
+        newState = [...state.slice(0, epIdx), episode, ...state.slice(epIdx + 1)];
+        return newState;
       }
+    }
       break;
-    case ACTIONS.ActionTypes.CASTLE_EPISODE_ALL_TIME_METRICS_FAILURE:
-      if (action instanceof ACTIONS.CastleEpisodeAllTimeMetricsFailureAction) {
-        const { error } = action.payload;
-        if (action.payload['episode']) {
-          const { id, seriesId } = action.payload['episode'];
-          const epIdx = episodeIndex(state, id, seriesId);
-          if (epIdx > -1) {
-            let episode: EpisodeMetricsModel, newState: EpisodeMetricsModel[];
-            episode = {id, seriesId, ...state[epIdx], error};
-            newState = [...state.slice(0, epIdx), episode, ...state.slice(epIdx + 1)];
-            return newState;
-          }
-        }
+    case ACTIONS.ActionTypes.CASTLE_EPISODE_PERFORMANCE_METRICS_FAILURE: {
+      const { id, seriesId, guid, error } = action['payload'];
+      const epIdx = episodeIndex(state, id, seriesId);
+      if (epIdx > -1) {
+        let episode: EpisodeMetricsModel, newState: EpisodeMetricsModel[];
+        episode = {id, seriesId, guid, ...state[epIdx], error};
+        newState = [...state.slice(0, epIdx), episode, ...state.slice(epIdx + 1)];
+        return newState;
       }
+    }
       break;
     // TODO: TLDR; charted does not really belong here.
     // It belongs in the router state and should be combined with metrics state using a selector to get charted data

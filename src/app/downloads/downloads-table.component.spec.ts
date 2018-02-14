@@ -208,13 +208,23 @@ describe('DownloadsTableComponent', () => {
   });
 
   it('should display podcast all time total downloads', () => {
-    store.dispatch(new ACTIONS.CastlePodcastAllTimeMetricsSuccessAction({ podcast, allTimeDownloads: 10 }));
+    const { seriesId, feederId } = podcast;
+    store.dispatch(new ACTIONS.CastlePodcastPerformanceMetricsSuccessAction({ seriesId, feederId,
+      total: 10, previous7days: 5, this7days: 5, yesterday: 1, today: 1 }));
     expect(comp.podcastTableData['allTimeDownloads']).toEqual(10);
   });
 
   it('should display episode all time total downloads', () => {
-    store.dispatch(new ACTIONS.CastleEpisodeAllTimeMetricsSuccessAction({episode: episodes[1], allTimeDownloads: 5}));
-    store.dispatch(new ACTIONS.CastleEpisodeAllTimeMetricsSuccessAction({episode: episodes[0], allTimeDownloads: 5}));
+    {
+      const {id, seriesId, guid} = episodes[1];
+      store.dispatch(new ACTIONS.CastleEpisodePerformanceMetricsSuccessAction({id, seriesId, guid,
+        total: 5, previous7days: 0, this7days: 5, yesterday: 1, today: 1}));
+    }
+    {
+      const {id, seriesId, guid} = episodes[0];
+      store.dispatch(new ACTIONS.CastleEpisodePerformanceMetricsSuccessAction({id, seriesId, guid,
+        total: 5, previous7days: 0, this7days: 5, yesterday: 1, today: 1}));
+    }
     comp.episodeTableData.forEach(e => {
       expect(e.allTimeDownloads).toEqual(5);
     });

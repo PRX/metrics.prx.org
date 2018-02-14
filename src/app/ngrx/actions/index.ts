@@ -2,8 +2,8 @@ import { RouterNavigationAction } from '@ngrx/router-store';
 import { CmsAccountAction, CmsAccountSuccessAction, CmsAccountFailureAction, CmsPodcastsSuccessAction,
   CmsRecentEpisodePayload, CmsRecentEpisodeAction, CmsRecentEpisodeSuccessAction, CmsRecentEpisodeFailureAction,
   CmsPodcastEpisodePageAction, CmsPodcastEpisodePageSuccessAction, CmsPodcastEpisodePageFailureAction } from './cms.action.creator';
-import { CastlePodcastAllTimeMetricsLoadAction, CastlePodcastAllTimeMetricsSuccessAction, CastlePodcastAllTimeMetricsFailureAction,
-  CastleEpisodeAllTimeMetricsLoadAction, CastleEpisodeAllTimeMetricsSuccessAction, CastleEpisodeAllTimeMetricsFailureAction,
+import { CastlePodcastPerformanceMetricsLoadAction, CastlePodcastPerformanceMetricsSuccessAction, CastlePodcastPerformanceMetricsFailureAction,
+  CastleEpisodePerformanceMetricsLoadAction, CastleEpisodePerformanceMetricsSuccessAction, CastleEpisodePerformanceMetricsFailureAction,
   CastlePodcastMetricsLoadAction, CastlePodcastMetricsSuccessAction, CastlePodcastMetricsFailureAction,
   CastleEpisodeMetricsLoadAction, CastleEpisodeMetricsSuccessAction, CastleEpisodeMetricsFailureAction } from './castle.action.creator';
 import { GoogleAnalyticsEventAction } from './google-analytics.action.creator';
@@ -30,12 +30,12 @@ export type AllActions
   | CastleEpisodeMetricsLoadAction
   | CastleEpisodeMetricsSuccessAction
   | CastleEpisodeMetricsFailureAction
-  | CastlePodcastAllTimeMetricsLoadAction
-  | CastlePodcastAllTimeMetricsSuccessAction
-  | CastlePodcastAllTimeMetricsFailureAction
-  | CastleEpisodeAllTimeMetricsLoadAction
-  | CastleEpisodeAllTimeMetricsSuccessAction
-  | CastleEpisodeAllTimeMetricsFailureAction
+  | CastlePodcastPerformanceMetricsLoadAction
+  | CastlePodcastPerformanceMetricsSuccessAction
+  | CastlePodcastPerformanceMetricsFailureAction
+  | CastleEpisodePerformanceMetricsLoadAction
+  | CastleEpisodePerformanceMetricsSuccessAction
+  | CastleEpisodePerformanceMetricsFailureAction
   | RouterNavigationAction
   | GoogleAnalyticsEventAction
   | CustomRouterNavigationAction
@@ -56,18 +56,18 @@ export { CmsAccountSuccessPayload, CmsAccountSuccessAction,
   CmsPodcastsSuccessPayload, CmsPodcastsSuccessAction,
   CmsPodcastsAction, CmsPodcastsFailureAction,
   CmsRecentEpisodePayload, CmsRecentEpisodeAction,
-  CmsRecentEpisodeSuccessAction, CmsRecentEpisodeFailureAction,
+  CmsRecentEpisodeSuccessPayload, CmsRecentEpisodeSuccessAction, CmsRecentEpisodeFailureAction,
   CmsEpisodePagePayload, CmsPodcastEpisodePageAction,
   CmsEpisodePageSuccessPayload, CmsPodcastEpisodePageSuccessAction, CmsPodcastEpisodePageFailureAction } from './cms.action.creator';
 export { CastlePodcastMetricsLoadPayload, CastlePodcastMetricsLoadAction,
   CastlePodcastMetricsSuccessPayload, CastlePodcastMetricsSuccessAction,
   CastlePodcastMetricsFailurePayload, CastlePodcastMetricsFailureAction,
-  CastlePodcastAllTimeMetricsLoadAction,
-  CastlePodcastAllTimeMetricsSuccessPayload, CastlePodcastAllTimeMetricsSuccessAction,
-  CastlePodcastAllTimeMetricsFailureAction,
-  CastleEpisodeAllTimeMetricsLoadPayload, CastleEpisodeAllTimeMetricsLoadAction,
-  CastleEpisodeAllTimeMetricsSuccessPayload, CastleEpisodeAllTimeMetricsSuccessAction,
-  CastleEpisodeAllTimeMetricsFailureAction,
+  CastlePodcastPerformanceMetricsLoadPayload, CastlePodcastPerformanceMetricsLoadAction,
+  CastlePodcastPerformanceMetricsSuccessPayload, CastlePodcastPerformanceMetricsSuccessAction,
+  CastlePodcastPerformanceMetricsFailureAction,
+  CastleEpisodePerformanceMetricsLoadPayload, CastleEpisodePerformanceMetricsLoadAction,
+  CastleEpisodePerformanceMetricsSuccessPayload, CastleEpisodePerformanceMetricsSuccessAction,
+  CastleEpisodePerformanceMetricsFailureAction,
   CastleEpisodeMetricsLoadPayload, CastleEpisodeMetricsLoadAction,
   CastleEpisodeMetricsSuccessPayload, CastleEpisodeMetricsSuccessAction,
   CastleEpisodeMetricsFailurePayload, CastleEpisodeMetricsFailureAction } from './castle.action.creator';

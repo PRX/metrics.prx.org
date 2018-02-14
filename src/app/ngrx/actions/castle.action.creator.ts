@@ -88,50 +88,70 @@ export class CastleEpisodeMetricsFailureAction implements Action {
   constructor(public payload: CastleEpisodeMetricsFailurePayload) {}
 }
 
-export class CastlePodcastAllTimeMetricsLoadAction implements Action {
-  readonly type = ActionTypes.CASTLE_PODCAST_ALL_TIME_METRICS_LOAD;
+export interface CastlePodcastPerformanceMetricsLoadPayload {
+  seriesId: number;
+  feederId: string;
 }
 
-export interface CastlePodcastAllTimeMetricsSuccessPayload {
-  podcast: PodcastModel;
-  allTimeDownloads: number;
+export class CastlePodcastPerformanceMetricsLoadAction implements Action {
+  readonly type = ActionTypes.CASTLE_PODCAST_PERFORMANCE_METRICS_LOAD;
+
+  constructor(public payload: CastlePodcastPerformanceMetricsLoadPayload) {}
 }
 
-export class CastlePodcastAllTimeMetricsSuccessAction implements Action {
-  readonly type = ActionTypes.CASTLE_PODCAST_ALL_TIME_METRICS_SUCCESS;
-
-  constructor(public payload: CastlePodcastAllTimeMetricsSuccessPayload) {}
+export interface CastlePodcastPerformanceMetricsSuccessPayload {
+  seriesId: number;
+  feederId: string;
+  total: number;
+  previous7days: number;
+  this7days: number;
+  yesterday: number;
+  today: number;
 }
 
-export class CastlePodcastAllTimeMetricsFailureAction implements Action {
-  readonly type = ActionTypes.CASTLE_PODCAST_ALL_TIME_METRICS_FAILURE;
+export class CastlePodcastPerformanceMetricsSuccessAction implements Action {
+  readonly type = ActionTypes.CASTLE_PODCAST_PERFORMANCE_METRICS_SUCCESS;
+
+  constructor(public payload: CastlePodcastPerformanceMetricsSuccessPayload) {}
+}
+
+export class CastlePodcastPerformanceMetricsFailureAction implements Action {
+  readonly type = ActionTypes.CASTLE_PODCAST_PERFORMANCE_METRICS_FAILURE;
 
   constructor(public payload: any) {}
 }
 
-export interface CastleEpisodeAllTimeMetricsLoadPayload {
-  episode: EpisodeModel;
+export interface CastleEpisodePerformanceMetricsLoadPayload {
+  seriesId: number;
+  id: number;
+  guid: string;
 }
 
-export class CastleEpisodeAllTimeMetricsLoadAction implements Action {
-  readonly type = ActionTypes.CASTLE_EPISODE_ALL_TIME_METRICS_LOAD;
+export class CastleEpisodePerformanceMetricsLoadAction implements Action {
+  readonly type = ActionTypes.CASTLE_EPISODE_PERFORMANCE_METRICS_LOAD;
 
-  constructor(public payload: CastleEpisodeAllTimeMetricsLoadPayload) {}
+  constructor(public payload: CastleEpisodePerformanceMetricsLoadPayload) {}
 }
 
-export interface CastleEpisodeAllTimeMetricsSuccessPayload {
-  episode: EpisodeModel;
-  allTimeDownloads: number;
+export interface CastleEpisodePerformanceMetricsSuccessPayload {
+  seriesId: number;
+  id: number;
+  guid: string;
+  total: number;
+  previous7days: number;
+  this7days: number;
+  yesterday: number;
+  today: number;
 }
 
-export class CastleEpisodeAllTimeMetricsSuccessAction implements Action {
-  readonly type = ActionTypes.CASTLE_EPISODE_ALL_TIME_METRICS_SUCCESS;
+export class CastleEpisodePerformanceMetricsSuccessAction implements Action {
+  readonly type = ActionTypes.CASTLE_EPISODE_PERFORMANCE_METRICS_SUCCESS;
 
-  constructor(public payload: CastleEpisodeAllTimeMetricsSuccessPayload) {}
+  constructor(public payload: CastleEpisodePerformanceMetricsSuccessPayload) {}
 }
 
-export class CastleEpisodeAllTimeMetricsFailureAction implements Action {
-  readonly type = ActionTypes.CASTLE_EPISODE_ALL_TIME_METRICS_FAILURE;
+export class CastleEpisodePerformanceMetricsFailureAction implements Action {
+  readonly type = ActionTypes.CASTLE_EPISODE_PERFORMANCE_METRICS_FAILURE;
 
   constructor(public payload: any) {}
 }

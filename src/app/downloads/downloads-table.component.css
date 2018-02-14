@@ -38,7 +38,7 @@ table.sticky th:first-child, table.sticky td:first-child {
 
 .scroll-x-wrapper {
   flex-grow: 1;
-  max-width: calc(100% - 600px);
+  max-width: calc(100% - 500px);
   overflow-x: auto;
 }
 .scroll-x-wrapper > table {

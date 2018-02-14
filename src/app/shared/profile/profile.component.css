@@ -86,3 +86,27 @@
   font-size: 0.8em;
   line-height: 1.0em;
 }
+.trend-container {
+  position: relative;
+  display: inline-block;
+  min-height: 20px;
+}
+.trend-left {
+  margin-right: 12px;
+}
+.trend-up {
+  position: absolute;
+  top: 50%;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-bottom: 10px solid #61A85D;
+  border-top: 0;
+}
+.trend-down {
+  position: absolute;
+  top: 50%;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-top: 10px solid #ee4d3e;
+  border-bottom: 0;
+}

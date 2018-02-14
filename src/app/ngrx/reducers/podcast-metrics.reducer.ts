@@ -9,6 +9,10 @@ export interface PodcastMetricsModel {
   dailyDownloads?: any[][];
   hourlyDownloads?: any[][];
   allTimeDownloads?: number;
+  previous7days?: number;
+  this7days?: number;
+  yesterday?: number;
+  today?: number;
   loaded?: boolean;
   loading?: boolean;
   error?: any;
@@ -69,35 +73,28 @@ export function PodcastMetricsReducer(state: PodcastMetricsModel[] = initialStat
         return newState;
       }
       break;
-    case ACTIONS.ActionTypes.CASTLE_PODCAST_ALL_TIME_METRICS_SUCCESS:
-      if (action instanceof ACTIONS.CastlePodcastAllTimeMetricsSuccessAction) {
-        const { seriesId } = action.payload.podcast;
-        const podcastIdx = podcastIndex(state, seriesId);
-
-        if (podcastIdx > -1) {
-          let podcast: PodcastMetricsModel, newState: PodcastMetricsModel[];
-          podcast = {seriesId, ...state[podcastIdx], allTimeDownloads: action.payload.allTimeDownloads};
-          newState = [...state.slice(0, podcastIdx), podcast, ...state.slice(podcastIdx + 1)];
-          return newState;
-        } else {
-          return state;
-        }
+    // TODO: #141 & #142 should remove from this state and combine with performance metrics state
+    case ACTIONS.ActionTypes.CASTLE_PODCAST_PERFORMANCE_METRICS_SUCCESS: {
+      const { seriesId, feederId, total } = action['payload'];
+      const podcastIdx = podcastIndex(state, seriesId);
+      if (podcastIdx > -1) {
+        let podcast: PodcastMetricsModel, newState: PodcastMetricsModel[];
+        podcast = {seriesId, feederId, ...state[podcastIdx], allTimeDownloads: total};
+        newState = [...state.slice(0, podcastIdx), podcast, ...state.slice(podcastIdx + 1)];
+        return newState;
       }
+    }
       break;
-    case ACTIONS.ActionTypes.CASTLE_PODCAST_ALL_TIME_METRICS_FAILURE:
-      if (action instanceof ACTIONS.CastlePodcastAllTimeMetricsFailureAction) {
-        const { error } = action.payload;
-        if (action.payload['podcast']) {
-          const { seriesId } = action.payload['podcast'];
-          const podcastIdx = podcastIndex(state, seriesId);
-          if (podcastIdx > -1) {
-            let podcast: PodcastMetricsModel, newState: PodcastMetricsModel[];
-            podcast = {seriesId, ...state[podcastIdx], error};
-            newState = [...state.slice(0, podcastIdx), podcast, ...state.slice(podcastIdx + 1)];
-            return newState;
-          }
-        }
+    case ACTIONS.ActionTypes.CASTLE_PODCAST_PERFORMANCE_METRICS_FAILURE:  {
+      const { seriesId, feederId, error } = action['payload'];
+      const podcastIdx = podcastIndex(state, seriesId);
+      if (podcastIdx > -1) {
+        let podcast: PodcastMetricsModel, newState: PodcastMetricsModel[];
+        podcast = {seriesId, feederId, ...state[podcastIdx], error};
+        newState = [...state.slice(0, podcastIdx), podcast, ...state.slice(podcastIdx + 1)];
+        return newState;
       }
+    }
       break;
     // TODO: TLDR; charted does not really belong here.
     // It belongs in the router state and should be combined with metrics state using a selector to get charted data
@@ -105,18 +102,20 @@ export function PodcastMetricsReducer(state: PodcastMetricsModel[] = initialStat
     // so am handling the ROUTER_NAVIGATION event here to catch changes to whether the podcast is charted via the route
     case ACTIONS.ActionTypes.CUSTOM_ROUTER_NAVIGATION: {
       const payload: ACTIONS.CustomRouterNavigationPayload = action['payload'];
-      const seriesId = payload.routerState.podcastSeriesId;
-      const charted = payload.routerState.chartPodcast;
-      const podcastIdx = podcastIndex(state, seriesId);
-      let podcast: PodcastMetricsModel, newState: PodcastMetricsModel[];
-      if (podcastIdx > -1) {
-        podcast = {seriesId, ...state[podcastIdx], charted};
-        newState = [...state.slice(0, podcastIdx), podcast, ...state.slice(podcastIdx + 1)];
-      } else {
-        podcast = {seriesId, charted};
-        newState = [podcast, ...state];
+      if (payload.routerState.podcastSeriesId) {
+        const seriesId = payload.routerState.podcastSeriesId;
+        const charted = payload.routerState.chartPodcast;
+        const podcastIdx = podcastIndex(state, seriesId);
+        let podcast: PodcastMetricsModel, newState: PodcastMetricsModel[];
+        if (podcastIdx > -1) {
+          podcast = {seriesId, ...state[podcastIdx], charted};
+          newState = [...state.slice(0, podcastIdx), podcast, ...state.slice(podcastIdx + 1)];
+        } else {
+          podcast = {seriesId, charted};
+          newState = [podcast, ...state];
+        }
+        return newState;
       }
-      return newState;
     }
   }
   return state;

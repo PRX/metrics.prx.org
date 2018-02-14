@@ -25,9 +25,9 @@
   white-space: nowrap;
 }
 .down-arrow {
-  border-left: 8px solid transparent;
-  border-right: 8px solid transparent;
-  border-top: 8px solid #676767;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-top: 6px solid #676767;
   border-bottom: 0;
   margin-left: 6px;
 }

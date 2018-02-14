@@ -1,5 +1,5 @@
-import { CastlePodcastMetricsSuccessAction, CastlePodcastAllTimeMetricsSuccessAction,
-  CastlePodcastAllTimeMetricsFailureAction } from '../actions/castle.action.creator';
+import { CastlePodcastMetricsSuccessAction, CastlePodcastPerformanceMetricsSuccessAction,
+  CastlePodcastPerformanceMetricsFailureAction } from '../actions/castle.action.creator';
 import { RouterModel, INTERVAL_DAILY, MetricsType, METRICSTYPE_DOWNLOADS, getMetricsProperty } from './models';
 import { PodcastMetricsReducer } from './podcast-metrics.reducer';
 
@@ -75,13 +75,14 @@ describe('PodcastMetricsReducer', () => {
 
   it ('should add all-time podcast metrics', () => {
     newState = PodcastMetricsReducer(newState,
-      new CastlePodcastAllTimeMetricsSuccessAction({
-        podcast: {
-          seriesId: 37800,
-          feederId: '70',
-          title: 'Pet Talks Daily'
-        },
-        allTimeDownloads: 10
+      new CastlePodcastPerformanceMetricsSuccessAction({
+        seriesId: 37800,
+        feederId: '70',
+        total: 10,
+        previous7days: 5,
+        this7days: 5,
+        yesterday: 1,
+        today: 1
       })
     );
     expect(newState[0].allTimeDownloads).toEqual(10);
@@ -90,7 +91,7 @@ describe('PodcastMetricsReducer', () => {
   it ('should not alter state on all time metrics failure', () => {
     const oldState = newState;
     newState = PodcastMetricsReducer(newState,
-      new CastlePodcastAllTimeMetricsFailureAction({error: 'Some error'})
+      new CastlePodcastPerformanceMetricsFailureAction({error: 'Some error'})
     );
     expect(newState[0]).toEqual(oldState[0]);
   });

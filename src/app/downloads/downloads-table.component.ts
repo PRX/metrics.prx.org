@@ -41,7 +41,6 @@ export class DownloadsTableComponent implements OnDestroy {
     this.routerSub = this.store.select(selectRouter).subscribe((newRouterState: RouterModel) => {
       if (newRouterState) {
         if (isPodcastChanged(newRouterState, this.routerState)) {
-          this.store.dispatch(new ACTIONS.CastlePodcastAllTimeMetricsLoadAction());
           this.resetAllData();
         }
         // apply new routerState to existing data so it's not showing stale data while loading
@@ -60,9 +59,10 @@ export class DownloadsTableComponent implements OnDestroy {
       const allPodcastEpisodes = filterPodcastEpisodePage(this.routerState, allEpisodes);
       if (allPodcastEpisodes) {
         this.episodes = allPodcastEpisodes;
-        this.episodes.forEach(episode =>
-          this.store.dispatch(new ACTIONS.CastleEpisodeAllTimeMetricsLoadAction({episode}))
-        );
+        this.episodes.forEach(episode => {
+          const { id, seriesId, guid } = episode;
+          this.store.dispatch(new ACTIONS.CastleEpisodePerformanceMetricsLoadAction({id, seriesId, guid}));
+        });
         this.buildTableData();
       }
     });
@@ -92,8 +92,6 @@ export class DownloadsTableComponent implements OnDestroy {
   mapPodcastData() {
     const downloads = metricsData(this.routerState, this.podcastMetrics);
     if (downloads) {
-      const avgPerIntervalForPeriod =
-        getWeightedAverage(downloads, this.routerState.beginDate, this.routerState.endDate, this.routerState.interval);
       const totalForPeriod = getTotal(downloads);
       return {
         title: 'All Episodes',
@@ -101,7 +99,7 @@ export class DownloadsTableComponent implements OnDestroy {
         color: neutralColor,
         downloads: mapMetricsToTimeseriesData(downloads),
         totalForPeriod,
-        avgPerIntervalForPeriod,
+        // TODO: leaving allTimeDownloads in PodcastMetrics until can do #141 & #142
         allTimeDownloads: this.podcastMetrics.allTimeDownloads,
         charted: this.podcastMetrics.charted
       };
@@ -117,24 +115,6 @@ export class DownloadsTableComponent implements OnDestroy {
           const episode = this.episodes.find(ep => ep.id === epMetric.id);
           if (episode && epMetric && downloads) {
             const totalForPeriod = getTotal(downloads);
-            let avgPerIntervalForPeriod;
-            if (episode.publishedAt.valueOf() > this.routerState.endDate.valueOf()) {
-              avgPerIntervalForPeriod = 0;
-            } else if (episode.publishedAt.valueOf() > this.routerState.beginDate.valueOf()) {
-              const beginDate = moment(episode.publishedAt.valueOf()).utc();
-              if (this.routerState.interval === INTERVAL_HOURLY) {
-                // if hourly, use a begin date at the beginning of the hour the episode was published
-                beginDate.minutes(0).seconds(0).milliseconds(0);
-              } else {
-                // otherwise, use a begin date at the beginning of the day on the publish date
-                beginDate.hours(0).minutes(0).seconds(0).milliseconds(0);
-              }
-              avgPerIntervalForPeriod =
-                getWeightedAverage(downloads, beginDate.toDate(), this.routerState.endDate, this.routerState.interval);
-            } else {
-              avgPerIntervalForPeriod =
-                getWeightedAverage(downloads, this.routerState.beginDate, this.routerState.endDate, this.routerState.interval);
-            }
             return {
               title: episode.title,
               publishedAt: episode.publishedAt,
@@ -143,7 +123,7 @@ export class DownloadsTableComponent implements OnDestroy {
               id: epMetric.id,
               downloads: mapMetricsToTimeseriesData(downloads),
               totalForPeriod,
-              avgPerIntervalForPeriod,
+              // TODO: leaving allTimeDownloads in EpisodeMetrics until can do #141 & #142
               allTimeDownloads: epMetric.allTimeDownloads,
               charted: epMetric.charted
             };

@@ -6,6 +6,7 @@ import { Router, Route } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { StoreModule } from '@ngrx/store';
 import { ImageModule } from 'ngx-prx-styleguide';
+import { AbrevNumberPipe } from '../pipes/abrev-number.pipe';
 
 import { reducers } from '../../ngrx/reducers';
 import { RouterModel, ChartType, MetricsType,
@@ -69,6 +70,7 @@ describe('NavMenuComponent', () => {
       declarations: [
         NavMenuComponent,
         ProfileComponent,
+        AbrevNumberPipe,
         TestComponent
       ],
       imports: [

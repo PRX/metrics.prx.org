@@ -28,7 +28,7 @@ export function PodcastPerformanceMetricsReducer(state: PodcastPerformanceMetric
       return {
         entities: {
           ...state.entities,
-          [seriesId]: {seriesId, feederId, loading: true, loaded: false}
+          [seriesId]: {...state.entities[seriesId], seriesId, feederId, loading: true, loaded: false}
         }
       };
     }
@@ -56,7 +56,7 @@ export function PodcastPerformanceMetricsReducer(state: PodcastPerformanceMetric
       return {
         entities: {
           ...state.entities,
-          [seriesId]: {seriesId, feederId, error, loading: false, loaded: false}
+          [seriesId]: {...state.entities[seriesId], seriesId, feederId, error, loading: false, loaded: false}
         }
       };
     }

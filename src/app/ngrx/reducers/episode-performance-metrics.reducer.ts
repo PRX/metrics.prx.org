@@ -29,7 +29,7 @@ export function EpisodePerformanceMetricsReducer(state: EpisodePerformanceMetric
       return {
         entities: {
           ...state.entities,
-          [id]: {seriesId, id, guid, loading: true, loaded: false}
+          [id]: {...state.entities[id], seriesId, id, guid, loading: true, loaded: false}
         }
       };
     }
@@ -47,7 +47,7 @@ export function EpisodePerformanceMetricsReducer(state: EpisodePerformanceMetric
       return {
         entities: {
           ...state.entities,
-          [id]: {seriesId, id, guid, error, loading: false, loaded: false}
+          [id]: {...state.entities[id], seriesId, id, guid, error, loading: false, loaded: false}
         }
       };
     }

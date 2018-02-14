@@ -39,4 +39,26 @@ describe('PodcastPerformanceMetricsReducer', () => {
     expect(newState.entities[37800].loaded).toBe(false);
     expect(newState.entities[37800].error).toEqual('This is an error');
   });
+
+  it('loading should not clear performance values', () => {
+    newState = PodcastPerformanceMetricsReducer(newState, new ACTIONS.CastlePodcastPerformanceMetricsSuccessAction({
+      seriesId: 37800,
+      feederId: '70',
+      total: 10,
+      previous7days: 6,
+      this7days: 4,
+      yesterday: 2,
+      today: 1
+    }));
+    expect(newState.entities[37800].loaded).toBe(true);
+    expect(newState.entities[37800].total).toEqual(10);
+    newState = PodcastPerformanceMetricsReducer(newState,
+      new ACTIONS.CastlePodcastPerformanceMetricsLoadAction({
+        seriesId: 37800,
+        feederId: '70'
+      }));
+    expect(newState.entities[37800].loaded).toBe(false);
+    expect(newState.entities[37800].loading).toBe(true);
+    expect(newState.entities[37800].total).toEqual(10);
+  });
 });

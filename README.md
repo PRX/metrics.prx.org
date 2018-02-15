@@ -55,7 +55,7 @@ Enter in the client id in `.env`, setting `AUTH_CLIENT_ID` to the value from abo
 
 ## Local Install
 
-Make sure you're running the node version in `.nvmrc`, and you're off!
+Make sure you're running the node version in `.nvmrc`, and you're off!!
 
 ``` sh
 # install dependencies (https://yarnpkg.com/en/docs/install)

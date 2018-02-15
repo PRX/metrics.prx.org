@@ -16,7 +16,7 @@ import { largeNumberFormat } from '../shared/pipes/large-number.pipe';
   selector: 'metrics-downloads-chart',
   template: `
     <prx-timeseries-chart *ngIf="chartData" [type]="chartType" [stacked]="stacked" [datasets]="chartData"
-                          [formatX]="dateFormat()" [formatY]="largeNumberFormat"
+                          [formatX]="dateFormat()" [formatY]="largeNumberFormat" [minY]="minY"
                           [showPoints]="showPoints" [strokeWidth]="strokeWidth"
                           [pointRadius]="pointRadius" [pointRadiusOnHover]="pointRadiusOnHover">
     </prx-timeseries-chart>
@@ -220,6 +220,12 @@ export class DownloadsChartComponent implements OnDestroy {
         return 3.25;
       case CHARTTYPE_STACKED:
         return 1;
+    }
+  }
+
+  get minY(): number {
+    if (this.routerState.chartType === CHARTTYPE_EPISODES) {
+      return 0;
     }
   }
 

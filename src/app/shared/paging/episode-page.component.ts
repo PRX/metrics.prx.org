@@ -33,6 +33,7 @@ export class EpisodePageComponent implements OnChanges {
       this.pages.push(i);
     }
     this.lastPage = Math.floor(this.totalPages);
+
     if (this.totalPages <= this.showNumPages) {
       this.pagesBegin = 0;
       this.pagesEnd = this.lastPage - 1;
@@ -44,11 +45,11 @@ export class EpisodePageComponent implements OnChanges {
         this.pagesEnd = this.showNumPages;
       }
       else if ((this.currentPage + (halfWindow - 1)) >= this.totalPages) {
-        this.pagesBegin = this.totalPages - (this.showNumPages - 1);
+        this.pagesBegin = this.totalPages - this.showNumPages;
         this.pagesEnd = this.totalPages;
       }
       else {
-        this.pagesBegin = this.currentPage - halfWindow - 1;
+        this.pagesBegin = this.currentPage - halfWindow;
         this.pagesEnd = this.currentPage + halfWindow;
       }
     }

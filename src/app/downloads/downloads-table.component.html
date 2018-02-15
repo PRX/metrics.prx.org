@@ -3,8 +3,8 @@
 
   <div class="table-navigation">
     <button (click)="toggleExpandedReport()" class="btn-link">
-      <p *ngIf="!expanded">Show more &gt;&gt;</p>
-      <p *ngIf="expanded">Show less &lt;&lt;</p>
+      <p *ngIf="!expanded">Show {{routerState.interval.key}} numbers &#187;</p>
+      <p *ngIf="expanded">Hide {{routerState.interval.key}} numbers &#171;</p>
     </button>
 
     <metrics-episode-page

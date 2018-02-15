@@ -1,8 +1,5 @@
 button {
-  margin-left: 4px;
-}
-button.active {
-  text-decoration: underline;
+  margin-left: 0px;
 }
 div {
   text-align: right;

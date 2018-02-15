@@ -59,10 +59,13 @@ describe('EpisodePageComponent', () => {
     expect(comp.pager.nextDisabled).toBeTruthy();
   });
 
-  it('should only show up to showNumPages at a time', () => {
+  it('should only show up to showNumPages at a time in a sliding window', () => {
+    comp.pager.showNumPages = 5; // known value for this test only
     comp.pager.currentPage = 5;
-    comp.pager.totalPages = 2 * comp.pager.showNumPages;
     fix.detectChanges();
-    expect(comp.pager.pagesEnd).toEqual(10);
+    comp.pager.ngOnChanges();
+    // expect visible pages 3 4 *5* 6 7
+    expect(comp.pager.pagesBegin).toEqual(3);
+    expect(comp.pager.pagesEnd).toEqual(7);
   });
 });

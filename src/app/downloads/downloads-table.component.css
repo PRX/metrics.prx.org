@@ -55,7 +55,6 @@ table.scroll-x th:first-child, table.scroll-x td:first-child {
   display: flex;
   justify-content: space-between;
   padding: 3px;
-  background-color: #fff;
   margin-top: 3px;
 }
 .table-navigation > button {

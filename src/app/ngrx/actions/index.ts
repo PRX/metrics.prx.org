@@ -12,7 +12,8 @@ import { CustomRouterNavigationAction,
   RouteEpisodePageAction, RouteEpisodesChartedAction,
   RouteSingleEpisodeChartedAction, RouteToggleEpisodeChartedAction,
   RouteChartTypeAction, RouteIntervalAction,
-  RouteStandardRangeAction, RouteAdvancedRangeAction } from './router.action.creator';
+  RouteStandardRangeAction, RouteAdvancedRangeAction,
+  RouteMetricsTypeAction } from './router.action.creator';
 
 export type AllActions
   = CmsAccountAction
@@ -48,7 +49,8 @@ export type AllActions
   | RouteChartTypeAction
   | RouteIntervalAction
   | RouteStandardRangeAction
-  | RouteAdvancedRangeAction;
+  | RouteAdvancedRangeAction
+  | RouteMetricsTypeAction;
 
 export { ActionTypes } from './action.types';
 export { CmsAccountSuccessPayload, CmsAccountSuccessAction,
@@ -82,4 +84,5 @@ export { CustomRouterNavigationPayload, CustomRouterNavigationAction,
   RouteChartTypePayload, RouteChartTypeAction,
   RouteIntervalPayload, RouteIntervalAction,
   RouteAdvancedRangePayload, RouteAdvancedRangeAction,
-  RouteStandardRangePayload, RouteStandardRangeAction } from './router.action.creator';
+  RouteStandardRangePayload, RouteStandardRangeAction,
+  RouteMetricsTypePayload, RouteMetricsTypeAction } from './router.action.creator';

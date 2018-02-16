@@ -1,6 +1,7 @@
 import { Action } from '@ngrx/store';
 import { ActionTypes } from './action.types';
 import { RouterModel, ChartType, IntervalModel } from '../';
+import {MetricsType} from "../reducers/models/metrics.type";
 
 // CustomRouterNavigation happens as a result of
 // the StoreRouterConnectingModule and the RouterStateSerializer and the customRouterNavigation$ routing effect
@@ -119,4 +120,14 @@ export class RoutePodcastChartedAction implements Action {
   readonly type = ActionTypes.ROUTE_PODCAST_CHARTED;
 
   constructor(public payload: RoutePodcastChartedPayload) {}
+}
+
+export interface RouteMetricsTypePayload {
+  metricsType: MetricsType;
+}
+
+export class RouteMetricsTypeAction implements Action {
+  readonly type = ActionTypes.ROUTE_METRICS_TYPE;
+
+  constructor(public payload: RouteMetricsTypePayload) {}
 }

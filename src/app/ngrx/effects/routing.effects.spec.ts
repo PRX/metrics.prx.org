@@ -203,4 +203,13 @@ describe('RoutingEffects', () => {
     expect(effects.routeAdvancedRange$).toBeObservable(expected);
     expect(effects.routeFromNewRouterState).toHaveBeenCalled();
   });
+
+  it('should route to metrics type', () => {
+    const action = new ACTIONS.RouteMetricsTypeAction({metricsType: METRICSTYPE_DOWNLOADS});
+    store.dispatch(action);
+    actions$.stream = hot('-a', { a: action });
+    const expected = cold('-r', { r: null });
+    expect(effects.routeMetricsType$).toBeObservable(expected);
+    expect(effects.routeFromNewRouterState).toHaveBeenCalledWith({metricsType: METRICSTYPE_DOWNLOADS});
+  });
 });

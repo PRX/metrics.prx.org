@@ -163,6 +163,16 @@ export class RoutingEffects {
       return Observable.of(null);
     });
 
+ @Effect({dispatch: false})
+ routeMetricsType$: Observable<void> = this.actions$
+  .ofType(ActionTypes.ROUTE_METRICS_TYPE)
+  .map((action: ACTIONS.RouteMetricsTypeAction) => action.payload)
+  .switchMap((payload: ACTIONS.RouteMetricsTypePayload) => {
+    const { metricsType } = payload;
+    this.routeFromNewRouterState(({metricsType}));
+    return Observable.of(null);
+  });
+
   constructor(public store: Store<any>,
               private router: Router,
               private actions$: Actions) {

@@ -4,8 +4,7 @@
   margin-left: 5px;
   min-width: 0;
 }
-@media only screen
-and (max-device-width: 767px) {
+@media (max-width: 768px) {
   :host {
     display: none;
   }
@@ -15,14 +14,17 @@ nav {
   min-height: 400px;
   padding-top: 20px;
 }
-a {
+button {
   display: block;
   width: 100%;
+  text-align: left;
   padding: 5px 30px;
   font-size: 1.2em;
   white-space: nowrap;
+  background-color: transparent;
+  color: #368aa2;
 }
-a:hover, a:focus, a.active {
+button:hover, button:focus, button.active {
   background-color: #ddd;
   color: #2b7187;
 }

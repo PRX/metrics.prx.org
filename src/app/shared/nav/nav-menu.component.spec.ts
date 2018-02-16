@@ -1,17 +1,16 @@
-import { async, fakeAsync, tick, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { Component, DebugElement } from '@angular/core';
-import { Location } from '@angular/common';
-import { Router, Route } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { StoreModule } from '@ngrx/store';
+import { StoreModule, Store } from '@ngrx/store';
 import { ImageModule } from 'ngx-prx-styleguide';
 import { AbrevNumberPipe } from '../pipes/abrev-number.pipe';
 
 import { reducers } from '../../ngrx/reducers';
 import { RouterModel, ChartType, MetricsType,
-  CHARTTYPE_PODCAST, INTERVAL_DAILY, METRICSTYPE_DOWNLOADS } from '../../ngrx';
-import { CustomRouterNavigationAction, CmsPodcastsSuccessAction, CmsRecentEpisodeSuccessAction } from '../../ngrx/actions';
+  CHARTTYPE_PODCAST, INTERVAL_DAILY,
+  METRICSTYPE_DOWNLOADS, METRICSTYPE_DEMOGRAPHICS, METRICSTYPE_TRAFFICSOURCES } from '../../ngrx';
+import * as ACTIONS from '../../ngrx/actions';
 
 import { NavMenuComponent } from './nav-menu.component';
 import { ProfileComponent } from '../profile/profile.component';
@@ -27,8 +26,7 @@ describe('NavMenuComponent', () => {
   let fix: ComponentFixture<NavMenuComponent>;
   let de: DebugElement;
   let el: HTMLElement;
-  let router: Router;
-  let location: Location;
+  let store: Store<any>;
   let navLinks;
 
   const podcasts: any[] = [
@@ -50,21 +48,6 @@ describe('NavMenuComponent', () => {
     interval: INTERVAL_DAILY
   };
 
-  const routes: Route[] = [
-    {
-      path: ':seriesId/downloads/:chartType/:interval',
-      component: TestComponent
-    },
-    {
-      path: ':seriesId/demographics',
-      component: TestComponent
-    },
-    {
-      path: ':seriesId/traffic-sources',
-      component: TestComponent
-    }
-  ];
-
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [
@@ -75,11 +58,8 @@ describe('NavMenuComponent', () => {
       ],
       imports: [
         ImageModule,
-        RouterTestingModule.withRoutes(routes),
+        RouterTestingModule,
         StoreModule.forRoot(reducers),
-      ],
-      providers: [
-        Location
       ]
     }).compileComponents().then(() => {
       fix = TestBed.createComponent(NavMenuComponent);
@@ -87,15 +67,15 @@ describe('NavMenuComponent', () => {
       fix.detectChanges();
       de = fix.debugElement;
       el = de.nativeElement;
-      router = TestBed.get(Router);
-      location = TestBed.get(Location);
-      router.initialNavigation();
+      store = TestBed.get(Store);
 
-      comp.store.dispatch(new CustomRouterNavigationAction({routerState}));
-      comp.store.dispatch(new CmsPodcastsSuccessAction({podcasts}));
-      comp.store.dispatch(new CmsRecentEpisodeSuccessAction({episode}));
+      store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerState}));
+      store.dispatch(new ACTIONS.CmsPodcastsSuccessAction({podcasts}));
+      store.dispatch(new ACTIONS.CmsRecentEpisodeSuccessAction({episode}));
       fix.detectChanges();
-      navLinks = de.queryAll(By.css('a'));
+      navLinks = de.queryAll(By.css('button'));
+
+      spyOn(store, 'dispatch');
     });
   }));
 
@@ -111,27 +91,21 @@ describe('NavMenuComponent', () => {
     expect(result).toEqual(episode);
   });
 
-  it('should have navigation to podcast Downloads', fakeAsync(() => {
-    const downloadsLink = navLinks.find(link => link.nativeElement.innerText === 'Downloads');
-    expect(downloadsLink).not.toBeNull();
-    downloadsLink.nativeElement.click();
-    tick();
-    expect(location.path()).toBe('/37800/downloads/podcast/daily');
-  }));
+  it('should have navigation to podcast Downloads', () => {
+    expect(navLinks.find(link => link.nativeElement.innerText === 'Downloads')).not.toBeNull();
+    comp.routeMetricsType(METRICSTYPE_DOWNLOADS);
+    expect(store.dispatch).toHaveBeenCalledWith(new ACTIONS.RouteMetricsTypeAction({metricsType: METRICSTYPE_DOWNLOADS}));
+  });
 
-  it('should have navigation to podcast Demographics', fakeAsync(() => {
-    const demographicsLink = navLinks.find(link => link.nativeElement.innerText === 'Demographics');
-    expect(demographicsLink).not.toBeNull();
-    demographicsLink.nativeElement.click();
-    tick();
-    expect(location.path()).toBe('/37800/demographics');
-  }));
+  it('should have navigation to podcast Demographics', () => {
+    expect(navLinks.find(link => link.nativeElement.innerText === 'Demographics')).not.toBeNull();
+    comp.routeMetricsType(METRICSTYPE_DEMOGRAPHICS);
+    expect(store.dispatch).toHaveBeenCalledWith(new ACTIONS.RouteMetricsTypeAction({metricsType: METRICSTYPE_DEMOGRAPHICS}));
+  });
 
-  it('should have navigation to podcast Traffic Sources', fakeAsync(() => {
-    const demographicsLink = navLinks.find(link => link.nativeElement.innerText === 'Traffic Sources');
-    expect(demographicsLink).not.toBeNull();
-    demographicsLink.nativeElement.click();
-    tick();
-    expect(location.path()).toBe('/37800/traffic-sources');
-  }));
+  it('should have navigation to podcast Traffic Sources', () => {
+    expect(navLinks.find(link => link.nativeElement.innerText === 'Traffic Sources')).not.toBeNull();
+    comp.routeMetricsType(METRICSTYPE_TRAFFICSOURCES);
+    expect(store.dispatch).toHaveBeenCalledWith(new ACTIONS.RouteMetricsTypeAction({metricsType: METRICSTYPE_TRAFFICSOURCES}));
+  });
 });

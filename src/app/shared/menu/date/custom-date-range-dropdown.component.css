@@ -44,6 +44,15 @@
   min-width: 285px;
 }
 
+@media (max-width: 768px) {
+  .ranges > .separator {
+    display: none;
+  }
+  .ranges > metrics-standard-date-range {
+    display: none;
+  }
+}
+
 .pickers {
   position: relative;
   padding: 30px 0;

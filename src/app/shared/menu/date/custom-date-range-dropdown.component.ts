@@ -12,7 +12,7 @@ import { GoogleAnalyticsEventAction, RouteAdvancedRangeAction } from '../../../n
       <div class="dropdown-button">
         <button class="btn-icon icon-calendar grey-dove" (click)="toggleOpen()" aria-label="Custom Date Range"></button>
       </div>
-      <div class="dropdown-content" *ngIf="tempRange">
+      <div class="dropdown-content" *ngIf="tempRange && open">
         <div class="intervals">
           <button *ngFor="let interval of intervalList"
                   [class.btn-link]="tempRange.interval !== interval"

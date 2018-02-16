@@ -25,7 +25,7 @@ export class CustomSerializer implements RouterStateSerializer<RouterModel> {
       // metricsType is not a param because it differentiates the feature module routes
       const urlParts = url.split('/');
       if (urlParts.length >= 3 && urlParts[2]) {
-        const metricsType = urlParts[2];
+        const metricsType = urlParts[2].split(';')[0];
         switch (metricsType) {
           case METRICSTYPE_DOWNLOADS:
             router.metricsType = <MetricsType>METRICSTYPE_DOWNLOADS;

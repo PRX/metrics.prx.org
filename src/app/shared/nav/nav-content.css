@@ -9,8 +9,7 @@
   max-width: 75%;
 }
 
-@media only screen
-and (max-device-width: 767px) {
+@media (max-width: 768px) {
   :host {
     padding: 20px 10px 10px 10px;
     display: block;

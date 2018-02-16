@@ -1,17 +1,13 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
+import { Subscription } from 'rxjs/Subscription';
 import { PodcastModel, EpisodeModel, RouterModel, CHARTTYPE_EPISODES,
+  MetricsType, METRICSTYPE_DOWNLOADS, METRICSTYPE_TRAFFICSOURCES, METRICSTYPE_DEMOGRAPHICS,
   PodcastPerformanceMetricsModel, EpisodePerformanceMetricsModel } from '../../ngrx';
 import { selectSelectedPodcast, selectRecentEpisode, selectRouter,
   selectSelectedPodcastPerformanceMetrics, selectRecentEpisodePerformanceMetrics } from '../../ngrx/reducers';
-import { RouteSingleEpisodeChartedAction } from '../../ngrx/actions';
-
-interface Nav {
-  link: string;
-  name: string;
-  exact: boolean;
-}
+import * as ACTIONS from '../../ngrx/actions';
 
 @Component({
   selector: 'metrics-nav-menu',
@@ -23,20 +19,25 @@ interface Nav {
       [episodePerformance]="episodePerformance$ | async"
       (chartEpisode)="onChartSingleEpisode($event)"></metrics-profile>
     <nav>
-      <a *ngFor="let item of nav$ | async"
-         [routerLink]="item.link"
-         routerLinkActive="active"
-         [routerLinkActiveOptions]="{exact: item.exact}">{{item.name}}</a>
+      <button *ngFor="let t of types"
+          (click)="routeMetricsType(t.type)"
+         [class.active]="routerState.metricsType === t.type">{{t.name}}</button>
     </nav>
   `,
   styleUrls: ['nav-menu.component.css']
 })
-export class NavMenuComponent {
-  nav$: Observable<Nav[]>;
+export class NavMenuComponent implements OnDestroy {
+  routerSub: Subscription;
   selectedPodcast$: Observable<PodcastModel>;
   mostRecentEpisode$: Observable<EpisodeModel>;
   podcastPerformance$: Observable<PodcastPerformanceMetricsModel>;
   episodePerformance$: Observable<EpisodePerformanceMetricsModel>;
+  routerState: RouterModel;
+  types = [
+    {name: 'Downloads', type: METRICSTYPE_DOWNLOADS},
+    {name: 'Demographics', type: METRICSTYPE_DEMOGRAPHICS},
+    {name: 'Traffic Sources', type: METRICSTYPE_TRAFFICSOURCES}
+  ];
 
   constructor(public store: Store<any>) {
     this.selectedPodcast$ = this.store.select(selectSelectedPodcast);
@@ -44,44 +45,19 @@ export class NavMenuComponent {
     this.podcastPerformance$ = this.store.select(selectSelectedPodcastPerformanceMetrics);
     this.episodePerformance$ = this.store.select(selectRecentEpisodePerformanceMetrics);
 
-    this.nav$ = this.store.select(selectRouter).map((routerState: RouterModel) => {
-      if (routerState.podcastSeriesId) {
-        let routes;
+    this.routerSub = this.store.select(selectRouter).subscribe((routerState) => this.routerState = routerState);
+  }
 
-        if (routerState.chartType && routerState.interval) {
-          routes = [{
-            link: `/${routerState.podcastSeriesId}/downloads/${routerState.chartType}/${routerState.interval.key}`,
-            name: 'Downloads',
-            exact: false
-          }];
-        } else {
-          routes = [{
-            link: `/${routerState.podcastSeriesId}/downloads`,
-            name: 'Downloads',
-            exact: false
-          }];
-        }
+  ngOnDestroy() {
+    if (this.routerSub) { this.routerSub.unsubscribe(); }
+  }
 
-        routes.push(
-          {
-            link: `/${routerState.podcastSeriesId}/demographics`,
-            name: 'Demographics',
-            exact: false
-          },
-          {
-            link: `/${routerState.podcastSeriesId}/traffic-sources`,
-            name: 'Traffic Sources',
-            exact: false
-          }
-        );
-
-        return routes;
-      }
-    });
+  routeMetricsType(metricsType: MetricsType) {
+    this.store.dispatch(new ACTIONS.RouteMetricsTypeAction({metricsType}));
   }
 
   onChartSingleEpisode(episodeId) {
-    this.store.dispatch(new RouteSingleEpisodeChartedAction({
+    this.store.dispatch(new ACTIONS.RouteSingleEpisodeChartedAction({
       episodeId: episodeId,
       chartType: CHARTTYPE_EPISODES,
       page: 1

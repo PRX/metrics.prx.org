@@ -24,7 +24,7 @@ export const initialState = {
 export function PodcastPerformanceMetricsReducer(state: PodcastPerformanceMetricsState = initialState, action: ACTIONS.AllActions) {
   switch (action.type) {
     case ACTIONS.ActionTypes.CASTLE_PODCAST_PERFORMANCE_METRICS_LOAD: {
-      const {seriesId, feederId} = action['payload'];
+      const {seriesId, feederId} = action.payload;
       return {
         entities: {
           ...state.entities,

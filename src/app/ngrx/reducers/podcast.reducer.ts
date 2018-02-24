@@ -46,28 +46,23 @@ export function PodcastReducer(state: PodcastState = initialState, action: AllAc
         loaded: false
       };
     }
-    case ActionTypes.CMS_PODCASTS_SUCCESS:
-      if (action instanceof CmsPodcastsSuccessAction) {
-        const entities = podcastEntities(state, [...action.payload.podcasts]);
-        return {
-          ...state,
-          entities,
-          error: null,
-          loading: false,
-          loaded: true
-        };
-      }
-      break;
+    case ActionTypes.CMS_PODCASTS_SUCCESS: {
+      const entities = podcastEntities(state, [...action.payload.podcasts]);
+      return {
+        ...state,
+        entities,
+        error: null,
+        loading: false,
+        loaded: true
+      };
+    }
     case ActionTypes.CMS_PODCASTS_FAILURE: {
-      if (action instanceof CmsPodcastsFailureAction) {
-        return {
-          ...state,
-          error: action.payload['error'],
-          loading: false,
-          loaded: false
-        };
-      }
-      break;
+      return {
+        ...state,
+        error: action.payload['error'],
+        loading: false,
+        loaded: false
+      };
     }
   }
   return state;

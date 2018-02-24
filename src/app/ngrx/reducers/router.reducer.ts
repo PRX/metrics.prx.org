@@ -1,5 +1,4 @@
 import { ActionTypes, CustomRouterNavigationAction } from '../actions';
-import { isPodcastChanged } from '../../shared/util/filter.util';
 import { RouterModel } from './models';
 
 const initialState = {};

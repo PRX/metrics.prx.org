@@ -99,7 +99,7 @@ export interface RouteAdvancedRangePayload {
 export class RouteAdvancedRangeAction implements Action {
   readonly type = ActionTypes.ROUTE_ADVANCED_RANGE;
 
-  constructor(public payload: any) {}
+  constructor(public payload: RouteAdvancedRangePayload) {}
 }
 
 export interface RouteEpisodePagePayload {

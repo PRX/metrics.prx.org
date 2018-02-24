@@ -5,7 +5,6 @@ import {
   AllActions
 } from '../actions';
 import { EpisodeModel } from './episode.reducer';
-import { HalDoc } from 'ngx-prx-styleguide';
 
 interface RecentEpisodeLookup {
   [seriesId: number]: EpisodeModel;
@@ -37,26 +36,22 @@ export function RecentEpisodeReducer(state: RecentEpisodeState = initialState, a
         loaded: false
       };
     }
-    case ActionTypes.CMS_RECENT_EPISODE_SUCCESS:
-      if (action instanceof CmsRecentEpisodeSuccessAction) {
-        const entities = recentEpisodeEntities(state, action.payload.episode);
-        return {
-          ...state,
-          entities,
-          loading: false,
-          loaded: true
-        };
-      }
-      break;
+    case ActionTypes.CMS_RECENT_EPISODE_SUCCESS: {
+      const entities = recentEpisodeEntities(state, action.payload.episode);
+      return {
+        ...state,
+        entities,
+        loading: false,
+        loaded: true
+      };
+    }
     case ActionTypes.CMS_RECENT_EPISODE_FAILURE: {
-      if (action instanceof CmsRecentEpisodeFailureAction) {
-        return {
-          ...state,
-          error: action.payload.error,
-          loading: false,
-          loaded: false
-        };
-      }
+      return {
+        ...state,
+        error: action.payload.error,
+        loading: false,
+        loaded: false
+      };
     }
   }
   return state;

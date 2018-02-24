@@ -4,6 +4,8 @@ import { AccountModel, PodcastModel, EpisodeModel } from '../';
 
 export class CmsAccountAction implements Action {
   readonly type = ActionTypes.CMS_ACCOUNT;
+
+  constructor(public payload = {}) {}
 }
 
 export interface CmsAccountSuccessPayload {
@@ -22,6 +24,8 @@ export class CmsAccountFailureAction implements Action {
 
 export class CmsPodcastsAction implements Action {
   readonly type = ActionTypes.CMS_PODCASTS;
+
+  constructor(public payload = {}) {}
 }
 
 export interface CmsPodcastsSuccessPayload {

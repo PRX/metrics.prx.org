@@ -34,26 +34,21 @@ export function AccountReducer(state: AccountState = initialState, action: AllAc
         loaded: false
       };
     }
-    case ActionTypes.CMS_ACCOUNT_SUCCESS:
-      if (action instanceof CmsAccountSuccessAction) {
-        return {
-          entity: action.payload.account,
-          loading: false,
-          loaded: true
-        };
-      }
-      break;
+    case ActionTypes.CMS_ACCOUNT_SUCCESS: {
+      return {
+        entity: action.payload.account,
+        loading: false,
+        loaded: true
+      };
+    }
     case ActionTypes.CMS_ACCOUNT_FAILURE: {
-      if (action instanceof CmsAccountFailureAction) {
-        return {
-          ...state,
-          error: action.payload.error,
-          entity: null,
-          loading: false,
-          loaded: false
-        };
-      }
-      break;
+      return {
+        ...state,
+        error: action.payload.error,
+        entity: null,
+        loading: false,
+        loaded: false
+      };
     }
   }
   return state;

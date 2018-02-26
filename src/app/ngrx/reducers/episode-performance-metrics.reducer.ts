@@ -25,7 +25,7 @@ export const initialState = {
 export function EpisodePerformanceMetricsReducer(state: EpisodePerformanceMetricsState = initialState, action: ACTIONS.AllActions) {
   switch (action.type) {
     case ACTIONS.ActionTypes.CASTLE_EPISODE_PERFORMANCE_METRICS_LOAD: {
-      const {seriesId, id, guid} = action['payload'];
+      const {seriesId, id, guid} = action.payload;
       return {
         entities: {
           ...state.entities,
@@ -34,7 +34,7 @@ export function EpisodePerformanceMetricsReducer(state: EpisodePerformanceMetric
       };
     }
     case ACTIONS.ActionTypes.CASTLE_EPISODE_PERFORMANCE_METRICS_SUCCESS: {
-      const {seriesId, id, guid, total, previous7days, this7days, yesterday, today} = action['payload'];
+      const {seriesId, id, guid, total, previous7days, this7days, yesterday, today} = action.payload;
       return {
         entities: {
           ...state.entities,
@@ -43,7 +43,7 @@ export function EpisodePerformanceMetricsReducer(state: EpisodePerformanceMetric
       };
     }
     case ACTIONS.ActionTypes.CASTLE_EPISODE_PERFORMANCE_METRICS_FAILURE: {
-      const {seriesId, id, guid, error} = action['payload'];
+      const {seriesId, id, guid, error} = action.payload;
       return {
         entities: {
           ...state.entities,

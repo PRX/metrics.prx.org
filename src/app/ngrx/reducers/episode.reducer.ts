@@ -51,26 +51,22 @@ export function EpisodeReducer(state: EpisodeState = initialState, action: AllAc
         loaded: false
       };
     }
-    case ActionTypes.CMS_PODCAST_EPISODE_PAGE_SUCCESS:
-      if (action instanceof CmsPodcastEpisodePageSuccessAction) {
-        const entities = episodeEntities(state, action.payload.episodes);
-        return {
-          ...state,
-          entities,
-          loading: false,
-          loaded: true
-        };
-      }
-      break;
+    case ActionTypes.CMS_PODCAST_EPISODE_PAGE_SUCCESS: {
+      const entities = episodeEntities(state, action.payload.episodes);
+      return {
+        ...state,
+        entities,
+        loading: false,
+        loaded: true
+      };
+    }
     case ActionTypes.CMS_PODCAST_EPISODE_PAGE_FAILURE: {
-      if (action instanceof CmsPodcastEpisodePageFailureAction) {
-        return {
-          ...state,
-          error: action.payload.error,
-          loading: false,
-          loaded: false
-        };
-      }
+      return {
+        ...state,
+        error: action.payload.error,
+        loading: false,
+        loaded: false
+      };
     }
   }
   return state;

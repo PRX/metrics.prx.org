@@ -26,53 +26,47 @@ const podcastIndex = (state: PodcastMetricsModel[], seriesId: number) => {
 
 export function PodcastMetricsReducer(state: PodcastMetricsModel[] = initialState, action: ACTIONS.AllActions) {
   switch (action.type) {
-    case ACTIONS.ActionTypes.CASTLE_PODCAST_METRICS_LOAD:
-      if (action instanceof ACTIONS.CastlePodcastMetricsLoadAction) {
-        const { seriesId, feederId} = action.payload;
-        const podcastIdx = podcastIndex(state, seriesId);
-        let podcast: PodcastMetricsModel, newState: PodcastMetricsModel[];
-        if (podcastIdx > -1) {
-          podcast = {...state[podcastIdx], seriesId, loading: true, loaded: false};
-          newState = [...state.slice(0, podcastIdx), podcast, ...state.slice(podcastIdx + 1)];
-        } else {
-          podcast = {seriesId, feederId, loading: true, loaded: false};
-          newState = [podcast, ...state];
-        }
-        return newState;
+    case ACTIONS.ActionTypes.CASTLE_PODCAST_METRICS_LOAD: {
+      const { seriesId, feederId} = action.payload;
+      const podcastIdx = podcastIndex(state, seriesId);
+      let podcast: PodcastMetricsModel, newState: PodcastMetricsModel[];
+      if (podcastIdx > -1) {
+        podcast = {...state[podcastIdx], seriesId, loading: true, loaded: false};
+        newState = [...state.slice(0, podcastIdx), podcast, ...state.slice(podcastIdx + 1)];
+      } else {
+        podcast = {seriesId, feederId, loading: true, loaded: false};
+        newState = [podcast, ...state];
       }
-      break;
-    case ACTIONS.ActionTypes.CASTLE_PODCAST_METRICS_SUCCESS:
-      if (action instanceof ACTIONS.CastlePodcastMetricsSuccessAction) {
-        const { seriesId, feederId, metricsPropertyName, metrics } = action.payload;
-        const podcastIdx = podcastIndex(state, seriesId);
-        let podcast: PodcastMetricsModel, newState: PodcastMetricsModel[];
-        if (podcastIdx > -1) {
-          podcast = {...state[podcastIdx], seriesId, loading: false, loaded: true};
-          podcast[metricsPropertyName] = metrics;
-          newState = [...state.slice(0, podcastIdx), podcast, ...state.slice(podcastIdx + 1)];
-        } else {
-          podcast = {seriesId, feederId, loading: false, loaded: true};
-          podcast[metricsPropertyName] = metrics;
-          newState = [podcast, ...state];
-        }
-        return newState;
+      return newState;
+    }
+    case ACTIONS.ActionTypes.CASTLE_PODCAST_METRICS_SUCCESS: {
+      const { seriesId, feederId, metricsPropertyName, metrics } = action.payload;
+      const podcastIdx = podcastIndex(state, seriesId);
+      let podcast: PodcastMetricsModel, newState: PodcastMetricsModel[];
+      if (podcastIdx > -1) {
+        podcast = {...state[podcastIdx], seriesId, loading: false, loaded: true};
+        podcast[metricsPropertyName] = metrics;
+        newState = [...state.slice(0, podcastIdx), podcast, ...state.slice(podcastIdx + 1)];
+      } else {
+        podcast = {seriesId, feederId, loading: false, loaded: true};
+        podcast[metricsPropertyName] = metrics;
+        newState = [podcast, ...state];
       }
-      break;
-    case ACTIONS.ActionTypes.CASTLE_PODCAST_METRICS_FAILURE:
-      if (action instanceof ACTIONS.CastlePodcastMetricsFailureAction) {
-        const { seriesId, feederId, error } = action.payload;
-        const podcastIdx = podcastIndex(state, seriesId);
-        let podcast: PodcastMetricsModel, newState: PodcastMetricsModel[];
-        if (podcastIdx > -1) {
-          podcast = {...state[podcastIdx], seriesId, error, loading: false, loaded: false};
-          newState = [...state.slice(0, podcastIdx), podcast, ...state.slice(podcastIdx + 1)];
-        } else {
-          podcast = {seriesId, error, loading: false, loaded: false};
-          newState = [podcast, ...state];
-        }
-        return newState;
+      return newState;
+    }
+    case ACTIONS.ActionTypes.CASTLE_PODCAST_METRICS_FAILURE: {
+      const { seriesId, feederId, error } = action.payload;
+      const podcastIdx = podcastIndex(state, seriesId);
+      let podcast: PodcastMetricsModel, newState: PodcastMetricsModel[];
+      if (podcastIdx > -1) {
+        podcast = {...state[podcastIdx], seriesId, error, loading: false, loaded: false};
+        newState = [...state.slice(0, podcastIdx), podcast, ...state.slice(podcastIdx + 1)];
+      } else {
+        podcast = {seriesId, error, loading: false, loaded: false};
+        newState = [podcast, ...state];
       }
-      break;
+      return newState;
+    }
     // TODO: #141 & #142 should remove from this state and combine with performance metrics state
     case ACTIONS.ActionTypes.CASTLE_PODCAST_PERFORMANCE_METRICS_SUCCESS: {
       const { seriesId, feederId, total } = action['payload'];

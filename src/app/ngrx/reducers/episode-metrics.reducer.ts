@@ -24,56 +24,50 @@ const episodeIndex = (state: EpisodeMetricsModel[], id: number, seriesId: number
 
 export function EpisodeMetricsReducer(state: EpisodeMetricsModel[] = initialState, action: ACTIONS.AllActions) {
   switch (action.type) {
-    case ACTIONS.ActionTypes.CASTLE_EPISODE_METRICS_LOAD:
-      if (action instanceof ACTIONS.CastleEpisodeMetricsLoadAction) {
-        const { id, seriesId, guid, page } = action.payload;
-        const epIdx = episodeIndex(state, id, seriesId);
-        let episode: EpisodeMetricsModel, newState: EpisodeMetricsModel[];
-        if (epIdx > -1) {
-          episode = {...state[epIdx], id, seriesId, guid, page, loading: true, loaded: false};
-          newState = [...state.slice(0, epIdx), episode, ...state.slice(epIdx + 1)];
-        } else {
-          episode = {seriesId, id, guid, page, loading: true, loaded: false};
-          newState = [episode, ...state];
-        }
-        return newState;
+    case ACTIONS.ActionTypes.CASTLE_EPISODE_METRICS_LOAD: {
+      const {id, seriesId, guid, page} = action.payload;
+      const epIdx = episodeIndex(state, id, seriesId);
+      let episode: EpisodeMetricsModel, newState: EpisodeMetricsModel[];
+      if (epIdx > -1) {
+        episode = {...state[epIdx], id, seriesId, guid, page, loading: true, loaded: false};
+        newState = [...state.slice(0, epIdx), episode, ...state.slice(epIdx + 1)];
+      } else {
+        episode = {seriesId, id, guid, page, loading: true, loaded: false};
+        newState = [episode, ...state];
       }
-      break;
-    case ACTIONS.ActionTypes.CASTLE_EPISODE_METRICS_SUCCESS:
-      if (action instanceof ACTIONS.CastleEpisodeMetricsSuccessAction) {
-        const { id, seriesId, guid, page, metricsPropertyName, metrics } = action.payload;
-        const epIdx = episodeIndex(state, id, seriesId);
-        let episode: EpisodeMetricsModel, newState: EpisodeMetricsModel[];
-        if (epIdx > -1) {
-          episode = {...state[epIdx], id, seriesId, guid, page, loading: false, loaded: true};
-          episode[metricsPropertyName] = metrics;
-          newState = [...state.slice(0, epIdx), episode, ...state.slice(epIdx + 1)];
-        } else {
-          episode = {seriesId, id, guid, page, loading: false, loaded: true};
-          episode[metricsPropertyName] = metrics;
-          newState = [episode, ...state];
-        }
-        return newState;
+      return newState;
+    }
+    case ACTIONS.ActionTypes.CASTLE_EPISODE_METRICS_SUCCESS: {
+      const {id, seriesId, guid, page, metricsPropertyName, metrics} = action.payload;
+      const epIdx = episodeIndex(state, id, seriesId);
+      let episode: EpisodeMetricsModel, newState: EpisodeMetricsModel[];
+      if (epIdx > -1) {
+        episode = {...state[epIdx], id, seriesId, guid, page, loading: false, loaded: true};
+        episode[metricsPropertyName] = metrics;
+        newState = [...state.slice(0, epIdx), episode, ...state.slice(epIdx + 1)];
+      } else {
+        episode = {seriesId, id, guid, page, loading: false, loaded: true};
+        episode[metricsPropertyName] = metrics;
+        newState = [episode, ...state];
       }
-      break;
-    case ACTIONS.ActionTypes.CASTLE_EPISODE_METRICS_FAILURE:
-      if (action instanceof ACTIONS.CastleEpisodeMetricsFailureAction) {
-        const { id, seriesId, guid, page, error } = action.payload;
-        const epIdx = episodeIndex(state, id, seriesId);
-        let episode: EpisodeMetricsModel, newState: EpisodeMetricsModel[];
-        if (epIdx > -1) {
-          episode = {...state[epIdx], id, seriesId, guid, page, error, loading: false, loaded: false};
-          newState = [...state.slice(0, epIdx), episode, ...state.slice(epIdx + 1)];
-        } else {
-          episode = {seriesId, id, guid, page, error, loading: false, loaded: false};
-          newState = [episode, ...state];
-        }
-        return newState;
+      return newState;
+    }
+    case ACTIONS.ActionTypes.CASTLE_EPISODE_METRICS_FAILURE: {
+      const {id, seriesId, guid, page, error} = action.payload;
+      const epIdx = episodeIndex(state, id, seriesId);
+      let episode: EpisodeMetricsModel, newState: EpisodeMetricsModel[];
+      if (epIdx > -1) {
+        episode = {...state[epIdx], id, seriesId, guid, page, error, loading: false, loaded: false};
+        newState = [...state.slice(0, epIdx), episode, ...state.slice(epIdx + 1)];
+      } else {
+        episode = {seriesId, id, guid, page, error, loading: false, loaded: false};
+        newState = [episode, ...state];
       }
-      break;
+      return newState;
+    }
     // TODO: #141 & #142 should remove from this state and combine with performance metrics state
     case ACTIONS.ActionTypes.CASTLE_EPISODE_PERFORMANCE_METRICS_SUCCESS: {
-      const { id, seriesId, guid, total } = action['payload'];
+      const { id, seriesId, guid, total } = action.payload;
       const epIdx = episodeIndex(state, id, seriesId);
 
       if (epIdx > -1) {
@@ -85,7 +79,7 @@ export function EpisodeMetricsReducer(state: EpisodeMetricsModel[] = initialStat
     }
       break;
     case ACTIONS.ActionTypes.CASTLE_EPISODE_PERFORMANCE_METRICS_FAILURE: {
-      const { id, seriesId, guid, error } = action['payload'];
+      const { id, seriesId, guid, error } = action.payload;
       const epIdx = episodeIndex(state, id, seriesId);
       if (epIdx > -1) {
         let episode: EpisodeMetricsModel, newState: EpisodeMetricsModel[];

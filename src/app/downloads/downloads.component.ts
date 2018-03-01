@@ -7,7 +7,7 @@ import { CastleService } from '../core';
 import * as ACTIONS from '../ngrx/actions';
 import { RouterModel, EpisodeModel, PodcastModel, ChartType, MetricsType,
   CHARTTYPE_PODCAST, INTERVAL_DAILY, EPISODE_PAGE_SIZE, METRICSTYPE_DOWNLOADS, getMetricsProperty } from '../ngrx';
-import { selectRouter, selectEpisodes, selectPodcasts, selectLoading, selectLoaded, selectErrors } from '../ngrx/reducers';
+import { selectRouter, selectEpisodes, selectPodcasts, selectLoading, selectLoaded, selectErrors } from '../ngrx/reducers/selectors';
 import { filterPodcastEpisodePage } from '../shared/util/metrics.util';
 import * as dateUtil from '../shared/util/date';
 import { isPodcastChanged, isBeginDateChanged, isEndDateChanged, isIntervalChanged } from '../shared/util/filter.util';

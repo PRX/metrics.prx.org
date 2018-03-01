@@ -13,7 +13,7 @@ import { CmsService, HalDoc } from '../../core';
 import { getColor } from '../../shared/util/chart.util';
 
 import { AccountModel, PodcastModel, EpisodeModel, EPISODE_PAGE_SIZE } from '../';
-import { selectPodcastRoute, selectChartedEpisodeIdsRoute } from '../reducers';
+import { selectPodcastRoute, selectChartedEpisodeIdsRoute } from '../reducers/selectors';
 import * as ACTIONS from '../actions';
 
 @Injectable()

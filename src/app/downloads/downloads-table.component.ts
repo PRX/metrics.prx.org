@@ -4,11 +4,11 @@ import { Component, OnDestroy, Input } from '@angular/core';
 import { EpisodeModel, RouterModel, EpisodeMetricsModel, PodcastMetricsModel,
   INTERVAL_MONTHLY, INTERVAL_WEEKLY, INTERVAL_DAILY, INTERVAL_HOURLY,
   CHARTTYPE_PODCAST, CHARTTYPE_EPISODES, CHARTTYPE_STACKED  } from '../ngrx';
-import { selectEpisodes, selectRouter, selectEpisodeMetrics, selectPodcastMetrics } from '../ngrx/reducers';
+import {  selectEpisodes, selectRouter, selectEpisodeMetrics, selectPodcastMetrics } from '../ngrx/reducers/selectors';
 import * as ACTIONS from '../ngrx/actions';
 
 import { findPodcastMetrics, filterPodcastEpisodePage, filterEpisodeMetricsPage,
-  metricsData, getTotal, getWeightedAverage } from '../shared/util/metrics.util';
+  metricsData, getTotal } from '../shared/util/metrics.util';
 import { mapMetricsToTimeseriesData, neutralColor } from '../shared/util/chart.util';
 import * as dateFormat from '../shared/util/date/date.format';
 import { isPodcastChanged } from '../shared/util/filter.util';

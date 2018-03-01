@@ -8,7 +8,7 @@ import { Actions, Effect } from '@ngrx/effects';
 import { RouterModel, ChartType, MetricsType, PodcastModel,
   CHARTTYPE_PODCAST, INTERVAL_DAILY,
   METRICSTYPE_DOWNLOADS, METRICSTYPE_DEMOGRAPHICS, METRICSTYPE_TRAFFICSOURCES } from '../';
-import { selectRouter, selectPodcasts } from '../reducers';
+import { selectRouter, selectPodcasts } from '../reducers/selectors';
 import { ActionTypes } from '../actions';
 import * as ACTIONS from '../actions';
 import * as dateUtil from '../../shared/util/date';

@@ -6,7 +6,7 @@ import { Store } from '@ngrx/store';
 import { Angulartics2 } from 'angulartics2';
 import { ActionTypes, GoogleAnalyticsEventAction } from '../actions';
 import { PodcastModel, RouterModel } from '../';
-import { selectPodcasts, selectRouter } from '../reducers';
+import { selectPodcasts, selectRouter } from '../reducers/selectors';
 
 @Injectable()
 export class GoogleAnalyticsEffects {

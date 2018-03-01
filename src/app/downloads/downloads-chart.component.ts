@@ -5,7 +5,7 @@ import { TimeseriesChartModel } from 'ngx-prx-styleguide';
 import { RouterModel, EpisodeModel, PodcastMetricsModel, EpisodeMetricsModel,
   INTERVAL_MONTHLY, INTERVAL_WEEKLY, INTERVAL_DAILY, INTERVAL_HOURLY,
   CHARTTYPE_PODCAST, CHARTTYPE_EPISODES, CHARTTYPE_STACKED } from '../ngrx';
-import { selectRouter, selectEpisodes, selectPodcastMetrics, selectEpisodeMetrics } from '../ngrx/reducers';
+import {  selectRouter, selectEpisodes, selectPodcastMetrics, selectEpisodeMetrics } from '../ngrx/reducers/selectors';
 import { RouteChartTypeAction } from '../ngrx/actions';
 import { findPodcastMetrics, filterEpisodeMetricsPage, metricsData, getTotal } from '../shared/util/metrics.util';
 import { mapMetricsToTimeseriesData, subtractTimeseriesDatasets, neutralColor, standardColor } from '../shared/util/chart.util';

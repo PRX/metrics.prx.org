@@ -4,9 +4,9 @@ import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
 import { PodcastModel, EpisodeModel, RouterModel, CHARTTYPE_EPISODES,
   MetricsType, METRICSTYPE_DOWNLOADS, METRICSTYPE_TRAFFICSOURCES, METRICSTYPE_DEMOGRAPHICS,
-  PodcastPerformanceMetricsModel, EpisodePerformanceMetricsModel } from '../../ngrx';
-import { selectSelectedPodcast, selectRecentEpisode, selectRouter,
-  selectSelectedPodcastPerformanceMetrics, selectRecentEpisodePerformanceMetrics } from '../../ngrx/reducers';
+  PodcastPerformanceMetricsModel, EpisodePerformanceMetricsModel } from '../../ngrx/';
+import {  selectSelectedPodcast, selectRecentEpisode, selectRouter,
+  selectSelectedPodcastPerformanceMetrics, selectRecentEpisodePerformanceMetrics } from '../../ngrx/reducers/selectors';
 import * as ACTIONS from '../../ngrx/actions';
 
 @Component({

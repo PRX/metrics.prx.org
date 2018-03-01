@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
 import { PodcastModel } from '../../ngrx';
-import { selectPodcasts, selectSelectedPodcast } from '../../ngrx/reducers';
+import { selectPodcasts, selectSelectedPodcast } from '../../ngrx/reducers/selectors';
 import { RouteSeriesAction } from '../../ngrx/actions';
 
 @Component({

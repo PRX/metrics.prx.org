@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs/Subscription';
-import { selectPodcastsError } from '../ngrx/reducers';
+import { selectPodcastsError } from '../ngrx/reducers/selectors';
 
 @Component({
   selector: 'metrics-home',

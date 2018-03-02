@@ -16,6 +16,16 @@ export const subtractTimeseriesDatasets = (from: TimeseriesDatumModel[], dataset
   });
 };
 
+export const getTotal = (data: TimeseriesDatumModel[]): number => {
+  if (data && data.length) {
+    return data.map(d => d.value).reduce((acc: number, value: number) => {
+      return acc + value;
+    });
+  } else {
+    return 0;
+  }
+};
+
 export const baseColor = 'rgb(32, 80, 96)';
 export const neutralColor = '#a3a3a3';
 export const standardColor = '#368aa2';

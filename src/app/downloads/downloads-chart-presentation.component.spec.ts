@@ -5,7 +5,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { StoreModule } from '@ngrx/store';
 
 import { SharedModule } from '../shared';
-import { DownloadsChartComponent } from './downloads-chart.component';
+import { DownloadsChartPresentationComponent } from './downloads-chart-presentation.component';
 
 import { reducers } from '../ngrx/reducers';
 import { PodcastModel, EpisodeModel, RouterModel, ChartType, MetricsType,
@@ -16,9 +16,9 @@ import { CmsPodcastEpisodePageSuccessAction, CastlePodcastMetricsSuccessAction,
 import { getTotal } from '../shared/util/metrics.util';
 import { TimeseriesDatumModel } from 'ngx-prx-styleguide';
 
-describe('DownloadsChartComponent', () => {
-  let comp: DownloadsChartComponent;
-  let fix: ComponentFixture<DownloadsChartComponent>;
+describe('DownloadsChartPresentationComponent', () => {
+  let comp: DownloadsChartPresentationComponent;
+  let fix: ComponentFixture<DownloadsChartPresentationComponent>;
   let de: DebugElement;
   let el: HTMLElement;
 

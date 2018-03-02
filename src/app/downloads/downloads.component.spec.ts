@@ -10,7 +10,7 @@ import { MockHalService, MockHalDoc, AuthModule, FancyFormModule } from 'ngx-prx
 import { CoreModule, CastleService } from '../core';
 import { SharedModule } from '../shared';
 import { DownloadsComponent } from './downloads.component';
-import { DownloadsChartComponent } from './downloads-chart.component';
+import { DownloadsChartComponent } from './downloads-chart-presentation.component';
 import { DownloadsTableComponent } from './downloads-table.component';
 import { downloadsRouting } from './downloads.routing';
 

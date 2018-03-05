@@ -22,7 +22,7 @@ export interface DownloadsTableModel {
   id?: number;
   downloads: TimeseriesDatumModel[];
   totalForPeriod: number;
-  allTimeDownloads: number;
+  allTimeDownloads?: number;
   charted: boolean;
 }
 
@@ -35,7 +35,7 @@ export const selectDownloadTablePodcastMetrics = createSelector(
    podcastPerformanceMetrics: PodcastPerformanceMetricsModel): DownloadsTableModel => {
     let podcastData: DownloadsTableModel;
 
-    if (podcastMetrics && podcastPerformanceMetrics &&
+    if (podcastMetrics &&
       routerState.chartType === CHARTTYPE_PODCAST || (routerState.chartPodcast && routerState.chartType === CHARTTYPE_STACKED)) {
       const data = metricsData(routerState, podcastMetrics);
       if (data) {
@@ -44,9 +44,11 @@ export const selectDownloadTablePodcastMetrics = createSelector(
           downloads: mapMetricsToTimeseriesData(data),
           color: routerState.chartType === CHARTTYPE_PODCAST ? standardColor : neutralColor,
           totalForPeriod: getTotal(data),
-          allTimeDownloads: podcastPerformanceMetrics.total,
           charted: routerState.chartPodcast
         };
+        if (podcastPerformanceMetrics) {
+          podcastData.allTimeDownloads = podcastPerformanceMetrics.total;
+        }
       }
     }
     return podcastData;
@@ -62,30 +64,32 @@ export const selectDownloadTableEpisodeMetrics = createSelector(
    episodes: EpisodeModel[],
    episodeMetrics: EpisodeMetricsModel[],
    episodePerformanceMetrics: EpisodePerformanceMetricsModel[]): DownloadsTableModel[] => {
-    let episodeData: DownloadsTableModel[];
+    let episodesData: DownloadsTableModel[];
 
     if (episodes.length && episodeMetrics.length && episodePerformanceMetrics.length) {
-      episodeData = episodes
+      episodesData = episodes
         .filter(episode => metricsData(routerState, episodeMetrics.find(e => e.id === episode.id)))
         .map(episode => {
           const metrics = episodeMetrics.find(e => e.id === episode.id);
           const performanceMetrics = episodePerformanceMetrics.find(e => e.id === episode.id);
-          const allTimeDownloads = performanceMetrics ? performanceMetrics.total : undefined;
           const data = metricsData(routerState, metrics);
-          return {
+          const episodeTableData: DownloadsTableModel = {
             title: episode.title,
             publishedAt: episode.publishedAt,
             downloads: mapMetricsToTimeseriesData(data),
             color: episode.color,
             id: episode.id,
             totalForPeriod: getTotal(data),
-            allTimeDownloads,
             charted: routerState.episodeIds.indexOf(episode.id) >= 0
           };
+          if (performanceMetrics) {
+            episodeTableData.allTimeDownloads = performanceMetrics.total;
+          }
+          return episodeTableData;
         }).sort((a: DownloadsTableModel, b: DownloadsTableModel) => {
           return b.publishedAt.valueOf() - a.publishedAt.valueOf();
         });
     }
-    return episodeData;
+    return episodesData;
   }
 );

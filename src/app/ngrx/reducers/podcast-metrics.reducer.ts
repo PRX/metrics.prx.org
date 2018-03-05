@@ -7,11 +7,6 @@ export interface PodcastMetricsModel {
   weeklyDownloads?: any[][];
   dailyDownloads?: any[][];
   hourlyDownloads?: any[][];
-  allTimeDownloads?: number;
-  previous7days?: number;
-  this7days?: number;
-  yesterday?: number;
-  today?: number;
   loaded?: boolean;
   loading?: boolean;
   error?: any;

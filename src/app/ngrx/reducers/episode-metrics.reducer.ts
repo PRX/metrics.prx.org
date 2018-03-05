@@ -9,7 +9,6 @@ export interface EpisodeMetricsModel {
   weeklyDownloads?: any[][];
   dailyDownloads?: any[][];
   hourlyDownloads?: any[][];
-  allTimeDownloads?: number;
   loaded?: boolean;
   loading?: boolean;
   error?: any;

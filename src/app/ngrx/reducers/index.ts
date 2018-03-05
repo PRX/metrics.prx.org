@@ -15,7 +15,6 @@ import { CustomRouterReducer } from './router.reducer';
 
 import { RouterModel } from './models';
 
-
 export interface RootState {
   routerSerializer: RouterReducerState<RouterModel>;
   router: RouterModel;

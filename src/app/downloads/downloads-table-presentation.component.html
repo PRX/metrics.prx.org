@@ -3,8 +3,8 @@
 
   <div class="table-navigation">
     <button (click)="toggleExpandedReport.emit()" class="btn-link">
-      <p *ngIf="!expanded">Show {{routerState.interval.key}} numbers &#187;</p>
-      <p *ngIf="expanded">Hide {{routerState.interval.key}} numbers &#171;</p>
+      <p *ngIf="!expanded">Show {{routerState?.interval?.key}} numbers &#187;</p>
+      <p *ngIf="expanded">Hide {{routerState?.interval?.key}} numbers &#171;</p>
     </button>
 
     <metrics-episode-page
@@ -45,7 +45,7 @@
               <button class="btn-link title" (click)="chartSingleEpisode.emit(episode.id)" [title]="episode.title">{{episode.title}}</button>
             </ng-template>
           </td>
-          <td>{{dateFormat(episode.publishedAt)}}</td>
+          <td>{{releaseDateFormat(episode.publishedAt)}}</td>
           <td>{{episode.totalForPeriod | largeNumber}}</td>
           <td *ngIf="episode.allTimeDownloads !== undefined">{{episode.allTimeDownloads | largeNumber}}</td>
           <td *ngIf="episode.allTimeDownloads === undefined"></td>

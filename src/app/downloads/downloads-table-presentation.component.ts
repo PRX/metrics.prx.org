@@ -9,12 +9,11 @@ import * as dateFormat from '../shared/util/date/date.format';
   selector: 'metrics-downloads-table-presentation',
   templateUrl: 'downloads-table-presentation.component.html',
   styleUrls: ['downloads-table-presentation.component.css']
-
 })
 export class DownloadsTablePresentationComponent {
   @Input() totalPages: number;
   @Input() podcastTableData: DownloadsTableModel;
-  @Input() episodeTableData: DownloadsTableModel;
+  @Input() episodeTableData: DownloadsTableModel[];
   @Input() routerState: RouterModel;
   @Input() expanded = false;
   @Output() toggleChartPodcast = new EventEmitter<boolean>();
@@ -40,6 +39,10 @@ export class DownloadsTablePresentationComponent {
     } else {
       return dateFormat.monthDate(date);
     }
+  }
+
+  releaseDateFormat(date: Date): string {
+    return dateFormat.monthDateYear(date);
   }
 
   get dateRange(): string[] {

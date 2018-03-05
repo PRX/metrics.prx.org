@@ -1,9 +1,4 @@
-import {
-  ActionTypes,
-  CmsRecentEpisodeSuccessAction,
-  CmsRecentEpisodeFailureAction,
-  AllActions
-} from '../actions';
+import { ActionTypes, AllActions } from '../actions';
 import { EpisodeModel } from './episode.reducer';
 
 interface RecentEpisodeLookup {

@@ -15,7 +15,7 @@ import { largeNumberFormat } from '../shared/pipes/large-number.pipe';
                           [pointRadius]="pointRadius" [pointRadiusOnHover]="pointRadiusOnHover">
     </prx-timeseries-chart>
     <div class="placeholder" *ngIf="!chartData">
-      You have no data selected. Would you like to view the <button class="btn-link" (click)="placeholder.emit()">Podcast chart</button>? 
+      You have no data selected. Would you like to view the <button class="btn-link" (click)="placeholder.emit()">Podcast chart</button>?
     </div>
   `,
   styleUrls: ['./downloads-chart-presentation.component.css']
@@ -45,7 +45,8 @@ export class DownloadsChartPresentationComponent {
   }
 
   get chartType(): string {
-    if (this.chartData && this.chartData.length && this.chartData[0].data.length <= 2) {
+    if (this.chartData && this.chartData.length &&
+      this.chartData[0].data && this.chartData[0].data.length <= 2) {
       return 'bar';
     } else {
       switch (this.routerState.chartType) {
@@ -86,9 +87,11 @@ export class DownloadsChartPresentationComponent {
   get pointRadius(): number {
     switch (this.routerState.chartType) {
       case CHARTTYPE_PODCAST:
-        return this.chartData && this.chartData.length && this.chartData[0].data.length <= 40 ? 3.75 : 0;
+        return this.chartData && this.chartData.length &&
+        this.chartData[0].data && this.chartData[0].data.length <= 40 ? 3.75 : 0;
       case CHARTTYPE_EPISODES:
-        return this.chartData && this.chartData.length && this.chartData[0].data.length <= 20 ? 3.25 : 0;
+        return this.chartData && this.chartData.length &&
+        this.chartData[0].data && this.chartData[0].data.length <= 20 ? 3.25 : 0;
       case CHARTTYPE_STACKED:
         return 1;
     }

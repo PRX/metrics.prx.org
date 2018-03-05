@@ -79,11 +79,6 @@ describe('RoutingEffects', () => {
   }));
 
   it('should map ROUTER_NAVIGATION to CustomRouterNavigationAction', () => {
-    expect(store.dispatch).toHaveBeenCalledWith(jasmine.any(ACTIONS.CustomRouterNavigationAction));
-  });
-
-  // TODO: fix TODO in customRouterNavigation$ with charted episodes and re-enable this and remove one above
-  xit('should map ROUTER_NAVIGATION to CustomRouterNavigationAction', () => {
     const action = {
       type: ROUTER_NAVIGATION,
       payload: {routerState}

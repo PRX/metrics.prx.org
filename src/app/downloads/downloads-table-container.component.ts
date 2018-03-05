@@ -2,8 +2,8 @@ import { Component, OnInit, OnDestroy, Input } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs/Subscription';
 import { Observable } from 'rxjs/Observable';
-import { EpisodeModel, RouterModel, CHARTTYPE_EPISODES } from '../ngrx';
-import { DownloadsTableModel, selectRouter, selectSelectedPageEpisodes,
+import { DownloadsTableModel, EpisodeModel, RouterModel, CHARTTYPE_EPISODES } from '../ngrx';
+import { selectRouter, selectSelectedPageEpisodes,
   selectDownloadTablePodcastMetrics, selectDownloadTableEpisodeMetrics } from '../ngrx/reducers/selectors';
 import * as ACTIONS from '../ngrx/actions';
 

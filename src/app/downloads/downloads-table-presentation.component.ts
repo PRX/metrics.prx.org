@@ -1,8 +1,7 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { RouterModel,
+import { RouterModel, DownloadsTableModel,
   INTERVAL_MONTHLY, INTERVAL_WEEKLY, INTERVAL_DAILY, INTERVAL_HOURLY,
   CHARTTYPE_PODCAST, CHARTTYPE_STACKED  } from '../ngrx';
-import { DownloadsTableModel } from '../ngrx/reducers/selectors/downloads-table.selectors';
 import * as dateFormat from '../shared/util/date/date.format';
 
 @Component({

@@ -2,13 +2,13 @@ import { TestBed } from '@angular/core/testing';
 import { StoreModule, Store } from '@ngrx/store';
 
 import { RootState, reducers } from '../';
-import { getMetricsProperty } from '../models';
+import { DownloadsTableModel, getMetricsProperty } from '../models';
 import { routerState,  podcast, episodes,
   podDownloads, podPerformance,
   ep0Downloads, ep1Downloads, ep0Performance, ep1Performance } from '../../../../testing/downloads.fixtures';
 import * as ACTIONS from '../../actions';
 import { getTotal } from '../../../shared/util/chart.util';
-import { DownloadsTableModel, selectDownloadTablePodcastMetrics, selectDownloadTableEpisodeMetrics } from './downloads-table.selectors';
+import { selectDownloadTablePodcastMetrics, selectDownloadTableEpisodeMetrics } from './downloads-table.selectors';
 
 describe('Downloads Table Selectors', () => {
   let store: Store<RootState>;

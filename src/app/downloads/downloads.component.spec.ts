@@ -10,8 +10,10 @@ import { MockHalService, MockHalDoc, AuthModule, FancyFormModule } from 'ngx-prx
 import { CoreModule, CastleService } from '../core';
 import { SharedModule } from '../shared';
 import { DownloadsComponent } from './downloads.component';
-import { DownloadsChartComponent } from './downloads-chart-presentation.component';
-import { DownloadsTableComponent } from './downloads-table.component';
+import { DownloadsChartContainerComponent } from './downloads-chart-container.component';
+import { DownloadsChartPresentationComponent } from './downloads-chart-presentation.component';
+import { DownloadsTableContainerComponent } from './downloads-table-container.component';
+import { DownloadsTablePresentationComponent } from './downloads-table-presentation.component';
 import { downloadsRouting } from './downloads.routing';
 
 import { EpisodeModel, PodcastModel, RouterModel, ChartType, MetricsType,
@@ -73,8 +75,10 @@ describe('DownloadsComponent', () => {
     TestBed.configureTestingModule({
       declarations: [
         DownloadsComponent,
-        DownloadsChartComponent,
-        DownloadsTableComponent
+        DownloadsChartContainerComponent,
+        DownloadsChartPresentationComponent,
+        DownloadsTableContainerComponent,
+        DownloadsTablePresentationComponent
       ],
       imports: [
         CoreModule,

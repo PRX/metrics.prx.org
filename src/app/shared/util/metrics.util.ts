@@ -52,7 +52,7 @@ export const filterEpisodeMetricsPage =
 
 export const metricsData = (filter: RouterModel, metrics: PodcastMetricsModel | EpisodeMetricsModel) => {
   const metricsProperty = getMetricsProperty(filter.interval, filter.metricsType);
-  return metrics[metricsProperty];
+  return metrics && metrics[metricsProperty];
 };
 
 export const getTotal = (metrics: any[][]): number => {

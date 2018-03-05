@@ -15,5 +15,5 @@ export const selectRecentEpisodePerformanceMetrics = createSelector(selectRecent
   });
 export const selectEpisodePagePerformanceMetrics = createSelector(selectSelectedPageEpisodes, selectEpisodePerformanceMetricsEntities,
   (episodes: EpisodeModel[], entities): EpisodePerformanceMetricsModel[] => {
-    return episodes.map(episode => entities[episode.id]);
+    return episodes.filter(episode => entities[episode.id]).map(episode => entities[episode.id]);
   });

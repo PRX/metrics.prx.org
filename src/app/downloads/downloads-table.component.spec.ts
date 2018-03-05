@@ -6,7 +6,7 @@ import { By } from '@angular/platform-browser';
 import { FancyFormModule } from 'ngx-prx-styleguide';
 
 import { SharedModule } from '../shared';
-import { DownloadsTableComponent } from './downloads-table.component';
+import { DownloadsTableComponent } from './downloads-table-container.component';
 
 import { reducers } from '../ngrx/reducers';
 import { PodcastModel, EpisodeModel, RouterModel, ChartType, MetricsType,

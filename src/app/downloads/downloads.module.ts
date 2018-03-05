@@ -6,7 +6,8 @@ import { SharedModule } from '../shared';
 import { DownloadsComponent } from './downloads.component';
 import { DownloadsChartContainerComponent } from './downloads-chart-container.component';
 import { DownloadsChartPresentationComponent } from './downloads-chart-presentation.component';
-import { DownloadsTableComponent } from './downloads-table.component';
+import { DownloadsTableContainerComponent } from './downloads-table-container.component';
+import { DownloadsTablePresentationComponent } from './downloads-table-presentation.component';
 
 import { downloadsRouting } from './downloads.routing';
 
@@ -15,7 +16,8 @@ import { downloadsRouting } from './downloads.routing';
     DownloadsComponent,
     DownloadsChartContainerComponent,
     DownloadsChartPresentationComponent,
-    DownloadsTableComponent
+    DownloadsTableContainerComponent,
+    DownloadsTablePresentationComponent
   ],
   imports: [
     CommonModule,

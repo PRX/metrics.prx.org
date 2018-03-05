@@ -2,7 +2,7 @@ import { createSelector } from '@ngrx/store';
 import { RootState, selectAppState } from '../';
 import { RouterModel, getMetricsProperty } from '../models';
 import { PodcastMetricsModel } from '../podcast-metrics.reducer';
-import { selectRouter } from './router.selectors';
+import { selectRouter, selectPodcastRoute } from './router.selectors';
 import { errorType } from './error.type';
 import * as metricsUtil from '../../../shared/util/metrics.util';
 
@@ -36,4 +36,8 @@ export const selectPodcastMetricsError = createSelector(selectPodcastMetrics, (m
   return metrics.filter(m => m.error).map(m => {
     return `${errorType(m.error.status)} error occurred while requesting podcast metrics`;
   });
+});
+export const selectSelectedPodcastMetrics = createSelector(selectPodcastRoute, selectPodcastMetrics,
+  (seriesId: number, metrics: PodcastMetricsModel[]): PodcastMetricsModel => {
+    return metrics.find((metric: PodcastMetricsModel) => metric.seriesId === seriesId);
 });

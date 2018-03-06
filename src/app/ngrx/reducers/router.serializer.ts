@@ -75,7 +75,7 @@ export class CustomSerializer implements RouterStateSerializer<RouterModel> {
         router.endDate = endDate;
       }
       if (params['episodes']) {
-        router.episodeIds = params['episodes'].split(',').map(stringValue => +stringValue);
+        router.episodeIds = params['episodes'].split(',').map(stringValue => +stringValue).filter(id => id > 0);
       } else if (params['episodes'] === '') {
         router.episodeIds = [];
       }

@@ -57,9 +57,8 @@ describe('DownloadsTablePresentationComponent', () => {
     });
   }));
 
-  xit('should show message about local timezone translation for hourly data', () => {
-    // TODO: for some reason, this throws off all the selector tests that use routerState, WTHeck though
-    comp.routerState.interval = INTERVAL_HOURLY;
+  it('should show message about local timezone translation for hourly data', () => {
+    comp.routerState = {...comp.routerState, interval: INTERVAL_HOURLY};
     fix.detectChanges();
     expect(de.query(By.css('em')).nativeElement.textContent).toContain('local timezone');
   });

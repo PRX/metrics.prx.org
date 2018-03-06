@@ -1,5 +1,5 @@
 import { RouterModel, EpisodeModel, PodcastModel, ChartType, MetricsType,
-  CHARTTYPE_PODCAST, CHARTTYPE_STACKED, INTERVAL_DAILY, EPISODE_PAGE_SIZE, METRICSTYPE_DOWNLOADS, getMetricsProperty } from '../app/ngrx';
+  CHARTTYPE_STACKED, INTERVAL_DAILY, METRICSTYPE_DOWNLOADS } from '../app/ngrx';
 import { MockHalDoc } from 'ngx-prx-styleguide';
 
 const podcast: PodcastModel = {

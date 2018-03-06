@@ -40,7 +40,7 @@
           <td>
             <prx-checkbox *ngIf="showEpisodeToggles; else episodeTitle"
               small [checked]="episode.charted" [color]="episode.color"
-                          (change)="toggleChartEpisode.emit({episdoeId: episode.id, charted: $event})"><span [title]="episode.title">{{episode.title}}</span></prx-checkbox>
+                          (change)="toggleChartEpisode.emit({episodeId: episode.id, charted: $event})"><span [title]="episode.title">{{episode.title}}</span></prx-checkbox>
             <ng-template #episodeTitle>
               <button class="btn-link title" (click)="chartSingleEpisode.emit(episode.id)" [title]="episode.title">{{episode.title}}</button>
             </ng-template>

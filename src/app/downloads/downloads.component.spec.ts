@@ -6,18 +6,21 @@ import { StoreModule, Store } from '@ngrx/store';
 import { Subject } from 'rxjs/Subject';
 import { Angulartics2 } from 'angulartics2';
 
-import { MockHalService, MockHalDoc, AuthModule, FancyFormModule } from 'ngx-prx-styleguide';
+import { MockHalService, AuthModule, FancyFormModule } from 'ngx-prx-styleguide';
 import { CoreModule, CastleService } from '../core';
 import { SharedModule } from '../shared';
 import { DownloadsComponent } from './downloads.component';
-import { DownloadsChartComponent } from './downloads-chart.component';
-import { DownloadsTableComponent } from './downloads-table.component';
+import { DownloadsChartContainerComponent } from './downloads-chart-container.component';
+import { DownloadsChartPresentationComponent } from './downloads-chart-presentation.component';
+import { DownloadsTableContainerComponent } from './downloads-table-container.component';
+import { DownloadsTablePresentationComponent } from './downloads-table-presentation.component';
 import { downloadsRouting } from './downloads.routing';
 
-import { EpisodeModel, PodcastModel, RouterModel, ChartType, MetricsType,
-  CHARTTYPE_STACKED, METRICSTYPE_DOWNLOADS, INTERVAL_DAILY, getMetricsProperty } from '../ngrx';
+import { METRICSTYPE_DOWNLOADS, INTERVAL_DAILY, getMetricsProperty } from '../ngrx';
 import { reducers } from '../ngrx/reducers';
 import * as ACTIONS from '../ngrx/actions';
+
+import { routerState, episodes, podcast, ep0Downloads, ep1Downloads, podDownloads } from '../../testing/downloads.fixtures';
 
 describe('DownloadsComponent', () => {
   let comp: DownloadsComponent;
@@ -26,55 +29,20 @@ describe('DownloadsComponent', () => {
   let el: HTMLElement;
   let castle;
   let store: Store<any>;
-
-  const podcast: PodcastModel = {
-    seriesId: 37800,
-    feederId: '70',
-    title: 'Pet Talks Daily'
-  };
-  podcast['doc'] = new MockHalDoc(podcast);
-  const episode: EpisodeModel = {
-    id: 1,
-    page: 1,
-    guid: 'abcde',
-    seriesId: 37800,
-    title: 'A Pet Talks Episode',
-    publishedAt: new Date()
-  };
-  const routerState: RouterModel = {
-    podcastSeriesId: 37800,
-      page: 1,
-      beginDate: new Date('2017-08-27T00:00:00Z'),
-      endDate: new Date('2017-09-07T00:00:00Z'),
-      interval: INTERVAL_DAILY,
-      chartType: <ChartType>CHARTTYPE_STACKED,
-      metricsType: <MetricsType>METRICSTYPE_DOWNLOADS
-  };
-  const downloads = [
-    ['2017-08-27T00:00:00Z', 52522],
-    ['2017-08-28T00:00:00Z', 162900],
-    ['2017-08-29T00:00:00Z', 46858],
-    ['2017-08-30T00:00:00Z', 52522],
-    ['2017-08-31T00:00:00Z', 162900],
-    ['2017-09-01T00:00:00Z', 46858],
-    ['2017-09-02T00:00:00Z', 52522],
-    ['2017-09-03T00:00:00Z', 162900],
-    ['2017-09-04T00:00:00Z', 46858],
-    ['2017-09-05T00:00:00Z', 52522],
-    ['2017-09-06T00:00:00Z', 162900],
-    ['2017-09-07T00:00:00Z', 46858]
-  ];
+  const metricsPropertyName = getMetricsProperty(routerState.interval, routerState.metricsType);
 
   beforeEach(async(() => {
     castle = new MockHalService();
-    castle.root.mockList('prx:podcast-downloads', [{downloads}]);
-    castle.root.mockList('prx:episode-downloads', [{downloads}]);
+    castle.root.mockList('prx:podcast-downloads', [{podDownloads}]);
+    castle.root.mockList('prx:episode-downloads', [{ep0Downloads}]);
 
     TestBed.configureTestingModule({
       declarations: [
         DownloadsComponent,
-        DownloadsChartComponent,
-        DownloadsTableComponent
+        DownloadsChartContainerComponent,
+        DownloadsChartPresentationComponent,
+        DownloadsTableContainerComponent,
+        DownloadsTablePresentationComponent
       ],
       imports: [
         CoreModule,
@@ -120,26 +88,34 @@ describe('DownloadsComponent', () => {
   }
 
   function dispatchEpisodePage() {
-    store.dispatch(new ACTIONS.CmsPodcastEpisodePageSuccessAction({episodes: [episode]}));
+    store.dispatch(new ACTIONS.CmsPodcastEpisodePageSuccessAction({episodes}));
   }
 
   function dispatchPodcastMetrics() {
     store.dispatch(new ACTIONS.CastlePodcastMetricsSuccessAction({
       seriesId: podcast.seriesId,
       feederId: podcast.feederId,
-      metricsPropertyName: getMetricsProperty(INTERVAL_DAILY, <MetricsType>METRICSTYPE_DOWNLOADS),
-      metrics: downloads
+      metricsPropertyName,
+      metrics: podDownloads
     }));
   }
 
   function dispatchEpisodeMetrics() {
     store.dispatch(new ACTIONS.CastleEpisodeMetricsSuccessAction({
-      seriesId: episode.seriesId,
-      page: episode.page,
-      id: episode.id,
-      guid: episode.guid,
-      metricsPropertyName: getMetricsProperty(INTERVAL_DAILY, <MetricsType>METRICSTYPE_DOWNLOADS),
-      metrics: downloads
+      seriesId: episodes[0].seriesId,
+      page: episodes[0].page,
+      id: episodes[0].id,
+      guid: episodes[0].guid,
+      metricsPropertyName,
+      metrics: ep0Downloads
+    }));
+    store.dispatch(new ACTIONS.CastleEpisodeMetricsSuccessAction({
+      seriesId: episodes[1].seriesId,
+      page: episodes[1].page,
+      id: episodes[1].id,
+      guid: episodes[1].guid,
+      metricsPropertyName,
+      metrics: ep1Downloads
     }));
   }
 
@@ -175,16 +151,7 @@ describe('DownloadsComponent', () => {
     it('should reload podcast and episode data if routerState parameters change', () => {
       const beginDate = new Date();
       comp.store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerState: {page: 2}}));
-      comp.store.dispatch(new ACTIONS.CmsPodcastEpisodePageSuccessAction({episodes:
-        [{
-          id: 123,
-          seriesId: 37800,
-          title: 'A New Pet Talk Episode',
-          publishedAt: new Date(),
-          guid: 'abcdefg',
-          page: 2
-        }]
-      }));
+      comp.store.dispatch(new ACTIONS.CmsPodcastEpisodePageSuccessAction({episodes: [{...episodes[1], page: 2}]}));
       comp.store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerState: {beginDate}}));
       expect(comp.getPodcastMetrics).toHaveBeenCalled();
       expect(comp.getEpisodeMetrics).toHaveBeenCalled();

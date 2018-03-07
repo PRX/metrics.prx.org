@@ -1,8 +1,7 @@
 import { Component } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
-import { IntervalModel, INTERVAL_HOURLY, INTERVAL_DAILY, INTERVAL_WEEKLY, INTERVAL_MONTHLY } from '../../ngrx';
-import { selectPodcastMetricsFilteredAverage, selectPodcastMetricsFilteredTotal, selectIntervalRoute } from '../../ngrx/reducers';
+import { selectPodcastMetricsFilteredTotal } from '../../ngrx/reducers/selectors';
 
 @Component({
   selector: 'metrics-downloads-summary',
@@ -14,8 +13,6 @@ import { selectPodcastMetricsFilteredAverage, selectPodcastMetricsFilteredTotal,
 })
 
 export class DownloadsSummaryContainerComponent {
-  average$: Observable<number>;
-  averageLabel$: Observable<string>;
   total$: Observable<number>;
 
   constructor(private store: Store<any>) {

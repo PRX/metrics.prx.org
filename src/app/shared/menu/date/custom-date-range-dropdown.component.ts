@@ -90,7 +90,8 @@ export class CustomDateRangeDropdownComponent {
   onApply() {
     if (!this.invalid) {
       this.googleAnalyticsEvent(this.userChoseRange || this.CUSTOM_DATE, this.tempRange);
-      this.store.dispatch(new RouteAdvancedRangeAction({...this.tempRange}));
+      const { standardRange, interval, beginDate, endDate } = this.tempRange;
+      this.store.dispatch(new RouteAdvancedRangeAction({standardRange, interval, beginDate, endDate}));
       this.open = false;
     }
   }

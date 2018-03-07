@@ -5,7 +5,7 @@ import { Angulartics2GoogleAnalytics } from 'angulartics2';
 import { HalDoc } from './core';
 import { Env } from './core/core.env';
 import { AccountModel, RouterModel } from './ngrx';
-import { selectAccount, selectAccountError, selectRouter } from './ngrx/reducers';
+import { selectAccount, selectAccountError, selectRouter } from './ngrx/reducers/selectors';
 import * as ACTIONS from './ngrx/actions';
 
 @Component({

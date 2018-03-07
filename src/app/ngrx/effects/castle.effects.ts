@@ -5,7 +5,7 @@ import { Actions, Effect } from '@ngrx/effects';
 import { Action, Store } from '@ngrx/store';
 
 import * as ACTIONS from '../actions';
-import { selectSelectedPodcast, selectRecentEpisode } from '../reducers';
+import { selectSelectedPodcast, selectRecentEpisode } from '../reducers/selectors';
 import { CastleService } from '../../core';
 import { PodcastModel, EpisodeModel, getMetricsProperty } from '../';
 

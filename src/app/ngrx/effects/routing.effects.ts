@@ -8,7 +8,7 @@ import { Actions, Effect } from '@ngrx/effects';
 import { RouterModel, ChartType, MetricsType, PodcastModel,
   CHARTTYPE_PODCAST, INTERVAL_DAILY,
   METRICSTYPE_DOWNLOADS, METRICSTYPE_DEMOGRAPHICS, METRICSTYPE_TRAFFICSOURCES } from '../';
-import { selectRouter, selectPodcasts } from '../reducers';
+import { selectRouter, selectPodcasts } from '../reducers/selectors';
 import { ActionTypes } from '../actions';
 import * as ACTIONS from '../actions';
 import * as dateUtil from '../../shared/util/date';
@@ -25,26 +25,14 @@ export class RoutingEffects {
   // The router reducer captures the CustomRouterNavigationAction to save routing state.
   // The CustomRouterNavigationAction is mocked by tests but is _not_ otherwise ever manually called by the application,
   // only through routing and the router-store connecting module.
-  @Effect({dispatch: false})
-  customRouterNavigation$: Observable<void> = this.actions$
+  @Effect()
+  customRouterNavigation$: Observable<Action> = this.actions$
     .ofType(ROUTER_NAVIGATION)
     .map((action: ACTIONS.CustomRouterNavigationAction) => action.payload)
     .switchMap((payload: ACTIONS.CustomRouterNavigationPayload) => {
       const routerState: RouterModel = {...payload.routerState};
       // map to an action with our CUSTOM_ROUTER_NAVIGATION type
-      if (Object.keys(routerState).length > 0) {
-        // TODO: fix below and return Action rather than only sometimes dispatch
-        this.store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerState}));
-      }
-      // TODO: #141 and #142
-      // because of the unsupported link to '/' in the PRX header,
-      // only sending custom routing action if there are params on the route
-      // so as not to clear the charted episodes in the episode metrics reducer
-      // what was happening is it would get an empty CustomRouterNavigationAction, clear charted on episode metrics,
-      // then there would be no ROUTER_NAVIGATION event or CustomRouterNavigationAction for the navigation back to the previous route
-      // so even though they were on the route, episodes were uncharted
-      // combining episode data selectors with the route selectors and not duplicating state would fix this
-      return Observable.of(null);
+      return Observable.of(new ACTIONS.CustomRouterNavigationAction({routerState}));
     });
 
   @Effect({dispatch: false})

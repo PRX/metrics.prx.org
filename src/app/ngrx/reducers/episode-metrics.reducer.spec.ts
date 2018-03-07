@@ -1,5 +1,4 @@
-import { CastleEpisodeMetricsSuccessAction, CastleEpisodePerformanceMetricsSuccessAction,
-  CastleEpisodePerformanceMetricsFailureAction } from '../actions';
+import { CastleEpisodeMetricsSuccessAction } from '../actions';
 import { INTERVAL_DAILY, MetricsType, METRICSTYPE_DOWNLOADS, RouterModel, getMetricsProperty } from '../';
 import { EpisodeMetricsReducer } from './episode-metrics.reducer';
 
@@ -79,29 +78,5 @@ describe('EpisodeMetricsReducer', () => {
       })
     );
     expect(newState.filter(p => p.seriesId === 37800).length).toEqual(2);
-  });
-
-  it ('should add all-time episode metrics', () => {
-    newState = EpisodeMetricsReducer(newState,
-      new CastleEpisodePerformanceMetricsSuccessAction({
-        seriesId: episode.seriesId,
-        id: episode.id,
-        guid: episode.guid,
-        total: 10,
-        this7days: 5,
-        previous7days: 5,
-        today: 1,
-        yesterday: 1
-      })
-    );
-    expect(newState[0].allTimeDownloads).toEqual(10);
-  });
-
-  it ('should not alter state on all time metrics failure', () => {
-    const oldState = newState;
-    newState = EpisodeMetricsReducer(newState,
-      new CastleEpisodePerformanceMetricsFailureAction({error: 'Some error'})
-    );
-    expect(newState[0]).toEqual(oldState[0]);
   });
 });

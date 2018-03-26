@@ -4,8 +4,7 @@ export { EpisodeModel, EPISODE_PAGE_SIZE } from './reducers/episode.reducer';
 export { RouterModel, DownloadsTableModel,
   INTERVAL_MONTHLY, INTERVAL_WEEKLY, INTERVAL_DAILY, INTERVAL_HOURLY, IntervalModel, IntervalList,
   CHARTTYPE_PODCAST, CHARTTYPE_EPISODES, CHARTTYPE_STACKED, ChartType,
-  METRICSTYPE_DOWNLOADS, METRICSTYPE_DEMOGRAPHICS, METRICSTYPE_TRAFFICSOURCES, MetricsType, getMetricsProperty } from './reducers/models';
+  METRICSTYPE_DOWNLOADS, METRICSTYPE_DEMOGRAPHICS, METRICSTYPE_TRAFFICSOURCES, MetricsType, getMetricsProperty,
+  PodcastPerformanceMetricsModel, EpisodePerformanceMetricsModel } from './reducers/models';
 export { PodcastMetricsModel } from './reducers/podcast-metrics.reducer';
 export { EpisodeMetricsModel } from './reducers/episode-metrics.reducer';
-export { PodcastPerformanceMetricsModel } from './reducers/podcast-performance-metrics.reducer';
-export { EpisodePerformanceMetricsModel } from './reducers/episode-performance-metrics.reducer';

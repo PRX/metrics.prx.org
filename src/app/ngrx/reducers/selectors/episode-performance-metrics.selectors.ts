@@ -1,6 +1,7 @@
 import { createSelector } from '@ngrx/store';
 import { RootState, selectAppState } from '../';
-import { getEpisodePerformanceMetricsEntities, EpisodePerformanceMetricsModel } from '../episode-performance-metrics.reducer';
+import { EpisodePerformanceMetricsModel } from '../models';
+import { getEpisodePerformanceMetricsEntities } from '../episode-performance-metrics.reducer';
 import { EpisodeModel } from '../episode.reducer';
 import { selectRecentEpisode } from './recent-episode.selectors';
 import { selectSelectedPageEpisodes } from './episode.selectors';

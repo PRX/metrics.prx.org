@@ -7,7 +7,8 @@ import { routerState,  podcast, episodes,
   podDownloads, podPerformance,
   ep0Downloads, ep1Downloads, ep0Performance, ep1Performance } from '../../../../testing/downloads.fixtures';
 import * as ACTIONS from '../../actions';
-import { getTotal } from '../../../shared/util/chart.util';
+import * as chartUtil from '../../../shared/util/chart.util';
+import * as metricsUtil from '../../../shared/util/metrics.util';
 import { selectDownloadTablePodcastMetrics, selectDownloadTableEpisodeMetrics } from './downloads-table.selectors';
 
 describe('Downloads Table Selectors', () => {
@@ -54,8 +55,13 @@ describe('Downloads Table Selectors', () => {
       expect(result.title).toEqual('All Episodes');
     });
 
-    it('should include podcast all time total downloads', () => {
-      expect(result.allTimeDownloads).toEqual(podPerformance.total);
+    it('should include podcast all time total downloads, but should use total for range if larger', () => {
+      if (metricsUtil.getTotal(podDownloads) > podPerformance.total) {
+        expect(result.allTimeDownloads).not.toEqual(podPerformance.total);
+        expect(result.allTimeDownloads).toEqual(metricsUtil.getTotal(podDownloads));
+      } else {
+        expect(result.allTimeDownloads).toEqual(podPerformance.total);
+      }
     });
   });
 
@@ -78,13 +84,23 @@ describe('Downloads Table Selectors', () => {
 
     it('should include episode total downloads for period', () => {
       result.forEach(e => {
-        expect(e.totalForPeriod).toEqual(getTotal(e.downloads));
+        expect(e.totalForPeriod).toEqual(chartUtil.getTotal(e.downloads));
       });
     });
 
-    it('should include episode all time total downloads', () => {
-      expect(result[0].allTimeDownloads).toEqual(ep0Performance.total);
-      expect(result[1].allTimeDownloads).toEqual(ep1Performance.total);
+    it('should include episode all time total downloads, but should use total for range if larger', () => {
+      if (metricsUtil.getTotal(ep0Downloads) > ep0Performance.total) {
+        expect(result[0].allTimeDownloads).not.toEqual(ep0Performance.total);
+        expect(result[0].allTimeDownloads).toEqual(metricsUtil.getTotal(ep0Downloads));
+      } else {
+        expect(result[0].allTimeDownloads).toEqual(ep0Performance.total);
+      }
+      if (metricsUtil.getTotal(ep1Downloads) > ep1Performance.total) {
+        expect(result[1].allTimeDownloads).not.toEqual(ep1Performance.total);
+        expect(result[1].allTimeDownloads).toEqual(metricsUtil.getTotal(ep1Downloads));
+      } else {
+        expect(result[1].allTimeDownloads).toEqual(ep1Performance.total);
+      }
     });
   });
 

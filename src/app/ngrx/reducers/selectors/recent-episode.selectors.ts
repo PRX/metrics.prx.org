@@ -21,7 +21,7 @@ export const selectRecentEpisodeError = createSelector(selectRecentEpisodeState,
 
 export const selectRecentEpisodeMetrics = createSelector(
   selectRecentEpisode, selectEpisodeMetrics, (episode, metrics) => {
-    return metrics.find(m => m.id === episode.id);
+    return episode && metrics.find(m => m.id === episode.id);
   }
 );
 

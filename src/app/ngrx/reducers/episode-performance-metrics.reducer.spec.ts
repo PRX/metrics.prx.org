@@ -1,7 +1,5 @@
 import * as ACTIONS from '../actions';
 import { EpisodePerformanceMetricsReducer } from './episode-performance-metrics.reducer';
-import { ep0Downloads, ep1Downloads } from '../../../testing/downloads.fixtures';
-import { getTotal } from '../../shared/util/metrics.util';
 
 describe('EpisodePerformanceMetricsReducer', () => {
   let newState;

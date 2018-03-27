@@ -1,7 +1,5 @@
 import * as ACTIONS from '../actions';
 import { PodcastPerformanceMetricsReducer } from './podcast-performance-metrics.reducer';
-import { podDownloads } from '../../../testing/downloads.fixtures';
-import { getTotal } from '../../shared/util/metrics.util';
 
 describe('PodcastPerformanceMetricsReducer', () => {
   let newState;

@@ -4,8 +4,8 @@ import { StoreModule, Store } from '@ngrx/store';
 import { RootState, reducers } from '../';
 import { DownloadsTableModel, getMetricsProperty } from '../models';
 import { routerState,  podcast, episodes,
-  podDownloads, podPerformance,
-  ep0Downloads, ep1Downloads, ep0Performance, ep1Performance } from '../../../../testing/downloads.fixtures';
+  podDownloads, podPerformance, podPerformanceOff,
+  ep0Downloads, ep1Downloads, ep0Performance, ep0PerformanceOff, ep1Performance, ep1PerformanceOff } from '../../../../testing/downloads.fixtures';
 import * as ACTIONS from '../../actions';
 import * as chartUtil from '../../../shared/util/chart.util';
 import * as metricsUtil from '../../../shared/util/metrics.util';
@@ -55,13 +55,15 @@ describe('Downloads Table Selectors', () => {
       expect(result.title).toEqual('All Episodes');
     });
 
-    it('should include podcast all time total downloads, but should use total for range if larger', () => {
-      if (metricsUtil.getTotal(podDownloads) > podPerformance.total) {
-        expect(result.allTimeDownloads).not.toEqual(podPerformance.total);
-        expect(result.allTimeDownloads).toEqual(metricsUtil.getTotal(podDownloads));
-      } else {
-        expect(result.allTimeDownloads).toEqual(podPerformance.total);
-      }
+    it('should include podcast all time total downloads', () => {
+      expect(result.allTimeDownloads).toEqual(podPerformance.total);
+    });
+
+    it('should use total for range for all time if larger than all time total rollup', () => {
+      store.dispatch(new ACTIONS.CastlePodcastPerformanceMetricsSuccessAction({seriesId: podcast.seriesId, feederId: podcast.feederId,
+        ...podPerformanceOff }));
+      expect(result.allTimeDownloads).not.toEqual(podPerformanceOff.total);
+      expect(result.allTimeDownloads).toEqual(metricsUtil.getTotal(podDownloads));
     });
   });
 
@@ -88,19 +90,20 @@ describe('Downloads Table Selectors', () => {
       });
     });
 
-    it('should include episode all time total downloads, but should use total for range if larger', () => {
-      if (metricsUtil.getTotal(ep0Downloads) > ep0Performance.total) {
-        expect(result[0].allTimeDownloads).not.toEqual(ep0Performance.total);
-        expect(result[0].allTimeDownloads).toEqual(metricsUtil.getTotal(ep0Downloads));
-      } else {
-        expect(result[0].allTimeDownloads).toEqual(ep0Performance.total);
-      }
-      if (metricsUtil.getTotal(ep1Downloads) > ep1Performance.total) {
-        expect(result[1].allTimeDownloads).not.toEqual(ep1Performance.total);
-        expect(result[1].allTimeDownloads).toEqual(metricsUtil.getTotal(ep1Downloads));
-      } else {
-        expect(result[1].allTimeDownloads).toEqual(ep1Performance.total);
-      }
+    it('should include episode all time total downloads', () => {
+      expect(result[0].allTimeDownloads).toEqual(ep0Performance.total);
+      expect(result[1].allTimeDownloads).toEqual(ep1Performance.total);
+    });
+
+    it('should use total for range for all time if larger than all time total rollup', () => {
+      store.dispatch(new ACTIONS.CastleEpisodePerformanceMetricsSuccessAction({
+        seriesId: episodes[0].seriesId, id: episodes[0].id, guid: episodes[0].guid, ...ep0PerformanceOff}));
+      store.dispatch(new ACTIONS.CastleEpisodePerformanceMetricsSuccessAction({
+        seriesId: episodes[1].seriesId, id: episodes[1].id, guid: episodes[1].guid, ...ep1PerformanceOff}));
+      expect(result[0].allTimeDownloads).not.toEqual(ep0PerformanceOff.total);
+      expect(result[0].allTimeDownloads).toEqual(metricsUtil.getTotal(ep0Downloads));
+      expect(result[1].allTimeDownloads).not.toEqual(ep1PerformanceOff.total);
+      expect(result[1].allTimeDownloads).toEqual(metricsUtil.getTotal(ep1Downloads));
     });
   });
 

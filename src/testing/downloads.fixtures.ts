@@ -111,7 +111,9 @@ export const ep1Downloads = [
   ['2017-09-06T00:00:00Z', 900],
   ['2017-09-07T00:00:00Z', 858]
 ];
-
-export const podPerformance = {total: 1049119, previous7days: 5, this7days: 5, yesterday: 1, today: 1};
-export const ep0Performance = {total: 679, previous7days: 0, this7days: 5, yesterday: 1, today: 1};
-export const ep1Performance = {total: 9129, previous7days: 0, this7days: 5, yesterday: 1, today: 1};
+export const podPerformance = {total: 1049120, previous7days: 5, this7days: 5, yesterday: 1, today: 1};
+export const podPerformanceOff = {total: 1049119, previous7days: 5, this7days: 5, yesterday: 1, today: 1};
+export const ep0Performance = {total: 680, previous7days: 0, this7days: 5, yesterday: 1, today: 1};
+export const ep0PerformanceOff = {total: 679, previous7days: 0, this7days: 5, yesterday: 1, today: 1};
+export const ep1Performance = {total: 9120, previous7days: 0, this7days: 5, yesterday: 1, today: 1};
+export const ep1PerformanceOff = {total: 9119, previous7days: 0, this7days: 5, yesterday: 1, today: 1};

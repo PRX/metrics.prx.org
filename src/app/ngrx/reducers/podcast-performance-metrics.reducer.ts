@@ -33,7 +33,7 @@ export function PodcastPerformanceMetricsReducer(state: PodcastPerformanceMetric
       };
     }
     case ACTIONS.ActionTypes.CASTLE_PODCAST_PERFORMANCE_METRICS_SUCCESS: {
-      const {seriesId, feederId, total, previous7days, this7days, yesterday, today} = action['payload'];
+      const {seriesId, feederId, total, previous7days, this7days, yesterday, today} = action.payload;
       return {
         entities: {
           ...state.entities,
@@ -52,7 +52,7 @@ export function PodcastPerformanceMetricsReducer(state: PodcastPerformanceMetric
       };
     }
     case ACTIONS.ActionTypes.CASTLE_PODCAST_PERFORMANCE_METRICS_FAILURE: {
-      const {seriesId, feederId, error} = action['payload'];
+      const {seriesId, feederId, error} = action.payload;
       return {
         entities: {
           ...state.entities,

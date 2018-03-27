@@ -27,15 +27,20 @@ export const selectDownloadTablePodcastMetrics = createSelector(
       routerState.chartType === CHARTTYPE_PODCAST || (routerState.chartPodcast && routerState.chartType === CHARTTYPE_STACKED)) {
       const data = metricsData(routerState, podcastMetrics);
       if (data) {
+        const totalForPeriod = getTotal(data);
         podcastData = {
           title: 'All Episodes',
           downloads: mapMetricsToTimeseriesData(data),
           color: routerState.chartType === CHARTTYPE_PODCAST ? standardColor : neutralColor,
-          totalForPeriod: getTotal(data),
+          totalForPeriod,
           charted: routerState.chartPodcast
         };
         if (podcastPerformanceMetrics) {
-          podcastData.allTimeDownloads = podcastPerformanceMetrics.total;
+          if (totalForPeriod > podcastPerformanceMetrics.total) {
+            podcastData.allTimeDownloads = totalForPeriod;
+          } else {
+            podcastData.allTimeDownloads = podcastPerformanceMetrics.total;
+          }
         }
       }
     }
@@ -61,17 +66,22 @@ export const selectDownloadTableEpisodeMetrics = createSelector(
           const metrics = episodeMetrics.find(e => e.id === episode.id);
           const performanceMetrics = episodePerformanceMetrics.find(e => e.id === episode.id);
           const data = metricsData(routerState, metrics);
+          const totalForPeriod = getTotal(data);
           const episodeTableData: DownloadsTableModel = {
             title: episode.title,
             publishedAt: episode.publishedAt,
             downloads: mapMetricsToTimeseriesData(data),
             color: episode.color,
             id: episode.id,
-            totalForPeriod: getTotal(data),
+            totalForPeriod,
             charted: routerState.episodeIds.indexOf(episode.id) >= 0
           };
           if (performanceMetrics) {
-            episodeTableData.allTimeDownloads = performanceMetrics.total;
+            if (totalForPeriod > performanceMetrics.total) {
+              episodeTableData.allTimeDownloads = totalForPeriod;
+            } else {
+              episodeTableData.allTimeDownloads = performanceMetrics.total;
+            }
           }
           return episodeTableData;
         }).sort((a: DownloadsTableModel, b: DownloadsTableModel) => {

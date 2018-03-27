@@ -38,7 +38,17 @@ export function EpisodePerformanceMetricsReducer(state: EpisodePerformanceMetric
       return {
         entities: {
           ...state.entities,
-          [id]: {seriesId, id, guid, total, previous7days, this7days, yesterday, today, loading: false, loaded: true}
+          [id]: {seriesId,
+            id,
+            guid,
+            total,
+            previous7days,
+            this7days,
+            yesterday,
+            today,
+            loading: false,
+            loaded: true
+          }
         }
       };
     }

@@ -57,11 +57,13 @@ Enter in the client id in `.env`, setting `AUTH_CLIENT_ID` to the value from abo
 
 Make sure you're running the node version in `.nvmrc`, and you're off!!
 
+Note: you may need to install puma-dev proxy (see https://github.com/puma/puma-dev). Note that you can use the
+`-install-port` option to run on a port other than 80 if you have other services using that port (eg. Apache).
+
 ``` sh
 # install dependencies (https://yarnpkg.com/en/docs/install)
 yarn install
 
-# setup puma-dev proxy (see https://github.com/puma/puma-dev)
 echo 4202 > ~/.puma-dev/metrics.prx
 
 # dev server

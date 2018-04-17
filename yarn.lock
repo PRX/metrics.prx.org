@@ -3662,9 +3662,9 @@ newrelic@^2.4.2:
   optionalDependencies:
     "@newrelic/native-metrics" "^2.1.0"
 
-ngx-prx-styleguide@^0.0.33:
-  version "0.0.33"
-  resolved "https://registry.yarnpkg.com/ngx-prx-styleguide/-/ngx-prx-styleguide-0.0.33.tgz#49a2580c07297066e6f3877c2406d291ab300857"
+ngx-prx-styleguide@0.0.36:
+  version "0.0.36"
+  resolved "https://registry.yarnpkg.com/ngx-prx-styleguide/-/ngx-prx-styleguide-0.0.36.tgz#644f0921803e5d22d311e636b7ef37d696475128"
   dependencies:
     angular-2-dropdown-multiselect "^1.5.4"
     c3 "^0.4.11"

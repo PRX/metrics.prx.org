@@ -21,11 +21,13 @@ describe('CmsEffects', () => {
   let cms: MockHalService;
   let auth: MockHalDoc;
   let store: Store<any>;
+  let tokenIsValid: Boolean;
 
   beforeEach(() => {
     authToken.next('some-auth-token');
     cms = new MockHalService();
     auth = cms.mock('prx:authorization', {});
+    tokenIsValid = true;
   });
 
   beforeEach(() => {
@@ -34,7 +36,11 @@ describe('CmsEffects', () => {
         StoreModule.forRoot(reducers)
       ],
       providers: [
-        {provide: AuthService, useValue: {token: authToken}},
+        {provide: AuthService, useValue: {
+             token: authToken,
+             parseToken: () => { return tokenIsValid }
+           }
+        },
         {provide: HalService, useValue: cms},
         CmsService,
         CmsEffects,

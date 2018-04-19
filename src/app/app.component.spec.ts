@@ -13,6 +13,7 @@ import { reducers } from './ngrx/reducers';
 import { AccountModel, PodcastModel, RouterModel, ChartType, MetricsType,
   CHARTTYPE_PODCAST, INTERVAL_DAILY, METRICSTYPE_DOWNLOADS } from './ngrx';
 import * as ACTIONS from './ngrx/actions';
+import { Userinfo, UserinfoService } from 'ngx-prx-styleguide';
 
 /* tslint:disable-next-line:component-selector */
 @Component({selector: 'prx-auth', template: 'mock-prx-auth'})
@@ -23,6 +24,8 @@ describe('AppComponent', () => {
   let fix: ComponentFixture<AppComponent>;
   let de: DebugElement;
   let el: HTMLElement;
+  let userinfo = new Userinfo();
+  userinfo.name = 'Joey JoJo Jr Shabadoo';
 
   const account: AccountModel = {id: 1234, name: 'Joey JoJo Jr Shabadoo'};
   const podcasts: PodcastModel[] = [{seriesId: 9876, title: 'Foobar'}];
@@ -50,6 +53,7 @@ describe('AppComponent', () => {
         StoreModule.forRoot(reducers)
       ],
       providers: [
+        {provide: UserinfoService, useValue: { getUserinfo: userinfo }},
         Angulartics2GoogleAnalytics,
         Angulartics2
       ]

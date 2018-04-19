@@ -14,6 +14,7 @@ import { AccountModel, PodcastModel, RouterModel, ChartType, MetricsType,
   CHARTTYPE_PODCAST, INTERVAL_DAILY, METRICSTYPE_DOWNLOADS } from './ngrx';
 import * as ACTIONS from './ngrx/actions';
 import { Userinfo, UserinfoService } from 'ngx-prx-styleguide';
+import { Observable } from 'rxjs/Observable';
 
 /* tslint:disable-next-line:component-selector */
 @Component({selector: 'prx-auth', template: 'mock-prx-auth'})
@@ -53,7 +54,13 @@ describe('AppComponent', () => {
         StoreModule.forRoot(reducers)
       ],
       providers: [
-        {provide: UserinfoService, useValue: { getUserinfo: userinfo }},
+        {
+          provide: UserinfoService,
+          useValue: {
+            config: () => {},
+            getUserinfo: () => { return Observable.of(userinfo) }
+          }
+        },
         Angulartics2GoogleAnalytics,
         Angulartics2
       ]

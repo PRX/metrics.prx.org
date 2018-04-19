@@ -27,10 +27,14 @@ export class CmsEffects {
     .switchMap(() => {
       return this.auth.token.first().mergeMap(token => {
         if (token) {
-          return this.cms.individualAccount.map(doc => {
-            const account: AccountModel = {doc, id: doc.id, name: doc['name']};
-            return new ACTIONS.CmsAccountSuccessAction({account});
-          });
+          if (!this.auth.parseToken(token)) {
+            return Observable.of(new ACTIONS.CmsAccountFailureAction({error: 'Permission denied'}));
+          } else {
+            return this.cms.individualAccount.map(doc => {
+              const account: AccountModel = {doc, id: doc.id, name: doc['name']};
+              return new ACTIONS.CmsAccountSuccessAction({account});
+            });
+          }
         } else {
           return Observable.of(new ACTIONS.CmsAccountFailureAction({error: 'You are not logged in'}));
         }
@@ -42,6 +46,9 @@ export class CmsEffects {
     .ofType(ACTIONS.ActionTypes.CMS_PODCASTS)
     .switchMap(() => {
       return this.auth.token.first().mergeMap(token => {
+        if (token && !this.auth.parseToken(token)) {
+          return Observable.of(new ACTIONS.CmsPodcastsFailureAction({error: 'Permission denied'}));
+        }
         if (token) {
           return this.cms.auth.mergeMap(auth => {
             const count = auth.count('prx:series');

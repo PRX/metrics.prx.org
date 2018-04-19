@@ -8,7 +8,7 @@ import { AuthorizationComponent } from '../authorization/authorization.component
 
 export const loginRoutes: Routes = [
   { path: 'login',     component: LoginComponent, canActivate: [UnauthGuard] },
-  { path: 'permission-denied', component: AuthorizationComponent, canActivate: [AuthGuard] }
+  { path: 'permission-denied', component: AuthorizationComponent } // IMPORTANT no canActivate guard
 ];
 
 export const loginRouting: ModuleWithProviders = RouterModule.forRoot(loginRoutes);

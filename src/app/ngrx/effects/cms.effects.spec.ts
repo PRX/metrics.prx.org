@@ -156,6 +156,15 @@ describe('CmsEffects', () => {
       expect(effects.loadPodcasts$).toBeObservable(expect$);
     });
 
+    it('catches permission denied authorization error', () => {
+      const action = new ACTIONS.CmsPodcastsAction();
+      const completion = new ACTIONS.CmsPodcastsFailureAction({error: 'Permission denied'});
+      tokenIsValid = false;
+      actions$ = hot('-a', {a: action});
+      expect$ = cold('-r', {r: completion});
+      expect(effects.loadPodcasts$).toBeObservable(expect$);
+    });
+
   });
 
   describe('loadMostRecentEpisode', () => {

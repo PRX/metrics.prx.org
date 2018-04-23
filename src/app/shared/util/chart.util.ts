@@ -28,7 +28,7 @@ export const getTotal = (data: TimeseriesDatumModel[]): number => {
 
 export const baseColor = 'rgb(32, 80, 96)';
 export const neutralColor = '#a3a3a3';
-export const standardColor = '#368aa2';
+export const standardColor = '#0089bd';
 
 export const lightenColor = (color: string, percent: number) => {
   return tinycolor2(color).lighten(percent);

@@ -22,9 +22,9 @@ button {
   font-size: 1.2em;
   white-space: nowrap;
   background-color: transparent;
-  color: #368aa2;
+  color: #0089bd;
 }
 button:hover, button:focus, button.active {
   background-color: #ddd;
-  color: #2b7187;
+  color: #0070a1;
 }

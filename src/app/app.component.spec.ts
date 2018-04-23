@@ -25,7 +25,7 @@ describe('AppComponent', () => {
   let fix: ComponentFixture<AppComponent>;
   let de: DebugElement;
   let el: HTMLElement;
-  let userinfo = new Userinfo();
+  const userinfo = new Userinfo();
   userinfo.name = 'Joey JoJo Jr Shabadoo';
 
   const account: AccountModel = {id: 1234, name: 'Joey JoJo Jr Shabadoo'};
@@ -58,7 +58,7 @@ describe('AppComponent', () => {
           provide: UserinfoService,
           useValue: {
             config: () => {},
-            getUserinfo: () => { return Observable.of(userinfo) }
+            getUserinfo: () => Observable.of(userinfo)
           }
         },
         Angulartics2GoogleAnalytics,

@@ -38,7 +38,7 @@ describe('CmsEffects', () => {
       providers: [
         {provide: AuthService, useValue: {
              token: authToken,
-             parseToken: () => { return tokenIsValid }
+             parseToken: () => tokenIsValid
            }
         },
         {provide: HalService, useValue: cms},

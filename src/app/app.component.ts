@@ -7,6 +7,7 @@ import { Env } from './core/core.env';
 import { AccountModel, RouterModel } from './ngrx';
 import { selectAccount, selectAccountError, selectRouter } from './ngrx/reducers/selectors';
 import * as ACTIONS from './ngrx/actions';
+import { Userinfo, UserinfoService } from 'ngx-prx-styleguide';
 
 @Component({
   selector: 'metrics-root',
@@ -21,7 +22,8 @@ export class AppComponent implements OnInit, OnDestroy {
   accountStoreSub: Subscription;
   accountStoreErrorSub: Subscription;
   loggedIn = true; // until proven otherwise
-  userName: string;
+  authorized = false; // until proven otherwise
+  userinfo: Userinfo;
   userImageDoc: HalDoc;
 
   routerSub: Subscription;
@@ -29,10 +31,12 @@ export class AppComponent implements OnInit, OnDestroy {
 
   constructor(
     public store: Store<any>,
-    private angulartics2GoogleAnalytics: Angulartics2GoogleAnalytics
+    private angulartics2GoogleAnalytics: Angulartics2GoogleAnalytics,
+    private user: UserinfoService
   ) {
     this.store.dispatch(new ACTIONS.CmsAccountAction());
     this.store.dispatch(new ACTIONS.CmsPodcastsAction());
+    this.user.config(this.authHost);
   }
 
   ngOnInit() {
@@ -40,15 +44,26 @@ export class AppComponent implements OnInit, OnDestroy {
       if (state) {
         this.loggedIn = true;
         this.userImageDoc = state.doc;
-        this.userName = state.name;
+        this.authorized = true;
+        this.user.getUserinfo().subscribe(userinfo => { this.userinfo = userinfo; });
       }
     });
 
     this.accountStoreErrorSub = this.store.select(selectAccountError).subscribe((error: any) => {
       if (error) {
         this.loggedIn = false;
+        this.authorized = false;
         this.userImageDoc = null;
-        this.userName = null;
+        this.userinfo = null;
+
+        if (error === 'Permission denied') {
+          this.loggedIn = true;
+          this.authorized = false;
+          this.user.getUserinfo().subscribe(userinfo => {
+            this.userinfo = userinfo;
+            this.user.getUserDoc(userinfo).subscribe(userDoc => { this.userImageDoc = userDoc; });
+          });
+        }
       }
     });
 

@@ -21,11 +21,13 @@ describe('CmsEffects', () => {
   let cms: MockHalService;
   let auth: MockHalDoc;
   let store: Store<any>;
+  let tokenIsValid: Boolean;
 
   beforeEach(() => {
     authToken.next('some-auth-token');
     cms = new MockHalService();
     auth = cms.mock('prx:authorization', {});
+    tokenIsValid = true;
   });
 
   beforeEach(() => {
@@ -34,7 +36,11 @@ describe('CmsEffects', () => {
         StoreModule.forRoot(reducers)
       ],
       providers: [
-        {provide: AuthService, useValue: {token: authToken}},
+        {provide: AuthService, useValue: {
+             token: authToken,
+             parseToken: () => tokenIsValid
+           }
+        },
         {provide: HalService, useValue: cms},
         CmsService,
         CmsEffects,
@@ -145,6 +151,15 @@ describe('CmsEffects', () => {
       const action = new ACTIONS.CmsPodcastsAction();
       const completion = new ACTIONS.CmsPodcastsFailureAction({error: 'You are not logged in'});
       authToken.next(null);
+      actions$ = hot('-a', {a: action});
+      expect$ = cold('-r', {r: completion});
+      expect(effects.loadPodcasts$).toBeObservable(expect$);
+    });
+
+    it('catches permission denied authorization error', () => {
+      const action = new ACTIONS.CmsPodcastsAction();
+      const completion = new ACTIONS.CmsPodcastsFailureAction({error: 'Permission denied'});
+      tokenIsValid = false;
       actions$ = hot('-a', {a: action});
       expect$ = cold('-r', {r: completion});
       expect(effects.loadPodcasts$).toBeObservable(expect$);

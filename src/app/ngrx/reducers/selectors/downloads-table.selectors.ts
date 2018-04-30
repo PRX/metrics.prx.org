@@ -13,6 +13,7 @@ import { EpisodePerformanceMetricsModel } from '../episode-performance-metrics.r
 import { selectEpisodePagePerformanceMetrics } from './episode-performance-metrics.selectors';
 import { metricsData, getTotal } from '../../../shared/util/metrics.util';
 import { mapMetricsToTimeseriesData, neutralColor, standardColor } from '../../../shared/util/chart.util';
+import {CHARTTYPE_EPISODES} from "../models/chart.type";
 
 export const selectDownloadTablePodcastMetrics = createSelector(
   selectRouter,
@@ -23,8 +24,7 @@ export const selectDownloadTablePodcastMetrics = createSelector(
    podcastPerformanceMetrics: PodcastPerformanceMetricsModel): DownloadsTableModel => {
     let podcastData: DownloadsTableModel;
 
-    if (podcastMetrics &&
-      routerState.chartType === CHARTTYPE_PODCAST || (routerState.chartPodcast && routerState.chartType === CHARTTYPE_STACKED)) {
+    if (podcastMetrics && routerState.chartType !== CHARTTYPE_EPISODES) {
       const data = metricsData(routerState, podcastMetrics);
       if (data) {
         const totalForPeriod = getTotal(data);

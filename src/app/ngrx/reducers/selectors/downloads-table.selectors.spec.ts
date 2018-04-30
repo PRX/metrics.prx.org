@@ -5,7 +5,8 @@ import { RootState, reducers } from '../';
 import { DownloadsTableModel, getMetricsProperty } from '../models';
 import { routerState,  podcast, episodes,
   podDownloads, podPerformance, podPerformanceOff,
-  ep0Downloads, ep1Downloads, ep0Performance, ep0PerformanceOff, ep1Performance, ep1PerformanceOff } from '../../../../testing/downloads.fixtures';
+  ep0Downloads, ep1Downloads,
+  ep0Performance, ep0PerformanceOff, ep1Performance, ep1PerformanceOff } from '../../../../testing/downloads.fixtures';
 import * as ACTIONS from '../../actions';
 import * as chartUtil from '../../../shared/util/chart.util';
 import * as metricsUtil from '../../../shared/util/metrics.util';
@@ -64,6 +65,11 @@ describe('Downloads Table Selectors', () => {
         ...podPerformanceOff }));
       expect(result.allTimeDownloads).not.toEqual(podPerformanceOff.total);
       expect(result.allTimeDownloads).toEqual(metricsUtil.getTotal(podDownloads));
+    });
+
+    it('should keep podcast in table for stacked chart when unselected for charting', () => {
+      store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerState: {...routerState, chartPodcast: false}}));
+      expect(result.allTimeDownloads).toEqual(podPerformance.total);
     });
   });
 

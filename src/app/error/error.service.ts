@@ -7,7 +7,7 @@ export class ErrorService implements ErrorHandler {
   private defaultHandler: ErrorHandler;
 
   constructor(private modal: ModalService) {
-    this.defaultHandler = new ErrorHandler(false); // don't re-throw
+    this.defaultHandler = new ErrorHandler();
   }
 
   handleError(err) {

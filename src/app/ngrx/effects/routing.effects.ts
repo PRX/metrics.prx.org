@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Router, RoutesRecognized } from '@angular/router';
 import 'rxjs/add/operator/switchMap';
+import 'rxjs/add/operator/filter';
 import { Observable } from 'rxjs/Observable';
 import { Action, Store } from '@ngrx/store';
 import { ROUTER_NAVIGATION } from '@ngrx/router-store';

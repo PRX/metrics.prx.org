@@ -1,6 +1,6 @@
 import { NgModule, Optional, SkipSelf } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HttpModule } from '@angular/http';
+import { HttpClientModule } from '@angular/common/http';
 import { FooterModule, HalModule, HeaderModule, ModalModule, ModalService } from 'ngx-prx-styleguide';
 
 import { CastleService, CmsService } from './hal';
@@ -9,7 +9,7 @@ import { CastleService, CmsService } from './hal';
   declarations: [],
   imports: [
     CommonModule,
-    HttpModule,
+    /*HttpClientModule,*/
     HalModule
   ],
   exports: [

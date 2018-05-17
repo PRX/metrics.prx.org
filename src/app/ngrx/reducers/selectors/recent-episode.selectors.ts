@@ -28,7 +28,7 @@ export const selectRecentEpisodeMetrics = createSelector(
 export const selectRecentEpisodePerformanceMetrics = createSelector(
   selectRecentEpisode, selectEpisodePerformanceMetricsEntities, selectRouter, selectRecentEpisodeMetrics,
   (episode: EpisodeModel, entities, routerState, metrics): EpisodePerformanceMetricsModel => {
-    if (episode) {
+    if (episode && entities[episode.id]) {
       if (metrics) {
         // this whole bit can't reconcile totals if the app was loaded from non default route without recent episode metrics data
         // if we have full metrics data on the recent episode, check the today and all time total values and reconcile

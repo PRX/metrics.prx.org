@@ -29,9 +29,9 @@ export const selectRecentEpisodePerformanceMetrics = createSelector(
   selectRecentEpisode, selectEpisodePerformanceMetricsEntities, selectRouter, selectRecentEpisodeMetrics,
   (episode: EpisodeModel, entities, routerState, metrics): EpisodePerformanceMetricsModel => {
     if (episode && entities[episode.id]) {
+      // if we have full metrics data on the recent episode, check the today and all time total values and reconcile
       if (metrics) {
         // this whole bit can't reconcile totals if the app was loaded from non default route without recent episode metrics data
-        // if we have full metrics data on the recent episode, check the today and all time total values and reconcile
         let totalForToday = entities[episode.id].today;
         // if recent episode is not on routed episode page, check for episode dailyDownloads and total
         const totalForRange = getTotal(metricsData(routerState, metrics)) || (metrics.dailyDownloads && getTotal(metrics.dailyDownloads));
@@ -43,8 +43,8 @@ export const selectRecentEpisodePerformanceMetrics = createSelector(
           new Date(metrics.dailyDownloads[metrics.dailyDownloads.length - 1][0]).valueOf() >= beginningOfTodayUTC().valueOf()) {
           totalForToday = metrics.dailyDownloads[metrics.dailyDownloads.length - 1][1];
         }
-        if (entities[episode.id] && metrics &&
-          (totalForRange > entities[episode.id].total || totalForToday > entities[episode.id].today)) {
+
+        if (totalForRange > entities[episode.id].total || totalForToday > entities[episode.id].today) {
           return {
             ...entities[episode.id],
             total: Math.max(totalForRange, entities[episode.id].total),

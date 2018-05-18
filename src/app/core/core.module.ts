@@ -9,7 +9,6 @@ import { CastleService, CmsService } from './hal';
   declarations: [],
   imports: [
     CommonModule,
-    /*HttpClientModule,*/
     HalModule
   ],
   exports: [

@@ -4,7 +4,7 @@
   "license": "MIT",
   "scripts": {
     "start": "prx-ng-serve dev",
-    "build": "ng build --prod",
+    "build": "ng build --prod --aot --vc=true",
     "test": "ng test",
     "lint": "ng lint --type-check",
     "e2e": "ng e2e",

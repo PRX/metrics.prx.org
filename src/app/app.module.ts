@@ -4,7 +4,8 @@ import { StoreRouterConnectingModule, RouterStateSerializer } from '@ngrx/router
 import { EffectsModule } from '@ngrx/effects';
 import { AuthModule } from 'ngx-prx-styleguide';
 import { StoreModule, ActionReducerMap } from '@ngrx/store';
-import { Angulartics2Module, Angulartics2GoogleAnalytics } from 'angulartics2';
+import { Angulartics2Module } from 'angulartics2';
+import { Angulartics2GoogleAnalytics } from 'angulartics2/ga';
 
 import { AppComponent } from './app.component';
 import { routing, routingProviders, routingComponents } from './app.routing';

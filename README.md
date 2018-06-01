@@ -67,11 +67,11 @@ yarn install
 echo 4202 > ~/.puma-dev/metrics.prx
 
 # dev server
-npm start
+yarn start
 open http://metrics.prx.dev
 
 # run tests in Chrome
-npm test
+yarn test
 ```
 
 ## Docker Install

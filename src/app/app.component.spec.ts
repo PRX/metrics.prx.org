@@ -29,7 +29,7 @@ describe('AppComponent', () => {
   let el: HTMLElement;
   let store: Store<any>;
   const userinfo = new Userinfo();
-  userinfo.name = 'Joey JoJo Jr Shabadoo';
+  userinfo.email = 'Joey@Shabadoo.pizza';
 
   const account: AccountModel = {id: 1234, name: 'Joey JoJo Jr Shabadoo'};
   const podcasts: PodcastModel[] = [{seriesId: 9876, title: 'Foobar'}];
@@ -106,11 +106,11 @@ describe('AppComponent', () => {
 
   it('should show user info when logged in', async(() => {
     expect(de.query(By.css('prx-navuser'))).toBeTruthy();
-    expect(el.textContent).toContain('Joey JoJo Jr Shabadoo');
+    expect(el.textContent).toContain(userinfo.email);
     store.dispatch(new ACTIONS.CmsAccountFailureAction({error: 'whatevs'}));
     fix.detectChanges();
     expect(de.query(By.css('prx-navuser'))).toBeNull();
-    expect(el.textContent).not.toContain('Joey JoJo Jr Shabadoo');
+    expect(el.textContent).not.toContain(userinfo.email);
   }));
 
   it('should dispatch episode load action when series or page has changed', () => {

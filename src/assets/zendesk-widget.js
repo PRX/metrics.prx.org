@@ -13,3 +13,13 @@ window.zEmbed || function (e, t) {
     n && (this.domain = n), e.id = "js-iframe-async", e.src = "https://assets.zendesk.com/embeddable_framework/main.js", this.t = +new Date, this.zendeskHost = "prx.zendesk.com", this.zEQueue = a, this.body.appendChild(e)
   }, o.write('<body onload="document._l();">'), o.close()
 }();
+
+window.zESettings = {
+  webWidget: {
+    // https://developer.zendesk.com/embeddables/docs/widget/api
+    // is possible to set positioning and offset to top right but cannot configure button padding
+    color: {
+      theme: '#0089bd'
+    }
+  }
+};

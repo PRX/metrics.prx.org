@@ -12,8 +12,7 @@ import { RouteSeriesAction } from '../../ngrx/actions';
       [selectedPodcast]="selectedPodcast$ | async"
       [podcasts]="podcasts$ | async"
       (podcastChange)="onPodcastChange($event)"></metrics-podcast-dropdown>
-  `,
-  styleUrls: ['../menu/dropdown.css', './podcast-nav-dropdown.component.css']
+  `
 })
 export class PodcastNavComponent {
   selectedPodcast$: Observable<PodcastModel>;

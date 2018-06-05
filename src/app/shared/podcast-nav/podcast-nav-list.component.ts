@@ -11,7 +11,8 @@ import { PodcastModel } from '../../ngrx';
         </button>
       </li>
     </ul>
-  `
+  `,
+  styleUrls: ['./podcast-nav-list.component.css']
 })
 export class PodcastNavListComponent {
   @Input() selectedPodcast: PodcastModel;

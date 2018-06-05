@@ -29,7 +29,7 @@ describe('AppComponent', () => {
   let el: HTMLElement;
   let store: Store<any>;
   const userinfo = new Userinfo();
-  userinfo['name'] = userinfo['email'] = 'Joey@Shabadoo.pizza';
+  userinfo['email'] = 'Joey@Shabadoo.pizza';
 
   const account: AccountModel = {id: 1234, name: 'Joey JoJo Jr Shabadoo'};
   const podcasts: PodcastModel[] = [{seriesId: 9876, title: 'Foobar'}];

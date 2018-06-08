@@ -1,5 +1,5 @@
 import { createSelector } from '@ngrx/store';
-import { RouterModel, DownloadsTableModel, CHARTTYPE_PODCAST, CHARTTYPE_STACKED } from '../models';
+import { RouterModel, DownloadsTableModel, CHARTTYPE_PODCAST, CHARTTYPE_EPISODES } from '../models';
 import { selectRouter } from './router.selectors';
 import { EpisodeModel } from '../episode.reducer';
 import { selectSelectedPageEpisodes } from './episode.selectors';
@@ -13,7 +13,6 @@ import { EpisodePerformanceMetricsModel } from '../episode-performance-metrics.r
 import { selectEpisodePagePerformanceMetrics } from './episode-performance-metrics.selectors';
 import { metricsData, getTotal } from '../../../shared/util/metrics.util';
 import { mapMetricsToTimeseriesData, neutralColor, standardColor } from '../../../shared/util/chart.util';
-import {CHARTTYPE_EPISODES} from "../models/chart.type";
 
 export const selectDownloadTablePodcastMetrics = createSelector(
   selectRouter,

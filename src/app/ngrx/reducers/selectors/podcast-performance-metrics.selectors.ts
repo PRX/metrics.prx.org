@@ -5,7 +5,8 @@ import { getPodcastPerformanceMetricsEntities } from '../podcast-performance-met
 
 export const selectPodcastPerformanceMetricsState = createSelector(selectAppState, (state: RootState) => state.podcastPerformanceMetrics);
 export const selectPodcastPerformanceMetricsEntities = createSelector(selectPodcastPerformanceMetricsState, getPodcastPerformanceMetricsEntities);
-export const selectSelectedPodcastPerformanceMetrics = createSelector(selectPodcastRoute, selectPodcastPerformanceMetricsEntities,
+export const selectSelectedPodcastPerformanceMetrics = createSelector(
+  selectPodcastRoute, selectPodcastPerformanceMetricsEntities,
   (podcastSeriesId: number, entities) => {
     return entities[podcastSeriesId];
   });

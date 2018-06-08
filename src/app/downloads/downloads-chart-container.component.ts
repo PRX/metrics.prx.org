@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Store } from '@ngrx/store';
+import { Store, select } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
 import { TimeseriesChartModel } from 'ngx-prx-styleguide';
 import { RouterModel, CHARTTYPE_PODCAST } from '../ngrx';
@@ -23,8 +23,8 @@ export class DownloadsChartContainerComponent implements OnInit {
   constructor(private store: Store<any>) {}
 
   ngOnInit() {
-    this.routerState$ = this.store.select(selectRouter);
-    this.chartData$ = this.store.select(selectDownloadChartMetrics);
+    this.routerState$ = this.store.pipe(select(selectRouter));
+    this.chartData$ = this.store.pipe(select(selectDownloadChartMetrics));
   }
 
   routeToPodcastChart(): void {

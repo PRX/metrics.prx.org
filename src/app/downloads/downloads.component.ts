@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
-import { Store } from '@ngrx/store';
+import { Store, select } from '@ngrx/store';
 import { Subscription } from 'rxjs/Subscription';
 import { Observable } from 'rxjs/Observable';
 import { CastleService } from '../core';
@@ -44,9 +44,9 @@ export class DownloadsComponent implements OnInit, OnDestroy {
   constructor(private castle: CastleService,
               public store: Store<any>,
               private router: Router) {
-    this.loading$ = this.store.select(selectLoading);
-    this.loaded$ = this.store.select(selectLoaded);
-    this.errors$ = this.store.select(selectErrors);
+    this.loading$ = this.store.pipe(select(selectLoading));
+    this.loaded$ = this.store.pipe(select(selectLoaded));
+    this.errors$ = this.store.pipe(select(selectErrors));
   }
 
   ngOnInit() {
@@ -54,12 +54,12 @@ export class DownloadsComponent implements OnInit, OnDestroy {
   }
 
   subPodcastsAndRoute() {
-    this.podcastSub = this.store.select(selectPodcasts).subscribe((podcasts: PodcastModel[]) => {
+    this.podcastSub = this.store.pipe(select(selectPodcasts)).subscribe((podcasts: PodcastModel[]) => {
       if (podcasts && podcasts.length) {
         this.podcasts = podcasts;
 
         if (!this.routerSub) {
-          this.routerSub = this.store.select(selectRouter).subscribe((newRouterState: RouterModel) => {
+          this.routerSub = this.store.pipe(select(selectRouter)).subscribe((newRouterState: RouterModel) => {
             if (!this.routerState) {
               this.setDefaultRouteFromExistingRoute(newRouterState);
               this.updatePodcast = this.updateEpisodes = true;
@@ -119,7 +119,7 @@ export class DownloadsComponent implements OnInit, OnDestroy {
 
   subEpisodes() {
     // update episodes separate from routerState change when we're waiting on the episodes to load
-    this.episodeSub = this.store.select(selectEpisodes).subscribe((allAvailableEpisodes: EpisodeModel[]) => {
+    this.episodeSub = this.store.pipe(select(selectEpisodes)).subscribe((allAvailableEpisodes: EpisodeModel[]) => {
       const episodes = filterPodcastEpisodePage(this.routerState, allAvailableEpisodes);
       if (episodes && episodes.length) {
         this.pageEpisodes = episodes;

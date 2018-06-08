@@ -1,5 +1,5 @@
 import { Component, OnDestroy } from '@angular/core';
-import { Store } from '@ngrx/store';
+import { Store, select } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
 import { PodcastModel, EpisodeModel, RouterModel, CHARTTYPE_EPISODES,
@@ -40,12 +40,12 @@ export class NavMenuComponent implements OnDestroy {
   ];
 
   constructor(public store: Store<any>) {
-    this.selectedPodcast$ = this.store.select(selectSelectedPodcast);
-    this.mostRecentEpisode$ = this.store.select(selectRecentEpisode);
-    this.podcastPerformance$ = this.store.select(selectSelectedPodcastPerformanceMetrics);
-    this.episodePerformance$ = this.store.select(selectRecentEpisodePerformanceMetrics);
+    this.selectedPodcast$ = this.store.pipe(select(selectSelectedPodcast));
+    this.mostRecentEpisode$ = this.store.pipe(select(selectRecentEpisode));
+    this.podcastPerformance$ = this.store.pipe(select(selectSelectedPodcastPerformanceMetrics));
+    this.episodePerformance$ = this.store.pipe(select(selectRecentEpisodePerformanceMetrics));
 
-    this.routerSub = this.store.select(selectRouter).subscribe((routerState) => this.routerState = routerState);
+    this.routerSub = this.store.pipe(select(selectRouter)).subscribe((routerState) => this.routerState = routerState);
   }
 
   ngOnDestroy() {

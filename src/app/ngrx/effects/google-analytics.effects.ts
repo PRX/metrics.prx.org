@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import 'rxjs/add/operator/switchMap';
+import { map, switchMap } from 'rxjs/operators';
 import { Observable } from 'rxjs/Observable';
-import { Actions, Effect } from '@ngrx/effects';
-import { Store } from '@ngrx/store';
+import { Actions, Effect, ofType } from '@ngrx/effects';
+import { Store, select } from '@ngrx/store';
 import { Angulartics2 } from 'angulartics2';
 import { ActionTypes, GoogleAnalyticsEventAction } from '../actions';
 import { PodcastModel, RouterModel } from '../';
@@ -14,9 +14,9 @@ export class GoogleAnalyticsEffects {
   routerState: RouterModel;
 
   @Effect({dispatch: false})
-  fromGAEvent$: Observable<void> = this.actions$
-    .ofType(ActionTypes.GOOGLE_ANALYTICS_EVENT)
-    .map((action: GoogleAnalyticsEventAction) => {
+  fromGAEvent$: Observable<void> = this.actions$.pipe(
+    ofType(ActionTypes.GOOGLE_ANALYTICS_EVENT),
+    map((action: GoogleAnalyticsEventAction) => {
       const event = {
         action: action.payload.gaAction
       };
@@ -41,15 +41,16 @@ export class GoogleAnalyticsEffects {
         event['value'] = action.payload.value;
       }
       this.angulartics2.eventTrack.next(event);
-    });
+    })
+  );
 
   constructor(private actions$: Actions,
               public angulartics2: Angulartics2,
               public store: Store<any>) {
-    this.store.select(selectPodcasts).subscribe(podcasts => {
+    this.store.pipe(select(selectPodcasts)).subscribe(podcasts => {
       this.podcasts = podcasts;
     });
-    this.store.select(selectRouter).subscribe(routerState => {
+    this.store.pipe(select(selectRouter)).subscribe(routerState => {
       this.routerState = routerState;
     });
   }

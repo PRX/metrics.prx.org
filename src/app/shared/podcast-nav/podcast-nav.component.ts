@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Store } from '@ngrx/store';
+import { Store, select } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
 import { PodcastModel } from '../../ngrx';
 import { selectPodcasts, selectSelectedPodcast } from '../../ngrx/reducers/selectors';
@@ -19,8 +19,8 @@ export class PodcastNavComponent {
   podcasts$: Observable<PodcastModel[]>;
 
   constructor(private store: Store<any>) {
-    this.podcasts$ = this.store.select(selectPodcasts);
-    this.selectedPodcast$ = this.store.select(selectSelectedPodcast);
+    this.podcasts$ = this.store.pipe(select(selectPodcasts));
+    this.selectedPodcast$ = this.store.pipe(select(selectSelectedPodcast));
   }
 
   onPodcastChange(val) {

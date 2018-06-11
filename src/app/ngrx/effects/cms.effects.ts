@@ -1,7 +1,10 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
-import { catchError, first, map, mergeMap, switchMap } from 'rxjs/operators';
-import 'rxjs/add/observable/of';
+import { catchError } from 'rxjs/operators/catchError';
+import { first } from 'rxjs/operators/first';
+import { map } from 'rxjs/operators/map';
+import { mergeMap } from 'rxjs/operators/mergeMap';
+import { switchMap } from 'rxjs/operators/switchMap';
 import { Action, Store, select } from '@ngrx/store';
 import { Actions, Effect, ofType } from '@ngrx/effects';
 

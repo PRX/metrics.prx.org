@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, Input } from '@angular/core';
-import { Store } from '@ngrx/store';
+import { Store, select } from '@ngrx/store';
 import { Subscription } from 'rxjs/Subscription';
 import { Observable } from 'rxjs/Observable';
 import { DownloadsTableModel, EpisodeModel, RouterModel, CHARTTYPE_EPISODES } from '../ngrx';
@@ -35,11 +35,11 @@ export class DownloadsTableContainerComponent implements OnInit, OnDestroy {
   constructor(private store: Store<any>) {}
 
   ngOnInit() {
-    this.podcastTableData$ = this.store.select(selectDownloadTablePodcastMetrics);
-    this.episodeTableData$ = this.store.select(selectDownloadTableEpisodeMetrics);
-    this.routerState$ = this.store.select(selectRouter);
+    this.podcastTableData$ = this.store.pipe(select(selectDownloadTablePodcastMetrics));
+    this.episodeTableData$ = this.store.pipe(select(selectDownloadTableEpisodeMetrics));
+    this.routerState$ = this.store.pipe(select(selectRouter));
 
-    this.episodePageSub = this.store.select(selectSelectedPageEpisodes).subscribe((pageEpisodes: EpisodeModel[]) => {
+    this.episodePageSub = this.store.pipe(select(selectSelectedPageEpisodes)).subscribe((pageEpisodes: EpisodeModel[]) => {
       pageEpisodes.forEach(episode => {
         const { id, seriesId, guid } = episode;
         this.store.dispatch(new ACTIONS.CastleEpisodePerformanceMetricsLoadAction({id, seriesId, guid}));

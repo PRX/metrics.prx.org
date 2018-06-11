@@ -42,18 +42,15 @@ export class EpisodePageComponent implements OnChanges {
     if (this.totalPages <= this.showNumPages) {
       this.pagesBegin = 1;
       this.pagesEnd = this.lastPage;
-    }
-    else {
-      var halfWindow = Math.floor(this.showNumPages / 2);
+    } else {
+      const halfWindow = Math.floor(this.showNumPages / 2);
       if (this.currentPage <= (halfWindow + 1)) {
         this.pagesBegin = 1;
         this.pagesEnd = this.showNumPages;
-      }
-      else if ((this.currentPage + halfWindow) >= this.lastPage) {
+      } else if ((this.currentPage + halfWindow) >= this.lastPage) {
         this.pagesBegin = this.lastPage - this.showNumPages + 1;
         this.pagesEnd = this.lastPage;
-      }
-      else {
+      } else {
         this.pagesBegin = this.currentPage - halfWindow;
         this.pagesEnd = this.currentPage + halfWindow;
       }

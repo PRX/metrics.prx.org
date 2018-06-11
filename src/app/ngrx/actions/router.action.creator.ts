@@ -1,7 +1,6 @@
 import { Action } from '@ngrx/store';
 import { ActionTypes } from './action.types';
-import { RouterModel, ChartType, IntervalModel } from '../';
-import {MetricsType} from "../reducers/models/metrics.type";
+import { RouterModel, ChartType, IntervalModel, MetricsType } from '../';
 
 // CustomRouterNavigation happens as a result of
 // the StoreRouterConnectingModule and the RouterStateSerializer and the customRouterNavigation$ routing effect

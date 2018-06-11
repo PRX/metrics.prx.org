@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Store } from '@ngrx/store';
+import { Store, select } from '@ngrx/store';
 import { Subscription } from 'rxjs/Subscription';
 import { Angulartics2GoogleAnalytics } from 'angulartics2/ga';
 import { HalDoc } from './core';
@@ -40,7 +40,7 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.accountStoreSub = this.store.select(selectAccount).subscribe((state: AccountModel) => {
+    this.accountStoreSub = this.store.pipe(select(selectAccount)).subscribe((state: AccountModel) => {
       if (state) {
         this.loggedIn = true;
         this.userImageDoc = state.doc;
@@ -49,7 +49,7 @@ export class AppComponent implements OnInit, OnDestroy {
       }
     });
 
-    this.accountStoreErrorSub = this.store.select(selectAccountError).subscribe((error: any) => {
+    this.accountStoreErrorSub = this.store.pipe(select(selectAccountError)).subscribe((error: any) => {
       if (error) {
         this.loggedIn = false;
         this.authorized = false;
@@ -68,7 +68,7 @@ export class AppComponent implements OnInit, OnDestroy {
     });
 
     // TODO: seems like getEpisodes/CmsPodcastEpisodePageAction should actually happen as a result of CmsPodcastsSuccessAction
-    this.routerSub = this.store.select(selectRouter).subscribe((newRouterState: RouterModel) => {
+    this.routerSub = this.store.pipe(select(selectRouter)).subscribe((newRouterState: RouterModel) => {
       if (newRouterState && newRouterState.podcastSeriesId) {
         if (!this.routerState) {
           this.getEpisodesAndRecent(newRouterState);

@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Store } from '@ngrx/store';
+import { Store, select } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
 import { selectRouter, selectChartTypeRoute, selectIntervalRoute, selectStandardRangeRoute } from '../../ngrx/reducers/selectors';
 import { RouterModel, IntervalModel, ChartType } from '../../ngrx';
@@ -29,9 +29,9 @@ export class MenuBarComponent {
   standardRange$: Observable<string>;
 
   constructor(private store: Store<any>) {
-    this.routerState$ = this.store.select(selectRouter);
-    this.chartType$ = this.store.select(selectChartTypeRoute);
-    this.interval$ = this.store.select(selectIntervalRoute);
-    this.standardRange$ = this.store.select(selectStandardRangeRoute);
+    this.routerState$ = this.store.pipe(select(selectRouter));
+    this.chartType$ = this.store.pipe(select(selectChartTypeRoute));
+    this.interval$ = this.store.pipe(select(selectIntervalRoute));
+    this.standardRange$ = this.store.pipe(select(selectStandardRangeRoute));
   }
 }

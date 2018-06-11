@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { StoreModule, Store } from '@ngrx/store';
+import { StoreModule, Store, select } from '@ngrx/store';
 
 import { RootState, reducers } from '../';
 import { DownloadsTableModel, getMetricsProperty } from '../models';
@@ -47,7 +47,7 @@ describe('Downloads Table Selectors', () => {
 
   describe('podcast download table metrics', () => {
     beforeEach(() => {
-      store.select(selectDownloadTablePodcastMetrics).subscribe((tableMetrics: DownloadsTableModel) => {
+      store.pipe(select(selectDownloadTablePodcastMetrics)).subscribe((tableMetrics: DownloadsTableModel) => {
         result = tableMetrics;
       });
     });
@@ -75,7 +75,7 @@ describe('Downloads Table Selectors', () => {
 
   describe('episode download table metrics', () => {
     beforeEach(() => {
-      store.select(selectDownloadTableEpisodeMetrics).subscribe((tableMetrics: DownloadsTableModel[]) => {
+      store.pipe(select(selectDownloadTableEpisodeMetrics)).subscribe((tableMetrics: DownloadsTableModel[]) => {
         result = tableMetrics;
       });
     });

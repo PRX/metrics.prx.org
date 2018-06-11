@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Store } from '@ngrx/store';
+import { Store, select } from '@ngrx/store';
 import { Subscription } from 'rxjs/Subscription';
 import { selectPodcastsError } from '../ngrx/reducers/selectors';
 
@@ -19,7 +19,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     // The only reason we're on this route is if podcasts have not yet loaded or if the user has no podcasts
-    this.podcastsSub = this.store.select(selectPodcastsError).subscribe((error: any) => {
+    this.podcastsSub = this.store.pipe(select(selectPodcastsError)).subscribe((error: any) => {
       this.error = error;
     });
   }

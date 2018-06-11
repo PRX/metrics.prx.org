@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { StoreModule, Store } from '@ngrx/store';
+import { StoreModule, Store, select } from '@ngrx/store';
 
 import { RootState, reducers } from '../';
 import { getMetricsProperty, ChartType,
@@ -46,7 +46,7 @@ describe('Downloads Chart Selectors', () => {
       store.dispatch(new ACTIONS.CastleEpisodePerformanceMetricsSuccessAction({
         seriesId: episodes[1].seriesId, id: episodes[1].id, guid: episodes[1].guid, ...ep1Performance}));
 
-      store.select(selectDownloadChartMetrics).subscribe((data) => {
+      store.pipe(select(selectDownloadChartMetrics)).subscribe((data) => {
         result = data;
       });
     });
@@ -97,7 +97,7 @@ describe('Downloads Chart Selectors', () => {
       store.dispatch(new ACTIONS.CastlePodcastPerformanceMetricsSuccessAction({seriesId: podcast.seriesId, feederId: podcast.feederId,
         ...podPerformance }));
 
-      store.select(selectDownloadChartMetrics).subscribe((data) => {
+      store.pipe(select(selectDownloadChartMetrics)).subscribe((data) => {
         result = data;
       });
     });
@@ -136,7 +136,7 @@ describe('Downloads Chart Selectors', () => {
       store.dispatch(new ACTIONS.CastleEpisodePerformanceMetricsSuccessAction({
         seriesId: episodes[1].seriesId, id: episodes[1].id, guid: episodes[1].guid, ...ep1Performance}));
 
-      store.select(selectDownloadChartMetrics).subscribe((data) => {
+      store.pipe(select(selectDownloadChartMetrics)).subscribe((data) => {
         result = data;
       });
     });

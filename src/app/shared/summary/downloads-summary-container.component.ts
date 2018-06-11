@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Store } from '@ngrx/store';
+import { Store, select } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
 import { selectPodcastMetricsFilteredTotal } from '../../ngrx/reducers/selectors';
 
@@ -16,6 +16,6 @@ export class DownloadsSummaryContainerComponent {
   total$: Observable<number>;
 
   constructor(private store: Store<any>) {
-    this.total$ = store.select(selectPodcastMetricsFilteredTotal);
+    this.total$ = store.pipe(select(selectPodcastMetricsFilteredTotal));
   }
 }

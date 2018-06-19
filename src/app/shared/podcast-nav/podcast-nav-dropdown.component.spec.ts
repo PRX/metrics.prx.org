@@ -45,7 +45,7 @@ describe('PodcastNavComponent', () => {
     comp.podcasts = [podcasts[0]];
     comp.selectedPodcast = podcasts[0];
     fix.detectChanges();
-    expect(de.query(By.css('span')).nativeElement.innerText).toEqual((podcasts[0].title).toUpperCase());
+    expect(de.query(By.css('span')).nativeElement.innerText).toEqual(podcasts[0].title.toUpperCase());
   });
 
   it('should show a drop down of podcasts if there are multiple to choose from', () => {
@@ -53,6 +53,6 @@ describe('PodcastNavComponent', () => {
     comp.selectedPodcast = podcasts[0];
     fix.detectChanges();
     expect(de.query(By.css('.dropdown'))).toBeDefined();
-    expect(de.query(By.css('.dropdown-button > button')).nativeElement.innerText).toContain((podcasts[0].title).toUpperCase());
+    expect(de.query(By.css('.dropdown-button > button')).nativeElement.innerText).toContain(podcasts[0].title.toUpperCase());
   });
 });

@@ -5,6 +5,11 @@
   display: flex;
   align-items: center;
 }
+@media (max-width: 768px) {
+  .dropdown-button, .open .dropdown-button {
+    height: 50px;
+  }
+}
 .single, .dropdown-button > button {
   margin: 0;
   padding: 0 10px;

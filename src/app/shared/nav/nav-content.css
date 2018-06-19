@@ -4,14 +4,14 @@
 }
 
 .content {
-  flex-basis: 75%;
-  max-width: 75%;
+  max-width: calc(100% - 200px);
+  flex-grow: 1;
 }
 
 @media (max-width: 768px) {
   :host {
-    padding: 20px 10px 10px 0px;
-    display: block;
+    padding: 0 10px 10px 10px;
+    flex-direction: column;
   }
   .content {
     max-width: 100%;

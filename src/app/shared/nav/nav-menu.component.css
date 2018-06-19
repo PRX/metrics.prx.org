@@ -1,7 +1,5 @@
 :host {
   flex-basis: 25%;
-  padding-right: 5px;
-  margin-left: 5px;
   min-width: 0;
 }
 @media (max-width: 768px) {
@@ -10,21 +8,29 @@
   }
 }
 nav {
-  background-color: white;
-  min-height: 400px;
-  padding-top: 20px;
+  padding: 40px 0px;
 }
 button {
-  display: block;
+  display: flex;
+  align-items: center;
   width: 100%;
   text-align: left;
-  padding: 5px 30px;
-  font-size: 1.2em;
+  padding: 10px 20px;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+  text-transform: uppercase;
   white-space: nowrap;
   background-color: transparent;
-  color: #0089bd;
+  color: #1a1a1a;
 }
 button:hover, button:focus, button.active {
-  background-color: #ddd;
   color: #0070a1;
+}
+button > .icon {
+  min-width: 2em;
+  width: 2em;
+  height: 2em;
+}
+button > .text {
+  padding-left: 10px;
 }

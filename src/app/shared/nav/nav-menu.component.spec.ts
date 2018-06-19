@@ -79,32 +79,20 @@ describe('NavMenuComponent', () => {
     });
   }));
 
-  it('should set selected podcast according to routerState', () => {
-    let result;
-    comp.selectedPodcast$.subscribe(value => result = value);
-    expect(result).toEqual(podcasts[0]);
-  });
-
-  it('should set the most recent episode for a podcast', () => {
-    let result;
-    comp.mostRecentEpisode$.subscribe(value => result = value);
-    expect(result).toEqual(episode);
-  });
-
-  it('should have navigation to podcast Downloads', () => {
-    expect(navLinks.find(link => link.nativeElement.innerText === 'Downloads')).not.toBeNull();
+  it('should have navigation to Reach', () => {
+    expect(navLinks.find(link => link.nativeElement.innerText === 'Reach'.toUpperCase())).not.toBeNull();
     comp.routeMetricsType(METRICSTYPE_DOWNLOADS);
     expect(store.dispatch).toHaveBeenCalledWith(new ACTIONS.RouteMetricsTypeAction({metricsType: METRICSTYPE_DOWNLOADS}));
   });
 
-  it('should have navigation to podcast Demographics', () => {
-    expect(navLinks.find(link => link.nativeElement.innerText === 'Demographics')).not.toBeNull();
+  it('should have navigation to Demographics', () => {
+    expect(navLinks.find(link => link.nativeElement.innerText === 'Demographics'.toUpperCase())).not.toBeNull();
     comp.routeMetricsType(METRICSTYPE_DEMOGRAPHICS);
     expect(store.dispatch).toHaveBeenCalledWith(new ACTIONS.RouteMetricsTypeAction({metricsType: METRICSTYPE_DEMOGRAPHICS}));
   });
 
-  it('should have navigation to podcast Traffic Sources', () => {
-    expect(navLinks.find(link => link.nativeElement.innerText === 'Traffic Sources')).not.toBeNull();
+  it('should have navigation to Devices', () => {
+    expect(navLinks.find(link => link.nativeElement.innerText === 'Devices'.toUpperCase())).not.toBeNull();
     comp.routeMetricsType(METRICSTYPE_TRAFFICSOURCES);
     expect(store.dispatch).toHaveBeenCalledWith(new ACTIONS.RouteMetricsTypeAction({metricsType: METRICSTYPE_TRAFFICSOURCES}));
   });

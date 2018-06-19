@@ -96,8 +96,9 @@ export class DownloadsComponent implements OnInit, OnDestroy {
 
             if (this.updatePodcast && this.routerState.podcastSeriesId) {
               this.podcast = this.podcasts.find(p => p.seriesId === this.routerState.podcastSeriesId);
-              this.totalPages = this.podcast.doc.count('prx:stories') / EPISODE_PAGE_SIZE;
-              if (this.podcast.doc.count('prx:stories') % EPISODE_PAGE_SIZE > 0) {
+              const numEpisodes = this.podcast ? this.podcast.doc.count('prx:stories') : 0;
+              this.totalPages = numEpisodes / EPISODE_PAGE_SIZE;
+              if (numEpisodes % EPISODE_PAGE_SIZE > 0) {
                 this.totalPages++;
               }
               if (this.podcast) {

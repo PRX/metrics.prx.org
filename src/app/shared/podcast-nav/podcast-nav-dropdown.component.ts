@@ -32,7 +32,7 @@ export class PodcastNavDropdownComponent {
   }
 
   onPodcastChange(val: PodcastModel) {
-    if (val && val.seriesId !== this.selectedPodcast.seriesId) {
+    if (val && (!this.selectedPodcast || val.seriesId !== this.selectedPodcast.seriesId)) {
       this.toggleOpen();
       this.podcastChange.emit(val);
     }

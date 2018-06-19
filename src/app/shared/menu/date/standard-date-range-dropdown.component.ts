@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, HostListener } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { IntervalModel } from '../../../ngrx';
 import { GoogleAnalyticsEventAction, RouteStandardRangeAction } from '../../../ngrx/actions';
@@ -34,6 +34,10 @@ export class StandardDateRangeDropdownComponent {
   @Input() interval: IntervalModel;
   @Output() custom = new EventEmitter();
   open = false;
+  @HostListener('window: scroll', [])
+  onWindowScroll() {
+    this.open = false;
+  }
 
   constructor(private store: Store<any>) {}
 

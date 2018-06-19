@@ -1,4 +1,4 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, HostListener } from '@angular/core';
 import { Store, select } from '@ngrx/store';
 import { Subscription } from 'rxjs/Subscription';
 import { RouterModel, MetricsType, METRICSTYPE_DOWNLOADS, METRICSTYPE_TRAFFICSOURCES, METRICSTYPE_DEMOGRAPHICS } from '../../ngrx/';
@@ -40,6 +40,10 @@ export class NavMenuComponent implements OnDestroy {
     {name: 'Devices', type: METRICSTYPE_TRAFFICSOURCES, icon: 'icon icon-smartphone'}
   ];
   open = false;
+  @HostListener('window: scroll', [])
+  onWindowScroll() {
+    this.open = false;
+  }
 
   constructor(public store: Store<any>) {
     this.routerSub = this.store.pipe(select(selectRouter)).subscribe((routerState) => this.routerState = routerState);

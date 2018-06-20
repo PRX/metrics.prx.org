@@ -59,4 +59,10 @@ describe('StandardDateRangeDropdownComponent', () => {
     comp.onStandardRangeChange(LAST_WEEK);
     expect(store.dispatch).toHaveBeenCalledWith(jasmine.any(GoogleAnalyticsEventAction));
   });
+
+  it('should close the dropdown on window scroll', () => {
+    comp.open = true;
+    window.dispatchEvent(new Event('scroll'));
+    expect(comp.open).toBeFalsy();
+  });
 });

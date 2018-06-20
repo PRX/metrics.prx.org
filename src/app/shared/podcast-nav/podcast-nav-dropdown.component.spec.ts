@@ -55,4 +55,12 @@ describe('PodcastNavComponent', () => {
     expect(de.query(By.css('.dropdown'))).toBeDefined();
     expect(de.query(By.css('.dropdown-button > button')).nativeElement.innerText).toContain(podcasts[0].title.toUpperCase());
   });
+
+  it('should handle selection of podcast if list is available but none is currently selected', () => {
+    spyOn(comp.podcastChange, 'emit').and.callThrough();
+    comp.podcasts = podcasts;
+    comp.selectedPodcast = undefined;
+    expect(() => comp.onPodcastChange(podcasts[0])).not.toThrow();
+    expect(comp.podcastChange.emit).toHaveBeenCalled();
+  });
 });

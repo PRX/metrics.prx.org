@@ -9,6 +9,7 @@ import * as ACTIONS from '../../ngrx/actions';
   selector: 'metrics-nav-menu',
   template: `
     <div class="dropdown" [class.open]="open">
+      <div class="overlay" (click)="toggleOpen()"></div>
       <div class="dropdown-button">
         <button (click)="toggleOpen()" >{{selectedNav?.name}}<span class="down-arrow"></span></button>
       </div>

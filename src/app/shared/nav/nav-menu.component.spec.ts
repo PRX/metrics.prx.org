@@ -96,4 +96,17 @@ describe('NavMenuComponent', () => {
     comp.routeMetricsType(METRICSTYPE_TRAFFICSOURCES);
     expect(store.dispatch).toHaveBeenCalledWith(new ACTIONS.RouteMetricsTypeAction({metricsType: METRICSTYPE_TRAFFICSOURCES}));
   });
+
+  it('should show dropdown when open', () => {
+    expect(de.query(By.css('.dropdown.open'))).toBeNull();
+    comp.toggleOpen();
+    fix.detectChanges();
+    expect(de.query(By.css('.dropdown.open'))).not.toBeNull();
+  });
+
+  it('should close the dropdown on window scroll', () => {
+    comp.open = true;
+    window.dispatchEvent(new Event('scroll'));
+    expect(comp.open).toBeFalsy();
+  });
 });

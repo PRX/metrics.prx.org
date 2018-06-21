@@ -1,4 +1,4 @@
-import { Component, Input, HostListener } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { RouterModel, INTERVAL_HOURLY, IntervalModel, IntervalList } from '../../../ngrx';
 import * as dateUtil from '../../util/date';
@@ -51,10 +51,6 @@ export class CustomDateRangeDropdownComponent {
   CUSTOM_DATE = 'custom-date';
   STANDARD_DATE = 'standard-date';
   open = false;
-  @HostListener('window: scroll', [])
-  onWindowScroll() {
-    this.open = false;
-  }
 
   constructor(public store: Store<any>) {}
 

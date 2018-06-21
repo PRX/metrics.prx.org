@@ -9,5 +9,6 @@ export const LAST_30_DAYS = 'Last 30 days';
 export const THIS_MONTH_PLUS_2_MONTHS = 'This month + 2 months';
 export const LAST_90_DAYS = 'Last 90 days';
 export const THIS_YEAR = 'This year';
+export const LAST_YEAR = 'Last year';
 export const LAST_365_DAYS = 'Last 365 days';
 export const OTHER = 'Other';

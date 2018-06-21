@@ -6,7 +6,7 @@ import * as dateUtil from '../../util/date';
   selector: 'metrics-date-range-summary',
   template: `
     <div class="dates">{{beginDate}} &#x2015; {{endDate}}</div>
-    <div class="desc">{{ routerState?.standardRange }}</div>
+    <div class="desc" *ngIf="matchingDesc">{{ routerState?.standardRange }}</div>
   `,
   styleUrls: ['./date-range-summary.component.css']
 })
@@ -20,5 +20,9 @@ export class DateRangeSummaryComponent {
 
   get endDate(): string {
     return this.routerState && this.routerState.endDate && dateUtil.monthDateYear(this.routerState.endDate);
+  }
+
+  get matchingDesc(): boolean {
+    return this.routerState && this.routerState.standardRange !== dateUtil.OTHER;
   }
 }

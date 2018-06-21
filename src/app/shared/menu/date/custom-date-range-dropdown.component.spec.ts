@@ -10,6 +10,7 @@ import * as dateUtil from '../../util/date';
 
 import { DatepickerModule } from 'ngx-prx-styleguide';
 import { StandardDateRangeComponent } from './standard-date-range.component';
+import { DateRangeSummaryComponent } from './date-range-summary.component';
 import { CustomDateRangeDropdownComponent } from './custom-date-range-dropdown.component';
 
 describe('CustomDateRangeDropdownComponent', () => {
@@ -29,6 +30,7 @@ describe('CustomDateRangeDropdownComponent', () => {
     TestBed.configureTestingModule({
       declarations: [
         CustomDateRangeDropdownComponent,
+        DateRangeSummaryComponent,
         StandardDateRangeComponent
       ],
       imports: [

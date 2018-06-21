@@ -10,7 +10,10 @@ import { GoogleAnalyticsEventAction, RouteAdvancedRangeAction } from '../../../n
     <div class="dropdown" [class.open]="open">
       <div class="overlay" (click)="toggleOpen()"></div>
       <div class="dropdown-button">
-        <button class="btn-icon icon-calendar grey-darkest" (click)="toggleOpen()" aria-label="Custom Date Range"></button>
+        <button (click)="toggleOpen()">
+          <metrics-date-range-summary [routerState]="routerState"></metrics-date-range-summary>
+          <span class="down-arrow"></span>
+        </button>
       </div>
       <div class="dropdown-content" *ngIf="tempRange && open">
         <div class="intervals">
@@ -35,7 +38,7 @@ import { GoogleAnalyticsEventAction, RouteAdvancedRangeAction } from '../../../n
         </div>
         <p class="buttons">
           <button (click)="toggleOpen()" class="btn-link">Cancel</button>
-          <button (click)="onApply()" [disabled]="invalid">Apply</button>
+          <button (click)="onApply()" [disabled]="invalid" class="button">Apply</button>
         </p>
       </div>
     </div>

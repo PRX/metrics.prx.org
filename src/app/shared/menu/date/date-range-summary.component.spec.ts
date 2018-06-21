@@ -1,5 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { DebugElement } from '@angular/core';
+import { By } from '@angular/platform-browser';
+import { THIS_WEEK } from '../../util/date';
 
 import { DateRangeSummaryComponent } from './date-range-summary.component';
 
@@ -17,14 +19,15 @@ describe('DateRangeSummaryComponent', () => {
     }).compileComponents().then(() => {
       fix = TestBed.createComponent(DateRangeSummaryComponent);
       comp = fix.componentInstance;
-      fix.detectChanges();
       de = fix.debugElement;
       el = de.nativeElement;
 
       comp.routerState = {
         beginDate: new Date(Date.UTC(2018, 0, 1)),
-        endDate: new Date(Date.UTC(2018, 0, 7))
+        endDate: new Date(Date.UTC(2018, 0, 7)),
+        standardRange: THIS_WEEK
       };
+      fix.detectChanges();
     });
   }));
 
@@ -33,10 +36,7 @@ describe('DateRangeSummaryComponent', () => {
     expect(comp.endDate).toEqual('Jan 7, 2018');
   });
 
-  it('should show number of days', () => {
-    expect(comp.numDays).toEqual('7 days');
-    comp.routerState.endDate = new Date(Date.UTC(2018, 0, 1));
-    fix.detectChanges();
-    expect(comp.numDays).toEqual('1 day');
+  it('should show standard range', () => {
+    expect(de.query(By.css('.desc')).nativeElement.innerText).toEqual(comp.routerState.standardRange);
   });
 });

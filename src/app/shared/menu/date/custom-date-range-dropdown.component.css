@@ -1,11 +1,6 @@
-.dropdown-button {
-  min-width: 36px;
-}
-.dropdown-button > button {
-  border: 6px solid transparent;
-  max-width: 36px;
-  padding: 0px;
-  margin: 0px;
+.summary {
+  display: flex;
+  flex-direction: column;
 }
 
 .open .dropdown-content {

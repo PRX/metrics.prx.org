@@ -145,8 +145,8 @@ export class DownloadsComponent implements OnInit, OnDestroy {
     // dispatch some default values for the dates and interval
     this.routerState = {
       page: 1,
-      standardRange: dateUtil.THIS_WEEK_PLUS_7_DAYS,
-      beginDate: dateUtil.beginningOfThisWeekPlus7DaysUTC().toDate(),
+      standardRange: dateUtil.THIS_WEEK,
+      beginDate: dateUtil.beginningOfThisWeekUTC().toDate(),
       endDate: dateUtil.endOfTodayUTC().toDate(),
       interval: INTERVAL_DAILY,
       metricsType: <MetricsType>METRICSTYPE_DOWNLOADS,

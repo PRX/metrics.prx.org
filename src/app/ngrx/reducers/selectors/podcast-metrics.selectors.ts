@@ -1,6 +1,6 @@
 import { createSelector } from '@ngrx/store';
 import { RootState, selectAppState } from '../';
-import { RouterModel, getMetricsProperty } from '../models';
+import { RouterModel, getMetricsProperty, METRICSTYPE_DOWNLOADS } from '../models';
 import { PodcastMetricsModel } from '../podcast-metrics.reducer';
 import { selectRouter, selectPodcastRoute } from './router.selectors';
 import { errorType } from './error.type';
@@ -13,7 +13,7 @@ export const selectPodcastMetricsFilteredAverage = createSelector(selectPodcastM
     // for episodes, including the zero data points before the release date brings the average down
     const filteredMetrics = metricsUtil.findPodcastMetrics(routerState, metrics);
     if (filteredMetrics) {
-      const data = filteredMetrics[getMetricsProperty(routerState.interval, 'downloads')];
+      const data = filteredMetrics[getMetricsProperty(routerState.interval, METRICSTYPE_DOWNLOADS)];
       return metricsUtil.getWeightedAverage(data, routerState.beginDate, routerState.endDate, routerState.interval);
     }
   });
@@ -21,7 +21,7 @@ export const selectPodcastMetricsFilteredTotal = createSelector(selectPodcastMet
   (metrics: PodcastMetricsModel[], routerState: RouterModel) => {
     const filteredMetrics = metricsUtil.findPodcastMetrics(routerState, metrics);
     if (filteredMetrics) {
-      const data = filteredMetrics[getMetricsProperty(routerState.interval, 'downloads')];
+      const data = filteredMetrics[getMetricsProperty(routerState.interval, METRICSTYPE_DOWNLOADS)];
       return metricsUtil.getTotal(data);
     }
   });

@@ -3,15 +3,12 @@
 }
 
 button {
-  border: 1px solid #a3a3a3;
-  background-color: #f0f0f0;
-}
-button:first-child, button:nth-child(2) {
-  border-right: 0px;
+  border: 6px solid transparent;
+  background-color: transparent;
 }
 button img {
-  min-width: 36px;
-  height: 36px;
+  min-width: 24px;
+  height: 24px;
 }
 .active {
   background-color: #ddd;

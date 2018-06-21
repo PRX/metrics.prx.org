@@ -5,6 +5,7 @@ import { CommonModule } from '@angular/common';
 import { AuthGuard, DeactivateGuard, UnauthGuard,
   ChartsModule, DatepickerModule, ImageModule, SpinnerModule } from 'ngx-prx-styleguide';
 
+import { MetricsTypeHeadingComponent } from './menu/metrics-type-heading.component';
 import { ChartTypeComponent } from './menu/chart-type.component';
 import { IntervalDropdownComponent } from './menu/interval-dropdown.component';
 import { MenuBarComponent } from './menu/menu-bar.component';
@@ -35,6 +36,7 @@ import { DownloadsSummaryItemComponent } from './summary/downloads-summary-item.
     IntervalDropdownComponent,
     LargeNumberPipe,
     MenuBarComponent,
+    MetricsTypeHeadingComponent,
     NavMenuComponent,
     PodcastNavDropdownComponent,
     PodcastNavListComponent,

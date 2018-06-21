@@ -1,9 +1,41 @@
+prx-header {
+  max-width: 100%;
+}
 metrics-podcast-nav {
   margin-right: auto;
 }
 main {
   padding-bottom: 0px;
 }
-prx-header {
+
+article {
+  display: flex;
+}
+
+metrics-nav-menu {
+  min-width: 200px;
+  background-color: #f0f0f0;
+}
+
+.content {
+  padding: 20px;
+  max-width: calc(100% - 200px);
+  min-height: 500px;
+  flex-grow: 1;
+  background-color: white;
+}
+.content.full-width {
   max-width: 100%;
+  background-color: transparent;
+}
+
+@media (max-width: 768px) {
+  article {
+    flex-direction: column;
+  }
+  .content {
+    padding: 10px;
+    padding-top: 0px;
+    max-width: 100%;
+  }
 }

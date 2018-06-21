@@ -10,7 +10,7 @@ import { GoogleAnalyticsEventAction, RouteAdvancedRangeAction } from '../../../n
     <div class="dropdown" [class.open]="open">
       <div class="overlay" (click)="toggleOpen()"></div>
       <div class="dropdown-button">
-        <button class="btn-icon icon-calendar grey-dove" (click)="toggleOpen()" aria-label="Custom Date Range"></button>
+        <button class="btn-icon icon-calendar grey-darkest" (click)="toggleOpen()" aria-label="Custom Date Range"></button>
       </div>
       <div class="dropdown-content" *ngIf="tempRange && open">
         <div class="intervals">

@@ -5,24 +5,52 @@
 
 .menu-bar {
   display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.menu-dropdowns {
+  display: flex;
+  align-items: center;
 }
 
 .summary {
   display: flex;
   align-items: center;
-  padding: 10px 20px;
+  justify-content: space-between;
+  padding: 10px 0px;
 }
 
-.empty {
-  flex-basis: 300px;
-  flex-grow: 1;
-  flex-shrink: 1;
-  background-color: white;
-  border: 1px solid #a3a3a3;
-  border-bottom-color: transparent;
-  height: 38px;
+.separator {
+  border-left: 2px solid #ff9600;
+  width: 0px;
+  height: 2em;
+  margin: 0 1em;
 }
 
 metrics-chart-type {
   max-height: 38px;
+}
+
+metrics-standard-date-range-dropdown {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .menu-dropdowns {
+    width: 100%;
+    justify-content: space-between;
+  }
+  metrics-standard-date-range-dropdown {
+    display: block;
+  }
+  metrics-custom-date-range-dropdown {
+    display: none;
+  }
+  metrics-type-heading {
+    display: none;
+  }
+  .separator {
+    display: none;
+  }
 }

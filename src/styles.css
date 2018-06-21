@@ -1,4 +1,14 @@
 /* You can add global styles to this file, and also import other style files */
 body {
   max-width: 100%;
+  color: #1A1A1A;
+}
+
+button {
+  background-color: transparent;
+  color: #1A1A1A;
+}
+
+button:hover, button:focus {
+  background-color: transparent;
 }

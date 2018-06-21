@@ -11,7 +11,7 @@ import * as ACTIONS from '../../ngrx/actions';
     <div class="dropdown" [class.open]="open">
       <div class="overlay" (click)="toggleOpen()"></div>
       <div class="dropdown-button">
-        <button (click)="toggleOpen()" >{{selectedNav?.name}}<span class="down-arrow"></span></button>
+        <button (click)="toggleOpen()" >{{routerState.metricsType}}<span class="down-arrow"></span></button>
       </div>
       <div class="dropdown-content rollout">
         <nav>
@@ -23,7 +23,7 @@ import * as ACTIONS from '../../ngrx/actions';
                 [class]="t.icon"
                 [class.grey-darkest]="routerState.metricsType !== t.type"
                 [class.active]="routerState.metricsType === t.type" aria-hidden="true"></span>
-              <span class="text">{{t.name}}</span>
+              <span class="text">{{t.type}}</span>
             </button>
           </li>
         </nav>
@@ -36,9 +36,9 @@ export class NavMenuComponent implements OnDestroy {
   routerSub: Subscription;
   routerState: RouterModel;
   types = [
-    {name: 'Reach', type: METRICSTYPE_DOWNLOADS, icon: 'icon icon-headphones'},
-    {name: 'Demographics', type: METRICSTYPE_DEMOGRAPHICS, icon: 'icon icon-globe'},
-    {name: 'Devices', type: METRICSTYPE_TRAFFICSOURCES, icon: 'icon icon-smartphone'}
+    {type: METRICSTYPE_DOWNLOADS, icon: 'icon icon-headphones'},
+    {type: METRICSTYPE_DEMOGRAPHICS, icon: 'icon icon-globe'},
+    {type: METRICSTYPE_TRAFFICSOURCES, icon: 'icon icon-smartphone'}
   ];
   open = false;
   @HostListener('window: scroll', [])
@@ -56,10 +56,6 @@ export class NavMenuComponent implements OnDestroy {
 
   routeMetricsType(metricsType: MetricsType) {
     this.store.dispatch(new ACTIONS.RouteMetricsTypeAction({metricsType}));
-  }
-
-  get selectedNav() {
-    return this.routerState && this.types.find(type => type.type === this.routerState.metricsType);
   }
 
   toggleOpen() {

@@ -1,6 +1,4 @@
 .dropdown-button, .open .dropdown-button {
-  border: none;
-  background-color: transparent;
   height: 73px;
   display: flex;
   align-items: center;

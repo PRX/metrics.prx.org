@@ -40,7 +40,7 @@ describe('RoutingEffects', () => {
 
   const routes: Route[] = [
     {
-      path: ':seriesId/downloads/:chartType/:interval',
+      path: ':seriesId/reach/:chartType/:interval',
       component: TestComponent
     },
     {
@@ -48,7 +48,7 @@ describe('RoutingEffects', () => {
       component: TestComponent
     },
     {
-      path: ':seriesId/traffic-sources',
+      path: ':seriesId/devices',
       component: TestComponent
     }
   ];

@@ -68,12 +68,12 @@ describe('metrics util', () => {
     {
       seriesId: 37800,
       feederId: '70',
-      dailyDownloads: [...metrics]
+      dailyReach: [...metrics]
     },
     {
       seriesId: 37801,
       feederId: '70',
-      dailyDownloads: [...metrics]
+      dailyReach: [...metrics]
     }
   ];
   const episodeMetrics: EpisodeMetricsModel[] = [
@@ -82,21 +82,21 @@ describe('metrics util', () => {
       id: 123,
       guid: 'abcdefg',
       page: 1,
-      dailyDownloads: [...metrics]
+      dailyReach: [...metrics]
     },
     {
       seriesId: 37800,
       id: 124,
       guid: 'gfedcba',
       page: 2,
-      dailyDownloads: [...metrics]
+      dailyReach: [...metrics]
     },
     {
       seriesId: 37801,
       id: 125,
       guid: 'hijklmn',
       page: 1,
-      dailyDownloads: [...metrics]
+      dailyReach: [...metrics]
     }
   ];
 

@@ -27,9 +27,8 @@ nav {
     width: 100%;
     border: 0px;
     background-color: transparent;
-    height: 36px;
     padding: 0px 10px;
-    line-height: 36px;
+    line-height: 2.5em;
     white-space: nowrap;
   }
   .down-arrow {

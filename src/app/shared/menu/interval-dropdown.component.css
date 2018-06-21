@@ -1,9 +1,5 @@
 .open .dropdown-content {
   padding: 10px 0;
-}
-@media (max-width: 768px) {
-  .open .dropdown-content {
-    right: auto;
-    left: 0;
-  }
+  right: auto;
+  left: 0;
 }

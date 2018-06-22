@@ -55,6 +55,7 @@ export class NavMenuComponent implements OnDestroy {
   }
 
   routeMetricsType(metricsType: MetricsType) {
+    this.open = false;
     this.store.dispatch(new ACTIONS.RouteMetricsTypeAction({metricsType}));
   }
 

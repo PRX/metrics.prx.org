@@ -1,7 +1,5 @@
 .table-wrapper {
   display: flex;
-  margin-left: -3px;
-  margin-right: -3px;
 }
 table {
   line-height: 14px;
@@ -13,6 +11,18 @@ th, td {
   vertical-align: middle;
   border: 3px solid #f0f0f0;
   background: white;
+}
+th:first-child, td:first-child {
+  border-left: 0;
+}
+th:last-child, td:last-child {
+  border-right: 0;
+}
+tr:first-child th {
+  border-top: 0;
+}
+tr:last-child td {
+  border-bottom: 0;
 }
 th {
   height: 45px;
@@ -49,7 +59,7 @@ table.scroll-x th {
   min-width: 45px;
 }
 table.scroll-x th:first-child, table.scroll-x td:first-child {
-  border-left: none;
+  border-left: 3px solid #f0f0f0;
 }
 .table-navigation {
   display: flex;

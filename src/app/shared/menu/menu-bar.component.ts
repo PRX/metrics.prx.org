@@ -8,16 +8,20 @@ import { RouterModel, IntervalModel, ChartType } from '../../ngrx';
   selector: 'metrics-menu-bar',
   template: `
     <div class="menu-bar">
-      <metrics-chart-type [selectedChartType]="chartType$ | async"></metrics-chart-type>
-      <metrics-interval-dropdown [routerState]="routerState$ | async"></metrics-interval-dropdown>
-      <div class="empty"></div>
-      <metrics-standard-date-range-dropdown [interval]="interval$ | async" [standardRange]="standardRange$ | async"
-                                            (custom)="custom.toggleOpen()"></metrics-standard-date-range-dropdown>
-      <metrics-custom-date-range-dropdown [routerState]="routerState$ | async" #custom></metrics-custom-date-range-dropdown>
+      <metrics-type-heading [routerState]="routerState$ | async"></metrics-type-heading>
+      <div class="menu-dropdowns">
+        <metrics-interval-dropdown [routerState]="routerState$ | async"></metrics-interval-dropdown>
+        <div class="separator"></div>
+        <metrics-standard-date-range-dropdown [interval]="interval$ | async" [standardRange]="standardRange$ | async">
+        </metrics-standard-date-range-dropdown>
+        <metrics-custom-date-range-dropdown [routerState]="routerState$ | async"></metrics-custom-date-range-dropdown>
+      </div>
     </div>
     <div class="summary">
-      <metrics-date-range-summary [routerState]="routerState$ | async"></metrics-date-range-summary>
       <metrics-downloads-summary></metrics-downloads-summary>
+      <div>
+        <metrics-chart-type [selectedChartType]="chartType$ | async"></metrics-chart-type>
+      </div>
     </div>
   `,
   styleUrls: ['./menu-bar.component.css']

@@ -8,7 +8,7 @@ describe('CustomSerializer', () => {
 
   it('should transform router snapshot to router state', () => {
     const routerSnapshot = {
-      url: '/37800/downloads/stacked/hourly;' +
+      url: '/37800/reach/stacked/hourly;' +
       'page=1;beginDate=2017-11-09T00:00:00.000Z;endDate=2017-11-09T22:00:00.000Z;' +
       'episodes=123,1234,chartPodcast=true',
       root: {
@@ -45,7 +45,7 @@ describe('CustomSerializer', () => {
 
   it('should provide routerState for begin and end date corresponding to standard range when dates not present', () => {
     const routerSnapshot = {
-      url: '/37800/downloads/podcast/daily;' +
+      url: '/37800/reach/podcast/daily;' +
       'page=1;standardRange=3%20months;',
       root: {
         firstChild: {

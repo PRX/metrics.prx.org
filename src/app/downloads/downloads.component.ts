@@ -16,15 +16,14 @@ import { isPodcastChanged, isBeginDateChanged, isEndDateChanged, isIntervalChang
   template: `
     <prx-spinner *ngIf="loading$ | async" overlay="true"
                  loadingMessage="Please wait..."></prx-spinner>
-    <router-outlet name="sidenav"></router-outlet>
-    <section class="content" *ngIf="loaded$ | async">
+    <section *ngIf="loaded$ | async">
       <metrics-menu-bar></metrics-menu-bar>
       <metrics-downloads-chart></metrics-downloads-chart>
       <metrics-downloads-table [totalPages]="totalPages"></metrics-downloads-table>
       <p class="error" *ngFor="let error of errors$ | async">{{error}}</p>
     </section>
   `,
-  styleUrls: ['../shared/nav/nav-content.css', 'downloads.component.css']
+  styleUrls: ['downloads.component.css']
 })
 export class DownloadsComponent implements OnInit, OnDestroy {
   podcastSub: Subscription;
@@ -96,8 +95,9 @@ export class DownloadsComponent implements OnInit, OnDestroy {
 
             if (this.updatePodcast && this.routerState.podcastSeriesId) {
               this.podcast = this.podcasts.find(p => p.seriesId === this.routerState.podcastSeriesId);
-              this.totalPages = this.podcast.doc.count('prx:stories') / EPISODE_PAGE_SIZE;
-              if (this.podcast.doc.count('prx:stories') % EPISODE_PAGE_SIZE > 0) {
+              const numEpisodes = this.podcast ? this.podcast.doc.count('prx:stories') : 0;
+              this.totalPages = numEpisodes / EPISODE_PAGE_SIZE;
+              if (numEpisodes % EPISODE_PAGE_SIZE > 0) {
                 this.totalPages++;
               }
               if (this.podcast) {
@@ -145,8 +145,8 @@ export class DownloadsComponent implements OnInit, OnDestroy {
     // dispatch some default values for the dates and interval
     this.routerState = {
       page: 1,
-      standardRange: dateUtil.THIS_WEEK_PLUS_7_DAYS,
-      beginDate: dateUtil.beginningOfThisWeekPlus7DaysUTC().toDate(),
+      standardRange: dateUtil.THIS_WEEK,
+      beginDate: dateUtil.beginningOfThisWeekUTC().toDate(),
       endDate: dateUtil.endOfTodayUTC().toDate(),
       interval: INTERVAL_DAILY,
       metricsType: <MetricsType>METRICSTYPE_DOWNLOADS,
@@ -196,7 +196,7 @@ export class DownloadsComponent implements OnInit, OnDestroy {
     if (routerState.episodeIds) {
       params['episodes'] = routerState.episodeIds.join(',');
     }
-    this.router.navigate([routerState.podcastSeriesId, 'downloads', routerState.chartType, routerState.interval.key, params]);
+    this.router.navigate([routerState.podcastSeriesId, METRICSTYPE_DOWNLOADS, routerState.chartType, routerState.interval.key, params]);
   }
 
   getPodcastMetrics(podcast: PodcastModel) {

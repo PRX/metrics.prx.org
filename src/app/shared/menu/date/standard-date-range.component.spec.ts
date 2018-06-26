@@ -31,11 +31,8 @@ describe('StandardDateRangeComponent', () => {
     comp.interval = INTERVAL_HOURLY;
     comp.ngOnChanges();
     const flattenedOptions = [];
-    comp.rangeOptions.forEach(group => group.forEach(option => {
-      flattenedOptions.push(option);
-    }));
-    expect(flattenedOptions.indexOf(dateConst.THIS_MONTH)).toBeGreaterThan(-1);
-    expect(flattenedOptions.indexOf(dateConst.THIS_MONTH_PLUS_2_MONTHS)).toBeLessThan(0);
-    expect(flattenedOptions.indexOf(dateConst.LAST_365_DAYS)).toBeLessThan(0);
+    expect(comp.rangeOptions.indexOf(dateConst.THIS_MONTH)).toBeGreaterThan(-1);
+    expect(comp.rangeOptions.indexOf(dateConst.LAST_YEAR)).toBeLessThan(0);
+    expect(comp.rangeOptions.indexOf(dateConst.LAST_365_DAYS)).toBeLessThan(0);
   });
 });

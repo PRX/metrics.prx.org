@@ -1,15 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg width="400px" height="400px" viewBox="0 0 400 400" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <!-- Generator: Sketch 46.2 (44496) - http://www.bohemiancoding.com/sketch -->
-    <title>400x400</title>
+<svg width="33px" height="24px" viewBox="0 0 33 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 50.2 (55047) - http://www.bohemiancoding.com/sketch -->
+    <title>Area</title>
     <desc>Created with Sketch.</desc>
     <defs></defs>
     <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <g id="400x400">
-            <g id="Group" transform="translate(10.000000, 96.000000)">
-                <g id="Group-2">
-                    <polygon id="Path" stroke="#343434" fill="#343434" points="1.42108547e-14 207.272048 40.7146582 104.731428 101.03267 140.922235 194.525589 74.5724218 380.003476 207.272048"></polygon>
-                    <path d="M43.7305588,94.1757758 C133.584665,80.0794253 214.379779,48.7189156 286.115899,0.0942468939 L376.987576,192.192545 L194.525589,62.5088194 L101.03267,125.842732 C83.8797356,116.606537 64.7790318,106.050884 43.7305588,94.1757758 Z" id="Path-2" stroke="#818181" fill="#818181"></path>
+        <g id="Desktop" transform="translate(-1094.000000, -219.000000)">
+            <g id="Main" transform="translate(299.000000, 85.000000)">
+                <g id="Rollup" transform="translate(42.000000, 117.000000)">
+                    <g id="Chart-selector" transform="translate(666.000000, 11.000000)">
+                        <g id="Area" transform="translate(87.000000, 6.000000)">
+                            <path d="M0,24 C22,24 33,24 33,24 L33,15 L27,8 C21.6666667,13.3333333 19,16 19,16 C15.6666667,13.3333333 14,12 14,12 C10,16 8,18 8,18 C6,16 5,15 5,15 L0,19 L0,24 Z" id="Path-3" fill="#0089BD"></path>
+                            <polygon id="Path-5" fill="#FF9600" points="0 18 5 14.173913 8 17 14 11 19 15 27 7.2173913 33 14 33 7 27 0 19 8 14 4 8 10.5 5 7.2173913 0 12"></polygon>
+                        </g>
+                    </g>
                 </g>
             </g>
         </g>

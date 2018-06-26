@@ -10,6 +10,7 @@ import * as dateUtil from '../../util/date';
 
 import { DatepickerModule } from 'ngx-prx-styleguide';
 import { StandardDateRangeComponent } from './standard-date-range.component';
+import { DateRangeSummaryComponent } from './date-range-summary.component';
 import { CustomDateRangeDropdownComponent } from './custom-date-range-dropdown.component';
 
 describe('CustomDateRangeDropdownComponent', () => {
@@ -29,6 +30,7 @@ describe('CustomDateRangeDropdownComponent', () => {
     TestBed.configureTestingModule({
       declarations: [
         CustomDateRangeDropdownComponent,
+        DateRangeSummaryComponent,
         StandardDateRangeComponent
       ],
       imports: [
@@ -114,5 +116,11 @@ describe('CustomDateRangeDropdownComponent', () => {
     comp.onCustomRangeChange({from: dateUtil.beginningOfLastMonthUTC().toDate(), to: dateUtil.endOfLastMonthUTC().toDate()});
     comp.onApply();
     expect(comp.googleAnalyticsEvent).toHaveBeenCalledWith(comp.CUSTOM_DATE, comp.tempRange);
+  });
+
+  it('should not close the dropdown on window scroll', () => {
+    comp.open = true;
+    window.dispatchEvent(new Event('scroll'));
+    expect(comp.open).toBeTruthy();
   });
 });

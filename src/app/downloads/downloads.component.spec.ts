@@ -83,6 +83,10 @@ describe('DownloadsComponent', () => {
     store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerState}));
   }
 
+  function dispatchInvalidPodcastRouterNavigation() {
+    store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerState: {...routerState, podcastSeriesId: 1234}}));
+  }
+
   function dispatchPodcasts() {
     store.dispatch(new ACTIONS.CmsPodcastsSuccessAction({podcasts: [podcast]}));
   }
@@ -163,6 +167,23 @@ describe('DownloadsComponent', () => {
       dispatchEpisodeMetrics();
       fix.detectChanges();
       expect(de.query(By.css('metrics-downloads-table'))).not.toBeNull();
+    });
+  });
+
+  describe('podcast series id is not matched', () => {
+    beforeEach(() => {
+      spyOn(comp, 'getPodcastMetrics').and.callThrough();
+      dispatchPodcasts();
+      dispatchInvalidPodcastRouterNavigation();
+      dispatchEpisodePage();
+      dispatchPodcastMetrics();
+      dispatchEpisodeMetrics();
+      fix.detectChanges();
+    });
+
+    it('should handle an unmatched routed podcast series id', () => {
+      expect(comp.totalPages).toBe(0);
+      expect(comp.getPodcastMetrics).not.toHaveBeenCalled();
     });
   });
 });

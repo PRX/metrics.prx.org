@@ -9,6 +9,7 @@ import { RouterModel, ChartType, CHARTTYPE_PODCAST, INTERVAL_DAILY } from '../..
 import * as dateUtil from '../util/date';
 
 import { MenuBarComponent } from './menu-bar.component';
+import { MetricsTypeHeadingComponent } from './metrics-type-heading.component';
 import { ChartTypeComponent } from './chart-type.component';
 import { CustomDateRangeDropdownComponent } from './date/custom-date-range-dropdown.component';
 import { DateRangeSummaryComponent } from './date/date-range-summary.component';
@@ -46,6 +47,7 @@ describe('MenuBarComponent', () => {
         DownloadsSummaryItemComponent,
         IntervalDropdownComponent,
         LargeNumberPipe,
+        MetricsTypeHeadingComponent,
         StandardDateRangeComponent,
         StandardDateRangeDropdownComponent
       ],

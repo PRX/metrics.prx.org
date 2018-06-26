@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges } from '@angular/core';
+import { Component, Input, OnChanges, HostListener } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { RouterModel, IntervalModel,
   INTERVAL_MONTHLY, INTERVAL_WEEKLY, INTERVAL_DAILY, INTERVAL_HOURLY } from '../../ngrx';
@@ -31,6 +31,10 @@ export class IntervalDropdownComponent implements OnChanges {
   intervalOptions: IntervalModel[] = [];
   selectedInterval: IntervalModel;
   open = false;
+  @HostListener('window: scroll', [])
+  onWindowScroll() {
+    this.open = false;
+  }
 
   constructor(private store: Store<any>) {}
 

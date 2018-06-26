@@ -10,10 +10,7 @@ export const geoRoutes: Routes = [
     path: ':seriesId/demographics',
     component: GeoComponent,
     canActivate: [AuthGuard],
-    canDeactivate: [DeactivateGuard],
-    children: [
-      { path: '', component: NavMenuComponent, outlet: 'sidenav'}
-    ]
+    canDeactivate: [DeactivateGuard]
   }
 ];
 

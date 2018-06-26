@@ -12,23 +12,20 @@ export const downloadsRoutes: Routes = [
     redirectTo: ':seriesId/downloads/podcast/daily'
   },
   {
-    path: ':seriesId/downloads',
+    path: ':seriesId/reach',
     pathMatch: 'full',
     redirectTo: ':seriesId/downloads/podcast/daily'
   },
   {
-    path: ':seriesId/downloads/:chartType',
+    path: ':seriesId/reach/:chartType',
     pathMatch: 'full',
     redirectTo: ':seriesId/downloads/podcast/daily'
   },
   {
-    path: ':seriesId/downloads/:chartType/:interval',
+    path: ':seriesId/reach/:chartType/:interval',
     component: DownloadsComponent,
     canActivate: [AuthGuard],
-    canDeactivate: [DeactivateGuard],
-    children: [
-      { path: '', component: NavMenuComponent, outlet: 'sidenav'}
-    ]
+    canDeactivate: [DeactivateGuard]
   }
 ];
 

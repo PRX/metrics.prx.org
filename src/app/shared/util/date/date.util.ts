@@ -78,6 +78,14 @@ export const beginningOfThisYearUTC = () => {
   return beginningOfTodayUTC().month(0).date(1);
 };
 
+export const beginningOfLastYearUTC = () => {
+  return beginningOfTodayUTC().month(0).date(1).subtract(1, 'years');
+};
+
+export const endOfLastYearUTC = () => {
+  return beginningOfTodayUTC().month(0).date(1).subtract(1, 'days');
+};
+
 export const beginningOfLast365DaysUTC = () => {
   return beginningOfTodayUTC().subtract(364, 'days');
 };
@@ -139,6 +147,11 @@ export const getBeginEndDateFromStandardRange = (standardRange: string): {beginD
         beginDate: beginningOfThisYearUTC().toDate(),
         endDate: endOfTodayUTC().toDate()
       };
+    case dateConst.LAST_YEAR:
+      return {
+        beginDate: beginningOfLastYearUTC().toDate(),
+        endDate: endOfLastYearUTC().toDate()
+      };
     case dateConst.LAST_365_DAYS:
       return {
         beginDate: beginningOfLast365DaysUTC().toDate(),
@@ -183,6 +196,9 @@ export const getStandardRangeForBeginEndDate = (beginDate: Date, endDate: Date) 
   } else if (beginDate.valueOf() === beginningOfThisYearUTC().valueOf() &&
     endDate.valueOf() === endOfTodayUTC().valueOf()) {
     return dateConst.THIS_YEAR;
+  } else if (beginDate.valueOf() === beginningOfLastYearUTC().valueOf() &&
+    endDate.valueOf() === endOfLastYearUTC().valueOf()) {
+    return dateConst.LAST_YEAR;
   } else if (beginDate.valueOf() === beginningOfLast365DaysUTC().valueOf() &&
     endDate.valueOf() === endOfTodayUTC().valueOf()) {
     return dateConst.LAST_365_DAYS;

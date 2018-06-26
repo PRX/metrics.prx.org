@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, HostListener } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { IntervalModel } from '../../../ngrx';
 import { GoogleAnalyticsEventAction, RouteStandardRangeAction } from '../../../ngrx/actions';
@@ -17,13 +17,6 @@ import * as dateUtil from '../../util/date';
           [standardRange]="standardRange" [interval]="interval"
           (standardRangeChange)="onStandardRangeChange($event)">
         </metrics-standard-date-range>
-        <ul>
-          <li>
-            <button class="btn-link" (click)="onCustom()">
-              Other...
-            </button>
-          </li>
-        </ul>
       </div>
     </div>
   `,
@@ -32,8 +25,11 @@ import * as dateUtil from '../../util/date';
 export class StandardDateRangeDropdownComponent {
   @Input() standardRange: string;
   @Input() interval: IntervalModel;
-  @Output() custom = new EventEmitter();
   open = false;
+  @HostListener('window: scroll', [])
+  onWindowScroll() {
+    this.open = false;
+  }
 
   constructor(private store: Store<any>) {}
 
@@ -44,11 +40,6 @@ export class StandardDateRangeDropdownComponent {
   onStandardRangeChange(standardRange: string) {
     this.googleAnalyticsEvent('standard-date', standardRange);
     this.store.dispatch(new RouteStandardRangeAction({standardRange}));
-    this.toggleOpen();
-  }
-
-  onCustom() {
-    this.custom.emit();
     this.toggleOpen();
   }
 

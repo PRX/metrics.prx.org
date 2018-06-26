@@ -65,4 +65,11 @@ describe('PodcastNavComponent', () => {
     inactiveButtons[0].nativeElement.click();
     expect(comp.podcastChange.emit).toHaveBeenCalled();
   });
+
+  it('should handle selection of podcast if list is available but none is currently selected', () => {
+    comp.podcasts = podcasts;
+    comp.selectedPodcast = undefined;
+    expect(() => comp.onPodcastChange(podcasts[0])).not.toThrow();
+    expect(comp.podcastChange.emit).toHaveBeenCalled();
+  });
 });

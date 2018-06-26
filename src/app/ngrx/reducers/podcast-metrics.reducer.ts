@@ -3,10 +3,10 @@ import * as ACTIONS from '../actions';
 export interface PodcastMetricsModel {
   seriesId: number;
   feederId?: string;
-  monthlyDownloads?: any[][];
-  weeklyDownloads?: any[][];
-  dailyDownloads?: any[][];
-  hourlyDownloads?: any[][];
+  monthlyReach?: any[][];
+  weeklyReach?: any[][];
+  dailyReach?: any[][];
+  hourlyReach?: any[][];
   loaded?: boolean;
   loading?: boolean;
   error?: any;

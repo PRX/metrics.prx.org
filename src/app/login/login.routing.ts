@@ -1,7 +1,7 @@
 import { ModuleWithProviders } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
-import { AuthGuard, UnauthGuard } from 'ngx-prx-styleguide';
+import { UnauthGuard } from 'ngx-prx-styleguide';
 import { LoginComponent } from './login.component';
 
 import { AuthorizationComponent } from '../authorization/authorization.component';

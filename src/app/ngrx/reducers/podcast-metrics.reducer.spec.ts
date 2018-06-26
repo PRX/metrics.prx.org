@@ -56,8 +56,8 @@ describe('PodcastMetricsReducer', () => {
     );
     expect(newState.length).toEqual(1);
     expect(newState[0].seriesId).toEqual(37800);
-    expect(newState[0].dailyDownloads.length).toEqual(12);
-    expect(newState[0].dailyDownloads[0][1]).toEqual(52522);
+    expect(newState[0].dailyReach.length).toEqual(12);
+    expect(newState[0].dailyReach[0][1]).toEqual(52522);
   });
 
   it ('should add new podcast metrics', () => {

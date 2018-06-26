@@ -1,12 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg width="400px" height="400px" viewBox="0 0 400 400" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <!-- Generator: Sketch 48.2 (47327) - http://www.bohemiancoding.com/sketch -->
-    <title>400x400 single-line</title>
+<svg width="29px" height="17px" viewBox="0 0 29 17" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 50.2 (55047) - http://www.bohemiancoding.com/sketch -->
+    <title>Path 2</title>
     <desc>Created with Sketch.</desc>
     <defs></defs>
     <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <g id="400x400-single-line" stroke="#818181" stroke-width="20">
-            <polyline id="Path-3" points="30 306.216797 106.982572 203.779823 186.23937 254.99831 370.28237 94"></polyline>
+        <g id="Desktop" transform="translate(-1047.000000, -224.000000)" stroke="#0089BD" stroke-width="3">
+            <g id="Main" transform="translate(299.000000, 85.000000)">
+                <g id="Rollup" transform="translate(42.000000, 117.000000)">
+                    <g id="Chart-selector" transform="translate(666.000000, 11.000000)">
+                        <g id="Lines" transform="translate(41.000000, 10.000000)">
+                            <path d="M0,16 C5.90163934,10.5432099 8.85245902,7.81481481 8.85245902,7.81481481 L14.6065574,14.0740741 L27,3" id="Path-2"></path>
+                        </g>
+                    </g>
+                </g>
+            </g>
         </g>
     </g>
 </svg>

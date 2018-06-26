@@ -7,13 +7,10 @@ import { NavMenuComponent } from '../shared/nav';
 
 export const userAgentsRoutes: Routes = [
   {
-    path: ':seriesId/traffic-sources',
+    path: ':seriesId/devices',
     component: UserAgentsComponent,
     canActivate: [AuthGuard],
-    canDeactivate: [DeactivateGuard],
-    children: [
-      { path: '', component: NavMenuComponent, outlet: 'sidenav'}
-    ]
+    canDeactivate: [DeactivateGuard]
   }
 ];
 

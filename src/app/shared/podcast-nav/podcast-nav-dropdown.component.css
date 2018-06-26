@@ -1,14 +1,20 @@
 .dropdown-button, .open .dropdown-button {
-  border: none;
-  background-color: transparent;
   height: 73px;
   display: flex;
   align-items: center;
 }
-.dropdown-button > button {
+@media (max-width: 768px) {
+  .dropdown-button, .open .dropdown-button {
+    height: 50px;
+  }
+}
+.single, .dropdown-button > button {
   margin: 0;
   padding: 0 10px;
   color: #ffffff;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+  text-transform: uppercase;
 }
 .down-arrow {
   border-top-color: #ffffff;

@@ -54,4 +54,10 @@ describe('IntervalDropdownComponent', () => {
     comp.onIntervalChange(INTERVAL_WEEKLY);
     expect(store.dispatch).toHaveBeenCalledWith(new RouteIntervalAction({interval: INTERVAL_WEEKLY}));
   });
+
+  it('should close the dropdown on window scroll', () => {
+    comp.open = true;
+    window.dispatchEvent(new Event('scroll'));
+    expect(comp.open).toBeFalsy();
+  });
 });

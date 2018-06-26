@@ -8,7 +8,10 @@
 </prx-header>
 <main>
   <article>
-    <router-outlet></router-outlet>
+    <metrics-nav-menu *ngIf="authorized"></metrics-nav-menu>
+    <div class="content" [class.full-width]="!authorized">
+      <router-outlet></router-outlet>
+    </div>
   </article>
 </main>
 <prx-footer></prx-footer>

@@ -17,7 +17,7 @@ import { PodcastModel } from '../../ngrx';
         </metrics-podcast-nav-list>
       </div>
     </div>
-    <span *ngIf="podcasts?.length === 1 && selectedPodcast">{{ selectedPodcast.title }}</span>
+    <span class="single" *ngIf="podcasts?.length === 1 && selectedPodcast">{{ selectedPodcast.title }}</span>
   `,
   styleUrls: ['../menu/dropdown.css', './podcast-nav-dropdown.component.css']
 })
@@ -32,7 +32,7 @@ export class PodcastNavDropdownComponent {
   }
 
   onPodcastChange(val: PodcastModel) {
-    if (val && val.seriesId !== this.selectedPodcast.seriesId) {
+    if (val && (!this.selectedPodcast || val.seriesId !== this.selectedPodcast.seriesId)) {
       this.toggleOpen();
       this.podcastChange.emit(val);
     }

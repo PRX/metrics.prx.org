@@ -6,10 +6,8 @@ import { selectPodcastMetricsFilteredTotal } from '../../ngrx/reducers/selectors
 @Component({
   selector: 'metrics-downloads-summary',
   template: `
-    <div class="separator"></div>
     <metrics-downloads-summary-item label="downloads" [value]="total$ | async"></metrics-downloads-summary-item>
-  `,
-  styleUrls: ['downloads-summary-container.component.css']
+  `
 })
 
 export class DownloadsSummaryContainerComponent {

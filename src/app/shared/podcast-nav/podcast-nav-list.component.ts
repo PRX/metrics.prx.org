@@ -20,7 +20,7 @@ export class PodcastNavListComponent {
   @Output() podcastChange = new EventEmitter<PodcastModel>();
 
   onPodcastChange(val) {
-    if (val && this.selectedPodcast && val.seriesId !== this.selectedPodcast.seriesId) {
+    if (val && (!this.selectedPodcast || val.seriesId !== this.selectedPodcast.seriesId)) {
       this.podcastChange.emit(val);
     }
   }

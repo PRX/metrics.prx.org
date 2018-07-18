@@ -11,7 +11,14 @@ import * as ACTIONS from '../../ngrx/actions';
     <div class="dropdown" [class.open]="open">
       <div class="overlay" (click)="toggleOpen()"></div>
       <div class="dropdown-button">
-        <button (click)="toggleOpen()" >{{routerState.metricsType}}<span class="down-arrow"></span></button>
+        <button (click)="toggleOpen()" >
+          <span class="nav-label">
+            <span
+              [class]="'grey-darkest ' + getTypeWithIcon(routerState.metricsType)?.icon" aria-hidden="true"></span>
+            <span class="text">{{routerState.metricsType}}</span>
+          </span>
+          <span class="down-arrow"></span>
+        </button>
       </div>
       <div class="dropdown-content rollout">
         <nav>
@@ -61,5 +68,9 @@ export class NavMenuComponent implements OnDestroy {
 
   toggleOpen() {
     this.open = !this.open;
+  }
+
+  getTypeWithIcon(metricsType: MetricsType) {
+    return this.types.find(t => t.type === metricsType);
   }
 }

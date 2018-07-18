@@ -3,3 +3,12 @@
   right: auto;
   left: 0;
 }
+
+@media (max-width: 768px) {
+  .dropdown {
+    margin-left: -10px;
+  }
+  .dropdown-button > button {
+    padding-left: 10px;
+  }
+}

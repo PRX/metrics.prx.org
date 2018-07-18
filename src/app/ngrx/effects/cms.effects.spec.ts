@@ -11,6 +11,8 @@ import { CmsService } from '../../core';
 import { reducers } from '../reducers';
 import * as ACTIONS from '../actions';
 import { CmsEffects } from './cms.effects';
+import * as localStorageUtil from '../../shared/util/local-storage.util';
+import * as fixtures from '../../../testing/downloads.fixtures';
 
 describe('CmsEffects', () => {
   const authToken = new ReplaySubject<string>(1);
@@ -90,6 +92,9 @@ describe('CmsEffects', () => {
   });
 
   describe('loadPodcasts', () => {
+    beforeEach(() => {
+      localStorage.clear();
+    });
 
     it('successfully loads podcasts', () => {
       const series = auth.mockItems('prx:series', [
@@ -114,7 +119,7 @@ describe('CmsEffects', () => {
       expect(effects.loadPodcasts$).toBeObservable(expect$);
     });
 
-    it('navigates to the first podcast on success', () => {
+    it('if none in local storage, navigates to the first podcast in the payload on success', () => {
       const podcasts = [{
         seriesId: 111,
         title: 'Series #1',
@@ -126,6 +131,24 @@ describe('CmsEffects', () => {
       expect$ = cold('-r', { r: null });
       expect(effects.loadPodcastsSuccess$).toBeObservable(expect$);
       expect(store.dispatch).toHaveBeenCalledWith(new ACTIONS.RouteSeriesAction({podcastSeriesId: 111}));
+    });
+
+    it('navigates to the podcast seriesId saved in localStorage', () => {
+      localStorageUtil.setItem(localStorageUtil.KEY_ROUTER_STATE, fixtures.routerState);
+      const podcasts = [
+        {
+          seriesId: 111,
+          title: 'Series #1',
+          feederUrl: 'http://my/podcast/url1',
+          feederId: 'url1',
+        },
+        fixtures.podcast
+      ];
+      const action = new ACTIONS.CmsPodcastsSuccessAction({podcasts});
+      actions$ = hot('-a', { a: action });
+      expect$ = cold('-r', { r: null });
+      expect(effects.loadPodcastsSuccess$).toBeObservable(expect$);
+      expect(store.dispatch).toHaveBeenCalledWith(new ACTIONS.RouteSeriesAction({podcastSeriesId: fixtures.routerState.podcastSeriesId}));
     });
 
     it('fails to load podcasts', () => {

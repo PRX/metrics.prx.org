@@ -12,9 +12,10 @@ import { AuthService } from 'ngx-prx-styleguide';
 import { CmsService, HalDoc } from '../../core';
 import { getColor } from '../../shared/util/chart.util';
 
-import { AccountModel, PodcastModel, EpisodeModel, EPISODE_PAGE_SIZE } from '../';
+import { AccountModel, PodcastModel, EpisodeModel, EPISODE_PAGE_SIZE, RouterModel } from '../';
 import { selectPodcastRoute, selectChartedEpisodeIdsRoute } from '../reducers/selectors';
 import * as ACTIONS from '../actions';
+import * as localStorageUtil from '../../shared/util/local-storage.util';
 
 @Injectable()
 export class CmsEffects {
@@ -92,7 +93,13 @@ export class CmsEffects {
     // only dispatches a routing action when there is not already a routed :seriesId
       if (!this.routedPodcastSeriesId) {
         const {podcasts} = payload;
-        this.store.dispatch(new ACTIONS.RouteSeriesAction({podcastSeriesId: podcasts[0].seriesId}));
+        const localStorageRouterState: RouterModel = localStorageUtil.getItem(localStorageUtil.KEY_ROUTER_STATE);
+        const localStoragePodcastInList = localStorageRouterState && localStorageRouterState.podcastSeriesId &&
+            podcasts.find(podcast => podcast.seriesId === localStorageRouterState.podcastSeriesId);
+        this.store.dispatch(new ACTIONS.RouteSeriesAction(
+          // navigate to either the podcastStorageId in localStorage or the first one in the result from CMS (which is the last one changed)
+          { podcastSeriesId: localStoragePodcastInList && localStorageRouterState.podcastSeriesId || podcasts[0].seriesId }
+        ));
       }
       return Observable.of(null);
     })

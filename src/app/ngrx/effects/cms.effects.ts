@@ -98,7 +98,7 @@ export class CmsEffects {
             podcasts.find(podcast => podcast.seriesId === localStorageRouterState.podcastSeriesId);
         this.store.dispatch(new ACTIONS.RouteSeriesAction(
           // navigate to either the podcastStorageId in localStorage or the first one in the result from CMS (which is the last one changed)
-          { podcastSeriesId: localStoragePodcastInList && localStorageRouterState.podcastSeriesId || podcasts[0].seriesId }
+          { podcastSeriesId: (localStoragePodcastInList && localStorageRouterState.podcastSeriesId) || podcasts[0].seriesId }
         ));
       }
       return Observable.of(null);

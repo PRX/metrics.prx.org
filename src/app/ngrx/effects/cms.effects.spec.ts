@@ -151,6 +151,23 @@ describe('CmsEffects', () => {
       expect(store.dispatch).toHaveBeenCalledWith(new ACTIONS.RouteSeriesAction({podcastSeriesId: fixtures.routerState.podcastSeriesId}));
     });
 
+    it('navigates to the first podcast in the payload, if localStorage podcast is not in user\'s podcasts', () => {
+      localStorageUtil.setItem(localStorageUtil.KEY_ROUTER_STATE, fixtures.routerState);
+      const podcasts = [
+        {
+          seriesId: 111,
+          title: 'Series #1',
+          feederUrl: 'http://my/podcast/url1',
+          feederId: 'url1',
+        }
+      ];
+      const action = new ACTIONS.CmsPodcastsSuccessAction({podcasts});
+      actions$ = hot('-a', { a: action });
+      expect$ = cold('-r', { r: null });
+      expect(effects.loadPodcastsSuccess$).toBeObservable(expect$);
+      expect(store.dispatch).toHaveBeenCalledWith(new ACTIONS.RouteSeriesAction({podcastSeriesId: 111}));
+    });
+
     it('fails to load podcasts', () => {
       const error = new Error('Whaaaa?');
       const series = auth.mockError('prx:series', error);

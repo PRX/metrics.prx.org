@@ -7,7 +7,9 @@ import { RouteChartTypeAction } from '../../ngrx/actions';
   selector: 'metrics-chart-type',
   template: `
     <button class="btn-link" *ngFor="let chartType of chartTypes"
-            [class.active]="chartType === selectedChartType" [title]="getChartName(chartType)"
+            [class.active]="chartType === selectedChartType"
+            [disabled]="chartType === selectedChartType"
+            [title]="getChartName(chartType)"
             (click)="onChartType(chartType)"><img [src]="getChartImg(chartType)"></button>
   `,
   styleUrls: ['./chart-type.component.css']

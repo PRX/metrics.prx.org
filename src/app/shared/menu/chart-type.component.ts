@@ -9,7 +9,7 @@ import { RouteChartTypeAction } from '../../ngrx/actions';
     <button class="btn-link" *ngFor="let chartType of chartTypes"
             [class.active]="chartType === selectedChartType"
             [disabled]="chartType === selectedChartType"
-            [title]="getChartName(chartType)"
+            [title]="getTooltip(chartType)"
             (click)="onChartType(chartType)"><img [src]="getChartImg(chartType)"></button>
   `,
   styleUrls: ['./chart-type.component.css']
@@ -27,7 +27,7 @@ export class ChartTypeComponent {
   getChartImg(chartType: ChartType): string {
     switch (chartType) {
       case CHARTTYPE_PODCAST:
-        return '/assets/images/bt_single-line-chart.svg';
+        return '/assets/images/bt_bar-chart.svg';
       case CHARTTYPE_EPISODES:
         return '/assets/images/bt_multi-line-chart.svg';
       case CHARTTYPE_STACKED:
@@ -35,7 +35,14 @@ export class ChartTypeComponent {
     }
   }
 
-  getChartName(chartType: ChartType): string {
-    return chartType.charAt(0).toUpperCase() + chartType.slice(1);
+  getTooltip(chartType: ChartType): string {
+    switch (chartType) {
+      case CHARTTYPE_PODCAST:
+        return 'BAR';
+      case CHARTTYPE_EPISODES:
+        return 'MULTI-LINE';
+      case CHARTTYPE_STACKED:
+        return 'STACKED';
+    }
   }
 }

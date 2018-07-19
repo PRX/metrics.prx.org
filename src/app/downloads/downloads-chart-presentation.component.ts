@@ -51,6 +51,7 @@ export class DownloadsChartPresentationComponent {
     } else {
       switch (this.routerState.chartType) {
         case CHARTTYPE_PODCAST:
+          return 'bar';
         case CHARTTYPE_EPISODES:
           return 'line';
         case CHARTTYPE_STACKED:

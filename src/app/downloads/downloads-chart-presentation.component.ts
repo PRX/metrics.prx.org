@@ -45,18 +45,13 @@ export class DownloadsChartPresentationComponent {
   }
 
   get chartType(): string {
-    if (this.chartData && this.chartData.length &&
-      this.chartData[0].data && this.chartData[0].data.length <= 2) {
-      return 'bar';
-    } else {
-      switch (this.routerState.chartType) {
-        case CHARTTYPE_PODCAST:
-          return 'bar';
-        case CHARTTYPE_EPISODES:
-          return 'line';
-        case CHARTTYPE_STACKED:
-          return 'area';
-      }
+    switch (this.routerState.chartType) {
+      case CHARTTYPE_PODCAST:
+        return 'bar';
+      case CHARTTYPE_EPISODES:
+        return 'line';
+      case CHARTTYPE_STACKED:
+        return 'area';
     }
   }
 

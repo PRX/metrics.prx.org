@@ -1,20 +1,153 @@
 import { Injectable } from '@angular/core';
 import { catchError } from 'rxjs/operators/catchError';
+import { concatMap } from 'rxjs/operators/concatMap';
+import { filter } from 'rxjs/operators/filter';
+import { first } from 'rxjs/operators/first';
 import { map } from 'rxjs/operators/map';
 import { mergeMap } from 'rxjs/operators/mergeMap';
 import { switchMap } from 'rxjs/operators/switchMap';
+import { startWith } from 'rxjs/operators/startWith';
 import { Observable } from 'rxjs/Observable';
 import { Actions, Effect, ofType } from '@ngrx/effects';
 import { Action, Store, select } from '@ngrx/store';
 
 import * as ACTIONS from '../actions';
 import { selectSelectedPodcast, selectRecentEpisode } from '../reducers/selectors';
+import { AuthService, Userinfo, UserinfoService } from 'ngx-prx-styleguide';
+import { HalDoc } from '../../core';
 import { CastleService } from '../../core';
-import { PodcastModel, EpisodeModel, getMetricsProperty } from '../';
+import { AccountModel, PodcastModel, EpisodeModel, getMetricsProperty, PODCAST_PAGE_SIZE, EPISODE_PAGE_SIZE } from '../';
 
 @Injectable()
 export class CastleEffects {
   selectedPodcast: PodcastModel;
+
+  @Effect()
+  loadAccount$: Observable<Action> = this.actions$.pipe(
+    ofType(ACTIONS.ActionTypes.ID_ACCOUNT_LOAD),
+    startWith(new ACTIONS.IdAccountLoadAction()),
+    switchMap(() => {
+      return this.auth.token.pipe(
+        first(),
+        mergeMap(token => {
+          if (token) {
+            if (!this.auth.parseToken(token)) {
+              return Observable.of(new ACTIONS.IdAccountFailureAction({error: 'Permission denied'}));
+            } else {
+              return this.userinfo.getUserinfo().map((info: Userinfo) => {
+                const account: AccountModel = {id: info.sub, name: info.name};
+                return new ACTIONS.IdAccountSuccessAction({account});
+              });
+            }
+          } else {
+            return Observable.of(new ACTIONS.IdAccountFailureAction({error: 'You are not logged in'}));
+          }
+        }),
+        catchError(error => Observable.of(new ACTIONS.IdAccountFailureAction({error})))
+      );
+    })
+  );
+
+  @Effect()
+  loadPodcastPage$: Observable<Action> = this.actions$.pipe(
+    ofType(ACTIONS.ActionTypes.CASTLE_PODCAST_PAGE_LOAD),
+    startWith(new ACTIONS.CastlePodcastPageLoadAction({page: 1, all: true})),
+    map((action: ACTIONS.CastlePodcastPageLoadAction) => action.payload),
+    switchMap((payload: ACTIONS.CastleEpisodePageLoadPayload) => {
+      const { page, all } = payload;
+      return this.castle.followItems('prx:podcasts', { page, per: PODCAST_PAGE_SIZE })
+      .pipe(
+        map((results: HalDoc[]) => {
+            return new ACTIONS.CastlePodcastPageSuccessAction({
+              page,
+              all,
+              total: results[0].total(),
+              podcasts: results.map(doc => {
+                return {
+                  seriesId: 0,
+                  title: doc['title'],
+                  feederId: '' + doc['id']
+                };
+              })
+            });
+          }),
+        catchError(error => Observable.of(new ACTIONS.CastlePodcastPageFailureAction({error})))
+      );
+    })
+  );
+
+  @Effect({dispatch: false})
+  loadNextPodcastPage$: Observable<any> = this.actions$.pipe(
+    ofType(ACTIONS.ActionTypes.CASTLE_PODCAST_PAGE_SUCCESS),
+    map((action: ACTIONS.CastlePodcastPageSuccessAction) => action.payload),
+    concatMap((payload: ACTIONS.CastlePodcastPageSuccessPayload) => {
+      const { page, all, total } = payload;
+      if (all && page * PODCAST_PAGE_SIZE < total) {
+        this.store.dispatch(new ACTIONS.CastlePodcastPageLoadAction({page: page + 1, all}));
+      }
+      return Observable.of(null);
+    })
+  );
+
+  @Effect()
+  loadPodcastEpisodes$: Observable<Action> = this.actions$.pipe(
+    ofType(ACTIONS.ActionTypes.CASTLE_PODCAST_PAGE_SUCCESS),
+    filter((action: ACTIONS.CastlePodcastPageSuccessAction) => {
+      const { all, page, podcasts } = action.payload;
+      return all && page === 1 && podcasts && podcasts.length > 0;
+    }),
+    map((action: ACTIONS.CastlePodcastPageSuccessAction) => action.payload.podcasts),
+    mergeMap((podcasts: PodcastModel[]) => {
+      return podcasts.map(podcast => new ACTIONS.CastleEpisodePageLoadAction(
+        {feederId: podcast.feederId, page: 1, all: true}));
+    })
+  );
+
+  @Effect()
+  loadEpisodePage$: Observable<Action> = this.actions$.pipe(
+    ofType(ACTIONS.ActionTypes.CASTLE_EPISODE_PAGE_LOAD),
+    map((action: ACTIONS.CastleEpisodePageLoadAction) => action.payload),
+    concatMap((payload: ACTIONS.CastleEpisodePageLoadPayload) => {
+      const { feederId, page, all } = payload;
+      return this.castle.follow('prx:podcast', {id: feederId}).followItems('prx:episodes', {page, per: EPISODE_PAGE_SIZE})
+        .pipe(
+          map((results: HalDoc[]) => {
+            return new ACTIONS.CastleEpisodePageSuccessAction({
+              page,
+              all,
+              total: results[0].total(),
+              episodes: results.map(doc => {
+                return {
+                  doc,
+                  seriesId: 0,
+                  feederId,
+                  id: 0,
+                  guid: '' + doc['id'],
+                  publishedAt: doc['publishedAt'] ? new Date(doc['publishedAt']) : null,
+                  title: doc['title'],
+                };
+              })
+            });
+          }),
+          catchError(error => Observable.of(new ACTIONS.CastlePodcastPageFailureAction({error})))
+        );
+    })
+  );
+
+  @Effect()
+  loadNextEpisodePage$: Observable<Action> = this.actions$.pipe(
+    ofType(ACTIONS.ActionTypes.CASTLE_EPISODE_PAGE_SUCCESS),
+    filter((action: ACTIONS.CastleEpisodePageSuccessAction) => {
+      const { page, all, total, episodes} = action.payload;
+      return all && page * EPISODE_PAGE_SIZE < total && episodes && episodes.length > 0;
+    }),
+    map((action: ACTIONS.CastleEpisodePageSuccessAction) => action.payload),
+    concatMap((payload: ACTIONS.CastleEpisodePageSuccessPayload) => {
+      const { page, all, episodes } = payload;
+      return Observable.of(new ACTIONS.CastleEpisodePageLoadAction(
+        {feederId: episodes[0].feederId, page: page + 1, all}));
+    })
+  );
 
   @Effect()
   loadPodcastMetrics$ = this.actions$.pipe(
@@ -131,6 +264,8 @@ export class CastleEffects {
   );
 
   constructor(private actions$: Actions,
+              private auth: AuthService,
+              private userinfo: UserinfoService,
               private castle: CastleService,
               private store: Store<any>) {
     this.store.pipe(select(selectSelectedPodcast)).subscribe((podcast: PodcastModel) => {

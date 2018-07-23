@@ -13,7 +13,7 @@ export interface CmsAccountSuccessPayload {
 }
 
 export class CmsAccountSuccessAction implements Action {
-  readonly type = ActionTypes.CMS_ACCOUNT_SUCCESS;
+  readonly type = <string>ActionTypes.CMS_ACCOUNT_SUCCESS;
   constructor(public payload: CmsAccountSuccessPayload) {}
 }
 
@@ -33,7 +33,7 @@ export interface CmsPodcastsSuccessPayload {
 }
 
 export class CmsPodcastsSuccessAction implements Action {
-  readonly type = ActionTypes.CMS_PODCASTS_SUCCESS;
+  readonly type = <string>ActionTypes.CMS_PODCASTS_SUCCESS;
 
   constructor(public payload: CmsPodcastsSuccessPayload) {}
 }
@@ -58,7 +58,7 @@ export interface CmsRecentEpisodeSuccessPayload {
 }
 
 export class CmsRecentEpisodeSuccessAction implements Action {
-  readonly type = ActionTypes.CMS_RECENT_EPISODE_SUCCESS;
+  readonly type = <string>ActionTypes.CMS_RECENT_EPISODE_SUCCESS;
   constructor(public payload: CmsRecentEpisodeSuccessPayload) {}
 }
 

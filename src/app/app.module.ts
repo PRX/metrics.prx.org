@@ -1,6 +1,8 @@
 import { NgModule, ErrorHandler, InjectionToken } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { StoreRouterConnectingModule, RouterStateSerializer } from '@ngrx/router-store';
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+import { environment } from '../environments/environment';
 import { EffectsModule } from '@ngrx/effects';
 import { AuthModule } from 'ngx-prx-styleguide';
 import { StoreModule, ActionReducerMap } from '@ngrx/store';
@@ -46,6 +48,10 @@ export const reducerProvider = { provide: reducerToken, useFactory: getReducers 
     AuthModule,
     SharedModule,
     StoreModule.forRoot(reducerToken),
+    StoreDevtoolsModule.instrument({
+      maxAge: 150, // Retains last 150 states
+      logOnly: environment.production, // Restrict extension to log-only mode
+    }),
     Angulartics2Module.forRoot([ Angulartics2GoogleAnalytics ]),
     StoreRouterConnectingModule,
     EffectsModule.forRoot([CastleEffects, CmsEffects, RoutingEffects, GoogleAnalyticsEffects]),

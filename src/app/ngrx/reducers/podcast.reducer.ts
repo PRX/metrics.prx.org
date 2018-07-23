@@ -1,6 +1,8 @@
 import { ActionTypes, CmsPodcastsSuccessAction, CmsPodcastsFailureAction, AllActions } from '../actions';
 import { HalDoc } from 'ngx-prx-styleguide';
 
+export const PODCAST_PAGE_SIZE = 10;
+
 export interface PodcastModel {
   doc?: HalDoc;
   seriesId: number;

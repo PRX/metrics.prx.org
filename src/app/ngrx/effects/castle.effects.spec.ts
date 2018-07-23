@@ -1,11 +1,12 @@
 import { Actions } from '@ngrx/effects';
 import { TestBed, async } from '@angular/core/testing';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { cold, hot } from 'jasmine-marbles';
 import { StoreModule, Store } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
 import { getActions, TestActions } from './test.actions';
 
-import { MockHalService } from 'ngx-prx-styleguide';
+import { AuthService, UserinfoService, MockHalService, HalService } from 'ngx-prx-styleguide';
 import { CastleService } from '../../core';
 
 import { PodcastModel, RouterModel, EpisodeModel, MetricsType,
@@ -81,14 +82,21 @@ describe('CastleEffects', () => {
       guid: episode.guid,
       downloads
     }]);
+    const podcastsRequest = castle.root.mockItems('prx:podcasts', podcasts.map(p => {
+      return {id: p.feederId, title: p.title};
+    }));
 
     TestBed.configureTestingModule({
       imports: [
         StoreModule.forRoot({...reducers}),
         EffectsModule.forRoot([CastleEffects]),
+        HttpClientTestingModule
       ],
       providers: [
         CastleEffects,
+        AuthService,
+        UserinfoService,
+        {provide: HalService, useValue: castle},
         { provide: CastleService, useValue: castle.root },
         { provide: Actions, useFactory: getActions }
       ]
@@ -221,5 +229,31 @@ describe('CastleEffects', () => {
     actions$.stream = hot('-a', { a: action });
     const expected = cold('-r', { r: success });
     expect(effects.loadEpisodeMetrics$).toBeObservable(expected);
+  });
+
+  xit('should load page of podcasts', () => {
+    const action = {
+      type: ACTIONS.ActionTypes.CASTLE_PODCAST_PAGE_LOAD,
+      payload: {
+        page: 1,
+        all: true
+      }
+    };
+    const success = new ACTIONS.CastlePodcastPageSuccessAction({
+      podcasts: podcasts.map(p => {
+        return {
+          feederId: p.feederId,
+          seriesId: 0,
+          title: p.title
+        };
+      }),
+      page: 1,
+      total: podcasts.length,
+      all: true
+    });
+
+    actions$.stream = hot('-a', { a: action });
+    const expected = cold('-r', { r: success });
+    expect(effects.loadPodcastPage$).toBeObservable(expected);
   });
 });

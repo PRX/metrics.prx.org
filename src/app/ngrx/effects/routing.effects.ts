@@ -14,6 +14,7 @@ import { selectRouter, selectPodcasts } from '../reducers/selectors';
 import { ActionTypes } from '../actions';
 import * as ACTIONS from '../actions';
 import * as dateUtil from '../../shared/util/date';
+import * as localStorageUtil from '../../shared/util/local-storage.util';
 
 @Injectable()
 export class RoutingEffects {
@@ -222,6 +223,8 @@ export class RoutingEffects {
     if (combinedRouterState.episodeIds) {
       params['episodes'] = combinedRouterState.episodeIds.join(',');
     }
+
+    localStorageUtil.setItem(localStorageUtil.KEY_ROUTER_STATE, combinedRouterState);
 
     switch (combinedRouterState.metricsType) {
       case METRICSTYPE_DOWNLOADS:

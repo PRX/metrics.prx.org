@@ -10,6 +10,9 @@ button img {
   min-width: 24px;
   height: 24px;
 }
-.active {
+button:hover {
+  background-color: #f0f0f0;
+}
+button.active {
   background-color: #ddd;
 }

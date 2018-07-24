@@ -183,10 +183,10 @@ export class CmsEffects {
     return getColor(EPISODE_PAGE_SIZE, episodeIndex);
   }
 
-  // if there are episodes on this episodePage to be charted, put those on the route
-  // if there are not episodes on this episodePage to be charted, chart the first 5 via route change
+  // if there are episodes on this page to be charted, put those on the route
+  // if there are not episodes on this page to be charted, chart the first 5 via route change
   // with recent changes to reset episode state, the episodes to be charted from the route are
-  // chart a single episode or charting episode ids via the url/episodePage refresh/ load from url
+  // chart a single episode or charting episode ids via the url/page refresh/ load from url
   chartIncomingEpisodes(episodes: EpisodeModel[]) {
     if (!this.routedEpisodeIds || this.routedEpisodeIds.length === 0) {
       const episodeIds = episodes.map(e => e.id);

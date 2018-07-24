@@ -1,7 +1,5 @@
-import { ActionTypes, CmsPodcastsSuccessAction, CmsPodcastsFailureAction, AllActions } from '../actions';
+import { ActionTypes, AllActions } from '../actions';
 import { HalDoc } from 'ngx-prx-styleguide';
-
-
 
 export interface PodcastModel {
   doc?: HalDoc;

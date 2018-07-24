@@ -244,7 +244,7 @@ describe('CmsEffects', () => {
     const s5 = {id: 125, publishedAt: new Date('2018-01-19'), title: 'Episode s5'};
     const s6 = {id: 126, publishedAt: new Date('2017-12-04'), title: 'Episode s6'};
 
-    it('successfully loads a episodePage of episodes', () => {
+    it('successfully loads a page of episodes', () => {
       const stories = cms.mock('prx:series', {}).mockItems('prx:stories', [s1, s2, s3, s4, s5, s6]);
       stories[0].mockItems('prx:distributions', [{kind: 'episode', url: 'http://my/episode/guid1'}]);
       stories[1].mockItems('prx:distributions', [{kind: 'episode', url: 'http://my/episode/guid2'}]);
@@ -262,7 +262,7 @@ describe('CmsEffects', () => {
       expect(effects.loadEpisodes$).toBeObservable(expect$);
     });
 
-    it('fails to load a episodePage of episodes', () => {
+    it('fails to load a page of episodes', () => {
       const error = new Error('Whaaaa?');
       const stories = cms.mock('prx:series', {}).mockError('prx:stories', error);
       const action = new ACTIONS.CmsPodcastEpisodePageAction({seriesId, page: 1});

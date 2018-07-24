@@ -39,7 +39,7 @@ describe('CustomRouterReducer', () => {
     expect(newState.interval.key).toEqual('hourly');
   });
 
-  it('should update with new episode episodePage', () => {
+  it('should update with new episode page', () => {
     newState = CustomRouterReducer(newState,
       new CustomRouterNavigationAction({
         routerState: {

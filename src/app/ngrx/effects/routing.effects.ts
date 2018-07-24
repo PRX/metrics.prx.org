@@ -199,69 +199,69 @@ export class RoutingEffects {
   }
 
   routeFromNewRouterParams(newRouterParams: RouterParams): RouterParams {
-    const combinedRouterState: RouterParams = { ...this.routerParams, ...newRouterParams};
-    if (!combinedRouterState.metricsType) {
-      combinedRouterState.metricsType = <MetricsType>METRICSTYPE_DOWNLOADS;
+    const combinedRouterParams: RouterParams = { ...this.routerParams, ...newRouterParams};
+    if (!combinedRouterParams.metricsType) {
+      combinedRouterParams.metricsType = <MetricsType>METRICSTYPE_DOWNLOADS;
     }
-    if (!combinedRouterState.chartType) {
-      combinedRouterState.chartType = <ChartType>CHARTTYPE_PODCAST;
+    if (!combinedRouterParams.chartType) {
+      combinedRouterParams.chartType = <ChartType>CHARTTYPE_PODCAST;
     }
-    if (!combinedRouterState.interval) {
-      combinedRouterState.interval = INTERVAL_DAILY;
+    if (!combinedRouterParams.interval) {
+      combinedRouterParams.interval = INTERVAL_DAILY;
     }
 
     const params = {};
-    if (combinedRouterState.episodePage) {
-      params['episodePage'] = combinedRouterState.episodePage;
+    if (combinedRouterParams.episodePage) {
+      params['episodePage'] = combinedRouterParams.episodePage;
     }
-    if (combinedRouterState.episodePage) {
-      params['page'] = combinedRouterState.episodePage;
+    if (combinedRouterParams.episodePage) {
+      params['page'] = combinedRouterParams.episodePage;
     }
-    if (combinedRouterState.guid) {
-      params['guid'] = combinedRouterState.guid;
+    if (combinedRouterParams.guid) {
+      params['guid'] = combinedRouterParams.guid;
     }
-    if (combinedRouterState.standardRange) {
-      params['standardRange'] = combinedRouterState.standardRange;
+    if (combinedRouterParams.standardRange) {
+      params['standardRange'] = combinedRouterParams.standardRange;
     }
-    if (combinedRouterState.beginDate) {
-      params['beginDate'] = combinedRouterState.beginDate.toUTCString();
+    if (combinedRouterParams.beginDate) {
+      params['beginDate'] = combinedRouterParams.beginDate.toUTCString();
     }
-    if (combinedRouterState.endDate) {
-      params['endDate'] = combinedRouterState.endDate.toUTCString();
+    if (combinedRouterParams.endDate) {
+      params['endDate'] = combinedRouterParams.endDate.toUTCString();
     }
-    if (combinedRouterState.chartPodcast !== undefined) {
-      params['chartPodcast'] = combinedRouterState.chartPodcast;
-    } else if (combinedRouterState.metricsType === METRICSTYPE_DOWNLOADS) {
+    if (combinedRouterParams.chartPodcast !== undefined) {
+      params['chartPodcast'] = combinedRouterParams.chartPodcast;
+    } else if (combinedRouterParams.metricsType === METRICSTYPE_DOWNLOADS) {
       params['chartPodcast'] = true; // true is the default for downloads
     }
-    if (combinedRouterState.episodeIds) {
-      params['episodes'] = combinedRouterState.episodeIds.join(',');
+    if (combinedRouterParams.episodeIds) {
+      params['episodes'] = combinedRouterParams.episodeIds.join(',');
     }
 
-    localStorageUtil.setItem(localStorageUtil.KEY_ROUTER_PARAMS, combinedRouterState);
+    localStorageUtil.setItem(localStorageUtil.KEY_ROUTER_PARAMS, combinedRouterParams);
 
-    switch (combinedRouterState.metricsType) {
+    switch (combinedRouterParams.metricsType) {
       case METRICSTYPE_DOWNLOADS:
         this.router.navigate([
-            combinedRouterState.podcastSeriesId,
-            combinedRouterState.podcastId,
-            combinedRouterState.metricsType,
-            combinedRouterState.chartType,
-            combinedRouterState.interval.key,
-            params
-          ]);
+          combinedRouterParams.podcastSeriesId,
+          combinedRouterParams.podcastId,
+          combinedRouterParams.metricsType,
+          combinedRouterParams.chartType,
+          combinedRouterParams.interval.key,
+          params
+        ]);
         break;
       case METRICSTYPE_DEMOGRAPHICS:
       case METRICSTYPE_TRAFFICSOURCES:
         this.router.navigate([
-            combinedRouterState.podcastSeriesId,
-            combinedRouterState.podcastId,
-            combinedRouterState.metricsType,
-            params
-          ]);
+          combinedRouterParams.podcastSeriesId,
+          combinedRouterParams.podcastId,
+          combinedRouterParams.metricsType,
+          params
+        ]);
         break;
     }
-    return combinedRouterState;
+    return combinedRouterParams;
   }
 
   loadEpisodesIfChanged(newRouterParams: RouterParams) {

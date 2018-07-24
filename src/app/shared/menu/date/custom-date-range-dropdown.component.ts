@@ -18,7 +18,9 @@ import { GoogleAnalyticsEventAction, RouteAdvancedRangeAction } from '../../../n
       <div class="dropdown-content" *ngIf="tempRange && open">
         <div class="intervals">
           <button *ngFor="let interval of intervalList"
-                  [class.btn-link]="tempRange.interval !== interval"
+                  class="btn-link"
+                  [class.active]="tempRange.interval === interval"
+                  [disabled]="tempRange.interval === interval"
                   (click)="onIntervalChange(interval)">{{ interval.name }}
           </button>
         </div>

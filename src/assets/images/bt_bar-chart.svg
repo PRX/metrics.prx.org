@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="32px" height="27px" viewBox="0 0 32 27" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 50.2 (55047) - http://www.bohemiancoding.com/sketch -->
+    <title>Bars</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" stroke-linecap="square">
+        <g id="Desktop" transform="translate(-994.000000, -218.000000)" stroke="#0089BD" stroke-width="4">
+            <g id="Main" transform="translate(299.000000, 85.000000)">
+                <g id="Rollup" transform="translate(42.000000, 117.000000)">
+                    <g id="Chart-selector" transform="translate(654.000000, 11.000000)">
+                        <g id="Bars" transform="translate(0.000000, 7.000000)">
+                            <path d="M1.66666667,17 L1.66666667,22.7083333" id="Line-6"></path>
+                            <path d="M7.13333333,4.31481481 L7.13333333,22.6851852" id="Line-6"></path>
+                            <path d="M12.6,6.31481481 L12.6,22.7083333" id="Line-6"></path>
+                            <path d="M18.0666667,12 L18.0666667,22.6851852" id="Line-6"></path>
+                            <path d="M23.5333333,14 L23.5333333,22.6944444" id="Line-6"></path>
+                            <path d="M29,0 L29,22.6973684" id="Line-6"></path>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

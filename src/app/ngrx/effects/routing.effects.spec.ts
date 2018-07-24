@@ -14,6 +14,7 @@ import { reducers } from '../reducers';
 import * as ACTIONS from '../actions';
 import { RoutingEffects } from './routing.effects';
 import * as dateUtil from '../../shared/util/date';
+import * as localStorageUtil from '../../shared/util/local-storage.util';
 
 @Component({
   selector: 'metrics-test-component',
@@ -206,5 +207,11 @@ describe('RoutingEffects', () => {
     const expected = cold('-r', { r: null });
     expect(effects.routeMetricsType$).toBeObservable(expected);
     expect(effects.routeFromNewRouterState).toHaveBeenCalledWith({metricsType: METRICSTYPE_DOWNLOADS});
+  });
+
+  it('should save routerState in localStorage', () => {
+    localStorage.clear();
+    effects.routeFromNewRouterState(routerState);
+    expect(localStorageUtil.getItem(localStorageUtil.KEY_ROUTER_STATE).podcastSeriesId).toEqual(routerState.podcastSeriesId);
   });
 });

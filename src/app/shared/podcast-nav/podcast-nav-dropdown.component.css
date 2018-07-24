@@ -16,6 +16,9 @@
   font-weight: 700;
   text-transform: uppercase;
 }
+.dropdown-button > button:hover, .dropdown-button > button:focus {
+  background-color: transparent;
+}
 .down-arrow {
   border-top-color: #ffffff;
 }

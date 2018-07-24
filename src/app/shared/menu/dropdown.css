@@ -17,6 +17,9 @@
   line-height: 40px;
   white-space: nowrap;
 }
+.dropdown-button > button:hover, .dropdown-button > button:focus {
+  background-color: #f0f0f0;
+}
 .down-arrow {
   border-left: 6px solid transparent;
   border-right: 6px solid transparent;
@@ -55,7 +58,10 @@
   padding: 5px 20px;
 }
 
-.dropdown-content >>> li .btn-link:hover, .dropdown-content >>> li .btn-link:focus, .dropdown-content >>> li .btn-link.active {
+.dropdown-content >>> li .btn-link:hover, .dropdown-content >>> li .btn-link:focus {
+  background-color: #f0f0f0;
+}
+.dropdown-content >>> li .btn-link.active {
   background-color: #ddd;
 }
 

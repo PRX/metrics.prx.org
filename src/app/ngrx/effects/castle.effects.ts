@@ -16,7 +16,7 @@ import { selectSelectedPodcast, selectRecentEpisode } from '../reducers/selector
 import { AuthService, Userinfo, UserinfoService } from 'ngx-prx-styleguide';
 import { HalDoc } from '../../core';
 import { CastleService } from '../../core';
-import { AccountModel, PodcastModel, EpisodeModel, getMetricsProperty, PODCAST_PAGE_SIZE, EPISODE_PAGE_SIZE } from '../';
+import { AccountModel, PodcastModel, EpisodeModel, getMetricsProperty, Podcast, Episode, PODCAST_PAGE_SIZE, EPISODE_PAGE_SIZE } from '../';
 
 @Injectable()
 export class CastleEffects {
@@ -64,9 +64,8 @@ export class CastleEffects {
               total: results[0].total(),
               podcasts: results.map(doc => {
                 return {
-                  seriesId: 0,
-                  title: doc['title'],
-                  feederId: '' + doc['id']
+                  id: '' + doc['id'],
+                  title: doc['title']
                 };
               })
             });
@@ -97,9 +96,9 @@ export class CastleEffects {
       return all && page === 1 && podcasts && podcasts.length > 0;
     }),
     map((action: ACTIONS.CastlePodcastPageSuccessAction) => action.payload.podcasts),
-    mergeMap((podcasts: PodcastModel[]) => {
+    mergeMap((podcasts: Podcast[]) => {
       return podcasts.map(podcast => new ACTIONS.CastleEpisodePageLoadAction(
-        {feederId: podcast.feederId, page: 1, all: true}));
+        {podcastId: podcast.id, page: 1, all: true}));
     })
   );
 
@@ -108,8 +107,8 @@ export class CastleEffects {
     ofType(ACTIONS.ActionTypes.CASTLE_EPISODE_PAGE_LOAD),
     map((action: ACTIONS.CastleEpisodePageLoadAction) => action.payload),
     concatMap((payload: ACTIONS.CastleEpisodePageLoadPayload) => {
-      const { feederId, page, all } = payload;
-      return this.castle.follow('prx:podcast', {id: feederId}).followItems('prx:episodes', {page, per: EPISODE_PAGE_SIZE})
+      const { podcastId, page, all } = payload;
+      return this.castle.follow('prx:podcast', {id: podcastId}).followItems('prx:episodes', {page, per: EPISODE_PAGE_SIZE})
         .pipe(
           map((results: HalDoc[]) => {
             return new ACTIONS.CastleEpisodePageSuccessAction({
@@ -118,11 +117,8 @@ export class CastleEffects {
               total: results[0].total(),
               episodes: results.map(doc => {
                 return {
-                  doc,
-                  seriesId: 0,
-                  feederId,
-                  id: 0,
                   guid: '' + doc['id'],
+                  podcastId,
                   publishedAt: doc['publishedAt'] ? new Date(doc['publishedAt']) : null,
                   title: doc['title'],
                 };
@@ -145,7 +141,7 @@ export class CastleEffects {
     concatMap((payload: ACTIONS.CastleEpisodePageSuccessPayload) => {
       const { page, all, episodes } = payload;
       return Observable.of(new ACTIONS.CastleEpisodePageLoadAction(
-        {feederId: episodes[0].feederId, page: page + 1, all}));
+        {podcastId: episodes[0].podcastId, page: page + 1, all}));
     })
   );
 

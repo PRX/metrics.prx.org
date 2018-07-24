@@ -242,8 +242,7 @@ describe('CastleEffects', () => {
     const success = new ACTIONS.CastlePodcastPageSuccessAction({
       podcasts: podcasts.map(p => {
         return {
-          feederId: p.feederId,
-          seriesId: 0,
+          id: p.feederId,
           title: p.title
         };
       }),

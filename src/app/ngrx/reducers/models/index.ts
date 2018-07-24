@@ -4,3 +4,5 @@ export { INTERVAL_MONTHLY, INTERVAL_WEEKLY, INTERVAL_DAILY, INTERVAL_HOURLY, Int
 export { CHARTTYPE_PODCAST, CHARTTYPE_EPISODES, CHARTTYPE_STACKED, ChartType } from './chart.type';
 export { RouterModel } from './router.model';
 export { DownloadsTableModel } from './downloads-table.model';
+export { PODCAST_PAGE_SIZE, Podcast } from './podcast.model';
+export { EPISODE_PAGE_SIZE, Episode } from './episode.model';

@@ -1,7 +1,6 @@
 import { Action } from '@ngrx/store';
 import { ActionTypes } from './action.types';
-import { EpisodeModel, PodcastModel, MetricsType, IntervalModel } from '../';
-import { HalDoc } from 'ngx-prx-styleguide';
+import { Podcast, Episode, MetricsType, IntervalModel } from '../';
 
 export interface CastlePodcastPageLoadPayload {
   page: number;
@@ -15,7 +14,7 @@ export class CastlePodcastPageLoadAction implements Action {
 }
 
 export interface CastlePodcastPageSuccessPayload {
-  podcasts: PodcastModel[];
+  podcasts: Podcast[];
   page: number;
   total: number;
   all?: boolean;
@@ -34,7 +33,7 @@ export class CastlePodcastPageFailureAction {
 }
 
 export interface CastleEpisodePageLoadPayload {
-  feederId: string;
+  podcastId: string;
   page: number;
   all?: boolean;
 }
@@ -49,7 +48,7 @@ export interface CastleEpisodePageSuccessPayload {
   page: number;
   total: number;
   all?: boolean;
-  episodes: EpisodeModel[];
+  episodes: Episode[];
 }
 
 export class CastleEpisodePageSuccessAction implements Action {

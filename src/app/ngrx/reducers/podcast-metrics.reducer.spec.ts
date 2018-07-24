@@ -1,5 +1,5 @@
 import { CastlePodcastMetricsSuccessAction } from '../actions/castle.action.creator';
-import { RouterModel, INTERVAL_DAILY, MetricsType, METRICSTYPE_DOWNLOADS, getMetricsProperty } from './models';
+import { RouterParams, INTERVAL_DAILY, MetricsType, METRICSTYPE_DOWNLOADS, getMetricsProperty } from './models';
 import { PodcastMetricsReducer } from './podcast-metrics.reducer';
 
 describe('PodcastMetricsReducer', () => {
@@ -9,7 +9,7 @@ describe('PodcastMetricsReducer', () => {
     feederId: '70',
     title: 'Pet Talks Daily'
   };
-  const routerState: RouterModel = {
+  const routerState: RouterParams = {
     metricsType: <MetricsType>METRICSTYPE_DOWNLOADS,
     beginDate: new Date('2017-08-27T00:00:00Z'),
     endDate: new Date('2017-09-07T00:00:00Z'),

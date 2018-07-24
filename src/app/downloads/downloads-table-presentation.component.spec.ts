@@ -8,7 +8,7 @@ import { SharedModule } from '../shared';
 import { DownloadsTablePresentationComponent } from './downloads-table-presentation.component';
 
 import { INTERVAL_HOURLY } from '../ngrx/reducers/models';
-import { routerState, podcast, episodes } from '../../testing/downloads.fixtures';
+import { routerParams, podcast, episodes } from '../../testing/downloads.fixtures';
 import { neutralColor, getColor } from '../shared/util/chart.util';
 
 describe('DownloadsTablePresentationComponent', () => {
@@ -34,7 +34,7 @@ describe('DownloadsTablePresentationComponent', () => {
       de = fix.debugElement;
       el = de.nativeElement;
 
-      comp.routerState = routerState;
+      comp.routerParams = routerParams;
       comp.podcastTableData = {
         title: 'All Episodes',
         color: neutralColor,
@@ -58,7 +58,7 @@ describe('DownloadsTablePresentationComponent', () => {
   }));
 
   it('should show message about local timezone translation for hourly data', () => {
-    comp.routerState = {...comp.routerState, interval: INTERVAL_HOURLY};
+    comp.routerParams = {...comp.routerParams, interval: INTERVAL_HOURLY};
     fix.detectChanges();
     expect(de.query(By.css('em')).nativeElement.textContent).toContain('local timezone');
   });

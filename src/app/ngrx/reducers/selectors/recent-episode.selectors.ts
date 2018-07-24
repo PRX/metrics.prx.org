@@ -28,20 +28,20 @@ export const selectRecentEpisodeMetrics = createSelector(
 
 export const selectRecentEpisodePerformanceMetrics = createSelector(
   selectRecentEpisode, selectEpisodePerformanceMetricsEntities, selectRouter, selectRecentEpisodeMetrics,
-  (episode: EpisodeModel, entities, routerState, metrics): EpisodePerformanceMetricsModel => {
+  (episode: EpisodeModel, entities, routerParams, metrics): EpisodePerformanceMetricsModel => {
     if (episode && entities[episode.id]) {
       // if we have full metrics data on the recent episode, check the today and all time total values and reconcile
       if (metrics) {
         // this whole bit can't reconcile totals if the app was loaded from non default route without recent episode metrics data
         let totalForToday = entities[episode.id].today;
-        // if recent episode is not on routed episode page, check for episode dailyReach and total
+        // if recent episode is not on routed episode episodePage, check for episode dailyReach and total
         const downloadsProp = getMetricsProperty(INTERVAL_DAILY, METRICSTYPE_DOWNLOADS);
         const downloadsLength = metrics[downloadsProp] && metrics[downloadsProp].length;
-        const totalForRange = getTotal(metricsData(routerState, metrics)) || (metrics[downloadsProp] && getTotal(metrics[downloadsProp]));
+        const totalForRange = getTotal(metricsData(routerParams, metrics)) || (metrics[downloadsProp] && getTotal(metrics[downloadsProp]));
 
         // today's total doesn't update until day after release, so attempt to get it from the daily downloads
         // (If app was loaded from non default url, we probably won't have dailyReach for today, an edge case I can live with.
-        // _could_ also total hourlies from today if they are refreshing the page from that route, but this is not doing that.)
+        // _could_ also total hourlies from today if they are refreshing the episodePage from that route, but this is not doing that.)
         if (metrics[downloadsProp] &&
           new Date(metrics[downloadsProp][downloadsLength - 1][0]).valueOf() >= beginningOfTodayUTC().valueOf()) {
           totalForToday = metrics[downloadsProp][downloadsLength - 1][1];

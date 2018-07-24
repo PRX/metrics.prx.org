@@ -1,14 +1,16 @@
 import { IntervalModel, ChartType, MetricsType } from './';
 
-export interface RouterModel {
+export interface RouterParams {
+  podcastId?: string;
   metricsType?: MetricsType;
-  podcastSeriesId?: number;
-  page?: number;
+  chartType?: ChartType;
+  interval?: IntervalModel;
+  episodePage?: number;
+  guid?: string;
   standardRange?: string;
   beginDate?: Date;
   endDate?: Date;
-  interval?: IntervalModel;
-  chartType?: ChartType;
+  podcastSeriesId?: number;
   chartPodcast?: boolean;
   episodeIds?: number[];
 }

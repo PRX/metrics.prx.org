@@ -6,13 +6,13 @@ import { Actions, Effect, ofType } from '@ngrx/effects';
 import { Store, select } from '@ngrx/store';
 import { Angulartics2 } from 'angulartics2';
 import { ActionTypes, GoogleAnalyticsEventAction } from '../actions';
-import { PodcastModel, RouterModel } from '../';
+import { PodcastModel, RouterParams } from '../';
 import { selectPodcasts, selectRouter } from '../reducers/selectors';
 
 @Injectable()
 export class GoogleAnalyticsEffects {
   podcasts: PodcastModel[];
-  routerState: RouterModel;
+  routerParams: RouterParams;
 
   @Effect({dispatch: false})
   fromGAEvent$: Observable<void> = this.actions$.pipe(
@@ -24,15 +24,15 @@ export class GoogleAnalyticsEffects {
       if (action.payload.category) {
         event['category'] = action.payload.category;
       } else {
-        if (this.routerState && this.routerState.interval) {
-          event['category'] = 'Downloads/' + this.routerState.interval.name;
+        if (this.routerParams && this.routerParams.interval) {
+          event['category'] = 'Downloads/' + this.routerParams.interval.name;
         }
       }
       if (action.payload.label) {
         event['label'] = action.payload.label;
       } else {
-        if (this.routerState && this.routerState.podcastSeriesId && this.podcasts) {
-          const podcast = this.podcasts.find(p => p.seriesId === this.routerState.podcastSeriesId);
+        if (this.routerParams && this.routerParams.podcastSeriesId && this.podcasts) {
+          const podcast = this.podcasts.find(p => p.seriesId === this.routerParams.podcastSeriesId);
           if (podcast) {
             event['label'] = podcast.title;
           }
@@ -51,8 +51,8 @@ export class GoogleAnalyticsEffects {
     this.store.pipe(select(selectPodcasts)).subscribe(podcasts => {
       this.podcasts = podcasts;
     });
-    this.store.pipe(select(selectRouter)).subscribe(routerState => {
-      this.routerState = routerState;
+    this.store.pipe(select(selectRouter)).subscribe(routerParams => {
+      this.routerParams = routerParams;
     });
   }
 }

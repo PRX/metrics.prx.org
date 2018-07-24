@@ -32,7 +32,7 @@ describe('IntervalDropdownComponent', () => {
       el = de.nativeElement;
       store = TestBed.get(Store);
 
-      comp.routerState = {
+      comp.routerParams = {
         beginDate: dateUtil.beginningOfLastMonthUTC().toDate(),
         endDate: dateUtil.endOfLastMonthUTC().toDate(),
         interval: INTERVAL_DAILY
@@ -41,7 +41,7 @@ describe('IntervalDropdownComponent', () => {
     });
   }));
 
-  it('should set interval according to default routerState', () => {
+  it('should set interval according to default routerParams', () => {
     expect(comp.selectedInterval).toEqual(INTERVAL_DAILY);
   });
 

@@ -1,5 +1,5 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { RouterModel, DownloadsTableModel,
+import { RouterParams, DownloadsTableModel,
   INTERVAL_MONTHLY, INTERVAL_WEEKLY, INTERVAL_DAILY, INTERVAL_HOURLY,
   CHARTTYPE_PODCAST, CHARTTYPE_STACKED  } from '../ngrx';
 import * as dateFormat from '../shared/util/date/date.format';
@@ -13,7 +13,7 @@ export class DownloadsTablePresentationComponent {
   @Input() totalPages: number;
   @Input() podcastTableData: DownloadsTableModel;
   @Input() episodeTableData: DownloadsTableModel[];
-  @Input() routerState: RouterModel;
+  @Input() routerParams: RouterParams;
   @Input() expanded = false;
   @Output() toggleChartPodcast = new EventEmitter<boolean>();
   @Output() toggleChartEpisode = new EventEmitter<{episodeId: number, charted: boolean}>();
@@ -23,8 +23,8 @@ export class DownloadsTablePresentationComponent {
   bindToIntervalHourly = INTERVAL_HOURLY;
 
   dateFormat(date: Date): string {
-    if (this.routerState) {
-      switch (this.routerState.interval) {
+    if (this.routerParams) {
+      switch (this.routerParams.interval) {
         case INTERVAL_MONTHLY:
           return dateFormat.monthDateYear(date);
         case INTERVAL_WEEKLY:
@@ -50,10 +50,10 @@ export class DownloadsTablePresentationComponent {
   }
 
   get showPodcastToggle(): boolean {
-    return this.routerState && this.routerState.chartType === CHARTTYPE_STACKED;
+    return this.routerParams && this.routerParams.chartType === CHARTTYPE_STACKED;
   }
 
   get showEpisodeToggles(): boolean {
-    return this.routerState && this.routerState.chartType !== CHARTTYPE_PODCAST;
+    return this.routerParams && this.routerParams.chartType !== CHARTTYPE_PODCAST;
   }
 }

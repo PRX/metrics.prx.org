@@ -1,7 +1,7 @@
 export { AccountModel } from './reducers/account.reducer';
 export { PodcastModel,  } from './reducers/podcast.reducer';
 export { EpisodeModel,  } from './reducers/episode.reducer';
-export { RouterModel, DownloadsTableModel,
+export { RouterParams, DownloadsTableModel,
   Podcast, Episode, PODCAST_PAGE_SIZE, EPISODE_PAGE_SIZE,
   INTERVAL_MONTHLY, INTERVAL_WEEKLY, INTERVAL_DAILY, INTERVAL_HOURLY, IntervalModel, IntervalList,
   CHARTTYPE_PODCAST, CHARTTYPE_EPISODES, CHARTTYPE_STACKED, ChartType,

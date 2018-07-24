@@ -3,26 +3,25 @@ import { Routes, RouterModule } from '@angular/router';
 import { AuthGuard, DeactivateGuard } from 'ngx-prx-styleguide';
 
 import { DownloadsComponent } from './downloads.component';
-import { NavMenuComponent } from '../shared/nav';
 
 export const downloadsRoutes: Routes = [
   {
-    path: ':seriesId',
+    path: ':seriesId/:podcastId',
     pathMatch: 'full',
-    redirectTo: ':seriesId/downloads/podcast/daily'
+    redirectTo: ':seriesId/:podcastId/reach/podcast/daily'
   },
   {
-    path: ':seriesId/reach',
+    path: ':seriesId/:podcastId/reach',
     pathMatch: 'full',
-    redirectTo: ':seriesId/downloads/podcast/daily'
+    redirectTo: ':seriesId/:podcastId/reach/podcast/daily'
   },
   {
-    path: ':seriesId/reach/:chartType',
+    path: ':seriesId/:podcastId/reach/:chartType',
     pathMatch: 'full',
-    redirectTo: ':seriesId/downloads/podcast/daily'
+    redirectTo: ':seriesId/:podcastId/reach/podcast/daily'
   },
   {
-    path: ':seriesId/reach/:chartType/:interval',
+    path: ':seriesId/:podcastId/reach/:chartType/:interval',
     component: DownloadsComponent,
     canActivate: [AuthGuard],
     canDeactivate: [DeactivateGuard]

@@ -130,11 +130,11 @@ describe('CmsEffects', () => {
       actions$ = hot('-a', { a: action });
       expect$ = cold('-r', { r: null });
       expect(effects.loadPodcastsSuccess$).toBeObservable(expect$);
-      expect(store.dispatch).toHaveBeenCalledWith(new ACTIONS.RouteSeriesAction({podcastSeriesId: 111}));
+      expect(store.dispatch).toHaveBeenCalledWith(new ACTIONS.RoutePodcastAction({podcastId: 'url1', podcastSeriesId: 111}));
     });
 
     it('navigates to the podcast seriesId saved in localStorage', () => {
-      localStorageUtil.setItem(localStorageUtil.KEY_ROUTER_STATE, fixtures.routerState);
+      localStorageUtil.setItem(localStorageUtil.KEY_ROUTER_PARAMS, fixtures.routerParams);
       const podcasts = [
         {
           seriesId: 111,
@@ -148,11 +148,14 @@ describe('CmsEffects', () => {
       actions$ = hot('-a', { a: action });
       expect$ = cold('-r', { r: null });
       expect(effects.loadPodcastsSuccess$).toBeObservable(expect$);
-      expect(store.dispatch).toHaveBeenCalledWith(new ACTIONS.RouteSeriesAction({podcastSeriesId: fixtures.routerState.podcastSeriesId}));
+      expect(store.dispatch).toHaveBeenCalledWith(new ACTIONS.RoutePodcastAction({
+        podcastId: fixtures.routerParams.podcastId,
+        podcastSeriesId: fixtures.routerParams.podcastSeriesId
+      }));
     });
 
     it('navigates to the first podcast in the payload, if localStorage podcast is not in user\'s podcasts', () => {
-      localStorageUtil.setItem(localStorageUtil.KEY_ROUTER_STATE, fixtures.routerState);
+      localStorageUtil.setItem(localStorageUtil.KEY_ROUTER_PARAMS, fixtures.routerParams);
       const podcasts = [
         {
           seriesId: 111,
@@ -165,7 +168,7 @@ describe('CmsEffects', () => {
       actions$ = hot('-a', { a: action });
       expect$ = cold('-r', { r: null });
       expect(effects.loadPodcastsSuccess$).toBeObservable(expect$);
-      expect(store.dispatch).toHaveBeenCalledWith(new ACTIONS.RouteSeriesAction({podcastSeriesId: 111}));
+      expect(store.dispatch).toHaveBeenCalledWith(new ACTIONS.RoutePodcastAction({podcastId: 'url1', podcastSeriesId: 111}));
     });
 
     it('fails to load podcasts', () => {
@@ -241,7 +244,7 @@ describe('CmsEffects', () => {
     const s5 = {id: 125, publishedAt: new Date('2018-01-19'), title: 'Episode s5'};
     const s6 = {id: 126, publishedAt: new Date('2017-12-04'), title: 'Episode s6'};
 
-    it('successfully loads a page of episodes', () => {
+    it('successfully loads a episodePage of episodes', () => {
       const stories = cms.mock('prx:series', {}).mockItems('prx:stories', [s1, s2, s3, s4, s5, s6]);
       stories[0].mockItems('prx:distributions', [{kind: 'episode', url: 'http://my/episode/guid1'}]);
       stories[1].mockItems('prx:distributions', [{kind: 'episode', url: 'http://my/episode/guid2'}]);
@@ -259,7 +262,7 @@ describe('CmsEffects', () => {
       expect(effects.loadEpisodes$).toBeObservable(expect$);
     });
 
-    it('fails to load a page of episodes', () => {
+    it('fails to load a episodePage of episodes', () => {
       const error = new Error('Whaaaa?');
       const stories = cms.mock('prx:series', {}).mockError('prx:stories', error);
       const action = new ACTIONS.CmsPodcastEpisodePageAction({seriesId, page: 1});

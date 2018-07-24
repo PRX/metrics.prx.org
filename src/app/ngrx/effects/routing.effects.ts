@@ -7,7 +7,7 @@ import { Observable } from 'rxjs/Observable';
 import { Action, Store, select } from '@ngrx/store';
 import { ROUTER_NAVIGATION } from '@ngrx/router-store';
 import { Actions, Effect, ofType } from '@ngrx/effects';
-import { RouterModel, ChartType, MetricsType, PodcastModel,
+import { RouterParams, ChartType, MetricsType, PodcastModel,
   CHARTTYPE_PODCAST, INTERVAL_DAILY,
   METRICSTYPE_DOWNLOADS, METRICSTYPE_DEMOGRAPHICS, METRICSTYPE_TRAFFICSOURCES } from '../';
 import { selectRouter, selectPodcasts } from '../reducers/selectors';
@@ -18,11 +18,11 @@ import * as localStorageUtil from '../../shared/util/local-storage.util';
 
 @Injectable()
 export class RoutingEffects {
-  routerState: RouterModel;
+  routerParams: RouterParams;
   podcasts: PodcastModel[];
 
   // ROUTER_NAVIGATION/RouterNavigationAction originates from the ngrx StoreRouterConnectingModule.
-  // It is serialized from a RouterStateSnapshot by the custom RouterStateSerializer to a custom RouterModel
+  // It is serialized from a RouterStateSnapshot by the custom RouterStateSerializer to a custom RouterParams
   // after serialize, a RouterNavigationAction still has router event extras attached
   // so here in the effect it is mapped to a CustomRouterNavigationAction to strip it down.
   // The router reducer captures the CustomRouterNavigationAction to save routing state.
@@ -33,19 +33,19 @@ export class RoutingEffects {
     ofType(ROUTER_NAVIGATION),
     map((action: ACTIONS.CustomRouterNavigationAction) => action.payload),
     switchMap((payload: ACTIONS.CustomRouterNavigationPayload) => {
-      const routerState: RouterModel = {...payload.routerState};
+      const routerState: RouterParams = {...payload.routerState};
       // map to an action with our CUSTOM_ROUTER_NAVIGATION type
       return Observable.of(new ACTIONS.CustomRouterNavigationAction({routerState}));
     })
   );
 
   @Effect({dispatch: false})
-  routeSeries$: Observable<void> = this.actions$.pipe(
-    ofType(ActionTypes.ROUTE_SERIES),
-    map((action: ACTIONS.RouteSeriesAction) => action.payload),
-    switchMap((payload: ACTIONS.RouteSeriesPayload) => {
-      const { podcastSeriesId } = payload;
-      this.routeFromNewRouterState({podcastSeriesId, page: 1, episodeIds: []});
+  routePodcast$: Observable<void> = this.actions$.pipe(
+    ofType(ActionTypes.ROUTE_PODCAST),
+    map((action: ACTIONS.RoutePodcastAction) => action.payload),
+    switchMap((payload: ACTIONS.RoutePodcastPayload) => {
+      const { podcastId, podcastSeriesId } = payload;
+      this.routeFromNewRouterParams({podcastId, podcastSeriesId, episodePage: 1, episodeIds: []});
       return Observable.of(null);
     })
   );
@@ -56,7 +56,7 @@ export class RoutingEffects {
     map((action: ACTIONS.RoutePodcastChartedAction) => action.payload),
     switchMap((payload: ACTIONS.RoutePodcastChartedPayload) => {
       const { chartPodcast } = payload;
-      this.routeFromNewRouterState({chartPodcast});
+      this.routeFromNewRouterParams({chartPodcast});
       return Observable.of(null);
     })
   );
@@ -66,9 +66,9 @@ export class RoutingEffects {
     ofType(ActionTypes.ROUTE_EPISODE_PAGE),
     map((action: ACTIONS.RouteEpisodePageAction) => action.payload),
     switchMap((payload: ACTIONS.RouteEpisodePagePayload) => {
-      const { page } = payload;
+      const { episodePage } = payload;
       // route to no episodes so that incoming episodes will be charted again by default (reset state)
-      this.routeFromNewRouterState({page, episodeIds: []});
+      this.routeFromNewRouterParams({episodePage, episodeIds: []});
       return Observable.of(null);
     })
   );
@@ -79,7 +79,7 @@ export class RoutingEffects {
     map((action: ACTIONS.RouteEpisodesChartedAction) => action.payload),
     switchMap((payload: ACTIONS.RouteEpisodesChartedPayload) => {
       const { episodeIds } = payload;
-      this.routeFromNewRouterState({episodeIds});
+      this.routeFromNewRouterParams({episodeIds});
       return Observable.of(null);
     })
   );
@@ -89,12 +89,12 @@ export class RoutingEffects {
     ofType(ActionTypes.ROUTE_SINGLE_EPISODE_CHARTED),
     map((action: ACTIONS.RouteSingleEpisodeChartedAction) => action.payload),
     switchMap((payload: ACTIONS.RouteSingleEpisodeChartedPayload) => {
-      const { episodeId, chartType, page } = payload;
+      const { episodeId, chartType, episodePage } = payload;
       const metricsType = METRICSTYPE_DOWNLOADS;
-      if (page) {
-        this.routeFromNewRouterState({episodeIds: [episodeId], chartType, metricsType, page});
+      if (episodePage) {
+        this.routeFromNewRouterParams({episodeIds: [episodeId], chartType, metricsType, episodePage});
       } else {
-        this.routeFromNewRouterState({episodeIds: [episodeId], chartType, metricsType});
+        this.routeFromNewRouterParams({episodeIds: [episodeId], chartType, metricsType});
       }
       return Observable.of(null);
     })
@@ -111,11 +111,11 @@ export class RoutingEffects {
       const { episodeId, charted } = payload;
       let episodeIds;
       if (charted) {
-        episodeIds = this.routerState.episodeIds ? this.routerState.episodeIds.concat(episodeId) : [episodeId];
+        episodeIds = this.routerParams.episodeIds ? this.routerParams.episodeIds.concat(episodeId) : [episodeId];
       } else {
-        episodeIds = this.routerState.episodeIds ? this.routerState.episodeIds.filter(id => id !== episodeId) : [];
+        episodeIds = this.routerParams.episodeIds ? this.routerParams.episodeIds.filter(id => id !== episodeId) : [];
       }
-      this.routeFromNewRouterState({episodeIds});
+      this.routeFromNewRouterParams({episodeIds});
       return Observable.of(null);
     })
   );
@@ -126,7 +126,7 @@ export class RoutingEffects {
     map((action: ACTIONS.RouteChartTypeAction) => action.payload),
     switchMap((payload: ACTIONS.RouteChartTypePayload) => {
       const { chartType } = payload;
-      this.routeFromNewRouterState({chartType});
+      this.routeFromNewRouterParams({chartType});
       return Observable.of(null);
     })
   );
@@ -137,7 +137,7 @@ export class RoutingEffects {
     map((action: ACTIONS.RouteIntervalAction) => action.payload),
     switchMap((payload: ACTIONS.RouteIntervalPayload) => {
       const { interval } = payload;
-      this.routeFromNewRouterState({interval});
+      this.routeFromNewRouterParams({interval});
       return Observable.of(null);
     })
   );
@@ -149,7 +149,7 @@ export class RoutingEffects {
     switchMap((payload: ACTIONS.RouteStandardRangePayload) => {
       const { standardRange } = payload;
       const range = dateUtil.getBeginEndDateFromStandardRange(standardRange);
-      this.routeFromNewRouterState({standardRange, ...range});
+      this.routeFromNewRouterParams({standardRange, ...range});
       return Observable.of(null);
     })
   );
@@ -160,7 +160,7 @@ export class RoutingEffects {
     map((action: ACTIONS.RouteAdvancedRangeAction) => action.payload),
     switchMap((payload: ACTIONS.RouteAdvancedRangePayload) => {
       const { interval, beginDate, endDate, standardRange } = payload;
-      this.routeFromNewRouterState({beginDate, endDate, interval, standardRange});
+      this.routeFromNewRouterParams({beginDate, endDate, interval, standardRange});
       return Observable.of(null);
     })
   );
@@ -171,7 +171,7 @@ export class RoutingEffects {
    map((action: ACTIONS.RouteMetricsTypeAction) => action.payload),
    switchMap((payload: ACTIONS.RouteMetricsTypePayload) => {
      const { metricsType } = payload;
-     this.routeFromNewRouterState(({metricsType}));
+     this.routeFromNewRouterParams(({metricsType}));
      return Observable.of(null);
    })
  );
@@ -179,19 +179,27 @@ export class RoutingEffects {
   constructor(public store: Store<any>,
               private router: Router,
               private actions$: Actions) {
-    this.store.pipe(select(selectRouter)).subscribe(routerState => this.routerState = routerState);
-    this.store.pipe(select(selectPodcasts)).subscribe(podcasts => this.podcasts = podcasts);
+    this.store.pipe(select(selectRouter)).subscribe(routerParams => {
+      this.loadEpisodesIfChanged(routerParams);
+
+      this.routerParams = routerParams;
+    });
+
+    /* TODO: don't seem to be using this
+    this.store.pipe(select(selectPodcasts)).subscribe(podcasts => this.podcasts = podcasts);*/
+
+    // for redirecting users routed to '/'
     this.router.events.pipe(
       filter(event => event instanceof RoutesRecognized)
     ).subscribe((event: RoutesRecognized) => {
-      if (event.url === '/' && this.routerState && this.routerState.podcastSeriesId) {
-        this.routeFromNewRouterState(this.routerState);
+      if (event.url === '/' && this.routerParams && this.routerParams.podcastSeriesId) {
+        this.routeFromNewRouterParams(this.routerParams);
       }
     });
   }
 
-  routeFromNewRouterState(newRouteParams: RouterModel): RouterModel {
-    const combinedRouterState: RouterModel = { ...this.routerState, ...newRouteParams};
+  routeFromNewRouterParams(newRouterParams: RouterParams): RouterParams {
+    const combinedRouterState: RouterParams = { ...this.routerParams, ...newRouterParams};
     if (!combinedRouterState.metricsType) {
       combinedRouterState.metricsType = <MetricsType>METRICSTYPE_DOWNLOADS;
     }
@@ -203,8 +211,14 @@ export class RoutingEffects {
     }
 
     const params = {};
-    if (combinedRouterState.page) {
-      params['page'] = combinedRouterState.page;
+    if (combinedRouterState.episodePage) {
+      params['episodePage'] = combinedRouterState.episodePage;
+    }
+    if (combinedRouterState.episodePage) {
+      params['page'] = combinedRouterState.episodePage;
+    }
+    if (combinedRouterState.guid) {
+      params['guid'] = combinedRouterState.guid;
     }
     if (combinedRouterState.standardRange) {
       params['standardRange'] = combinedRouterState.standardRange;
@@ -224,12 +238,13 @@ export class RoutingEffects {
       params['episodes'] = combinedRouterState.episodeIds.join(',');
     }
 
-    localStorageUtil.setItem(localStorageUtil.KEY_ROUTER_STATE, combinedRouterState);
+    localStorageUtil.setItem(localStorageUtil.KEY_ROUTER_PARAMS, combinedRouterState);
 
     switch (combinedRouterState.metricsType) {
       case METRICSTYPE_DOWNLOADS:
         this.router.navigate([
             combinedRouterState.podcastSeriesId,
+            combinedRouterState.podcastId,
             combinedRouterState.metricsType,
             combinedRouterState.chartType,
             combinedRouterState.interval.key,
@@ -240,11 +255,23 @@ export class RoutingEffects {
       case METRICSTYPE_TRAFFICSOURCES:
         this.router.navigate([
             combinedRouterState.podcastSeriesId,
+            combinedRouterState.podcastId,
             combinedRouterState.metricsType,
             params
           ]);
         break;
     }
     return combinedRouterState;
+  }
+
+  loadEpisodesIfChanged(newRouterParams: RouterParams) {
+    if (newRouterParams && newRouterParams.podcastId && (!this.routerParams ||
+      newRouterParams.podcastId !== this.routerParams.podcastId ||
+      newRouterParams.episodePage !== this.routerParams.episodePage)) {
+        this.store.dispatch(new ACTIONS.CastleEpisodePageLoadAction({
+          podcastId: newRouterParams.podcastId,
+          page: newRouterParams.episodePage || 1,
+          all: newRouterParams.podcastSeriesId !== this.routerParams.podcastSeriesId}));
+    }
   }
 }

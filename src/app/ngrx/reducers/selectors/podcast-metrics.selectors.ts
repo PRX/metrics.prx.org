@@ -1,6 +1,6 @@
 import { createSelector } from '@ngrx/store';
 import { RootState, selectAppState } from '../';
-import { RouterModel, getMetricsProperty, METRICSTYPE_DOWNLOADS } from '../models';
+import { RouterParams, getMetricsProperty, METRICSTYPE_DOWNLOADS } from '../models';
 import { PodcastMetricsModel } from '../podcast-metrics.reducer';
 import { selectRouter, selectPodcastRoute } from './router.selectors';
 import { errorType } from './error.type';
@@ -8,20 +8,20 @@ import * as metricsUtil from '../../../shared/util/metrics.util';
 
 export const selectPodcastMetrics = createSelector(selectAppState, (state: RootState) => state.podcastMetrics);
 export const selectPodcastMetricsFilteredAverage = createSelector(selectPodcastMetrics, selectRouter,
-  (metrics: PodcastMetricsModel[], routerState: RouterModel) => {
+  (metrics: PodcastMetricsModel[], routerParams: RouterParams) => {
     // TODO: should zero value data points be included in the average? for some of these zeroes, there just is no data
     // for episodes, including the zero data points before the release date brings the average down
-    const filteredMetrics = metricsUtil.findPodcastMetrics(routerState, metrics);
+    const filteredMetrics = metricsUtil.findPodcastMetrics(routerParams, metrics);
     if (filteredMetrics) {
-      const data = filteredMetrics[getMetricsProperty(routerState.interval, METRICSTYPE_DOWNLOADS)];
-      return metricsUtil.getWeightedAverage(data, routerState.beginDate, routerState.endDate, routerState.interval);
+      const data = filteredMetrics[getMetricsProperty(routerParams.interval, METRICSTYPE_DOWNLOADS)];
+      return metricsUtil.getWeightedAverage(data, routerParams.beginDate, routerParams.endDate, routerParams.interval);
     }
   });
 export const selectPodcastMetricsFilteredTotal = createSelector(selectPodcastMetrics, selectRouter,
-  (metrics: PodcastMetricsModel[], routerState: RouterModel) => {
-    const filteredMetrics = metricsUtil.findPodcastMetrics(routerState, metrics);
+  (metrics: PodcastMetricsModel[], routerParams: RouterParams) => {
+    const filteredMetrics = metricsUtil.findPodcastMetrics(routerParams, metrics);
     if (filteredMetrics) {
-      const data = filteredMetrics[getMetricsProperty(routerState.interval, METRICSTYPE_DOWNLOADS)];
+      const data = filteredMetrics[getMetricsProperty(routerParams.interval, METRICSTYPE_DOWNLOADS)];
       return metricsUtil.getTotal(data);
     }
   });

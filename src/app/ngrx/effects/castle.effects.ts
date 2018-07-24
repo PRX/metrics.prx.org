@@ -88,7 +88,7 @@ export class CastleEffects {
     })
   );
 
-  @Effect()
+  /*@Effect()
   loadPodcastEpisodes$: Observable<Action> = this.actions$.pipe(
     ofType(ACTIONS.ActionTypes.CASTLE_PODCAST_PAGE_SUCCESS),
     filter((action: ACTIONS.CastlePodcastPageSuccessAction) => {
@@ -100,7 +100,7 @@ export class CastleEffects {
       return podcasts.map(podcast => new ACTIONS.CastleEpisodePageLoadAction(
         {podcastId: podcast.id, page: 1, all: true}));
     })
-  );
+  );*/
 
   @Effect()
   loadEpisodePage$: Observable<Action> = this.actions$.pipe(

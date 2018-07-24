@@ -1,4 +1,4 @@
-export const KEY_ROUTER_STATE = 'routerState';
+export const KEY_ROUTER_PARAMS = 'routerParams';
 
 export const setItem = (key: string, val: any) => localStorage.setItem(key, JSON.stringify(val));
 

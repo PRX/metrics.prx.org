@@ -11,7 +11,7 @@ import { DownloadsTablePresentationComponent } from './downloads-table-presentat
 import { reducers } from '../ngrx/reducers';
 import { CHARTTYPE_EPISODES, getMetricsProperty } from '../ngrx';
 import * as ACTIONS from '../ngrx/actions';
-import { routerState, episodes, podcast, ep0Downloads, ep1Downloads, podDownloads } from '../../testing/downloads.fixtures';
+import { routerParams, episodes, podcast, ep0Downloads, ep1Downloads, podDownloads } from '../../testing/downloads.fixtures';
 
 describe('DownloadsTableContainerComponent', () => {
   let comp: DownloadsTableContainerComponent;
@@ -20,7 +20,7 @@ describe('DownloadsTableContainerComponent', () => {
   let el: HTMLElement;
   let store: Store<any>;
 
-  const metricsPropertyName = getMetricsProperty(routerState.interval, routerState.metricsType);
+  const metricsPropertyName = getMetricsProperty(routerParams.interval, routerParams.metricsType);
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -42,7 +42,7 @@ describe('DownloadsTableContainerComponent', () => {
       el = de.nativeElement;
       store = TestBed.get(Store);
 
-      store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerState}));
+      store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerState: routerParams}));
       store.dispatch(new ACTIONS.CastleEpisodeMetricsSuccessAction({
         seriesId: episodes[0].seriesId, page: episodes[0].page, id: episodes[0].id, guid: episodes[0].guid,
         metricsPropertyName, metrics: ep0Downloads}));
@@ -73,8 +73,8 @@ describe('DownloadsTableContainerComponent', () => {
       {episodeId: 124, chartType: CHARTTYPE_EPISODES}));
   });
 
-  it('should dispatch routing action on page change', () => {
+  it('should dispatch routing action on episodePage change', () => {
     comp.onPageChange(2);
-    expect(store.dispatch).toHaveBeenCalledWith(new ACTIONS.RouteEpisodePageAction({page: 2}));
+    expect(store.dispatch).toHaveBeenCalledWith(new ACTIONS.RouteEpisodePageAction({episodePage: 2}));
   });
 });

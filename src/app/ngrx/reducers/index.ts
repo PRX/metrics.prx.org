@@ -13,11 +13,11 @@ import { EpisodeState } from './episode.reducer';
 import { RecentEpisodeState } from './recent-episode.reducer';
 import { CustomRouterReducer } from './router.reducer';
 
-import { RouterModel } from './models';
+import { RouterParams } from './models';
 
 export interface RootState {
-  routerSerializer: RouterReducerState<RouterModel>;
-  router: RouterModel;
+  routerSerializer: RouterReducerState<RouterParams>;
+  router: RouterParams;
   account: AccountState;
   podcasts: PodcastState;
   episodes: EpisodeState;

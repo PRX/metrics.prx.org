@@ -1,5 +1,5 @@
 import { ActionTypes, CustomRouterNavigationAction } from '../actions';
-import { RouterModel } from './models';
+import { RouterParams } from './models';
 
 const initialState = {};
 
@@ -7,10 +7,13 @@ const initialState = {};
 // Things that are not in/relevant to the current URL, can still be saved in the application state
 // so that for example, if you navigate away from Downloads, the chart type, interval, date range etc are not lost
 // Still to be decided if the date range for downloads carries over to demographics or traffic sources
-export function CustomRouterReducer(state: RouterModel = initialState, action: CustomRouterNavigationAction): RouterModel {
+export function CustomRouterReducer(state: RouterParams = initialState, action: CustomRouterNavigationAction): RouterParams {
   switch (action.type) {
     case ActionTypes.CUSTOM_ROUTER_NAVIGATION:
-      const newState: RouterModel = {...state};
+      const newState: RouterParams = {...state};
+      if (action.payload.routerState.podcastId) {
+        newState.podcastId = action.payload.routerState.podcastId;
+      }
       if (action.payload.routerState.podcastSeriesId) {
         newState.podcastSeriesId = action.payload.routerState.podcastSeriesId;
       }
@@ -23,8 +26,11 @@ export function CustomRouterReducer(state: RouterModel = initialState, action: C
       if (action.payload.routerState.interval) {
         newState.interval = action.payload.routerState.interval;
       }
-      if (action.payload.routerState.page) {
-        newState.page = action.payload.routerState.page;
+      if (action.payload.routerState.episodePage) {
+        newState.episodePage = action.payload.routerState.episodePage;
+      }
+      if (action.payload.routerState.guid) {
+        newState.guid = action.payload.routerState.guid;
       }
       if (action.payload.routerState.beginDate || action.payload.routerState.endDate) {
         // standardRange can only be set with accompanying begin or end date

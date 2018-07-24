@@ -1,5 +1,5 @@
 import { CastleEpisodeMetricsSuccessAction } from '../actions';
-import { INTERVAL_DAILY, MetricsType, METRICSTYPE_DOWNLOADS, RouterModel, getMetricsProperty } from '../';
+import { INTERVAL_DAILY, MetricsType, METRICSTYPE_DOWNLOADS, RouterParams, getMetricsProperty } from '../';
 import { EpisodeMetricsReducer } from './episode-metrics.reducer';
 
 describe('EpisodeMetricsReducer', () => {
@@ -12,7 +12,7 @@ describe('EpisodeMetricsReducer', () => {
     title: 'A Pet Talk Episode',
     guid: 'abcdefg'
   };
-  const routerState: RouterModel = {
+  const routerState: RouterParams = {
     metricsType: <MetricsType>METRICSTYPE_DOWNLOADS,
     beginDate: new Date('2017-08-27T00:00:00Z'),
     endDate: new Date('2017-09-07T00:00:00Z'),

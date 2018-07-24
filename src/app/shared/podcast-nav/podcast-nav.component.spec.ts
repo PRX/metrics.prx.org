@@ -10,8 +10,8 @@ import { PodcastNavListComponent } from './podcast-nav-list.component';
 
 import { reducers, RootState } from '../../ngrx/reducers';
 
-import { CustomRouterNavigationAction, CmsPodcastsSuccessAction, RouteSeriesAction } from '../../ngrx/actions';
-import { RouterModel } from '../../ngrx';
+import { CustomRouterNavigationAction, CmsPodcastsSuccessAction, RoutePodcastAction } from '../../ngrx/actions';
+import { RouterParams } from '../../ngrx';
 
 describe('PodcastNavComponent', () => {
   let store: Store<RootState>;
@@ -32,7 +32,8 @@ describe('PodcastNavComponent', () => {
       feederId: '72'
     }
   ];
-  const routerState: RouterModel = {
+  const routerParams: RouterParams = {
+    podcastId: podcasts[0].feederId,
     podcastSeriesId: podcasts[0].seriesId
   };
 
@@ -58,12 +59,12 @@ describe('PodcastNavComponent', () => {
 
       store = TestBed.get(Store);
 
-      store.dispatch(new CustomRouterNavigationAction({routerState}));
+      store.dispatch(new CustomRouterNavigationAction({routerState: routerParams}));
       store.dispatch(new CmsPodcastsSuccessAction({podcasts: podcasts.slice(0, 1)}));
     });
   }));
 
-  it('should set selected podcast according to routerState', () => {
+  it('should set selected podcast according to routerParams', () => {
     let result;
     comp.selectedPodcast$.subscribe(value => result = value);
     expect(result).toEqual(podcasts[0]);
@@ -80,6 +81,7 @@ describe('PodcastNavComponent', () => {
   it('should dispatch routing action when podcast is changed', () => {
     spyOn(store, 'dispatch');
     comp.onPodcastChange(podcasts[1]);
-    expect(store.dispatch).toHaveBeenCalledWith(new RouteSeriesAction({podcastSeriesId: podcasts[1].seriesId}));
+    expect(store.dispatch).toHaveBeenCalledWith(
+      new RoutePodcastAction({podcastId: podcasts[1].feederId, podcastSeriesId: podcasts[1].seriesId}));
   });
 });

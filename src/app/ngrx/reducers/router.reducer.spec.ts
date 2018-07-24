@@ -1,10 +1,10 @@
 import { CustomRouterNavigationAction } from '../actions';
-import { RouterModel, INTERVAL_DAILY, INTERVAL_HOURLY, CHARTTYPE_STACKED, METRICSTYPE_DOWNLOADS } from '../';
+import { RouterParams, INTERVAL_DAILY, INTERVAL_HOURLY, CHARTTYPE_STACKED, METRICSTYPE_DOWNLOADS } from '../';
 import { CustomRouterReducer } from './router.reducer';
 import * as dateUtil from '../../shared/util/date';
 
 describe('CustomRouterReducer', () => {
-  let newState: RouterModel;
+  let newState: RouterParams;
   beforeEach(() => {
     newState = CustomRouterReducer(undefined,
       new CustomRouterNavigationAction({
@@ -17,7 +17,7 @@ describe('CustomRouterReducer', () => {
       }));
   });
 
-  it('should update with new routerState', () => {
+  it('should update with new routerParams', () => {
     expect(newState.podcastSeriesId).toEqual(37800);
   });
 
@@ -39,14 +39,14 @@ describe('CustomRouterReducer', () => {
     expect(newState.interval.key).toEqual('hourly');
   });
 
-  it('should update with new episode page', () => {
+  it('should update with new episode episodePage', () => {
     newState = CustomRouterReducer(newState,
       new CustomRouterNavigationAction({
         routerState: {
-          page: 1
+          episodePage: 1
         }
       }));
-    expect(newState.page).toEqual(1);
+    expect(newState.episodePage).toEqual(1);
   });
 
   it ('should update with new beginDate or endDate', () => {

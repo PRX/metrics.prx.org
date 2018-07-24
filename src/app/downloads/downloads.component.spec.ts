@@ -20,7 +20,7 @@ import { METRICSTYPE_DOWNLOADS, INTERVAL_DAILY, getMetricsProperty } from '../ng
 import { reducers } from '../ngrx/reducers';
 import * as ACTIONS from '../ngrx/actions';
 
-import { routerState, episodes, podcast, ep0Downloads, ep1Downloads, podDownloads } from '../../testing/downloads.fixtures';
+import { routerParams, episodes, podcast, ep0Downloads, ep1Downloads, podDownloads } from '../../testing/downloads.fixtures';
 
 describe('DownloadsComponent', () => {
   let comp: DownloadsComponent;
@@ -29,7 +29,7 @@ describe('DownloadsComponent', () => {
   let el: HTMLElement;
   let castle;
   let store: Store<any>;
-  const metricsPropertyName = getMetricsProperty(routerState.interval, routerState.metricsType);
+  const metricsPropertyName = getMetricsProperty(routerParams.interval, routerParams.metricsType);
 
   beforeEach(async(() => {
     castle = new MockHalService();
@@ -80,11 +80,11 @@ describe('DownloadsComponent', () => {
   }
 
   function dispatchRouterNavigation() {
-    store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerState}));
+    store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerState: routerParams}));
   }
 
   function dispatchInvalidPodcastRouterNavigation() {
-    store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerState: {...routerState, podcastSeriesId: 1234}}));
+    store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerState: {...routerParams, podcastSeriesId: 1234}}));
   }
 
   function dispatchPodcasts() {
@@ -152,9 +152,9 @@ describe('DownloadsComponent', () => {
       expect(comp.getEpisodeMetrics).toHaveBeenCalled();
     });
 
-    it('should reload podcast and episode data if routerState parameters change', () => {
+    it('should reload podcast and episode data if routerParams parameters change', () => {
       const beginDate = new Date();
-      comp.store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerState: {page: 2}}));
+      comp.store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerState: {episodePage: 2}}));
       comp.store.dispatch(new ACTIONS.CmsPodcastEpisodePageSuccessAction({episodes: [{...episodes[1], page: 2}]}));
       comp.store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerState: {beginDate}}));
       expect(comp.getPodcastMetrics).toHaveBeenCalled();

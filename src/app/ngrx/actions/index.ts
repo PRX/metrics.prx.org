@@ -12,7 +12,7 @@ import { CastlePodcastPageLoadAction, CastlePodcastPageSuccessAction, CastlePodc
 import { IdAccountLoadAction, IdAccountSuccessAction, IdAccountFailureAction } from './id.action.creator';
 import { GoogleAnalyticsEventAction } from './google-analytics.action.creator';
 import { CustomRouterNavigationAction,
-  RouteSeriesAction, RoutePodcastChartedAction,
+  RoutePodcastAction, RoutePodcastChartedAction,
   RouteEpisodePageAction, RouteEpisodesChartedAction,
   RouteSingleEpisodeChartedAction, RouteToggleEpisodeChartedAction,
   RouteChartTypeAction, RouteIntervalAction,
@@ -53,7 +53,7 @@ export type AllActions
   | RouterNavigationAction
   | GoogleAnalyticsEventAction
   | CustomRouterNavigationAction
-  | RouteSeriesAction
+  | RoutePodcastAction
   | RoutePodcastChartedAction
   | RouteEpisodePageAction
   | RouteEpisodesChartedAction
@@ -92,7 +92,7 @@ export { CastlePodcastPageLoadAction, CastlePodcastPageSuccessPayload, CastlePod
 export { IdAccountLoadAction, IdAccountSuccessPayload, IdAccountSuccessAction, IdAccountFailureAction } from './id.action.creator';
 export { GoogleAnalyticsEventPayload, GoogleAnalyticsEventAction } from './google-analytics.action.creator';
 export { CustomRouterNavigationPayload, CustomRouterNavigationAction,
-  RouteSeriesPayload, RouteSeriesAction,
+  RoutePodcastPayload, RoutePodcastAction,
   RoutePodcastChartedPayload, RoutePodcastChartedAction,
   RouteEpisodePagePayload, RouteEpisodePageAction,
   RouteEpisodesChartedPayload, RouteEpisodesChartedAction,

@@ -10,7 +10,7 @@ import { getMetricsProperty } from '../ngrx';
 import { SharedModule } from '../shared';
 import { DownloadsChartContainerComponent } from './downloads-chart-container.component';
 import { DownloadsChartPresentationComponent } from './downloads-chart-presentation.component';
-import { routerState, episodes, podcast, ep0Downloads, ep1Downloads, podDownloads } from '../../testing/downloads.fixtures';
+import { routerParams, episodes, podcast, ep0Downloads, ep1Downloads, podDownloads } from '../../testing/downloads.fixtures';
 
 describe('DownloadsChartContainerComponent', () => {
   let comp: DownloadsChartContainerComponent;
@@ -37,9 +37,9 @@ describe('DownloadsChartContainerComponent', () => {
       el = de.nativeElement;
       store = TestBed.get(Store);
 
-      const metricsPropertyName = getMetricsProperty(routerState.interval, routerState.metricsType);
+      const metricsPropertyName = getMetricsProperty(routerParams.interval, routerParams.metricsType);
 
-      store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerState}));
+      store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerState: routerParams}));
       store.dispatch(new ACTIONS.CmsPodcastEpisodePageSuccessAction({episodes}));
       store.dispatch(new ACTIONS.CastleEpisodeMetricsSuccessAction({
         seriesId: episodes[0].seriesId, page: episodes[0].page, id: episodes[0].id, guid: episodes[0].guid,
@@ -54,8 +54,8 @@ describe('DownloadsChartContainerComponent', () => {
 
   it('should have router state', () => {
     let result;
-    comp.routerState$.subscribe(value => result = value);
-    expect(result).toEqual(routerState);
+    comp.routerParams$.subscribe(value => result = value);
+    expect(result).toEqual(routerParams);
   });
 
   it('should have chart data', () => {

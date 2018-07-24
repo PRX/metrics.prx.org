@@ -1,14 +1,14 @@
 <div>
-  <p *ngIf="routerState?.interval === bindToIntervalHourly"><em>Hourly data is shown in your local timezone</em></p>
+  <p *ngIf="routerParams?.interval === bindToIntervalHourly"><em>Hourly data is shown in your local timezone</em></p>
 
   <div class="table-navigation">
     <button (click)="toggleExpandedReport.emit()" class="btn-link">
-      <p *ngIf="!expanded">Show {{routerState?.interval?.key}} numbers &#187;</p>
-      <p *ngIf="expanded">Hide {{routerState?.interval?.key}} numbers &#171;</p>
+      <p *ngIf="!expanded">Show {{routerParams?.interval?.key}} numbers &#187;</p>
+      <p *ngIf="expanded">Hide {{routerParams?.interval?.key}} numbers &#171;</p>
     </button>
 
     <metrics-episode-page
-    [currentPage]="routerState?.page"
+    [currentPage]="routerParams?.episodePage"
     [totalPages]="totalPages"
     (pageChange)="pageChange.emit($event)"></metrics-episode-page>
   </div>

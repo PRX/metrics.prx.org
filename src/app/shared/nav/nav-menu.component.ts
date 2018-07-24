@@ -1,7 +1,7 @@
 import { Component, OnDestroy, HostListener } from '@angular/core';
 import { Store, select } from '@ngrx/store';
 import { Subscription } from 'rxjs/Subscription';
-import { RouterModel, MetricsType, METRICSTYPE_DOWNLOADS, METRICSTYPE_TRAFFICSOURCES, METRICSTYPE_DEMOGRAPHICS } from '../../ngrx/';
+import { RouterParams, MetricsType, METRICSTYPE_DOWNLOADS, METRICSTYPE_TRAFFICSOURCES, METRICSTYPE_DEMOGRAPHICS } from '../../ngrx/';
 import {  selectRouter } from '../../ngrx/reducers/selectors';
 import * as ACTIONS from '../../ngrx/actions';
 
@@ -14,8 +14,8 @@ import * as ACTIONS from '../../ngrx/actions';
         <button (click)="toggleOpen()" >
           <span class="nav-label">
             <span
-              [class]="'grey-darkest ' + getTypeWithIcon(routerState.metricsType)?.icon" aria-hidden="true"></span>
-            <span class="text">{{routerState.metricsType}}</span>
+              [class]="'grey-darkest ' + getTypeWithIcon(routerParams.metricsType)?.icon" aria-hidden="true"></span>
+            <span class="text">{{routerParams.metricsType}}</span>
           </span>
           <span class="down-arrow"></span>
         </button>
@@ -25,11 +25,11 @@ import * as ACTIONS from '../../ngrx/actions';
           <li *ngFor="let t of types">
             <button
               (click)="routeMetricsType(t.type)"
-              [class.active]="routerState.metricsType === t.type">
+              [class.active]="routerParams.metricsType === t.type">
               <span
                 [class]="t.icon"
-                [class.grey-darkest]="routerState.metricsType !== t.type"
-                [class.active]="routerState.metricsType === t.type" aria-hidden="true"></span>
+                [class.grey-darkest]="routerParams.metricsType !== t.type"
+                [class.active]="routerParams.metricsType === t.type" aria-hidden="true"></span>
               <span class="text">{{t.type}}</span>
             </button>
           </li>
@@ -41,7 +41,7 @@ import * as ACTIONS from '../../ngrx/actions';
 })
 export class NavMenuComponent implements OnDestroy {
   routerSub: Subscription;
-  routerState: RouterModel;
+  routerParams: RouterParams;
   types = [
     {type: METRICSTYPE_DOWNLOADS, icon: 'icon icon-headphones'},
     {type: METRICSTYPE_DEMOGRAPHICS, icon: 'icon icon-globe'},
@@ -54,7 +54,7 @@ export class NavMenuComponent implements OnDestroy {
   }
 
   constructor(public store: Store<any>) {
-    this.routerSub = this.store.pipe(select(selectRouter)).subscribe((routerState) => this.routerState = routerState);
+    this.routerSub = this.store.pipe(select(selectRouter)).subscribe((routerParams) => this.routerParams = routerParams);
   }
 
   ngOnDestroy() {

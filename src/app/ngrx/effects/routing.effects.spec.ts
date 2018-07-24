@@ -27,7 +27,8 @@ describe('RoutingEffects', () => {
   let actions$: TestActions;
   let store: Store<any>;
 
-  const routerState = {
+  const routerParams = {
+    podcastId: '70',
     podcastSeriesId: 37800,
     metricsType: <MetricsType>METRICSTYPE_DOWNLOADS,
     chartType: <ChartType>CHARTTYPE_PODCAST,
@@ -41,15 +42,15 @@ describe('RoutingEffects', () => {
 
   const routes: Route[] = [
     {
-      path: ':seriesId/reach/:chartType/:interval',
+      path: ':seriesId/:podcastId/reach/:chartType/:interval',
       component: TestComponent
     },
     {
-      path: ':seriesId/demographics',
+      path: ':seriesId/:podcastId/demographics',
       component: TestComponent
     },
     {
-      path: ':seriesId/devices',
+      path: ':seriesId/:podcastId/devices',
       component: TestComponent
     }
   ];
@@ -74,29 +75,30 @@ describe('RoutingEffects', () => {
     store = TestBed.get(Store);
 
     spyOn(store, 'dispatch').and.callThrough();
-    store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerState}));
+    store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerState: routerParams}));
 
-    spyOn(effects, 'routeFromNewRouterState').and.callThrough();
+    spyOn(effects, 'routeFromNewRouterParams').and.callThrough();
   }));
 
   it('should map ROUTER_NAVIGATION to CustomRouterNavigationAction', () => {
     const action = {
       type: ROUTER_NAVIGATION,
-      payload: {routerState}
+      payload: {routerState: routerParams}
     };
-    const result = new ACTIONS.CustomRouterNavigationAction({routerState});
+    const result = new ACTIONS.CustomRouterNavigationAction({routerState: routerParams});
     actions$.stream = hot('-a', { a: action });
     const expected = cold('-r', { r: result });
     expect(effects.customRouterNavigation$).toBeObservable(expected);
   });
 
-  it('should route to series on page 1 and reset episodes', () => {
-    const action = new ACTIONS.RouteSeriesAction({podcastSeriesId: 37800});
+  it('should route to podcast on episode page 1 and reset charted episodes', () => {
+    const action = new ACTIONS.RoutePodcastAction({podcastId: '70', podcastSeriesId: 37800});
     store.dispatch(action);
     actions$.stream = hot('-a', { a: action });
     const expected = cold('-r', { r: null });
-    expect(effects.routeSeries$).toBeObservable(expected);
-    expect(effects.routeFromNewRouterState).toHaveBeenCalledWith({podcastSeriesId: 37800, page: 1, episodeIds: []});
+    expect(effects.routePodcast$).toBeObservable(expected);
+    expect(effects.routeFromNewRouterParams).toHaveBeenCalledWith(
+      {podcastId: '70', podcastSeriesId: 37800, episodePage: 1, episodeIds: []});
   });
 
   it('should route to podcast charted', () => {
@@ -105,16 +107,16 @@ describe('RoutingEffects', () => {
     actions$.stream = hot('-a', { a: action });
     const expected = cold('-r', { r: null });
     expect(effects.routePodcastCharted$).toBeObservable(expected);
-    expect(effects.routeFromNewRouterState).toHaveBeenCalledWith({chartPodcast: false});
+    expect(effects.routeFromNewRouterParams).toHaveBeenCalledWith({chartPodcast: false});
   });
 
   it('should route to episode page and reset episode route', () => {
-    const action = new ACTIONS.RouteEpisodePageAction({page: 1});
+    const action = new ACTIONS.RouteEpisodePageAction({episodePage: 1});
     store.dispatch(action);
     actions$.stream = hot('-a', { a: action });
     const expected = cold('-r', { r: null });
     expect(effects.routeEpisodePage$).toBeObservable(expected);
-    expect(effects.routeFromNewRouterState).toHaveBeenCalledWith({page: 1, episodeIds: []});
+    expect(effects.routeFromNewRouterParams).toHaveBeenCalledWith({episodePage: 1, episodeIds: []});
   });
 
   it('should route to episodes charted', () => {
@@ -123,7 +125,7 @@ describe('RoutingEffects', () => {
     actions$.stream = hot('-a', { a: action });
     const expected = cold('-r', { r: null });
     expect(effects.routeEpisodesCharted$).toBeObservable(expected);
-    expect(effects.routeFromNewRouterState).toHaveBeenCalledWith({episodeIds: [123, 1234]});
+    expect(effects.routeFromNewRouterParams).toHaveBeenCalledWith({episodeIds: [123, 1234]});
   });
 
   it('should route to single episode charted', () => {
@@ -132,18 +134,18 @@ describe('RoutingEffects', () => {
     actions$.stream = hot('-a', { a: action });
     const expected = cold('-r', { r: null });
     expect(effects.routeSingleEpisodeCharted$).toBeObservable(expected);
-    expect(effects.routeFromNewRouterState).toHaveBeenCalledWith(
+    expect(effects.routeFromNewRouterParams).toHaveBeenCalledWith(
       {episodeIds: [123], chartType: CHARTTYPE_EPISODES, metricsType: METRICSTYPE_DOWNLOADS});
   });
 
   it('routes to single episode on a specific page', () => {
-    const action = new ACTIONS.RouteSingleEpisodeChartedAction({episodeId: 123, chartType: CHARTTYPE_EPISODES, page: 2});
+    const action = new ACTIONS.RouteSingleEpisodeChartedAction({episodeId: 123, chartType: CHARTTYPE_EPISODES, episodePage: 2});
     store.dispatch(action);
     actions$.stream = hot('-a', { a: action });
     const expected = cold('-r', { r: null });
     expect(effects.routeSingleEpisodeCharted$).toBeObservable(expected);
-    expect(effects.routeFromNewRouterState).toHaveBeenCalledWith(
-      {episodeIds: [123], chartType: CHARTTYPE_EPISODES, page: 2, metricsType: METRICSTYPE_DOWNLOADS});
+    expect(effects.routeFromNewRouterParams).toHaveBeenCalledWith(
+      {episodeIds: [123], chartType: CHARTTYPE_EPISODES, episodePage: 2, metricsType: METRICSTYPE_DOWNLOADS});
   });
 
   it('should route to toggle episode charted ', () => {
@@ -152,7 +154,7 @@ describe('RoutingEffects', () => {
     actions$.stream = hot('-a', { a: action });
     const expected = cold('-r', { r: null });
     expect(effects.routeToggleEpisodeCharted$).toBeObservable(expected);
-    expect(effects.routeFromNewRouterState).toHaveBeenCalledWith({episodeIds: routerState.episodeIds.filter(id => id !== 123)});
+    expect(effects.routeFromNewRouterParams).toHaveBeenCalledWith({episodeIds: routerParams.episodeIds.filter(id => id !== 123)});
   });
 
   it('should route to chart type', () => {
@@ -161,7 +163,7 @@ describe('RoutingEffects', () => {
     actions$.stream = hot('-a', { a: action });
     const expected = cold('-r', { r: null });
     expect(effects.routeChartType$).toBeObservable(expected);
-    expect(effects.routeFromNewRouterState).toHaveBeenCalledWith({chartType: CHARTTYPE_EPISODES});
+    expect(effects.routeFromNewRouterParams).toHaveBeenCalledWith({chartType: CHARTTYPE_EPISODES});
   });
 
   it('should route to interval', () => {
@@ -170,7 +172,7 @@ describe('RoutingEffects', () => {
     actions$.stream = hot('-a', { a: action });
     const expected = cold('-r', { r: null });
     expect(effects.routeInterval$).toBeObservable(expected);
-    expect(effects.routeFromNewRouterState).toHaveBeenCalledWith({interval: INTERVAL_HOURLY});
+    expect(effects.routeFromNewRouterParams).toHaveBeenCalledWith({interval: INTERVAL_HOURLY});
   });
 
   it('should route to standard range and include begin and end dates', () => {
@@ -179,7 +181,7 @@ describe('RoutingEffects', () => {
     actions$.stream = hot('-a', { a: action });
     const expected = cold('-r', { r: null });
     expect(effects.routeStandardRange$).toBeObservable(expected);
-    expect(effects.routeFromNewRouterState).toHaveBeenCalledWith({
+    expect(effects.routeFromNewRouterParams).toHaveBeenCalledWith({
       standardRange: dateUtil.LAST_WEEK,
       beginDate: dateUtil.beginningOfLastWeekUTC().toDate(),
       endDate: dateUtil.endOfLastWeekUTC().toDate()
@@ -197,7 +199,7 @@ describe('RoutingEffects', () => {
     actions$.stream = hot('-a', { a: action });
     const expected = cold('-r', { r: null });
     expect(effects.routeAdvancedRange$).toBeObservable(expected);
-    expect(effects.routeFromNewRouterState).toHaveBeenCalled();
+    expect(effects.routeFromNewRouterParams).toHaveBeenCalled();
   });
 
   it('should route to metrics type', () => {
@@ -206,12 +208,12 @@ describe('RoutingEffects', () => {
     actions$.stream = hot('-a', { a: action });
     const expected = cold('-r', { r: null });
     expect(effects.routeMetricsType$).toBeObservable(expected);
-    expect(effects.routeFromNewRouterState).toHaveBeenCalledWith({metricsType: METRICSTYPE_DOWNLOADS});
+    expect(effects.routeFromNewRouterParams).toHaveBeenCalledWith({metricsType: METRICSTYPE_DOWNLOADS});
   });
 
   it('should save routerState in localStorage', () => {
     localStorage.clear();
-    effects.routeFromNewRouterState(routerState);
-    expect(localStorageUtil.getItem(localStorageUtil.KEY_ROUTER_STATE).podcastSeriesId).toEqual(routerState.podcastSeriesId);
+    effects.routeFromNewRouterParams(routerParams);
+    expect(localStorageUtil.getItem(localStorageUtil.KEY_ROUTER_PARAMS).podcastSeriesId).toEqual(routerParams.podcastSeriesId);
   });
 });

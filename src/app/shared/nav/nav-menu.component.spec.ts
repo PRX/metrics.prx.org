@@ -7,7 +7,7 @@ import { ImageModule } from 'ngx-prx-styleguide';
 import { AbrevNumberPipe } from '../pipes/abrev-number.pipe';
 
 import { reducers } from '../../ngrx/reducers';
-import { RouterModel, ChartType, MetricsType,
+import { RouterParams, ChartType, MetricsType,
   CHARTTYPE_PODCAST, INTERVAL_DAILY,
   METRICSTYPE_DOWNLOADS, METRICSTYPE_DEMOGRAPHICS, METRICSTYPE_TRAFFICSOURCES } from '../../ngrx';
 import * as ACTIONS from '../../ngrx/actions';
@@ -41,7 +41,7 @@ describe('NavMenuComponent', () => {
     publishedAt: new Date('2017-09-21T00:00:00Z')
   };
 
-  const routerState: RouterModel = {
+  const routerParams: RouterParams = {
     podcastSeriesId: podcasts[0].seriesId,
     metricsType: <MetricsType>METRICSTYPE_DOWNLOADS,
     chartType: <ChartType>CHARTTYPE_PODCAST,
@@ -69,7 +69,7 @@ describe('NavMenuComponent', () => {
       el = de.nativeElement;
       store = TestBed.get(Store);
 
-      store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerState}));
+      store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerState: routerParams}));
       store.dispatch(new ACTIONS.CmsPodcastsSuccessAction({podcasts}));
       store.dispatch(new ACTIONS.CmsRecentEpisodeSuccessAction({episode}));
       fix.detectChanges();

@@ -3,7 +3,7 @@ import { StoreModule, Store, select } from '@ngrx/store';
 
 import { RootState, reducers } from '../';
 import { DownloadsTableModel, getMetricsProperty } from '../models';
-import { routerState,  podcast, episodes,
+import { routerParams,  podcast, episodes,
   podDownloads, podPerformance, podPerformanceOff,
   ep0Downloads, ep1Downloads,
   ep0Performance, ep0PerformanceOff, ep1Performance, ep1PerformanceOff } from '../../../../testing/downloads.fixtures';
@@ -15,7 +15,7 @@ import { selectDownloadTablePodcastMetrics, selectDownloadTableEpisodeMetrics } 
 describe('Downloads Table Selectors', () => {
   let store: Store<RootState>;
   let result;
-  const metricsPropertyName = getMetricsProperty(routerState.interval, routerState.metricsType);
+  const metricsPropertyName = getMetricsProperty(routerParams.interval, routerParams.metricsType);
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -27,7 +27,7 @@ describe('Downloads Table Selectors', () => {
 
     spyOn(store, 'dispatch').and.callThrough();
 
-    store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerState}));
+    store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerState: routerParams}));
     store.dispatch(new ACTIONS.CmsPodcastEpisodePageSuccessAction({episodes}));
     store.dispatch(new ACTIONS.CastleEpisodeMetricsSuccessAction({
       seriesId: episodes[0].seriesId, page: episodes[0].page, id: episodes[0].id, guid: episodes[0].guid,
@@ -68,7 +68,7 @@ describe('Downloads Table Selectors', () => {
     });
 
     it('should keep podcast in table for stacked chart when unselected for charting', () => {
-      store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerState: {...routerState, chartPodcast: false}}));
+      store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerState: {...routerParams, chartPodcast: false}}));
       expect(result.allTimeDownloads).toEqual(podPerformance.total);
     });
   });

@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { RouterModel, INTERVAL_HOURLY, IntervalModel, IntervalList } from '../../../ngrx';
+import { RouterParams, INTERVAL_HOURLY, IntervalModel, IntervalList } from '../../../ngrx';
 import * as dateUtil from '../../util/date';
 import { GoogleAnalyticsEventAction, RouteAdvancedRangeAction } from '../../../ngrx/actions';
 
@@ -11,7 +11,7 @@ import { GoogleAnalyticsEventAction, RouteAdvancedRangeAction } from '../../../n
       <div class="overlay" (click)="toggleOpen()"></div>
       <div class="dropdown-button">
         <button (click)="toggleOpen()">
-          <metrics-date-range-summary [routerState]="routerState"></metrics-date-range-summary>
+          <metrics-date-range-summary [routerParams]="routerParams"></metrics-date-range-summary>
           <span class="down-arrow"></span>
         </button>
       </div>
@@ -49,8 +49,8 @@ import { GoogleAnalyticsEventAction, RouteAdvancedRangeAction } from '../../../n
 })
 
 export class CustomDateRangeDropdownComponent {
-  @Input() routerState: RouterModel;
-  tempRange: RouterModel;
+  @Input() routerParams: RouterParams;
+  tempRange: RouterParams;
   intervalList = IntervalList;
   userChoseRange: string;
   CUSTOM_DATE = 'custom-date';
@@ -82,13 +82,13 @@ export class CustomDateRangeDropdownComponent {
     this.userChoseRange = this.STANDARD_DATE;
   }
 
-  googleAnalyticsEvent(action: string, dateRange: RouterModel) {
+  googleAnalyticsEvent(action: string, dateRange: RouterParams) {
     const value = dateUtil.getAmountOfIntervals(dateRange.beginDate, dateRange.endDate, dateRange.interval);
-    this.store.dispatch(new GoogleAnalyticsEventAction({gaAction: 'routerState-' + action, value}));
+    this.store.dispatch(new GoogleAnalyticsEventAction({gaAction: 'routerParams-' + action, value}));
   }
 
   toggleOpen() {
-    this.tempRange = {...this.routerState};
+    this.tempRange = {...this.routerParams};
     this.open = !this.open;
   }
 

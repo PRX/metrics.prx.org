@@ -11,7 +11,7 @@ import { SharedModule } from './shared';
 import { AppComponent } from './app.component';
 
 import { reducers } from './ngrx/reducers';
-import { AccountModel, PodcastModel, RouterModel, ChartType, MetricsType,
+import { AccountModel, PodcastModel, RouterParams, ChartType, MetricsType,
   CHARTTYPE_PODCAST, INTERVAL_DAILY, METRICSTYPE_DOWNLOADS } from './ngrx';
 import * as ACTIONS from './ngrx/actions';
 import { Userinfo, UserinfoService } from 'ngx-prx-styleguide';
@@ -33,7 +33,7 @@ describe('AppComponent', () => {
 
   const account: AccountModel = {id: 1234, name: 'Joey JoJo Jr Shabadoo'};
   const podcasts: PodcastModel[] = [{seriesId: 9876, title: 'Foobar'}];
-  const routerState: RouterModel = {
+  const routerParams: RouterParams = {
     podcastSeriesId: 9876,
     metricsType: <MetricsType>METRICSTYPE_DOWNLOADS,
     chartType: <ChartType>CHARTTYPE_PODCAST,
@@ -115,7 +115,7 @@ describe('AppComponent', () => {
 
   it('should dispatch episode load action when series or page has changed', () => {
     spyOn(store, 'dispatch').and.callThrough();
-    store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerState}));
+    store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerState: routerParams}));
     expect(store.dispatch).toHaveBeenCalledWith(jasmine.any(ACTIONS.CmsPodcastEpisodePageAction));
   });
 });

@@ -13,12 +13,12 @@ describe('filter.util', () => {
   });
 
   it ('should check if episodes changed', () => {
-    expect(filterUtil.isEpisodesChanged({page: 1}, {})).toBeTruthy();
-    expect(filterUtil.isEpisodesChanged({page: 1}, undefined)).toBeTruthy();
-    expect(filterUtil.isEpisodesChanged({page: 1}, {page: 2})).toBeTruthy();
+    expect(filterUtil.isEpisodesChanged({episodePage: 1}, {})).toBeTruthy();
+    expect(filterUtil.isEpisodesChanged({episodePage: 1}, undefined)).toBeTruthy();
+    expect(filterUtil.isEpisodesChanged({episodePage: 1}, {episodePage: 2})).toBeTruthy();
     expect(filterUtil.isEpisodesChanged(undefined, undefined)).toBeFalsy();
-    expect(filterUtil.isEpisodesChanged(undefined, {page: 1})).toBeFalsy();
-    expect(filterUtil.isEpisodesChanged({page: 1}, {page: 1})).toBeFalsy();
+    expect(filterUtil.isEpisodesChanged(undefined, {episodePage: 1})).toBeFalsy();
+    expect(filterUtil.isEpisodesChanged({episodePage: 1}, {episodePage: 1})).toBeFalsy();
   });
 
   it('should check if interval changed', () => {

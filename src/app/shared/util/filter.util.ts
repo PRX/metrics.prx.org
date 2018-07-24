@@ -1,24 +1,24 @@
-import { RouterModel } from '../../ngrx';
+import { RouterParams } from '../../ngrx';
 
-export const isPodcastChanged = (state: RouterModel, oldState: RouterModel): boolean => {
+export const isPodcastChanged = (state: RouterParams, oldState: RouterParams): boolean => {
   return state && state.podcastSeriesId && (!oldState || !oldState.podcastSeriesId || oldState.podcastSeriesId !== state.podcastSeriesId);
 };
 
-export const isEpisodesChanged = (state: RouterModel, oldState: RouterModel): boolean => {
-  return state && state.page &&
+export const isEpisodesChanged = (state: RouterParams, oldState: RouterParams): boolean => {
+  return state && state.episodePage &&
     (!oldState ||
-    !oldState.page ||
-    state.page !== oldState.page);
+    !oldState.episodePage ||
+    state.episodePage !== oldState.episodePage);
 };
 
-export const isBeginDateChanged = (state: RouterModel, oldState: RouterModel): boolean => {
+export const isBeginDateChanged = (state: RouterParams, oldState: RouterParams): boolean => {
   return state.beginDate && (!oldState.beginDate || oldState.beginDate.valueOf() !== state.beginDate.valueOf());
 };
 
-export const isEndDateChanged = (state: RouterModel, oldState: RouterModel): boolean => {
+export const isEndDateChanged = (state: RouterParams, oldState: RouterParams): boolean => {
   return state.endDate && (!oldState.endDate || oldState.endDate.valueOf() !== state.endDate.valueOf());
 };
 
-export const isIntervalChanged = (state: RouterModel, oldState: RouterModel): boolean => {
+export const isIntervalChanged = (state: RouterParams, oldState: RouterParams): boolean => {
   return state.interval && (!oldState.interval || oldState.interval.value !== state.interval.value);
 };

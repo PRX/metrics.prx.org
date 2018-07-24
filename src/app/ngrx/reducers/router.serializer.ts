@@ -1,15 +1,15 @@
 import { ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 import { RouterStateSerializer } from '@ngrx/router-store';
 
-import { RouterModel, IntervalList,
+import { RouterParams, IntervalList,
   METRICSTYPE_DEMOGRAPHICS, METRICSTYPE_DOWNLOADS, METRICSTYPE_TRAFFICSOURCES, MetricsType } from './models';
 
 import { getBeginEndDateFromStandardRange, getStandardRangeForBeginEndDate } from '../../shared/util/date/date.util';
 
-// serialize the route snapshot to our RouterModel
-export class CustomSerializer implements RouterStateSerializer<RouterModel> {
-  serialize(routerState: RouterStateSnapshot | any): RouterModel {
-    const router: RouterModel = {};
+// serialize the route snapshot to our custom RouterParams
+export class CustomSerializer implements RouterStateSerializer<RouterParams> {
+  serialize(routerState: RouterStateSnapshot | any): RouterParams {
+    const routerParams: RouterParams = {};
     const { url } = routerState;
 
     let state: ActivatedRouteSnapshot = routerState.root;
@@ -19,73 +19,84 @@ export class CustomSerializer implements RouterStateSerializer<RouterModel> {
     const { params } = state;
 
     if (params && url.length > 1) {
+      if (params['podcastId']) {
+        routerParams.podcastId = params['podcastId'];
+      }
       if (params['seriesId'] && !isNaN(parseInt(params['seriesId'], 10))) {
-        router.podcastSeriesId = +params['seriesId'];
+        routerParams.podcastSeriesId = +params['seriesId'];
       }
       // metricsType is not a param because it differentiates the feature module routes
       const urlParts = url.split('/');
-      if (urlParts.length >= 3 && urlParts[2]) {
-        const metricsType = urlParts[2].split(';')[0];
+      if (urlParts.length >= 4 && urlParts[3]) {
+        const metricsType = urlParts[3].split(';')[0];
         switch (metricsType) {
           case METRICSTYPE_DOWNLOADS:
-            router.metricsType = <MetricsType>METRICSTYPE_DOWNLOADS;
+            routerParams.metricsType = <MetricsType>METRICSTYPE_DOWNLOADS;
             break;
           case METRICSTYPE_DEMOGRAPHICS:
-            router.metricsType = <MetricsType>METRICSTYPE_DEMOGRAPHICS;
+            routerParams.metricsType = <MetricsType>METRICSTYPE_DEMOGRAPHICS;
             break;
           case METRICSTYPE_TRAFFICSOURCES:
-            router.metricsType = <MetricsType>METRICSTYPE_TRAFFICSOURCES;
+            routerParams.metricsType = <MetricsType>METRICSTYPE_TRAFFICSOURCES;
             break;
         }
       }
-      if (params['interval']) {
-        router.interval = IntervalList.find(i => i.key === params['interval']);
-      }
       if (params['chartType']) {
-        router.chartType = params['chartType'];
+        routerParams.chartType = params['chartType'];
       }
+      if (params['interval']) {
+        routerParams.interval = IntervalList.find(i => i.key === params['interval']);
+      }
+      if (params['episodePage'] && !isNaN(parseInt(params['episodePage'], 10))) {
+        routerParams.episodePage = +params['episodePage'];
+      }
+      if (params['page']) {
+        routerParams.episodePage = +params['page'];
+      }
+
+      if (params['guid']) {
+        routerParams.guid = params['guid'];
+      }
+
       if (params['beginDate']) {
-        router.beginDate = new Date(params['beginDate']);
+        routerParams.beginDate = new Date(params['beginDate']);
       }
       if (params['endDate']) {
-        router.endDate = new Date(params['endDate']);
+        routerParams.endDate = new Date(params['endDate']);
         // Hmmm... params from the RouterStateSnanshot have date strings without milliseconds even though they're in the url
         // For our purposes, end date is 999 milliseconds, so... add it I guess
         // This could get weird for hourly data if we ever bring back time pickers
-        router.endDate.setMilliseconds(999);
+        routerParams.endDate.setMilliseconds(999);
       }
-      if (router.beginDate && router.endDate && params['standardRange']) {
+      if (routerParams.beginDate && routerParams.endDate && params['standardRange']) {
         const range = getBeginEndDateFromStandardRange(params['standardRange']);
-        if (range && (range.beginDate.valueOf() !== router.beginDate.valueOf() ||
-          range.endDate.valueOf() !== router.endDate.valueOf())) {
+        if (range && (range.beginDate.valueOf() !== routerParams.beginDate.valueOf() ||
+          range.endDate.valueOf() !== routerParams.endDate.valueOf())) {
           // route has standard range that does not match begin/end dates
-          router.standardRange = getStandardRangeForBeginEndDate(router.beginDate, router.endDate);
+          routerParams.standardRange = getStandardRangeForBeginEndDate(routerParams.beginDate, routerParams.endDate);
         } else {
           // standardRange matches begin/end dates
-          router.standardRange = params['standardRange'];
+          routerParams.standardRange = params['standardRange'];
         }
-      } else if (router.beginDate && router.endDate && !params['standardRange']) {
+      } else if (routerParams.beginDate && routerParams.endDate && !params['standardRange']) {
         // missing standard range, so set it from begin/end date
-        router.standardRange = getStandardRangeForBeginEndDate(router.beginDate, router.endDate);
+        routerParams.standardRange = getStandardRangeForBeginEndDate(routerParams.beginDate, routerParams.endDate);
       } else if (params['standardRange']) {
         // missing begin and/or end dates, so set from standardRange
-        router.standardRange = params['standardRange'];
-        const { beginDate, endDate } = getBeginEndDateFromStandardRange(router.standardRange);
-        router.beginDate = beginDate;
-        router.endDate = endDate;
+        routerParams.standardRange = params['standardRange'];
+        const { beginDate, endDate } = getBeginEndDateFromStandardRange(routerParams.standardRange);
+        routerParams.beginDate = beginDate;
+        routerParams.endDate = endDate;
       }
       if (params['episodes']) {
-        router.episodeIds = params['episodes'].split(',').map(stringValue => +stringValue).filter(id => id > 0);
+        routerParams.episodeIds = params['episodes'].split(',').map(stringValue => +stringValue).filter(id => id > 0);
       } else if (params['episodes'] === '') {
-        router.episodeIds = [];
-      }
-      if (params['page']) {
-        router.page = +params['page'];
+        routerParams.episodeIds = [];
       }
       if (params['chartPodcast']) {
-        router.chartPodcast = params['chartPodcast'] === 'true';
+        routerParams.chartPodcast = params['chartPodcast'] === 'true';
       }
     }
-    return router;
+    return routerParams;
   }
 }

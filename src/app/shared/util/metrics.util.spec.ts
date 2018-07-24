@@ -1,5 +1,5 @@
 import * as moment from 'moment';
-import { PodcastModel, EpisodeModel, RouterModel, PodcastMetricsModel, EpisodeMetricsModel,
+import { PodcastModel, EpisodeModel, RouterParams, PodcastMetricsModel, EpisodeMetricsModel,
   INTERVAL_HOURLY, INTERVAL_DAILY, INTERVAL_WEEKLY, INTERVAL_MONTHLY, MetricsType, METRICSTYPE_DOWNLOADS } from '../../ngrx';
 import * as dateUtil from './date/date.util';
 import { findPodcastMetrics, metricsData, getTotal, getWeightedAverage } from './metrics.util';
@@ -42,10 +42,10 @@ describe('metrics util', () => {
       guid: 'hijklmn'
     }
   ];
-  const routerState: RouterModel = {
+  const routerParams: RouterParams = {
     podcastSeriesId: podcasts[0].seriesId,
     metricsType: <MetricsType>METRICSTYPE_DOWNLOADS,
-    page: 1,
+    episodePage: 1,
     beginDate: new Date('2017-09-01T00:00:00Z'),
     endDate: new Date('2017-09-07T00:00:00Z'),
     interval: INTERVAL_DAILY
@@ -100,12 +100,12 @@ describe('metrics util', () => {
     }
   ];
 
-  it('should find podcast metrics matching routerState', () => {
-    expect(findPodcastMetrics(routerState, podcastMetrics).seriesId).toEqual(37800);
+  it('should find podcast metrics matching routerParams', () => {
+    expect(findPodcastMetrics(routerParams, podcastMetrics).seriesId).toEqual(37800);
   });
 
   it('should get metrics array according to interval and metrics type', () => {
-    expect(metricsData(routerState, podcastMetrics[0]).length).toEqual(12);
+    expect(metricsData(routerParams, podcastMetrics[0]).length).toEqual(12);
     // no hourly
     expect(metricsData({interval: INTERVAL_HOURLY, metricsType: <MetricsType>METRICSTYPE_DOWNLOADS}, episodeMetrics[0])).toBeUndefined();
   });
@@ -119,7 +119,7 @@ describe('metrics util', () => {
     let now = moment().utc();
     const thisWeek = dateUtil.beginningOfThisWeekUTC();
     const thisMonth = dateUtil.beginningOfThisMonthUTC();
-    const hourlyRouterState = {
+    const hourlyRouterParams = {
       beginDate: today.toDate(),
       endDate: dateUtil.endOfTodayUTC().toDate(),
       interval: INTERVAL_HOURLY
@@ -141,7 +141,7 @@ describe('metrics util', () => {
       ['2018-01-11T00:00:00Z', 2019559], // 3 days in this week
       ['2018-01-14T00:00:00Z', 4367270],
       ['2018-01-21T00:00:00Z', 4148881],
-      ['2018-01-28T00:00:00Z', 3907768] // metrics data is on the beginning of the week boundary, routerState has actual end date
+      ['2018-01-28T00:00:00Z', 3907768] // metrics data is on the beginning of the week boundary, routerParams has actual end date
     ];
     const currentWeeklyMetrics = [
       [moment(thisWeek).utc().subtract(3, 'weeks').format(), 4367270],
@@ -174,21 +174,21 @@ describe('metrics util', () => {
     it('for current hourly data should not include zeroes past current hour', () => {
       const withoutZeroes = hourlyMetrics.filter(m => m[1] > 0);
       expect(getWeightedAverage(hourlyMetrics,
-        hourlyRouterState.beginDate,
-        hourlyRouterState.endDate,
-        hourlyRouterState.interval)).toEqual(getWeightedAverage(withoutZeroes,
-        hourlyRouterState.beginDate,
-        hourlyRouterState.endDate,
-        hourlyRouterState.interval));
+        hourlyRouterParams.beginDate,
+        hourlyRouterParams.endDate,
+        hourlyRouterParams.interval)).toEqual(getWeightedAverage(withoutZeroes,
+        hourlyRouterParams.beginDate,
+        hourlyRouterParams.endDate,
+        hourlyRouterParams.interval));
     });
 
     it('for current hourly data should weight end bucket to how many minutes have passed in the current hour', () => {
       now = moment().utc();
       const manualCalc = getTotal(hourlyMetrics) / (now.hours() + (now.minutes() / 60));
       expect(getWeightedAverage(hourlyMetrics,
-        hourlyRouterState.beginDate,
-        hourlyRouterState.endDate,
-        hourlyRouterState.interval)).toEqual(Math.round(manualCalc));
+        hourlyRouterParams.beginDate,
+        hourlyRouterParams.endDate,
+        hourlyRouterParams.interval)).toEqual(Math.round(manualCalc));
     });
 
     it('for current daily data should weight end bucket to how many minutes have passed in the current day', () => {

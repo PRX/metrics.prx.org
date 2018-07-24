@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy, Input } from '@angular/core';
 import { Store, select } from '@ngrx/store';
 import { Subscription } from 'rxjs/Subscription';
 import { Observable } from 'rxjs/Observable';
-import { DownloadsTableModel, EpisodeModel, RouterModel, CHARTTYPE_EPISODES } from '../ngrx';
+import { DownloadsTableModel, EpisodeModel, RouterParams, CHARTTYPE_EPISODES } from '../ngrx';
 import { selectRouter, selectSelectedPageEpisodes,
   selectDownloadTablePodcastMetrics, selectDownloadTableEpisodeMetrics } from '../ngrx/reducers/selectors';
 import * as ACTIONS from '../ngrx/actions';
@@ -14,7 +14,7 @@ import * as ACTIONS from '../ngrx/actions';
       [totalPages]="totalPages"
       [podcastTableData]="podcastTableData$ | async"
       [episodeTableData]="episodeTableData$ | async"
-      [routerState]="routerState$ | async"
+      [routerParams]="routerParams$ | async"
       [expanded]="expanded"
       (toggleChartPodcast)="toggleChartPodcast($event)"
       (toggleChartEpisode)="toggleChartEpisode($event)"
@@ -28,7 +28,7 @@ export class DownloadsTableContainerComponent implements OnInit, OnDestroy {
   @Input() totalPages;
   podcastTableData$: Observable<DownloadsTableModel>;
   episodeTableData$: Observable<DownloadsTableModel[]>;
-  routerState$: Observable<RouterModel>;
+  routerParams$: Observable<RouterParams>;
   episodePageSub: Subscription;
   expanded = false;
 
@@ -37,7 +37,7 @@ export class DownloadsTableContainerComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.podcastTableData$ = this.store.pipe(select(selectDownloadTablePodcastMetrics));
     this.episodeTableData$ = this.store.pipe(select(selectDownloadTableEpisodeMetrics));
-    this.routerState$ = this.store.pipe(select(selectRouter));
+    this.routerParams$ = this.store.pipe(select(selectRouter));
 
     this.episodePageSub = this.store.pipe(select(selectSelectedPageEpisodes)).subscribe((pageEpisodes: EpisodeModel[]) => {
       pageEpisodes.forEach(episode => {
@@ -63,8 +63,8 @@ export class DownloadsTableContainerComponent implements OnInit, OnDestroy {
     this.store.dispatch(new ACTIONS.RouteSingleEpisodeChartedAction({episodeId, chartType: CHARTTYPE_EPISODES}));
   }
 
-  onPageChange(page: number) {
-    this.store.dispatch(new ACTIONS.RouteEpisodePageAction({page}));
+  onPageChange(episodePage: number) {
+    this.store.dispatch(new ACTIONS.RouteEpisodePageAction({episodePage}));
   }
 
   toggleExpandedReport() {

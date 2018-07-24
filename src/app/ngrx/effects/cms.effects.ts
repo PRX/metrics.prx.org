@@ -12,7 +12,7 @@ import { AuthService } from 'ngx-prx-styleguide';
 import { CmsService, HalDoc } from '../../core';
 import { getColor } from '../../shared/util/chart.util';
 
-import { AccountModel, PodcastModel, EpisodeModel, EPISODE_PAGE_SIZE, RouterModel } from '../';
+import { AccountModel, PodcastModel, EpisodeModel, EPISODE_PAGE_SIZE, RouterParams } from '../';
 import { selectPodcastRoute, selectChartedEpisodeIdsRoute } from '../reducers/selectors';
 import * as ACTIONS from '../actions';
 import * as localStorageUtil from '../../shared/util/local-storage.util';
@@ -93,13 +93,16 @@ export class CmsEffects {
     // only dispatches a routing action when there is not already a routed :seriesId
       if (!this.routedPodcastSeriesId) {
         const {podcasts} = payload;
-        const localStorageRouterState: RouterModel = localStorageUtil.getItem(localStorageUtil.KEY_ROUTER_STATE);
-        const localStoragePodcastInList = localStorageRouterState && localStorageRouterState.podcastSeriesId &&
-            podcasts.find(podcast => podcast.seriesId === localStorageRouterState.podcastSeriesId);
-        this.store.dispatch(new ACTIONS.RouteSeriesAction(
+        const localStorageRouterParams: RouterParams = localStorageUtil.getItem(localStorageUtil.KEY_ROUTER_PARAMS);
+        const localStorageSeriesInList = localStorageRouterParams && localStorageRouterParams.podcastSeriesId &&
+            podcasts.find(podcast => podcast.seriesId === localStorageRouterParams.podcastSeriesId);
+        const localStoragePodcastInList = localStorageRouterParams && localStorageRouterParams.podcastId &&
+          podcasts.find(podcast => podcast.feederId === localStorageRouterParams.podcastId);
+        this.store.dispatch(new ACTIONS.RoutePodcastAction( {
           // navigate to either the podcastStorageId in localStorage or the first one in the result from CMS (which is the last one changed)
-          { podcastSeriesId: (localStoragePodcastInList && localStorageRouterState.podcastSeriesId) || podcasts[0].seriesId }
-        ));
+          podcastId: (localStoragePodcastInList && localStorageRouterParams.podcastId) || podcasts[0].feederId,
+          podcastSeriesId: (localStorageSeriesInList && localStorageRouterParams.podcastSeriesId) || podcasts[0].seriesId
+        }));
       }
       return Observable.of(null);
     })
@@ -180,10 +183,10 @@ export class CmsEffects {
     return getColor(EPISODE_PAGE_SIZE, episodeIndex);
   }
 
-  // if there are episodes on this page to be charted, put those on the route
-  // if there are not episodes on this page to be charted, chart the first 5 via route change
+  // if there are episodes on this episodePage to be charted, put those on the route
+  // if there are not episodes on this episodePage to be charted, chart the first 5 via route change
   // with recent changes to reset episode state, the episodes to be charted from the route are
-  // chart a single episode or charting episode ids via the url/page refresh/ load from url
+  // chart a single episode or charting episode ids via the url/episodePage refresh/ load from url
   chartIncomingEpisodes(episodes: EpisodeModel[]) {
     if (!this.routedEpisodeIds || this.routedEpisodeIds.length === 0) {
       const episodeIds = episodes.map(e => e.id);

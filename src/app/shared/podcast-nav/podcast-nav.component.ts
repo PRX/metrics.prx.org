@@ -3,7 +3,7 @@ import { Store, select } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
 import { PodcastModel } from '../../ngrx';
 import { selectPodcasts, selectSelectedPodcast } from '../../ngrx/reducers/selectors';
-import { RouteSeriesAction } from '../../ngrx/actions';
+import { RoutePodcastAction } from '../../ngrx/actions';
 
 @Component({
   selector: 'metrics-podcast-nav',
@@ -23,7 +23,10 @@ export class PodcastNavComponent {
     this.selectedPodcast$ = this.store.pipe(select(selectSelectedPodcast));
   }
 
-  onPodcastChange(val) {
-    this.store.dispatch(new RouteSeriesAction({podcastSeriesId: val.seriesId}));
+  onPodcastChange(val: PodcastModel) {
+    this.store.dispatch(new RoutePodcastAction({
+      podcastId: val.feederId,
+      podcastSeriesId: val.seriesId
+    }));
   }
 }

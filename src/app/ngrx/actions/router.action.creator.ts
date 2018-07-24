@@ -1,12 +1,12 @@
 import { Action } from '@ngrx/store';
 import { ActionTypes } from './action.types';
-import { RouterModel, ChartType, IntervalModel, MetricsType } from '../';
+import { RouterParams, ChartType, IntervalModel, MetricsType } from '../';
 
 // CustomRouterNavigation happens as a result of
 // the StoreRouterConnectingModule and the RouterStateSerializer and the customRouterNavigation$ routing effect
 // It is otherwise not to be used directly by the application
 export interface CustomRouterNavigationPayload {
-  routerState: RouterModel;
+  routerState: RouterParams;
 }
 
 export class CustomRouterNavigationAction implements Action {
@@ -15,14 +15,15 @@ export class CustomRouterNavigationAction implements Action {
   constructor(public payload: CustomRouterNavigationPayload) {}
 }
 
-export interface RouteSeriesPayload {
+export interface RoutePodcastPayload {
+  podcastId: string;
   podcastSeriesId: number;
 }
 
-export class RouteSeriesAction implements Action {
-  readonly type = ActionTypes.ROUTE_SERIES;
+export class RoutePodcastAction implements Action {
+  readonly type = ActionTypes.ROUTE_PODCAST;
 
-  constructor(public payload: RouteSeriesPayload) {}
+  constructor(public payload: RoutePodcastPayload) {}
 }
 
 export interface RouteEpisodesChartedPayload {
@@ -38,7 +39,7 @@ export class RouteEpisodesChartedAction implements Action {
 export interface RouteSingleEpisodeChartedPayload {
   episodeId: number;
   chartType?: ChartType;
-  page?: number;
+  episodePage?: number;
 }
 
 export class RouteSingleEpisodeChartedAction implements Action {
@@ -102,7 +103,7 @@ export class RouteAdvancedRangeAction implements Action {
 }
 
 export interface RouteEpisodePagePayload {
-  page: number;
+  episodePage: number;
 }
 
 export class RouteEpisodePageAction implements Action {

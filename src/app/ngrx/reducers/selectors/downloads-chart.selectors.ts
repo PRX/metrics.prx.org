@@ -1,6 +1,6 @@
 import { createSelector } from '@ngrx/store';
 import { TimeseriesChartModel } from 'ngx-prx-styleguide';
-import { RouterModel, CHARTTYPE_EPISODES, CHARTTYPE_PODCAST, CHARTTYPE_STACKED } from '../models';
+import { RouterParams, CHARTTYPE_EPISODES, CHARTTYPE_PODCAST, CHARTTYPE_STACKED } from '../models';
 import { selectRouter } from './router.selectors';
 import { EpisodeModel } from '../episode.reducer';
 import { selectSelectedPageEpisodes } from './episode.selectors';
@@ -17,7 +17,7 @@ export const selectDownloadChartMetrics = createSelector(
   selectSelectedPageEpisodes,
   selectSelectedPodcastMetrics,
   selectEpisodeMetrics,
-  (routerState: RouterModel,
+  (routerParams: RouterParams,
    episodes: EpisodeModel[],
    podcastMetrics: PodcastMetricsModel,
    episodeMetrics: EpisodeMetricsModel[]): TimeseriesChartModel[] => {
@@ -25,24 +25,24 @@ export const selectDownloadChartMetrics = createSelector(
       chartedEpisodeMetrics: TimeseriesChartModel[];
 
     if (podcastMetrics &&
-      routerState.chartType === CHARTTYPE_PODCAST || (routerState.chartPodcast && routerState.chartType === CHARTTYPE_STACKED)) {
-      const data = metricsData(routerState, podcastMetrics);
+      routerParams.chartType === CHARTTYPE_PODCAST || (routerParams.chartPodcast && routerParams.chartType === CHARTTYPE_STACKED)) {
+      const data = metricsData(routerParams, podcastMetrics);
       if (data) {
         chartedPodcastMetrics = {
           data: mapMetricsToTimeseriesData(data),
           label: 'All Episodes',
-          color: routerState.chartType === CHARTTYPE_PODCAST ? standardColor : neutralColor
+          color: routerParams.chartType === CHARTTYPE_PODCAST ? standardColor : neutralColor
         };
       }
     }
 
-    if (routerState.episodeIds &&
-      routerState.chartType === CHARTTYPE_EPISODES || routerState.chartType === CHARTTYPE_STACKED) {
+    if (routerParams.episodeIds &&
+      routerParams.chartType === CHARTTYPE_EPISODES || routerParams.chartType === CHARTTYPE_STACKED) {
       chartedEpisodeMetrics = [];
-      routerState.episodeIds.forEach(id => {
+      routerParams.episodeIds.forEach(id => {
         const metrics = episodeMetrics.find(e => e.id === id);
         const episode = episodes.find(e => e.id === id);
-        const data = metricsData(routerState, metrics);
+        const data = metricsData(routerParams, metrics);
         if (episode && data) {
           chartedEpisodeMetrics.push({
             data: mapMetricsToTimeseriesData(data),
@@ -52,7 +52,7 @@ export const selectDownloadChartMetrics = createSelector(
         }
       });
 
-      if (routerState.chartType === CHARTTYPE_STACKED) {
+      if (routerParams.chartType === CHARTTYPE_STACKED) {
         chartedEpisodeMetrics.sort((a: TimeseriesChartModel, b: TimeseriesChartModel) => {
           return getTotal(b.data) - getTotal(a.data);
         });
@@ -60,9 +60,9 @@ export const selectDownloadChartMetrics = createSelector(
     }
 
     let chartData: TimeseriesChartModel[];
-    switch (routerState.chartType) {
+    switch (routerParams.chartType) {
       case CHARTTYPE_STACKED:
-        if (chartedPodcastMetrics && routerState.chartPodcast &&
+        if (chartedPodcastMetrics && routerParams.chartPodcast &&
           chartedEpisodeMetrics && chartedEpisodeMetrics.length) {
           // if we have episodes to combine with podcast total
           const allOtherEpisodesData: TimeseriesChartModel = {
@@ -71,8 +71,8 @@ export const selectDownloadChartMetrics = createSelector(
             color: neutralColor
           };
           chartData = [...chartedEpisodeMetrics, allOtherEpisodesData];
-        } else if (chartedPodcastMetrics && routerState.chartPodcast &&
-          chartedPodcastMetrics.data.length && !(routerState.episodeIds.length || chartedEpisodeMetrics.length)) {
+        } else if (chartedPodcastMetrics && routerParams.chartPodcast &&
+          chartedPodcastMetrics.data.length && !(routerParams.episodeIds.length || chartedEpisodeMetrics.length)) {
           chartData = [chartedPodcastMetrics];
         } else if (chartedEpisodeMetrics && chartedEpisodeMetrics.length) {
           chartData = chartedEpisodeMetrics;

@@ -5,7 +5,7 @@ import { Subscription } from 'rxjs/Subscription';
 import { Observable } from 'rxjs/Observable';
 import { CastleService } from '../core';
 import * as ACTIONS from '../ngrx/actions';
-import { RouterModel, EpisodeModel, PodcastModel, ChartType, MetricsType,
+import { RouterParams, EpisodeModel, PodcastModel, ChartType, MetricsType,
   CHARTTYPE_PODCAST, INTERVAL_DAILY, EPISODE_PAGE_SIZE, METRICSTYPE_DOWNLOADS } from '../ngrx';
 import { selectRouter, selectEpisodes, selectPodcasts, selectLoading, selectLoaded, selectErrors } from '../ngrx/reducers/selectors';
 import { filterPodcastEpisodePage } from '../shared/util/metrics.util';
@@ -33,7 +33,7 @@ export class DownloadsComponent implements OnInit, OnDestroy {
   pageEpisodes: EpisodeModel[];
   totalPages: number;
   routerSub: Subscription;
-  routerState: RouterModel;
+  routerParams: RouterParams;
   updatePodcast: boolean;
   updateEpisodes: boolean;
   loading$: Observable<boolean>;
@@ -58,43 +58,43 @@ export class DownloadsComponent implements OnInit, OnDestroy {
         this.podcasts = podcasts;
 
         if (!this.routerSub) {
-          this.routerSub = this.store.pipe(select(selectRouter)).subscribe((newRouterState: RouterModel) => {
-            if (!this.routerState) {
-              this.setDefaultRouteFromExistingRoute(newRouterState);
+          this.routerSub = this.store.pipe(select(selectRouter)).subscribe((newRouterParams: RouterParams) => {
+            if (!this.routerParams) {
+              this.setDefaultRouteFromExistingRoute(newRouterParams);
               this.updatePodcast = this.updateEpisodes = true;
               if (!this.episodeSub) {
                 this.subEpisodes();
               }
             }
-            this.routerState.chartType = newRouterState.chartType;
-            this.routerState.chartPodcast = newRouterState.chartPodcast;
-            this.routerState.episodeIds = newRouterState.episodeIds;
+            this.routerParams.chartType = newRouterParams.chartType;
+            this.routerParams.chartPodcast = newRouterParams.chartPodcast;
+            this.routerParams.episodeIds = newRouterParams.episodeIds;
 
-            if (isPodcastChanged(newRouterState, this.routerState)) {
-              this.routerState.podcastSeriesId = newRouterState.podcastSeriesId;
+            if (isPodcastChanged(newRouterParams, this.routerParams)) {
+              this.routerParams.podcastSeriesId = newRouterParams.podcastSeriesId;
               this.resetEpisodes();
               this.updatePodcast = this.updateEpisodes = true;
             }
-            if (newRouterState.page !== this.routerState.page) {
-              this.routerState.page = newRouterState.page;
+            if (newRouterParams.episodePage !== this.routerParams.episodePage) {
+              this.routerParams.episodePage = newRouterParams.episodePage;
               this.resetEpisodes();
               this.updateEpisodes = true;
             }
-            if (isBeginDateChanged(newRouterState, this.routerState)) {
-              this.routerState.beginDate = newRouterState.beginDate;
+            if (isBeginDateChanged(newRouterParams, this.routerParams)) {
+              this.routerParams.beginDate = newRouterParams.beginDate;
               this.updatePodcast = this.updateEpisodes = true;
             }
-            if (isEndDateChanged(newRouterState, this.routerState)) {
-              this.routerState.endDate = newRouterState.endDate;
+            if (isEndDateChanged(newRouterParams, this.routerParams)) {
+              this.routerParams.endDate = newRouterParams.endDate;
               this.updatePodcast = this.updateEpisodes = true;
             }
-            if (isIntervalChanged(newRouterState, this.routerState)) {
-              this.routerState.interval = newRouterState.interval;
+            if (isIntervalChanged(newRouterParams, this.routerParams)) {
+              this.routerParams.interval = newRouterParams.interval;
               this.updatePodcast = this.updateEpisodes = true;
             }
 
-            if (this.updatePodcast && this.routerState.podcastSeriesId) {
-              this.podcast = this.podcasts.find(p => p.seriesId === this.routerState.podcastSeriesId);
+            if (this.updatePodcast && this.routerParams.podcastSeriesId) {
+              this.podcast = this.podcasts.find(p => p.seriesId === this.routerParams.podcastSeriesId);
               const numEpisodes = this.podcast ? this.podcast.doc.count('prx:stories') : 0;
               this.totalPages = numEpisodes / EPISODE_PAGE_SIZE;
               if (numEpisodes % EPISODE_PAGE_SIZE > 0) {
@@ -106,7 +106,7 @@ export class DownloadsComponent implements OnInit, OnDestroy {
               }
             }
 
-            // if episodes were already loaded, update episode metrics with routerState change
+            // if episodes were already loaded, update episode metrics with routerParams change
             if (this.updateEpisodes && this.pageEpisodes) {
               this.getEpisodeMetrics();
               this.updateEpisodes = false;
@@ -118,9 +118,9 @@ export class DownloadsComponent implements OnInit, OnDestroy {
   }
 
   subEpisodes() {
-    // update episodes separate from routerState change when we're waiting on the episodes to load
+    // update episodes separate from routerParams change when we're waiting on the episodes to load
     this.episodeSub = this.store.pipe(select(selectEpisodes)).subscribe((allAvailableEpisodes: EpisodeModel[]) => {
-      const episodes = filterPodcastEpisodePage(this.routerState, allAvailableEpisodes);
+      const episodes = filterPodcastEpisodePage(this.routerParams, allAvailableEpisodes);
       if (episodes && episodes.length) {
         this.pageEpisodes = episodes;
         if (this.updateEpisodes) {
@@ -141,10 +141,10 @@ export class DownloadsComponent implements OnInit, OnDestroy {
     if (this.episodeSub) { this.episodeSub.unsubscribe(); }
   }
 
-  setDefaultRouteFromExistingRoute(existingRouterState: RouterModel) {
+  setDefaultRouteFromExistingRoute(existingRouterParams: RouterParams) {
     // dispatch some default values for the dates and interval
-    this.routerState = {
-      page: 1,
+    this.routerParams = {
+      episodePage: 1,
       standardRange: dateUtil.THIS_WEEK,
       beginDate: dateUtil.beginningOfLast28DaysUTC().toDate(),
       endDate: dateUtil.endOfTodayUTC().toDate(),
@@ -152,61 +152,62 @@ export class DownloadsComponent implements OnInit, OnDestroy {
       metricsType: <MetricsType>METRICSTYPE_DOWNLOADS,
       chartType: <ChartType>CHARTTYPE_PODCAST
     };
-    if (existingRouterState.page) {
-      this.routerState.page = existingRouterState.page;
+    if (existingRouterParams.episodePage) {
+      this.routerParams.episodePage = existingRouterParams.episodePage;
     }
-    if (existingRouterState.episodeIds) {
-      this.routerState.episodeIds = existingRouterState.episodeIds;
+    if (existingRouterParams.episodeIds) {
+      this.routerParams.episodeIds = existingRouterParams.episodeIds;
     }
-    if (existingRouterState.standardRange) {
-      this.routerState.standardRange = existingRouterState.standardRange;
+    if (existingRouterParams.standardRange) {
+      this.routerParams.standardRange = existingRouterParams.standardRange;
     }
-    if (existingRouterState.beginDate) {
-      this.routerState.beginDate = existingRouterState.beginDate;
+    if (existingRouterParams.beginDate) {
+      this.routerParams.beginDate = existingRouterParams.beginDate;
     }
-    if (existingRouterState.endDate) {
-      this.routerState.endDate = existingRouterState.endDate;
+    if (existingRouterParams.endDate) {
+      this.routerParams.endDate = existingRouterParams.endDate;
     }
-    if (existingRouterState.interval) {
-      this.routerState.interval = existingRouterState.interval;
+    if (existingRouterParams.interval) {
+      this.routerParams.interval = existingRouterParams.interval;
     }
-    if (existingRouterState.chartType) {
-      this.routerState.chartType = existingRouterState.chartType;
+    if (existingRouterParams.chartType) {
+      this.routerParams.chartType = existingRouterParams.chartType;
     }
-    if (existingRouterState.podcastSeriesId) {
-      this.routerState.podcastSeriesId = existingRouterState.podcastSeriesId;
-      this.routeFromModel(this.routerState);
+    if (existingRouterParams.podcastSeriesId && existingRouterParams.podcastId) {
+      this.routerParams.podcastSeriesId = existingRouterParams.podcastSeriesId;
+      this.routerParams.podcastId = existingRouterParams.podcastId;
+      this.routeFromModel(this.routerParams);
     }
   }
 
-  routeFromModel(routerState: RouterModel) {
+  routeFromModel(routerParams: RouterParams) {
     const params = {
-      page: routerState.page,
-      beginDate: routerState.beginDate.toISOString(),
-      endDate: routerState.endDate.toISOString(),
-      standardRange: routerState.standardRange
+      page: routerParams.episodePage,
+      beginDate: routerParams.beginDate.toISOString(),
+      endDate: routerParams.endDate.toISOString(),
+      standardRange: routerParams.standardRange
     };
 
-    if (routerState.chartPodcast !== undefined) {
-      params['chartPodcast'] = routerState.chartPodcast;
+    if (routerParams.chartPodcast !== undefined) {
+      params['chartPodcast'] = routerParams.chartPodcast;
     } else {
       params['chartPodcast'] = true; // true is the default
     }
 
-    if (routerState.episodeIds) {
-      params['episodes'] = routerState.episodeIds.join(',');
+    if (routerParams.episodeIds) {
+      params['episodes'] = routerParams.episodeIds.join(',');
     }
-    this.router.navigate([routerState.podcastSeriesId, METRICSTYPE_DOWNLOADS, routerState.chartType, routerState.interval.key, params]);
+    this.router.navigate([routerParams.podcastSeriesId, routerParams.podcastId, METRICSTYPE_DOWNLOADS, routerParams.chartType, routerParams.interval.key, params]);
   }
 
   getPodcastMetrics(podcast: PodcastModel) {
     this.store.dispatch(new ACTIONS.CastlePodcastMetricsLoadAction({
       seriesId: podcast.seriesId,
       feederId: podcast.feederId,
-      metricsType: this.routerState.metricsType,
-      interval: this.routerState.interval,
-      beginDate: this.routerState.beginDate,
-      endDate: this.routerState.endDate
+      metricsType: this.routerParams.metricsType,
+      interval: this.routerParams.interval,
+      beginDate: this.routerParams.beginDate,
+      endDate: this.routerParams.endDate
     }));
   }
 
@@ -218,10 +219,10 @@ export class DownloadsComponent implements OnInit, OnDestroy {
           page: episode.page,
           id: episode.id,
           guid: episode.guid,
-          metricsType: this.routerState.metricsType,
-          interval: this.routerState.interval,
-          beginDate: this.routerState.beginDate,
-          endDate: this.routerState.endDate
+          metricsType: this.routerParams.metricsType,
+          interval: this.routerParams.interval,
+          beginDate: this.routerParams.beginDate,
+          endDate: this.routerParams.endDate
         }));
       }
     });

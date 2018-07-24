@@ -1,4 +1,4 @@
-import { RouterModel, EpisodeModel, PodcastModel, ChartType, MetricsType,
+import { RouterParams, EpisodeModel, PodcastModel, ChartType, MetricsType,
   CHARTTYPE_STACKED, INTERVAL_DAILY, METRICSTYPE_DOWNLOADS } from '../app/ngrx';
 import { MockHalDoc } from 'ngx-prx-styleguide';
 
@@ -30,9 +30,10 @@ export const episodes: EpisodeModel[] = [
     page: 1
   }
 ];
-export const routerState: RouterModel = {
+export const routerParams: RouterParams = {
+  podcastId: podcast.feederId,
   podcastSeriesId: podcast.seriesId,
-  page: 1,
+  episodePage: 1,
   beginDate: new Date('2017-08-27T00:00:00Z'),
   endDate: new Date('2017-09-07T00:00:00Z'),
   standardRange: undefined,

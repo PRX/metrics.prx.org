@@ -9,7 +9,7 @@ import { getActions, TestActions } from './test.actions';
 import { AuthService, UserinfoService, MockHalService, HalService } from 'ngx-prx-styleguide';
 import { CastleService } from '../../core';
 
-import { PodcastModel, RouterModel, EpisodeModel, MetricsType,
+import { PodcastModel, RouterParams, EpisodeModel, MetricsType,
   METRICSTYPE_DOWNLOADS, INTERVAL_DAILY, getMetricsProperty } from '../';
 import { reducers } from '../../ngrx/reducers';
 import * as ACTIONS from '../actions';
@@ -26,7 +26,7 @@ describe('CastleEffects', () => {
     feederId: '70',
     title: 'Pet Talks Daily'
   }];
-  const routerState: RouterModel = {
+  const routerParams: RouterParams = {
     podcastSeriesId: 37800,
   };
   const episode: EpisodeModel = {
@@ -106,7 +106,7 @@ describe('CastleEffects', () => {
     store = TestBed.get(Store);
 
     store.dispatch(new ACTIONS.CmsPodcastsSuccessAction({podcasts}));
-    store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerState}));
+    store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerState: routerParams}));
   }));
 
   it('should request podcast performance metrics from castle', () => {

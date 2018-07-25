@@ -5,4 +5,5 @@ export interface Episode {
   podcastId: string;
   title: string;
   publishedAt: Date;
+  page: number;
 }

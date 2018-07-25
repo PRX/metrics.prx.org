@@ -6,6 +6,7 @@ describe('EpisodeMetricsReducer', () => {
   let newState;
   const episode = {
     seriesId: 37800,
+    feederId: '70',
     page: 1,
     id: 123,
     publishedAt: new Date(),
@@ -22,7 +23,7 @@ describe('EpisodeMetricsReducer', () => {
   beforeEach(() => {
     newState = EpisodeMetricsReducer(undefined,
       new CastleEpisodeMetricsSuccessAction({
-        seriesId: episode.seriesId, page: episode.page, id: episode.id, guid: episode.guid,
+        seriesId: episode.seriesId, feederId: episode.feederId, page: episode.page, guid: episode.guid,
         metricsPropertyName,
         metrics: []
       })
@@ -36,10 +37,10 @@ describe('EpisodeMetricsReducer', () => {
     expect(newState[0].guid).toEqual('abcdefg');
   });
 
-  it('should update existing episode metrics keyed by seriesId and episode id', () => {
+  it('should update existing episode metrics keyed by podcastId and episode guid', () => {
     newState = EpisodeMetricsReducer(newState,
       new CastleEpisodeMetricsSuccessAction({
-        seriesId: episode.seriesId, page: episode.page, id: episode.id,
+        seriesId: episode.seriesId, feederId: episode.feederId, page: episode.page,
         guid: 'gfedcba',
         metricsPropertyName,
         metrics: [
@@ -70,13 +71,13 @@ describe('EpisodeMetricsReducer', () => {
     newState = EpisodeMetricsReducer(newState,
       new CastleEpisodeMetricsSuccessAction({
         seriesId: 37800,
+        feederId: '70',
         page: 1,
-        id: 1234,
         guid: 'hijklmn',
         metricsPropertyName,
         metrics: []
       })
     );
-    expect(newState.filter(p => p.seriesId === 37800).length).toEqual(2);
+    expect(newState.filter(p => p.feederId === '70').length).toEqual(2);
   });
 });

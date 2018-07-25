@@ -108,7 +108,7 @@ describe('DownloadsComponent', () => {
     store.dispatch(new ACTIONS.CastleEpisodeMetricsSuccessAction({
       seriesId: episodes[0].seriesId,
       page: episodes[0].page,
-      id: episodes[0].id,
+      feederId: episodes[0].feederId,
       guid: episodes[0].guid,
       metricsPropertyName,
       metrics: ep0Downloads
@@ -116,7 +116,7 @@ describe('DownloadsComponent', () => {
     store.dispatch(new ACTIONS.CastleEpisodeMetricsSuccessAction({
       seriesId: episodes[1].seriesId,
       page: episodes[1].page,
-      id: episodes[1].id,
+      feederId: episodes[1].feederId,
       guid: episodes[1].guid,
       metricsPropertyName,
       metrics: ep1Downloads

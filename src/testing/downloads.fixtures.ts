@@ -15,6 +15,7 @@ const publishedAt1 = new Date('2017-08-20T00:00:00Z');
 export const episodes: EpisodeModel[] = [
   {
     seriesId: 37800,
+    feederId: '70',
     id: 123,
     publishedAt: publishedAt0,
     title: 'A Pet Talk Episode',
@@ -23,6 +24,7 @@ export const episodes: EpisodeModel[] = [
   },
   {
     seriesId: 37800,
+    feederId: '70',
     id: 124,
     publishedAt: publishedAt1,
     title: 'Another Pet Talk Episode',

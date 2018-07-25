@@ -10,8 +10,13 @@ import { PodcastNavListComponent } from './podcast-nav-list.component';
 
 import { reducers, RootState } from '../../ngrx/reducers';
 
-import { CustomRouterNavigationAction, CmsPodcastsSuccessAction, RoutePodcastAction } from '../../ngrx/actions';
-import { RouterParams } from '../../ngrx';
+import {
+  CustomRouterNavigationAction,
+  CmsPodcastsSuccessAction,
+  RoutePodcastAction,
+  CastlePodcastPageSuccessAction
+} from '../../ngrx/actions';
+import { Podcast, RouterParams } from '../../ngrx';
 
 describe('PodcastNavComponent', () => {
   let store: Store<RootState>;
@@ -20,21 +25,19 @@ describe('PodcastNavComponent', () => {
   let de: DebugElement;
   let el: HTMLElement;
 
-  const podcasts = [
+  const podcasts: Podcast[] = [
     {
-      seriesId: 37800,
-      title: 'Pet Talks Daily',
-      feederId: '70'
+      id: '70',
+      title: 'Pet Talks Daily'
     },
     {
-      seriesId: 37801,
-      title: 'Totally Not Pet Talks Daily',
-      feederId: '72'
+      id: '72',
+      title: 'Totally Not Pet Talks Daily'
     }
   ];
   const routerParams: RouterParams = {
-    podcastId: podcasts[0].feederId,
-    podcastSeriesId: podcasts[0].seriesId
+    podcastId: podcasts[0].id,
+    podcastSeriesId: 0
   };
 
   beforeEach(async(() => {
@@ -60,7 +63,7 @@ describe('PodcastNavComponent', () => {
       store = TestBed.get(Store);
 
       store.dispatch(new CustomRouterNavigationAction({routerState: routerParams}));
-      store.dispatch(new CmsPodcastsSuccessAction({podcasts: podcasts.slice(0, 1)}));
+      store.dispatch(new CastlePodcastPageSuccessAction({page: 1, podcasts: podcasts.slice(0, 1), total: 1}));
     });
   }));
 
@@ -74,7 +77,7 @@ describe('PodcastNavComponent', () => {
     let result;
     comp.podcasts$.subscribe(value => result = value);
     expect(result).toEqual([podcasts[0]]);
-    store.dispatch(new CmsPodcastsSuccessAction({podcasts: podcasts}));
+    store.dispatch(new CastlePodcastPageSuccessAction({page: 1, podcasts: podcasts, total: podcasts.length}));
     expect(result).toEqual(podcasts);
   });
 
@@ -82,6 +85,6 @@ describe('PodcastNavComponent', () => {
     spyOn(store, 'dispatch');
     comp.onPodcastChange(podcasts[1]);
     expect(store.dispatch).toHaveBeenCalledWith(
-      new RoutePodcastAction({podcastId: podcasts[1].feederId, podcastSeriesId: podcasts[1].seriesId}));
+      new RoutePodcastAction({podcastId: podcasts[1].id, podcastSeriesId: 0}));
   });
 });

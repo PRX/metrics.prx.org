@@ -105,8 +105,8 @@ export class CastlePodcastMetricsFailureAction implements Action {
 
 export interface CastleEpisodeMetricsLoadPayload {
   seriesId: number;
+  feederId: string;
   page: number;
-  id: number;
   guid: string;
   metricsType: MetricsType;
   interval: IntervalModel;
@@ -122,8 +122,8 @@ export class CastleEpisodeMetricsLoadAction implements Action {
 
 export interface CastleEpisodeMetricsSuccessPayload {
   seriesId: number;
+  feederId: string;
   page: number;
-  id: number;
   guid: string;
   metricsPropertyName: string;
   metrics: any[][];
@@ -137,8 +137,8 @@ export class CastleEpisodeMetricsSuccessAction implements Action {
 
 export interface CastleEpisodeMetricsFailurePayload {
   seriesId: number;
+  feederId: string;
   page: number;
-  id: number;
   guid: string;
   error: any;
 }
@@ -184,6 +184,7 @@ export class CastlePodcastPerformanceMetricsFailureAction implements Action {
 
 export interface CastleEpisodePerformanceMetricsLoadPayload {
   seriesId: number;
+  feederId: string;
   id: number;
   guid: string;
 }
@@ -196,6 +197,7 @@ export class CastleEpisodePerformanceMetricsLoadAction implements Action {
 
 export interface CastleEpisodePerformanceMetricsSuccessPayload {
   seriesId: number;
+  feederId: string;
   id: number;
   guid: string;
   total: number;

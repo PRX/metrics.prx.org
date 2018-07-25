@@ -12,7 +12,7 @@ describe('PodcastPerformanceMetricsReducer', () => {
   });
 
   it('should be in loading state after load request', () => {
-    expect(newState.entities[37800].loading).toBe(true);
+    expect(newState.entities['70'].loading).toBe(true);
   });
 
   it('should set podcast performance numbers on success', () => {
@@ -25,8 +25,8 @@ describe('PodcastPerformanceMetricsReducer', () => {
       yesterday: 2,
       today: 1
     }));
-    expect(newState.entities[37800].loaded).toBe(true);
-    expect(newState.entities[37800].total).toEqual(10);
+    expect(newState.entities['70'].loaded).toBe(true);
+    expect(newState.entities['70'].total).toEqual(10);
   });
 
   it('should set error on failure', () => {
@@ -35,9 +35,9 @@ describe('PodcastPerformanceMetricsReducer', () => {
       feederId: '70',
       error: 'This is an error'
     }));
-    expect(newState.entities[37800].loading).toBe(false);
-    expect(newState.entities[37800].loaded).toBe(false);
-    expect(newState.entities[37800].error).toEqual('This is an error');
+    expect(newState.entities['70'].loading).toBe(false);
+    expect(newState.entities['70'].loaded).toBe(false);
+    expect(newState.entities['70'].error).toEqual('This is an error');
   });
 
   it('loading should not clear performance values', () => {
@@ -50,15 +50,15 @@ describe('PodcastPerformanceMetricsReducer', () => {
       yesterday: 2,
       today: 1
     }));
-    expect(newState.entities[37800].loaded).toBe(true);
-    expect(newState.entities[37800].total).toEqual(10);
+    expect(newState.entities['70'].loaded).toBe(true);
+    expect(newState.entities['70'].total).toEqual(10);
     newState = PodcastPerformanceMetricsReducer(newState,
       new ACTIONS.CastlePodcastPerformanceMetricsLoadAction({
         seriesId: 37800,
         feederId: '70'
       }));
-    expect(newState.entities[37800].loaded).toBe(false);
-    expect(newState.entities[37800].loading).toBe(true);
-    expect(newState.entities[37800].total).toEqual(10);
+    expect(newState.entities['70'].loaded).toBe(false);
+    expect(newState.entities['70'].loading).toBe(true);
+    expect(newState.entities['70'].total).toEqual(10);
   });
 });

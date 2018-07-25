@@ -3,18 +3,19 @@ import { EpisodeModel, RouterParams,
   IntervalModel, INTERVAL_HOURLY, INTERVAL_DAILY, INTERVAL_WEEKLY, INTERVAL_MONTHLY } from '../../ngrx';
 import * as dateUtil from './date/date.util';
 
-export const filterPodcastEpisodePage = (filter: RouterParams, episodes: EpisodeModel[]) => {
-  if (filter && filter.podcastSeriesId && filter.episodePage && episodes) {
-    return episodes.filter(episode => episode.seriesId === filter.podcastSeriesId && episode.page === filter.episodePage);
+// TODO: remove
+export const filterPodcastEpisodePage = (params: RouterParams, episodes: EpisodeModel[]) => {
+  if (params && params.podcastSeriesId && params.episodePage && episodes) {
+    return episodes.filter(episode => episode.seriesId === params.podcastSeriesId && episode.page === params.episodePage);
   }
 };
 
 export const findPodcastMetrics =
-  (filter: RouterParams, podcastMetrics: PodcastMetricsModel[]): PodcastMetricsModel => {
-  if (filter && filter.podcastSeriesId && filter.interval && filter.beginDate && filter.endDate && podcastMetrics) {
-    const metricsProperty = getMetricsProperty(filter.interval, filter.metricsType);
+  (params: RouterParams, podcastMetrics: PodcastMetricsModel[]): PodcastMetricsModel => {
+  if (params && params.podcastId && params.interval && params.beginDate && params.endDate && podcastMetrics) {
+    const metricsProperty = getMetricsProperty(params.interval, params.metricsType);
     const metrics = podcastMetrics
-      .filter((metric: PodcastMetricsModel) => metric.seriesId === filter.podcastSeriesId &&
+      .filter((metric: PodcastMetricsModel) => metric.feederId === params.podcastId &&
         metric[metricsProperty]);
     if (metrics && metrics.length) {
       return metrics[0]; // only one entry should match the series id
@@ -22,8 +23,8 @@ export const findPodcastMetrics =
   }
 };
 
-export const metricsData = (filter: RouterParams, metrics: PodcastMetricsModel | EpisodeMetricsModel) => {
-  const metricsProperty = getMetricsProperty(filter.interval, filter.metricsType);
+export const metricsData = (params: RouterParams, metrics: PodcastMetricsModel | EpisodeMetricsModel) => {
+  const metricsProperty = getMetricsProperty(params.interval, params.metricsType);
   return metrics && metrics[metricsProperty];
 };
 

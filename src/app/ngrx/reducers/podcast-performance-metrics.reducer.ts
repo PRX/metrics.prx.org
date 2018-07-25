@@ -14,7 +14,7 @@ export interface PodcastPerformanceMetricsModel {
 }
 
 export interface PodcastPerformanceMetricsState {
-  entities?: {[id: number]: PodcastPerformanceMetricsModel};
+  entities?: {[id: string]: PodcastPerformanceMetricsModel};
 }
 
 export const initialState = {
@@ -28,7 +28,7 @@ export function PodcastPerformanceMetricsReducer(state: PodcastPerformanceMetric
       return {
         entities: {
           ...state.entities,
-          [seriesId]: {...state.entities[seriesId], seriesId, feederId, loading: true, loaded: false}
+          [feederId]: {...state.entities[feederId], seriesId, feederId, loading: true, loaded: false}
         }
       };
     }
@@ -37,7 +37,7 @@ export function PodcastPerformanceMetricsReducer(state: PodcastPerformanceMetric
       return {
         entities: {
           ...state.entities,
-          [seriesId]: {
+          [feederId]: {
             seriesId,
             feederId,
             total,
@@ -56,7 +56,7 @@ export function PodcastPerformanceMetricsReducer(state: PodcastPerformanceMetric
       return {
         entities: {
           ...state.entities,
-          [seriesId]: {...state.entities[seriesId], seriesId, feederId, error, loading: false, loaded: false}
+          [feederId]: {...state.entities[feederId], seriesId, feederId, error, loading: false, loaded: false}
         }
       };
     }

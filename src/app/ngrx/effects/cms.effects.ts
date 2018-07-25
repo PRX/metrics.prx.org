@@ -180,7 +180,7 @@ export class CmsEffects {
   }
 
   getEpisodeColor(episodeIndex: number): string {
-    return getColor(EPISODE_PAGE_SIZE, episodeIndex);
+    return getColor(episodeIndex);
   }
 
   // if there are episodes on this page to be charted, put those on the route

@@ -34,6 +34,7 @@ describe('CastleEffects', () => {
     page: 1,
     guid: 'abcde',
     seriesId: 37800,
+    feederId: '70',
     title: 'A Pet Talks Episode',
     publishedAt: new Date()
   };
@@ -139,6 +140,7 @@ describe('CastleEffects', () => {
     };
     const success = new ACTIONS.CastleEpisodePerformanceMetricsSuccessAction({
       id: episode.id,
+      feederId: episode.feederId,
       seriesId: episode.seriesId,
       guid: episode.guid,
       total: 11,
@@ -165,6 +167,7 @@ describe('CastleEffects', () => {
     };
     const success = new ACTIONS.CastleEpisodePerformanceMetricsSuccessAction({
       id: episode.id,
+      feederId: episode.feederId,
       seriesId: episode.seriesId,
       guid: episode.guid,
       total: 0,
@@ -219,8 +222,8 @@ describe('CastleEffects', () => {
     };
     const success = new ACTIONS.CastleEpisodeMetricsSuccessAction({
       seriesId: podcasts[0].seriesId,
+      feederId: podcasts[0].feederId,
       page: episode.page,
-      id: episode.id,
       guid: episode.guid,
       metricsPropertyName: getMetricsProperty(INTERVAL_DAILY, <MetricsType>METRICSTYPE_DOWNLOADS),
       metrics: downloads

@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { catchError } from 'rxjs/operators/catchError';
 import { concatMap } from 'rxjs/operators/concatMap';
 import { filter } from 'rxjs/operators/filter';
-import { first } from 'rxjs/operators/first';
 import { map } from 'rxjs/operators/map';
 import { mergeMap } from 'rxjs/operators/mergeMap';
 import { switchMap } from 'rxjs/operators/switchMap';
@@ -12,16 +11,17 @@ import { Actions, Effect, ofType } from '@ngrx/effects';
 import { Action, Store, select } from '@ngrx/store';
 
 import * as ACTIONS from '../actions';
-import { selectSelectedPodcast, selectRecentEpisode } from '../reducers/selectors';
+import { selectSelectedPodcast } from '../reducers/selectors';
 import { AuthService, Userinfo, UserinfoService } from 'ngx-prx-styleguide';
 import { HalDoc } from '../../core';
 import { CastleService } from '../../core';
-import { AccountModel, PodcastModel, EpisodeModel, getMetricsProperty, Podcast, Episode, PODCAST_PAGE_SIZE, EPISODE_PAGE_SIZE } from '../';
+import { AccountModel, PodcastModel, getMetricsProperty, Podcast, Episode, PODCAST_PAGE_SIZE, EPISODE_PAGE_SIZE } from '../';
 
 @Injectable()
 export class CastleEffects {
   selectedPodcast: PodcastModel;
 
+  /*
   @Effect()
   loadAccount$: Observable<Action> = this.actions$.pipe(
     ofType(ACTIONS.ActionTypes.ID_ACCOUNT_LOAD),
@@ -46,7 +46,7 @@ export class CastleEffects {
         catchError(error => Observable.of(new ACTIONS.IdAccountFailureAction({error})))
       );
     })
-  );
+  );*/
 
   @Effect()
   loadPodcastPage$: Observable<Action> = this.actions$.pipe(
@@ -121,6 +121,7 @@ export class CastleEffects {
                   podcastId,
                   publishedAt: doc['publishedAt'] ? new Date(doc['publishedAt']) : null,
                   title: doc['title'],
+                  page
                 };
               })
             });
@@ -177,7 +178,7 @@ export class CastleEffects {
     ofType(ACTIONS.ActionTypes.CASTLE_EPISODE_METRICS_LOAD),
     map((action: ACTIONS.CastleEpisodeMetricsLoadAction) => action.payload),
     mergeMap((payload: ACTIONS.CastleEpisodeMetricsLoadPayload) => {
-    const {seriesId, page, id, guid, metricsType, interval, beginDate, endDate } = payload;
+    const {seriesId, feederId, page, guid, metricsType, interval, beginDate, endDate } = payload;
       return this.castle.followList('prx:episode-downloads', {
         guid,
         from: beginDate.toISOString(),
@@ -187,8 +188,8 @@ export class CastleEffects {
         map(metrics => {
           return new ACTIONS.CastleEpisodeMetricsSuccessAction({
             seriesId,
+            feederId,
             page,
-            id,
             guid,
             metricsPropertyName: getMetricsProperty(interval, metricsType),
             metrics: metrics[0]['downloads']
@@ -197,8 +198,8 @@ export class CastleEffects {
         catchError(error => {
           return Observable.of(new ACTIONS.CastleEpisodeMetricsFailureAction({
             seriesId,
+            feederId,
             page,
-            id,
             guid,
             error
           }));
@@ -238,21 +239,21 @@ export class CastleEffects {
     ofType(ACTIONS.ActionTypes.CASTLE_EPISODE_PERFORMANCE_METRICS_LOAD),
     map((action: ACTIONS.CastleEpisodePerformanceMetricsLoadAction) => action.payload),
     mergeMap((payload: ACTIONS.CastleEpisodePerformanceMetricsLoadPayload) => {
-      const { id, seriesId, guid } = payload;
+      const { id, seriesId, feederId, guid } = payload;
       return this.castle
         .followList('prx:episode', {guid})
         .pipe(
           map(metrics => {
             const { total, previous7days, this7days, yesterday, today } = metrics[0]['downloads'];
-            return new ACTIONS.CastleEpisodePerformanceMetricsSuccessAction({id, seriesId, guid,
+            return new ACTIONS.CastleEpisodePerformanceMetricsSuccessAction({id, seriesId, feederId, guid,
               total, previous7days, this7days, yesterday, today});
           }),
           catchError(error => {
             if (error.status === 404) {
-              return Observable.of(new ACTIONS.CastleEpisodePerformanceMetricsSuccessAction({id, seriesId, guid,
+              return Observable.of(new ACTIONS.CastleEpisodePerformanceMetricsSuccessAction({id, seriesId, feederId, guid,
                 total: 0, previous7days: 0, this7days: 0, yesterday: 0, today: 0}));
             } else {
-              return Observable.of(new ACTIONS.CastleEpisodePerformanceMetricsFailureAction({id, seriesId, guid, error}));
+              return Observable.of(new ACTIONS.CastleEpisodePerformanceMetricsFailureAction({id, seriesId, feederId, guid, error}));
             }
           })
         );
@@ -264,17 +265,12 @@ export class CastleEffects {
               private userinfo: UserinfoService,
               private castle: CastleService,
               private store: Store<any>) {
+    // TODO: move
     this.store.pipe(select(selectSelectedPodcast)).subscribe((podcast: PodcastModel) => {
       this.selectedPodcast = podcast;
       if (this.selectedPodcast) {
         const {seriesId, feederId} = this.selectedPodcast;
         this.store.dispatch(new ACTIONS.CastlePodcastPerformanceMetricsLoadAction({seriesId, feederId}));
-      }
-    });
-    this.store.pipe(select(selectRecentEpisode)).subscribe((episode: EpisodeModel) => {
-      if (episode) {
-        const {id, seriesId, guid} = episode;
-        this.store.dispatch(new ACTIONS.CastleEpisodePerformanceMetricsLoadAction({id, seriesId, guid}));
       }
     });
   }

@@ -1,24 +1,23 @@
 import { createSelector } from '@ngrx/store';
 import { TimeseriesChartModel } from 'ngx-prx-styleguide';
-import { RouterParams, CHARTTYPE_EPISODES, CHARTTYPE_PODCAST, CHARTTYPE_STACKED } from '../models';
+import { Episode, RouterParams, CHARTTYPE_EPISODES, CHARTTYPE_PODCAST, CHARTTYPE_STACKED } from '../models';
 import { selectRouter } from './router.selectors';
-import { EpisodeModel } from '../episode.reducer';
-import { selectSelectedPageEpisodes } from './episode.selectors';
+import { selectRoutedPageEpisodes } from './castle-episode.selectors';
 import { PodcastMetricsModel } from '../podcast-metrics.reducer';
-import { selectSelectedPodcastMetrics } from './podcast-metrics.selectors';
+import { selectRoutedPodcastMetrics } from './podcast-metrics.selectors';
 import { EpisodeMetricsModel } from '../episode-metrics.reducer';
 import { selectEpisodeMetrics } from './episode-metrics.selectors';
-import { metricsData } from '../../../shared/util/metrics.util';
-import { mapMetricsToTimeseriesData, subtractTimeseriesDatasets, getTotal,
-  neutralColor, standardColor } from '../../../shared/util/chart.util';
+import { metricsData, getTotal } from '../../../shared/util/metrics.util';
+import { mapMetricsToTimeseriesData, subtractTimeseriesDatasets, /*getTotal,*/
+  neutralColor, standardColor, getColor } from '../../../shared/util/chart.util';
 
 export const selectDownloadChartMetrics = createSelector(
   selectRouter,
-  selectSelectedPageEpisodes,
-  selectSelectedPodcastMetrics,
+  selectRoutedPageEpisodes,
+  selectRoutedPodcastMetrics,
   selectEpisodeMetrics,
   (routerParams: RouterParams,
-   episodes: EpisodeModel[],
+   episodes: Episode[],
    podcastMetrics: PodcastMetricsModel,
    episodeMetrics: EpisodeMetricsModel[]): TimeseriesChartModel[] => {
     let chartedPodcastMetrics: TimeseriesChartModel,
@@ -36,27 +35,40 @@ export const selectDownloadChartMetrics = createSelector(
       }
     }
 
+    // TODO: fix/keep charted episodes on route?
     if (routerParams.episodeIds &&
       routerParams.chartType === CHARTTYPE_EPISODES || routerParams.chartType === CHARTTYPE_STACKED) {
-      chartedEpisodeMetrics = [];
-      routerParams.episodeIds.forEach(id => {
+      chartedEpisodeMetrics = episodeMetrics
+        .sort((a: EpisodeMetricsModel, b: EpisodeMetricsModel) => {
+          return getTotal(metricsData(routerParams, b)) - getTotal(metricsData(routerParams, a));
+        })
+        .map((metrics, idx) => {
+        const episode = episodes.find(e => metrics && metrics.guid === e.guid);
+        return {
+          data: mapMetricsToTimeseriesData(metricsData(routerParams, metrics)),
+          label: episode.title,
+          color: getColor(idx)
+        };
+      });
+
+      /*routerParams.episodeIds.forEach((id, idx) => {
         const metrics = episodeMetrics.find(e => e.id === id);
-        const episode = episodes.find(e => e.id === id);
+        const episode = episodes.find(e => metrics && metrics.guid === e.guid);
         const data = metricsData(routerParams, metrics);
         if (episode && data) {
           chartedEpisodeMetrics.push({
             data: mapMetricsToTimeseriesData(data),
             label: episode.title,
-            color: episode.color
+            color: getColor(idx)
           });
         }
-      });
+      });*/
 
-      if (routerParams.chartType === CHARTTYPE_STACKED) {
+      /*if (routerParams.chartType === CHARTTYPE_STACKED) {
         chartedEpisodeMetrics.sort((a: TimeseriesChartModel, b: TimeseriesChartModel) => {
           return getTotal(b.data) - getTotal(a.data);
         });
-      }
+      }*/
     }
 
     let chartData: TimeseriesChartModel[];

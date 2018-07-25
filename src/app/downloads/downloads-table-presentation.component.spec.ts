@@ -38,7 +38,7 @@ describe('DownloadsTablePresentationComponent', () => {
       comp.podcastTableData = {
         title: 'All Episodes',
         color: neutralColor,
-        id: podcast.seriesId,
+        id: podcast.feederId,
         downloads: [],
         totalForPeriod: 0,
         charted: true
@@ -46,8 +46,8 @@ describe('DownloadsTablePresentationComponent', () => {
       comp.episodeTableData = episodes.map((e, index) => {
         return {
           title: e.title,
-          color: getColor(episodes.length, index),
-          id: e.id,
+          color: getColor(index),
+          id: e.guid,
           downloads: [],
           totalForPeriod: 0,
           charted: true
@@ -66,8 +66,8 @@ describe('DownloadsTablePresentationComponent', () => {
   it('toggles episode display when checkbox is clicked', () => {
     spyOn(comp.toggleChartEpisode, 'emit');
     const checks = de.queryAll(By.css('input[type="checkbox"]'));
-    expect(checks.length).toEqual(3);
+    expect(checks.length).toEqual(3); // podcast + episodes
     checks[2].nativeElement.click();
-    expect(comp.toggleChartEpisode.emit).toHaveBeenCalledWith({episodeId: 124, charted: false});
+    expect(comp.toggleChartEpisode.emit).toHaveBeenCalledWith({episodeId: episodes[1].guid, charted: false});
   });
 });

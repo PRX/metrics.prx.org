@@ -1,7 +1,7 @@
 import { createSelector, createFeatureSelector } from '@ngrx/store';
 import * as fromEpisode from '../castle-episode.reducer';
 import { Episode, EPISODE_PAGE_SIZE } from '../models';
-import { selectPodcastRoute } from './router.selectors';
+import { selectPageRoute, selectPodcastRoute } from './router.selectors';
 
 export const selectEpisodeState = createFeatureSelector<fromEpisode.State>('episode');
 
@@ -18,7 +18,6 @@ export const selectAllEpisodes = createSelector(
   fromEpisode.selectAllEpisodes
 );
 
-
 export const selectNumEpisodePages = createSelector(
   selectPodcastRoute,
   selectAllEpisodes,
@@ -31,3 +30,7 @@ export const selectNumEpisodePages = createSelector(
     }
   }
 );
+
+export const selectRoutedPageEpisodes = createSelector(selectAllEpisodes, selectPageRoute, (episodes: Episode[], page: number) => {
+  return episodes.filter(episode => episode.page === page);
+});

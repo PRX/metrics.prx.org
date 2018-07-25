@@ -1,5 +1,5 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { PodcastModel } from '../../ngrx';
+import { Podcast } from '../../ngrx';
 
 @Component({
   selector: 'metrics-podcast-dropdown',
@@ -22,17 +22,17 @@ import { PodcastModel } from '../../ngrx';
   styleUrls: ['../menu/dropdown.css', './podcast-nav-dropdown.component.css']
 })
 export class PodcastNavDropdownComponent {
-  @Input() selectedPodcast: PodcastModel;
-  @Input() podcasts: PodcastModel[];
-  @Output() podcastChange = new EventEmitter<PodcastModel>();
+  @Input() selectedPodcast: Podcast;
+  @Input() podcasts: Podcast[];
+  @Output() podcastChange = new EventEmitter<Podcast>();
   open = false;
 
   toggleOpen() {
     this.open = !this.open;
   }
 
-  onPodcastChange(val: PodcastModel) {
-    if (val && (!this.selectedPodcast || val.seriesId !== this.selectedPodcast.seriesId)) {
+  onPodcastChange(val: Podcast) {
+    if (val && (!this.selectedPodcast || val.id !== this.selectedPodcast.id)) {
       this.toggleOpen();
       this.podcastChange.emit(val);
     }

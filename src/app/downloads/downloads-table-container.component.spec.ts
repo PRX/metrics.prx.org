@@ -44,10 +44,10 @@ describe('DownloadsTableContainerComponent', () => {
 
       store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerState: routerParams}));
       store.dispatch(new ACTIONS.CastleEpisodeMetricsSuccessAction({
-        seriesId: episodes[0].seriesId, page: episodes[0].page, id: episodes[0].id, guid: episodes[0].guid,
+        seriesId: episodes[0].seriesId, page: episodes[0].page, feederId: episodes[0].feederId, guid: episodes[0].guid,
         metricsPropertyName, metrics: ep0Downloads}));
       store.dispatch(new ACTIONS.CastleEpisodeMetricsSuccessAction({
-        seriesId: episodes[1].seriesId, page: episodes[1].page, id: episodes[1].id, guid: episodes[1].guid,
+        seriesId: episodes[1].seriesId, page: episodes[1].page, feederId: episodes[1].feederId, guid: episodes[1].guid,
         metricsPropertyName, metrics: ep1Downloads}));
       store.dispatch(new ACTIONS.CmsPodcastEpisodePageSuccessAction({episodes}));
       store.dispatch(new ACTIONS.CastlePodcastMetricsSuccessAction({

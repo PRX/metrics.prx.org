@@ -39,10 +39,11 @@ export class DownloadsTableContainerComponent implements OnInit, OnDestroy {
     this.episodeTableData$ = this.store.pipe(select(selectDownloadTableEpisodeMetrics));
     this.routerParams$ = this.store.pipe(select(selectRouter));
 
+    // TODO: move
     this.episodePageSub = this.store.pipe(select(selectSelectedPageEpisodes)).subscribe((pageEpisodes: EpisodeModel[]) => {
       pageEpisodes.forEach(episode => {
-        const { id, seriesId, guid } = episode;
-        this.store.dispatch(new ACTIONS.CastleEpisodePerformanceMetricsLoadAction({id, seriesId, guid}));
+        const { id, seriesId, feederId, guid } = episode;
+        this.store.dispatch(new ACTIONS.CastleEpisodePerformanceMetricsLoadAction({id, seriesId, feederId, guid}));
       });
     });
   }

@@ -5,9 +5,10 @@ import { Subscription } from 'rxjs/Subscription';
 import { Observable } from 'rxjs/Observable';
 import { CastleService } from '../core';
 import * as ACTIONS from '../ngrx/actions';
-import { RouterParams, EpisodeModel, PodcastModel, ChartType, MetricsType,
+import { RouterParams, Episode, EpisodeModel, PodcastModel, ChartType, MetricsType,
   CHARTTYPE_PODCAST, INTERVAL_DAILY, EPISODE_PAGE_SIZE, METRICSTYPE_DOWNLOADS } from '../ngrx';
-import { selectRouter, selectEpisodes, selectPodcasts, selectLoading, selectLoaded, selectErrors } from '../ngrx/reducers/selectors';
+import { selectRouter, selectEpisodes, selectPodcasts, selectLoading, selectLoaded, selectErrors,
+  selectNumEpisodePages, selectRoutedPageEpisodes } from '../ngrx/reducers/selectors';
 import { filterPodcastEpisodePage } from '../shared/util/metrics.util';
 import * as dateUtil from '../shared/util/date';
 import { isPodcastChanged, isBeginDateChanged, isEndDateChanged, isIntervalChanged } from '../shared/util/filter.util';
@@ -19,7 +20,7 @@ import { isPodcastChanged, isBeginDateChanged, isEndDateChanged, isIntervalChang
     <section *ngIf="loaded$ | async">
       <metrics-menu-bar></metrics-menu-bar>
       <metrics-downloads-chart></metrics-downloads-chart>
-      <metrics-downloads-table [totalPages]="totalPages"></metrics-downloads-table>
+      <metrics-downloads-table [totalPages]="selectNumEpisodePages$ | async"></metrics-downloads-table>
       <p class="error" *ngFor="let error of errors$ | async">{{error}}</p>
     </section>
   `,
@@ -29,8 +30,10 @@ export class DownloadsComponent implements OnInit, OnDestroy {
   podcastSub: Subscription;
   podcasts: PodcastModel[];
   podcast: PodcastModel;
+  castleEpisodeSub: Subscription;
   episodeSub: Subscription;
   pageEpisodes: EpisodeModel[];
+  castlePageEpisodes: Episode[];
   totalPages: number;
   routerSub: Subscription;
   routerParams: RouterParams;
@@ -39,16 +42,18 @@ export class DownloadsComponent implements OnInit, OnDestroy {
   loading$: Observable<boolean>;
   loaded$: Observable<boolean>;
   errors$: Observable<string[]>;
+  selectNumEpisodePages$: Observable<number>;
 
   constructor(private castle: CastleService,
               public store: Store<any>,
-              private router: Router) {
+              private router: Router) {}
+
+  ngOnInit() {
     this.loading$ = this.store.pipe(select(selectLoading));
     this.loaded$ = this.store.pipe(select(selectLoaded));
     this.errors$ = this.store.pipe(select(selectErrors));
-  }
+    this.selectNumEpisodePages$ = this.store.pipe(select(selectNumEpisodePages));
 
-  ngOnInit() {
     this.subPodcastsAndRoute();
   }
 
@@ -119,6 +124,10 @@ export class DownloadsComponent implements OnInit, OnDestroy {
 
   subEpisodes() {
     // update episodes separate from routerParams change when we're waiting on the episodes to load
+    // TODO: undo
+    this.castleEpisodeSub = this.store.pipe(select(selectRoutedPageEpisodes)).subscribe((pageEpisodes: Episode[]) => {
+      this.castlePageEpisodes = pageEpisodes;
+    });
     this.episodeSub = this.store.pipe(select(selectEpisodes)).subscribe((allAvailableEpisodes: EpisodeModel[]) => {
       const episodes = filterPodcastEpisodePage(this.routerParams, allAvailableEpisodes);
       if (episodes && episodes.length) {
@@ -182,7 +191,7 @@ export class DownloadsComponent implements OnInit, OnDestroy {
 
   routeFromModel(routerParams: RouterParams) {
     const params = {
-      page: routerParams.episodePage,
+      episodePage: routerParams.episodePage,
       beginDate: routerParams.beginDate.toISOString(),
       endDate: routerParams.endDate.toISOString(),
       standardRange: routerParams.standardRange
@@ -212,12 +221,12 @@ export class DownloadsComponent implements OnInit, OnDestroy {
   }
 
   getEpisodeMetrics() {
-    this.pageEpisodes.forEach((episode: EpisodeModel) => {
+    this.castlePageEpisodes.forEach((episode: Episode) => {
       if (episode && episode.guid) {
         this.store.dispatch(new ACTIONS.CastleEpisodeMetricsLoadAction({
-          seriesId: episode.seriesId,
+          seriesId: 0,
+          feederId: episode.podcastId,
           page: episode.page,
-          id: episode.id,
           guid: episode.guid,
           metricsType: this.routerParams.metricsType,
           interval: this.routerParams.interval,

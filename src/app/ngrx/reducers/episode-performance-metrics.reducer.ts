@@ -15,7 +15,7 @@ export interface EpisodePerformanceMetricsModel {
 }
 
 export interface EpisodePerformanceMetricsState {
-  entities?: {[id: number]: EpisodePerformanceMetricsModel};
+  entities?: {[guid: string]: EpisodePerformanceMetricsModel};
 }
 
 export const initialState = {
@@ -29,7 +29,7 @@ export function EpisodePerformanceMetricsReducer(state: EpisodePerformanceMetric
       return {
         entities: {
           ...state.entities,
-          [id]: {...state.entities[id], seriesId, id, guid, loading: true, loaded: false}
+          [guid]: {...state.entities[guid], seriesId, id, guid, loading: true, loaded: false}
         }
       };
     }
@@ -38,7 +38,8 @@ export function EpisodePerformanceMetricsReducer(state: EpisodePerformanceMetric
       return {
         entities: {
           ...state.entities,
-          [id]: {seriesId,
+          [guid]: {
+            seriesId,
             id,
             guid,
             total,
@@ -57,7 +58,7 @@ export function EpisodePerformanceMetricsReducer(state: EpisodePerformanceMetric
       return {
         entities: {
           ...state.entities,
-          [id]: {...state.entities[id], seriesId, id, guid, error, loading: false, loaded: false}
+          [guid]: {...state.entities[guid], seriesId, id, guid, error, loading: false, loaded: false}
         }
       };
     }

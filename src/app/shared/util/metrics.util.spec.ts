@@ -22,6 +22,7 @@ describe('metrics util', () => {
   const episodes: EpisodeModel[] = [
     {
       seriesId: 37800,
+      feederId: '70',
       id: 123,
       publishedAt: new Date(),
       title: 'A Pet Talk Episode',
@@ -29,6 +30,7 @@ describe('metrics util', () => {
     },
     {
       seriesId: 37800,
+      feederId: '70',
       id: 124,
       publishedAt: new Date(),
       title: 'Another Pet Talk Episode',
@@ -36,6 +38,7 @@ describe('metrics util', () => {
     },
     {
       seriesId: 37801,
+      feederId: '72',
       id: 125,
       publishedAt: new Date(),
       title: 'Totally Not a Pet Talk Episode',
@@ -44,6 +47,7 @@ describe('metrics util', () => {
   ];
   const routerParams: RouterParams = {
     podcastSeriesId: podcasts[0].seriesId,
+    podcastId: podcasts[0].feederId,
     metricsType: <MetricsType>METRICSTYPE_DOWNLOADS,
     episodePage: 1,
     beginDate: new Date('2017-09-01T00:00:00Z'),
@@ -79,21 +83,21 @@ describe('metrics util', () => {
   const episodeMetrics: EpisodeMetricsModel[] = [
     {
       seriesId: 37800,
-      id: 123,
+      feederId: '70',
       guid: 'abcdefg',
       page: 1,
       dailyReach: [...metrics]
     },
     {
       seriesId: 37800,
-      id: 124,
+      feederId: '70',
       guid: 'gfedcba',
       page: 2,
       dailyReach: [...metrics]
     },
     {
       seriesId: 37801,
-      id: 125,
+      feederId: '72',
       guid: 'hijklmn',
       page: 1,
       dailyReach: [...metrics]
@@ -101,7 +105,7 @@ describe('metrics util', () => {
   ];
 
   it('should find podcast metrics matching routerParams', () => {
-    expect(findPodcastMetrics(routerParams, podcastMetrics).seriesId).toEqual(37800);
+    expect(findPodcastMetrics(routerParams, podcastMetrics).feederId).toEqual('70');
   });
 
   it('should get metrics array according to interval and metrics type', () => {

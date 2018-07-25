@@ -13,7 +13,7 @@ import { CmsService, HalDoc } from '../../core';
 import { getColor } from '../../shared/util/chart.util';
 
 import { AccountModel, PodcastModel, EpisodeModel, EPISODE_PAGE_SIZE, RouterParams } from '../';
-import { selectPodcastRoute, selectChartedEpisodeIdsRoute } from '../reducers/selectors';
+import { selectPodcastSeriesRoute, selectChartedEpisodeIdsRoute } from '../reducers/selectors';
 import * as ACTIONS from '../actions';
 import * as localStorageUtil from '../../shared/util/local-storage.util';
 
@@ -173,7 +173,7 @@ export class CmsEffects {
               private actions$: Actions,
               private auth: AuthService,
               private cms: CmsService) {
-    this.store.pipe(select(selectPodcastRoute)).subscribe(podcastSeriesId => {
+    this.store.pipe(select(selectPodcastSeriesRoute)).subscribe(podcastSeriesId => {
       this.routedPodcastSeriesId = podcastSeriesId;
     });
     this.store.pipe(select(selectChartedEpisodeIdsRoute)).subscribe(episodes => this.routedEpisodeIds = episodes);

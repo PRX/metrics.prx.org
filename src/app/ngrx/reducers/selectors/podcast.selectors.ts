@@ -1,7 +1,7 @@
 import { createSelector } from '@ngrx/store';
 import { RootState, selectAppState } from '../';
 import { getPodcastEntities, getPodcastsLoaded, getPodcastsLoading, getPodcastsError } from '../podcast.reducer';
-import { selectPodcastRoute } from './router.selectors';
+import { selectPodcastSeriesRoute } from './router.selectors';
 
 export const selectPodcastState = createSelector(selectAppState, (state: RootState) => state.podcasts);
 export const selectPodcastEntities = createSelector(selectPodcastState, getPodcastEntities);
@@ -15,5 +15,5 @@ export const selectPodcasts = createSelector(selectPodcastEntities, entities => 
 export const selectPodcastsLoaded = createSelector(selectPodcastState, getPodcastsLoaded);
 export const selectPodcastsLoading = createSelector(selectPodcastState, getPodcastsLoading);
 export const selectPodcastsError = createSelector(selectPodcastState, getPodcastsError);
-export const selectSelectedPodcast = createSelector(selectPodcastEntities, selectPodcastRoute,
+export const selectSelectedPodcast = createSelector(selectPodcastEntities, selectPodcastSeriesRoute,
   (entities, podcastSeriesId) => entities[podcastSeriesId]);

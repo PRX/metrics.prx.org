@@ -12,3 +12,5 @@ export * from './downloads-table.selectors';
 export * from './loading.selectors';
 export * from './loaded.selectors';
 export * from './error.selectors';
+export { selectAllPodcasts, selectRoutedPodcast } from './castle-podcast.selectors';
+export { selectAllEpisodes, selectNumEpisodePages } from './castle-episode.selectors';

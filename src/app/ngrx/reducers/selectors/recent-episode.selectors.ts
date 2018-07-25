@@ -3,7 +3,7 @@ import { RootState, selectAppState } from '../';
 import { EpisodeModel } from '../episode.reducer';
 import { getRecentEpisodeEntities, getRecentEpisodeLoaded,
   getRecentEpisodeLoading, getRecentEpisodeError } from '../recent-episode.reducer';
-import { selectRouter, selectPodcastRoute } from './router.selectors';
+import { selectRouter, selectPodcastSeriesRoute } from './router.selectors';
 import { selectEpisodeMetrics } from './episode-metrics.selectors';
 import { EpisodePerformanceMetricsModel } from '../episode-performance-metrics.reducer';
 import { selectEpisodePerformanceMetricsEntities } from './episode-performance-metrics.selectors';
@@ -13,7 +13,7 @@ import { INTERVAL_DAILY, METRICSTYPE_DOWNLOADS, getMetricsProperty } from '../mo
 
 export const selectRecentEpisodeState = createSelector(selectAppState, (state: RootState) => state.recentEpisodes);
 export const selectRecentEpisodeEntities = createSelector(selectRecentEpisodeState, getRecentEpisodeEntities);
-export const selectRecentEpisode = createSelector(selectRecentEpisodeEntities, selectPodcastRoute, (entities, seriesId): EpisodeModel => {
+export const selectRecentEpisode = createSelector(selectRecentEpisodeEntities, selectPodcastSeriesRoute, (entities, seriesId): EpisodeModel => {
   return entities[seriesId];
 });
 export const selectRecentEpisodeLoaded = createSelector(selectRecentEpisodeState, getRecentEpisodeLoaded);

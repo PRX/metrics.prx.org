@@ -10,7 +10,7 @@ import { Actions, Effect, ofType } from '@ngrx/effects';
 import { RouterParams, ChartType, MetricsType, PodcastModel,
   CHARTTYPE_PODCAST, INTERVAL_DAILY,
   METRICSTYPE_DOWNLOADS, METRICSTYPE_DEMOGRAPHICS, METRICSTYPE_TRAFFICSOURCES } from '../';
-import { selectRouter, selectPodcasts } from '../reducers/selectors';
+import { selectRouter } from '../reducers/selectors';
 import { ActionTypes } from '../actions';
 import * as ACTIONS from '../actions';
 import * as dateUtil from '../../shared/util/date';
@@ -184,9 +184,6 @@ export class RoutingEffects {
 
       this.routerParams = routerParams;
     });
-
-    /* TODO: don't seem to be using this
-    this.store.pipe(select(selectPodcasts)).subscribe(podcasts => this.podcasts = podcasts);*/
 
     // for redirecting users routed to '/'
     this.router.events.pipe(

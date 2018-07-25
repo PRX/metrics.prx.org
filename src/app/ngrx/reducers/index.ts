@@ -14,6 +14,8 @@ import { RecentEpisodeState } from './recent-episode.reducer';
 import { CustomRouterReducer } from './router.reducer';
 
 import { RouterParams } from './models';
+import * as fromPodcast from './castle-podcast.reducer';
+import * as fromEpisode from './castle-episode.reducer';
 
 export interface RootState {
   routerSerializer: RouterReducerState<RouterParams>;
@@ -26,6 +28,8 @@ export interface RootState {
   episodeMetrics: EpisodeMetricsModel[];
   episodePerformanceMetrics: EpisodePerformanceMetricsState;
   recentEpisodes: RecentEpisodeState;
+  podcast: fromPodcast.State;
+  episode: fromEpisode.State;
 }
 
 // TypeScript is complaining about this ActionReducerMap again, not sure why ugh
@@ -39,7 +43,9 @@ export const reducers: ActionReducerMap<RootState> = {
   podcastPerformanceMetrics: PodcastPerformanceMetricsReducer,
   episodeMetrics: EpisodeMetricsReducer,
   episodePerformanceMetrics: EpisodePerformanceMetricsReducer,
-  recentEpisodes: RecentEpisodeReducer
+  recentEpisodes: RecentEpisodeReducer,
+  podcast: fromPodcast.reducer,
+  episode: fromEpisode.reducer,
 };
 
 export { CustomSerializer } from './router.serializer';

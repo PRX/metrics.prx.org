@@ -6,4 +6,5 @@ export interface Episode {
   title: string;
   publishedAt: Date;
   page: number;
+  color?: string;
 }

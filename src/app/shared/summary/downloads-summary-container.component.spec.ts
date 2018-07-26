@@ -41,6 +41,7 @@ describe('DownloadsSummaryContainerComponent', () => {
   ];
   const routerParams: RouterParams = {
     podcastSeriesId: podcast.seriesId,
+    podcastId: podcast.feederId,
     metricsType: <MetricsType>METRICSTYPE_DOWNLOADS,
     interval: INTERVAL_DAILY,
     beginDate: new Date('2017-08-27T00:00:00Z'),

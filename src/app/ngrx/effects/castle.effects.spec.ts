@@ -136,7 +136,7 @@ describe('CastleEffects', () => {
   it('should request episode performance metrics from castle', () => {
     const action = {
       type: ACTIONS.ActionTypes.CASTLE_EPISODE_PERFORMANCE_METRICS_LOAD,
-      payload: { id: episode.id, seriesId: episode.seriesId, guid: episode.guid }
+      payload: { id: episode.id, seriesId: episode.seriesId, feederId: episode.feederId, guid: episode.guid }
     };
     const success = new ACTIONS.CastleEpisodePerformanceMetricsSuccessAction({
       id: episode.id,
@@ -162,6 +162,7 @@ describe('CastleEffects', () => {
       payload: {
         id: episode.id,
         seriesId: episode.seriesId,
+        feederId: episode.feederId,
         guid: episode.guid,
       }
     };
@@ -211,6 +212,7 @@ describe('CastleEffects', () => {
       type: ACTIONS.ActionTypes.CASTLE_EPISODE_METRICS_LOAD,
       payload: {
         seriesId: podcasts[0].seriesId,
+        feederId: podcasts[0].feederId,
         page: episode.page,
         id: episode.id,
         guid: episode.guid,

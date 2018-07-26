@@ -49,7 +49,13 @@ describe('DownloadsTableContainerComponent', () => {
       store.dispatch(new ACTIONS.CastleEpisodeMetricsSuccessAction({
         seriesId: episodes[1].seriesId, page: episodes[1].page, feederId: episodes[1].feederId, guid: episodes[1].guid,
         metricsPropertyName, metrics: ep1Downloads}));
-      store.dispatch(new ACTIONS.CmsPodcastEpisodePageSuccessAction({episodes}));
+      store.dispatch(new ACTIONS.CastleEpisodePageSuccessAction({
+        episodes: episodes.map(e => {
+          return {guid: e.guid, title: e.title, publishedAt: e.publishedAt, page: e.page, podcastId: e.feederId};
+        }),
+        page: 1,
+        total: episodes.length
+      }));
       store.dispatch(new ACTIONS.CastlePodcastMetricsSuccessAction({
         seriesId: podcast.seriesId, feederId: podcast.feederId, metricsPropertyName, metrics: podDownloads}));
 

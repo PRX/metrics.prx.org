@@ -32,7 +32,6 @@ describe('EpisodeMetricsReducer', () => {
 
   it('should update with new episode metrics', () => {
     expect(newState.length).toEqual(1);
-    expect(newState[0].id).toEqual(123);
     expect(newState[0].seriesId).toEqual(37800);
     expect(newState[0].guid).toEqual('abcdefg');
   });
@@ -41,7 +40,7 @@ describe('EpisodeMetricsReducer', () => {
     newState = EpisodeMetricsReducer(newState,
       new CastleEpisodeMetricsSuccessAction({
         seriesId: episode.seriesId, feederId: episode.feederId, page: episode.page,
-        guid: 'gfedcba',
+        guid: 'abcdefg',
         metricsPropertyName,
         metrics: [
           ['2017-08-27T00:00:00Z', 52522],
@@ -60,9 +59,8 @@ describe('EpisodeMetricsReducer', () => {
       })
     );
     expect(newState.length).toEqual(1);
-    expect(newState[0].id).toEqual(123);
     expect(newState[0].seriesId).toEqual(37800);
-    expect(newState[0].guid).toEqual('gfedcba');
+    expect(newState[0].guid).toEqual('abcdefg');
     expect(newState[0].dailyReach.length).toEqual(12);
     expect(newState[0].dailyReach[0][1]).toEqual(52522);
   });

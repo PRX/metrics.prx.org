@@ -4,6 +4,7 @@ import { ActionTypes, AllActions } from '../actions';
 
 export interface State extends EntityState<Podcast> {
   // additional entities state properties
+  error?: any;
 }
 
 export function sortByTitle(a: Podcast, b: Podcast) {
@@ -26,6 +27,9 @@ export function reducer(
     case ActionTypes.CASTLE_PODCAST_PAGE_SUCCESS: {
       return adapter.addMany(action.payload.podcasts, state);
     }
+    case ActionTypes.CASTLE_PODCAST_PAGE_FAILURE: {
+      return { ...state, error: action.payload.error};
+    }
     default: {
       return state;
     }
@@ -41,3 +45,5 @@ export const {
 export const selectPodcastIds = selectIds;
 export const selectPodcastEntities = selectEntities;
 export const selectAllPodcasts = selectAll;
+
+export const getError = (state: State) => state.error;

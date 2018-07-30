@@ -4,6 +4,9 @@ import { ActionTypes, AllActions } from '../actions';
 
 export interface State extends EntityState<Episode> {
   // additional entities state properties
+  pagesLoaded: number[];
+  pagesLoading: number[];
+  error?: any;
 }
 
 export function sortByPodcastAndPubDate(a: Episode, b: Episode) {
@@ -18,15 +21,50 @@ export const adapter: EntityAdapter<Episode> = createEntityAdapter<Episode>({
 
 export const initialState: State = adapter.getInitialState({
   // additional entity state properties
+  pagesLoaded: [],
+  pagesLoading: []
 });
+
+export const addToArray = function(entries: number[], value: number) {
+  if (entries.indexOf(value) > -1) {
+    return entries;
+  } else {
+    return entries.concat([value]).sort((a, b) => a - b);
+  }
+};
+
+export const removeFromArray = function(entries: number[], value: number) {
+  if (entries.indexOf(value) === -1) {
+    return entries;
+  } else {
+    return entries.filter(e => e !== value);
+  }
+};
 
 export function reducer(
   state = initialState,
   action: AllActions
 ): State {
   switch (action.type) {
+    case ActionTypes.ROUTE_PODCAST: {
+      return {
+        ...state,
+        pagesLoaded: [],
+        pagesLoading: []
+      };
+    }
+    case ActionTypes.CASTLE_EPISODE_PAGE_LOAD: {
+      return {...state, pagesLoading: addToArray(state.pagesLoading, action.payload.page)};
+    }
     case ActionTypes.CASTLE_EPISODE_PAGE_SUCCESS: {
-      return adapter.addMany(action.payload.episodes, state);
+      return {
+        ...adapter.addMany(action.payload.episodes, state),
+        pagesLoaded: addToArray(state.pagesLoaded, action.payload.page),
+        pagesLoading: removeFromArray(state.pagesLoading, action.payload.page)
+      };
+    }
+    case ActionTypes.CASTLE_EPISODE_PAGE_FAILURE: {
+      return {...state, error: action.payload.error};
     }
     default: {
       return state;
@@ -43,3 +81,7 @@ export const {
 export const selectEpisodeGuids = selectIds;
 export const selectEpisodeEntities = selectEntities;
 export const selectAllEpisodes = selectAll;
+
+export const getPagesLoaded = (state: State) => state.pagesLoaded;
+export const getPagesLoading = (state: State) => state.pagesLoading;
+export const getError = (state: State) => state.error;

@@ -75,7 +75,7 @@ describe('RoutingEffects', () => {
     store = TestBed.get(Store);
 
     spyOn(store, 'dispatch').and.callThrough();
-    store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerState: routerParams}));
+    store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerParams}));
 
     spyOn(effects, 'routeFromNewRouterParams').and.callThrough();
   }));
@@ -85,7 +85,7 @@ describe('RoutingEffects', () => {
       type: ROUTER_NAVIGATION,
       payload: {routerState: routerParams}
     };
-    const result = new ACTIONS.CustomRouterNavigationAction({routerState: routerParams});
+    const result = new ACTIONS.CustomRouterNavigationAction({routerParams});
     actions$.stream = hot('-a', { a: action });
     const expected = cold('-r', { r: result });
     expect(effects.customRouterNavigation$).toBeObservable(expected);

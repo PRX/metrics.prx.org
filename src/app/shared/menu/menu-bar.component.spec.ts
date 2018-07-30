@@ -63,7 +63,7 @@ describe('MenuBarComponent', () => {
       el = de.nativeElement;
       store = TestBed.get(Store);
 
-      store.dispatch(new CustomRouterNavigationAction({routerState: routerParams}));
+      store.dispatch(new CustomRouterNavigationAction({routerParams}));
     });
   }));
 

@@ -80,7 +80,7 @@ describe('DownloadsComponent', () => {
   }
 
   function dispatchRouterNavigation() {
-    store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerState: routerParams}));
+    store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerParams}));
   }
 
   function dispatchInvalidPodcastRouterNavigation() {
@@ -163,7 +163,7 @@ describe('DownloadsComponent', () => {
 
     it('should reload podcast and episode data if routerParams parameters change', () => {
       const beginDate = new Date();
-      comp.store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerState: {episodePage: 2}}));
+      comp.store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerParams: {episodePage: 2}}));
       comp.store.dispatch(new ACTIONS.CastleEpisodePageSuccessAction({
         episodes: [{
           guid: episodes[1].guid,
@@ -175,7 +175,7 @@ describe('DownloadsComponent', () => {
         page: 2,
         total: episodes.length
       }));
-      comp.store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerState: {beginDate}}));
+      comp.store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerParams: {beginDate}}));
       expect(comp.getPodcastMetrics).toHaveBeenCalled();
       expect(comp.getEpisodeMetrics).toHaveBeenCalled();
     });

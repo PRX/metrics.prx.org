@@ -69,7 +69,7 @@ describe('NavMenuComponent', () => {
       el = de.nativeElement;
       store = TestBed.get(Store);
 
-      store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerState: routerParams}));
+      store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerParams}));
       store.dispatch(new ACTIONS.CmsPodcastsSuccessAction({podcasts}));
       store.dispatch(new ACTIONS.CmsRecentEpisodeSuccessAction({episode}));
       fix.detectChanges();

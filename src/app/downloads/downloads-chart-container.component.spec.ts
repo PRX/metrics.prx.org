@@ -39,7 +39,7 @@ describe('DownloadsChartContainerComponent', () => {
 
       const metricsPropertyName = getMetricsProperty(routerParams.interval, routerParams.metricsType);
 
-      store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerState: routerParams}));
+      store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerParams}));
       store.dispatch(new ACTIONS.CastleEpisodePageSuccessAction({
         episodes: episodes.map(e => {
           return {guid: e.guid, title: e.title, publishedAt: e.publishedAt, page: e.page, podcastId: e.feederId};

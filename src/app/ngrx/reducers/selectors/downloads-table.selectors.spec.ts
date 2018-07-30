@@ -27,7 +27,7 @@ describe('Downloads Table Selectors', () => {
 
     spyOn(store, 'dispatch').and.callThrough();
 
-    store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerState: routerParams}));
+    store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerParams}));
     store.dispatch(new ACTIONS.CastleEpisodePageSuccessAction({
       episodes: episodes.map(e => {
           return {guid: e.guid, title: e.title, publishedAt: e.publishedAt, page: e.page, podcastId: e.feederId};
@@ -74,7 +74,7 @@ describe('Downloads Table Selectors', () => {
     });
 
     it('should keep podcast in table for stacked chart when unselected for charting', () => {
-      store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerState: {...routerParams, chartPodcast: false}}));
+      store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerParams: {...routerParams, chartPodcast: false}}));
       expect(result.allTimeDownloads).toEqual(podPerformance.total);
     });
   });

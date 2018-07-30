@@ -6,7 +6,7 @@ import { RouterParams, ChartType, IntervalModel, MetricsType } from '../';
 // the StoreRouterConnectingModule and the RouterStateSerializer and the customRouterNavigation$ routing effect
 // It is otherwise not to be used directly by the application
 export interface CustomRouterNavigationPayload {
-  routerState: RouterParams;
+  routerParams: RouterParams;
 }
 
 export class CustomRouterNavigationAction implements Action {

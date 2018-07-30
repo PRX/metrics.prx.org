@@ -62,7 +62,7 @@ describe('PodcastNavComponent', () => {
 
       store = TestBed.get(Store);
 
-      store.dispatch(new CustomRouterNavigationAction({routerState: routerParams}));
+      store.dispatch(new CustomRouterNavigationAction({routerParams}));
       store.dispatch(new CastlePodcastPageSuccessAction({page: 1, podcasts: podcasts.slice(0, 1), total: 1}));
     });
   }));

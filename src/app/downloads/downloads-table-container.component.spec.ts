@@ -42,7 +42,7 @@ describe('DownloadsTableContainerComponent', () => {
       el = de.nativeElement;
       store = TestBed.get(Store);
 
-      store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerState: routerParams}));
+      store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerParams}));
       store.dispatch(new ACTIONS.CastleEpisodeMetricsSuccessAction({
         seriesId: episodes[0].seriesId, page: episodes[0].page, feederId: episodes[0].feederId, guid: episodes[0].guid,
         metricsPropertyName, metrics: ep0Downloads}));

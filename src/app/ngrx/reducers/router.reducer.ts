@@ -11,43 +11,43 @@ export function CustomRouterReducer(state: RouterParams = initialState, action: 
   switch (action.type) {
     case ActionTypes.CUSTOM_ROUTER_NAVIGATION:
       const newState: RouterParams = {...state};
-      if (action.payload.routerState.podcastId) {
-        newState.podcastId = action.payload.routerState.podcastId;
+      if (action.payload.routerParams.podcastId) {
+        newState.podcastId = action.payload.routerParams.podcastId;
       }
-      if (action.payload.routerState.podcastSeriesId) {
-        newState.podcastSeriesId = action.payload.routerState.podcastSeriesId;
+      if (action.payload.routerParams.podcastSeriesId) {
+        newState.podcastSeriesId = action.payload.routerParams.podcastSeriesId;
       }
-      if (action.payload.routerState.metricsType) {
-        newState.metricsType = action.payload.routerState.metricsType;
+      if (action.payload.routerParams.metricsType) {
+        newState.metricsType = action.payload.routerParams.metricsType;
       }
-      if (action.payload.routerState.chartType) {
-        newState.chartType = action.payload.routerState.chartType;
+      if (action.payload.routerParams.chartType) {
+        newState.chartType = action.payload.routerParams.chartType;
       }
-      if (action.payload.routerState.interval) {
-        newState.interval = action.payload.routerState.interval;
+      if (action.payload.routerParams.interval) {
+        newState.interval = action.payload.routerParams.interval;
       }
-      if (action.payload.routerState.episodePage) {
-        newState.episodePage = action.payload.routerState.episodePage;
+      if (action.payload.routerParams.episodePage) {
+        newState.episodePage = action.payload.routerParams.episodePage;
       }
-      if (action.payload.routerState.guid) {
-        newState.guid = action.payload.routerState.guid;
+      if (action.payload.routerParams.guid) {
+        newState.guid = action.payload.routerParams.guid;
       }
-      if (action.payload.routerState.beginDate || action.payload.routerState.endDate) {
+      if (action.payload.routerParams.beginDate || action.payload.routerParams.endDate) {
         // standardRange can only be set with accompanying begin or end date
         // standardRange can be set to undefined if begin or end date is present but standardRange is not
-        newState.standardRange = action.payload.routerState.standardRange;
+        newState.standardRange = action.payload.routerParams.standardRange;
       }
-      if (action.payload.routerState.beginDate) {
-        newState.beginDate = action.payload.routerState.beginDate;
+      if (action.payload.routerParams.beginDate) {
+        newState.beginDate = action.payload.routerParams.beginDate;
       }
-      if (action.payload.routerState.endDate) {
-        newState.endDate = action.payload.routerState.endDate;
+      if (action.payload.routerParams.endDate) {
+        newState.endDate = action.payload.routerParams.endDate;
       }
-      if (action.payload.routerState.chartPodcast !== undefined) {
-        newState.chartPodcast = action.payload.routerState.chartPodcast;
+      if (action.payload.routerParams.chartPodcast !== undefined) {
+        newState.chartPodcast = action.payload.routerParams.chartPodcast;
       }
-      if (action.payload.routerState.episodeIds) {
-        newState.episodeIds = action.payload.routerState.episodeIds;
+      if (action.payload.routerParams.episodeIds) {
+        newState.episodeIds = action.payload.routerParams.episodeIds;
       }
       return newState;
     default:

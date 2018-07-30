@@ -68,7 +68,7 @@ describe('DownloadsSummaryContainerComponent', () => {
       store = TestBed.get(Store);
 
       const metricsPropertyName = getMetricsProperty(routerParams.interval, routerParams.metricsType);
-      store.dispatch(new CustomRouterNavigationAction({routerState: routerParams}));
+      store.dispatch(new CustomRouterNavigationAction({routerParams}));
       store.dispatch(new CastlePodcastMetricsSuccessAction({
         seriesId: podcast.seriesId, feederId: podcast.feederId, metricsPropertyName, metrics: podDownloads}));
     });

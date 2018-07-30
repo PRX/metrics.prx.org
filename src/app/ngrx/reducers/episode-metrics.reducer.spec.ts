@@ -13,13 +13,13 @@ describe('EpisodeMetricsReducer', () => {
     title: 'A Pet Talk Episode',
     guid: 'abcdefg'
   };
-  const routerState: RouterParams = {
+  const routerParams: RouterParams = {
     metricsType: <MetricsType>METRICSTYPE_DOWNLOADS,
     beginDate: new Date('2017-08-27T00:00:00Z'),
     endDate: new Date('2017-09-07T00:00:00Z'),
     interval: INTERVAL_DAILY
   };
-  const metricsPropertyName = getMetricsProperty(routerState.interval, routerState.metricsType);
+  const metricsPropertyName = getMetricsProperty(routerParams.interval, routerParams.metricsType);
   beforeEach(() => {
     newState = EpisodeMetricsReducer(undefined,
       new CastleEpisodeMetricsSuccessAction({

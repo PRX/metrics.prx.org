@@ -115,7 +115,7 @@ describe('AppComponent', () => {
 
   it('should dispatch episode load action when series or page has changed', () => {
     spyOn(store, 'dispatch').and.callThrough();
-    store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerState: routerParams}));
+    store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerParams}));
     expect(store.dispatch).toHaveBeenCalledWith(jasmine.any(ACTIONS.CmsPodcastEpisodePageAction));
   });
 });

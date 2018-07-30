@@ -5,7 +5,7 @@ import { map } from 'rxjs/operators/map';
 import { switchMap } from 'rxjs/operators/switchMap';
 import { Observable } from 'rxjs/Observable';
 import { Action, Store, select } from '@ngrx/store';
-import { ROUTER_NAVIGATION } from '@ngrx/router-store';
+import { ROUTER_NAVIGATION, RouterNavigationAction, RouterNavigationPayload } from '@ngrx/router-store';
 import { Actions, Effect, ofType } from '@ngrx/effects';
 import { RouterParams, ChartType, MetricsType, PodcastModel,
   CHARTTYPE_PODCAST, INTERVAL_DAILY,
@@ -31,11 +31,11 @@ export class RoutingEffects {
   @Effect()
   customRouterNavigation$: Observable<Action> = this.actions$.pipe(
     ofType(ROUTER_NAVIGATION),
-    map((action: ACTIONS.CustomRouterNavigationAction) => action.payload),
-    switchMap((payload: ACTIONS.CustomRouterNavigationPayload) => {
-      const routerState: RouterParams = {...payload.routerState};
+    map((action: RouterNavigationAction) => action.payload),
+    switchMap((payload: RouterNavigationPayload<any>) => {
+      const routerParams: RouterParams = {...payload.routerState};
       // map to an action with our CUSTOM_ROUTER_NAVIGATION type
-      return Observable.of(new ACTIONS.CustomRouterNavigationAction({routerState}));
+      return Observable.of(new ACTIONS.CustomRouterNavigationAction({routerParams}));
     })
   );
 

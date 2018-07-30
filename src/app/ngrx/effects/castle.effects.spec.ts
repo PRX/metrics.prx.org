@@ -105,7 +105,7 @@ describe('CastleEffects', () => {
     store = TestBed.get(Store);
 
     store.dispatch(new ACTIONS.CmsPodcastsSuccessAction({podcasts}));
-    store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerState: routerParams}));
+    store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerParams}));
   }));
 
   it('should request podcast performance metrics from castle', () => {

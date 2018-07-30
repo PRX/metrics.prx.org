@@ -29,7 +29,7 @@ describe('Downloads Chart Selectors', () => {
     let result: TimeseriesChartModel[];
 
     beforeEach(() => {
-      store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerState: {...routerParams, chartType: <ChartType>CHARTTYPE_STACKED}}));
+      store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerParams: {...routerParams, chartType: <ChartType>CHARTTYPE_STACKED}}));
       store.dispatch(new ACTIONS.CastleEpisodePageSuccessAction({
         episodes: episodes.map(e => {
           return {guid: e.guid, title: e.title, publishedAt: e.publishedAt, page: e.page, podcastId: e.feederId};
@@ -72,20 +72,20 @@ describe('Downloads Chart Selectors', () => {
     });
 
     it('should only include episode metrics matching router state', () => {
-      store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerState: {podcastSeriesId: 37801, episodePage: 2}}));
+      store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerParams: {podcastSeriesId: 37801, episodePage: 2}}));
       expect(result).toBeUndefined();
     });
 
     // TODO: fix/keep charted episodes on route?
     xit('should only include charted episodes', () => {
       expect(result.length).toEqual(3);
-      store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerState: {...routerParams, episodeIds: [episodes[1].id]}}));
+      store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerParams: {...routerParams, episodeIds: [episodes[1].id]}}));
       expect(result.length).toEqual(2);
     });
 
     it('should only include podcast if charted', () => {
       expect(result.length).toEqual(3);
-      store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerState: {...routerParams, chartPodcast: false}}));
+      store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerParams: {...routerParams, chartPodcast: false}}));
       expect(result.length).toEqual(2);
     });
 
@@ -98,7 +98,7 @@ describe('Downloads Chart Selectors', () => {
     let result: TimeseriesChartModel[];
 
     beforeEach(() => {
-      store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerState: {...routerParams, chartType: <ChartType>CHARTTYPE_PODCAST}}));
+      store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerParams: {...routerParams, chartType: <ChartType>CHARTTYPE_PODCAST}}));
       store.dispatch(new ACTIONS.CastlePodcastMetricsSuccessAction({
         seriesId: podcast.seriesId, feederId: podcast.feederId, metricsPropertyName, metrics: podDownloads}));
       store.dispatch(new ACTIONS.CastlePodcastPerformanceMetricsSuccessAction({seriesId: podcast.seriesId, feederId: podcast.feederId,
@@ -120,7 +120,7 @@ describe('Downloads Chart Selectors', () => {
     });
 
     it('should include podcast regardless of whether or not it is set to charted', () => {
-      store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerState: {chartPodcast: false}}));
+      store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerParams: {chartPodcast: false}}));
       expect(result).not.toBeUndefined();
       expect(result[0].label).toContain('All Episodes');
     });
@@ -130,7 +130,7 @@ describe('Downloads Chart Selectors', () => {
     let result: TimeseriesChartModel[];
 
     beforeEach(() => {
-      store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerState: {...routerParams, chartType: <ChartType>CHARTTYPE_EPISODES}}));
+      store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerParams: {...routerParams, chartType: <ChartType>CHARTTYPE_EPISODES}}));
       store.dispatch(new ACTIONS.CastleEpisodePageSuccessAction({
         episodes: episodes.map(e => {
           return {guid: e.guid, title: e.title, publishedAt: e.publishedAt, page: e.page, podcastId: e.feederId};
@@ -161,14 +161,14 @@ describe('Downloads Chart Selectors', () => {
     });
 
     it('should only include episode metrics matching router state', () => {
-      store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerState: {episodePage: 2}}));
+      store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerParams: {episodePage: 2}}));
       expect(result).toBeUndefined();
     });
 
     // TODO: fix/keep charted episodes on route?
     xit('should only include charted episodes', () => {
       expect(result.length).toEqual(2);
-      store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerState: {episodeIds: [episodes[1].id]}}));
+      store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerParams: {episodeIds: [episodes[1].id]}}));
       expect(result.length).toEqual(1);
     });
   });

@@ -31,9 +31,7 @@ export class DownloadsComponent implements OnInit, OnDestroy {
   podcasts: PodcastModel[];
   podcast: PodcastModel;
   castleEpisodeSub: Subscription;
-  episodeSub: Subscription;
-  pageEpisodes: EpisodeModel[];
-  castlePageEpisodes: Episode[];
+  pageEpisodes: Episode[];
   routerSub: Subscription;
   routerParams: RouterParams;
   updatePodcast: boolean;
@@ -120,16 +118,10 @@ export class DownloadsComponent implements OnInit, OnDestroy {
     // update episodes separate from routerParams change when we're waiting on the episodes to load
     // TODO: undo
     this.castleEpisodeSub = this.store.pipe(select(selectRoutedPageEpisodes)).subscribe((pageEpisodes: Episode[]) => {
-      this.castlePageEpisodes = pageEpisodes;
-    });
-    this.episodeSub = this.store.pipe(select(selectEpisodes)).subscribe((allAvailableEpisodes: EpisodeModel[]) => {
-      const episodes = filterPodcastEpisodePage(this.routerParams, allAvailableEpisodes);
-      if (episodes && episodes.length) {
-        this.pageEpisodes = episodes;
-        if (this.updateEpisodes) {
-          this.getEpisodeMetrics();
-          this.updateEpisodes = false;
-        }
+      this.pageEpisodes = pageEpisodes;
+      if (this.updateEpisodes) {
+        this.getEpisodeMetrics();
+        this.updateEpisodes = false;
       }
     });
   }
@@ -141,7 +133,7 @@ export class DownloadsComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     if (this.routerSub) { this.routerSub.unsubscribe(); }
     if (this.podcastSub) { this.podcastSub.unsubscribe(); }
-    if (this.episodeSub) { this.episodeSub.unsubscribe(); }
+    if (this.castleEpisodeSub) { this.castleEpisodeSub.unsubscribe(); }
   }
 
   setDefaultRouteFromExistingRoute(existingRouterParams: RouterParams) {
@@ -215,7 +207,7 @@ export class DownloadsComponent implements OnInit, OnDestroy {
   }
 
   getEpisodeMetrics() {
-    this.castlePageEpisodes.forEach((episode: Episode) => {
+    this.pageEpisodes.forEach((episode: Episode) => {
       if (episode && episode.guid) {
         this.store.dispatch(new ACTIONS.CastleEpisodeMetricsLoadAction({
           seriesId: 0,

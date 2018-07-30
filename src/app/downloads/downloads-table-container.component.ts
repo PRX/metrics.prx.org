@@ -2,8 +2,8 @@ import { Component, OnInit, OnDestroy, Input } from '@angular/core';
 import { Store, select } from '@ngrx/store';
 import { Subscription } from 'rxjs/Subscription';
 import { Observable } from 'rxjs/Observable';
-import { DownloadsTableModel, EpisodeModel, RouterParams, CHARTTYPE_EPISODES } from '../ngrx';
-import { selectRouter, selectSelectedPageEpisodes,
+import { DownloadsTableModel, Episode, RouterParams, CHARTTYPE_EPISODES } from '../ngrx';
+import { selectRouter, selectRoutedPageEpisodes,
   selectDownloadTablePodcastMetrics, selectDownloadTableEpisodeMetrics } from '../ngrx/reducers/selectors';
 import * as ACTIONS from '../ngrx/actions';
 
@@ -40,10 +40,10 @@ export class DownloadsTableContainerComponent implements OnInit, OnDestroy {
     this.routerParams$ = this.store.pipe(select(selectRouter));
 
     // TODO: move
-    this.episodePageSub = this.store.pipe(select(selectSelectedPageEpisodes)).subscribe((pageEpisodes: EpisodeModel[]) => {
+    this.episodePageSub = this.store.pipe(select(selectRoutedPageEpisodes)).subscribe((pageEpisodes: Episode[]) => {
       pageEpisodes.forEach(episode => {
-        const { id, seriesId, feederId, guid } = episode;
-        this.store.dispatch(new ACTIONS.CastleEpisodePerformanceMetricsLoadAction({id, seriesId, feederId, guid}));
+        const { podcastId, guid } = episode;
+        this.store.dispatch(new ACTIONS.CastleEpisodePerformanceMetricsLoadAction({id: 0, seriesId: 0, feederId: podcastId, guid}));
       });
     });
   }

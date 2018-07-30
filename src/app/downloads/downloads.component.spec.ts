@@ -84,7 +84,7 @@ describe('DownloadsComponent', () => {
   }
 
   function dispatchInvalidPodcastRouterNavigation() {
-    store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerState: {...routerParams, podcastSeriesId: 1234}}));
+    store.dispatch(new ACTIONS.RoutePodcastAction({podcastId: '13', podcastSeriesId: 1234}));
   }
 
   function dispatchPodcasts() {
@@ -111,9 +111,6 @@ describe('DownloadsComponent', () => {
       metricsPropertyName,
       metrics: podDownloads
     }));
-
-    /*store.dispatch(new ACTIONS.CastlePodcastPerformanceMetricsSuccessAction({seriesId: podcast.seriesId, feederId: podcast.feederId,
-      ...podPerformance }));*/
   }
 
   function dispatchEpisodeMetrics() {
@@ -133,11 +130,6 @@ describe('DownloadsComponent', () => {
       metricsPropertyName,
       metrics: ep1Downloads
     }));
-
-    /*store.dispatch(new ACTIONS.CastleEpisodePerformanceMetricsSuccessAction({
-      seriesId: episodes[0].seriesId, feederId: episodes[0].feederId, id: episodes[0].id, guid: episodes[0].guid, ...ep0Performance}));
-    store.dispatch(new ACTIONS.CastleEpisodePerformanceMetricsSuccessAction({
-      seriesId: episodes[1].seriesId, feederId: episodes[1].feederId, id: episodes[1].id, guid: episodes[1].guid, ...ep1Performance}));*/
   }
 
   it('should show loading spinner when loading', () => {
@@ -212,7 +204,6 @@ describe('DownloadsComponent', () => {
     });
 
     it('should handle an unmatched routed podcast series id', () => {
-      // expect(comp.totalPages).toBe(0);
       expect(comp.getPodcastMetrics).not.toHaveBeenCalled();
     });
   });

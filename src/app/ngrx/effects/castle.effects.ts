@@ -11,42 +11,14 @@ import { Actions, Effect, ofType } from '@ngrx/effects';
 import { Action, Store, select } from '@ngrx/store';
 
 import * as ACTIONS from '../actions';
-import { selectSelectedPodcast } from '../reducers/selectors';
-import { AuthService, Userinfo, UserinfoService } from 'ngx-prx-styleguide';
+import { selectRoutedPodcast } from '../reducers/selectors';
 import { HalDoc } from '../../core';
 import { CastleService } from '../../core';
-import { AccountModel, PodcastModel, getMetricsProperty, Podcast, Episode, PODCAST_PAGE_SIZE, EPISODE_PAGE_SIZE } from '../';
+import { Podcast, getMetricsProperty, PODCAST_PAGE_SIZE, EPISODE_PAGE_SIZE } from '../';
 
 @Injectable()
 export class CastleEffects {
-  selectedPodcast: PodcastModel;
-
-  /*
-  @Effect()
-  loadAccount$: Observable<Action> = this.actions$.pipe(
-    ofType(ACTIONS.ActionTypes.ID_ACCOUNT_LOAD),
-    startWith(new ACTIONS.IdAccountLoadAction()),
-    switchMap(() => {
-      return this.auth.token.pipe(
-        first(),
-        mergeMap(token => {
-          if (token) {
-            if (!this.auth.parseToken(token)) {
-              return Observable.of(new ACTIONS.IdAccountFailureAction({error: 'Permission denied'}));
-            } else {
-              return this.userinfo.getUserinfo().map((info: Userinfo) => {
-                const account: AccountModel = {id: info.sub, name: info.name};
-                return new ACTIONS.IdAccountSuccessAction({account});
-              });
-            }
-          } else {
-            return Observable.of(new ACTIONS.IdAccountFailureAction({error: 'You are not logged in'}));
-          }
-        }),
-        catchError(error => Observable.of(new ACTIONS.IdAccountFailureAction({error})))
-      );
-    })
-  );*/
+  routedPodcast: Podcast;
 
   @Effect()
   loadPodcastPage$: Observable<Action> = this.actions$.pipe(
@@ -261,16 +233,14 @@ export class CastleEffects {
   );
 
   constructor(private actions$: Actions,
-              private auth: AuthService,
-              private userinfo: UserinfoService,
               private castle: CastleService,
               private store: Store<any>) {
     // TODO: move
-    this.store.pipe(select(selectSelectedPodcast)).subscribe((podcast: PodcastModel) => {
-      this.selectedPodcast = podcast;
-      if (this.selectedPodcast) {
-        const {seriesId, feederId} = this.selectedPodcast;
-        this.store.dispatch(new ACTIONS.CastlePodcastPerformanceMetricsLoadAction({seriesId, feederId}));
+    this.store.pipe(select(selectRoutedPodcast)).subscribe((podcast: Podcast) => {
+      this.routedPodcast = podcast;
+      if (this.routedPodcast) {
+        const { id } = this.routedPodcast;
+        this.store.dispatch(new ACTIONS.CastlePodcastPerformanceMetricsLoadAction({seriesId: 0, feederId: id}));
       }
     });
   }

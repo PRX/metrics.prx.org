@@ -34,7 +34,6 @@ export class DownloadsComponent implements OnInit, OnDestroy {
   episodeSub: Subscription;
   pageEpisodes: EpisodeModel[];
   castlePageEpisodes: Episode[];
-  totalPages: number;
   routerSub: Subscription;
   routerParams: RouterParams;
   updatePodcast: boolean;
@@ -100,11 +99,6 @@ export class DownloadsComponent implements OnInit, OnDestroy {
 
             if (this.updatePodcast && this.routerParams.podcastSeriesId) {
               this.podcast = this.podcasts.find(p => p.seriesId === this.routerParams.podcastSeriesId);
-              const numEpisodes = this.podcast ? this.podcast.doc.count('prx:stories') : 0;
-              this.totalPages = numEpisodes / EPISODE_PAGE_SIZE;
-              if (numEpisodes % EPISODE_PAGE_SIZE > 0) {
-                this.totalPages++;
-              }
               if (this.podcast) {
                 this.getPodcastMetrics(this.podcast);
                 this.updatePodcast = false;

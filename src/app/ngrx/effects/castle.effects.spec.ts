@@ -1,12 +1,12 @@
 import { Actions } from '@ngrx/effects';
 import { TestBed, async } from '@angular/core/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+/*import { HttpClientTestingModule } from '@angular/common/http/testing';*/
 import { cold, hot } from 'jasmine-marbles';
 import { StoreModule, Store } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
 import { getActions, TestActions } from './test.actions';
 
-import { AuthService, UserinfoService, MockHalService, HalService } from 'ngx-prx-styleguide';
+import { HalService, MockHalService } from 'ngx-prx-styleguide';
 import { CastleService } from '../../core';
 
 import { PodcastModel, RouterParams, EpisodeModel, MetricsType,
@@ -90,14 +90,12 @@ describe('CastleEffects', () => {
     TestBed.configureTestingModule({
       imports: [
         StoreModule.forRoot({...reducers}),
-        EffectsModule.forRoot([CastleEffects]),
-        HttpClientTestingModule
+        EffectsModule.forRoot([CastleEffects])/*,
+        HttpClientTestingModule*/
       ],
       providers: [
         CastleEffects,
-        AuthService,
-        UserinfoService,
-        {provide: HalService, useValue: castle},
+        { provide: HalService, useValue: castle },
         { provide: CastleService, useValue: castle.root },
         { provide: Actions, useFactory: getActions }
       ]

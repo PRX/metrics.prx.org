@@ -165,7 +165,7 @@ export class CastleEffects {
         endDate: this.routerParams.endDate
       }));
       this.store.dispatch(new ACTIONS.CastlePodcastPerformanceMetricsLoadAction({seriesId: 0, feederId: episodes[0].podcastId}));
-      return payload.episodes.map((episode: Episode) => {
+      return episodes.map((episode: Episode) => {
         this.store.dispatch(new ACTIONS.CastleEpisodePerformanceMetricsLoadAction({
           id: 0,
           seriesId: 0,

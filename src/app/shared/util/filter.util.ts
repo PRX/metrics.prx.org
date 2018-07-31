@@ -1,7 +1,7 @@
 import { RouterParams } from '../../ngrx';
 
 export const isPodcastChanged = (state: RouterParams, oldState: RouterParams): boolean => {
-  return state && state.podcastSeriesId && (!oldState || !oldState.podcastSeriesId || oldState.podcastSeriesId !== state.podcastSeriesId);
+  return state && state.podcastId && (!oldState || !oldState.podcastId || oldState.podcastId !== state.podcastId);
 };
 
 export const isEpisodesChanged = (state: RouterParams, oldState: RouterParams): boolean => {

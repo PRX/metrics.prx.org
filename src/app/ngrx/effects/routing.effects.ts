@@ -7,19 +7,20 @@ import { Observable } from 'rxjs/Observable';
 import { Action, Store, select } from '@ngrx/store';
 import { ROUTER_NAVIGATION, RouterNavigationAction, RouterNavigationPayload } from '@ngrx/router-store';
 import { Actions, Effect, ofType } from '@ngrx/effects';
-import { RouterParams, ChartType, MetricsType, PodcastModel,
+import { RouterParams, ChartType, MetricsType, Episode,
   CHARTTYPE_PODCAST, INTERVAL_DAILY,
   METRICSTYPE_DOWNLOADS, METRICSTYPE_DEMOGRAPHICS, METRICSTYPE_TRAFFICSOURCES } from '../';
-import { selectRouter } from '../reducers/selectors';
+import { selectRouter, selectRoutedPageEpisodes } from '../reducers/selectors';
 import { ActionTypes } from '../actions';
 import * as ACTIONS from '../actions';
 import * as dateUtil from '../../shared/util/date';
 import * as localStorageUtil from '../../shared/util/local-storage.util';
+import { isBeginDateChanged, isEndDateChanged, isIntervalChanged } from '../../shared/util/filter.util';
 
 @Injectable()
 export class RoutingEffects {
   routerParams: RouterParams;
-  podcasts: PodcastModel[];
+  episodes: Episode[];
 
   // ROUTER_NAVIGATION/RouterNavigationAction originates from the ngrx StoreRouterConnectingModule.
   // It is serialized from a RouterStateSnapshot by the custom RouterStateSerializer to a custom RouterParams
@@ -179,12 +180,12 @@ export class RoutingEffects {
   constructor(public store: Store<any>,
               private router: Router,
               private actions$: Actions) {
-    this.store.pipe(select(selectRouter)).subscribe(routerParams => {
-      this.loadEpisodesIfChanged(routerParams);
+    this.dontAllowRoot();
+    this.subRoutedPageEpisodes();
+    this.subAndCheckRouterParams();
+  }
 
-      this.routerParams = routerParams;
-    });
-
+  dontAllowRoot() {
     // for redirecting users routed to '/'
     this.router.events.pipe(
       filter(event => event instanceof RoutesRecognized)
@@ -195,80 +196,170 @@ export class RoutingEffects {
     });
   }
 
+  subRoutedPageEpisodes() {
+    this.store.pipe(select(selectRoutedPageEpisodes)).subscribe((episodes: Episode[]) => {
+      this.episodes = episodes;
+    });
+  }
+
   routeFromNewRouterParams(newRouterParams: RouterParams): RouterParams {
-    const combinedRouterParams: RouterParams = { ...this.routerParams, ...newRouterParams};
-    if (!combinedRouterParams.metricsType) {
-      combinedRouterParams.metricsType = <MetricsType>METRICSTYPE_DOWNLOADS;
-    }
-    if (!combinedRouterParams.chartType) {
-      combinedRouterParams.chartType = <ChartType>CHARTTYPE_PODCAST;
-    }
-    if (!combinedRouterParams.interval) {
-      combinedRouterParams.interval = INTERVAL_DAILY;
-    }
+    const routerParams: RouterParams = this.checkAndGetDefaults({ ...this.routerParams, ...newRouterParams});
 
     const params = {};
-    if (combinedRouterParams.episodePage) {
-      params['episodePage'] = combinedRouterParams.episodePage;
+    if (routerParams.episodePage) {
+      params['episodePage'] = routerParams.episodePage;
     }
-    if (combinedRouterParams.episodePage) {
-      params['page'] = combinedRouterParams.episodePage;
+    if (routerParams.guid) {
+      params['guid'] = routerParams.guid;
     }
-    if (combinedRouterParams.guid) {
-      params['guid'] = combinedRouterParams.guid;
+    if (routerParams.standardRange) {
+      params['standardRange'] = routerParams.standardRange;
     }
-    if (combinedRouterParams.standardRange) {
-      params['standardRange'] = combinedRouterParams.standardRange;
+    if (routerParams.beginDate) {
+      params['beginDate'] = routerParams.beginDate.toUTCString();
     }
-    if (combinedRouterParams.beginDate) {
-      params['beginDate'] = combinedRouterParams.beginDate.toUTCString();
+    if (routerParams.endDate) {
+      params['endDate'] = routerParams.endDate.toUTCString();
     }
-    if (combinedRouterParams.endDate) {
-      params['endDate'] = combinedRouterParams.endDate.toUTCString();
-    }
-    if (combinedRouterParams.chartPodcast !== undefined) {
-      params['chartPodcast'] = combinedRouterParams.chartPodcast;
-    } else if (combinedRouterParams.metricsType === METRICSTYPE_DOWNLOADS) {
+    if (routerParams.chartPodcast !== undefined) {
+      params['chartPodcast'] = routerParams.chartPodcast;
+    } else if (routerParams.metricsType === METRICSTYPE_DOWNLOADS) {
       params['chartPodcast'] = true; // true is the default for downloads
     }
-    if (combinedRouterParams.episodeIds) {
-      params['episodes'] = combinedRouterParams.episodeIds.join(',');
+    if (routerParams.episodeIds) {
+      params['episodes'] = routerParams.episodeIds.join(',');
     }
 
-    localStorageUtil.setItem(localStorageUtil.KEY_ROUTER_PARAMS, combinedRouterParams);
+    localStorageUtil.setItem(localStorageUtil.KEY_ROUTER_PARAMS, routerParams);
 
-    switch (combinedRouterParams.metricsType) {
+    switch (routerParams.metricsType) {
       case METRICSTYPE_DOWNLOADS:
         this.router.navigate([
-          combinedRouterParams.podcastSeriesId,
-          combinedRouterParams.podcastId,
-          combinedRouterParams.metricsType,
-          combinedRouterParams.chartType,
-          combinedRouterParams.interval.key,
+          routerParams.podcastSeriesId,
+          routerParams.podcastId,
+          routerParams.metricsType,
+          routerParams.chartType,
+          routerParams.interval.key,
           params
         ]);
         break;
       case METRICSTYPE_DEMOGRAPHICS:
       case METRICSTYPE_TRAFFICSOURCES:
         this.router.navigate([
-          combinedRouterParams.podcastSeriesId,
-          combinedRouterParams.podcastId,
-          combinedRouterParams.metricsType,
+          routerParams.podcastSeriesId,
+          routerParams.podcastId,
+          routerParams.metricsType,
           params
         ]);
         break;
     }
-    return combinedRouterParams;
+    return routerParams;
+  }
+
+  checkAndGetDefaults(routerParams: RouterParams) {
+    if (!routerParams.metricsType) {
+      routerParams.metricsType = <MetricsType>METRICSTYPE_DOWNLOADS;
+    }
+    if (!routerParams.chartType) {
+      routerParams.chartType = <ChartType>CHARTTYPE_PODCAST;
+    }
+    if (!routerParams.interval) {
+      routerParams.interval = INTERVAL_DAILY;
+    }
+    if (!routerParams.episodePage) {
+      routerParams.episodePage = 1;
+    }
+    if (!routerParams.standardRange) {
+      routerParams.standardRange = dateUtil.LAST_28_DAYS;
+    }
+    if (!routerParams.beginDate) {
+      routerParams.beginDate = dateUtil.beginningOfLast28DaysUTC().toDate();
+    }
+    if (!routerParams.endDate) {
+      routerParams.endDate = dateUtil.endOfTodayUTC().toDate();
+    }
+    return routerParams;
+  }
+
+  subAndCheckRouterParams() {
+    this.store.pipe(select(selectRouter)).subscribe(routerParams => {
+      // don't do anything with setting route or loading metrics until podcast is set
+      if (routerParams.podcastId && routerParams.podcastSeriesId) {
+        // if this.routerParams has not yet been set, go through routing which checks for and sets defaults
+        if (!this.routerParams) {
+          this.routeFromNewRouterParams(routerParams);
+        }
+
+        // load episodes if the episode page changed or not set or if podcast id changed
+        if (!this.loadEpisodesIfChanged(routerParams)) {
+          // if episode page or podcast didn't change, check if router params changed and load metrics
+          // otherwise episode page loading will trigger loading of metrics (in order to load metrics for each episode)
+          this.loadMetricsIfRouterParamsChanged(routerParams);
+        }
+        this.routerParams = routerParams;
+      }
+    });
   }
 
   loadEpisodesIfChanged(newRouterParams: RouterParams) {
-    if (newRouterParams && newRouterParams.podcastId && (!this.routerParams ||
+    // TODO: I think we are actually covered here...
+    // if episode page changes, metrics are loaded from castle.effects
+    // so is it just podcast id newly set or changed?
+    if (newRouterParams && newRouterParams.podcastId && (
+      !this.routerParams || !newRouterParams.episodePage ||
       newRouterParams.podcastId !== this.routerParams.podcastId ||
       newRouterParams.episodePage !== this.routerParams.episodePage)) {
         this.store.dispatch(new ACTIONS.CastleEpisodePageLoadAction({
           podcastId: newRouterParams.podcastId,
           page: newRouterParams.episodePage || 1,
-          all: newRouterParams.podcastSeriesId !== this.routerParams.podcastSeriesId}));
+          all: !this.routerParams || this.routerParams.podcastId !== newRouterParams.podcastId}));
+        return true;
+    } else {
+      return false;
+    }
+  }
+
+  loadMetricsIfRouterParamsChanged(newRouterParams: RouterParams) {
+    let loadMetrics = false;
+
+    if (isBeginDateChanged(newRouterParams, this.routerParams)) {
+      loadMetrics = true;
+    }
+    if (isEndDateChanged(newRouterParams, this.routerParams)) {
+      loadMetrics = true;
+    }
+    if (isIntervalChanged(newRouterParams, this.routerParams)) {
+      loadMetrics = true;
+    }
+
+    if (loadMetrics) {
+      this.store.dispatch(new ACTIONS.CastlePodcastMetricsLoadAction({
+        seriesId: 0,
+        feederId: newRouterParams.podcastId,
+        metricsType: newRouterParams.metricsType,
+        interval: newRouterParams.interval,
+        beginDate: newRouterParams.beginDate,
+        endDate: newRouterParams.endDate
+      }));
+      this.store.dispatch(new ACTIONS.CastlePodcastPerformanceMetricsLoadAction({seriesId: 0, feederId: newRouterParams.podcastId}));
+      return this.episodes.forEach((episode: Episode) => {
+        this.store.dispatch(new ACTIONS.CastleEpisodePerformanceMetricsLoadAction({
+          id: 0,
+          seriesId: 0,
+          feederId: episode.podcastId,
+          guid: episode.guid
+        }));
+        this.store.dispatch(new ACTIONS.CastleEpisodeMetricsLoadAction({
+          seriesId: 0,
+          feederId: episode.podcastId,
+          page: episode.page,
+          guid: episode.guid,
+          metricsType: newRouterParams.metricsType,
+          interval: newRouterParams.interval,
+          beginDate: newRouterParams.beginDate,
+          endDate: newRouterParams.endDate
+        }));
+      });
     }
   }
 }

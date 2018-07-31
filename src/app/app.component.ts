@@ -5,7 +5,7 @@ import { Angulartics2GoogleAnalytics } from 'angulartics2/ga';
 import { HalDoc } from './core';
 import { Env } from './core/core.env';
 import { AccountModel, RouterParams } from './ngrx';
-import { selectAccount, selectAccountError, selectRouter } from './ngrx/reducers/selectors';
+import { selectAccount, selectAccountError } from './ngrx/reducers/selectors';
 import * as ACTIONS from './ngrx/actions';
 import { Userinfo, UserinfoService } from 'ngx-prx-styleguide';
 
@@ -25,9 +25,6 @@ export class AppComponent implements OnInit, OnDestroy {
   authorized = false; // until proven otherwise
   userinfo: Userinfo;
   userImageDoc: HalDoc;
-
-  routerSub: Subscription;
-  routerState: RouterParams;
 
   constructor(
     public store: Store<any>,
@@ -66,28 +63,10 @@ export class AppComponent implements OnInit, OnDestroy {
         }
       }
     });
-
-    // TODO: seems like getEpisodes/CmsPodcastEpisodePageAction should actually happen as a result of CmsPodcastsSuccessAction
-    /*this.routerSub = this.store.pipe(select(selectRouter)).subscribe((newRouterState: RouterParams) => {
-      if (newRouterState && newRouterState.podcastSeriesId) {
-        if (!this.routerState ||
-          newRouterState.podcastSeriesId !== this.routerState.podcastSeriesId ||
-          newRouterState.episodePage !== this.routerState.episodePage) {
-          this.getEpisodes(newRouterState);
-        }
-        this.routerState = newRouterState;
-      }
-    });*/
   }
 
   ngOnDestroy() {
     if (this.accountStoreSub) { this.accountStoreSub.unsubscribe(); }
     if (this.accountStoreErrorSub) { this.accountStoreErrorSub.unsubscribe(); }
   }
-
-  /*getEpisodes(state: RouterParams) {
-    const seriesId = state.podcastSeriesId;
-    const page = state.episodePage;
-    this.store.dispatch(new ACTIONS.CmsPodcastEpisodePageAction({seriesId, page}));
-  }*/
 }

@@ -38,14 +38,6 @@ export class DownloadsTableContainerComponent implements OnInit, OnDestroy {
     this.podcastTableData$ = this.store.pipe(select(selectDownloadTablePodcastMetrics));
     this.episodeTableData$ = this.store.pipe(select(selectDownloadTableEpisodeMetrics));
     this.routerParams$ = this.store.pipe(select(selectRouter));
-
-    // TODO: move
-    this.episodePageSub = this.store.pipe(select(selectRoutedPageEpisodes)).subscribe((pageEpisodes: Episode[]) => {
-      pageEpisodes.forEach(episode => {
-        const { podcastId, guid } = episode;
-        this.store.dispatch(new ACTIONS.CastleEpisodePerformanceMetricsLoadAction({id: 0, seriesId: 0, feederId: podcastId, guid}));
-      });
-    });
   }
 
   ngOnDestroy() {

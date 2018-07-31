@@ -1,8 +1,7 @@
 import * as ACTIONS from '../actions';
 
 export interface PodcastPerformanceMetricsModel {
-  seriesId: number;
-  feederId: string;
+  id: string;
   total?: number;
   previous7days?: number;
   this7days?: number;
@@ -24,22 +23,20 @@ export const initialState = {
 export function PodcastPerformanceMetricsReducer(state: PodcastPerformanceMetricsState = initialState, action: ACTIONS.AllActions) {
   switch (action.type) {
     case ACTIONS.ActionTypes.CASTLE_PODCAST_PERFORMANCE_METRICS_LOAD: {
-      const {seriesId, feederId} = action.payload;
+      const {id} = action.payload;
       return {
         entities: {
           ...state.entities,
-          [feederId]: {...state.entities[feederId], seriesId, feederId, loading: true, loaded: false}
+          [id]: {...state.entities[id], oading: true, loaded: false}
         }
       };
     }
     case ACTIONS.ActionTypes.CASTLE_PODCAST_PERFORMANCE_METRICS_SUCCESS: {
-      const {seriesId, feederId, total, previous7days, this7days, yesterday, today} = action.payload;
+      const {id, total, previous7days, this7days, yesterday, today} = action.payload;
       return {
         entities: {
           ...state.entities,
-          [feederId]: {
-            seriesId,
-            feederId,
+          [id]: {
             total,
             previous7days,
             this7days,
@@ -52,11 +49,11 @@ export function PodcastPerformanceMetricsReducer(state: PodcastPerformanceMetric
       };
     }
     case ACTIONS.ActionTypes.CASTLE_PODCAST_PERFORMANCE_METRICS_FAILURE: {
-      const {seriesId, feederId, error} = action.payload;
+      const {id, error} = action.payload;
       return {
         entities: {
           ...state.entities,
-          [feederId]: {...state.entities[feederId], seriesId, feederId, error, loading: false, loaded: false}
+          [id]: {...state.entities[id], error, loading: false, loaded: false}
         }
       };
     }

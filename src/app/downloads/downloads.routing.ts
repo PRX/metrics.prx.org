@@ -6,22 +6,22 @@ import { DownloadsComponent } from './downloads.component';
 
 export const downloadsRoutes: Routes = [
   {
-    path: ':seriesId/:podcastId',
+    path: ':podcastId',
     pathMatch: 'full',
-    redirectTo: ':seriesId/:podcastId/reach/podcast/daily'
+    redirectTo: ':podcastId/reach/podcast/daily'
   },
   {
-    path: ':seriesId/:podcastId/reach',
+    path: ':podcastId/reach',
     pathMatch: 'full',
-    redirectTo: ':seriesId/:podcastId/reach/podcast/daily'
+    redirectTo: ':podcastId/reach/podcast/daily'
   },
   {
-    path: ':seriesId/:podcastId/reach/:chartType',
+    path: ':podcastId/reach/:chartType',
     pathMatch: 'full',
-    redirectTo: ':seriesId/:podcastId/reach/podcast/daily'
+    redirectTo: ':podcastId/reach/podcast/daily'
   },
   {
-    path: ':seriesId/:podcastId/reach/:chartType/:interval',
+    path: ':podcastId/reach/:chartType/:interval',
     component: DownloadsComponent,
     canActivate: [AuthGuard],
     canDeactivate: [DeactivateGuard]

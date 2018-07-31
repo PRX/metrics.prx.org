@@ -19,8 +19,7 @@ describe('PodcastMetricsReducer', () => {
   beforeEach(() => {
     newState = PodcastMetricsReducer(undefined,
       new CastlePodcastMetricsSuccessAction({
-        seriesId: podcast.seriesId,
-        feederId: podcast.feederId,
+        id: podcast.feederId,
         metricsPropertyName,
         metrics: []
       })
@@ -32,11 +31,10 @@ describe('PodcastMetricsReducer', () => {
     expect(newState[0].seriesId).toEqual(37800);
   });
 
-  it('should update existing podcast metrics keyed by seriesId', () => {
+  it('should update existing podcast metrics keyed by id', () => {
     newState = PodcastMetricsReducer(newState,
       new CastlePodcastMetricsSuccessAction({
-        seriesId: podcast.seriesId,
-        feederId: podcast.feederId,
+        id: podcast.feederId,
         metricsPropertyName,
         metrics: [
           ['2017-08-27T00:00:00Z', 52522],
@@ -63,8 +61,7 @@ describe('PodcastMetricsReducer', () => {
   it ('should add new podcast metrics', () => {
     newState = PodcastMetricsReducer(newState,
       new CastlePodcastMetricsSuccessAction({
-        seriesId: 37801,
-        feederId: '71',
+        id: '71',
         metricsPropertyName,
         metrics: []
       })

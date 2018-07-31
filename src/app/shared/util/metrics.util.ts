@@ -7,7 +7,7 @@ export const findPodcastMetrics =
   if (params && params.podcastId && params.interval && params.beginDate && params.endDate && podcastMetrics) {
     const metricsProperty = getMetricsProperty(params.interval, params.metricsType);
     const metrics = podcastMetrics
-      .filter((metric: PodcastMetricsModel) => metric.feederId === params.podcastId &&
+      .filter((metric: PodcastMetricsModel) => metric.id === params.podcastId &&
         metric[metricsProperty]);
     if (metrics && metrics.length) {
       return metrics[0]; // only one entry should match the series id

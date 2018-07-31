@@ -38,13 +38,13 @@ describe('Downloads Chart Selectors', () => {
         total: episodes.length
       }));
       store.dispatch(new ACTIONS.CastleEpisodeMetricsSuccessAction({
-        seriesId: episodes[0].seriesId, feederId: episodes[0].feederId, page: episodes[0].page, guid: episodes[0].guid,
+        podcastId: episodes[0].feederId, page: episodes[0].page, guid: episodes[0].guid,
         metricsPropertyName, metrics: ep0Downloads}));
       store.dispatch(new ACTIONS.CastleEpisodeMetricsSuccessAction({
-        seriesId: episodes[1].seriesId, feederId: episodes[1].feederId, page: episodes[1].page, guid: episodes[1].guid,
+        podcastId: episodes[1].feederId, page: episodes[1].page, guid: episodes[1].guid,
         metricsPropertyName, metrics: ep1Downloads}));
       store.dispatch(new ACTIONS.CastlePodcastMetricsSuccessAction({
-        seriesId: podcast.seriesId, feederId: podcast.feederId, metricsPropertyName, metrics: podDownloads}));
+        id: podcast.feederId, metricsPropertyName, metrics: podDownloads}));
       store.dispatch(new ACTIONS.CastlePodcastPerformanceMetricsSuccessAction({seriesId: podcast.seriesId, feederId: podcast.feederId,
         ...podPerformance }));
       store.dispatch(new ACTIONS.CastleEpisodePerformanceMetricsSuccessAction({
@@ -100,7 +100,7 @@ describe('Downloads Chart Selectors', () => {
     beforeEach(() => {
       store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerParams: {...routerParams, chartType: <ChartType>CHARTTYPE_PODCAST}}));
       store.dispatch(new ACTIONS.CastlePodcastMetricsSuccessAction({
-        seriesId: podcast.seriesId, feederId: podcast.feederId, metricsPropertyName, metrics: podDownloads}));
+        id: podcast.feederId, metricsPropertyName, metrics: podDownloads}));
       store.dispatch(new ACTIONS.CastlePodcastPerformanceMetricsSuccessAction({seriesId: podcast.seriesId, feederId: podcast.feederId,
         ...podPerformance }));
 
@@ -139,10 +139,10 @@ describe('Downloads Chart Selectors', () => {
         total: episodes.length
       }));
       store.dispatch(new ACTIONS.CastleEpisodeMetricsSuccessAction({
-        seriesId: episodes[0].seriesId, feederId: episodes[0].feederId, page: episodes[0].page, guid: episodes[0].guid,
+        podcastId: episodes[0].feederId, page: episodes[0].page, guid: episodes[0].guid,
         metricsPropertyName, metrics: ep0Downloads}));
       store.dispatch(new ACTIONS.CastleEpisodeMetricsSuccessAction({
-        seriesId: episodes[1].seriesId, feederId: episodes[1].feederId, page: episodes[1].page, guid: episodes[1].guid,
+        podcastId: episodes[1].feederId, page: episodes[1].page, guid: episodes[1].guid,
         metricsPropertyName, metrics: ep1Downloads}));
       store.dispatch(new ACTIONS.CastleEpisodePerformanceMetricsSuccessAction({
         seriesId: episodes[0].seriesId, id: episodes[0].id, feederId: episodes[0].feederId, guid: episodes[0].guid, ...ep0Performance}));

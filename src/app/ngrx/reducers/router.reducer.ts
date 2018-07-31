@@ -14,9 +14,6 @@ export function CustomRouterReducer(state: RouterParams = initialState, action: 
       if (action.payload.routerParams.podcastId) {
         newState.podcastId = action.payload.routerParams.podcastId;
       }
-      if (action.payload.routerParams.podcastSeriesId) {
-        newState.podcastSeriesId = action.payload.routerParams.podcastSeriesId;
-      }
       if (action.payload.routerParams.metricsType) {
         newState.metricsType = action.payload.routerParams.metricsType;
       }

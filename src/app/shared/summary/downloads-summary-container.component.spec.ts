@@ -70,7 +70,7 @@ describe('DownloadsSummaryContainerComponent', () => {
       const metricsPropertyName = getMetricsProperty(routerParams.interval, routerParams.metricsType);
       store.dispatch(new CustomRouterNavigationAction({routerParams}));
       store.dispatch(new CastlePodcastMetricsSuccessAction({
-        seriesId: podcast.seriesId, feederId: podcast.feederId, metricsPropertyName, metrics: podDownloads}));
+        id: podcast.feederId, metricsPropertyName, metrics: podDownloads}));
     });
   }));
 

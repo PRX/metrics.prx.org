@@ -6,7 +6,7 @@ import { UserAgentsComponent } from './user-agents.component';
 
 export const userAgentsRoutes: Routes = [
   {
-    path: ':seriesId/:podcastId/devices',
+    path: ':podcastId/devices',
     component: UserAgentsComponent,
     canActivate: [AuthGuard],
     canDeactivate: [DeactivateGuard]

@@ -23,7 +23,7 @@ describe('EpisodeMetricsReducer', () => {
   beforeEach(() => {
     newState = EpisodeMetricsReducer(undefined,
       new CastleEpisodeMetricsSuccessAction({
-        seriesId: episode.seriesId, feederId: episode.feederId, page: episode.page, guid: episode.guid,
+        podcastId: episode.feederId, page: episode.page, guid: episode.guid,
         metricsPropertyName,
         metrics: []
       })
@@ -39,7 +39,7 @@ describe('EpisodeMetricsReducer', () => {
   it('should update existing episode metrics keyed by podcastId and episode guid', () => {
     newState = EpisodeMetricsReducer(newState,
       new CastleEpisodeMetricsSuccessAction({
-        seriesId: episode.seriesId, feederId: episode.feederId, page: episode.page,
+        podcastId: episode.feederId, page: episode.page,
         guid: 'abcdefg',
         metricsPropertyName,
         metrics: [
@@ -68,8 +68,7 @@ describe('EpisodeMetricsReducer', () => {
   it ('should add new episode metrics', () => {
     newState = EpisodeMetricsReducer(newState,
       new CastleEpisodeMetricsSuccessAction({
-        seriesId: 37800,
-        feederId: '70',
+        podcastId: '70',
         page: 1,
         guid: 'hijklmn',
         metricsPropertyName,

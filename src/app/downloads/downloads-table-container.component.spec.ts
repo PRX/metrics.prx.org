@@ -44,10 +44,10 @@ describe('DownloadsTableContainerComponent', () => {
 
       store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerParams}));
       store.dispatch(new ACTIONS.CastleEpisodeMetricsSuccessAction({
-        seriesId: episodes[0].seriesId, page: episodes[0].page, feederId: episodes[0].feederId, guid: episodes[0].guid,
+        page: episodes[0].page, podcastId: episodes[0].feederId, guid: episodes[0].guid,
         metricsPropertyName, metrics: ep0Downloads}));
       store.dispatch(new ACTIONS.CastleEpisodeMetricsSuccessAction({
-        seriesId: episodes[1].seriesId, page: episodes[1].page, feederId: episodes[1].feederId, guid: episodes[1].guid,
+        page: episodes[1].page, podcastId: episodes[1].feederId, guid: episodes[1].guid,
         metricsPropertyName, metrics: ep1Downloads}));
       store.dispatch(new ACTIONS.CastleEpisodePageSuccessAction({
         episodes: episodes.map(e => {
@@ -57,7 +57,7 @@ describe('DownloadsTableContainerComponent', () => {
         total: episodes.length
       }));
       store.dispatch(new ACTIONS.CastlePodcastMetricsSuccessAction({
-        seriesId: podcast.seriesId, feederId: podcast.feederId, metricsPropertyName, metrics: podDownloads}));
+        id: podcast.feederId, metricsPropertyName, metrics: podDownloads}));
 
       spyOn(store, 'dispatch').and.callThrough();
     });

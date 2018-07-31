@@ -18,5 +18,5 @@ export const selectEpisodeMetricsError = createSelector(selectEpisodeMetrics, (m
 });
 export const selectRoutedEpisodePageMetrics = createSelector(selectPodcastRoute, selectPageRoute, selectEpisodeMetrics,
   (podcastId: string, page: number, metrics: EpisodeMetricsModel[]) => {
-    return metrics.filter((metric: EpisodeMetricsModel) => metric.feederId === podcastId && page === metric.page);
+    return metrics.filter((metric: EpisodeMetricsModel) => metric.podcastId === podcastId && page === metric.page);
 });

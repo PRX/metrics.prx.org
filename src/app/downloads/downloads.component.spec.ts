@@ -70,8 +70,7 @@ describe('DownloadsComponent', () => {
 
   function dispatchLoad() {
     store.dispatch(new ACTIONS.CastlePodcastMetricsLoadAction({
-      seriesId: podcast.seriesId,
-      feederId: podcast.feederId,
+      id: podcast.feederId,
       metricsType: METRICSTYPE_DOWNLOADS,
       interval: INTERVAL_DAILY,
       beginDate: new Date(),
@@ -106,8 +105,7 @@ describe('DownloadsComponent', () => {
 
   function dispatchPodcastMetrics() {
     store.dispatch(new ACTIONS.CastlePodcastMetricsSuccessAction({
-      seriesId: podcast.seriesId,
-      feederId: podcast.feederId,
+      id: podcast.feederId,
       metricsPropertyName,
       metrics: podDownloads
     }));
@@ -115,17 +113,15 @@ describe('DownloadsComponent', () => {
 
   function dispatchEpisodeMetrics() {
     store.dispatch(new ACTIONS.CastleEpisodeMetricsSuccessAction({
-      seriesId: episodes[0].seriesId,
+      podcastId: episodes[0].feederId,
       page: episodes[0].page,
-      feederId: episodes[0].feederId,
       guid: episodes[0].guid,
       metricsPropertyName,
       metrics: ep0Downloads
     }));
     store.dispatch(new ACTIONS.CastleEpisodeMetricsSuccessAction({
-      seriesId: episodes[1].seriesId,
+      podcastId: episodes[1].feederId,
       page: episodes[1].page,
-      feederId: episodes[1].feederId,
       guid: episodes[1].guid,
       metricsPropertyName,
       metrics: ep1Downloads

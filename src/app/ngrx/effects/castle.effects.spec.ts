@@ -137,9 +137,7 @@ describe('CastleEffects', () => {
       payload: { id: episode.id, seriesId: episode.seriesId, feederId: episode.feederId, guid: episode.guid }
     };
     const success = new ACTIONS.CastleEpisodePerformanceMetricsSuccessAction({
-      id: episode.id,
-      feederId: episode.feederId,
-      seriesId: episode.seriesId,
+      podcastId: episode.feederId,
       guid: episode.guid,
       total: 11,
       this7days: 5,
@@ -165,9 +163,7 @@ describe('CastleEffects', () => {
       }
     };
     const success = new ACTIONS.CastleEpisodePerformanceMetricsSuccessAction({
-      id: episode.id,
-      feederId: episode.feederId,
-      seriesId: episode.seriesId,
+      podcastId: episode.feederId,
       guid: episode.guid,
       total: 0,
       this7days: 0,
@@ -185,8 +181,7 @@ describe('CastleEffects', () => {
     const action = {
       type: ACTIONS.ActionTypes.CASTLE_PODCAST_METRICS_LOAD,
       payload: {
-        seriesId: podcasts[0].seriesId,
-        feederId: podcasts[0].feederId,
+        podcastId: podcasts[0].feederId,
         metricsType: METRICSTYPE_DOWNLOADS,
         interval: INTERVAL_DAILY,
         beginDate: new Date(),
@@ -194,8 +189,7 @@ describe('CastleEffects', () => {
       }
     };
     const success = new ACTIONS.CastlePodcastMetricsSuccessAction({
-      seriesId: podcasts[0].seriesId,
-      feederId: podcasts[0].feederId,
+      id: podcasts[0].feederId,
       metricsPropertyName: getMetricsProperty(INTERVAL_DAILY, <MetricsType>METRICSTYPE_DOWNLOADS),
       metrics: downloads
     });
@@ -209,8 +203,7 @@ describe('CastleEffects', () => {
     const action = {
       type: ACTIONS.ActionTypes.CASTLE_EPISODE_METRICS_LOAD,
       payload: {
-        seriesId: podcasts[0].seriesId,
-        feederId: podcasts[0].feederId,
+        podcastId: podcasts[0].feederId,
         page: episode.page,
         id: episode.id,
         guid: episode.guid,
@@ -221,8 +214,7 @@ describe('CastleEffects', () => {
       }
     };
     const success = new ACTIONS.CastleEpisodeMetricsSuccessAction({
-      seriesId: podcasts[0].seriesId,
-      feederId: podcasts[0].feederId,
+      podcastId: podcasts[0].feederId,
       page: episode.page,
       guid: episode.guid,
       metricsPropertyName: getMetricsProperty(INTERVAL_DAILY, <MetricsType>METRICSTYPE_DOWNLOADS),

@@ -34,7 +34,6 @@ export const episodes: EpisodeModel[] = [
 ];
 export const routerParams: RouterParams = {
   podcastId: podcast.feederId,
-  podcastSeriesId: podcast.seriesId,
   episodePage: 1,
   beginDate: new Date('2017-08-27T00:00:00Z'),
   endDate: new Date('2017-09-07T00:00:00Z'),

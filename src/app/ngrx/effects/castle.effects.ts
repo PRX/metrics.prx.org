@@ -61,8 +61,7 @@ export class CastleEffects {
           podcasts.find(podcast => podcast.id === localStorageRouterParams.podcastId);
         this.store.dispatch(new ACTIONS.RoutePodcastAction( {
           // navigate to either the podcastStorageId in localStorage or the first one in the result from CMS (which is the last one changed)
-          podcastId: (localStoragePodcastInList && localStorageRouterParams.podcastId) || podcasts[0].id,
-          podcastSeriesId: (localStorageRouterParams.podcastSeriesId) || 0
+          podcastId: (localStoragePodcastInList && localStorageRouterParams.podcastId) || podcasts[0].id
         }));
       }
       return Observable.of(null);
@@ -145,9 +144,9 @@ export class CastleEffects {
     ofType(ACTIONS.ActionTypes.CASTLE_PODCAST_METRICS_LOAD),
     map((action: ACTIONS.CastlePodcastMetricsLoadAction) => action.payload),
     switchMap((payload: ACTIONS.CastlePodcastMetricsLoadPayload) => {
-      const { seriesId, feederId, metricsType, interval, beginDate, endDate } = payload;
+      const { id, metricsType, interval, beginDate, endDate } = payload;
       return this.castle.followList('prx:podcast-downloads', {
-        id: feederId,
+        id,
         from: beginDate.toISOString(),
         to: endDate.toISOString(),
         interval: interval.value
@@ -155,14 +154,12 @@ export class CastleEffects {
         map(metrics => {
           this.store.dispatch(new ACTIONS.GoogleAnalyticsEventAction({gaAction: 'load', value: metrics[0]['downloads'].length}));
           return new ACTIONS.CastlePodcastMetricsSuccessAction({
-            seriesId,
-            feederId,
+            id,
             metricsPropertyName: getMetricsProperty(interval, metricsType),
             metrics: metrics[0]['downloads']
           });
         }),
-        catchError(error => Observable.of(new ACTIONS.CastlePodcastMetricsFailureAction({
-          seriesId, feederId, error})))
+        catchError(error => Observable.of(new ACTIONS.CastlePodcastMetricsFailureAction({id, error})))
       );
     })
   );
@@ -178,24 +175,20 @@ export class CastleEffects {
     mergeMap((payload: ACTIONS.CastleEpisodePageSuccessPayload) => {
       const { episodes } = payload;
       this.store.dispatch(new ACTIONS.CastlePodcastMetricsLoadAction({
-        seriesId: 0,
-        feederId: episodes[0].podcastId,
+        id: episodes[0].podcastId,
         metricsType: this.routerParams.metricsType,
         interval: this.routerParams.interval,
         beginDate: this.routerParams.beginDate,
         endDate: this.routerParams.endDate
       }));
-      this.store.dispatch(new ACTIONS.CastlePodcastPerformanceMetricsLoadAction({seriesId: 0, feederId: episodes[0].podcastId}));
+      this.store.dispatch(new ACTIONS.CastlePodcastPerformanceMetricsLoadAction({id: episodes[0].podcastId}));
       return episodes.map((episode: Episode) => {
         this.store.dispatch(new ACTIONS.CastleEpisodePerformanceMetricsLoadAction({
-          id: 0,
-          seriesId: 0,
-          feederId: episode.podcastId,
+          podcastId: episode.podcastId,
           guid: episode.guid
         }));
         return new ACTIONS.CastleEpisodeMetricsLoadAction({
-          seriesId: 0,
-          feederId: episode.podcastId,
+          podcastId: episode.podcastId,
           page: episode.page,
           guid: episode.guid,
           metricsType: this.routerParams.metricsType,
@@ -212,7 +205,7 @@ export class CastleEffects {
     ofType(ACTIONS.ActionTypes.CASTLE_EPISODE_METRICS_LOAD),
     map((action: ACTIONS.CastleEpisodeMetricsLoadAction) => action.payload),
     mergeMap((payload: ACTIONS.CastleEpisodeMetricsLoadPayload) => {
-    const {seriesId, feederId, page, guid, metricsType, interval, beginDate, endDate } = payload;
+    const { podcastId, page, guid, metricsType, interval, beginDate, endDate } = payload;
       return this.castle.followList('prx:episode-downloads', {
         guid,
         from: beginDate.toISOString(),
@@ -221,8 +214,7 @@ export class CastleEffects {
       }).pipe(
         map(metrics => {
           return new ACTIONS.CastleEpisodeMetricsSuccessAction({
-            seriesId,
-            feederId,
+            podcastId,
             page,
             guid,
             metricsPropertyName: getMetricsProperty(interval, metricsType),
@@ -231,8 +223,7 @@ export class CastleEffects {
         }),
         catchError(error => {
           return Observable.of(new ACTIONS.CastleEpisodeMetricsFailureAction({
-            seriesId,
-            feederId,
+            podcastId,
             page,
             guid,
             error
@@ -247,21 +238,20 @@ export class CastleEffects {
     ofType(ACTIONS.ActionTypes.CASTLE_PODCAST_PERFORMANCE_METRICS_LOAD),
     map((action: ACTIONS.CastlePodcastPerformanceMetricsLoadAction) => action.payload),
     switchMap((payload: ACTIONS.CastlePodcastPerformanceMetricsLoadPayload) => {
-    const { seriesId, feederId } = payload;
+    const { id } = payload;
       return this.castle
-        .followList('prx:podcast', {id: feederId})
+        .followList('prx:podcast', {id})
         .pipe(
             map(metrics => {
             const { total, previous7days, this7days, yesterday, today } = metrics[0]['downloads'];
-            return new ACTIONS.CastlePodcastPerformanceMetricsSuccessAction({seriesId, feederId,
-              total, previous7days, this7days, yesterday, today});
+            return new ACTIONS.CastlePodcastPerformanceMetricsSuccessAction({id, total, previous7days, this7days, yesterday, today});
           }),
           catchError(error => {
             if (error.status === 404) {
-              return Observable.of(new ACTIONS.CastlePodcastPerformanceMetricsSuccessAction({seriesId, feederId,
-                total: 0, previous7days: 0, this7days: 0, yesterday: 0, today: 0}));
+              return Observable.of(new ACTIONS.CastlePodcastPerformanceMetricsSuccessAction({
+                id, total: 0, previous7days: 0, this7days: 0, yesterday: 0, today: 0}));
             } else {
-              Observable.of(new ACTIONS.CastlePodcastPerformanceMetricsFailureAction({seriesId, feederId, error}));
+              Observable.of(new ACTIONS.CastlePodcastPerformanceMetricsFailureAction({id, error}));
             }
           })
         );
@@ -273,21 +263,21 @@ export class CastleEffects {
     ofType(ACTIONS.ActionTypes.CASTLE_EPISODE_PERFORMANCE_METRICS_LOAD),
     map((action: ACTIONS.CastleEpisodePerformanceMetricsLoadAction) => action.payload),
     mergeMap((payload: ACTIONS.CastleEpisodePerformanceMetricsLoadPayload) => {
-      const { id, seriesId, feederId, guid } = payload;
+      const { podcastId, guid } = payload;
       return this.castle
         .followList('prx:episode', {guid})
         .pipe(
           map(metrics => {
             const { total, previous7days, this7days, yesterday, today } = metrics[0]['downloads'];
-            return new ACTIONS.CastleEpisodePerformanceMetricsSuccessAction({id, seriesId, feederId, guid,
+            return new ACTIONS.CastleEpisodePerformanceMetricsSuccessAction({podcastId, guid,
               total, previous7days, this7days, yesterday, today});
           }),
           catchError(error => {
             if (error.status === 404) {
-              return Observable.of(new ACTIONS.CastleEpisodePerformanceMetricsSuccessAction({id, seriesId, feederId, guid,
+              return Observable.of(new ACTIONS.CastleEpisodePerformanceMetricsSuccessAction({podcastId, guid,
                 total: 0, previous7days: 0, this7days: 0, yesterday: 0, today: 0}));
             } else {
-              return Observable.of(new ACTIONS.CastleEpisodePerformanceMetricsFailureAction({id, seriesId, feederId, guid, error}));
+              return Observable.of(new ACTIONS.CastleEpisodePerformanceMetricsFailureAction({podcastId, guid, error}));
             }
           })
         );

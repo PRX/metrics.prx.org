@@ -45,8 +45,8 @@ export class RoutingEffects {
     ofType(ActionTypes.ROUTE_PODCAST),
     map((action: ACTIONS.RoutePodcastAction) => action.payload),
     switchMap((payload: ACTIONS.RoutePodcastPayload) => {
-      const { podcastId, podcastSeriesId } = payload;
-      this.routeFromNewRouterParams({podcastId, podcastSeriesId, episodePage: 1, episodeIds: []});
+      const { podcastId } = payload;
+      this.routeFromNewRouterParams({podcastId, episodePage: 1, episodeIds: []});
       return Observable.of(null);
     })
   );
@@ -190,7 +190,7 @@ export class RoutingEffects {
     this.router.events.pipe(
       filter(event => event instanceof RoutesRecognized)
     ).subscribe((event: RoutesRecognized) => {
-      if (event.url === '/' && this.routerParams && this.routerParams.podcastSeriesId) {
+      if (event.url === '/' && this.routerParams && this.routerParams.podcastId) {
         this.routeFromNewRouterParams(this.routerParams);
       }
     });
@@ -235,7 +235,6 @@ export class RoutingEffects {
     switch (routerParams.metricsType) {
       case METRICSTYPE_DOWNLOADS:
         this.router.navigate([
-          routerParams.podcastSeriesId,
           routerParams.podcastId,
           routerParams.metricsType,
           routerParams.chartType,
@@ -246,7 +245,6 @@ export class RoutingEffects {
       case METRICSTYPE_DEMOGRAPHICS:
       case METRICSTYPE_TRAFFICSOURCES:
         this.router.navigate([
-          routerParams.podcastSeriesId,
           routerParams.podcastId,
           routerParams.metricsType,
           params
@@ -290,6 +288,7 @@ export class RoutingEffects {
           this.routeFromNewRouterParams(routerParams);
         }
 
+        // TODO: still a problem here, never loads the episodes if default set to 1
         // load episodes if the episode page changed or not set or if podcast id changed
         if (!this.loadEpisodesIfChanged(routerParams)) {
           // if episode page or podcast didn't change, check if router params changed and load metrics
@@ -334,24 +333,20 @@ export class RoutingEffects {
 
     if (loadMetrics) {
       this.store.dispatch(new ACTIONS.CastlePodcastMetricsLoadAction({
-        seriesId: 0,
-        feederId: newRouterParams.podcastId,
+        id: newRouterParams.podcastId,
         metricsType: newRouterParams.metricsType,
         interval: newRouterParams.interval,
         beginDate: newRouterParams.beginDate,
         endDate: newRouterParams.endDate
       }));
-      this.store.dispatch(new ACTIONS.CastlePodcastPerformanceMetricsLoadAction({seriesId: 0, feederId: newRouterParams.podcastId}));
+      this.store.dispatch(new ACTIONS.CastlePodcastPerformanceMetricsLoadAction({id: newRouterParams.podcastId}));
       return this.episodes.forEach((episode: Episode) => {
         this.store.dispatch(new ACTIONS.CastleEpisodePerformanceMetricsLoadAction({
-          id: 0,
-          seriesId: 0,
-          feederId: episode.podcastId,
+          podcastId: episode.podcastId,
           guid: episode.guid
         }));
         this.store.dispatch(new ACTIONS.CastleEpisodeMetricsLoadAction({
-          seriesId: 0,
-          feederId: episode.podcastId,
+          podcastId: episode.podcastId,
           page: episode.page,
           guid: episode.guid,
           metricsType: newRouterParams.metricsType,

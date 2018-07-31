@@ -17,7 +17,6 @@ export class CustomRouterNavigationAction implements Action {
 
 export interface RoutePodcastPayload {
   podcastId: string;
-  podcastSeriesId: number;
 }
 
 export class RoutePodcastAction implements Action {

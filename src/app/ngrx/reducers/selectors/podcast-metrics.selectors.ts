@@ -39,5 +39,5 @@ export const selectPodcastMetricsError = createSelector(selectPodcastMetrics, (m
 });
 export const selectRoutedPodcastMetrics = createSelector(selectPodcastRoute, selectPodcastMetrics,
   (podcastId: string, metrics: PodcastMetricsModel[]): PodcastMetricsModel => {
-    return metrics.find((metric: PodcastMetricsModel) => metric.feederId === podcastId);
+    return metrics.find((metric: PodcastMetricsModel) => metric.id === podcastId);
 });

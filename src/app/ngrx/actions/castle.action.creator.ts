@@ -64,8 +64,7 @@ export class CastleEpisodePageFailureAction implements Action {
 }
 
 export interface CastlePodcastMetricsLoadPayload {
-  seriesId: number;
-  feederId: string;
+  id: string;
   metricsType: MetricsType;
   interval: IntervalModel;
   beginDate: Date;
@@ -79,8 +78,7 @@ export class CastlePodcastMetricsLoadAction implements Action {
 }
 
 export interface CastlePodcastMetricsSuccessPayload {
-  seriesId: number;
-  feederId: string;
+  id: string;
   metricsPropertyName: string;
   metrics: any[][];
 }
@@ -92,8 +90,7 @@ export class CastlePodcastMetricsSuccessAction implements Action {
 }
 
 export interface CastlePodcastMetricsFailurePayload {
-  seriesId: number;
-  feederId: string;
+  id: string;
   error: any;
 }
 
@@ -104,8 +101,7 @@ export class CastlePodcastMetricsFailureAction implements Action {
 }
 
 export interface CastleEpisodeMetricsLoadPayload {
-  seriesId: number;
-  feederId: string;
+  podcastId: string;
   page: number;
   guid: string;
   metricsType: MetricsType;
@@ -121,8 +117,7 @@ export class CastleEpisodeMetricsLoadAction implements Action {
 }
 
 export interface CastleEpisodeMetricsSuccessPayload {
-  seriesId: number;
-  feederId: string;
+  podcastId: string;
   page: number;
   guid: string;
   metricsPropertyName: string;
@@ -136,8 +131,7 @@ export class CastleEpisodeMetricsSuccessAction implements Action {
 }
 
 export interface CastleEpisodeMetricsFailurePayload {
-  seriesId: number;
-  feederId: string;
+  podcastId: string;
   page: number;
   guid: string;
   error: any;
@@ -150,8 +144,7 @@ export class CastleEpisodeMetricsFailureAction implements Action {
 }
 
 export interface CastlePodcastPerformanceMetricsLoadPayload {
-  seriesId: number;
-  feederId: string;
+  id: string;
 }
 
 export class CastlePodcastPerformanceMetricsLoadAction implements Action {
@@ -161,8 +154,7 @@ export class CastlePodcastPerformanceMetricsLoadAction implements Action {
 }
 
 export interface CastlePodcastPerformanceMetricsSuccessPayload {
-  seriesId: number;
-  feederId: string;
+  id: string;
   total: number;
   previous7days: number;
   this7days: number;
@@ -183,9 +175,7 @@ export class CastlePodcastPerformanceMetricsFailureAction implements Action {
 }
 
 export interface CastleEpisodePerformanceMetricsLoadPayload {
-  seriesId: number;
-  feederId: string;
-  id: number;
+  podcastId: string;
   guid: string;
 }
 
@@ -196,9 +186,7 @@ export class CastleEpisodePerformanceMetricsLoadAction implements Action {
 }
 
 export interface CastleEpisodePerformanceMetricsSuccessPayload {
-  seriesId: number;
-  feederId: string;
-  id: number;
+  podcastId: string;
   guid: string;
   total: number;
   previous7days: number;

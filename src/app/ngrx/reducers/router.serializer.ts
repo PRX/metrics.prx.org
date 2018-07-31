@@ -22,13 +22,10 @@ export class CustomSerializer implements RouterStateSerializer<RouterParams> {
       if (params['podcastId']) {
         routerParams.podcastId = params['podcastId'];
       }
-      if (params['seriesId'] && !isNaN(parseInt(params['seriesId'], 10))) {
-        routerParams.podcastSeriesId = +params['seriesId'];
-      }
       // metricsType is not a param because it differentiates the feature module routes
       const urlParts = url.split('/');
-      if (urlParts.length >= 4 && urlParts[3]) {
-        const metricsType = urlParts[3].split(';')[0];
+      if (urlParts.length >= 3 && urlParts[2]) {
+        const metricsType = urlParts[2].split(';')[0];
         switch (metricsType) {
           case METRICSTYPE_DOWNLOADS:
             routerParams.metricsType = <MetricsType>METRICSTYPE_DOWNLOADS;

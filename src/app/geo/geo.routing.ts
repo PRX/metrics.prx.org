@@ -6,7 +6,7 @@ import { GeoComponent } from './geo.component';
 
 export const geoRoutes: Routes = [
   {
-    path: ':seriesId/:podcastId/demographics',
+    path: ':podcastId/demographics',
     component: GeoComponent,
     canActivate: [AuthGuard],
     canDeactivate: [DeactivateGuard]

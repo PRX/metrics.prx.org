@@ -11,14 +11,15 @@ import { Actions, Effect, ofType } from '@ngrx/effects';
 import { Action, Store, select } from '@ngrx/store';
 
 import * as ACTIONS from '../actions';
-import { selectRoutedPodcast } from '../reducers/selectors';
+import { selectRouter, selectRoutedPodcast } from '../reducers/selectors';
 import { HalDoc } from '../../core';
 import { CastleService } from '../../core';
-import { Podcast, getMetricsProperty, PODCAST_PAGE_SIZE, EPISODE_PAGE_SIZE } from '../';
+import { Episode, Podcast, RouterParams, getMetricsProperty, PODCAST_PAGE_SIZE, EPISODE_PAGE_SIZE } from '../';
 
 @Injectable()
 export class CastleEffects {
   routedPodcast: Podcast;
+  routerParams: RouterParams;
 
   @Effect()
   loadPodcastPage$: Observable<Action> = this.actions$.pipe(
@@ -146,6 +147,46 @@ export class CastleEffects {
   );
 
   @Effect()
+  loadRoutedMetrics$ = this.actions$.pipe(
+    ofType(ACTIONS.ActionTypes.CASTLE_EPISODE_PAGE_SUCCESS),
+    filter((action: ACTIONS.CastleEpisodePageSuccessAction) => {
+      const { page, episodes } = action.payload;
+      return episodes && episodes.length && this.routerParams && this.routerParams.episodePage === page;
+    }),
+    map((action: ACTIONS.CastleEpisodePageSuccessAction) => action.payload),
+    mergeMap((payload: ACTIONS.CastleEpisodePageSuccessPayload) => {
+      const { episodes } = payload;
+      this.store.dispatch(new ACTIONS.CastlePodcastMetricsLoadAction({
+        seriesId: 0,
+        feederId: episodes[0].podcastId,
+        metricsType: this.routerParams.metricsType,
+        interval: this.routerParams.interval,
+        beginDate: this.routerParams.beginDate,
+        endDate: this.routerParams.endDate
+      }));
+      this.store.dispatch(new ACTIONS.CastlePodcastPerformanceMetricsLoadAction({seriesId: 0, feederId: episodes[0].podcastId}));
+      return payload.episodes.map((episode: Episode) => {
+        this.store.dispatch(new ACTIONS.CastleEpisodePerformanceMetricsLoadAction({
+          id: 0,
+          seriesId: 0,
+          feederId: episode.podcastId,
+          guid: episode.guid
+        }));
+        return new ACTIONS.CastleEpisodeMetricsLoadAction({
+          seriesId: 0,
+          feederId: episode.podcastId,
+          page: episode.page,
+          guid: episode.guid,
+          metricsType: this.routerParams.metricsType,
+          interval: this.routerParams.interval,
+          beginDate: this.routerParams.beginDate,
+          endDate: this.routerParams.endDate
+        });
+      });
+    })
+  );
+
+  @Effect()
   loadEpisodeMetrics$ = this.actions$.pipe(
     ofType(ACTIONS.ActionTypes.CASTLE_EPISODE_METRICS_LOAD),
     map((action: ACTIONS.CastleEpisodeMetricsLoadAction) => action.payload),
@@ -235,7 +276,12 @@ export class CastleEffects {
   constructor(private actions$: Actions,
               private castle: CastleService,
               private store: Store<any>) {
+    this.store.pipe(select(selectRouter)).subscribe((routerParams: RouterParams) => {
+      this.routerParams = routerParams;
+    });
+
     // TODO: move
+    /*
     this.store.pipe(select(selectRoutedPodcast)).subscribe((podcast: Podcast) => {
       this.routedPodcast = podcast;
       if (this.routedPodcast) {
@@ -243,5 +289,6 @@ export class CastleEffects {
         this.store.dispatch(new ACTIONS.CastlePodcastPerformanceMetricsLoadAction({seriesId: 0, feederId: id}));
       }
     });
+    */
   }
 }

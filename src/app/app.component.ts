@@ -32,7 +32,6 @@ export class AppComponent implements OnInit, OnDestroy {
     private user: UserinfoService
   ) {
     this.store.dispatch(new ACTIONS.CmsAccountAction());
-    this.store.dispatch(new ACTIONS.CmsPodcastsAction());
     this.user.config(this.authHost);
   }
 

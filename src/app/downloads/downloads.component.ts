@@ -1,17 +1,7 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, OnInit } from '@angular/core';
 import { Store, select } from '@ngrx/store';
-import { Subscription } from 'rxjs/Subscription';
 import { Observable } from 'rxjs/Observable';
-import { CastleService } from '../core';
-import * as ACTIONS from '../ngrx/actions';
-import { RouterParams, Episode, EpisodeModel, PodcastModel, ChartType, MetricsType,
-  CHARTTYPE_PODCAST, INTERVAL_DAILY, EPISODE_PAGE_SIZE, METRICSTYPE_DOWNLOADS } from '../ngrx';
-import { selectRouter, selectEpisodes, selectPodcasts, selectLoading, selectLoaded, selectErrors,
-  selectNumEpisodePages, selectRoutedPageEpisodes } from '../ngrx/reducers/selectors';
-import { filterPodcastEpisodePage } from '../shared/util/metrics.util';
-import * as dateUtil from '../shared/util/date';
-import { isPodcastChanged, isBeginDateChanged, isEndDateChanged, isIntervalChanged } from '../shared/util/filter.util';
+import { selectLoading, selectLoaded, selectErrors, selectNumEpisodePages } from '../ngrx/reducers/selectors';
 
 @Component({
   template: `

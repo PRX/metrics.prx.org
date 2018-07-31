@@ -1,14 +1,6 @@
-import { EpisodeModel, RouterParams,
-  PodcastMetricsModel, EpisodeMetricsModel, getMetricsProperty,
+import { RouterParams, PodcastMetricsModel, EpisodeMetricsModel, getMetricsProperty,
   IntervalModel, INTERVAL_HOURLY, INTERVAL_DAILY, INTERVAL_WEEKLY, INTERVAL_MONTHLY } from '../../ngrx';
 import * as dateUtil from './date/date.util';
-
-// TODO: remove
-export const filterPodcastEpisodePage = (params: RouterParams, episodes: EpisodeModel[]) => {
-  if (params && params.podcastSeriesId && params.episodePage && episodes) {
-    return episodes.filter(episode => episode.seriesId === params.podcastSeriesId && episode.page === params.episodePage);
-  }
-};
 
 export const findPodcastMetrics =
   (params: RouterParams, podcastMetrics: PodcastMetricsModel[]): PodcastMetricsModel => {

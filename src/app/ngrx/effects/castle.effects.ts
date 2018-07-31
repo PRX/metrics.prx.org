@@ -11,14 +11,14 @@ import { Actions, Effect, ofType } from '@ngrx/effects';
 import { Action, Store, select } from '@ngrx/store';
 
 import * as ACTIONS from '../actions';
-import { selectRouter, selectRoutedPodcast } from '../reducers/selectors';
+import { selectRouter } from '../reducers/selectors';
 import { HalDoc } from '../../core';
 import { CastleService } from '../../core';
 import { Episode, Podcast, RouterParams, getMetricsProperty, PODCAST_PAGE_SIZE, EPISODE_PAGE_SIZE } from '../';
+import * as localStorageUtil from '../../shared/util/local-storage.util';
 
 @Injectable()
 export class CastleEffects {
-  routedPodcast: Podcast;
   routerParams: RouterParams;
 
   @Effect()
@@ -45,6 +45,27 @@ export class CastleEffects {
           }),
         catchError(error => Observable.of(new ACTIONS.CastlePodcastPageFailureAction({error})))
       );
+    })
+  );
+
+  @Effect({dispatch: false})
+  loadPodcastsSuccess$: Observable<void> = this.actions$.pipe(
+    ofType(ACTIONS.ActionTypes.CASTLE_PODCAST_PAGE_SUCCESS),
+    map((action: ACTIONS.CastlePodcastPageSuccessAction) => action.payload),
+    switchMap((payload: ACTIONS.CastlePodcastPageSuccessPayload) => {
+      // only dispatches a routing action when there is not already a routed :seriesId
+      if (!this.routerParams.podcastId) {
+        const {podcasts} = payload;
+        const localStorageRouterParams: RouterParams = localStorageUtil.getItem(localStorageUtil.KEY_ROUTER_PARAMS);
+        const localStoragePodcastInList = localStorageRouterParams && localStorageRouterParams.podcastId &&
+          podcasts.find(podcast => podcast.id === localStorageRouterParams.podcastId);
+        this.store.dispatch(new ACTIONS.RoutePodcastAction( {
+          // navigate to either the podcastStorageId in localStorage or the first one in the result from CMS (which is the last one changed)
+          podcastId: (localStoragePodcastInList && localStorageRouterParams.podcastId) || podcasts[0].id,
+          podcastSeriesId: (localStorageRouterParams.podcastSeriesId) || 0
+        }));
+      }
+      return Observable.of(null);
     })
   );
 
@@ -279,16 +300,5 @@ export class CastleEffects {
     this.store.pipe(select(selectRouter)).subscribe((routerParams: RouterParams) => {
       this.routerParams = routerParams;
     });
-
-    // TODO: move
-    /*
-    this.store.pipe(select(selectRoutedPodcast)).subscribe((podcast: Podcast) => {
-      this.routedPodcast = podcast;
-      if (this.routedPodcast) {
-        const { id } = this.routedPodcast;
-        this.store.dispatch(new ACTIONS.CastlePodcastPerformanceMetricsLoadAction({seriesId: 0, feederId: id}));
-      }
-    });
-    */
   }
 }

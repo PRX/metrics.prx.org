@@ -1,11 +1,11 @@
 import { createSelector } from '@ngrx/store';
-import { selectEpisodesError } from './episode.selectors';
-import { selectPodcastsError } from './podcast.selectors';
+import { selectEpisodeError } from './castle-episode.selectors';
+import { selectPodcastError } from './castle-podcast.selectors';
 import { selectEpisodeMetricsError } from './episode-metrics.selectors';
 import { selectPodcastMetricsError } from './podcast-metrics.selectors';
 import { errorType } from './error.type';
 
-export const selectCmsErrors = createSelector(selectPodcastsError, selectEpisodesError, (podcastError, episodeError) => {
+export const selectCmsErrors = createSelector(selectPodcastError, selectEpisodeError, (podcastError, episodeError) => {
   const errors = [];
   if (podcastError) {
     errors.push(`${errorType(podcastError.code)} error occurred while requesting podcast series`);

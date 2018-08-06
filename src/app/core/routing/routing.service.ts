@@ -9,11 +9,10 @@ import {
   INTERVAL_DAILY,
   METRICSTYPE_DEMOGRAPHICS,
   METRICSTYPE_DOWNLOADS,
-  METRICSTYPE_TRAFFICSOURCES } from '../../ngrx/index';
+  METRICSTYPE_TRAFFICSOURCES } from '../../ngrx/';
 import * as localStorageUtil from '../../shared/util/local-storage.util';
-import * as dateUtil from '../../shared/util/date/index';
-import * as ACTIONS from '../../ngrx/actions/index';
-import { isBeginDateChanged, isEndDateChanged, isIntervalChanged } from '../../shared/util/filter.util';
+import * as dateUtil from '../../shared/util/date/';
+import * as ACTIONS from '../../ngrx/actions/';
 
 @Injectable()
 export class RoutingService {
@@ -53,12 +52,13 @@ export class RoutingService {
           this.normalizeAndRoute(routerParams);
         }
 
-        // TODO: still a problem here, always lands on page 1
         // load episodes if podcast id changed or if the episode page changed or page has not been set
-        if (!this.loadEpisodesIfChanged(routerParams)) {
-          // if episode page or podcast didn't change, check if router params changed and load metrics
-          // otherwise episode page loading will trigger loading of metrics (in order to load metrics for each episode)
-          this.loadMetricsIfRouterParamsChanged(routerParams);
+        if (this.isPodcastChanged(routerParams) || this.isEpisodesChanged(routerParams)) {
+          this.loadEpisodes(routerParams);
+        } else if (this.isBeginDateChanged(routerParams) || this.isEndDateChanged(routerParams) || this.isIntervalChanged(routerParams)) {
+          // if episode page or podcast didn't change, check if other router params changed and load metrics
+          // otherwise episode page loading will trigger loading of metrics (in order to load metrics for each loaded episode on that page)
+          this.loadMetrics(routerParams);
         }
         this.routerParams = routerParams;
       }
@@ -139,59 +139,61 @@ export class RoutingService {
     return routerParams;
   }
 
-  loadEpisodesIfChanged(newRouterParams: RouterParams) {
-    // call load action for the routed episode page if the podcast or page has changed
-    if (newRouterParams && newRouterParams.podcastId && (
-      !this.routerParams || !newRouterParams.episodePage ||
-      newRouterParams.podcastId !== this.routerParams.podcastId ||
-      newRouterParams.episodePage !== this.routerParams.episodePage)) {
-      this.store.dispatch(new ACTIONS.CastleEpisodePageLoadAction({
-        podcastId: newRouterParams.podcastId,
-        page: newRouterParams.episodePage || 1,
-        all: !this.routerParams || this.routerParams.podcastId !== newRouterParams.podcastId}));
-      return true;
-    } else {
-      return false;
-    }
+  isPodcastChanged(newRouterParams: RouterParams): boolean {
+    return newRouterParams && newRouterParams.podcastId &&
+      (!this.routerParams || this.routerParams.podcastId !== newRouterParams.podcastId);
   }
 
-  loadMetricsIfRouterParamsChanged(newRouterParams: RouterParams) {
-    let loadMetrics = false;
+  isEpisodesChanged(newRouterParams: RouterParams): boolean {
+    return newRouterParams &&
+      (!newRouterParams.episodePage || !this.routerParams || this.routerParams.episodePage !== newRouterParams.episodePage);
+  }
 
-    if (isBeginDateChanged(newRouterParams, this.routerParams)) {
-      loadMetrics = true;
-    }
-    if (isEndDateChanged(newRouterParams, this.routerParams)) {
-      loadMetrics = true;
-    }
-    if (isIntervalChanged(newRouterParams, this.routerParams)) {
-      loadMetrics = true;
-    }
+  isBeginDateChanged(newRouterParams: RouterParams): boolean {
+    return newRouterParams && newRouterParams.beginDate &&
+      (!this.routerParams.beginDate || this.routerParams.beginDate.valueOf() !== newRouterParams.beginDate.valueOf());
+  }
 
-    if (loadMetrics) {
-      this.store.dispatch(new ACTIONS.CastlePodcastMetricsLoadAction({
-        id: newRouterParams.podcastId,
+  isEndDateChanged(newRouterParams: RouterParams): boolean {
+    return newRouterParams && newRouterParams.endDate &&
+      (!this.routerParams.endDate || this.routerParams.endDate.valueOf() !== newRouterParams.endDate.valueOf());
+  }
+
+  isIntervalChanged (newRouterParams: RouterParams): boolean {
+    return newRouterParams && newRouterParams.interval &&
+      (!this.routerParams.interval || this.routerParams.interval.value !== newRouterParams.interval.value);
+  }
+
+  loadEpisodes(newRouterParams: RouterParams) {
+    this.store.dispatch(new ACTIONS.CastleEpisodePageLoadAction({
+      podcastId: newRouterParams.podcastId,
+      page: newRouterParams.episodePage || 1,
+      all: !this.routerParams || this.routerParams.podcastId !== newRouterParams.podcastId}));
+  }
+
+  loadMetrics(newRouterParams: RouterParams) {
+    this.store.dispatch(new ACTIONS.CastlePodcastMetricsLoadAction({
+      id: newRouterParams.podcastId,
+      metricsType: newRouterParams.metricsType,
+      interval: newRouterParams.interval,
+      beginDate: newRouterParams.beginDate,
+      endDate: newRouterParams.endDate
+    }));
+    this.store.dispatch(new ACTIONS.CastlePodcastPerformanceMetricsLoadAction({id: newRouterParams.podcastId}));
+    return this.episodes.forEach((episode: Episode) => {
+      this.store.dispatch(new ACTIONS.CastleEpisodePerformanceMetricsLoadAction({
+        podcastId: episode.podcastId,
+        guid: episode.guid
+      }));
+      this.store.dispatch(new ACTIONS.CastleEpisodeMetricsLoadAction({
+        podcastId: episode.podcastId,
+        page: episode.page,
+        guid: episode.guid,
         metricsType: newRouterParams.metricsType,
         interval: newRouterParams.interval,
         beginDate: newRouterParams.beginDate,
         endDate: newRouterParams.endDate
       }));
-      this.store.dispatch(new ACTIONS.CastlePodcastPerformanceMetricsLoadAction({id: newRouterParams.podcastId}));
-      return this.episodes.forEach((episode: Episode) => {
-        this.store.dispatch(new ACTIONS.CastleEpisodePerformanceMetricsLoadAction({
-          podcastId: episode.podcastId,
-          guid: episode.guid
-        }));
-        this.store.dispatch(new ACTIONS.CastleEpisodeMetricsLoadAction({
-          podcastId: episode.podcastId,
-          page: episode.page,
-          guid: episode.guid,
-          metricsType: newRouterParams.metricsType,
-          interval: newRouterParams.interval,
-          beginDate: newRouterParams.beginDate,
-          endDate: newRouterParams.endDate
-        }));
-      });
-    }
+    });
   }
 }

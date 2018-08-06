@@ -83,17 +83,15 @@ describe('DownloadsComponent', () => {
   }
 
   function dispatchInvalidPodcastRouterNavigation() {
-    store.dispatch(new ACTIONS.RoutePodcastAction({podcastId: '13', podcastSeriesId: 1234}));
+    store.dispatch(new ACTIONS.RoutePodcastAction({podcastId: '13'}));
   }
 
   function dispatchPodcasts() {
-    store.dispatch(new ACTIONS.CmsPodcastsSuccessAction({podcasts: [podcast]}));
     store.dispatch(new ACTIONS.CastlePodcastPageSuccessAction(
       {podcasts: [{id: podcast.feederId, title: podcast.title}], page: 1, total: 1}));
   }
 
   function dispatchEpisodePage() {
-    store.dispatch(new ACTIONS.CmsPodcastEpisodePageSuccessAction({episodes}));
     store.dispatch(new ACTIONS.CastleEpisodePageSuccessAction({
       episodes: episodes.map(e => {
         return {guid: e.guid, title: e.title, publishedAt: e.publishedAt, page: e.page, podcastId: e.feederId};

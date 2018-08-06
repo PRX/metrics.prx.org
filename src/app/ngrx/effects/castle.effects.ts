@@ -14,7 +14,7 @@ import * as ACTIONS from '../actions';
 import { selectRouter } from '../reducers/selectors';
 import { HalDoc } from '../../core';
 import { CastleService } from '../../core';
-import { Episode, Podcast, RouterParams, getMetricsProperty, PODCAST_PAGE_SIZE, EPISODE_PAGE_SIZE } from '../';
+import { Episode, RouterParams, getMetricsProperty, PODCAST_PAGE_SIZE, EPISODE_PAGE_SIZE } from '../';
 import * as localStorageUtil from '../../shared/util/local-storage.util';
 
 @Injectable()
@@ -54,8 +54,8 @@ export class CastleEffects {
   @Effect()
   loadPodcastsSuccess$: Observable<Action> = this.actions$.pipe(
     ofType(ACTIONS.ActionTypes.CASTLE_PODCAST_PAGE_SUCCESS),
-    // only dispatches a routing action when there is not already a routed :seriesId
-    filter(() => !!this.routerParams.podcastId),
+    // only dispatches a routing action when there is not already a routed :podcastId
+    filter(() => !this.routerParams.podcastId),
     map((action: ACTIONS.CastlePodcastPageSuccessAction) => action.payload),
     switchMap((payload: ACTIONS.CastlePodcastPageSuccessPayload) => {
       const { podcasts } = payload;

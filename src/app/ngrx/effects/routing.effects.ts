@@ -5,7 +5,7 @@ import { Observable } from 'rxjs/Observable';
 import { Action } from '@ngrx/store';
 import { ROUTER_NAVIGATION, RouterNavigationAction, RouterNavigationPayload } from '@ngrx/router-store';
 import { Actions, Effect, ofType } from '@ngrx/effects';
-import { RouterParams, METRICSTYPE_DOWNLOADS } from '../';
+import { RouterParams } from '../';
 import { ActionTypes } from '../actions';
 import * as ACTIONS from '../actions';
 import * as dateUtil from '../../shared/util/date';
@@ -43,7 +43,7 @@ export class RoutingEffects {
     })
   );
 
-  @Effect({dispatch: false})
+  /*@Effect({dispatch: false})
   routePodcastCharted$: Observable<void> = this.actions$.pipe(
     ofType(ActionTypes.ROUTE_PODCAST_CHARTED),
     map((action: ACTIONS.RoutePodcastChartedAction) => action.payload),
@@ -52,7 +52,7 @@ export class RoutingEffects {
       this.routingService.normalizeAndRoute({chartPodcast});
       return Observable.of(null);
     })
-  );
+  );*/
 
   @Effect({dispatch: false})
   routeEpisodePage$: Observable<void> = this.actions$.pipe(
@@ -60,13 +60,12 @@ export class RoutingEffects {
     map((action: ACTIONS.RouteEpisodePageAction) => action.payload),
     switchMap((payload: ACTIONS.RouteEpisodePagePayload) => {
       const { episodePage } = payload;
-      // route to no episodes so that incoming episodes will be charted again by default (reset state)
-      this.routingService.normalizeAndRoute({episodePage, episodeIds: []});
+      this.routingService.normalizeAndRoute({episodePage});
       return Observable.of(null);
     })
   );
 
-  @Effect({dispatch: false})
+  /*@Effect({dispatch: false})
   routeEpisodesCharted$: Observable<void> = this.actions$.pipe(
     ofType(ActionTypes.ROUTE_EPISODES_CHARTED),
     map((action: ACTIONS.RouteEpisodesChartedAction) => action.payload),
@@ -75,9 +74,9 @@ export class RoutingEffects {
       this.routingService.normalizeAndRoute({episodeIds});
       return Observable.of(null);
     })
-  );
+  );*/
 
-  @Effect({dispatch: false})
+  /*@Effect({dispatch: false})
   routeSingleEpisodeCharted$: Observable<void> = this.actions$.pipe(
     ofType(ActionTypes.ROUTE_SINGLE_EPISODE_CHARTED),
     map((action: ACTIONS.RouteSingleEpisodeChartedAction) => action.payload),
@@ -91,7 +90,7 @@ export class RoutingEffects {
       }
       return Observable.of(null);
     })
-  );
+  );*/
 
   // note that this is an Observable<void> dispatch: false because it only needs to dispatch when charted is false
   // so toggle off is handled via manual dispatch rather than by transform and dispatch an action from the effect

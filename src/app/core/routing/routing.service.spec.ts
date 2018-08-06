@@ -1,6 +1,6 @@
 import * as filterUtil from './filter.util';
-import { INTERVAL_DAILY, INTERVAL_MONTHLY } from '../../ngrx';
-import * as dateUtil from './date/date.util';
+import { INTERVAL_DAILY, INTERVAL_MONTHLY } from '../../ngrx/index';
+import * as dateUtil from '../../shared/util/date/date.util';
 
 describe('filter.util', () => {
   it('should check if podcast changed', () => {

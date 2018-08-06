@@ -1,9 +1,8 @@
-import { Component, OnInit, OnDestroy, Input } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { Store, select } from '@ngrx/store';
-import { Subscription } from 'rxjs/Subscription';
 import { Observable } from 'rxjs/Observable';
-import { DownloadsTableModel, Episode, RouterParams, CHARTTYPE_EPISODES } from '../ngrx';
-import { selectRouter, selectRoutedPageEpisodes,
+import { DownloadsTableModel, RouterParams, CHARTTYPE_EPISODES } from '../ngrx';
+import { selectRouter, selectNumEpisodePages,
   selectDownloadTablePodcastMetrics, selectDownloadTableEpisodeMetrics } from '../ngrx/reducers/selectors';
 import * as ACTIONS from '../ngrx/actions';
 
@@ -11,7 +10,7 @@ import * as ACTIONS from '../ngrx/actions';
   selector: 'metrics-downloads-table',
   template: `
     <metrics-downloads-table-presentation
-      [totalPages]="totalPages"
+      [totalPages]="numEpisodePages$ | async"
       [podcastTableData]="podcastTableData$ | async"
       [episodeTableData]="episodeTableData$ | async"
       [routerParams]="routerParams$ | async"
@@ -24,12 +23,12 @@ import * as ACTIONS from '../ngrx/actions';
     </metrics-downloads-table-presentation>
   `
 })
-export class DownloadsTableContainerComponent implements OnInit, OnDestroy {
+export class DownloadsTableContainerComponent implements OnInit {
   @Input() totalPages;
   podcastTableData$: Observable<DownloadsTableModel>;
   episodeTableData$: Observable<DownloadsTableModel[]>;
+  numEpisodePages$: Observable<number>;
   routerParams$: Observable<RouterParams>;
-  episodePageSub: Subscription;
   expanded = false;
 
   constructor(private store: Store<any>) {}
@@ -37,11 +36,8 @@ export class DownloadsTableContainerComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.podcastTableData$ = this.store.pipe(select(selectDownloadTablePodcastMetrics));
     this.episodeTableData$ = this.store.pipe(select(selectDownloadTableEpisodeMetrics));
+    this.numEpisodePages$ = this.store.pipe(select(selectNumEpisodePages));
     this.routerParams$ = this.store.pipe(select(selectRouter));
-  }
-
-  ngOnDestroy() {
-    if (this.episodePageSub) { this.episodePageSub.unsubscribe(); }
   }
 
   toggleChartPodcast(chartPodcast: boolean) {

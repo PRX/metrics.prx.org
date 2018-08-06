@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Store, select } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
-import { selectLoading, selectLoaded, selectErrors, selectNumEpisodePages } from '../ngrx/reducers/selectors';
+import { selectLoading, selectLoaded, selectErrors } from '../ngrx/reducers/selectors';
 
 @Component({
   template: `
@@ -10,7 +10,7 @@ import { selectLoading, selectLoaded, selectErrors, selectNumEpisodePages } from
     <section *ngIf="loaded$ | async">
       <metrics-menu-bar></metrics-menu-bar>
       <metrics-downloads-chart></metrics-downloads-chart>
-      <metrics-downloads-table [totalPages]="selectNumEpisodePages$ | async"></metrics-downloads-table>
+      <metrics-downloads-table></metrics-downloads-table>
       <p class="error" *ngFor="let error of errors$ | async">{{error}}</p>
     </section>
   `,
@@ -20,7 +20,6 @@ export class DownloadsComponent implements OnInit {
   loading$: Observable<boolean>;
   loaded$: Observable<boolean>;
   errors$: Observable<string[]>;
-  selectNumEpisodePages$: Observable<number>;
 
   constructor(public store: Store<any>) {}
 
@@ -28,6 +27,5 @@ export class DownloadsComponent implements OnInit {
     this.loading$ = this.store.pipe(select(selectLoading));
     this.loaded$ = this.store.pipe(select(selectLoaded));
     this.errors$ = this.store.pipe(select(selectErrors));
-    this.selectNumEpisodePages$ = this.store.pipe(select(selectNumEpisodePages));
   }
 }

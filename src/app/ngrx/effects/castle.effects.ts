@@ -21,6 +21,7 @@ import * as localStorageUtil from '../../shared/util/local-storage.util';
 export class CastleEffects {
   routerParams: RouterParams;
 
+  // basic - load > success/failure podcast page
   @Effect()
   loadPodcastPage$: Observable<Action> = this.actions$.pipe(
     ofType(ACTIONS.ActionTypes.CASTLE_PODCAST_PAGE_LOAD),
@@ -48,40 +49,45 @@ export class CastleEffects {
     })
   );
 
-  @Effect({dispatch: false})
-  loadPodcastsSuccess$: Observable<void> = this.actions$.pipe(
+  // on podcast page success if not already routed to a podcast,
+  // check for podcast id on local storage or use first podcast id in list and route to it
+  @Effect()
+  loadPodcastsSuccess$: Observable<Action> = this.actions$.pipe(
     ofType(ACTIONS.ActionTypes.CASTLE_PODCAST_PAGE_SUCCESS),
+    // only dispatches a routing action when there is not already a routed :seriesId
+    filter(() => !!this.routerParams.podcastId),
     map((action: ACTIONS.CastlePodcastPageSuccessAction) => action.payload),
     switchMap((payload: ACTIONS.CastlePodcastPageSuccessPayload) => {
-      // only dispatches a routing action when there is not already a routed :seriesId
-      if (!this.routerParams.podcastId) {
-        const {podcasts} = payload;
-        const localStorageRouterParams: RouterParams = localStorageUtil.getItem(localStorageUtil.KEY_ROUTER_PARAMS);
-        const localStoragePodcastInList = localStorageRouterParams && localStorageRouterParams.podcastId &&
-          podcasts.find(podcast => podcast.id === localStorageRouterParams.podcastId);
-        this.store.dispatch(new ACTIONS.RoutePodcastAction( {
-          // navigate to either the podcastStorageId in localStorage or the first one in the result from CMS (which is the last one changed)
-          podcastId: (localStoragePodcastInList && localStorageRouterParams.podcastId) || podcasts[0].id
-        }));
-      }
-      return Observable.of(null);
+      const { podcasts } = payload;
+      const localStorageRouterParams: RouterParams = localStorageUtil.getItem(localStorageUtil.KEY_ROUTER_PARAMS);
+      const localStoragePodcastInList = localStorageRouterParams && localStorageRouterParams.podcastId &&
+        podcasts.find(podcast => podcast.id === localStorageRouterParams.podcastId);
+      return Observable.of(new ACTIONS.RoutePodcastAction( {
+        // navigate to either the podcastStorageId in localStorage or the first one in the result from CMS (which is the last one changed)
+        podcastId: (localStoragePodcastInList && localStorageRouterParams.podcastId) || podcasts[0].id
+      }));
     })
   );
 
+  // on podcast page success if loading all podcast pages and not yet finished, load next page
   @Effect({dispatch: false})
-  loadNextPodcastPage$: Observable<any> = this.actions$.pipe(
+  loadNextPodcastPage$: Observable<Action> = this.actions$.pipe(
     ofType(ACTIONS.ActionTypes.CASTLE_PODCAST_PAGE_SUCCESS),
+    filter((action: ACTIONS.CastlePodcastPageSuccessAction) => {
+      const { page, all, total } = action.payload;
+      return all && page * PODCAST_PAGE_SIZE < total;
+    }),
     map((action: ACTIONS.CastlePodcastPageSuccessAction) => action.payload),
     concatMap((payload: ACTIONS.CastlePodcastPageSuccessPayload) => {
-      const { page, all, total } = payload;
-      if (all && page * PODCAST_PAGE_SIZE < total) {
-        this.store.dispatch(new ACTIONS.CastlePodcastPageLoadAction({page: page + 1, all}));
-      }
-      return Observable.of(null);
+      const { page, all } = payload;
+      return Observable.of(new ACTIONS.CastlePodcastPageLoadAction({page: page + 1, all}));
     })
   );
 
-  /*@Effect()
+  /*
+  // on podcast page 1 success, if loading all podcasts start loading all episodes page by page as well
+  // ugh, makes app loading too slow
+  @Effect()
   loadPodcastEpisodes$: Observable<Action> = this.actions$.pipe(
     ofType(ACTIONS.ActionTypes.CASTLE_PODCAST_PAGE_SUCCESS),
     filter((action: ACTIONS.CastlePodcastPageSuccessAction) => {
@@ -95,6 +101,7 @@ export class CastleEffects {
     })
   );*/
 
+  // basic - load > success/failure episode page
   @Effect()
   loadEpisodePage$: Observable<Action> = this.actions$.pipe(
     ofType(ACTIONS.ActionTypes.CASTLE_EPISODE_PAGE_LOAD),
@@ -124,11 +131,12 @@ export class CastleEffects {
     })
   );
 
+  // on episode page success if loading all episode pages and not yet finished, load next page
   @Effect()
   loadNextEpisodePage$: Observable<Action> = this.actions$.pipe(
     ofType(ACTIONS.ActionTypes.CASTLE_EPISODE_PAGE_SUCCESS),
     filter((action: ACTIONS.CastleEpisodePageSuccessAction) => {
-      const { page, all, total, episodes} = action.payload;
+      const { page, all, total, episodes } = action.payload;
       return all && page * EPISODE_PAGE_SIZE < total && episodes && episodes.length > 0;
     }),
     map((action: ACTIONS.CastleEpisodePageSuccessAction) => action.payload),
@@ -139,31 +147,8 @@ export class CastleEffects {
     })
   );
 
-  @Effect()
-  loadPodcastMetrics$ = this.actions$.pipe(
-    ofType(ACTIONS.ActionTypes.CASTLE_PODCAST_METRICS_LOAD),
-    map((action: ACTIONS.CastlePodcastMetricsLoadAction) => action.payload),
-    switchMap((payload: ACTIONS.CastlePodcastMetricsLoadPayload) => {
-      const { id, metricsType, interval, beginDate, endDate } = payload;
-      return this.castle.followList('prx:podcast-downloads', {
-        id,
-        from: beginDate.toISOString(),
-        to: endDate.toISOString(),
-        interval: interval.value
-      }).pipe(
-        map(metrics => {
-          this.store.dispatch(new ACTIONS.GoogleAnalyticsEventAction({gaAction: 'load', value: metrics[0]['downloads'].length}));
-          return new ACTIONS.CastlePodcastMetricsSuccessAction({
-            id,
-            metricsPropertyName: getMetricsProperty(interval, metricsType),
-            metrics: metrics[0]['downloads']
-          });
-        }),
-        catchError(error => Observable.of(new ACTIONS.CastlePodcastMetricsFailureAction({id, error})))
-      );
-    })
-  );
-
+  // whenever an episode page is loaded that is the currently routed page,
+  // call the load actions for podcast and episode metrics
   @Effect()
   loadRoutedMetrics$ = this.actions$.pipe(
     ofType(ACTIONS.ActionTypes.CASTLE_EPISODE_PAGE_SUCCESS),
@@ -200,6 +185,34 @@ export class CastleEffects {
     })
   );
 
+  // basic - load > success/failure podcasrt metrics
+  // also dispatches google analytics action for loading metrics with how many metrics datapoints
+  @Effect()
+  loadPodcastMetrics$: Observable<Action> = this.actions$.pipe(
+    ofType(ACTIONS.ActionTypes.CASTLE_PODCAST_METRICS_LOAD),
+    map((action: ACTIONS.CastlePodcastMetricsLoadAction) => action.payload),
+    switchMap((payload: ACTIONS.CastlePodcastMetricsLoadPayload) => {
+      const { id, metricsType, interval, beginDate, endDate } = payload;
+      return this.castle.followList('prx:podcast-downloads', {
+        id,
+        from: beginDate.toISOString(),
+        to: endDate.toISOString(),
+        interval: interval.value
+      }).pipe(
+        map(metrics => {
+          this.store.dispatch(new ACTIONS.GoogleAnalyticsEventAction({gaAction: 'load', value: metrics[0]['downloads'].length}));
+          return new ACTIONS.CastlePodcastMetricsSuccessAction({
+            id,
+            metricsPropertyName: getMetricsProperty(interval, metricsType),
+            metrics: metrics[0]['downloads']
+          });
+        }),
+        catchError(error => Observable.of(new ACTIONS.CastlePodcastMetricsFailureAction({id, error})))
+      );
+    })
+  );
+
+  // basic - load > success/failure episode metrics
   @Effect()
   loadEpisodeMetrics$ = this.actions$.pipe(
     ofType(ACTIONS.ActionTypes.CASTLE_EPISODE_METRICS_LOAD),
@@ -233,6 +246,7 @@ export class CastleEffects {
     })
   );
 
+  // basic - load > success/failure podcast performance
   @Effect()
   loadPodcastPerformanceMetrics$: Observable<Action> = this.actions$.pipe(
     ofType(ACTIONS.ActionTypes.CASTLE_PODCAST_PERFORMANCE_METRICS_LOAD),
@@ -258,6 +272,7 @@ export class CastleEffects {
     })
   );
 
+  // basic - load > success/failure episode performance
   @Effect()
   loadEpisodePerformanceMetrics$: Observable<Action> = this.actions$.pipe(
     ofType(ACTIONS.ActionTypes.CASTLE_EPISODE_PERFORMANCE_METRICS_LOAD),

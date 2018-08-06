@@ -9,7 +9,4 @@ export interface RouterParams {
   standardRange?: string;
   beginDate?: Date;
   endDate?: Date;
-  podcastSeriesId?: number;
-  chartPodcast?: boolean;
-  episodeIds?: number[];
 }

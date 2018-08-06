@@ -32,7 +32,7 @@ export const selectDownloadTablePodcastMetrics = createSelector(
           downloads: mapMetricsToTimeseriesData(data),
           color: routerParams.chartType === CHARTTYPE_PODCAST ? standardColor : neutralColor,
           totalForPeriod,
-          charted: routerParams.chartPodcast
+          charted: true/*routerParams.chartPodcast*/
         };
         if (podcastPerformanceMetrics) {
           if (totalForPeriod > podcastPerformanceMetrics.total) {

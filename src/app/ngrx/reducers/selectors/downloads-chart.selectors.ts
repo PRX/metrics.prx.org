@@ -24,7 +24,7 @@ export const selectDownloadChartMetrics = createSelector(
       chartedEpisodeMetrics: TimeseriesChartModel[];
 
     if (podcastMetrics &&
-      routerParams.chartType === CHARTTYPE_PODCAST || (routerParams.chartPodcast && routerParams.chartType === CHARTTYPE_STACKED)) {
+      routerParams.chartType === CHARTTYPE_PODCAST || (/*routerParams.chartPodcast && */routerParams.chartType === CHARTTYPE_STACKED)) {
       const data = metricsData(routerParams, podcastMetrics);
       if (data) {
         chartedPodcastMetrics = {
@@ -36,7 +36,7 @@ export const selectDownloadChartMetrics = createSelector(
     }
 
     // TODO: fix/keep charted episodes on route?
-    if (routerParams.episodeIds &&
+    if (/*routerParams.episodeIds &&*/
       routerParams.chartType === CHARTTYPE_EPISODES || routerParams.chartType === CHARTTYPE_STACKED) {
       if (episodes.length && episodeMetrics.length) {
         chartedEpisodeMetrics = episodes
@@ -46,10 +46,8 @@ export const selectDownloadChartMetrics = createSelector(
             return {...episode, color: getColor(idx)};
           })
           .map((episode: Episode, idx) => {
-            const metrics = episodeMetrics.find(e => e.guid === episode.guid);
-            const data = metricsData(routerParams, metrics);
             return {
-              data: mapMetricsToTimeseriesData(metricsData(routerParams, metrics)),
+              data: mapMetricsToTimeseriesData(metricsData(routerParams, episodeMetrics.find(e => e.guid === episode.guid))),
               label: episode ? episode.title : '',
               color: getColor(idx)
             };
@@ -66,7 +64,7 @@ export const selectDownloadChartMetrics = createSelector(
     let chartData: TimeseriesChartModel[];
     switch (routerParams.chartType) {
       case CHARTTYPE_STACKED:
-        if (chartedPodcastMetrics && routerParams.chartPodcast &&
+        if (chartedPodcastMetrics &&/* routerParams.chartPodcast &&*/
           chartedEpisodeMetrics && chartedEpisodeMetrics.length) {
           // if we have episodes to combine with podcast total
           const allOtherEpisodesData: TimeseriesChartModel = {
@@ -75,8 +73,9 @@ export const selectDownloadChartMetrics = createSelector(
             color: neutralColor
           };
           chartData = [...chartedEpisodeMetrics, allOtherEpisodesData];
-        } else if (chartedPodcastMetrics && routerParams.chartPodcast &&
-          chartedPodcastMetrics.data.length && !(routerParams.episodeIds.length || chartedEpisodeMetrics.length)) {
+        } else if (chartedPodcastMetrics &&/* routerParams.chartPodcast &&*/
+          chartedPodcastMetrics.data.length &&
+          !chartedEpisodeMetrics.length/*!(routerParams.episodeIds.length || chartedEpisodeMetrics.length)*/) {
           chartData = [chartedPodcastMetrics];
         } else if (chartedEpisodeMetrics && chartedEpisodeMetrics.length) {
           chartData = chartedEpisodeMetrics;

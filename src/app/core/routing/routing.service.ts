@@ -81,14 +81,6 @@ export class RoutingService {
     if (routerParams.endDate) {
       params['endDate'] = routerParams.endDate.toUTCString();
     }
-    if (routerParams.chartPodcast !== undefined) {
-      params['chartPodcast'] = routerParams.chartPodcast;
-    } else if (routerParams.metricsType === METRICSTYPE_DOWNLOADS) {
-      params['chartPodcast'] = true; // true is the default for downloads
-    }
-    if (routerParams.episodeIds) {
-      params['episodes'] = routerParams.episodeIds.join(',');
-    }
 
     localStorageUtil.setItem(localStorageUtil.KEY_ROUTER_PARAMS, routerParams);
 

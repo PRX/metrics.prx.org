@@ -38,21 +38,10 @@ export class RoutingEffects {
     map((action: ACTIONS.RoutePodcastAction) => action.payload),
     switchMap((payload: ACTIONS.RoutePodcastPayload) => {
       const { podcastId } = payload;
-      this.routingService.normalizeAndRoute({podcastId, episodePage: 1, episodeIds: []});
+      this.routingService.normalizeAndRoute({podcastId, episodePage: 1});
       return Observable.of(null);
     })
   );
-
-  /*@Effect({dispatch: false})
-  routePodcastCharted$: Observable<void> = this.actions$.pipe(
-    ofType(ActionTypes.ROUTE_PODCAST_CHARTED),
-    map((action: ACTIONS.RoutePodcastChartedAction) => action.payload),
-    switchMap((payload: ACTIONS.RoutePodcastChartedPayload) => {
-      const { chartPodcast } = payload;
-      this.routingService.normalizeAndRoute({chartPodcast});
-      return Observable.of(null);
-    })
-  );*/
 
   @Effect({dispatch: false})
   routeEpisodePage$: Observable<void> = this.actions$.pipe(
@@ -64,53 +53,6 @@ export class RoutingEffects {
       return Observable.of(null);
     })
   );
-
-  /*@Effect({dispatch: false})
-  routeEpisodesCharted$: Observable<void> = this.actions$.pipe(
-    ofType(ActionTypes.ROUTE_EPISODES_CHARTED),
-    map((action: ACTIONS.RouteEpisodesChartedAction) => action.payload),
-    switchMap((payload: ACTIONS.RouteEpisodesChartedPayload) => {
-      const { episodeIds } = payload;
-      this.routingService.normalizeAndRoute({episodeIds});
-      return Observable.of(null);
-    })
-  );*/
-
-  /*@Effect({dispatch: false})
-  routeSingleEpisodeCharted$: Observable<void> = this.actions$.pipe(
-    ofType(ActionTypes.ROUTE_SINGLE_EPISODE_CHARTED),
-    map((action: ACTIONS.RouteSingleEpisodeChartedAction) => action.payload),
-    switchMap((payload: ACTIONS.RouteSingleEpisodeChartedPayload) => {
-      const { episodeId, chartType, episodePage } = payload;
-      const metricsType = METRICSTYPE_DOWNLOADS;
-      if (episodePage) {
-        this.routingService.normalizeAndRoute({episodeIds: [episodeId], chartType, metricsType, episodePage});
-      } else {
-        this.routingService.normalizeAndRoute({episodeIds: [episodeId], chartType, metricsType});
-      }
-      return Observable.of(null);
-    })
-  );*/
-
-  // note that this is an Observable<void> dispatch: false because it only needs to dispatch when charted is false
-  // so toggle off is handled via manual dispatch rather than by transform and dispatch an action from the effect
-  // thought about doing this differently but it will go away soon enuf
-  /*@Effect({dispatch: false})
-  routeToggleEpisodeCharted$: Observable<void> = this.actions$.pipe(
-    ofType(ActionTypes.ROUTE_TOGGLE_EPISODE_CHARTED),
-    map((action: ACTIONS.RouteToggleEpisodeChartedAction) => action.payload),
-    switchMap((payload: ACTIONS.RouteToggleEpisodeChartedPayload) => {
-      const { episodeId, charted } = payload;
-      let episodeIds;
-      if (charted) {
-        episodeIds = this.routerParams.episodeIds ? this.routerParams.episodeIds.concat(episodeId) : [episodeId];
-      } else {
-        episodeIds = this.routerParams.episodeIds ? this.routerParams.episodeIds.filter(id => id !== episodeId) : [];
-      }
-      this.routingService.normalizeAndRoute({episodeIds});
-      return Observable.of(null);
-    })
-  );*/
 
   @Effect({dispatch: false})
   routeChartType$: Observable<void> = this.actions$.pipe(

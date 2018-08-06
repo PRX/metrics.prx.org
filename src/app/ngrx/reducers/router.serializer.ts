@@ -78,14 +78,6 @@ export class CustomSerializer implements RouterStateSerializer<RouterParams> {
         routerParams.beginDate = beginDate;
         routerParams.endDate = endDate;
       }
-      if (params['episodes']) {
-        routerParams.episodeIds = params['episodes'].split(',').map(stringValue => +stringValue).filter(id => id > 0);
-      } else if (params['episodes'] === '') {
-        routerParams.episodeIds = [];
-      }
-      if (params['chartPodcast']) {
-        routerParams.chartPodcast = params['chartPodcast'] === 'true';
-      }
     }
     return routerParams;
   }

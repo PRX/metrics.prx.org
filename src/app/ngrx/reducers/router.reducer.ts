@@ -37,12 +37,6 @@ export function CustomRouterReducer(state: RouterParams = initialState, action: 
       if (action.payload.routerParams.endDate) {
         newState.endDate = action.payload.routerParams.endDate;
       }
-      if (action.payload.routerParams.chartPodcast !== undefined) {
-        newState.chartPodcast = action.payload.routerParams.chartPodcast;
-      }
-      if (action.payload.routerParams.episodeIds) {
-        newState.episodeIds = action.payload.routerParams.episodeIds;
-      }
       return newState;
     default:
       return state;

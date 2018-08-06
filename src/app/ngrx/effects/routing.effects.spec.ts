@@ -77,7 +77,7 @@ describe('RoutingEffects', () => {
     spyOn(store, 'dispatch').and.callThrough();
     store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerParams}));
 
-    spyOn(effects, 'routeFromNewRouterParams').and.callThrough();
+    spyOn(effects, 'normalizeAndRoute').and.callThrough();
   }));
 
   it('should map ROUTER_NAVIGATION to CustomRouterNavigationAction', () => {

@@ -25,8 +25,7 @@ export class PodcastNavComponent {
 
   onPodcastChange(val: Podcast) {
     this.store.dispatch(new RoutePodcastAction({
-      podcastId: val.id,
-      podcastSeriesId: 0 // TODO
+      podcastId: val.id
     }));
   }
 }

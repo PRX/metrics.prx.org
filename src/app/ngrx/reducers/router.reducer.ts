@@ -26,9 +26,6 @@ export function CustomRouterReducer(state: RouterParams = initialState, action: 
       if (action.payload.routerParams.episodePage) {
         newState.episodePage = action.payload.routerParams.episodePage;
       }
-      if (action.payload.routerParams.guid) {
-        newState.guid = action.payload.routerParams.guid;
-      }
       if (action.payload.routerParams.beginDate || action.payload.routerParams.endDate) {
         // standardRange can only be set with accompanying begin or end date
         // standardRange can be set to undefined if begin or end date is present but standardRange is not

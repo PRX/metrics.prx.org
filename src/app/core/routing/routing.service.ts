@@ -53,7 +53,7 @@ export class RoutingService {
           this.normalizeAndRoute(routerParams);
         }
 
-        // TODO: still a problem here, never loads the episodes if default set to 1
+        // TODO: still a problem here, always lands on page 1
         // load episodes if podcast id changed or if the episode page changed or page has not been set
         if (!this.loadEpisodesIfChanged(routerParams)) {
           // if episode page or podcast didn't change, check if router params changed and load metrics
@@ -71,9 +71,6 @@ export class RoutingService {
     const params = {};
     if (routerParams.episodePage) {
       params['episodePage'] = routerParams.episodePage;
-    }
-    if (routerParams.guid) {
-      params['guid'] = routerParams.guid;
     }
     if (routerParams.standardRange) {
       params['standardRange'] = routerParams.standardRange;

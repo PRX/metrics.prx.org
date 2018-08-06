@@ -47,13 +47,6 @@ export class CustomSerializer implements RouterStateSerializer<RouterParams> {
       if (params['episodePage'] && !isNaN(parseInt(params['episodePage'], 10))) {
         routerParams.episodePage = +params['episodePage'];
       }
-      if (params['page']) {
-        routerParams.episodePage = +params['page'];
-      }
-
-      if (params['guid']) {
-        routerParams.guid = params['guid'];
-      }
 
       if (params['beginDate']) {
         routerParams.beginDate = new Date(params['beginDate']);

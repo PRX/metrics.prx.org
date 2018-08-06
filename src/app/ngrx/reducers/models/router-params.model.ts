@@ -6,7 +6,6 @@ export interface RouterParams {
   chartType?: ChartType;
   interval?: IntervalModel;
   episodePage?: number;
-  guid?: string;
   standardRange?: string;
   beginDate?: Date;
   endDate?: Date;

@@ -35,7 +35,7 @@ export const addToArray = function(entries: number[], value: number) {
 
 export const removeFromArray = function(entries: number[], value: number) {
   if (entries.indexOf(value) === -1) {
-    return entries;
+    return entries; // don't actually want a new array if not changed
   } else {
     return entries.filter(e => e !== value);
   }

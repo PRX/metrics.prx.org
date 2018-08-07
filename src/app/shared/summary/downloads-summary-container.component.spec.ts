@@ -21,9 +21,8 @@ describe('DownloadsSummaryContainerComponent', () => {
   let el: HTMLElement;
 
   const podcast = {
-    seriesId: 37800,
+    id: '70',
     title: 'Pet Talks Daily',
-    feederId: '70'
   };
   const podDownloads = [
     ['2017-08-27T00:00:00Z', 52522],
@@ -40,8 +39,7 @@ describe('DownloadsSummaryContainerComponent', () => {
     ['2017-09-07T00:00:00Z', 46858]
   ];
   const routerParams: RouterParams = {
-    podcastSeriesId: podcast.seriesId,
-    podcastId: podcast.feederId,
+    podcastId: podcast.id,
     metricsType: <MetricsType>METRICSTYPE_DOWNLOADS,
     interval: INTERVAL_DAILY,
     beginDate: new Date('2017-08-27T00:00:00Z'),
@@ -70,7 +68,7 @@ describe('DownloadsSummaryContainerComponent', () => {
       const metricsPropertyName = getMetricsProperty(routerParams.interval, routerParams.metricsType);
       store.dispatch(new CustomRouterNavigationAction({routerParams}));
       store.dispatch(new CastlePodcastMetricsSuccessAction({
-        id: podcast.feederId, metricsPropertyName, metrics: podDownloads}));
+        id: podcast.id, metricsPropertyName, metrics: podDownloads}));
     });
   }));
 

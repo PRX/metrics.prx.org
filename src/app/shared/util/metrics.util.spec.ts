@@ -1,53 +1,45 @@
 import * as moment from 'moment';
-import { PodcastModel, EpisodeModel, RouterParams, PodcastMetricsModel, EpisodeMetricsModel,
+import { Podcast, Episode, RouterParams, PodcastMetricsModel, EpisodeMetricsModel,
   INTERVAL_HOURLY, INTERVAL_DAILY, INTERVAL_WEEKLY, INTERVAL_MONTHLY, MetricsType, METRICSTYPE_DOWNLOADS } from '../../ngrx';
 import * as dateUtil from './date/date.util';
 import { findPodcastMetrics, metricsData, getTotal, getWeightedAverage } from './metrics.util';
 
 describe('metrics util', () => {
-  const podcasts: PodcastModel[] = [
+  const podcasts: Podcast[] = [
     {
-      seriesId: 37800,
-      title: 'Pet Talks Daily',
-      feederUrl: 'https://feeder.prx.org/api/v1/podcasts/70',
-      feederId: '70'
+      id: '70',
+      title: 'Pet Talks Daily'
     },
     {
-      seriesId: 37801,
-      title: 'Totally Not Pet Talks Daily',
-      feederUrl: 'https://feeder.prx.org/api/v1/podcasts/12',
-      feederId: '12'
+      id: '72',
+      title: 'Totally Not Pet Talks Daily'
     }
   ];
-  const episodes: EpisodeModel[] = [
+  const episodes: Episode[] = [
     {
-      seriesId: 37800,
-      feederId: '70',
-      id: 123,
+      podcastId: '70',
+      guid: 'abcdefg',
+      page: 1,
       publishedAt: new Date(),
-      title: 'A Pet Talk Episode',
-      guid: 'abcdefg'
+      title: 'A Pet Talk Episode'
     },
     {
-      seriesId: 37800,
-      feederId: '70',
-      id: 124,
+      podcastId: '70',
+      guid: 'gfedcba',
+      page: 1,
       publishedAt: new Date(),
-      title: 'Another Pet Talk Episode',
-      guid: 'gfedcba'
+      title: 'Another Pet Talk Episode'
     },
     {
-      seriesId: 37801,
-      feederId: '72',
-      id: 125,
+      podcastId: '72',
+      guid: 'hijklmn',
+      page: 1,
       publishedAt: new Date(),
-      title: 'Totally Not a Pet Talk Episode',
-      guid: 'hijklmn'
+      title: 'Totally Not a Pet Talk Episode'
     }
   ];
   const routerParams: RouterParams = {
-    podcastSeriesId: podcasts[0].seriesId,
-    podcastId: podcasts[0].feederId,
+    podcastId: podcasts[0].id,
     metricsType: <MetricsType>METRICSTYPE_DOWNLOADS,
     episodePage: 1,
     beginDate: new Date('2017-09-01T00:00:00Z'),
@@ -70,34 +62,29 @@ describe('metrics util', () => {
   ];
   const podcastMetrics: PodcastMetricsModel[] = [
     {
-      seriesId: 37800,
-      feederId: '70',
+      id: '70',
       dailyReach: [...metrics]
     },
     {
-      seriesId: 37801,
-      feederId: '70',
+      id: '70',
       dailyReach: [...metrics]
     }
   ];
   const episodeMetrics: EpisodeMetricsModel[] = [
     {
-      seriesId: 37800,
-      feederId: '70',
+      podcastId: '70',
       guid: 'abcdefg',
       page: 1,
       dailyReach: [...metrics]
     },
     {
-      seriesId: 37800,
-      feederId: '70',
+      podcastId: '70',
       guid: 'gfedcba',
       page: 2,
       dailyReach: [...metrics]
     },
     {
-      seriesId: 37801,
-      feederId: '72',
+      podcastId: '72',
       guid: 'hijklmn',
       page: 1,
       dailyReach: [...metrics]
@@ -105,7 +92,7 @@ describe('metrics util', () => {
   ];
 
   it('should find podcast metrics matching routerParams', () => {
-    expect(findPodcastMetrics(routerParams, podcastMetrics).feederId).toEqual('70');
+    expect(findPodcastMetrics(routerParams, podcastMetrics).id).toEqual('70');
   });
 
   it('should get metrics array according to interval and metrics type', () => {

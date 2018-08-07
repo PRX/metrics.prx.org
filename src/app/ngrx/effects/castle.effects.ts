@@ -32,6 +32,10 @@ export class CastleEffects {
       return this.castle.followItems('prx:podcasts', { page, per: PODCAST_PAGE_SIZE })
       .pipe(
         map((results: HalDoc[]) => {
+          if (!results.length) {
+            const error = 'Looks like you don\'t have any podcasts.';
+            return new ACTIONS.CastlePodcastPageFailureAction({error});
+          } else {
             return new ACTIONS.CastlePodcastPageSuccessAction({
               page,
               all,
@@ -43,7 +47,8 @@ export class CastleEffects {
                 };
               })
             });
-          }),
+          }
+        }),
         catchError(error => Observable.of(new ACTIONS.CastlePodcastPageFailureAction({error})))
       );
     })
@@ -126,7 +131,7 @@ export class CastleEffects {
               })
             });
           }),
-          catchError(error => Observable.of(new ACTIONS.CastlePodcastPageFailureAction({error})))
+          catchError(error => Observable.of(new ACTIONS.CastleEpisodePageFailureAction({error})))
         );
     })
   );

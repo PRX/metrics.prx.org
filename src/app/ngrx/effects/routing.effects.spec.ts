@@ -13,8 +13,8 @@ import { ChartType, MetricsType, CHARTTYPE_PODCAST, CHARTTYPE_EPISODES, INTERVAL
 import { reducers } from '../reducers';
 import * as ACTIONS from '../actions';
 import { RoutingEffects } from './routing.effects';
+import { RoutingService } from '../../core/routing/routing.service';
 import * as dateUtil from '../../shared/util/date';
-import * as localStorageUtil from '../../shared/util/local-storage.util';
 
 @Component({
   selector: 'metrics-test-component',
@@ -42,15 +42,15 @@ describe('RoutingEffects', () => {
 
   const routes: Route[] = [
     {
-      path: ':seriesId/:podcastId/reach/:chartType/:interval',
+      path: ':podcastId/reach/:chartType/:interval',
       component: TestComponent
     },
     {
-      path: ':seriesId/:podcastId/demographics',
+      path: ':podcastId/demographics',
       component: TestComponent
     },
     {
-      path: ':seriesId/:podcastId/devices',
+      path: ':podcastId/devices',
       component: TestComponent
     }
   ];
@@ -67,6 +67,7 @@ describe('RoutingEffects', () => {
       ],
       providers: [
         RoutingEffects,
+        RoutingService,
         { provide: Actions, useFactory: getActions }
       ]
     });
@@ -77,7 +78,7 @@ describe('RoutingEffects', () => {
     spyOn(store, 'dispatch').and.callThrough();
     store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerParams}));
 
-    spyOn(effects, 'normalizeAndRoute').and.callThrough();
+    spyOn(effects.routingService, 'normalizeAndRoute').and.callThrough();
   }));
 
   it('should map ROUTER_NAVIGATION to CustomRouterNavigationAction', () => {
@@ -91,70 +92,22 @@ describe('RoutingEffects', () => {
     expect(effects.customRouterNavigation$).toBeObservable(expected);
   });
 
-  it('should route to podcast on episode page 1 and reset charted episodes', () => {
-    const action = new ACTIONS.RoutePodcastAction({podcastId: '70', podcastSeriesId: 37800});
+  it('should route to podcast on episode page 1', () => {
+    const action = new ACTIONS.RoutePodcastAction({podcastId: '70'});
     store.dispatch(action);
     actions$.stream = hot('-a', { a: action });
     const expected = cold('-r', { r: null });
     expect(effects.routePodcast$).toBeObservable(expected);
-    expect(effects.routeFromNewRouterParams).toHaveBeenCalledWith(
-      {podcastId: '70', podcastSeriesId: 37800, episodePage: 1, episodeIds: []});
+    expect(effects.routingService.normalizeAndRoute).toHaveBeenCalledWith({podcastId: '70', episodePage: 1});
   });
 
-  it('should route to podcast charted', () => {
-    const action = new ACTIONS.RoutePodcastChartedAction({chartPodcast: false});
-    store.dispatch(action);
-    actions$.stream = hot('-a', { a: action });
-    const expected = cold('-r', { r: null });
-    expect(effects.routePodcastCharted$).toBeObservable(expected);
-    expect(effects.routeFromNewRouterParams).toHaveBeenCalledWith({chartPodcast: false});
-  });
-
-  it('should route to episode page and reset episode route', () => {
+  it('should route to episode page', () => {
     const action = new ACTIONS.RouteEpisodePageAction({episodePage: 1});
     store.dispatch(action);
     actions$.stream = hot('-a', { a: action });
     const expected = cold('-r', { r: null });
     expect(effects.routeEpisodePage$).toBeObservable(expected);
-    expect(effects.routeFromNewRouterParams).toHaveBeenCalledWith({episodePage: 1, episodeIds: []});
-  });
-
-  it('should route to episodes charted', () => {
-    const action = new ACTIONS.RouteEpisodesChartedAction({episodeIds: [123, 1234]});
-    store.dispatch(action);
-    actions$.stream = hot('-a', { a: action });
-    const expected = cold('-r', { r: null });
-    expect(effects.routeEpisodesCharted$).toBeObservable(expected);
-    expect(effects.routeFromNewRouterParams).toHaveBeenCalledWith({episodeIds: [123, 1234]});
-  });
-
-  it('should route to single episode charted', () => {
-    const action = new ACTIONS.RouteSingleEpisodeChartedAction({episodeId: 123, chartType: CHARTTYPE_EPISODES});
-    store.dispatch(action);
-    actions$.stream = hot('-a', { a: action });
-    const expected = cold('-r', { r: null });
-    expect(effects.routeSingleEpisodeCharted$).toBeObservable(expected);
-    expect(effects.routeFromNewRouterParams).toHaveBeenCalledWith(
-      {episodeIds: [123], chartType: CHARTTYPE_EPISODES, metricsType: METRICSTYPE_DOWNLOADS});
-  });
-
-  it('routes to single episode on a specific page', () => {
-    const action = new ACTIONS.RouteSingleEpisodeChartedAction({episodeId: 123, chartType: CHARTTYPE_EPISODES, episodePage: 2});
-    store.dispatch(action);
-    actions$.stream = hot('-a', { a: action });
-    const expected = cold('-r', { r: null });
-    expect(effects.routeSingleEpisodeCharted$).toBeObservable(expected);
-    expect(effects.routeFromNewRouterParams).toHaveBeenCalledWith(
-      {episodeIds: [123], chartType: CHARTTYPE_EPISODES, episodePage: 2, metricsType: METRICSTYPE_DOWNLOADS});
-  });
-
-  it('should route to toggle episode charted ', () => {
-    const action = new ACTIONS.RouteToggleEpisodeChartedAction({episodeId: 123, charted: false});
-    store.dispatch(action);
-    actions$.stream = hot('-a', { a: action });
-    const expected = cold('-r', { r: null });
-    expect(effects.routeToggleEpisodeCharted$).toBeObservable(expected);
-    expect(effects.routeFromNewRouterParams).toHaveBeenCalledWith({episodeIds: routerParams.episodeIds.filter(id => id !== 123)});
+    expect(effects.routingService.normalizeAndRoute).toHaveBeenCalledWith({episodePage: 1});
   });
 
   it('should route to chart type', () => {
@@ -163,7 +116,7 @@ describe('RoutingEffects', () => {
     actions$.stream = hot('-a', { a: action });
     const expected = cold('-r', { r: null });
     expect(effects.routeChartType$).toBeObservable(expected);
-    expect(effects.routeFromNewRouterParams).toHaveBeenCalledWith({chartType: CHARTTYPE_EPISODES});
+    expect(effects.routingService.normalizeAndRoute).toHaveBeenCalledWith({chartType: CHARTTYPE_EPISODES});
   });
 
   it('should route to interval', () => {
@@ -172,7 +125,7 @@ describe('RoutingEffects', () => {
     actions$.stream = hot('-a', { a: action });
     const expected = cold('-r', { r: null });
     expect(effects.routeInterval$).toBeObservable(expected);
-    expect(effects.routeFromNewRouterParams).toHaveBeenCalledWith({interval: INTERVAL_HOURLY});
+    expect(effects.routingService.normalizeAndRoute).toHaveBeenCalledWith({interval: INTERVAL_HOURLY});
   });
 
   it('should route to standard range and include begin and end dates', () => {
@@ -181,7 +134,7 @@ describe('RoutingEffects', () => {
     actions$.stream = hot('-a', { a: action });
     const expected = cold('-r', { r: null });
     expect(effects.routeStandardRange$).toBeObservable(expected);
-    expect(effects.routeFromNewRouterParams).toHaveBeenCalledWith({
+    expect(effects.routingService.normalizeAndRoute).toHaveBeenCalledWith({
       standardRange: dateUtil.LAST_WEEK,
       beginDate: dateUtil.beginningOfLastWeekUTC().toDate(),
       endDate: dateUtil.endOfLastWeekUTC().toDate()
@@ -199,7 +152,7 @@ describe('RoutingEffects', () => {
     actions$.stream = hot('-a', { a: action });
     const expected = cold('-r', { r: null });
     expect(effects.routeAdvancedRange$).toBeObservable(expected);
-    expect(effects.routeFromNewRouterParams).toHaveBeenCalled();
+    expect(effects.routingService.normalizeAndRoute).toHaveBeenCalled();
   });
 
   it('should route to metrics type', () => {
@@ -208,12 +161,6 @@ describe('RoutingEffects', () => {
     actions$.stream = hot('-a', { a: action });
     const expected = cold('-r', { r: null });
     expect(effects.routeMetricsType$).toBeObservable(expected);
-    expect(effects.routeFromNewRouterParams).toHaveBeenCalledWith({metricsType: METRICSTYPE_DOWNLOADS});
-  });
-
-  it('should save routerState in localStorage', () => {
-    localStorage.clear();
-    effects.routeFromNewRouterParams(routerParams);
-    expect(localStorageUtil.getItem(localStorageUtil.KEY_ROUTER_PARAMS).podcastSeriesId).toEqual(routerParams.podcastSeriesId);
+    expect(effects.routingService.normalizeAndRoute).toHaveBeenCalledWith({metricsType: METRICSTYPE_DOWNLOADS});
   });
 });

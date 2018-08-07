@@ -12,7 +12,6 @@ import { reducers, RootState } from '../../ngrx/reducers';
 
 import {
   CustomRouterNavigationAction,
-  CmsPodcastsSuccessAction,
   RoutePodcastAction,
   CastlePodcastPageSuccessAction
 } from '../../ngrx/actions';
@@ -36,8 +35,7 @@ describe('PodcastNavComponent', () => {
     }
   ];
   const routerParams: RouterParams = {
-    podcastId: podcasts[0].id,
-    podcastSeriesId: 0
+    podcastId: podcasts[0].id
   };
 
   beforeEach(async(() => {
@@ -77,7 +75,7 @@ describe('PodcastNavComponent', () => {
     let result;
     comp.podcasts$.subscribe(value => result = value);
     expect(result).toEqual([podcasts[0]]);
-    store.dispatch(new CastlePodcastPageSuccessAction({page: 1, podcasts: podcasts, total: podcasts.length}));
+    store.dispatch(new CastlePodcastPageSuccessAction({page: 1, podcasts, total: podcasts.length}));
     expect(result).toEqual(podcasts);
   });
 
@@ -85,6 +83,6 @@ describe('PodcastNavComponent', () => {
     spyOn(store, 'dispatch');
     comp.onPodcastChange(podcasts[1]);
     expect(store.dispatch).toHaveBeenCalledWith(
-      new RoutePodcastAction({podcastId: podcasts[1].id, podcastSeriesId: 0}));
+      new RoutePodcastAction({podcastId: podcasts[1].id}));
   });
 });

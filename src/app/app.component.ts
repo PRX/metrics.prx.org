@@ -4,7 +4,7 @@ import { Subscription } from 'rxjs/Subscription';
 import { Angulartics2GoogleAnalytics } from 'angulartics2/ga';
 import { HalDoc } from './core';
 import { Env } from './core/core.env';
-import { AccountModel, RouterParams } from './ngrx';
+import { AccountModel } from './ngrx';
 import { selectAccount, selectAccountError } from './ngrx/reducers/selectors';
 import * as ACTIONS from './ngrx/actions';
 import { Userinfo, UserinfoService } from 'ngx-prx-styleguide';

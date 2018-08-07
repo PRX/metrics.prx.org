@@ -6,8 +6,7 @@ describe('PodcastPerformanceMetricsReducer', () => {
   beforeEach(() => {
     newState = PodcastPerformanceMetricsReducer(undefined,
       new ACTIONS.CastlePodcastPerformanceMetricsLoadAction({
-        seriesId: 37800,
-        feederId: '70'
+        id: '70'
       }));
   });
 
@@ -17,8 +16,7 @@ describe('PodcastPerformanceMetricsReducer', () => {
 
   it('should set podcast performance numbers on success', () => {
     newState = PodcastPerformanceMetricsReducer(newState, new ACTIONS.CastlePodcastPerformanceMetricsSuccessAction({
-      seriesId: 37800,
-      feederId: '70',
+      id: '70',
       total: 10,
       previous7days: 6,
       this7days: 4,
@@ -31,8 +29,7 @@ describe('PodcastPerformanceMetricsReducer', () => {
 
   it('should set error on failure', () => {
     newState = PodcastPerformanceMetricsReducer(newState, new ACTIONS.CastlePodcastPerformanceMetricsFailureAction({
-      seriesId: 37800,
-      feederId: '70',
+      id: '70',
       error: 'This is an error'
     }));
     expect(newState.entities['70'].loading).toBe(false);
@@ -42,8 +39,7 @@ describe('PodcastPerformanceMetricsReducer', () => {
 
   it('loading should not clear performance values', () => {
     newState = PodcastPerformanceMetricsReducer(newState, new ACTIONS.CastlePodcastPerformanceMetricsSuccessAction({
-      seriesId: 37800,
-      feederId: '70',
+      id: '70',
       total: 10,
       previous7days: 6,
       this7days: 4,
@@ -54,8 +50,7 @@ describe('PodcastPerformanceMetricsReducer', () => {
     expect(newState.entities['70'].total).toEqual(10);
     newState = PodcastPerformanceMetricsReducer(newState,
       new ACTIONS.CastlePodcastPerformanceMetricsLoadAction({
-        seriesId: 37800,
-        feederId: '70'
+        id: '70'
       }));
     expect(newState.entities['70'].loaded).toBe(false);
     expect(newState.entities['70'].loading).toBe(true);

@@ -27,7 +27,7 @@ export function PodcastPerformanceMetricsReducer(state: PodcastPerformanceMetric
       return {
         entities: {
           ...state.entities,
-          [id]: {...state.entities[id], oading: true, loaded: false}
+          [id]: {...state.entities[id], loading: true, loaded: false}
         }
       };
     }

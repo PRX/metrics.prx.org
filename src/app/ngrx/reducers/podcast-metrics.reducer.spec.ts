@@ -1,14 +1,10 @@
 import { CastlePodcastMetricsSuccessAction } from '../actions/castle.action.creator';
 import { RouterParams, INTERVAL_DAILY, MetricsType, METRICSTYPE_DOWNLOADS, getMetricsProperty } from './models';
 import { PodcastMetricsReducer } from './podcast-metrics.reducer';
+import { podcast } from '../../../testing/downloads.fixtures';
 
 describe('PodcastMetricsReducer', () => {
   let newState;
-  const podcast = {
-    seriesId: 37800,
-    feederId: '70',
-    title: 'Pet Talks Daily'
-  };
   const routerParams: RouterParams = {
     metricsType: <MetricsType>METRICSTYPE_DOWNLOADS,
     beginDate: new Date('2017-08-27T00:00:00Z'),
@@ -19,7 +15,7 @@ describe('PodcastMetricsReducer', () => {
   beforeEach(() => {
     newState = PodcastMetricsReducer(undefined,
       new CastlePodcastMetricsSuccessAction({
-        id: podcast.feederId,
+        id: podcast.id,
         metricsPropertyName,
         metrics: []
       })
@@ -28,13 +24,13 @@ describe('PodcastMetricsReducer', () => {
 
   it('should update with new podcast metrics', () => {
     expect(newState.length).toEqual(1);
-    expect(newState[0].seriesId).toEqual(37800);
+    expect(newState[0].id).toEqual(podcast.id);
   });
 
   it('should update existing podcast metrics keyed by id', () => {
     newState = PodcastMetricsReducer(newState,
       new CastlePodcastMetricsSuccessAction({
-        id: podcast.feederId,
+        id: podcast.id,
         metricsPropertyName,
         metrics: [
           ['2017-08-27T00:00:00Z', 52522],
@@ -53,7 +49,7 @@ describe('PodcastMetricsReducer', () => {
       })
     );
     expect(newState.length).toEqual(1);
-    expect(newState[0].seriesId).toEqual(37800);
+    expect(newState[0].id).toEqual(podcast.id);
     expect(newState[0].dailyReach.length).toEqual(12);
     expect(newState[0].dailyReach[0][1]).toEqual(52522);
   });

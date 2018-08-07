@@ -41,24 +41,22 @@ describe('DownloadsChartContainerComponent', () => {
 
       store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerParams}));
       store.dispatch(new ACTIONS.CastleEpisodePageSuccessAction({
-        episodes: episodes.map(e => {
-          return {guid: e.guid, title: e.title, publishedAt: e.publishedAt, page: e.page, podcastId: e.feederId};
-        }),
+        episodes,
         page: 1,
         total: episodes.length
       }));
       store.dispatch(new ACTIONS.CastleEpisodeMetricsSuccessAction({
-        podcastId: episodes[0].feederId, page: episodes[0].page, guid: episodes[0].guid,
+        podcastId: episodes[0].podcastId, page: episodes[0].page, guid: episodes[0].guid,
         metricsPropertyName, metrics: ep0Downloads}));
       store.dispatch(new ACTIONS.CastleEpisodeMetricsSuccessAction({
-        podcastId: episodes[1].feederId, page: episodes[1].page, guid: episodes[1].guid,
+        podcastId: episodes[1].podcastId, page: episodes[1].page, guid: episodes[1].guid,
         metricsPropertyName, metrics: ep1Downloads}));
       store.dispatch(new ACTIONS.CastlePodcastMetricsSuccessAction({
-        id: podcast.feederId, metricsPropertyName, metrics: podDownloads}));
+        id: podcast.id, metricsPropertyName, metrics: podDownloads}));
     });
   }));
 
-  it('should have router state', () => {
+  it('should have router params', () => {
     let result;
     comp.routerParams$.subscribe(value => result = value);
     expect(result).toEqual(routerParams);

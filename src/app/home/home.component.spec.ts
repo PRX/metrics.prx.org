@@ -10,7 +10,7 @@ import { SharedModule } from '../shared';
 import { HomeComponent } from './home.component';
 
 import { reducers } from '../ngrx/reducers';
-import { CmsPodcastsFailureAction } from '../ngrx/actions';
+import { CastlePodcastPageFailureAction } from '../ngrx/actions';
 
 describe('HomeComponent', () => {
   let comp: HomeComponent;
@@ -47,7 +47,7 @@ describe('HomeComponent', () => {
   });
 
   it('should inform users if they don\'t have any podcasts', () => {
-    comp.store.dispatch(new CmsPodcastsFailureAction({error: 'error is type any so we can also capture response errors'}));
+    comp.store.dispatch(new CastlePodcastPageFailureAction({error: 'error is type any so we can also capture response errors'}));
     fix.detectChanges();
     expect(de.query(By.css('p.error'))).not.toBeNull();
   });

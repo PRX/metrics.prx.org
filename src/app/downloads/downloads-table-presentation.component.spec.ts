@@ -38,7 +38,7 @@ describe('DownloadsTablePresentationComponent', () => {
       comp.podcastTableData = {
         title: 'All Episodes',
         color: neutralColor,
-        id: podcast.feederId,
+        id: podcast.id,
         downloads: [],
         totalForPeriod: 0,
         charted: true

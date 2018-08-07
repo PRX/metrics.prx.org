@@ -11,8 +11,7 @@ import { SharedModule } from './shared';
 import { AppComponent } from './app.component';
 
 import { reducers } from './ngrx/reducers';
-import { AccountModel, PodcastModel, RouterParams, ChartType, MetricsType,
-  CHARTTYPE_PODCAST, INTERVAL_DAILY, METRICSTYPE_DOWNLOADS } from './ngrx';
+import { AccountModel } from './ngrx';
 import * as ACTIONS from './ngrx/actions';
 import { Userinfo, UserinfoService } from 'ngx-prx-styleguide';
 import { Observable } from 'rxjs/Observable';
@@ -32,15 +31,6 @@ describe('AppComponent', () => {
   userinfo.name = 'Joey JoJo Jr Shabadoo';
 
   const account: AccountModel = {id: 1234, name: 'Joey JoJo Jr Shabadoo'};
-  const podcasts: PodcastModel[] = [{seriesId: 9876, title: 'Foobar'}];
-  const routerParams: RouterParams = {
-    podcastSeriesId: 9876,
-    metricsType: <MetricsType>METRICSTYPE_DOWNLOADS,
-    chartType: <ChartType>CHARTTYPE_PODCAST,
-    beginDate: new Date('2017-08-27T00:00:00Z'),
-    endDate: new Date('2017-09-07T00:00:00Z'),
-    interval: INTERVAL_DAILY
-  };
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -50,7 +40,7 @@ describe('AppComponent', () => {
       ],
       imports: [
         RouterTestingModule.withRoutes([
-          { path: ':seriesId/downloads/:chartType/:interval', component: MockAuthComponent }
+          { path: ':seriesId/reach/:chartType/:interval', component: MockAuthComponent }
         ]),
         CoreModule,
         SharedModule,
@@ -88,7 +78,6 @@ describe('AppComponent', () => {
       el = de.nativeElement;
       store = TestBed.get(Store);
       store.dispatch(new ACTIONS.CmsAccountSuccessAction({account}));
-      store.dispatch(new ACTIONS.CmsPodcastsSuccessAction({podcasts}));
       fix.detectChanges();
     });
   }));
@@ -112,10 +101,4 @@ describe('AppComponent', () => {
     expect(de.query(By.css('prx-navuser'))).toBeNull();
     expect(el.textContent).not.toContain('Joey JoJo Jr Shabadoo');
   }));
-
-  /*it('should dispatch episode load action when series or page has changed', () => {
-    spyOn(store, 'dispatch').and.callThrough();
-    store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerParams}));
-    expect(store.dispatch).toHaveBeenCalledWith(jasmine.any(ACTIONS.CmsPodcastEpisodePageAction));
-  });*/
 });

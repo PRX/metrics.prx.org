@@ -1,4 +1,6 @@
 import { reducer, initialState } from './castle-podcast.reducer';
+import * as ACTIONS from '../actions';
+import { podcast } from '../../../testing/downloads.fixtures';
 
 describe('Podcast Reducer', () => {
   describe('unknown action', () => {
@@ -9,5 +11,16 @@ describe('Podcast Reducer', () => {
 
       expect(result).toBe(initialState);
     });
+  });
+
+  it('should set podcast entities podcast page success', () => {
+    const newState = reducer(initialState,
+      new ACTIONS.CastlePodcastPageSuccessAction({page: 1, total: 1, all: true, podcasts: [podcast]}));
+    expect(newState.entities[podcast.id]).toEqual(podcast);
+  });
+
+  it('should set error on failure', () => {
+    const newState = reducer(initialState, new ACTIONS.CastlePodcastPageFailureAction({error: 'something went wrong'}));
+    expect(newState.error).not.toBeUndefined();
   });
 });

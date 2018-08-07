@@ -111,5 +111,5 @@ export class RoutingEffects {
  );
 
   constructor(private actions$: Actions,
-              private routingService: RoutingService) {}
+              public routingService: RoutingService) {}
 }

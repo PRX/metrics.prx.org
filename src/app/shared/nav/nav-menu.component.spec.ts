@@ -13,7 +13,6 @@ import { RouterParams, ChartType, MetricsType,
 import * as ACTIONS from '../../ngrx/actions';
 
 import { NavMenuComponent } from './nav-menu.component';
-import { ProfileComponent } from '../profile/profile.component';
 
 @Component({
   selector: 'metrics-test-component',
@@ -42,7 +41,7 @@ describe('NavMenuComponent', () => {
   };
 
   const routerParams: RouterParams = {
-    podcastSeriesId: podcasts[0].seriesId,
+    podcastId: podcasts[0].id,
     metricsType: <MetricsType>METRICSTYPE_DOWNLOADS,
     chartType: <ChartType>CHARTTYPE_PODCAST,
     interval: INTERVAL_DAILY
@@ -52,7 +51,6 @@ describe('NavMenuComponent', () => {
     TestBed.configureTestingModule({
       declarations: [
         NavMenuComponent,
-        ProfileComponent,
         AbrevNumberPipe,
         TestComponent
       ],
@@ -70,8 +68,7 @@ describe('NavMenuComponent', () => {
       store = TestBed.get(Store);
 
       store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerParams}));
-      store.dispatch(new ACTIONS.CmsPodcastsSuccessAction({podcasts}));
-      store.dispatch(new ACTIONS.CmsRecentEpisodeSuccessAction({episode}));
+      store.dispatch(new ACTIONS.CastlePodcastPageSuccessAction({podcasts, page: 1, total: podcasts.length}));
       fix.detectChanges();
       navLinks = de.queryAll(By.css('button'));
 

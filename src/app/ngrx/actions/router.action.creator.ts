@@ -25,39 +25,6 @@ export class RoutePodcastAction implements Action {
   constructor(public payload: RoutePodcastPayload) {}
 }
 
-export interface RouteEpisodesChartedPayload {
-  episodeIds: number[];
-}
-
-export class RouteEpisodesChartedAction implements Action {
-  readonly type = ActionTypes.ROUTE_EPISODES_CHARTED;
-
-  constructor(public payload: RouteEpisodesChartedPayload) {}
-}
-
-export interface RouteSingleEpisodeChartedPayload {
-  episodeId: number;
-  chartType?: ChartType;
-  episodePage?: number;
-}
-
-export class RouteSingleEpisodeChartedAction implements Action {
-  readonly type = ActionTypes.ROUTE_SINGLE_EPISODE_CHARTED;
-
-  constructor(public payload: RouteSingleEpisodeChartedPayload) {}
-}
-
-export interface RouteToggleEpisodeChartedPayload {
-  episodeId: number;
-  charted: boolean;
-}
-
-export class RouteToggleEpisodeChartedAction {
-  readonly type = ActionTypes.ROUTE_TOGGLE_EPISODE_CHARTED;
-
-  constructor(public payload: RouteToggleEpisodeChartedPayload) {}
-}
-
 export interface RouteChartTypePayload {
   chartType: ChartType;
 }
@@ -109,16 +76,6 @@ export class RouteEpisodePageAction implements Action {
   readonly type = ActionTypes.ROUTE_EPISODE_PAGE;
 
   constructor(public payload: RouteEpisodePagePayload) {}
-}
-
-export interface RoutePodcastChartedPayload {
-  chartPodcast: boolean;
-}
-
-export class RoutePodcastChartedAction implements Action {
-  readonly type = ActionTypes.ROUTE_PODCAST_CHARTED;
-
-  constructor(public payload: RoutePodcastChartedPayload) {}
 }
 
 export interface RouteMetricsTypePayload {

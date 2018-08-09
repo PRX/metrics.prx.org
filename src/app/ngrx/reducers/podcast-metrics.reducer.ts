@@ -6,6 +6,7 @@ export interface PodcastMetricsModel {
   weeklyReach?: any[][];
   dailyReach?: any[][];
   hourlyReach?: any[][];
+  charted?: boolean;
   loaded?: boolean;
   loading?: boolean;
   error?: any;
@@ -27,7 +28,7 @@ export function PodcastMetricsReducer(state: PodcastMetricsModel[] = initialStat
         podcast = {...state[podcastIdx], loading: true, loaded: false};
         newState = [...state.slice(0, podcastIdx), podcast, ...state.slice(podcastIdx + 1)];
       } else {
-        podcast = {id, loading: true, loaded: false};
+        podcast = {id, charted: true, loading: true, loaded: false};
         newState = [podcast, ...state];
       }
       return newState;
@@ -41,7 +42,7 @@ export function PodcastMetricsReducer(state: PodcastMetricsModel[] = initialStat
         podcast[metricsPropertyName] = metrics;
         newState = [...state.slice(0, podcastIdx), podcast, ...state.slice(podcastIdx + 1)];
       } else {
-        podcast = {id, loading: false, loaded: true};
+        podcast = {id, charted: true, loading: false, loaded: true};
         podcast[metricsPropertyName] = metrics;
         newState = [podcast, ...state];
       }
@@ -60,6 +61,15 @@ export function PodcastMetricsReducer(state: PodcastMetricsModel[] = initialStat
       }
       return newState;
     }
+    case ACTIONS.ActionTypes.CHART_TOGGLE_PODCAST: {
+      const { id, charted } = action.payload;
+      const podcastIdx = podcastIndex(state, id);
+      if (podcastIdx > -1) {
+        const podcast = {...state[podcastIdx], charted};
+        return [...state.slice(0, podcastIdx), podcast, ...state.slice(podcastIdx + 1)];
+      }
+    }
+    break;
   }
   return state;
 }

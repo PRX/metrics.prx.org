@@ -68,8 +68,8 @@ describe('Downloads Table Selectors', () => {
       expect(result.allTimeDownloads).toEqual(metricsUtil.getTotal(podDownloads));
     });
 
-    xit('should keep podcast in table for stacked chart when unselected for charting', () => {
-      store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerParams: {...routerParams/*, chartPodcast: false*/}}));
+    it('should keep podcast in table for stacked chart when unselected for charting', () => {
+      store.dispatch(new ACTIONS.ChartTogglePodcastAction({id: podcast.id, charted: false}));
       expect(result.allTimeDownloads).toEqual(podPerformance.total);
     });
   });

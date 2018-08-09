@@ -15,9 +15,9 @@ export class DownloadsTablePresentationComponent {
   @Input() episodeTableData: DownloadsTableModel[];
   @Input() routerParams: RouterParams;
   @Input() expanded = false;
-  @Output() toggleChartPodcast = new EventEmitter<boolean>();
-  @Output() toggleChartEpisode = new EventEmitter<{episodeId: number, charted: boolean}>();
-  @Output() chartSingleEpisode = new EventEmitter<number>();
+  @Output() toggleChartPodcast = new EventEmitter<{id: string, charted: boolean}>();
+  @Output() toggleChartEpisode = new EventEmitter<{episodeId: string, charted: boolean}>();
+  @Output() chartSingleEpisode = new EventEmitter<string>();
   @Output() pageChange = new EventEmitter<number>();
   @Output() toggleExpandedReport = new EventEmitter();
   bindToIntervalHourly = INTERVAL_HOURLY;

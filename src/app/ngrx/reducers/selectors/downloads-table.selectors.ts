@@ -32,7 +32,7 @@ export const selectDownloadTablePodcastMetrics = createSelector(
           downloads: mapMetricsToTimeseriesData(data),
           color: routerParams.chartType === CHARTTYPE_PODCAST ? standardColor : neutralColor,
           totalForPeriod,
-          charted: true/*routerParams.chartPodcast*/
+          charted: podcastMetrics.charted
         };
         if (podcastPerformanceMetrics) {
           if (totalForPeriod > podcastPerformanceMetrics.total) {
@@ -74,7 +74,7 @@ export const selectDownloadTableEpisodeMetrics = createSelector(
             downloads: mapMetricsToTimeseriesData(data),
             color: getColor(idx),
             totalForPeriod,
-            charted: true/* routerParams.episodeIds.indexOf(episode.id) >= 0 */
+            charted: metrics.charted
           };
           if (performanceMetrics) {
             if (totalForPeriod > performanceMetrics.total) {

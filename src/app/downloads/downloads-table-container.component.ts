@@ -40,16 +40,17 @@ export class DownloadsTableContainerComponent implements OnInit {
     this.routerParams$ = this.store.pipe(select(selectRouter));
   }
 
-  toggleChartPodcast(chartPodcast: boolean) {
-    this.store.dispatch(new ACTIONS.RoutePodcastChartedAction({chartPodcast}));
+  toggleChartPodcast(params: {id: string, charted: boolean}) {
+    this.store.dispatch(new ACTIONS.ChartTogglePodcastAction({...params}));
   }
 
-  toggleChartEpisode(params: {episodeId: number, charted: boolean}) {
-    this.store.dispatch(new ACTIONS.RouteToggleEpisodeChartedAction({episodeId: params.episodeId, charted: params.charted}));
+  toggleChartEpisode(params: {guid: string, charted: boolean}) {
+    this.store.dispatch(new ACTIONS.ChartToggleEpisodeAction({...params}));
   }
 
-  onChartSingleEpisode(episodeId: number) {
-    this.store.dispatch(new ACTIONS.RouteSingleEpisodeChartedAction({episodeId, chartType: CHARTTYPE_EPISODES}));
+  onChartSingleEpisode(guid: string) {
+    this.store.dispatch(new ACTIONS.ChartSingleEpisodeAction({guid}));
+    this.store.dispatch(new ACTIONS.RouteChartTypeAction({chartType: CHARTTYPE_EPISODES}));
   }
 
   onPageChange(episodePage: number) {

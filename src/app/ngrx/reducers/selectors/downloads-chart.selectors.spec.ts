@@ -73,17 +73,15 @@ describe('Downloads Chart Selectors', () => {
       expect(result).toBeUndefined();
     });
 
-    // TODO: fix/keep charted episodes on route?
-    xit('should only include charted episodes', () => {
+    it('should only include charted episodes', () => {
       expect(result.length).toEqual(3);
-      store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerParams: {...routerParams}}));
+      store.dispatch(new ACTIONS.ChartToggleEpisodeAction({guid: episodes[0].guid, charted: false}));
       expect(result.length).toEqual(2);
     });
 
-    // TODO
-    xit('should only include podcast if charted', () => {
+    it('should only include podcast if charted', () => {
       expect(result.length).toEqual(3);
-      store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerParams: {...routerParams}}));
+      store.dispatch(new ACTIONS.ChartTogglePodcastAction({id: podcast.id, charted: false}));
       expect(result.length).toEqual(2);
     });
 
@@ -115,9 +113,8 @@ describe('Downloads Chart Selectors', () => {
       expect(result[0].data[0].value).toEqual(<number>podDownloads[0][1]);
     });
 
-    // TODO
-    xit('should include podcast regardless of whether or not it is set to charted', () => {
-      store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerParams: {}}));
+    it('should include podcast regardless of whether or not it is set to charted', () => {
+      store.dispatch(new ACTIONS.ChartTogglePodcastAction({id: podcast.id, charted: false}));
       expect(result).not.toBeUndefined();
       expect(result[0].label).toContain('All Episodes');
     });
@@ -160,11 +157,10 @@ describe('Downloads Chart Selectors', () => {
       expect(result).toBeUndefined();
     });
 
-    // TODO: fix/keep charted episodes on route?
-    xit('should only include charted episodes', () => {
-      expect(result.length).toEqual(2);
-      store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerParams: {}}));
-      expect(result.length).toEqual(1);
+    it('should only include charted episodes', () => {
+      expect(result.length).toEqual(episodes.length);
+      store.dispatch(new ACTIONS.ChartToggleEpisodeAction({guid: episodes[0].guid, charted: false}));
+      expect(result.length).toEqual(episodes.length - 1);
     });
   });
 

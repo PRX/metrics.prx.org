@@ -1,4 +1,4 @@
-import { reducer, initialState } from './castle-podcast.reducer';
+import { reducer, initialState } from './podcast.reducer';
 import * as ACTIONS from '../actions';
 import { podcast } from '../../../testing/downloads.fixtures';
 

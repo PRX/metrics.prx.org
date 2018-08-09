@@ -1,5 +1,5 @@
 import { createSelector, createFeatureSelector } from '@ngrx/store';
-import * as fromPodcast from '../castle-podcast.reducer';
+import * as fromPodcast from '../podcast.reducer';
 import { selectPodcastRoute } from './router.selectors';
 
 export const selectPodcastState = createFeatureSelector<fromPodcast.State>('podcast');

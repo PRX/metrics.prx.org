@@ -1,10 +1,10 @@
 import { ActionReducerMap } from '@ngrx/store';
 import { RouterReducerState, routerReducer } from '@ngrx/router-store';
 import { AccountReducer, AccountState } from './account.reducer';
-import * as fromPodcast from './castle-podcast.reducer';
+import * as fromPodcast from './podcast.reducer';
 import { PodcastMetricsReducer, PodcastMetricsModel } from './podcast-metrics.reducer';
 import { PodcastPerformanceMetricsReducer, PodcastPerformanceMetricsState } from './podcast-performance-metrics.reducer';
-import * as fromEpisode from './castle-episode.reducer';
+import * as fromEpisode from './episode.reducer';
 import { EpisodeMetricsReducer, EpisodeMetricsModel } from './episode-metrics.reducer';
 import { EpisodePerformanceMetricsReducer, EpisodePerformanceMetricsState } from './episode-performance-metrics.reducer';
 import { CustomRouterReducer } from './router.reducer';

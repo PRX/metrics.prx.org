@@ -1,6 +1,6 @@
 import { createSelector } from '@ngrx/store';
-import { selectEpisodeError } from './castle-episode.selectors';
-import { selectPodcastError } from './castle-podcast.selectors';
+import { selectEpisodeError } from './episode.selectors';
+import { selectPodcastError } from './podcast.selectors';
 import { selectEpisodeMetricsError } from './episode-metrics.selectors';
 import { selectPodcastMetricsError } from './podcast-metrics.selectors';
 import { errorType } from './error.type';

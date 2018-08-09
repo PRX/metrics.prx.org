@@ -2,7 +2,7 @@ import { createSelector } from '@ngrx/store';
 import { TimeseriesChartModel } from 'ngx-prx-styleguide';
 import { Episode, RouterParams, CHARTTYPE_EPISODES, CHARTTYPE_PODCAST, CHARTTYPE_STACKED } from '../models';
 import { selectRouter } from './router.selectors';
-import { selectRoutedPageEpisodes } from './castle-episode.selectors';
+import { selectRoutedPageEpisodes } from './episode.selectors';
 import { PodcastMetricsModel } from '../podcast-metrics.reducer';
 import { selectRoutedPodcastMetrics } from './podcast-metrics.selectors';
 import { EpisodeMetricsModel } from '../episode-metrics.reducer';

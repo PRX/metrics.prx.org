@@ -1,5 +1,5 @@
 import { createSelector, createFeatureSelector } from '@ngrx/store';
-import * as fromEpisode from '../castle-episode.reducer';
+import * as fromEpisode from '../episode.reducer';
 import { Episode, EPISODE_PAGE_SIZE } from '../models';
 import { selectPageRoute, selectPodcastRoute } from './router.selectors';
 

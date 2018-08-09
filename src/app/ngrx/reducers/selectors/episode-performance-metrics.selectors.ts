@@ -2,7 +2,7 @@ import { createSelector } from '@ngrx/store';
 import { RootState, selectAppState } from '../';
 import { getEpisodePerformanceMetricsEntities, EpisodePerformanceMetricsModel } from '../episode-performance-metrics.reducer';
 import { Episode } from '../models/episode.model';
-import { selectRoutedPageEpisodes } from './castle-episode.selectors';
+import { selectRoutedPageEpisodes } from './episode.selectors';
 
 export const selectEpisodePerformanceMetricsState = createSelector(selectAppState, (state: RootState) => state.episodePerformanceMetrics);
 export const selectEpisodePerformanceMetricsEntities = createSelector(selectEpisodePerformanceMetricsState,

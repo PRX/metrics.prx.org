@@ -1,6 +1,6 @@
 import { createSelector } from '@ngrx/store';
-import { selectRoutedPageLoading } from './castle-episode.selectors';
-import { selectRoutedPodcast } from './castle-podcast.selectors';
+import { selectRoutedPageLoading } from './episode.selectors';
+import { selectRoutedPodcast } from './podcast.selectors';
 import { selectEpisodeMetricsLoading } from './episode-metrics.selectors';
 import { selectPodcastMetricsLoading } from './podcast-metrics.selectors';
 

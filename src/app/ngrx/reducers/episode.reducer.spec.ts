@@ -1,4 +1,4 @@
-import { reducer, initialState } from './castle-episode.reducer';
+import { reducer, initialState } from './episode.reducer';
 import * as ACTIONS from '../actions';
 import { episodes } from '../../../testing/downloads.fixtures';
 

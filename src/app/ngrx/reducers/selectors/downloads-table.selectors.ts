@@ -1,7 +1,7 @@
 import { createSelector } from '@ngrx/store';
 import { Episode, RouterParams, DownloadsTableModel, CHARTTYPE_PODCAST, CHARTTYPE_EPISODES } from '../models';
 import { selectRouter } from './router.selectors';
-import { selectRoutedPageEpisodes } from './castle-episode.selectors';
+import { selectRoutedPageEpisodes } from './episode.selectors';
 import { PodcastMetricsModel } from '../podcast-metrics.reducer';
 import { selectRoutedPodcastMetrics } from './podcast-metrics.selectors';
 import { PodcastPerformanceMetricsModel } from '../podcast-performance-metrics.reducer';

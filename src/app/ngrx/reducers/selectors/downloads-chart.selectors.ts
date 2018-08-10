@@ -38,7 +38,7 @@ export const selectDownloadChartMetrics = createSelector(
 
     if (routerParams.chartType === CHARTTYPE_EPISODES || routerParams.chartType === CHARTTYPE_STACKED) {
       if (episodes.length && episodeMetrics.length) {
-        const allEpisodes = episodes
+        chartedEpisodeMetrics = episodes
           .sort((a: Episode, b: Episode) => b.publishedAt.valueOf() - a.publishedAt.valueOf())
           .map((episode: Episode, idx) => {
             return {
@@ -46,8 +46,7 @@ export const selectDownloadChartMetrics = createSelector(
               label: episode.title,
               color: getColor(idx)
             };
-          });
-        chartedEpisodeMetrics = allEpisodes
+          })
           .filter(episode => metricsData(routerParams, episodeMetrics.find(e => e.charted && e.guid === episode.guid)))
           .map((episode) => {
             return {

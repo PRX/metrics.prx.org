@@ -63,23 +63,22 @@ describe('DownloadsTableContainerComponent', () => {
     });
   }));
 
-  // TODO: will be dispatching new/different actions
-  /*
-  it('should dispatch routing action on podcast chart toggle', () => {
-    comp.toggleChartPodcast(false);
-    expect(store.dispatch).toHaveBeenCalledWith(new ACTIONS.RoutePodcastChartedAction({chartPodcast: false}));
+  it('should dispatch action on podcast chart toggle', () => {
+    comp.toggleChartPodcast({id: routerParams.podcastId, charted: false});
+    expect(store.dispatch).toHaveBeenCalledWith(new ACTIONS.ChartTogglePodcastAction({id: routerParams.podcastId, charted: false}));
   });
 
-  it('should dispatch routing action on episode chart toggle', () => {
-    comp.toggleChartEpisode({episodeId: episodes[0].id, charted: false});
-    expect(store.dispatch).toHaveBeenCalledWith(new ACTIONS.RouteToggleEpisodeChartedAction({episodeId: 123, charted: false}));
+  it('should dispatch action on episode chart toggle', () => {
+    comp.toggleChartEpisode({guid: episodes[0].guid, charted: false});
+    expect(store.dispatch).toHaveBeenCalledWith(new ACTIONS.ChartToggleEpisodeAction({guid: episodes[0].guid, charted: false}));
   });
 
-  it('should dispatch routing action on chart single episode', () => {
-    comp.onChartSingleEpisode(episodes[1].id);
-    expect(store.dispatch).toHaveBeenCalledWith(new ACTIONS.RouteSingleEpisodeChartedAction(
-      {episodeId: 124, chartType: CHARTTYPE_EPISODES}));
-  });*/
+  it('should dispatch action on chart single episode and route to episode chart', () => {
+    comp.onChartSingleEpisode(episodes[1].guid);
+    expect(store.dispatch).toHaveBeenCalledWith(new ACTIONS.ChartSingleEpisodeAction(
+      {guid: episodes[1].guid}));
+    expect(store.dispatch).toHaveBeenCalledWith(new ACTIONS.RouteChartTypeAction({chartType: CHARTTYPE_EPISODES}));
+  });
 
   it('should dispatch routing action on episodePage change', () => {
     comp.onPageChange(2);

@@ -7,7 +7,7 @@ import { RoutingService } from './routing.service';
 import { StoreModule, Store } from '@ngrx/store';
 import { reducers } from '../../ngrx/reducers';
 import * as ACTIONS from '../../ngrx/actions';
-import { INTERVAL_DAILY, INTERVAL_MONTHLY } from '../../ngrx/';
+import {INTERVAL_DAILY, INTERVAL_MONTHLY, METRICSTYPE_DEMOGRAPHICS, METRICSTYPE_DOWNLOADS} from '../../ngrx/';
 import * as dateUtil from '../../shared/util/date/date.util';
 import * as localStorageUtil from '../../shared/util/local-storage.util';
 import { routerParams, episodes } from '../../../testing/downloads.fixtures';
@@ -27,7 +27,8 @@ describe('RoutingService', () => {
       declarations: [TestComponent],
       imports: [
         RouterTestingModule.withRoutes([
-          { path: ':seriesId/reach/:chartType/:interval', component: TestComponent }
+          { path: ':seriesId/reach/:chartType/:interval', component: TestComponent },
+          { path: ':seriesId/demographics', component: TestComponent }
         ]),
         StoreModule.forRoot(reducers)
       ],
@@ -74,6 +75,14 @@ describe('RoutingService', () => {
     }));
     store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerParams: {podcastId: routerParams.podcastId, episodePage: 2}}));
     store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerParams: {beginDate}}));
+    expect(routingService.loadMetrics).toHaveBeenCalled();
+  });
+
+  it('should reload metrics data if metrics type changes to reach/downloads', () => {
+    spyOn(routingService, 'loadMetrics').and.callThrough();
+    store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerParams: {...routerParams, metricsType: METRICSTYPE_DEMOGRAPHICS}}));
+    expect(routingService.loadMetrics).not.toHaveBeenCalled();
+    store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerParams: {...routerParams, metricsType: METRICSTYPE_DOWNLOADS}}));
     expect(routingService.loadMetrics).toHaveBeenCalled();
   });
 

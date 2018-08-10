@@ -55,7 +55,8 @@ export class RoutingService {
         // load episodes if podcast id changed or if the episode page changed or page has not been set
         if (this.isPodcastChanged(routerParams) || this.isEpisodesChanged(routerParams)) {
           this.loadEpisodes(routerParams);
-        } else if (this.isBeginDateChanged(routerParams) || this.isEndDateChanged(routerParams) || this.isIntervalChanged(routerParams)) {
+        } else if ((routerParams.metricsType === METRICSTYPE_DOWNLOADS && this.isMetricsTypeChanged(routerParams)) ||
+          (this.isBeginDateChanged(routerParams) || this.isEndDateChanged(routerParams) || this.isIntervalChanged(routerParams))) {
           // if episode page or podcast didn't change, check if other router params changed and load metrics
           // otherwise episode page loading will trigger loading of metrics (in order to load metrics for each loaded episode on that page)
           this.loadMetrics(routerParams);
@@ -129,6 +130,11 @@ export class RoutingService {
       routerParams.endDate = dateUtil.endOfTodayUTC().toDate();
     }
     return routerParams;
+  }
+
+  isMetricsTypeChanged(newRouterParams: RouterParams): boolean {
+    return newRouterParams && newRouterParams.metricsType &&
+      (!this.routerParams || this.routerParams.metricsType !== newRouterParams.metricsType);
   }
 
   isPodcastChanged(newRouterParams: RouterParams): boolean {

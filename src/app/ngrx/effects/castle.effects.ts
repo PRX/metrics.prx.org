@@ -14,7 +14,8 @@ import * as ACTIONS from '../actions';
 import { selectRouter } from '../reducers/selectors';
 import { HalDoc } from '../../core';
 import { CastleService } from '../../core';
-import { Episode, RouterParams, getMetricsProperty, PODCAST_PAGE_SIZE, EPISODE_PAGE_SIZE } from '../';
+import { Episode, RouterParams, getMetricsProperty, METRICSTYPE_DOWNLOADS,
+  PODCAST_PAGE_SIZE, EPISODE_PAGE_SIZE } from '../';
 import * as localStorageUtil from '../../shared/util/local-storage.util';
 
 @Injectable()
@@ -159,7 +160,8 @@ export class CastleEffects {
     ofType(ACTIONS.ActionTypes.CASTLE_EPISODE_PAGE_SUCCESS),
     filter((action: ACTIONS.CastleEpisodePageSuccessAction) => {
       const { page, episodes } = action.payload;
-      return episodes && episodes.length && this.routerParams && this.routerParams.episodePage === page;
+      return this.routerParams.metricsType === METRICSTYPE_DOWNLOADS &&
+        episodes && episodes.length && this.routerParams && this.routerParams.episodePage === page;
     }),
     map((action: ACTIONS.CastleEpisodePageSuccessAction) => action.payload),
     mergeMap((payload: ACTIONS.CastleEpisodePageSuccessPayload) => {

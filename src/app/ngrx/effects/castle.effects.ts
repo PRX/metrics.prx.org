@@ -225,7 +225,7 @@ export class CastleEffects {
     ofType(ACTIONS.ActionTypes.CASTLE_EPISODE_METRICS_LOAD),
     map((action: ACTIONS.CastleEpisodeMetricsLoadAction) => action.payload),
     mergeMap((payload: ACTIONS.CastleEpisodeMetricsLoadPayload) => {
-    const { podcastId, page, guid, metricsType, interval, beginDate, endDate } = payload;
+      const { podcastId, page, guid, metricsType, interval, beginDate, endDate } = payload;
       return this.castle.followList('prx:episode-downloads', {
         guid,
         from: beginDate.toISOString(),
@@ -259,7 +259,7 @@ export class CastleEffects {
     ofType(ACTIONS.ActionTypes.CASTLE_PODCAST_PERFORMANCE_METRICS_LOAD),
     map((action: ACTIONS.CastlePodcastPerformanceMetricsLoadAction) => action.payload),
     switchMap((payload: ACTIONS.CastlePodcastPerformanceMetricsLoadPayload) => {
-    const { id } = payload;
+      const { id } = payload;
       return this.castle
         .followList('prx:podcast', {id})
         .pipe(

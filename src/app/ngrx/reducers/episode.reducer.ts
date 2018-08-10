@@ -6,6 +6,7 @@ export interface State extends EntityState<Episode> {
   // additional entities state properties
   pagesLoaded: number[];
   pagesLoading: number[];
+  total: number;
   error?: any;
 }
 
@@ -22,7 +23,8 @@ export const adapter: EntityAdapter<Episode> = createEntityAdapter<Episode>({
 export const initialState: State = adapter.getInitialState({
   // additional entity state properties
   pagesLoaded: [],
-  pagesLoading: []
+  pagesLoading: [],
+  total: 0
 });
 
 export const addToArray = function(entries: number[], value: number) {
@@ -60,7 +62,8 @@ export function reducer(
       return {
         ...adapter.addMany(action.payload.episodes, state),
         pagesLoaded: addToArray(state.pagesLoaded, action.payload.page),
-        pagesLoading: removeFromArray(state.pagesLoading, action.payload.page)
+        pagesLoading: removeFromArray(state.pagesLoading, action.payload.page),
+        total: action.payload.page === 1 ? action.payload.total : state.total
       };
     }
     case ActionTypes.CASTLE_EPISODE_PAGE_FAILURE: {
@@ -84,4 +87,5 @@ export const selectAllEpisodes = selectAll;
 
 export const getPagesLoaded = (state: State) => state.pagesLoaded;
 export const getPagesLoading = (state: State) => state.pagesLoading;
+export const getTotal = (state: State) => state.total;
 export const getError = (state: State) => state.error;

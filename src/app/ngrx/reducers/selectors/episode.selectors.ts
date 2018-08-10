@@ -13,6 +13,10 @@ export const selectEpisodePagesLoading = createSelector(
   selectEpisodeState,
   fromEpisode.getPagesLoading
 );
+export const selectEpisodeTotal = createSelector(
+  selectEpisodeState,
+  fromEpisode.getTotal
+);
 export const selectEpisodeError = createSelector(
   selectEpisodeState,
   fromEpisode.getError
@@ -32,14 +36,12 @@ export const selectAllEpisodes = createSelector(
 );
 
 export const selectNumEpisodePages = createSelector(
-  selectPodcastRoute,
-  selectAllEpisodes,
-  (podcastId: string, allEpisodes: Episode[]) => {
-    const episodes = allEpisodes.filter(episode => episode.podcastId === podcastId);
-    if (episodes.length % EPISODE_PAGE_SIZE > 0) {
-      return Math.floor(episodes.length / EPISODE_PAGE_SIZE) + 1;
+  selectEpisodeTotal,
+  (total) => {
+    if (total % EPISODE_PAGE_SIZE > 0) {
+      return Math.floor(total / EPISODE_PAGE_SIZE) + 1;
     } else {
-      return Math.floor(episodes.length / EPISODE_PAGE_SIZE);
+      return Math.floor(total / EPISODE_PAGE_SIZE);
     }
   }
 );

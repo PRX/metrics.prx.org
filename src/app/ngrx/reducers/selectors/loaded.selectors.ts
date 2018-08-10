@@ -4,10 +4,21 @@ import { selectRoutedPodcastLoaded } from './podcast.selectors';
 import { selectEpisodeMetricsLoaded } from './episode-metrics.selectors';
 import { selectPodcastMetricsLoaded } from './podcast-metrics.selectors';
 
-export const selectCastleLoaded = createSelector(
+export const selectCatalogLoaded = createSelector(
   selectRoutedPageLoaded,
   selectRoutedPodcastLoaded,
+  (episodes, podcasts) => {
+    return episodes && podcasts;
+  });
+export const selectMetricsLoaded = createSelector(
   selectEpisodeMetricsLoaded,
   selectPodcastMetricsLoaded,
-  (episodes, podcasts, episodeMetrics, podcastMetrics) => episodes && podcasts && episodeMetrics && podcastMetrics);
-export const selectLoaded = selectCastleLoaded;
+  (episodeMetrics, podcastMetrics) => {
+    return episodeMetrics && podcastMetrics;
+  });
+export const selectLoaded = createSelector(
+  selectCatalogLoaded,
+  selectMetricsLoaded,
+  (catalog, metrics) => {
+    return catalog && metrics;
+  });

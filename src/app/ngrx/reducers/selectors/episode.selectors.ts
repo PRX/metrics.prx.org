@@ -44,8 +44,9 @@ export const selectNumEpisodePages = createSelector(
   }
 );
 
-export const selectRoutedPageEpisodes = createSelector(selectAllEpisodes, selectPageRoute, (episodes: Episode[], page: number) => {
-  return episodes.filter(episode => episode.page === page);
+export const selectRoutedPageEpisodes = createSelector(selectAllEpisodes, selectPodcastRoute, selectPageRoute,
+  (episodes: Episode[], podcastId: string, page: number) => {
+  return episodes.filter(episode => episode.podcastId === podcastId && episode.page === page);
 });
 
 export const selectRoutedPageLoaded = createSelector(selectEpisodePagesLoaded, selectPageRoute, (loaded: number[], page: number) => {

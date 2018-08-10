@@ -39,9 +39,7 @@ describe('AppComponent', () => {
         AppComponent
       ],
       imports: [
-        RouterTestingModule.withRoutes([
-          { path: ':seriesId/reach/:chartType/:interval', component: MockAuthComponent }
-        ]),
+        RouterTestingModule,
         CoreModule,
         SharedModule,
         StoreModule.forRoot(reducers)

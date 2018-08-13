@@ -187,16 +187,37 @@ describe('CastleEffects', () => {
     expect(effects.loadEpisodeMetrics$).toBeObservable(expected);
   });
 
-  it('should startWith loading page 1 of podcasts', () => {
-   const success = new ACTIONS.CastlePodcastPageSuccessAction({
+  it('should load podcasts on account success', () => {
+    const action = new ACTIONS.CmsAccountSuccessAction({
+      account: {
+        id: 111,
+        name: 'TheAccountName'
+      }
+    });
+    const success = new ACTIONS.CastlePodcastPageLoadAction({
+      page: 1,
+      all: true
+    });
+
+    actions$.stream = hot('-a', { a: action });
+    const expected = cold('-r', { r: success });
+    expect(effects.loadAccountSuccess$).toBeObservable(expected);
+  });
+
+  it('should load page 1 of podcasts', () => {
+    const action = new ACTIONS.CastlePodcastPageLoadAction({
+      page: 1,
+      all: true
+    });
+    const success = new ACTIONS.CastlePodcastPageSuccessAction({
       podcasts: [podcast],
       page: 1,
       total: 1,
       all: true
     });
 
-    actions$.stream = hot('-');
-    const expected = cold('r', { r: success });
+    actions$.stream = hot('-a', { a: action });
+    const expected = cold('-r', { r: success });
     expect(effects.loadPodcastPage$).toBeObservable(expected);
   });
 
@@ -221,8 +242,8 @@ describe('CastleEffects', () => {
     castle.root.mockItems('prx:podcasts', []);
     const action = new ACTIONS.CastlePodcastPageLoadAction({page: 1});
     const completion = new ACTIONS.CastlePodcastPageFailureAction({error: `Looks like you don't have any podcasts.`});
-    actions$.stream = hot('-', { a: action });
-    const expected = cold('r', { r: completion });
+    actions$.stream = hot('-a', { a: action });
+    const expected = cold('-r', { r: completion });
     expect(effects.loadPodcastPage$).toBeObservable(expected);
   });
 
@@ -231,8 +252,8 @@ describe('CastleEffects', () => {
     castle.root.mockError('prx:podcasts', error);
     const action = new ACTIONS.CastlePodcastPageLoadAction({page: 1});
     const completion = new ACTIONS.CastlePodcastPageFailureAction({error});
-    actions$.stream = hot('-', { a: action });
-    const expected = cold('r', { r: completion });
+    actions$.stream = hot('-a', { a: action });
+    const expected = cold('-r', { r: completion });
     expect(effects.loadPodcastPage$).toBeObservable(expected);
   });
 

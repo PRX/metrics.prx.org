@@ -5,7 +5,6 @@ import { filter } from 'rxjs/operators/filter';
 import { map } from 'rxjs/operators/map';
 import { mergeMap } from 'rxjs/operators/mergeMap';
 import { switchMap } from 'rxjs/operators/switchMap';
-import { startWith } from 'rxjs/operators/startWith';
 import { Observable } from 'rxjs/Observable';
 import { Actions, Effect, ofType } from '@ngrx/effects';
 import { Action, Store, select } from '@ngrx/store';
@@ -22,11 +21,18 @@ import * as localStorageUtil from '../../shared/util/local-storage.util';
 export class CastleEffects {
   routerParams: RouterParams;
 
+  @Effect()
+  loadAccountSuccess$: Observable<Action> = this.actions$.pipe(
+    ofType(ACTIONS.ActionTypes.CMS_ACCOUNT_SUCCESS),
+    switchMap(() => {
+      return Observable.of(new ACTIONS.CastlePodcastPageLoadAction({page: 1, all: true}));
+    })
+  );
+
   // basic - load > success/failure podcast page
   @Effect()
   loadPodcastPage$: Observable<Action> = this.actions$.pipe(
     ofType(ACTIONS.ActionTypes.CASTLE_PODCAST_PAGE_LOAD),
-    startWith(new ACTIONS.CastlePodcastPageLoadAction({page: 1, all: true})),
     map((action: ACTIONS.CastlePodcastPageLoadAction) => action.payload),
     switchMap((payload: ACTIONS.CastleEpisodePageLoadPayload) => {
       const { page, all } = payload;

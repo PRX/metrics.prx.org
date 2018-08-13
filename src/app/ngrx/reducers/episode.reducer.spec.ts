@@ -36,4 +36,16 @@ describe('Episode Reducer', () => {
     const newState = reducer(initialState, new ACTIONS.CastleEpisodePageFailureAction({error: 'something went wrong'}));
     expect(newState.error).not.toBeUndefined();
   });
+
+  it('should update total episodes on page 1 or on initial load', () => {
+    let newState = reducer(initialState,
+      new ACTIONS.CastleEpisodePageSuccessAction({page: 2, total: episodes.length, all: true, episodes}));
+    expect(newState.total).toEqual(episodes.length);
+    newState = reducer(newState,
+      new ACTIONS.CastleEpisodePageSuccessAction({page: 1, total: 25, all:true, episodes}));
+    expect(newState.total).toEqual(25);
+    newState = reducer(newState,
+      new ACTIONS.CastleEpisodePageSuccessAction({page: 2, total: episodes.length, all: true, episodes}));
+    expect(newState.total).toEqual(25);
+  });
 });

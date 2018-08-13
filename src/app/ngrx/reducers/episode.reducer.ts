@@ -63,7 +63,7 @@ export function reducer(
         ...adapter.addMany(action.payload.episodes, state),
         pagesLoaded: addToArray(state.pagesLoaded, action.payload.page),
         pagesLoading: removeFromArray(state.pagesLoading, action.payload.page),
-        total: action.payload.page === 1 ? action.payload.total : state.total
+        total: action.payload.page === 1 || !state.total ? action.payload.total : state.total
       };
     }
     case ActionTypes.CASTLE_EPISODE_PAGE_FAILURE: {

@@ -59,6 +59,12 @@ Make sure you're running the node version in `.nvmrc`, and you're off!!
 
 Note: you may need to install puma-dev proxy (see https://github.com/puma/puma-dev). Note that you can use the
 `-install-port` option to run on a port other than 80 if you have other services using that port (eg. Apache).
+``` sh
+brew install puma/puma/puma-dev
+sudo puma-dev -setup
+puma-dev -install
+
+```
 
 ``` sh
 # install dependencies (https://yarnpkg.com/en/docs/install)
@@ -68,11 +74,15 @@ echo 4202 > ~/.puma-dev/metrics.prx
 
 # dev server
 yarn start
-open http://metrics.prx.dev
+open https://metrics.prx.dev
 
 # run tests in Chrome
 yarn test
 ```
+
+puma-dev is used for ssl support, and on MacOS you will also need to accept the certificate.
+* Open https://metrics.prx.dev in Safari
+* The certificate gets incorrectly saved in Keychain Access under login -> Certificates. Move the certificate to System -> Certificates.
 
 ## Docker Install
 

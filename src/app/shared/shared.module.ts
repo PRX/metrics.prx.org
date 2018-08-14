@@ -5,6 +5,7 @@ import { CommonModule } from '@angular/common';
 import { AuthGuard, DeactivateGuard, UnauthGuard,
   ChartsModule, DatepickerModule, ImageModule, SpinnerModule } from 'ngx-prx-styleguide';
 
+import { ErrorRetryComponent } from './error/error-retry.component';
 import { MetricsTypeHeadingComponent } from './menu/metrics-type-heading.component';
 import { ChartTypeComponent } from './menu/chart-type.component';
 import { IntervalDropdownComponent } from './menu/interval-dropdown.component';
@@ -32,6 +33,7 @@ import { DownloadsSummaryItemComponent } from './summary/downloads-summary-item.
     DownloadsSummaryContainerComponent,
     DownloadsSummaryItemComponent,
     EpisodePageComponent,
+    ErrorRetryComponent,
     IntervalDropdownComponent,
     LargeNumberPipe,
     MenuBarComponent,
@@ -47,6 +49,7 @@ import { DownloadsSummaryItemComponent } from './summary/downloads-summary-item.
     CommonModule,
     ChartsModule,
     DatepickerModule,
+    ErrorRetryComponent,
     ImageModule,
     AbrevNumberPipe,
     MenuBarComponent,

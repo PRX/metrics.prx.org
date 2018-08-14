@@ -3,7 +3,6 @@ import { RootState, selectAppState } from '../';
 import { RouterParams, getMetricsProperty, METRICSTYPE_DOWNLOADS } from '../models';
 import { PodcastMetricsModel } from '../podcast-metrics.reducer';
 import { selectRouter, selectPodcastRoute } from './router.selectors';
-import { errorType } from './error.type';
 import * as metricsUtil from '../../../shared/util/metrics.util';
 
 export const selectPodcastMetrics = createSelector(selectAppState, (state: RootState) => state.podcastMetrics);
@@ -33,9 +32,7 @@ export const selectPodcastMetricsLoaded = createSelector(selectPodcastMetrics, (
 });
 
 export const selectPodcastMetricsError = createSelector(selectPodcastMetrics, (metrics: PodcastMetricsModel[]) => {
-  return metrics.filter(m => m.error).map(m => {
-    return `${errorType(m.error.status)} error occurred while requesting podcast metrics`;
-  });
+  return metrics.filter(m => m.error);
 });
 export const selectRoutedPodcastMetrics = createSelector(selectPodcastRoute, selectPodcastMetrics,
   (podcastId: string, metrics: PodcastMetricsModel[]): PodcastMetricsModel => {

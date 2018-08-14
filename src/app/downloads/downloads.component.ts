@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Store, select } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
-import { selectLoading, selectLoaded, selectErrors } from '../ngrx/reducers/selectors';
+import { selectLoading, selectLoaded, select500ErrorReloadActions } from '../ngrx/reducers/selectors';
+import { AllActions } from '../ngrx/actions';
 
 @Component({
   template: `
@@ -11,21 +12,21 @@ import { selectLoading, selectLoaded, selectErrors } from '../ngrx/reducers/sele
       <metrics-menu-bar></metrics-menu-bar>
       <metrics-downloads-chart></metrics-downloads-chart>
       <metrics-downloads-table></metrics-downloads-table>
-      <p class="error" *ngFor="let error of errors$ | async">{{error}}</p>
     </section>
+    <metrics-error-retry [retryActions]="errors$ | async"></metrics-error-retry>
   `,
   styleUrls: ['downloads.component.css']
 })
 export class DownloadsComponent implements OnInit {
   loading$: Observable<boolean>;
   loaded$: Observable<boolean>;
-  errors$: Observable<string[]>;
+  errors$: Observable<AllActions[]>;
 
   constructor(public store: Store<any>) {}
 
   ngOnInit() {
     this.loading$ = this.store.pipe(select(selectLoading));
     this.loaded$ = this.store.pipe(select(selectLoaded));
-    this.errors$ = this.store.pipe(select(selectErrors));
+    this.errors$ = this.store.pipe(select(select500ErrorReloadActions));
   }
 }

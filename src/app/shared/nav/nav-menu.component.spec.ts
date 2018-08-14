@@ -29,16 +29,9 @@ describe('NavMenuComponent', () => {
   let navLinks;
 
   const podcasts: any[] = [
-    {seriesId: 37800, title: 'Podcast 1', feederId: '70'},
-    {seriesId: 37801, title: 'Podcast 2', feederId: '72'}
+    {id: '70', title: 'Podcast 1'},
+    {id: '72', title: 'Podcast 2'}
   ];
-
-  const episode: any = {
-    seriesId: 37800,
-    id: 2,
-    title: 'Episode 2',
-    publishedAt: new Date('2017-09-21T00:00:00Z')
-  };
 
   const routerParams: RouterParams = {
     podcastId: podcasts[0].id,

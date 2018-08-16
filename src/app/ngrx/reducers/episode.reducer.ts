@@ -1,78 +1,91 @@
-import { ActionTypes, CmsPodcastEpisodePageSuccessAction, CmsPodcastEpisodePageFailureAction, AllActions  } from '../actions';
-import { HalDoc } from 'ngx-prx-styleguide';
+import { EntityState, EntityAdapter, createEntityAdapter } from '@ngrx/entity';
+import { Episode } from './models/episode.model';
+import { ActionTypes, AllActions } from '../actions';
 
-export const EPISODE_PAGE_SIZE = 10;
-
-export interface EpisodeModel {
-  doc?: HalDoc;
-  id: number;
-  seriesId: number;
-  title: string;
-  publishedAt: Date;
-  page?: number;
-  color?: string;
-  feederUrl?: string;
-  guid?: string;
-}
-
-export interface EpisodeState {
-  entities?: {[id: number]: EpisodeModel};
-  loaded: boolean;
-  loading: boolean;
+export interface State extends EntityState<Episode> {
+  // additional entities state properties
+  pagesLoaded: number[];
+  pagesLoading: number[];
+  total: number;
   error?: any;
 }
 
-export const initialState = {
-  entities: {},
-  loaded: false,
-  loading: false
-};
-
-const episodeEntities = (state: EpisodeState, episodes: EpisodeModel[]): {[id: number]: EpisodeModel} => {
-  return episodes.reduce(
-    (entities: {[id: number]: EpisodeModel}, episode: EpisodeModel) => {
-      return {
-        ...entities,
-        [episode.id]: episode
-      };
-    },
-    {
-      ...state.entities
-    }
-  );
-};
-
-export function EpisodeReducer(state: EpisodeState = initialState, action: AllActions): EpisodeState {
-  switch (action.type) {
-    case ActionTypes.CMS_PODCAST_EPISODE_PAGE: {
-      return {
-        ...state,
-        loading: true,
-        loaded: false
-      };
-    }
-    case ActionTypes.CMS_PODCAST_EPISODE_PAGE_SUCCESS: {
-      const entities = episodeEntities(state, action.payload.episodes);
-      return {
-        ...state,
-        entities,
-        loading: false,
-        loaded: true
-      };
-    }
-    case ActionTypes.CMS_PODCAST_EPISODE_PAGE_FAILURE: {
-      return {
-        ...state,
-        error: action.payload.error,
-        loading: false,
-        loaded: false
-      };
-    }
-  }
-  return state;
+export function sortByPodcastAndPubDate(a: Episode, b: Episode) {
+  return a.podcastId.localeCompare(b.podcastId) ||
+    b.publishedAt.valueOf() - a.publishedAt.valueOf();
 }
 
-export const getEpisodeEntities = (state: EpisodeState) => state.entities;
-export const getEpisodesLoading = (state: EpisodeState) => state.loading;
-export const getEpisodesLoaded = (state: EpisodeState) => state.loaded;
-export const getEpisodesError = (state: EpisodeState) => state.error;
+export const adapter: EntityAdapter<Episode> = createEntityAdapter<Episode>({
+  selectId: (e: Episode) => e.guid,
+  sortComparer: sortByPodcastAndPubDate
+});
+
+export const initialState: State = adapter.getInitialState({
+  // additional entity state properties
+  pagesLoaded: [],
+  pagesLoading: [],
+  total: 0
+});
+
+export const addToArray = function(entries: number[], value: number) {
+  if (entries.indexOf(value) > -1) {
+    return entries;
+  } else {
+    return entries.concat([value]).sort((a, b) => a - b);
+  }
+};
+
+export const removeFromArray = function(entries: number[], value: number) {
+  if (entries.indexOf(value) === -1) {
+    return entries; // don't actually want a new array if not changed
+  } else {
+    return entries.filter(e => e !== value);
+  }
+};
+
+export function reducer(
+  state = initialState,
+  action: AllActions
+): State {
+  switch (action.type) {
+    case ActionTypes.ROUTE_PODCAST: {
+      return {
+        ...state,
+        pagesLoaded: [],
+        pagesLoading: []
+      };
+    }
+    case ActionTypes.CASTLE_EPISODE_PAGE_LOAD: {
+      return {...state, pagesLoading: addToArray(state.pagesLoading, action.payload.page)};
+    }
+    case ActionTypes.CASTLE_EPISODE_PAGE_SUCCESS: {
+      return {
+        ...adapter.addMany(action.payload.episodes, state),
+        pagesLoaded: addToArray(state.pagesLoaded, action.payload.page),
+        pagesLoading: removeFromArray(state.pagesLoading, action.payload.page),
+        total: action.payload.page === 1 || !state.total ? action.payload.total : state.total
+      };
+    }
+    case ActionTypes.CASTLE_EPISODE_PAGE_FAILURE: {
+      return {...state, error: action.payload.error};
+    }
+    default: {
+      return state;
+    }
+  }
+}
+
+export const {
+  selectIds,
+  selectEntities,
+  selectAll,
+} = adapter.getSelectors();
+
+export const selectEpisodeGuids = selectIds;
+export const selectEpisodeEntities = selectEntities;
+export const selectAllEpisodes = selectAll;
+
+export const getPagesLoaded = (state: State) => state.pagesLoaded;
+export const getPagesLoading = (state: State) => state.pagesLoading;
+export const getTotal = (state: State) => state.total;
+export const getError = (state: State) => state.error;

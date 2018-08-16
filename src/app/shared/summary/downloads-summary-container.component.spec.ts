@@ -5,7 +5,7 @@ import { StoreModule, Store } from '@ngrx/store';
 import { reducers, RootState } from '../../ngrx/reducers';
 
 import { CustomRouterNavigationAction, CastlePodcastMetricsSuccessAction } from '../../ngrx/actions';
-import { RouterModel, INTERVAL_DAILY, MetricsType, METRICSTYPE_DOWNLOADS, getMetricsProperty } from '../../ngrx';
+import { RouterParams, INTERVAL_DAILY, MetricsType, METRICSTYPE_DOWNLOADS, getMetricsProperty } from '../../ngrx';
 
 import * as metricsUtil from '../util/metrics.util';
 
@@ -21,9 +21,8 @@ describe('DownloadsSummaryContainerComponent', () => {
   let el: HTMLElement;
 
   const podcast = {
-    seriesId: 37800,
+    id: '70',
     title: 'Pet Talks Daily',
-    feederId: '70'
   };
   const podDownloads = [
     ['2017-08-27T00:00:00Z', 52522],
@@ -39,8 +38,8 @@ describe('DownloadsSummaryContainerComponent', () => {
     ['2017-09-06T00:00:00Z', 162900],
     ['2017-09-07T00:00:00Z', 46858]
   ];
-  const routerState: RouterModel = {
-    podcastSeriesId: podcast.seriesId,
+  const routerParams: RouterParams = {
+    podcastId: podcast.id,
     metricsType: <MetricsType>METRICSTYPE_DOWNLOADS,
     interval: INTERVAL_DAILY,
     beginDate: new Date('2017-08-27T00:00:00Z'),
@@ -66,10 +65,10 @@ describe('DownloadsSummaryContainerComponent', () => {
 
       store = TestBed.get(Store);
 
-      const metricsPropertyName = getMetricsProperty(routerState.interval, routerState.metricsType);
-      store.dispatch(new CustomRouterNavigationAction({routerState}));
+      const metricsPropertyName = getMetricsProperty(routerParams.interval, routerParams.metricsType);
+      store.dispatch(new CustomRouterNavigationAction({routerParams}));
       store.dispatch(new CastlePodcastMetricsSuccessAction({
-        seriesId: podcast.seriesId, feederId: podcast.feederId, metricsPropertyName, metrics: podDownloads}));
+        id: podcast.id, metricsPropertyName, metrics: podDownloads}));
     });
   }));
 

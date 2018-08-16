@@ -8,7 +8,7 @@ import { SharedModule } from '../shared';
 import { DownloadsTablePresentationComponent } from './downloads-table-presentation.component';
 
 import { INTERVAL_HOURLY } from '../ngrx/reducers/models';
-import { routerState, podcast, episodes } from '../../testing/downloads.fixtures';
+import { routerParams, podcast, episodes } from '../../testing/downloads.fixtures';
 import { neutralColor, getColor } from '../shared/util/chart.util';
 
 describe('DownloadsTablePresentationComponent', () => {
@@ -34,11 +34,11 @@ describe('DownloadsTablePresentationComponent', () => {
       de = fix.debugElement;
       el = de.nativeElement;
 
-      comp.routerState = routerState;
+      comp.routerParams = routerParams;
       comp.podcastTableData = {
         title: 'All Episodes',
         color: neutralColor,
-        id: podcast.seriesId,
+        id: podcast.id,
         downloads: [],
         totalForPeriod: 0,
         charted: true
@@ -46,8 +46,8 @@ describe('DownloadsTablePresentationComponent', () => {
       comp.episodeTableData = episodes.map((e, index) => {
         return {
           title: e.title,
-          color: getColor(episodes.length, index),
-          id: e.id,
+          color: getColor(index),
+          id: e.guid,
           downloads: [],
           totalForPeriod: 0,
           charted: true
@@ -58,16 +58,23 @@ describe('DownloadsTablePresentationComponent', () => {
   }));
 
   it('should show message about local timezone translation for hourly data', () => {
-    comp.routerState = {...comp.routerState, interval: INTERVAL_HOURLY};
+    comp.routerParams = {...comp.routerParams, interval: INTERVAL_HOURLY};
     fix.detectChanges();
     expect(de.query(By.css('em')).nativeElement.textContent).toContain('local timezone');
   });
 
   it('toggles episode display when checkbox is clicked', () => {
-    spyOn(comp.toggleChartEpisode, 'emit');
+    spyOn(comp.toggleChartEpisode, 'emit').and.callThrough();
     const checks = de.queryAll(By.css('input[type="checkbox"]'));
-    expect(checks.length).toEqual(3);
+    expect(checks.length).toEqual(3); // podcast + episodes
     checks[2].nativeElement.click();
-    expect(comp.toggleChartEpisode.emit).toHaveBeenCalledWith({episodeId: 124, charted: false});
+    expect(comp.toggleChartEpisode.emit).toHaveBeenCalledWith({guid: episodes[1].guid, charted: false});
+  });
+
+  it('toggles podcast display when checkbox is clicked', () => {
+    spyOn(comp.toggleChartPodcast, 'emit').and.callThrough();
+    const checks = de.queryAll(By.css('input[type="checkbox"]'));
+    checks[0].nativeElement.click();
+    expect(comp.toggleChartPodcast.emit).toHaveBeenCalledWith({id: podcast.id, charted: false});
   });
 });

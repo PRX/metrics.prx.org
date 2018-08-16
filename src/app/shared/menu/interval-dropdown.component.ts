@@ -1,6 +1,6 @@
 import { Component, Input, OnChanges, HostListener } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { RouterModel, IntervalModel,
+import { RouterParams, IntervalModel,
   INTERVAL_MONTHLY, INTERVAL_WEEKLY, INTERVAL_DAILY, INTERVAL_HOURLY } from '../../ngrx';
 import { RouteIntervalAction } from '../../ngrx/actions';
 import * as dateUtil from '../util/date';
@@ -27,7 +27,7 @@ import * as dateUtil from '../util/date';
   styleUrls: ['./dropdown.css', './interval-dropdown.component.css']
 })
 export class IntervalDropdownComponent implements OnChanges {
-  @Input() routerState: RouterModel;
+  @Input() routerParams: RouterParams;
   intervalOptions: IntervalModel[] = [];
   selectedInterval: IntervalModel;
   open = false;
@@ -39,8 +39,8 @@ export class IntervalDropdownComponent implements OnChanges {
   constructor(private store: Store<any>) {}
 
   ngOnChanges() {
-    if (this.routerState && this.routerState.interval && this.routerState.beginDate && this.routerState.endDate) {
-      this.selectedInterval = this.routerState.interval;
+    if (this.routerParams && this.routerParams.interval && this.routerParams.beginDate && this.routerParams.endDate) {
+      this.selectedInterval = this.routerParams.interval;
       this.intervalOptions = this.getIntervalOptions();
     }
   }
@@ -51,7 +51,7 @@ export class IntervalDropdownComponent implements OnChanges {
      40 days at 1h
      2.7 years at 1d
      */
-    if (dateUtil.isMoreThanXDays(40, this.routerState.beginDate, this.routerState.endDate)) {
+    if (dateUtil.isMoreThanXDays(40, this.routerParams.beginDate, this.routerParams.endDate)) {
       return [INTERVAL_DAILY, INTERVAL_WEEKLY, INTERVAL_MONTHLY];
     } else {
       return [INTERVAL_HOURLY, INTERVAL_DAILY, INTERVAL_WEEKLY, INTERVAL_MONTHLY];
@@ -63,7 +63,7 @@ export class IntervalDropdownComponent implements OnChanges {
   }
 
   onIntervalChange(interval: IntervalModel) {
-    if (interval && interval !== this.routerState.interval) {
+    if (interval && interval !== this.routerParams.interval) {
       this.store.dispatch(new RouteIntervalAction({interval}));
     }
     this.toggleOpen();

@@ -1,9 +1,8 @@
-import { Component, OnInit, OnDestroy, Input } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { Store, select } from '@ngrx/store';
-import { Subscription } from 'rxjs/Subscription';
 import { Observable } from 'rxjs/Observable';
-import { DownloadsTableModel, EpisodeModel, RouterModel, CHARTTYPE_EPISODES } from '../ngrx';
-import { selectRouter, selectSelectedPageEpisodes,
+import { DownloadsTableModel, RouterParams, CHARTTYPE_EPISODES } from '../ngrx';
+import { selectRouter, selectNumEpisodePages,
   selectDownloadTablePodcastMetrics, selectDownloadTableEpisodeMetrics } from '../ngrx/reducers/selectors';
 import * as ACTIONS from '../ngrx/actions';
 
@@ -11,10 +10,10 @@ import * as ACTIONS from '../ngrx/actions';
   selector: 'metrics-downloads-table',
   template: `
     <metrics-downloads-table-presentation
-      [totalPages]="totalPages"
+      [totalPages]="numEpisodePages$ | async"
       [podcastTableData]="podcastTableData$ | async"
       [episodeTableData]="episodeTableData$ | async"
-      [routerState]="routerState$ | async"
+      [routerParams]="routerParams$ | async"
       [expanded]="expanded"
       (toggleChartPodcast)="toggleChartPodcast($event)"
       (toggleChartEpisode)="toggleChartEpisode($event)"
@@ -24,12 +23,12 @@ import * as ACTIONS from '../ngrx/actions';
     </metrics-downloads-table-presentation>
   `
 })
-export class DownloadsTableContainerComponent implements OnInit, OnDestroy {
+export class DownloadsTableContainerComponent implements OnInit {
   @Input() totalPages;
   podcastTableData$: Observable<DownloadsTableModel>;
   episodeTableData$: Observable<DownloadsTableModel[]>;
-  routerState$: Observable<RouterModel>;
-  episodePageSub: Subscription;
+  numEpisodePages$: Observable<number>;
+  routerParams$: Observable<RouterParams>;
   expanded = false;
 
   constructor(private store: Store<any>) {}
@@ -37,34 +36,25 @@ export class DownloadsTableContainerComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.podcastTableData$ = this.store.pipe(select(selectDownloadTablePodcastMetrics));
     this.episodeTableData$ = this.store.pipe(select(selectDownloadTableEpisodeMetrics));
-    this.routerState$ = this.store.pipe(select(selectRouter));
-
-    this.episodePageSub = this.store.pipe(select(selectSelectedPageEpisodes)).subscribe((pageEpisodes: EpisodeModel[]) => {
-      pageEpisodes.forEach(episode => {
-        const { id, seriesId, guid } = episode;
-        this.store.dispatch(new ACTIONS.CastleEpisodePerformanceMetricsLoadAction({id, seriesId, guid}));
-      });
-    });
+    this.numEpisodePages$ = this.store.pipe(select(selectNumEpisodePages));
+    this.routerParams$ = this.store.pipe(select(selectRouter));
   }
 
-  ngOnDestroy() {
-    if (this.episodePageSub) { this.episodePageSub.unsubscribe(); }
+  toggleChartPodcast(params: {id: string, charted: boolean}) {
+    this.store.dispatch(new ACTIONS.ChartTogglePodcastAction({...params}));
   }
 
-  toggleChartPodcast(chartPodcast: boolean) {
-    this.store.dispatch(new ACTIONS.RoutePodcastChartedAction({chartPodcast}));
+  toggleChartEpisode(params: {guid: string, charted: boolean}) {
+    this.store.dispatch(new ACTIONS.ChartToggleEpisodeAction({...params}));
   }
 
-  toggleChartEpisode(params: {episodeId: number, charted: boolean}) {
-    this.store.dispatch(new ACTIONS.RouteToggleEpisodeChartedAction({episodeId: params.episodeId, charted: params.charted}));
+  onChartSingleEpisode(guid: string) {
+    this.store.dispatch(new ACTIONS.ChartSingleEpisodeAction({guid}));
+    this.store.dispatch(new ACTIONS.RouteChartTypeAction({chartType: CHARTTYPE_EPISODES}));
   }
 
-  onChartSingleEpisode(episodeId: number) {
-    this.store.dispatch(new ACTIONS.RouteSingleEpisodeChartedAction({episodeId, chartType: CHARTTYPE_EPISODES}));
-  }
-
-  onPageChange(page: number) {
-    this.store.dispatch(new ACTIONS.RouteEpisodePageAction({page}));
+  onPageChange(episodePage: number) {
+    this.store.dispatch(new ACTIONS.RouteEpisodePageAction({episodePage}));
   }
 
   toggleExpandedReport() {

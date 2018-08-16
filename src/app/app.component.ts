@@ -4,8 +4,8 @@ import { Subscription } from 'rxjs/Subscription';
 import { Angulartics2GoogleAnalytics } from 'angulartics2/ga';
 import { HalDoc } from './core';
 import { Env } from './core/core.env';
-import { AccountModel, RouterModel } from './ngrx';
-import { selectAccount, selectAccountError, selectRouter } from './ngrx/reducers/selectors';
+import { AccountModel } from './ngrx';
+import { selectAccount, selectAccountError } from './ngrx/reducers/selectors';
 import * as ACTIONS from './ngrx/actions';
 import { Userinfo, UserinfoService } from 'ngx-prx-styleguide';
 
@@ -26,16 +26,12 @@ export class AppComponent implements OnInit, OnDestroy {
   userinfo: Userinfo;
   userImageDoc: HalDoc;
 
-  routerSub: Subscription;
-  routerState: RouterModel;
-
   constructor(
     public store: Store<any>,
     private angulartics2GoogleAnalytics: Angulartics2GoogleAnalytics,
     private user: UserinfoService
   ) {
     this.store.dispatch(new ACTIONS.CmsAccountAction());
-    this.store.dispatch(new ACTIONS.CmsPodcastsAction());
     this.user.config(this.authHost);
   }
 
@@ -66,28 +62,10 @@ export class AppComponent implements OnInit, OnDestroy {
         }
       }
     });
-
-    // TODO: seems like getEpisodes/CmsPodcastEpisodePageAction should actually happen as a result of CmsPodcastsSuccessAction
-    this.routerSub = this.store.pipe(select(selectRouter)).subscribe((newRouterState: RouterModel) => {
-      if (newRouterState && newRouterState.podcastSeriesId) {
-        if (!this.routerState ||
-          newRouterState.podcastSeriesId !== this.routerState.podcastSeriesId ||
-          newRouterState.page !== this.routerState.page) {
-          this.getEpisodes(newRouterState);
-        }
-        this.routerState = newRouterState;
-      }
-    });
   }
 
   ngOnDestroy() {
     if (this.accountStoreSub) { this.accountStoreSub.unsubscribe(); }
     if (this.accountStoreErrorSub) { this.accountStoreErrorSub.unsubscribe(); }
-  }
-
-  getEpisodes(state: RouterModel) {
-    const seriesId = state.podcastSeriesId;
-    const page = state.page;
-    this.store.dispatch(new ACTIONS.CmsPodcastEpisodePageAction({seriesId, page}));
   }
 }

@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
 import { Store, select } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
-import { PodcastModel } from '../../ngrx';
-import { selectPodcasts, selectSelectedPodcast } from '../../ngrx/reducers/selectors';
-import { RouteSeriesAction } from '../../ngrx/actions';
+import { Podcast } from '../../ngrx';
+import { selectAllPodcasts, selectRoutedPodcast } from '../../ngrx/reducers/selectors';
+import { RoutePodcastAction } from '../../ngrx/actions';
 
 @Component({
   selector: 'metrics-podcast-nav',
@@ -15,15 +15,17 @@ import { RouteSeriesAction } from '../../ngrx/actions';
   `
 })
 export class PodcastNavComponent {
-  selectedPodcast$: Observable<PodcastModel>;
-  podcasts$: Observable<PodcastModel[]>;
+  selectedPodcast$: Observable<Podcast>;
+  podcasts$: Observable<Podcast[]>;
 
   constructor(private store: Store<any>) {
-    this.podcasts$ = this.store.pipe(select(selectPodcasts));
-    this.selectedPodcast$ = this.store.pipe(select(selectSelectedPodcast));
+    this.podcasts$ = this.store.pipe(select(selectAllPodcasts));
+    this.selectedPodcast$ = this.store.pipe(select(selectRoutedPodcast));
   }
 
-  onPodcastChange(val) {
-    this.store.dispatch(new RouteSeriesAction({podcastSeriesId: val.seriesId}));
+  onPodcastChange(val: Podcast) {
+    this.store.dispatch(new RoutePodcastAction({
+      podcastId: val.id
+    }));
   }
 }

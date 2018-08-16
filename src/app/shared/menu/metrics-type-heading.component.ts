@@ -1,12 +1,12 @@
 import { Component, Input } from '@angular/core';
-import { RouterModel } from '../../ngrx';
+import { RouterParams } from '../../ngrx';
 
 @Component({
   selector: 'metrics-type-heading',
-  template: `<h1>{{routerState.metricsType}}</h1>`,
+  template: `<h1>{{routerParams.metricsType}}</h1>`,
   styleUrls: ['metrics-type-heading.component.css']
 })
 
 export class MetricsTypeHeadingComponent {
-  @Input() routerState: RouterModel;
+  @Input() routerParams: RouterParams;
 }

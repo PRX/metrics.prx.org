@@ -1,5 +1,5 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { PodcastModel } from '../../ngrx';
+import { Podcast } from '../../ngrx';
 
 @Component({
   selector: 'metrics-podcast-nav-list',
@@ -15,12 +15,12 @@ import { PodcastModel } from '../../ngrx';
   styleUrls: ['./podcast-nav-list.component.css']
 })
 export class PodcastNavListComponent {
-  @Input() selectedPodcast: PodcastModel;
-  @Input() podcasts: PodcastModel[];
-  @Output() podcastChange = new EventEmitter<PodcastModel>();
+  @Input() selectedPodcast: Podcast;
+  @Input() podcasts: Podcast[];
+  @Output() podcastChange = new EventEmitter<Podcast>();
 
-  onPodcastChange(val) {
-    if (val && (!this.selectedPodcast || val.seriesId !== this.selectedPodcast.seriesId)) {
+  onPodcastChange(val: Podcast) {
+    if (val && (!this.selectedPodcast || val.id !== this.selectedPodcast.id)) {
       this.podcastChange.emit(val);
     }
   }

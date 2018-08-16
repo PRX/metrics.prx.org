@@ -1,31 +1,26 @@
-import { CmsPodcastsSuccessAction } from '../actions';
-import { PodcastReducer, initialState, getPodcastEntities } from './podcast.reducer';
+import { reducer, initialState } from './podcast.reducer';
+import * as ACTIONS from '../actions';
+import { podcast } from '../../../testing/downloads.fixtures';
 
-describe('PodcastReducer', () => {
-  let newState;
-  const podcast = {
-      seriesId: 37800,
-      title: 'Pet Talks Daily',
-      feederUrl: 'https://feeder.prx.org/api/v1/podcasts/70',
-      feederId: '70'
-    };
-  beforeEach(() => {
-    newState = PodcastReducer(initialState, new CmsPodcastsSuccessAction({podcasts: [podcast]}));
+describe('Podcast Reducer', () => {
+  describe('unknown action', () => {
+    it('should return the initial state', () => {
+      const action = {} as any;
+
+      const result = reducer(initialState, action);
+
+      expect(result).toBe(initialState);
+    });
   });
 
-  it('should update with new podcasts', () => {
-    expect(getPodcastEntities(newState)[37800]).toEqual(podcast);
+  it('should set podcast entities podcast page success', () => {
+    const newState = reducer(initialState,
+      new ACTIONS.CastlePodcastPageSuccessAction({page: 1, total: 1, all: true, podcasts: [podcast]}));
+    expect(newState.entities[podcast.id]).toEqual(podcast);
   });
 
-  it('should update existing podcasts keyed by seriesId', () => {
-    const updatedPodcast = {
-      seriesId: 37800,
-      title: 'Something that is not Pet Talks'
-    };
-    newState = PodcastReducer(newState,
-      new CmsPodcastsSuccessAction({
-        podcasts: [updatedPodcast]
-      }));
-    expect(getPodcastEntities(newState)[37800].title).toEqual('Something that is not Pet Talks');
+  it('should set error on failure', () => {
+    const newState = reducer(initialState, new ACTIONS.CastlePodcastPageFailureAction({error: 'something went wrong'}));
+    expect(newState.error).not.toBeUndefined();
   });
 });

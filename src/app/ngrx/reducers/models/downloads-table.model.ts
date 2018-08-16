@@ -1,10 +1,10 @@
 import { TimeseriesDatumModel } from 'ngx-prx-styleguide';
 
 export interface DownloadsTableModel {
+  id: string;
   title: string;
   publishedAt?: Date;
   color: string;
-  id?: number;
   downloads: TimeseriesDatumModel[];
   totalForPeriod: number;
   allTimeDownloads?: number;

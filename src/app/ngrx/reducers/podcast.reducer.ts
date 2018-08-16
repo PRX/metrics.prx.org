@@ -1,74 +1,49 @@
-import { ActionTypes, CmsPodcastsSuccessAction, CmsPodcastsFailureAction, AllActions } from '../actions';
-import { HalDoc } from 'ngx-prx-styleguide';
+import { EntityState, EntityAdapter, createEntityAdapter } from '@ngrx/entity';
+import { Podcast } from './models/podcast.model';
+import { ActionTypes, AllActions } from '../actions';
 
-export interface PodcastModel {
-  doc?: HalDoc;
-  seriesId: number;
-  title: string;
-  feederUrl?: string;
-  feederId?: string;
-}
-
-export interface PodcastState {
-  entities?: {[seriesId: number]: PodcastModel};
-  loaded: boolean;
-  loading: boolean;
+export interface State extends EntityState<Podcast> {
+  // additional entities state properties
   error?: any;
 }
 
-export const initialState = {
-  entities: {},
-  loaded: false,
-  loading: false
-};
-
-const podcastEntities = (state: PodcastState, podcasts: PodcastModel[]): {[seriesId: number]: PodcastModel} => {
-  return podcasts.reduce(
-    (entities: {[seriesId: number]: PodcastModel}, podcast: PodcastModel) => {
-      return {
-        ...entities,
-        [podcast.seriesId]: podcast
-      };
-    },
-    {
-      ...state.entities
-    }
-  );
-};
-
-export function PodcastReducer(state: PodcastState = initialState, action: AllActions): PodcastState {
-  switch (action.type) {
-    case ActionTypes.CMS_PODCASTS: {
-      return {
-        ...state,
-        error: null,
-        loading: true,
-        loaded: false
-      };
-    }
-    case ActionTypes.CMS_PODCASTS_SUCCESS: {
-      const entities = podcastEntities(state, [...action.payload.podcasts]);
-      return {
-        ...state,
-        entities,
-        error: null,
-        loading: false,
-        loaded: true
-      };
-    }
-    case ActionTypes.CMS_PODCASTS_FAILURE: {
-      return {
-        ...state,
-        error: action.payload['error'],
-        loading: false,
-        loaded: false
-      };
-    }
-  }
-  return state;
+export function sortByTitle(a: Podcast, b: Podcast) {
+  return a.title.localeCompare(b.title);
 }
 
-export const getPodcastEntities = (state: PodcastState) => state.entities;
-export const getPodcastsLoading = (state: PodcastState) => state.loading;
-export const getPodcastsLoaded = (state: PodcastState) => state.loaded;
-export const getPodcastsError = (state: PodcastState) => state.error;
+export const adapter: EntityAdapter<Podcast> = createEntityAdapter<Podcast>({
+  sortComparer: sortByTitle
+});
+
+export const initialState: State = adapter.getInitialState({
+  // additional entity state properties
+});
+
+export function reducer(
+  state = initialState,
+  action: AllActions
+): State {
+  switch (action.type) {
+    case ActionTypes.CASTLE_PODCAST_PAGE_SUCCESS: {
+      return adapter.addMany(action.payload.podcasts, state);
+    }
+    case ActionTypes.CASTLE_PODCAST_PAGE_FAILURE: {
+      return { ...state, error: action.payload.error};
+    }
+    default: {
+      return state;
+    }
+  }
+}
+
+export const {
+  selectIds,
+  selectEntities,
+  selectAll,
+} = adapter.getSelectors();
+
+export const selectPodcastIds = selectIds;
+export const selectPodcastEntities = selectEntities;
+export const selectAllPodcasts = selectAll;
+
+export const getError = (state: State) => state.error;

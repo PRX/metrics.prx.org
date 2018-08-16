@@ -1,14 +1,14 @@
 <div>
-  <p *ngIf="routerState?.interval === bindToIntervalHourly"><em>Hourly data is shown in your local timezone</em></p>
+  <p *ngIf="routerParams?.interval === bindToIntervalHourly"><em>Hourly data is shown in your local timezone</em></p>
 
   <div class="table-navigation">
     <button (click)="toggleExpandedReport.emit()" class="btn-link">
-      <p *ngIf="!expanded">Show {{routerState?.interval?.key}} numbers &#187;</p>
-      <p *ngIf="expanded">Hide {{routerState?.interval?.key}} numbers &#171;</p>
+      <p *ngIf="!expanded">Show {{routerParams?.interval?.key}} numbers &#187;</p>
+      <p *ngIf="expanded">Hide {{routerParams?.interval?.key}} numbers &#171;</p>
     </button>
 
     <metrics-episode-page
-    [currentPage]="routerState?.page"
+    [currentPage]="routerParams?.episodePage"
     [totalPages]="totalPages"
     (pageChange)="pageChange.emit($event)"></metrics-episode-page>
   </div>
@@ -28,7 +28,9 @@
           <td>
             <prx-checkbox *ngIf="showPodcastToggle; else podcastTitle"
               small [checked]="podcastTableData.charted" [color]="podcastTableData.color"
-              (change)="toggleChartPodcast.emit($event)">{{podcastTableData.title}}</prx-checkbox>
+              (change)="toggleChartPodcast.emit({id: routerParams.podcastId, charted: $event})">
+              {{podcastTableData.title}}
+            </prx-checkbox>
             <ng-template #podcastTitle><span class="title">{{podcastTableData.title}}</span></ng-template>
           </td>
           <td></td>
@@ -40,7 +42,7 @@
           <td>
             <prx-checkbox *ngIf="showEpisodeToggles; else episodeTitle"
               small [checked]="episode.charted" [color]="episode.color"
-                          (change)="toggleChartEpisode.emit({episodeId: episode.id, charted: $event})"><span [title]="episode.title">{{episode.title}}</span></prx-checkbox>
+                          (change)="toggleChartEpisode.emit({guid: episode.id, charted: $event})"><span [title]="episode.title">{{episode.title}}</span></prx-checkbox>
             <ng-template #episodeTitle>
               <button class="btn-link title" (click)="chartSingleEpisode.emit(episode.id)" [title]="episode.title">{{episode.title}}</button>
             </ng-template>

@@ -1,7 +1,6 @@
 import * as ACTIONS from '../actions';
 
 export interface EpisodePerformanceMetricsModel {
-  seriesId: number;
   id: number;
   guid: string;
   total?: number;
@@ -15,7 +14,7 @@ export interface EpisodePerformanceMetricsModel {
 }
 
 export interface EpisodePerformanceMetricsState {
-  entities?: {[id: number]: EpisodePerformanceMetricsModel};
+  entities?: {[guid: string]: EpisodePerformanceMetricsModel};
 }
 
 export const initialState = {
@@ -25,20 +24,20 @@ export const initialState = {
 export function EpisodePerformanceMetricsReducer(state: EpisodePerformanceMetricsState = initialState, action: ACTIONS.AllActions) {
   switch (action.type) {
     case ACTIONS.ActionTypes.CASTLE_EPISODE_PERFORMANCE_METRICS_LOAD: {
-      const {seriesId, id, guid} = action.payload;
+      const {id, guid} = action.payload;
       return {
         entities: {
           ...state.entities,
-          [id]: {...state.entities[id], seriesId, id, guid, loading: true, loaded: false}
+          [guid]: {...state.entities[guid], id, guid, error: null, loading: true, loaded: false}
         }
       };
     }
     case ACTIONS.ActionTypes.CASTLE_EPISODE_PERFORMANCE_METRICS_SUCCESS: {
-      const {seriesId, id, guid, total, previous7days, this7days, yesterday, today} = action.payload;
+      const {id, guid, total, previous7days, this7days, yesterday, today} = action.payload;
       return {
         entities: {
           ...state.entities,
-          [id]: {seriesId,
+          [guid]: {
             id,
             guid,
             total,
@@ -53,11 +52,11 @@ export function EpisodePerformanceMetricsReducer(state: EpisodePerformanceMetric
       };
     }
     case ACTIONS.ActionTypes.CASTLE_EPISODE_PERFORMANCE_METRICS_FAILURE: {
-      const {seriesId, id, guid, error} = action.payload;
+      const {id, guid, error} = action.payload;
       return {
         entities: {
           ...state.entities,
-          [id]: {...state.entities[id], seriesId, id, guid, error, loading: false, loaded: false}
+          [guid]: {...state.entities[guid], id, guid, error, loading: false, loaded: false}
         }
       };
     }

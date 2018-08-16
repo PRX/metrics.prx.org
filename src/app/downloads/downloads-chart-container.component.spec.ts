@@ -10,7 +10,7 @@ import { getMetricsProperty } from '../ngrx';
 import { SharedModule } from '../shared';
 import { DownloadsChartContainerComponent } from './downloads-chart-container.component';
 import { DownloadsChartPresentationComponent } from './downloads-chart-presentation.component';
-import { routerState, episodes, podcast, ep0Downloads, ep1Downloads, podDownloads } from '../../testing/downloads.fixtures';
+import { routerParams, episodes, podcast, ep0Downloads, ep1Downloads, podDownloads } from '../../testing/downloads.fixtures';
 
 describe('DownloadsChartContainerComponent', () => {
   let comp: DownloadsChartContainerComponent;
@@ -37,25 +37,29 @@ describe('DownloadsChartContainerComponent', () => {
       el = de.nativeElement;
       store = TestBed.get(Store);
 
-      const metricsPropertyName = getMetricsProperty(routerState.interval, routerState.metricsType);
+      const metricsPropertyName = getMetricsProperty(routerParams.interval, routerParams.metricsType);
 
-      store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerState}));
-      store.dispatch(new ACTIONS.CmsPodcastEpisodePageSuccessAction({episodes}));
+      store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerParams}));
+      store.dispatch(new ACTIONS.CastleEpisodePageSuccessAction({
+        episodes,
+        page: 1,
+        total: episodes.length
+      }));
       store.dispatch(new ACTIONS.CastleEpisodeMetricsSuccessAction({
-        seriesId: episodes[0].seriesId, page: episodes[0].page, id: episodes[0].id, guid: episodes[0].guid,
+        podcastId: episodes[0].podcastId, page: episodes[0].page, guid: episodes[0].guid,
         metricsPropertyName, metrics: ep0Downloads}));
       store.dispatch(new ACTIONS.CastleEpisodeMetricsSuccessAction({
-        seriesId: episodes[1].seriesId, page: episodes[1].page, id: episodes[1].id, guid: episodes[1].guid,
+        podcastId: episodes[1].podcastId, page: episodes[1].page, guid: episodes[1].guid,
         metricsPropertyName, metrics: ep1Downloads}));
       store.dispatch(new ACTIONS.CastlePodcastMetricsSuccessAction({
-        seriesId: podcast.seriesId, feederId: podcast.feederId, metricsPropertyName, metrics: podDownloads}));
+        id: podcast.id, metricsPropertyName, metrics: podDownloads}));
     });
   }));
 
-  it('should have router state', () => {
+  it('should have router params', () => {
     let result;
-    comp.routerState$.subscribe(value => result = value);
-    expect(result).toEqual(routerState);
+    comp.routerParams$.subscribe(value => result = value);
+    expect(result).toEqual(routerParams);
   });
 
   it('should have chart data', () => {

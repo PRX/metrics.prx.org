@@ -20,7 +20,7 @@ describe('CustomDateRangeDropdownComponent', () => {
   let el: HTMLElement;
   let store: Store<any>;
 
-  const routerState = {
+  const routerParams = {
     interval: INTERVAL_DAILY,
     beginDate: dateUtil.beginningOfTodayUTC().toDate(),
     endDate: dateUtil.endOfTodayUTC().toDate()
@@ -44,7 +44,7 @@ describe('CustomDateRangeDropdownComponent', () => {
       el = de.nativeElement;
       store = TestBed.get(Store);
 
-      comp.tempRange = comp.routerState = routerState;
+      comp.tempRange = comp.routerParams = routerParams;
       fix.detectChanges();
 
       spyOn(comp, 'googleAnalyticsEvent').and.callThrough();

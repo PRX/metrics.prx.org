@@ -3,7 +3,7 @@ import { StoreModule, Store, select } from '@ngrx/store';
 
 import { RootState, reducers } from '../';
 import { DownloadsTableModel, getMetricsProperty } from '../models';
-import { routerState,  podcast, episodes,
+import { routerParams,  podcast, episodes,
   podDownloads, podPerformance, podPerformanceOff,
   ep0Downloads, ep1Downloads,
   ep0Performance, ep0PerformanceOff, ep1Performance, ep1PerformanceOff } from '../../../../testing/downloads.fixtures';
@@ -15,7 +15,7 @@ import { selectDownloadTablePodcastMetrics, selectDownloadTableEpisodeMetrics } 
 describe('Downloads Table Selectors', () => {
   let store: Store<RootState>;
   let result;
-  const metricsPropertyName = getMetricsProperty(routerState.interval, routerState.metricsType);
+  const metricsPropertyName = getMetricsProperty(routerParams.interval, routerParams.metricsType);
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -27,22 +27,24 @@ describe('Downloads Table Selectors', () => {
 
     spyOn(store, 'dispatch').and.callThrough();
 
-    store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerState}));
-    store.dispatch(new ACTIONS.CmsPodcastEpisodePageSuccessAction({episodes}));
+    store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerParams}));
+    store.dispatch(new ACTIONS.CastleEpisodePageSuccessAction({
+      episodes,
+      page: 1,
+      total: episodes.length
+    }));
     store.dispatch(new ACTIONS.CastleEpisodeMetricsSuccessAction({
-      seriesId: episodes[0].seriesId, page: episodes[0].page, id: episodes[0].id, guid: episodes[0].guid,
+      podcastId: episodes[0].podcastId, page: episodes[0].page, guid: episodes[0].guid,
       metricsPropertyName, metrics: ep0Downloads}));
     store.dispatch(new ACTIONS.CastleEpisodeMetricsSuccessAction({
-      seriesId: episodes[1].seriesId, page: episodes[1].page, id: episodes[1].id, guid: episodes[1].guid,
+      podcastId: episodes[1].podcastId, page: episodes[1].page, guid: episodes[1].guid,
       metricsPropertyName, metrics: ep1Downloads}));
-    store.dispatch(new ACTIONS.CastlePodcastMetricsSuccessAction({
-      seriesId: podcast.seriesId, feederId: podcast.feederId, metricsPropertyName, metrics: podDownloads}));
-    store.dispatch(new ACTIONS.CastlePodcastPerformanceMetricsSuccessAction({seriesId: podcast.seriesId, feederId: podcast.feederId,
-      ...podPerformance }));
+    store.dispatch(new ACTIONS.CastlePodcastMetricsSuccessAction({id: podcast.id, metricsPropertyName, metrics: podDownloads}));
+    store.dispatch(new ACTIONS.CastlePodcastPerformanceMetricsSuccessAction({id: podcast.id, ...podPerformance }));
     store.dispatch(new ACTIONS.CastleEpisodePerformanceMetricsSuccessAction({
-      seriesId: episodes[0].seriesId, id: episodes[0].id, guid: episodes[0].guid, ...ep0Performance}));
+      podcastId: episodes[0].podcastId, guid: episodes[0].guid, ...ep0Performance}));
     store.dispatch(new ACTIONS.CastleEpisodePerformanceMetricsSuccessAction({
-      seriesId: episodes[1].seriesId, id: episodes[1].id, guid: episodes[1].guid, ...ep1Performance}));
+      podcastId: episodes[1].podcastId, guid: episodes[1].guid, ...ep1Performance}));
   });
 
   describe('podcast download table metrics', () => {
@@ -61,14 +63,13 @@ describe('Downloads Table Selectors', () => {
     });
 
     it('should use total for range for all time if larger than all time total rollup', () => {
-      store.dispatch(new ACTIONS.CastlePodcastPerformanceMetricsSuccessAction({seriesId: podcast.seriesId, feederId: podcast.feederId,
-        ...podPerformanceOff }));
+      store.dispatch(new ACTIONS.CastlePodcastPerformanceMetricsSuccessAction({id: podcast.id, ...podPerformanceOff }));
       expect(result.allTimeDownloads).not.toEqual(podPerformanceOff.total);
       expect(result.allTimeDownloads).toEqual(metricsUtil.getTotal(podDownloads));
     });
 
     it('should keep podcast in table for stacked chart when unselected for charting', () => {
-      store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerState: {...routerState, chartPodcast: false}}));
+      store.dispatch(new ACTIONS.ChartTogglePodcastAction({id: podcast.id, charted: false}));
       expect(result.allTimeDownloads).toEqual(podPerformance.total);
     });
   });
@@ -103,9 +104,9 @@ describe('Downloads Table Selectors', () => {
 
     it('should use total for range for all time if larger than all time total rollup', () => {
       store.dispatch(new ACTIONS.CastleEpisodePerformanceMetricsSuccessAction({
-        seriesId: episodes[0].seriesId, id: episodes[0].id, guid: episodes[0].guid, ...ep0PerformanceOff}));
+        podcastId: episodes[0].podcastId, guid: episodes[0].guid, ...ep0PerformanceOff}));
       store.dispatch(new ACTIONS.CastleEpisodePerformanceMetricsSuccessAction({
-        seriesId: episodes[1].seriesId, id: episodes[1].id, guid: episodes[1].guid, ...ep1PerformanceOff}));
+        podcastId: episodes[1].podcastId, guid: episodes[1].guid, ...ep1PerformanceOff}));
       expect(result[0].allTimeDownloads).not.toEqual(ep0PerformanceOff.total);
       expect(result[0].allTimeDownloads).toEqual(metricsUtil.getTotal(ep0Downloads));
       expect(result[1].allTimeDownloads).not.toEqual(ep1PerformanceOff.total);

@@ -5,7 +5,7 @@ import { StoreModule, Store } from '@ngrx/store';
 import { reducers } from '../../ngrx/reducers';
 
 import { CustomRouterNavigationAction } from '../../ngrx/actions';
-import { RouterModel, ChartType, CHARTTYPE_PODCAST, INTERVAL_DAILY } from '../../ngrx';
+import { RouterParams, ChartType, CHARTTYPE_PODCAST, INTERVAL_DAILY } from '../../ngrx';
 import * as dateUtil from '../util/date';
 
 import { MenuBarComponent } from './menu-bar.component';
@@ -28,7 +28,7 @@ describe('MenuBarComponent', () => {
   let el: HTMLElement;
   let store: Store<any>;
 
-  const routerState: RouterModel = {
+  const routerParams: RouterParams = {
     chartType: <ChartType>CHARTTYPE_PODCAST,
     interval: INTERVAL_DAILY,
     standardRange: dateUtil.THIS_WEEK,
@@ -63,14 +63,14 @@ describe('MenuBarComponent', () => {
       el = de.nativeElement;
       store = TestBed.get(Store);
 
-      store.dispatch(new CustomRouterNavigationAction({routerState}));
+      store.dispatch(new CustomRouterNavigationAction({routerParams}));
     });
   }));
 
-  it('should have routerState', () => {
+  it('should have routerParams', () => {
     let result;
-    comp.routerState$.subscribe(value => result = value);
-    expect(result).toEqual(routerState);
+    comp.routerParams$.subscribe(value => result = value);
+    expect(result).toEqual(routerParams);
   });
 
   it('should have chart type', () => {

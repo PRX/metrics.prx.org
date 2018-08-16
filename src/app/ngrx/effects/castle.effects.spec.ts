@@ -5,14 +5,17 @@ import { StoreModule, Store } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
 import { getActions, TestActions } from './test.actions';
 
-import { MockHalService } from 'ngx-prx-styleguide';
+import { HalService, MockHalService } from 'ngx-prx-styleguide';
 import { CastleService } from '../../core';
 
-import { PodcastModel, RouterModel, EpisodeModel, MetricsType,
-  METRICSTYPE_DOWNLOADS, INTERVAL_DAILY, getMetricsProperty } from '../';
+import { MetricsType, getMetricsProperty,
+  METRICSTYPE_DOWNLOADS, INTERVAL_DAILY, PODCAST_PAGE_SIZE, EPISODE_PAGE_SIZE } from '../';
 import { reducers } from '../../ngrx/reducers';
 import * as ACTIONS from '../actions';
 import { CastleEffects } from './castle.effects';
+import * as localStorageUtil from '../../shared/util/local-storage.util';
+
+import { routerParams, podcast, episodes, podDownloads, ep0Downloads } from '../../../testing/downloads.fixtures';
 
 describe('CastleEffects', () => {
   let effects: CastleEffects;
@@ -20,41 +23,10 @@ describe('CastleEffects', () => {
   let castle: MockHalService;
   let store: Store<any>;
 
-  const podcasts: PodcastModel[] = [{
-    seriesId: 37800,
-    feederId: '70',
-    title: 'Pet Talks Daily'
-  }];
-  const routerState: RouterModel = {
-    podcastSeriesId: 37800,
-  };
-  const episode: EpisodeModel = {
-    id: 1,
-    page: 1,
-    guid: 'abcde',
-    seriesId: 37800,
-    title: 'A Pet Talks Episode',
-    publishedAt: new Date()
-  };
-  const downloads = [
-    ['2017-08-27T00:00:00Z', 52522],
-    ['2017-08-28T00:00:00Z', 162900],
-    ['2017-08-29T00:00:00Z', 46858],
-    ['2017-08-30T00:00:00Z', 52522],
-    ['2017-08-31T00:00:00Z', 162900],
-    ['2017-09-01T00:00:00Z', 46858],
-    ['2017-09-02T00:00:00Z', 52522],
-    ['2017-09-03T00:00:00Z', 162900],
-    ['2017-09-04T00:00:00Z', 46858],
-    ['2017-09-05T00:00:00Z', 52522],
-    ['2017-09-06T00:00:00Z', 162900],
-    ['2017-09-07T00:00:00Z', 46858]
-  ];
-
   beforeEach(async(() => {
     castle = new MockHalService();
-    const podcastAllTimeDownloads = castle.root.mockList('prx:podcast', [{
-      id: +podcasts[0].feederId,
+    castle.root.mockList('prx:podcast', [{
+      id: podcast.id,
       downloads: {
         total: 10,
         this7days: 5,
@@ -63,8 +35,8 @@ describe('CastleEffects', () => {
         yesterday: 1
       }
     }]);
-    const episodeAllTimeDownloads = castle.root.mockList('prx:episode', [{
-      guid: episode.guid,
+    castle.root.mockList('prx:episode', [{
+      guid: episodes[0].guid,
       downloads: {
         total: 11,
         this7days: 5,
@@ -73,22 +45,24 @@ describe('CastleEffects', () => {
         yesterday: 1
       }
     }]);
-    const podcastDownloads = castle.root.mockList('prx:podcast-downloads', [{
-      id: +podcasts[0].feederId,
-      downloads
+    castle.root.mockList('prx:podcast-downloads', [{
+      id: podcast.id,
+      downloads: podDownloads
     }]);
-    const episodeDownloads = castle.root.mockList('prx:episode-downloads', [{
-      guid: episode.guid,
-      downloads
+    castle.root.mockList('prx:episode-downloads', [{
+      guid: episodes[0].guid,
+      downloads: ep0Downloads
     }]);
+    castle.root.mockItems('prx:podcasts', [podcast]);
 
     TestBed.configureTestingModule({
       imports: [
         StoreModule.forRoot({...reducers}),
-        EffectsModule.forRoot([CastleEffects]),
+        EffectsModule.forRoot([CastleEffects])
       ],
       providers: [
         CastleEffects,
+        { provide: HalService, useValue: castle },
         { provide: CastleService, useValue: castle.root },
         { provide: Actions, useFactory: getActions }
       ]
@@ -97,21 +71,18 @@ describe('CastleEffects', () => {
     actions$ = TestBed.get(Actions);
     store = TestBed.get(Store);
 
-    store.dispatch(new ACTIONS.CmsPodcastsSuccessAction({podcasts}));
-    store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerState}));
+    store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerParams}));
   }));
 
   it('should request podcast performance metrics from castle', () => {
     const action = {
       type: ACTIONS.ActionTypes.CASTLE_PODCAST_PERFORMANCE_METRICS_LOAD,
       payload: {
-        seriesId: 37800,
-        feederId: '70'
+        id: podcast.id
       }
     };
     const success = new ACTIONS.CastlePodcastPerformanceMetricsSuccessAction({
-      seriesId: podcasts[0].seriesId,
-      feederId: podcasts[0].feederId,
+      id: podcast.id,
       total: 10,
       this7days: 5,
       previous7days: 6,
@@ -127,12 +98,11 @@ describe('CastleEffects', () => {
   it('should request episode performance metrics from castle', () => {
     const action = {
       type: ACTIONS.ActionTypes.CASTLE_EPISODE_PERFORMANCE_METRICS_LOAD,
-      payload: { id: episode.id, seriesId: episode.seriesId, guid: episode.guid }
+      payload: { podcastId: episodes[0].podcastId, guid: episodes[0].guid }
     };
     const success = new ACTIONS.CastleEpisodePerformanceMetricsSuccessAction({
-      id: episode.id,
-      seriesId: episode.seriesId,
-      guid: episode.guid,
+      podcastId: episodes[0].podcastId,
+      guid: episodes[0].guid,
       total: 11,
       this7days: 5,
       previous7days: 6,
@@ -150,15 +120,13 @@ describe('CastleEffects', () => {
     const action = {
       type: ACTIONS.ActionTypes.CASTLE_EPISODE_PERFORMANCE_METRICS_LOAD,
       payload: {
-        id: episode.id,
-        seriesId: episode.seriesId,
-        guid: episode.guid,
+        podcastId: episodes[0].podcastId,
+        guid: episodes[0].guid,
       }
     };
     const success = new ACTIONS.CastleEpisodePerformanceMetricsSuccessAction({
-      id: episode.id,
-      seriesId: episode.seriesId,
-      guid: episode.guid,
+      podcastId: episodes[0].podcastId,
+      guid: episodes[0].guid,
       total: 0,
       this7days: 0,
       previous7days: 0,
@@ -175,8 +143,7 @@ describe('CastleEffects', () => {
     const action = {
       type: ACTIONS.ActionTypes.CASTLE_PODCAST_METRICS_LOAD,
       payload: {
-        seriesId: podcasts[0].seriesId,
-        feederId: podcasts[0].feederId,
+        id: podcast.id,
         metricsType: METRICSTYPE_DOWNLOADS,
         interval: INTERVAL_DAILY,
         beginDate: new Date(),
@@ -184,10 +151,9 @@ describe('CastleEffects', () => {
       }
     };
     const success = new ACTIONS.CastlePodcastMetricsSuccessAction({
-      seriesId: podcasts[0].seriesId,
-      feederId: podcasts[0].feederId,
+      id: podcast.id,
       metricsPropertyName: getMetricsProperty(INTERVAL_DAILY, <MetricsType>METRICSTYPE_DOWNLOADS),
-      metrics: downloads
+      metrics: podDownloads
     });
 
     actions$.stream = hot('-a', { a: action });
@@ -199,10 +165,9 @@ describe('CastleEffects', () => {
     const action = {
       type: ACTIONS.ActionTypes.CASTLE_EPISODE_METRICS_LOAD,
       payload: {
-        seriesId: podcasts[0].seriesId,
-        page: episode.page,
-        id: episode.id,
-        guid: episode.guid,
+        podcastId: episodes[0].podcastId,
+        page: episodes[0].page,
+        guid: episodes[0].guid,
         metricsType: METRICSTYPE_DOWNLOADS,
         interval: INTERVAL_DAILY,
         beginDate: new Date(),
@@ -210,16 +175,243 @@ describe('CastleEffects', () => {
       }
     };
     const success = new ACTIONS.CastleEpisodeMetricsSuccessAction({
-      seriesId: podcasts[0].seriesId,
-      page: episode.page,
-      id: episode.id,
-      guid: episode.guid,
+      podcastId: episodes[0].podcastId,
+      page: episodes[0].page,
+      guid: episodes[0].guid,
       metricsPropertyName: getMetricsProperty(INTERVAL_DAILY, <MetricsType>METRICSTYPE_DOWNLOADS),
-      metrics: downloads
+      metrics: ep0Downloads
     });
 
     actions$.stream = hot('-a', { a: action });
     const expected = cold('-r', { r: success });
     expect(effects.loadEpisodeMetrics$).toBeObservable(expected);
+  });
+
+  it('should load podcasts on account success', () => {
+    const action = new ACTIONS.CmsAccountSuccessAction({
+      account: {
+        id: 111,
+        name: 'TheAccountName'
+      }
+    });
+    const success = new ACTIONS.CastlePodcastPageLoadAction({
+      page: 1,
+      all: true
+    });
+
+    actions$.stream = hot('-a', { a: action });
+    const expected = cold('-r', { r: success });
+    expect(effects.loadAccountSuccess$).toBeObservable(expected);
+  });
+
+  it('should load page 1 of podcasts', () => {
+    const action = new ACTIONS.CastlePodcastPageLoadAction({
+      page: 1,
+      all: true
+    });
+    const success = new ACTIONS.CastlePodcastPageSuccessAction({
+      podcasts: [podcast],
+      page: 1,
+      total: 1,
+      all: true
+    });
+
+    actions$.stream = hot('-a', { a: action });
+    const expected = cold('-r', { r: success });
+    expect(effects.loadPodcastPage$).toBeObservable(expected);
+  });
+
+  it('should load next page of podcasts', () => {
+    const pageOfPodcasts = new Array(PODCAST_PAGE_SIZE).fill(podcast);
+    const firstPageAction = new ACTIONS.CastlePodcastPageSuccessAction({
+      podcasts: pageOfPodcasts,
+      page: 1,
+      total: pageOfPodcasts.length * 2,
+      all: true
+    });
+    const nextPageLoadAction = new ACTIONS.CastlePodcastPageLoadAction({
+      page: 2,
+      all: true
+    });
+    actions$.stream = hot('-a', { a: firstPageAction });
+    const expected = cold('-r', { r: nextPageLoadAction });
+    expect(effects.loadNextPodcastPage$).toBeObservable(expected);
+  });
+
+  it('should handle lack of podcasts', () => {
+    castle.root.mockItems('prx:podcasts', []);
+    const action = new ACTIONS.CastlePodcastPageLoadAction({page: 1});
+    const completion = new ACTIONS.CastlePodcastPageFailureAction({error: `Looks like you don't have any podcasts.`});
+    actions$.stream = hot('-a', { a: action });
+    const expected = cold('-r', { r: completion });
+    expect(effects.loadPodcastPage$).toBeObservable(expected);
+  });
+
+  it('should produce failure action if fails to load podcasts', () => {
+    const error = new Error('Whaaaa?');
+    castle.root.mockError('prx:podcasts', error);
+    const action = new ACTIONS.CastlePodcastPageLoadAction({page: 1});
+    const completion = new ACTIONS.CastlePodcastPageFailureAction({error});
+    actions$.stream = hot('-a', { a: action });
+    const expected = cold('-r', { r: completion });
+    expect(effects.loadPodcastPage$).toBeObservable(expected);
+  });
+
+  describe('loadPodcastsSuccess$ on podcast load navigation', () => {
+    beforeEach(() => {
+      effects.routerParams.podcastId = undefined;
+      localStorage.clear();
+    });
+
+    it('if none in local storage, navigates to the first podcast in the payload on success', () => {
+      const action = new ACTIONS.CastlePodcastPageSuccessAction({podcasts: [podcast], page: 1, total: 1});
+      const completion = new ACTIONS.RoutePodcastAction({podcastId: podcast.id});
+      actions$.stream = hot('-a', { a: action });
+      const expected = cold('-r', { r: completion });
+      expect(effects.loadPodcastsSuccess$).toBeObservable(expected);
+    });
+
+    it('navigates to the podcastId saved in localStorage', () => {
+      localStorageUtil.setItem(localStorageUtil.KEY_ROUTER_PARAMS, routerParams);
+      const somePodcasts = [
+        {
+          id: 'url1',
+          title: 'Series #1'
+        },
+        podcast
+      ];
+      const action = new ACTIONS.CastlePodcastPageSuccessAction({podcasts: somePodcasts, page: 1, total: somePodcasts.length});
+      const completion = new ACTIONS.RoutePodcastAction({
+        podcastId: routerParams.podcastId
+      });
+      actions$.stream = hot('-a', { a: action });
+      const expected = cold('-r', { r: completion });
+      expect(effects.loadPodcastsSuccess$).toBeObservable(expected);
+    });
+
+    it('navigates to the first podcast in the payload, if localStorage podcast is not in user\'s podcasts', () => {
+      localStorageUtil.setItem(localStorageUtil.KEY_ROUTER_PARAMS, routerParams);
+      const somePodcasts = [
+        {
+          id: 'url1',
+          title: 'Series #1'
+        }
+      ];
+      const action = new ACTIONS.CastlePodcastPageSuccessAction({podcasts: somePodcasts, page: 1, total: somePodcasts.length});
+      const completion = new ACTIONS.RoutePodcastAction({
+        podcastId: somePodcasts[0].id
+      });
+      actions$.stream = hot('-a', { a: action });
+      const expected = cold('-r', { r: completion });
+      expect(effects.loadPodcastsSuccess$).toBeObservable(expected);
+    });
+
+  });
+
+  describe('load episodes', () => {
+    beforeEach(() => {
+      castle.root.mock('prx:podcast', {id: podcast.id}).mockItems('prx:episodes',
+        episodes.map(e => {
+          return {
+            ...e,
+            id: e.guid
+          };
+        }));
+    });
+
+    it('should load first page of episodes', () => {
+      const action = new ACTIONS.CastleEpisodePageLoadAction({
+        podcastId: episodes[0].podcastId,
+        page: 1,
+        all: true
+      });
+      const success = new ACTIONS.CastleEpisodePageSuccessAction({
+        episodes,
+        page: 1,
+        total: episodes.length,
+        all: true
+      });
+      actions$.stream = hot('-a', { a: action });
+      const expected = cold('-r', { r: success });
+      expect(effects.loadEpisodePage$).toBeObservable(expected);
+    });
+
+    it('should load next page of episodes', () => {
+      const pageOfEpisodes = new Array(EPISODE_PAGE_SIZE).fill(episodes[0]);
+      const firstPageAction = new ACTIONS.CastleEpisodePageSuccessAction({
+        episodes: pageOfEpisodes,
+        page: 1,
+        total: pageOfEpisodes.length * 2,
+        all: true
+      });
+      const nextPageLoadAction = new ACTIONS.CastleEpisodePageLoadAction({
+        podcastId: episodes[0].podcastId,
+        page: 2,
+        all: true
+      });
+      actions$.stream = hot('-a', { a: firstPageAction });
+      const expected = cold('-r', { r: nextPageLoadAction });
+      expect(effects.loadNextEpisodePage$).toBeObservable(expected);
+    });
+
+    it('fails to load a page of episodes', () => {
+      const error = new Error('Whaaaa?');
+      castle.root.mock('prx:podcast', {id: podcast.id}).mockError('prx:episodes', error);
+      const action = new ACTIONS.CastleEpisodePageLoadAction({podcastId: podcast.id, page: 1});
+      const completion = new ACTIONS.CastleEpisodePageFailureAction({error});
+      actions$.stream = hot('-a', {a: action});
+      const expected = cold('-r', {r: completion});
+      expect(effects.loadEpisodePage$).toBeObservable(expected);
+    });
+
+    it('should load metrics on episode page success', () => {
+      spyOn(store, 'dispatch').and.callThrough();
+      const action = new ACTIONS.CastleEpisodePageSuccessAction({
+        episodes,
+        page: routerParams.episodePage,
+        total: episodes.length,
+        all: true
+      });
+      const episodeMetricsActions = episodes.map(e => {
+        return new ACTIONS.CastleEpisodeMetricsLoadAction({
+          podcastId: e.podcastId,
+          page: e.page,
+          guid: e.guid,
+          metricsType: routerParams.metricsType,
+          interval: routerParams.interval,
+          beginDate: routerParams.beginDate,
+          endDate: routerParams.endDate
+        });
+      });
+      const completionString = episodes.map((e, i) => `-${i}`);
+      const completion = {};
+      // create an object with indices (toString) as keys to each action for marble mapping
+      episodeMetricsActions.forEach((a, i) => {
+        completion[i.toString()] = a;
+      });
+
+      actions$.stream = hot('-a--', {a: action});
+      // Marble syntax: '()' to sync groupings
+      // When multiple events need to be in the same frame synchronously, parentheses are used to group those events.
+      // eg '-(-0-1)' events '0' and '1' will both be in frame 10
+      const expected = cold(`-(${completionString.join('')})`, completion);
+      expect(effects.loadRoutedMetrics$).toBeObservable(expected);
+
+      expect(store.dispatch).toHaveBeenCalledWith(
+        new ACTIONS.CastlePodcastMetricsLoadAction({
+          id: episodes[0].podcastId,
+          metricsType: routerParams.metricsType,
+          interval: routerParams.interval,
+          beginDate: routerParams.beginDate,
+          endDate: routerParams.endDate
+        }));
+      expect(store.dispatch).toHaveBeenCalledWith(new ACTIONS.CastlePodcastPerformanceMetricsLoadAction({id: episodes[0].podcastId}));
+      episodes.forEach(e => {
+        expect(store.dispatch).toHaveBeenCalledWith(
+          new ACTIONS.CastleEpisodePerformanceMetricsLoadAction({podcastId: e.podcastId, guid: e.guid})
+        );
+      });
+    });
+
   });
 });

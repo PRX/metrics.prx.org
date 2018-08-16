@@ -7,13 +7,12 @@ import { ImageModule } from 'ngx-prx-styleguide';
 import { AbrevNumberPipe } from '../pipes/abrev-number.pipe';
 
 import { reducers } from '../../ngrx/reducers';
-import { RouterModel, ChartType, MetricsType,
+import { RouterParams, ChartType, MetricsType,
   CHARTTYPE_PODCAST, INTERVAL_DAILY,
   METRICSTYPE_DOWNLOADS, METRICSTYPE_DEMOGRAPHICS, METRICSTYPE_TRAFFICSOURCES } from '../../ngrx';
 import * as ACTIONS from '../../ngrx/actions';
 
 import { NavMenuComponent } from './nav-menu.component';
-import { ProfileComponent } from '../profile/profile.component';
 
 @Component({
   selector: 'metrics-test-component',
@@ -30,19 +29,12 @@ describe('NavMenuComponent', () => {
   let navLinks;
 
   const podcasts: any[] = [
-    {seriesId: 37800, title: 'Podcast 1', feederId: '70'},
-    {seriesId: 37801, title: 'Podcast 2', feederId: '72'}
+    {id: '70', title: 'Podcast 1'},
+    {id: '72', title: 'Podcast 2'}
   ];
 
-  const episode: any = {
-    seriesId: 37800,
-    id: 2,
-    title: 'Episode 2',
-    publishedAt: new Date('2017-09-21T00:00:00Z')
-  };
-
-  const routerState: RouterModel = {
-    podcastSeriesId: podcasts[0].seriesId,
+  const routerParams: RouterParams = {
+    podcastId: podcasts[0].id,
     metricsType: <MetricsType>METRICSTYPE_DOWNLOADS,
     chartType: <ChartType>CHARTTYPE_PODCAST,
     interval: INTERVAL_DAILY
@@ -52,7 +44,6 @@ describe('NavMenuComponent', () => {
     TestBed.configureTestingModule({
       declarations: [
         NavMenuComponent,
-        ProfileComponent,
         AbrevNumberPipe,
         TestComponent
       ],
@@ -69,9 +60,8 @@ describe('NavMenuComponent', () => {
       el = de.nativeElement;
       store = TestBed.get(Store);
 
-      store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerState}));
-      store.dispatch(new ACTIONS.CmsPodcastsSuccessAction({podcasts}));
-      store.dispatch(new ACTIONS.CmsRecentEpisodeSuccessAction({episode}));
+      store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerParams}));
+      store.dispatch(new ACTIONS.CastlePodcastPageSuccessAction({podcasts, page: 1, total: podcasts.length}));
       fix.detectChanges();
       navLinks = de.queryAll(By.css('button'));
 

@@ -6,7 +6,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { SharedModule } from '../shared';
 import { DownloadsChartPresentationComponent } from './downloads-chart-presentation.component';
 
-import { routerState } from '../../testing/downloads.fixtures';
+import { routerParams } from '../../testing/downloads.fixtures';
 
 describe('DownloadsChartPresentationComponent', () => {
   let comp: DownloadsChartPresentationComponent;
@@ -30,7 +30,7 @@ describe('DownloadsChartPresentationComponent', () => {
       de = fix.debugElement;
       el = de.nativeElement;
 
-      comp.routerState = routerState;
+      comp.routerParams = routerParams;
     });
   }));
 

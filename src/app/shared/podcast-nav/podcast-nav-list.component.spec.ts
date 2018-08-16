@@ -4,7 +4,7 @@ import { DebugElement } from '@angular/core';
 
 import { PodcastNavListComponent } from './podcast-nav-list.component';
 
-import { PodcastModel } from '../../ngrx';
+import { Podcast } from '../../ngrx';
 
 describe('PodcastNavComponent', () => {
   let comp: PodcastNavListComponent;
@@ -12,16 +12,14 @@ describe('PodcastNavComponent', () => {
   let de: DebugElement;
   let el: HTMLElement;
 
-  const podcasts: PodcastModel[] = [
+  const podcasts: Podcast[] = [
     {
-      seriesId: 37800,
-      title: 'Pet Talks Daily',
-      feederId: '70'
+      id: '70',
+      title: 'Pet Talks Daily'
     },
     {
-      seriesId: 37801,
-      title: 'Totally Not Pet Talks Daily',
-      feederId: '72'
+      id: '72',
+      title: 'Totally Not Pet Talks Daily'
     }
   ];
 

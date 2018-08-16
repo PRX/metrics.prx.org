@@ -9,7 +9,7 @@ export interface GoogleAnalyticsEventPayload {
 }
 
 export class GoogleAnalyticsEventAction implements Action {
-  readonly type = ActionTypes.GOOGLE_ANALYTICS_EVENT;
+  readonly type = <string>ActionTypes.GOOGLE_ANALYTICS_EVENT;
 
   constructor(public payload: GoogleAnalyticsEventPayload) {}
 }

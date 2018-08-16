@@ -1,10 +1,15 @@
 import { createSelector } from '@ngrx/store';
-import { selectEpisodesLoading } from './episode.selectors';
-import { selectPodcastsLoading } from './podcast.selectors';
+import { selectRoutedPageLoading } from './episode.selectors';
+import { selectRoutedPodcast } from './podcast.selectors';
 import { selectEpisodeMetricsLoading } from './episode-metrics.selectors';
 import { selectPodcastMetricsLoading } from './podcast-metrics.selectors';
 
-export const selectCmsLoading = createSelector(selectEpisodesLoading, selectPodcastsLoading, (episodes, podcasts) => episodes || podcasts);
-export const selectCastleLoading = createSelector(selectEpisodeMetricsLoading, selectPodcastMetricsLoading,
-  (episodes, podcasts) => episodes || podcasts);
-export const selectLoading = createSelector(selectCmsLoading, selectCastleLoading, (cms, castle) => cms || castle);
+export const selectCastleLoading = createSelector(
+  selectRoutedPageLoading,
+  selectRoutedPodcast,
+  selectEpisodeMetricsLoading,
+  selectPodcastMetricsLoading,
+  (routedPageLoading, routedPodcast, episodesMetricsLoading, podcastMetricsLoading) => {
+    return routedPageLoading || !routedPodcast || episodesMetricsLoading || podcastMetricsLoading
+  });
+export const selectLoading = selectCastleLoading;

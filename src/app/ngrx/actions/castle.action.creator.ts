@@ -1,25 +1,84 @@
 import { Action } from '@ngrx/store';
 import { ActionTypes } from './action.types';
-import { EpisodeModel, PodcastModel, MetricsType, IntervalModel } from '../';
+import { Podcast, Episode, MetricsType, IntervalModel } from '../';
+
+export interface CastlePodcastPageLoadPayload {
+  page: number;
+  all?: boolean;
+}
+
+export class CastlePodcastPageLoadAction implements Action {
+  readonly type = ActionTypes.CASTLE_PODCAST_PAGE_LOAD;
+
+  constructor(public payload: CastlePodcastPageLoadPayload) {}
+}
+
+export interface CastlePodcastPageSuccessPayload {
+  podcasts: Podcast[];
+  page: number;
+  total: number;
+  all?: boolean;
+}
+
+export class CastlePodcastPageSuccessAction implements Action {
+  readonly type = ActionTypes.CASTLE_PODCAST_PAGE_SUCCESS;
+
+  constructor(public payload: CastlePodcastPageSuccessPayload) {}
+}
+
+export class CastlePodcastPageFailureAction {
+  readonly type = ActionTypes.CASTLE_PODCAST_PAGE_FAILURE;
+
+  constructor(public payload: {error: any}) {}
+}
+
+export interface CastleEpisodePageLoadPayload {
+  podcastId: string;
+  page: number;
+  all?: boolean;
+}
+
+export class CastleEpisodePageLoadAction implements Action {
+  readonly type = ActionTypes.CASTLE_EPISODE_PAGE_LOAD;
+
+  constructor(public payload: CastleEpisodePageLoadPayload) {}
+}
+
+export interface CastleEpisodePageSuccessPayload {
+  page: number;
+  total: number;
+  all?: boolean;
+  episodes: Episode[];
+}
+
+export class CastleEpisodePageSuccessAction implements Action {
+  readonly type = ActionTypes.CASTLE_EPISODE_PAGE_SUCCESS;
+
+  constructor(public payload: CastleEpisodePageSuccessPayload) {}
+}
+
+export class CastleEpisodePageFailureAction implements Action {
+  readonly type = ActionTypes.CASTLE_EPISODE_PAGE_FAILURE;
+
+  constructor(public payload: {error: any}) {}
+}
 
 export interface CastlePodcastMetricsLoadPayload {
-  seriesId: number;
-  feederId: string;
+  id: string;
   metricsType: MetricsType;
   interval: IntervalModel;
   beginDate: Date;
   endDate: Date;
 }
 
-export class CastlePodcastMetricsLoadAction {
+export class CastlePodcastMetricsLoadAction implements Action {
   readonly type = ActionTypes.CASTLE_PODCAST_METRICS_LOAD;
 
   constructor(public payload: CastlePodcastMetricsLoadPayload) {}
 }
 
 export interface CastlePodcastMetricsSuccessPayload {
-  seriesId: number;
-  feederId: string;
+  id: string;
   metricsPropertyName: string;
   metrics: any[][];
 }
@@ -31,8 +90,7 @@ export class CastlePodcastMetricsSuccessAction implements Action {
 }
 
 export interface CastlePodcastMetricsFailurePayload {
-  seriesId: number;
-  feederId: string;
+  id: string;
   error: any;
 }
 
@@ -43,9 +101,8 @@ export class CastlePodcastMetricsFailureAction implements Action {
 }
 
 export interface CastleEpisodeMetricsLoadPayload {
-  seriesId: number;
+  podcastId: string;
   page: number;
-  id: number;
   guid: string;
   metricsType: MetricsType;
   interval: IntervalModel;
@@ -53,16 +110,15 @@ export interface CastleEpisodeMetricsLoadPayload {
   endDate: Date;
 }
 
-export class CastleEpisodeMetricsLoadAction {
+export class CastleEpisodeMetricsLoadAction implements Action {
   readonly type = ActionTypes.CASTLE_EPISODE_METRICS_LOAD;
 
   constructor(public payload: CastleEpisodeMetricsLoadPayload) {}
 }
 
 export interface CastleEpisodeMetricsSuccessPayload {
-  seriesId: number;
+  podcastId: string;
   page: number;
-  id: number;
   guid: string;
   metricsPropertyName: string;
   metrics: any[][];
@@ -75,9 +131,8 @@ export class CastleEpisodeMetricsSuccessAction implements Action {
 }
 
 export interface CastleEpisodeMetricsFailurePayload {
-  seriesId: number;
+  podcastId: string;
   page: number;
-  id: number;
   guid: string;
   error: any;
 }
@@ -89,8 +144,7 @@ export class CastleEpisodeMetricsFailureAction implements Action {
 }
 
 export interface CastlePodcastPerformanceMetricsLoadPayload {
-  seriesId: number;
-  feederId: string;
+  id: string;
 }
 
 export class CastlePodcastPerformanceMetricsLoadAction implements Action {
@@ -100,8 +154,7 @@ export class CastlePodcastPerformanceMetricsLoadAction implements Action {
 }
 
 export interface CastlePodcastPerformanceMetricsSuccessPayload {
-  seriesId: number;
-  feederId: string;
+  id: string;
   total: number;
   previous7days: number;
   this7days: number;
@@ -122,8 +175,7 @@ export class CastlePodcastPerformanceMetricsFailureAction implements Action {
 }
 
 export interface CastleEpisodePerformanceMetricsLoadPayload {
-  seriesId: number;
-  id: number;
+  podcastId: string;
   guid: string;
 }
 
@@ -134,8 +186,7 @@ export class CastleEpisodePerformanceMetricsLoadAction implements Action {
 }
 
 export interface CastleEpisodePerformanceMetricsSuccessPayload {
-  seriesId: number;
-  id: number;
+  podcastId: string;
   guid: string;
   total: number;
   previous7days: number;
@@ -145,13 +196,13 @@ export interface CastleEpisodePerformanceMetricsSuccessPayload {
 }
 
 export class CastleEpisodePerformanceMetricsSuccessAction implements Action {
-  readonly type = ActionTypes.CASTLE_EPISODE_PERFORMANCE_METRICS_SUCCESS;
+  readonly type = <string>ActionTypes.CASTLE_EPISODE_PERFORMANCE_METRICS_SUCCESS;
 
   constructor(public payload: CastleEpisodePerformanceMetricsSuccessPayload) {}
 }
 
 export class CastleEpisodePerformanceMetricsFailureAction implements Action {
-  readonly type = ActionTypes.CASTLE_EPISODE_PERFORMANCE_METRICS_FAILURE;
+  readonly type = <string>ActionTypes.CASTLE_EPISODE_PERFORMANCE_METRICS_FAILURE;
 
   constructor(public payload: any) {}
 }

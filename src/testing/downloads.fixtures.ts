@@ -1,46 +1,38 @@
-import { RouterModel, EpisodeModel, PodcastModel, ChartType, MetricsType,
+import { RouterParams, Episode, Podcast, ChartType, MetricsType,
   CHARTTYPE_STACKED, INTERVAL_DAILY, METRICSTYPE_DOWNLOADS } from '../app/ngrx';
-import { MockHalDoc } from 'ngx-prx-styleguide';
 
-const podcast: PodcastModel = {
-  seriesId: 37800,
-  feederId: '70',
+export const podcast: Podcast = {
+  id: '70',
   title: 'Pet Talks Daily'
 };
-podcast['doc'] = new MockHalDoc(podcast);
-export { podcast };
 
 const publishedAt0 = new Date('2017-08-27T00:00:00Z');
 const publishedAt1 = new Date('2017-08-20T00:00:00Z');
-export const episodes: EpisodeModel[] = [
+export const episodes: Episode[] = [
   {
-    seriesId: 37800,
-    id: 123,
+    podcastId: podcast.id,
+    guid: 'abcdefg',
     publishedAt: publishedAt0,
     title: 'A Pet Talk Episode',
-    guid: 'abcdefg',
     page: 1
   },
   {
-    seriesId: 37800,
-    id: 124,
+    podcastId: podcast.id,
+    guid: 'gfedcba',
     publishedAt: publishedAt1,
     title: 'Another Pet Talk Episode',
-    guid: 'gfedcba',
     page: 1
   }
 ];
-export const routerState: RouterModel = {
-  podcastSeriesId: podcast.seriesId,
-  page: 1,
+export const routerParams: RouterParams = {
+  podcastId: podcast.id,
+  episodePage: 1,
   beginDate: new Date('2017-08-27T00:00:00Z'),
   endDate: new Date('2017-09-07T00:00:00Z'),
   standardRange: undefined,
   interval: INTERVAL_DAILY,
   chartType: <ChartType>CHARTTYPE_STACKED,
-  metricsType: <MetricsType>METRICSTYPE_DOWNLOADS,
-  chartPodcast: true,
-  episodeIds: episodes.map(e => e.id)
+  metricsType: <MetricsType>METRICSTYPE_DOWNLOADS
 };
 
 export const podDownloads = [

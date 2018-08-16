@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { CmsAccountAction, CmsPodcastsAction } from '../ngrx/actions';
+import { CmsAccountAction } from '../ngrx/actions';
 
 @Component({
   selector: 'metrics-login',
@@ -26,7 +26,6 @@ export class LoginComponent {
   loginSuccess() {
     this.errorMsg = null;
     this.store.dispatch(new CmsAccountAction());
-    this.store.dispatch(new CmsPodcastsAction());
     this.router.navigate(['/']);
   }
 

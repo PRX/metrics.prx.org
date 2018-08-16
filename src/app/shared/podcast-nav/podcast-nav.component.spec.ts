@@ -10,8 +10,12 @@ import { PodcastNavListComponent } from './podcast-nav-list.component';
 
 import { reducers, RootState } from '../../ngrx/reducers';
 
-import { CustomRouterNavigationAction, CmsPodcastsSuccessAction, RouteSeriesAction } from '../../ngrx/actions';
-import { RouterModel } from '../../ngrx';
+import {
+  CustomRouterNavigationAction,
+  RoutePodcastAction,
+  CastlePodcastPageSuccessAction
+} from '../../ngrx/actions';
+import { Podcast, RouterParams } from '../../ngrx';
 
 describe('PodcastNavComponent', () => {
   let store: Store<RootState>;
@@ -20,20 +24,18 @@ describe('PodcastNavComponent', () => {
   let de: DebugElement;
   let el: HTMLElement;
 
-  const podcasts = [
+  const podcasts: Podcast[] = [
     {
-      seriesId: 37800,
-      title: 'Pet Talks Daily',
-      feederId: '70'
+      id: '70',
+      title: 'Pet Talks Daily'
     },
     {
-      seriesId: 37801,
-      title: 'Totally Not Pet Talks Daily',
-      feederId: '72'
+      id: '72',
+      title: 'Totally Not Pet Talks Daily'
     }
   ];
-  const routerState: RouterModel = {
-    podcastSeriesId: podcasts[0].seriesId
+  const routerParams: RouterParams = {
+    podcastId: podcasts[0].id
   };
 
   beforeEach(async(() => {
@@ -58,12 +60,12 @@ describe('PodcastNavComponent', () => {
 
       store = TestBed.get(Store);
 
-      store.dispatch(new CustomRouterNavigationAction({routerState}));
-      store.dispatch(new CmsPodcastsSuccessAction({podcasts: podcasts.slice(0, 1)}));
+      store.dispatch(new CustomRouterNavigationAction({routerParams}));
+      store.dispatch(new CastlePodcastPageSuccessAction({page: 1, podcasts: podcasts.slice(0, 1), total: 1}));
     });
   }));
 
-  it('should set selected podcast according to routerState', () => {
+  it('should set selected podcast according to routerParams', () => {
     let result;
     comp.selectedPodcast$.subscribe(value => result = value);
     expect(result).toEqual(podcasts[0]);
@@ -73,13 +75,14 @@ describe('PodcastNavComponent', () => {
     let result;
     comp.podcasts$.subscribe(value => result = value);
     expect(result).toEqual([podcasts[0]]);
-    store.dispatch(new CmsPodcastsSuccessAction({podcasts: podcasts}));
+    store.dispatch(new CastlePodcastPageSuccessAction({page: 1, podcasts, total: podcasts.length}));
     expect(result).toEqual(podcasts);
   });
 
   it('should dispatch routing action when podcast is changed', () => {
     spyOn(store, 'dispatch');
     comp.onPodcastChange(podcasts[1]);
-    expect(store.dispatch).toHaveBeenCalledWith(new RouteSeriesAction({podcastSeriesId: podcasts[1].seriesId}));
+    expect(store.dispatch).toHaveBeenCalledWith(
+      new RoutePodcastAction({podcastId: podcasts[1].id}));
   });
 });

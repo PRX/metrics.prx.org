@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FooterModule, HalModule, HeaderModule, ModalModule, ModalService } from 'ngx-prx-styleguide';
 
 import { CastleService, CmsService } from './hal';
+import { RoutingService } from './routing/routing.service';
 
 @NgModule({
   declarations: [],
@@ -18,7 +19,8 @@ import { CastleService, CmsService } from './hal';
   providers: [
     CastleService,
     CmsService,
-    ModalService
+    ModalService,
+    RoutingService
   ]
 })
 

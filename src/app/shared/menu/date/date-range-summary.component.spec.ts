@@ -22,7 +22,7 @@ describe('DateRangeSummaryComponent', () => {
       de = fix.debugElement;
       el = de.nativeElement;
 
-      comp.routerState = {
+      comp.routerParams = {
         beginDate: new Date(Date.UTC(2018, 0, 1)),
         endDate: new Date(Date.UTC(2018, 0, 7)),
         standardRange: THIS_WEEK
@@ -37,6 +37,6 @@ describe('DateRangeSummaryComponent', () => {
   });
 
   it('should show standard range', () => {
-    expect(de.query(By.css('.desc')).nativeElement.innerText).toEqual(comp.routerState.standardRange);
+    expect(de.query(By.css('.desc')).nativeElement.innerText).toEqual(comp.routerParams.standardRange);
   });
 });

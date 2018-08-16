@@ -312,6 +312,34 @@ export class CastleEffects {
     })
   );
 
+  // basic - load > success/failure podcast totals
+  @Effect()
+  loadPodcastTotals$: Observable<Action> = this.actions$.pipe(
+    ofType(ACTIONS.ActionTypes.CASTLE_PODCAST_TOTALS_LOAD),
+    map((action: ACTIONS.CastlePodcastTotalsLoadAction) => action.payload),
+    switchMap((payload: ACTIONS.CastlePodcastTotalsLoadPayload) => {
+      const { id, interval, group, beginDate, endDate } = payload;
+      return this.castle.followList('prx:podcast-ranks', {
+        id,
+        group,
+        interval: interval.value,
+        from: beginDate.toISOString(),
+        to: endDate.toISOString()
+      }).pipe(
+        map(metrics => {
+          return new ACTIONS.CastlePodcastTotalsSuccessAction({
+            id,
+            group,
+            interval,
+            downloads: metrics[0]['downloads'],
+            ranks: metrics[0]['ranks']
+          });
+        }),
+        catchError(error => Observable.of(new ACTIONS.CastlePodcastTotalsFailureAction({id, group, error})))
+      );
+    })
+  );
+
   constructor(private actions$: Actions,
               private castle: CastleService,
               private store: Store<any>) {

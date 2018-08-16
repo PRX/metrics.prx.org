@@ -1,6 +1,6 @@
 import { Action } from '@ngrx/store';
 import { ActionTypes } from './action.types';
-import { Podcast, Episode, MetricsType, IntervalModel } from '../';
+import { Podcast, Episode, MetricsType, IntervalModel, Totals } from '../';
 
 export interface CastlePodcastPageLoadPayload {
   page: number;
@@ -205,4 +205,44 @@ export class CastleEpisodePerformanceMetricsFailureAction implements Action {
   readonly type = <string>ActionTypes.CASTLE_EPISODE_PERFORMANCE_METRICS_FAILURE;
 
   constructor(public payload: any) {}
+}
+
+export interface CastlePodcastTotalsLoadPayload {
+  id: string;
+  group: string;
+  interval: IntervalModel;
+  beginDate: Date;
+  endDate: Date;
+}
+
+export class CastlePodcastTotalsLoadAction implements Action {
+  readonly type = ActionTypes.CASTLE_PODCAST_TOTALS_LOAD;
+
+  constructor(public payload: CastlePodcastTotalsLoadPayload) {}
+}
+
+export interface CastlePodcastTotalsSuccessPayload {
+  id: string;
+  group: string;
+  interval: IntervalModel;
+  downloads: any[][];
+  ranks: Totals[][];
+}
+
+export class CastlePodcastTotalsSuccessAction implements Action {
+  readonly type = ActionTypes.CASTLE_PODCAST_TOTALS_SUCCESS;
+
+  constructor(public payload: CastlePodcastTotalsSuccessPayload) {}
+}
+
+export interface CastlePodcastTotalsFailurePayload {
+  id: string;
+  group: string;
+  error: any;
+}
+
+export class CastlePodcastTotalsFailureAction implements Action {
+  readonly type = ActionTypes.CASTLE_PODCAST_TOTALS_FAILURE;
+
+  constructor(public payload: CastlePodcastTotalsFailurePayload) {}
 }

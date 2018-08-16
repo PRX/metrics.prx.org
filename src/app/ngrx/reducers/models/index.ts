@@ -6,3 +6,5 @@ export { RouterParams } from './router-params.model';
 export { DownloadsTableModel } from './downloads-table.model';
 export { PODCAST_PAGE_SIZE, Podcast } from './podcast.model';
 export { EPISODE_PAGE_SIZE, Episode } from './episode.model';
+export { Totals } from './totals.model';
+export { PodcastTotals } from './podcast-totals.model';

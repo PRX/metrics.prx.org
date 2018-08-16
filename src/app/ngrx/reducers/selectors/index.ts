@@ -3,6 +3,7 @@ export * from './account.selectors';
 export * from './podcast.selectors';
 export * from './podcast-metrics.selectors';
 export * from './podcast-performance-metrics.selectors';
+export * from './podcast-totals.selectors';
 export * from './episode.selectors';
 export * from './episode-metrics.selectors';
 export * from './episode-performance-metrics.selectors';

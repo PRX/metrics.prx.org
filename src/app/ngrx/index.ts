@@ -3,7 +3,8 @@ export { RouterParams, DownloadsTableModel,
   Podcast, Episode, PODCAST_PAGE_SIZE, EPISODE_PAGE_SIZE,
   INTERVAL_MONTHLY, INTERVAL_WEEKLY, INTERVAL_DAILY, INTERVAL_HOURLY, IntervalModel, IntervalList,
   CHARTTYPE_PODCAST, CHARTTYPE_EPISODES, CHARTTYPE_STACKED, ChartType,
-  METRICSTYPE_DOWNLOADS, METRICSTYPE_DEMOGRAPHICS, METRICSTYPE_TRAFFICSOURCES, MetricsType, getMetricsProperty } from './reducers/models';
+  METRICSTYPE_DOWNLOADS, METRICSTYPE_DEMOGRAPHICS, METRICSTYPE_TRAFFICSOURCES, MetricsType, getMetricsProperty,
+  Totals, PodcastTotals } from './reducers/models';
 export { PodcastMetricsModel } from './reducers/podcast-metrics.reducer';
 export { EpisodeMetricsModel } from './reducers/episode-metrics.reducer';
 export { PodcastPerformanceMetricsModel } from './reducers/podcast-performance-metrics.reducer';

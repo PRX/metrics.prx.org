@@ -4,12 +4,26 @@ import { filter } from 'rxjs/operators/filter';
 import { Store, select } from '@ngrx/store';
 import { selectRoutedPageEpisodes, selectRouter } from '../../ngrx/reducers/selectors/';
 import {
-  RouterParams, Episode,
-  MetricsType, ChartType, CHARTTYPE_PODCAST,
+  RouterParams,
+  Episode,
+  MetricsType,
+  ChartType,
+  CHARTTYPE_PODCAST,
+  CHARTTYPE_EPISODES,
+  CHARTTYPE_LINE,
+  CHARTTYPE_BAR,
+  CHARTTYPE_HORIZBAR,
   INTERVAL_DAILY,
   METRICSTYPE_DEMOGRAPHICS,
   METRICSTYPE_DOWNLOADS,
-  METRICSTYPE_TRAFFICSOURCES } from '../../ngrx/';
+  METRICSTYPE_TRAFFICSOURCES,
+  GROUPTYPE_GEOCOUNTRY,
+  GROUPTYPE_GEOMETRO,
+  GROUPTYPE_GEOSUBDIV,
+  GROUPTYPE_AGENTOS,
+  GROUPTYPE_AGENTNAME,
+  GROUPTYPE_AGENTTYPE
+} from '../../ngrx/';
 import * as localStorageUtil from '../../shared/util/local-storage.util';
 import * as dateUtil from '../../shared/util/date/';
 import * as ACTIONS from '../../ngrx/actions/';
@@ -23,7 +37,7 @@ export class RoutingService {
                private router: Router) {
     this.dontAllowRoot();
     this.subRoutedPageEpisodes();
-    this.subAndCheckRouterParams();
+    this.subRouterParams();
   }
 
   dontAllowRoot() {
@@ -43,27 +57,41 @@ export class RoutingService {
     });
   }
 
-  subAndCheckRouterParams() {
+  subRouterParams() {
     this.store.pipe(select(selectRouter)).subscribe(routerParams => {
       // don't do anything with setting route or loading metrics until podcast is set
       if (routerParams.podcastId) {
         // if this.routerParams has not yet been set, go through routing which checks for and sets defaults
         if (!this.routerParams) {
-          this.normalizeAndRoute(routerParams);
+          routerParams = this.normalizeAndRoute(routerParams);
         }
-
-        // load episodes if podcast id changed or if the episode page changed or page has not been set
-        if (this.isPodcastChanged(routerParams) || this.isEpisodesChanged(routerParams)) {
-          this.loadEpisodes(routerParams);
-        } else if ((routerParams.metricsType === METRICSTYPE_DOWNLOADS && this.isMetricsTypeChanged(routerParams)) ||
-          (this.isBeginDateChanged(routerParams) || this.isEndDateChanged(routerParams) || this.isIntervalChanged(routerParams))) {
-          // if episode page or podcast didn't change, check if other router params changed and load metrics
-          // otherwise episode page loading will trigger loading of metrics (in order to load metrics for each loaded episode on that page)
-          this.loadMetrics(routerParams);
-        }
+        this.checkChangesToParamsAndLoadData(routerParams);
         this.routerParams = routerParams;
       }
     });
+  }
+
+  checkChangesToParamsAndLoadData(newRouterParams: RouterParams) {
+    switch (newRouterParams.metricsType) {
+      case METRICSTYPE_DOWNLOADS:
+        if (this.isPodcastChanged(newRouterParams) ||
+          this.isEpisodesChanged(newRouterParams) || this.isMetricsTypeChanged(newRouterParams)) {
+          this.loadEpisodes(newRouterParams);
+        } else if (this.isBeginDateChanged(newRouterParams) ||
+          this.isEndDateChanged(newRouterParams) || this.isIntervalChanged(newRouterParams)) {
+          // if episode page or podcast didn't change, check if other router params changed and load metrics
+          // otherwise episode page loading will trigger loading of metrics (in order to load metrics for each loaded episode on that page)
+          this.loadDownloads(newRouterParams);
+        }
+        break;
+      case METRICSTYPE_DEMOGRAPHICS:
+      case METRICSTYPE_TRAFFICSOURCES:
+        if (this.isPodcastChanged(newRouterParams) || this.isMetricsTypeChanged(newRouterParams) || this.isGroupChanged(newRouterParams) ||
+          this.isBeginDateChanged(newRouterParams) || this.isEndDateChanged(newRouterParams) || this.isIntervalChanged(newRouterParams)) {
+          this.loadPodcastTotals(newRouterParams);
+        }
+        break;
+    }
   }
 
   normalizeAndRoute(newRouterParams: RouterParams): RouterParams {
@@ -100,6 +128,9 @@ export class RoutingService {
         this.router.navigate([
           routerParams.podcastId,
           routerParams.metricsType,
+          routerParams.group,
+          routerParams.chartType,
+          routerParams.interval.key,
           params
         ]);
         break;
@@ -111,9 +142,38 @@ export class RoutingService {
     if (!routerParams.metricsType) {
       routerParams.metricsType = <MetricsType>METRICSTYPE_DOWNLOADS;
     }
-    if (!routerParams.chartType) {
-      routerParams.chartType = <ChartType>CHARTTYPE_PODCAST;
+    switch (routerParams.metricsType) {
+      case METRICSTYPE_DOWNLOADS:
+        if (!routerParams.chartType || /* routerParams.chartType = CHARTTYPE_HORIZBAR */ routerParams.chartType === CHARTTYPE_LINE) {
+          routerParams.chartType = <ChartType>CHARTTYPE_PODCAST;
+        } else if (routerParams.chartType === <ChartType>CHARTTYPE_LINE) {
+          routerParams.chartType = CHARTTYPE_EPISODES;
+        }
+        break;
+      case METRICSTYPE_TRAFFICSOURCES:
+        if (!routerParams.chartType || routerParams.chartType === CHARTTYPE_PODCAST) {
+          // routerParams.chartType = CHARTTYPE_HORIZBAR; // TODO: rotated axis in chart
+          routerParams.chartType = CHARTTYPE_LINE;
+        } else if (routerParams.chartType === CHARTTYPE_EPISODES) {
+          routerParams.chartType = CHARTTYPE_LINE;
+        }
+        break;
     }
+
+    if (routerParams.metricsType === METRICSTYPE_TRAFFICSOURCES &&
+      (!routerParams.group ||
+        routerParams.group === GROUPTYPE_GEOCOUNTRY ||
+        routerParams.group === GROUPTYPE_GEOMETRO ||
+        routerParams.group === GROUPTYPE_GEOSUBDIV)) {
+      routerParams.group = GROUPTYPE_AGENTOS;
+    } else if (routerParams.metricsType === METRICSTYPE_DEMOGRAPHICS &&
+      (!routerParams.group ||
+        routerParams.group === GROUPTYPE_AGENTOS ||
+        routerParams.group === GROUPTYPE_AGENTNAME ||
+        routerParams.group === GROUPTYPE_AGENTTYPE)) {
+      routerParams.group = GROUPTYPE_GEOCOUNTRY;
+    }
+
     if (!routerParams.interval) {
       routerParams.interval = INTERVAL_DAILY;
     }
@@ -135,6 +195,11 @@ export class RoutingService {
   isMetricsTypeChanged(newRouterParams: RouterParams): boolean {
     return newRouterParams && newRouterParams.metricsType &&
       (!this.routerParams || this.routerParams.metricsType !== newRouterParams.metricsType);
+  }
+
+  isGroupChanged(newRouterParams: RouterParams): boolean {
+    return newRouterParams && newRouterParams.group &&
+      (!this.routerParams || this.routerParams.group !== newRouterParams.group);
   }
 
   isPodcastChanged(newRouterParams: RouterParams): boolean {
@@ -169,7 +234,7 @@ export class RoutingService {
       all: !this.routerParams || this.routerParams.podcastId !== newRouterParams.podcastId}));
   }
 
-  loadMetrics(newRouterParams: RouterParams) {
+  loadDownloads(newRouterParams) {
     this.store.dispatch(new ACTIONS.CastlePodcastMetricsLoadAction({
       id: newRouterParams.podcastId,
       metricsType: newRouterParams.metricsType,
@@ -178,7 +243,7 @@ export class RoutingService {
       endDate: newRouterParams.endDate
     }));
     this.store.dispatch(new ACTIONS.CastlePodcastPerformanceMetricsLoadAction({id: newRouterParams.podcastId}));
-    return this.episodes.forEach((episode: Episode) => {
+    this.episodes.forEach((episode: Episode) => {
       this.store.dispatch(new ACTIONS.CastleEpisodePerformanceMetricsLoadAction({
         podcastId: episode.podcastId,
         guid: episode.guid
@@ -193,5 +258,15 @@ export class RoutingService {
         endDate: newRouterParams.endDate
       }));
     });
+  }
+
+  loadPodcastTotals(newRouterParams: RouterParams) {
+    this.store.dispatch(new ACTIONS.CastlePodcastTotalsLoadAction({
+      id: newRouterParams.podcastId,
+      group: newRouterParams.group,
+      interval: newRouterParams.interval || INTERVAL_DAILY,
+      beginDate: newRouterParams.beginDate,
+      endDate: newRouterParams.endDate
+    }));
   }
 }

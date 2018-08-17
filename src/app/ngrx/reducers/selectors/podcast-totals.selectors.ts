@@ -1,7 +1,7 @@
 import { createSelector, createFeatureSelector } from '@ngrx/store';
 import * as fromPodcastTotals from '../podcast-totals.reducer';
 import { PodcastTotals, Totals, IntervalModel } from '../models';
-import { selectPodcastRoute, selectMetricsTypeRoute, selectIntervalRoute } from './router.selectors';
+import { selectPodcastRoute, selectGroupRoute, selectIntervalRoute } from './router.selectors';
 import { TimeseriesChartModel } from 'ngx-prx-styleguide';
 import { getColor, neutralColor, mapMetricsToTimeseriesData } from '../../../shared/util/chart.util';
 
@@ -35,11 +35,11 @@ export const selectAllPodcastTotals = createSelector(
 
 export const selectRoutedPodcastTotals = createSelector(
   selectPodcastRoute,
-  selectMetricsTypeRoute,
+  selectGroupRoute,
   selectIntervalRoute,
   selectPodcastTotalsEntities,
-  (podcastId: string, metricsType: string, interval: IntervalModel, podcastTotalsEntities): PodcastTotals => {
-    return podcastTotalsEntities[`${podcastId}-${'agentos'/*metricsType*/}-${'daily'/*interval.key*/}`];
+  (podcastId: string, group: string, interval: IntervalModel, podcastTotalsEntities): PodcastTotals => {
+    return podcastTotalsEntities[`${podcastId}-${group}-${interval.key}`];
   }
 );
 

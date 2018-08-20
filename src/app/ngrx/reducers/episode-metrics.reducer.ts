@@ -22,6 +22,21 @@ const episodeIndex = (state: EpisodeMetricsModel[], guid: string) => {
 
 export function EpisodeMetricsReducer(state: EpisodeMetricsModel[] = initialState, action: ACTIONS.AllActions) {
   switch (action.type) {
+    case ACTIONS.ActionTypes.CASTLE_EPISODE_PAGE_SUCCESS: {
+      // sets loaded to false on entry when episode page is loaded expecting that metrics will also be loaded
+      // (prevents loaded selector from showing prematurely when metrics load call has momentarily not yet been made)
+      const {episodes, page} = action.payload;
+      let newState = state;
+      episodes.forEach(episode => {
+        const {guid, podcastId} = episode;
+        const epIdx = episodeIndex(state, guid);
+        if (epIdx === -1) {
+          episode = {podcastId, guid, page, loaded: false};
+          newState = [episode, ...state.slice(epIdx + 1)];
+        }
+      });
+      return newState;
+    }
     case ACTIONS.ActionTypes.CASTLE_EPISODE_METRICS_LOAD: {
       const {podcastId, guid, page} = action.payload;
       const epIdx = episodeIndex(state, guid);

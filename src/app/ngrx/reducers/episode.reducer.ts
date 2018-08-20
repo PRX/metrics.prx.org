@@ -60,7 +60,9 @@ export function reducer(
     }
     case ActionTypes.CASTLE_EPISODE_PAGE_SUCCESS: {
       return {
-        ...adapter.addMany(action.payload.episodes, state),
+        ...adapter.upsertMany(action.payload.episodes.map(episode => {
+          return {id: episode.guid, changes: episode};
+        }), state),
         pagesLoaded: addToArray(state.pagesLoaded, action.payload.page),
         pagesLoading: removeFromArray(state.pagesLoading, action.payload.page),
         total: action.payload.page === 1 || !state.total ? action.payload.total : state.total

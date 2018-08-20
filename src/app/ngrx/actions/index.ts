@@ -1,12 +1,26 @@
 import { RouterNavigationAction } from '@ngrx/router-store';
 import { CmsAccountAction, CmsAccountSuccessAction, CmsAccountFailureAction } from './cms.action.creator';
-import { CastlePodcastPageLoadAction, CastlePodcastPageSuccessAction, CastlePodcastPageFailureAction,
-  CastleEpisodePageLoadAction, CastleEpisodePageSuccessAction, CastleEpisodePageFailureAction,
+import {
+  CastlePodcastPageLoadAction,
+  CastlePodcastPageSuccessAction,
+  CastlePodcastPageFailureAction,
+  CastleEpisodePageLoadAction,
+  CastleEpisodePageSuccessAction,
+  CastleEpisodePageFailureAction,
   CastlePodcastPerformanceMetricsLoadAction,
-  CastlePodcastPerformanceMetricsSuccessAction, CastlePodcastPerformanceMetricsFailureAction,
-  CastleEpisodePerformanceMetricsLoadAction, CastleEpisodePerformanceMetricsSuccessAction, CastleEpisodePerformanceMetricsFailureAction,
-  CastlePodcastMetricsLoadAction, CastlePodcastMetricsSuccessAction, CastlePodcastMetricsFailureAction,
-  CastleEpisodeMetricsLoadAction, CastleEpisodeMetricsSuccessAction, CastleEpisodeMetricsFailureAction } from './castle.action.creator';
+  CastlePodcastPerformanceMetricsSuccessAction,
+  CastlePodcastPerformanceMetricsFailureAction,
+  CastleEpisodePerformanceMetricsLoadAction,
+  CastleEpisodePerformanceMetricsSuccessAction,
+  CastleEpisodePerformanceMetricsFailureAction,
+  CastlePodcastMetricsLoadAction,
+  CastlePodcastMetricsSuccessAction,
+  CastlePodcastMetricsFailureAction,
+  CastleEpisodeMetricsLoadAction,
+  CastleEpisodeMetricsSuccessAction,
+  CastleEpisodeMetricsFailureAction,
+  CastlePodcastPageLoadPayload
+} from './castle.action.creator';
 import { GoogleAnalyticsEventAction } from './google-analytics.action.creator';
 import { CustomRouterNavigationAction,
   RoutePodcastAction, RouteEpisodePageAction,
@@ -54,7 +68,9 @@ export type AllActions
 export { ActionTypes } from './action.types';
 export { CmsAccountSuccessPayload, CmsAccountSuccessAction,
   CmsAccountAction, CmsAccountFailureAction } from './cms.action.creator';
-export { CastlePodcastPageLoadAction, CastlePodcastPageSuccessPayload, CastlePodcastPageSuccessAction, CastlePodcastPageFailureAction,
+export {
+  CastlePodcastPageLoadPayload, CastlePodcastPageLoadAction,
+  CastlePodcastPageSuccessPayload, CastlePodcastPageSuccessAction, CastlePodcastPageFailureAction,
   CastleEpisodePageLoadPayload, CastleEpisodePageLoadAction,
   CastleEpisodePageSuccessPayload, CastleEpisodePageSuccessAction, CastleEpisodePageFailureAction,
   CastlePodcastMetricsLoadPayload, CastlePodcastMetricsLoadAction,

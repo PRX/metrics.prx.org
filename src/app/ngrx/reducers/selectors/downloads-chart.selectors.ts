@@ -40,10 +40,12 @@ export const selectDownloadChartMetrics = createSelector(
       if (episodes.length && episodeMetrics.length) {
         chartedEpisodeMetrics = episodes
           .sort((a: Episode, b: Episode) => b.publishedAt.valueOf() - a.publishedAt.valueOf())
-          .map((episode: Episode, idx) => {
+          .map((episode: Episode, idx, self) => {
+            const uniqueLabel = self.filter(e => e.title === episode.title).length > 1 ?
+              episode.title + ' ' + episode.guid.split('-')[0].substr(0, 10) :  episode.title;
             return {
               guid: episode.guid,
-              label: episode.title,
+              label: uniqueLabel,
               color: getColor(idx)
             };
           })

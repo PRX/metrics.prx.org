@@ -32,7 +32,7 @@ export function EpisodeMetricsReducer(state: EpisodeMetricsModel[] = initialStat
         const epIdx = episodeIndex(state, guid);
         if (epIdx === -1) {
           episode = {podcastId, guid, page, loaded: false};
-          newState = [episode, ...state.slice(epIdx + 1)];
+          newState = [episode, ...state];
         }
       });
       return newState;

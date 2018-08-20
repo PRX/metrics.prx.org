@@ -1,7 +1,7 @@
 import { createSelector } from '@ngrx/store';
 import { selectRoutedPageLoaded } from './episode.selectors';
 import { selectRoutedPodcastLoaded } from './podcast.selectors';
-import { selectEpisodeMetricsLoaded } from './episode-metrics.selectors';
+import { selectRoutedEpisodePageMetricsLoaded } from './episode-metrics.selectors';
 import { selectPodcastMetricsLoaded } from './podcast-metrics.selectors';
 
 export const selectCatalogLoaded = createSelector(
@@ -11,7 +11,7 @@ export const selectCatalogLoaded = createSelector(
     return episodes && podcasts;
   });
 export const selectMetricsLoaded = createSelector(
-  selectEpisodeMetricsLoaded,
+  selectRoutedEpisodePageMetricsLoaded,
   selectPodcastMetricsLoaded,
   (episodeMetrics, podcastMetrics) => {
     return episodeMetrics && podcastMetrics;

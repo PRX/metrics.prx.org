@@ -16,6 +16,7 @@ import { CastleService } from '../../core';
 import { Episode, RouterParams, getMetricsProperty, METRICSTYPE_DOWNLOADS,
   PODCAST_PAGE_SIZE, EPISODE_PAGE_SIZE } from '../';
 import * as localStorageUtil from '../../shared/util/local-storage.util';
+import {CastlePodcastPageLoadPayload} from "../actions/castle.action.creator";
 
 @Injectable()
 export class CastleEffects {
@@ -34,7 +35,7 @@ export class CastleEffects {
   loadPodcastPage$: Observable<Action> = this.actions$.pipe(
     ofType(ACTIONS.ActionTypes.CASTLE_PODCAST_PAGE_LOAD),
     map((action: ACTIONS.CastlePodcastPageLoadAction) => action.payload),
-    switchMap((payload: ACTIONS.CastleEpisodePageLoadPayload) => {
+    concatMap((payload: ACTIONS.CastlePodcastPageLoadPayload) => {
       const { page, all } = payload;
       return this.castle.followItems('prx:podcasts', { page, per: PODCAST_PAGE_SIZE })
       .pipe(
@@ -82,7 +83,7 @@ export class CastleEffects {
   );
 
   // on podcast page success if loading all podcast pages and not yet finished, load next page
-  @Effect({dispatch: false})
+  @Effect()
   loadNextPodcastPage$: Observable<Action> = this.actions$.pipe(
     ofType(ACTIONS.ActionTypes.CASTLE_PODCAST_PAGE_SUCCESS),
     filter((action: ACTIONS.CastlePodcastPageSuccessAction) => {

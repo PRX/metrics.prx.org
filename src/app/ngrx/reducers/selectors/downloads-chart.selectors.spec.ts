@@ -162,6 +162,19 @@ describe('Downloads Chart Selectors', () => {
       store.dispatch(new ACTIONS.ChartToggleEpisodeAction({guid: episodes[0].guid, charted: false}));
       expect(result.length).toEqual(episodes.length - 1);
     });
+
+    it('should add first part of guid string to non unique episode titles', () => {
+      store.dispatch(new ACTIONS.CastleEpisodePageSuccessAction({
+        episodes: [
+          episodes[0],
+          {...episodes[1], title: episodes[0].title, guid: episodes[0].guid + '-' + episodes[0].guid}
+        ],
+        page: 1,
+        total: episodes.length
+      }));
+
+      expect(result[0].label.indexOf(episodes[0].guid.split('-')[0].substr(0, 10))).toBeGreaterThan(-1);
+    });
   });
 
 });

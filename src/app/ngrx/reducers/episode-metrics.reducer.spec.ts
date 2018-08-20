@@ -1,4 +1,4 @@
-import { CastleEpisodeMetricsSuccessAction } from '../actions';
+import { CastleEpisodeMetricsSuccessAction, CastleEpisodePageSuccessAction } from '../actions';
 import { INTERVAL_DAILY, MetricsType, METRICSTYPE_DOWNLOADS, RouterParams, getMetricsProperty } from '../';
 import { EpisodeMetricsReducer } from './episode-metrics.reducer';
 import { episodes, ep0Downloads, ep1Downloads } from '../../../testing/downloads.fixtures';
@@ -55,5 +55,16 @@ describe('EpisodeMetricsReducer', () => {
       })
     );
     expect(newState.filter(p => p.podcastId === '70').length).toEqual(2);
+  });
+
+  it('should set loaded to false on episode page load if entry not already on state', () => {
+    newState = EpisodeMetricsReducer(newState,
+      new CastleEpisodePageSuccessAction({
+        page: 2,
+        episodes: episodes,
+        total: episodes.length
+      })
+    );
+    expect(newState.filter(episodeMetrics => episodeMetrics.page === 2).every(entry => !entry.loaded)).toBeTruthy();
   });
 });

@@ -25,7 +25,12 @@ export function reducer(
 ): State {
   switch (action.type) {
     case ActionTypes.CASTLE_PODCAST_PAGE_SUCCESS: {
-      return adapter.addMany(action.payload.podcasts, state);
+      return adapter.upsertMany(action.payload.podcasts.map(podcast => {
+        return {
+          id: podcast.id,
+          changes: podcast
+        };
+      }), state);
     }
     case ActionTypes.CASTLE_PODCAST_PAGE_FAILURE: {
       return { ...state, error: action.payload.error};

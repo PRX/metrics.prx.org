@@ -100,12 +100,12 @@ export class RoutingEffects {
   );
 
  @Effect({dispatch: false})
- routeMetricsType$: Observable<void> = this.actions$.pipe(
-   ofType(ActionTypes.ROUTE_METRICS_TYPE),
-   map((action: ACTIONS.RouteMetricsTypeAction) => action.payload),
-   switchMap((payload: ACTIONS.RouteMetricsTypePayload) => {
-     const { metricsType } = payload;
-     this.routingService.normalizeAndRoute(({metricsType}));
+ routeMetricsGroupType$: Observable<void> = this.actions$.pipe(
+   ofType(ActionTypes.ROUTE_METRICS_GROUP_TYPE),
+   map((action: ACTIONS.RouteMetricsGroupTypeAction) => action.payload),
+   switchMap((payload: ACTIONS.RouteMetricsGroupTypePayload) => {
+     const { metricsType, group } = payload;
+     this.routingService.normalizeAndRoute(({metricsType, group}));
      return Observable.of(null);
    })
  );

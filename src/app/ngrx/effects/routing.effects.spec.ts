@@ -9,7 +9,15 @@ import { EffectsModule } from '@ngrx/effects';
 import { routerReducer } from '@ngrx/router-store';
 import { ROUTER_NAVIGATION } from '@ngrx/router-store';
 import { getActions, TestActions } from './test.actions';
-import { ChartType, MetricsType, CHARTTYPE_PODCAST, CHARTTYPE_EPISODES, INTERVAL_HOURLY, METRICSTYPE_DOWNLOADS } from '../';
+import {
+  ChartType,
+  MetricsType,
+  CHARTTYPE_PODCAST,
+  CHARTTYPE_EPISODES,
+  INTERVAL_HOURLY,
+  METRICSTYPE_DOWNLOADS,
+  GroupType
+} from '../';
 import { reducers } from '../reducers';
 import * as ACTIONS from '../actions';
 import { RoutingEffects } from './routing.effects';
@@ -153,12 +161,12 @@ describe('RoutingEffects', () => {
     expect(effects.routingService.normalizeAndRoute).toHaveBeenCalled();
   });
 
-  it('should route to metrics type', () => {
-    const action = new ACTIONS.RouteMetricsTypeAction({metricsType: METRICSTYPE_DOWNLOADS});
+  it('should route to metrics and group type', () => {
+    const action = new ACTIONS.RouteMetricsGroupTypeAction({metricsType: METRICSTYPE_DOWNLOADS});
     store.dispatch(action);
     actions$.stream = hot('-a', { a: action });
     const expected = cold('-r', { r: null });
-    expect(effects.routeMetricsType$).toBeObservable(expected);
-    expect(effects.routingService.normalizeAndRoute).toHaveBeenCalledWith({metricsType: METRICSTYPE_DOWNLOADS});
+    expect(effects.routeMetricsGroupType$).toBeObservable(expected);
+    expect(effects.routingService.normalizeAndRoute).toHaveBeenCalledWith({metricsType: METRICSTYPE_DOWNLOADS, group: undefined});
   });
 });

@@ -1,5 +1,6 @@
 import { RouterParams, Episode, Podcast, ChartType, MetricsType,
   CHARTTYPE_STACKED, INTERVAL_DAILY, METRICSTYPE_DOWNLOADS } from '../app/ngrx';
+import * as dateUtil from "../app/shared/util/date";
 
 export const podcast: Podcast = {
   id: '70',
@@ -27,9 +28,9 @@ export const episodes: Episode[] = [
 export const routerParams: RouterParams = {
   podcastId: podcast.id,
   episodePage: 1,
-  beginDate: new Date('2017-08-27T00:00:00Z'),
-  endDate: new Date('2017-09-07T00:00:00Z'),
-  standardRange: undefined,
+  beginDate: dateUtil.beginningOfLast28DaysUTC().toDate(),
+  endDate: dateUtil.endOfTodayUTC().toDate(),
+  standardRange: dateUtil.LAST_28_DAYS,
   interval: INTERVAL_DAILY,
   chartType: <ChartType>CHARTTYPE_STACKED,
   metricsType: <MetricsType>METRICSTYPE_DOWNLOADS

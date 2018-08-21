@@ -30,7 +30,7 @@ import { CustomRouterNavigationAction,
   RoutePodcastAction, RouteEpisodePageAction,
   RouteChartTypeAction, RouteIntervalAction,
   RouteStandardRangeAction, RouteAdvancedRangeAction,
-  RouteMetricsTypeAction } from './router.action.creator';
+  RouteMetricsGroupTypeAction } from './router.action.creator';
 import { ChartSingleEpisodeAction, ChartToggleEpisodeAction, ChartTogglePodcastAction } from './chart-toggle.action.creator';
 
 export type AllActions
@@ -67,7 +67,7 @@ export type AllActions
   | RouteIntervalAction
   | RouteStandardRangeAction
   | RouteAdvancedRangeAction
-  | RouteMetricsTypeAction
+  | RouteMetricsGroupTypeAction
   | ChartSingleEpisodeAction
   | ChartToggleEpisodeAction
   | ChartTogglePodcastAction;
@@ -101,7 +101,7 @@ export { CustomRouterNavigationPayload, CustomRouterNavigationAction,
   RouteIntervalPayload, RouteIntervalAction,
   RouteAdvancedRangePayload, RouteAdvancedRangeAction,
   RouteStandardRangePayload, RouteStandardRangeAction,
-  RouteMetricsTypePayload, RouteMetricsTypeAction } from './router.action.creator';
+  RouteMetricsGroupTypePayload, RouteMetricsGroupTypeAction } from './router.action.creator';
 export { ChartSingleEpisodePayload, ChartSingleEpisodeAction,
   ChartToggleEpisodePayload, ChartToggleEpisodeAction,
   ChartTogglePodcastPayload, ChartTogglePodcastAction } from './chart-toggle.action.creator';

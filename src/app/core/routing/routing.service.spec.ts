@@ -7,7 +7,13 @@ import { RoutingService } from './routing.service';
 import { StoreModule, Store } from '@ngrx/store';
 import { reducers } from '../../ngrx/reducers';
 import * as ACTIONS from '../../ngrx/actions';
-import { INTERVAL_DAILY, INTERVAL_MONTHLY, METRICSTYPE_DEMOGRAPHICS, METRICSTYPE_DOWNLOADS } from '../../ngrx/';
+import {
+  GROUPTYPE_GEOCOUNTRY,
+  INTERVAL_DAILY,
+  INTERVAL_MONTHLY,
+  METRICSTYPE_DEMOGRAPHICS,
+  METRICSTYPE_DOWNLOADS
+} from '../../ngrx/';
 import * as dateUtil from '../../shared/util/date/date.util';
 import * as localStorageUtil from '../../shared/util/local-storage.util';
 import { routerParams, episodes } from '../../../testing/downloads.fixtures';
@@ -28,7 +34,7 @@ describe('RoutingService', () => {
       imports: [
         RouterTestingModule.withRoutes([
           { path: ':podcastId/reach/:chartType/:interval', component: TestComponent },
-          { path: ':podcastId/demographics', component: TestComponent }
+          { path: ':podcastId/demographics/:group/:chartType/:interval', component: TestComponent }
         ]),
         StoreModule.forRoot(reducers)
       ],
@@ -60,7 +66,8 @@ describe('RoutingService', () => {
   });
 
   it('should reload metrics data if podcast or episodes has not changed but begin/end dates or interval changes', () => {
-    spyOn(routingService, 'loadMetrics').and.callThrough();
+    spyOn(routingService, 'loadEpisodes').and.callThrough();
+    spyOn(routingService, 'loadDownloads').and.callThrough();
     const beginDate = new Date();
     store.dispatch(new ACTIONS.CastleEpisodePageSuccessAction({
       episodes: [{
@@ -73,17 +80,20 @@ describe('RoutingService', () => {
       page: 2,
       total: episodes.length
     }));
-    store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerParams: {podcastId: routerParams.podcastId, episodePage: 2}}));
+    store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerParams: {
+      ...routerParams, podcastId: routerParams.podcastId, episodePage: 2}}));
+    expect(routingService.loadEpisodes).toHaveBeenCalled();
     store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerParams: {beginDate}}));
-    expect(routingService.loadMetrics).toHaveBeenCalled();
+    expect(routingService.loadDownloads).toHaveBeenCalled();
   });
 
-  it('should reload metrics data if metrics type changes to reach/downloads', () => {
-    spyOn(routingService, 'loadMetrics').and.callThrough();
-    store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerParams: {...routerParams, metricsType: METRICSTYPE_DEMOGRAPHICS}}));
-    expect(routingService.loadMetrics).not.toHaveBeenCalled();
-    store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerParams: {...routerParams, metricsType: METRICSTYPE_DOWNLOADS}}));
-    expect(routingService.loadMetrics).toHaveBeenCalled();
+  it('should reload episodes if metrics type changes to reach/downloads', () => {
+    spyOn(routingService, 'loadEpisodes').and.callThrough();
+    store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerParams:
+        {...routerParams, metricsType: METRICSTYPE_DEMOGRAPHICS, group: GROUPTYPE_GEOCOUNTRY}}));
+    expect(routingService.loadEpisodes).not.toHaveBeenCalled();
+    store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerParams: {metricsType: METRICSTYPE_DOWNLOADS}}));
+    expect(routingService.loadEpisodes).toHaveBeenCalled();
   });
 
   it('should save routerState in localStorage', () => {

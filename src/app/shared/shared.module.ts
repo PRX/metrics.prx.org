@@ -17,7 +17,8 @@ import { CustomDateRangeDropdownComponent } from './menu/date/custom-date-range-
 import { DateRangeSummaryComponent } from './menu/date/date-range-summary.component';
 import { StandardDateRangeComponent } from './menu/date/standard-date-range.component';
 import { StandardDateRangeDropdownComponent } from './menu/date/standard-date-range-dropdown.component';
-import { NavMenuComponent } from './nav/nav-menu.component';
+import { NavMenuContainerComponent } from './nav/nav-menu-container.component';
+import { NavMenuPresentationComponent } from './nav/nav-menu-presentation.component';
 import { EpisodePageComponent } from './paging/episode-page.component';
 import { AbrevNumberPipe } from './pipes/abrev-number.pipe';
 import { LargeNumberPipe } from './pipes/large-number.pipe';
@@ -38,7 +39,8 @@ import { DownloadsSummaryItemComponent } from './summary/downloads-summary-item.
     LargeNumberPipe,
     MenuBarComponent,
     MetricsTypeHeadingComponent,
-    NavMenuComponent,
+    NavMenuContainerComponent,
+    NavMenuPresentationComponent,
     PodcastNavDropdownComponent,
     PodcastNavListComponent,
     PodcastNavComponent,
@@ -56,7 +58,7 @@ import { DownloadsSummaryItemComponent } from './summary/downloads-summary-item.
     SpinnerModule,
     LargeNumberPipe,
     EpisodePageComponent,
-    NavMenuComponent,
+    NavMenuContainerComponent,
     PodcastNavComponent
   ],
   imports: [

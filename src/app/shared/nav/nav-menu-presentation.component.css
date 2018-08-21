@@ -31,7 +31,7 @@ nav {
     line-height: 2.5em;
     white-space: nowrap;
   }
-  .dropdown-button > button .icon {
+  .dropdown-button > img.icon {
     display: inline;
     min-width: 1.5em;
     width: 1.5em;
@@ -84,24 +84,31 @@ nav {
 }
 
 button {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+button.section {
   display: flex;
   align-items: center;
   width: 100%;
   text-align: left;
   padding: 10px 20px;
-  font-family: 'Montserrat', sans-serif;
-  font-weight: 600;
   text-transform: uppercase;
-  white-space: nowrap;
 }
-button:hover, button:focus, button.active {
+button.nav:hover, button.nav:focus, button.active {
   color: #0070a1;
 }
-button .icon {
+img.icon {
   min-width: 2em;
   width: 2em;
   height: 2em;
 }
 button .text {
   padding-left: 10px;
+}
+ul {
+  /* 2em (img width) + 20px (button padding) + 1px (button border) */
+  margin-left: calc(2em + 21px);
 }

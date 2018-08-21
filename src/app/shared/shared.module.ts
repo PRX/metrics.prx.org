@@ -22,8 +22,7 @@ import { NavMenuPresentationComponent } from './nav/nav-menu-presentation.compon
 import { EpisodePageComponent } from './paging/episode-page.component';
 import { AbrevNumberPipe } from './pipes/abrev-number.pipe';
 import { LargeNumberPipe } from './pipes/large-number.pipe';
-import { DownloadsSummaryContainerComponent } from './summary/downloads-summary-container.component';
-import { DownloadsSummaryItemComponent } from './summary/downloads-summary-item.component';
+import { DownloadsSummaryComponent } from './summary/downloads-summary.component';
 
 @NgModule({
   declarations: [
@@ -31,8 +30,7 @@ import { DownloadsSummaryItemComponent } from './summary/downloads-summary-item.
     ChartTypeComponent,
     CustomDateRangeDropdownComponent,
     DateRangeSummaryComponent,
-    DownloadsSummaryContainerComponent,
-    DownloadsSummaryItemComponent,
+    DownloadsSummaryComponent,
     EpisodePageComponent,
     ErrorRetryComponent,
     IntervalDropdownComponent,

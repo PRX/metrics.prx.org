@@ -1,8 +1,8 @@
 import { Component, Input, Output, EventEmitter, OnChanges, HostListener } from '@angular/core';
 import {
-  RouterParams,
+  RouterParams, GroupType, getGroupName,
   MetricsType, METRICSTYPE_DOWNLOADS, METRICSTYPE_TRAFFICSOURCES, METRICSTYPE_DEMOGRAPHICS,
-  GroupType, GROUPTYPE_AGENTOS, GROUPTYPE_AGENTTYPE, GROUPTYPE_AGENTNAME, GROUPTYPE_GEOCOUNTRY, GROUPTYPE_GEOMETRO, GROUPTYPE_GEOSUBDIV
+  GROUPTYPE_AGENTOS, GROUPTYPE_AGENTTYPE, GROUPTYPE_AGENTNAME, GROUPTYPE_GEOCOUNTRY, GROUPTYPE_GEOMETRO, GROUPTYPE_GEOSUBDIV
 } from '../../ngrx/';
 
 @Component({
@@ -16,7 +16,7 @@ import {
             <img class="icon" [src]="getTypeWithIcon(routerParams.metricsType)?.icon" [alt]="routerParams.metricsType">
             <span
               [class]="" aria-hidden="true"></span>
-            <span class="text">{{getGroupMenuItemName(routerParams.metricsType, routerParams.group)}}</span>
+            <span class="text">{{getGroupName(routerParams.metricsType, routerParams.group)}}</span>
           </span>
           <span class="down-arrow"></span>
         </button>
@@ -33,7 +33,7 @@ import {
                 <button
                   (click)="routeMetricsGroupType(t.type, group)" class="nav"
                   [class.active]="routerParams.metricsType === t.type && (routerParams.group === group || group === '')">
-                  {{getGroupMenuItemName(t.type, group)}}</button>
+                  {{getGroupName(t.type, group)}}</button>
               </li>
             </ul>
           </li>
@@ -57,6 +57,7 @@ export class NavMenuPresentationComponent implements OnChanges {
       groups: [GROUPTYPE_AGENTOS, GROUPTYPE_AGENTTYPE, GROUPTYPE_AGENTNAME]
     }
   ];
+  getGroupName = getGroupName;
   open = false;
   @HostListener('window: scroll', [])
   onWindowScroll() {
@@ -92,32 +93,5 @@ export class NavMenuPresentationComponent implements OnChanges {
 
   getTypeWithIcon(metricsType: MetricsType) {
     return this.types.find(t => t.type === metricsType);
-  }
-
-  getGroupMenuItemName(metricsType: MetricsType, group: GroupType) {
-    switch (metricsType) {
-      case METRICSTYPE_DOWNLOADS:
-        return 'Downloads';
-      case METRICSTYPE_DEMOGRAPHICS:
-        switch (group) {
-          case GROUPTYPE_GEOCOUNTRY:
-            return 'Country';
-          case GROUPTYPE_GEOMETRO:
-            return 'Metro';
-          case GROUPTYPE_GEOSUBDIV:
-            return 'State/Province';
-        }
-        break;
-      case METRICSTYPE_TRAFFICSOURCES:
-        switch (group) {
-          case GROUPTYPE_AGENTOS:
-            return 'Operating System';
-          case GROUPTYPE_AGENTTYPE:
-            return 'Form Factor';
-          case GROUPTYPE_AGENTNAME:
-            return 'App & Browser';
-        }
-        break;
-    }
   }
 }

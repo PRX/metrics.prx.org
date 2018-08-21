@@ -39,7 +39,7 @@ export const selectRoutedPodcastTotals = createSelector(
   selectIntervalRoute,
   selectPodcastTotalsEntities,
   (podcastId: string, group: string, interval: IntervalModel, podcastTotalsEntities): PodcastTotals => {
-    return podcastTotalsEntities[`${podcastId}-${group}-${interval.key}`];
+    return podcastTotalsEntities[`${podcastId}-${group}-${interval && interval.key}`];
   }
 );
 
@@ -56,5 +56,12 @@ export const selectRoutedPodcastTotalsChartMetrics = createSelector(
         };
       });
     }
+  }
+);
+
+export const selectRoutedPodcastRanksTotalDownloads = createSelector(
+  selectRoutedPodcastTotals,
+  (podcastRanks: PodcastTotals): number => {
+    return podcastRanks ? podcastRanks.ranks.reduce((acc, rank) => acc += rank.total, 0) : undefined;
   }
 );

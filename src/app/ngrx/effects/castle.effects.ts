@@ -314,10 +314,10 @@ export class CastleEffects {
 
   // basic - load > success/failure podcast totals
   @Effect()
-  loadPodcastTotals$: Observable<Action> = this.actions$.pipe(
-    ofType(ACTIONS.ActionTypes.CASTLE_PODCAST_TOTALS_LOAD),
-    map((action: ACTIONS.CastlePodcastTotalsLoadAction) => action.payload),
-    switchMap((payload: ACTIONS.CastlePodcastTotalsLoadPayload) => {
+  loadPodcastRanks$: Observable<Action> = this.actions$.pipe(
+    ofType(ACTIONS.ActionTypes.CASTLE_PODCAST_RANKS_LOAD),
+    map((action: ACTIONS.CastlePodcastRanksLoadAction) => action.payload),
+    switchMap((payload: ACTIONS.CastlePodcastRanksLoadPayload) => {
       const { id, interval, group, beginDate, endDate } = payload;
       return this.castle.followList('prx:podcast-ranks', {
         id,
@@ -327,11 +327,36 @@ export class CastleEffects {
         to: endDate.toISOString()
       }).pipe(
         map(metrics => {
-          return new ACTIONS.CastlePodcastTotalsSuccessAction({
+          return new ACTIONS.CastlePodcastRanksSuccessAction({
             id,
             group,
             interval,
             downloads: metrics[0]['downloads'],
+            ranks: metrics[0]['ranks']
+          });
+        }),
+        catchError(error => Observable.of(new ACTIONS.CastlePodcastRanksFailureAction({id, group, error})))
+      );
+    })
+  );
+
+  // basic - load > success/failure podcast totals
+  @Effect()
+  loadPodcastTotals$: Observable<Action> = this.actions$.pipe(
+    ofType(ACTIONS.ActionTypes.CASTLE_PODCAST_TOTALS_LOAD),
+    map((action: ACTIONS.CastlePodcastTotalsLoadAction) => action.payload),
+    switchMap((payload: ACTIONS.CastlePodcastTotalsLoadPayload) => {
+      const { id, group, beginDate, endDate } = payload;
+      return this.castle.followList('prx:podcast-totals', {
+        id,
+        group,
+        from: beginDate.toISOString(),
+        to: endDate.toISOString()
+      }).pipe(
+        map(metrics => {
+          return new ACTIONS.CastlePodcastTotalsSuccessAction({
+            id,
+            group,
             ranks: metrics[0]['ranks']
           });
         }),

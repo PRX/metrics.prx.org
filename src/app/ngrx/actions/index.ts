@@ -19,6 +19,11 @@ import {
   CastleEpisodeMetricsLoadAction,
   CastleEpisodeMetricsSuccessAction,
   CastleEpisodeMetricsFailureAction,
+  CastlePodcastRanksLoadAction,
+  CastlePodcastRanksSuccessAction,
+  CastlePodcastRanksFailureAction,
+  CastlePodcastRanksSuccessPayload,
+  CastlePodcastRanksFailurePayload,
   CastlePodcastTotalsLoadAction,
   CastlePodcastTotalsSuccessAction,
   CastlePodcastTotalsFailureAction,
@@ -55,6 +60,9 @@ export type AllActions
   | CastleEpisodePerformanceMetricsLoadAction
   | CastleEpisodePerformanceMetricsSuccessAction
   | CastleEpisodePerformanceMetricsFailureAction
+  | CastlePodcastRanksLoadAction
+  | CastlePodcastRanksSuccessAction
+  | CastlePodcastRanksFailureAction
   | CastlePodcastTotalsLoadAction
   | CastlePodcastTotalsSuccessAction
   | CastlePodcastTotalsFailureAction
@@ -90,6 +98,9 @@ export { CastlePodcastPageLoadAction, CastlePodcastPageSuccessPayload, CastlePod
   CastleEpisodeMetricsLoadPayload, CastleEpisodeMetricsLoadAction,
   CastleEpisodeMetricsSuccessPayload, CastleEpisodeMetricsSuccessAction,
   CastleEpisodeMetricsFailurePayload, CastleEpisodeMetricsFailureAction,
+  CastlePodcastRanksLoadPayload, CastlePodcastRanksLoadAction,
+  CastlePodcastRanksSuccessPayload, CastlePodcastRanksSuccessAction,
+  CastlePodcastRanksFailurePayload, CastlePodcastRanksFailureAction,
   CastlePodcastTotalsLoadPayload, CastlePodcastTotalsLoadAction,
   CastlePodcastTotalsSuccessPayload, CastlePodcastTotalsSuccessAction,
   CastlePodcastTotalsFailurePayload, CastlePodcastTotalsFailureAction } from './castle.action.creator';

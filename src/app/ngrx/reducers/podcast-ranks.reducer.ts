@@ -1,16 +1,16 @@
 import { EntityState, EntityAdapter, createEntityAdapter } from '@ngrx/entity';
-import { PodcastTotals } from './models/podcast-totals.model';
+import { PodcastRanks } from './models/podcast-ranks.model';
 import { ActionTypes, AllActions } from '../actions';
 
-export interface State extends EntityState<PodcastTotals> {
+export interface State extends EntityState<PodcastRanks> {
   // additional entities state properties
   loaded: boolean;
   loading: boolean;
   error?: any;
 }
 
-export const adapter: EntityAdapter<PodcastTotals> = createEntityAdapter<PodcastTotals>({
-  selectId: ((p: PodcastTotals) => p.key)
+export const adapter: EntityAdapter<PodcastRanks> = createEntityAdapter<PodcastRanks>({
+  selectId: ((p: PodcastRanks) => p.key)
 });
 
 export const initialState: State = adapter.getInitialState({
@@ -24,7 +24,7 @@ export function reducer(
   action: AllActions
 ): State {
   switch (action.type) {
-    case ActionTypes.CASTLE_PODCAST_TOTALS_LOAD: {
+    case ActionTypes.CASTLE_PODCAST_RANKS_LOAD: {
       return {
         ...state,
         loading: true,
@@ -32,22 +32,22 @@ export function reducer(
         error: null
       };
     }
-    case ActionTypes.CASTLE_PODCAST_TOTALS_SUCCESS: {
+    case ActionTypes.CASTLE_PODCAST_RANKS_SUCCESS: {
       const { id, group, interval, downloads, ranks } = action.payload;
       // Note that there will be a breaking change with upsert in Ngrx/entity v6, no longer users Update interface
       // https://github.com/ngrx/platform/commit/a0f45ff035726f106f3f34ddf9b5025c54fc63e0
       return {
         ...adapter.upsertOne({
-          id: `${id}-${group}`,
+          id: `${id}-${group}-${interval.key}`,
           changes: {
-            key: `${id}-${group}`, podcastId: id, group, interval, downloads, ranks
+            key: `${id}-${group}-${interval.key}`, podcastId: id, group, interval, downloads, ranks
           }
         }, state),
         loading: false,
         loaded: true
       };
     }
-    case ActionTypes.CASTLE_PODCAST_TOTALS_FAILURE: {
+    case ActionTypes.CASTLE_PODCAST_RANKS_FAILURE: {
       const { error } = action.payload;
       return {
         ...state,
@@ -69,9 +69,9 @@ export const {
   selectAll,
 } = adapter.getSelectors();
 
-export const selectPodcastTotalsKeys = selectIds;
-export const selectPodcastTotalsEntities = selectEntities;
-export const selectAllPodcastTotals = selectAll;
+export const selectPodcastRanksKeys = selectIds;
+export const selectPodcastRanksEntities = selectEntities;
+export const selectAllPodcastRanks = selectAll;
 
 export const getLoaded = (state: State) => state.loaded;
 export const getLoading = (state: State) => state.loading;

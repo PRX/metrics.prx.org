@@ -1,6 +1,6 @@
 import { Action } from '@ngrx/store';
 import { ActionTypes } from './action.types';
-import { Podcast, Episode, MetricsType, IntervalModel, Totals } from '../';
+import { Podcast, Episode, MetricsType, IntervalModel, RanksRank, TotalsRank } from '../';
 
 export interface CastlePodcastPageLoadPayload {
   page: number;
@@ -207,10 +207,49 @@ export class CastleEpisodePerformanceMetricsFailureAction implements Action {
   constructor(public payload: any) {}
 }
 
-export interface CastlePodcastTotalsLoadPayload {
+export interface CastlePodcastRanksLoadPayload {
   id: string;
   group: string;
   interval: IntervalModel;
+  beginDate: Date;
+  endDate: Date;
+}
+
+export class CastlePodcastRanksLoadAction implements Action {
+  readonly type = ActionTypes.CASTLE_PODCAST_RANKS_LOAD;
+
+  constructor(public payload: CastlePodcastRanksLoadPayload) {}
+}
+
+export interface CastlePodcastRanksSuccessPayload {
+  id: string;
+  group: string;
+  interval: IntervalModel;
+  downloads: any[][];
+  ranks: RanksRank[][];
+}
+
+export class CastlePodcastRanksSuccessAction implements Action {
+  readonly type = ActionTypes.CASTLE_PODCAST_RANKS_SUCCESS;
+
+  constructor(public payload: CastlePodcastRanksSuccessPayload) {}
+}
+
+export interface CastlePodcastRanksFailurePayload {
+  id: string;
+  group: string;
+  error: any;
+}
+
+export class CastlePodcastRanksFailureAction implements Action {
+  readonly type = ActionTypes.CASTLE_PODCAST_RANKS_FAILURE;
+
+  constructor(public payload: CastlePodcastRanksFailurePayload) {}
+}
+
+export interface CastlePodcastTotalsLoadPayload {
+  id: string;
+  group: string;
   beginDate: Date;
   endDate: Date;
 }
@@ -224,9 +263,7 @@ export class CastlePodcastTotalsLoadAction implements Action {
 export interface CastlePodcastTotalsSuccessPayload {
   id: string;
   group: string;
-  interval: IntervalModel;
-  downloads: any[][];
-  ranks: Totals[][];
+  ranks: TotalsRank[][];
 }
 
 export class CastlePodcastTotalsSuccessAction implements Action {

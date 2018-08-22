@@ -44,7 +44,7 @@ export const selectRoutedPodcastTotals = createSelector(
 export const selectRoutedPodcastTotalsTotalDownloads = createSelector(
   selectRoutedPodcastTotals,
   (podcastRanks: PodcastTotals): number => {
-    return podcastRanks ? podcastRanks.ranks.reduce((acc, rank) => acc += rank.total, 0) : undefined;
+    return podcastRanks ? podcastRanks.ranks.reduce((acc, rank) => acc += rank.count, 0) : undefined;
   }
 );
 

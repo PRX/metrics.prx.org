@@ -17,3 +17,9 @@ export const selectRoutedEpisodePageMetrics = createSelector(selectPodcastRoute,
   (podcastId: string, page: number, metrics: EpisodeMetricsModel[]) => {
     return metrics.filter((metric: EpisodeMetricsModel) => metric.podcastId === podcastId && page === metric.page);
 });
+export const selectRoutedEpisodePageMetricsLoaded = createSelector(selectPodcastRoute, selectPageRoute, selectEpisodeMetrics,
+  (podcastId: string, page: number, metrics: EpisodeMetricsModel[]) => {
+    return metrics
+      .filter((metric: EpisodeMetricsModel) => metric.podcastId === podcastId && page === metric.page)
+      .every((m: EpisodeMetricsModel) => m.loaded || m.loaded === undefined);
+  });

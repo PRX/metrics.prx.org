@@ -83,7 +83,9 @@ export type AllActions
 export { ActionTypes } from './action.types';
 export { CmsAccountSuccessPayload, CmsAccountSuccessAction,
   CmsAccountAction, CmsAccountFailureAction } from './cms.action.creator';
-export { CastlePodcastPageLoadAction, CastlePodcastPageSuccessPayload, CastlePodcastPageSuccessAction, CastlePodcastPageFailureAction,
+export {
+  CastlePodcastPageLoadPayload, CastlePodcastPageLoadAction,
+  CastlePodcastPageSuccessPayload, CastlePodcastPageSuccessAction, CastlePodcastPageFailureAction,
   CastleEpisodePageLoadPayload, CastleEpisodePageLoadAction,
   CastleEpisodePageSuccessPayload, CastleEpisodePageSuccessAction, CastleEpisodePageFailureAction,
   CastlePodcastMetricsLoadPayload, CastlePodcastMetricsLoadAction,

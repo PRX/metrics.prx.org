@@ -27,9 +27,21 @@ describe('Episode Reducer', () => {
   it('should set episode entities and pagesLoaded on episode page success', () => {
     const newState = reducer(initialState,
       new ACTIONS.CastleEpisodePageSuccessAction({page: 1, total: episodes.length, all: true, episodes}));
-    expect(newState.entities[episodes[0].guid]).toEqual(episodes[0]);
+    // @ts-ignore using upsert adds 'id' property to entity, seems like ngrx/entity v6 gets rid of this
+    expect(newState.entities[episodes[0].guid]).toEqual({...episodes[0], id: episodes[0].guid});
     expect(newState.pagesLoaded.indexOf(1)).not.toBe(-1);
     expect(newState.pagesLoading.indexOf(1)).toBe(-1);
+  });
+
+  it('should update an episode entity if it was already on the state', () => {
+    let newState = reducer(initialState,
+      new ACTIONS.CastleEpisodePageSuccessAction({page: 1, total: episodes.length, all: true, episodes}));
+    // @ts-ignore using upsert adds 'id' property to entity, seems like ngrx/entity v6 gets rid of this
+    expect(newState.entities[episodes[1].guid]).toEqual({...episodes[1], id: episodes[1].guid});
+    newState = reducer(initialState,
+      new ACTIONS.CastleEpisodePageSuccessAction({page: 1, total: episodes.length, all: true,
+        episodes: [episodes[0], {...episodes[1], title: 'an updated title'}]}));
+    expect(newState.entities[episodes[1].guid].title).toEqual('an updated title');
   });
 
   it('should set error on failure', () => {

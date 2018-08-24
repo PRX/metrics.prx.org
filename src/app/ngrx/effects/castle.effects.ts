@@ -320,7 +320,7 @@ export class CastleEffects {
     map((action: ACTIONS.CastlePodcastRanksLoadAction) => action.payload),
     switchMap((payload: ACTIONS.CastlePodcastRanksLoadPayload) => {
       const { id, interval, group, beginDate, endDate } = payload;
-      return this.castle.followList('prx:podcast-ranks', {
+      return this.castle.follow('prx:podcast-ranks', {
         id,
         group,
         interval: interval.value,
@@ -332,8 +332,8 @@ export class CastleEffects {
             id,
             group,
             interval,
-            downloads: metrics[0]['downloads'],
-            ranks: metrics[0]['ranks']
+            downloads: metrics['downloads'],
+            ranks: metrics['ranks']
           });
         }),
         catchError(error => Observable.of(new ACTIONS.CastlePodcastRanksFailureAction({id, group, error})))
@@ -348,7 +348,7 @@ export class CastleEffects {
     map((action: ACTIONS.CastlePodcastTotalsLoadAction) => action.payload),
     switchMap((payload: ACTIONS.CastlePodcastTotalsLoadPayload) => {
       const { id, group, beginDate, endDate } = payload;
-      return this.castle.followList('prx:podcast-totals', {
+      return this.castle.follow('prx:podcast-totals', {
         id,
         group,
         from: beginDate.toISOString(),
@@ -358,7 +358,10 @@ export class CastleEffects {
           return new ACTIONS.CastlePodcastTotalsSuccessAction({
             id,
             group,
-            ranks: metrics[0]['ranks']
+            ranks: metrics['ranks'].map(rank => {
+              const { count, label, code }  = rank;
+              return { total: count, label, code };
+            })
           });
         }),
         catchError(error => Observable.of(new ACTIONS.CastlePodcastTotalsFailureAction({id, group, error})))

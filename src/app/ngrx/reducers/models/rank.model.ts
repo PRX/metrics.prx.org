@@ -1,4 +1,4 @@
-export interface RanksRank {
+export interface Rank {
   total: number;
   label: string;
   code: number;

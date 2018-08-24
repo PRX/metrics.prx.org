@@ -9,8 +9,10 @@ import { reducers } from '../../ngrx/reducers';
 import * as ACTIONS from '../../ngrx/actions';
 import {
   GROUPTYPE_GEOCOUNTRY,
+  GROUPTYPE_AGENTOS,
   INTERVAL_DAILY,
   INTERVAL_MONTHLY,
+  METRICSTYPE_TRAFFICSOURCES,
   METRICSTYPE_DEMOGRAPHICS,
   METRICSTYPE_DOWNLOADS
 } from '../../ngrx/';
@@ -65,7 +67,7 @@ describe('RoutingService', () => {
     expect(routingService.loadEpisodes).toHaveBeenCalled();
   });
 
-  it('should reload metrics data if podcast or episodes has not changed but begin/end dates or interval changes', () => {
+  it('should reload downloads(metrics) data if podcast or episodes has not changed but begin/end dates or interval changes', () => {
     spyOn(routingService, 'loadEpisodes').and.callThrough();
     spyOn(routingService, 'loadDownloads').and.callThrough();
     const beginDate = new Date();
@@ -94,6 +96,60 @@ describe('RoutingService', () => {
     expect(routingService.loadEpisodes).not.toHaveBeenCalled();
     store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerParams: {metricsType: METRICSTYPE_DOWNLOADS}}));
     expect(routingService.loadEpisodes).toHaveBeenCalled();
+  });
+
+  it('should reload grouped (geo/agent) podcast totals if podcast, metrics type, group, or begin/end dates change', () => {
+    let newRouterParams = routerParams;
+    spyOn(routingService, 'loadPodcastTotals').and.callThrough();
+
+    store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerParams: newRouterParams}));
+    expect(routingService.loadPodcastTotals).not.toHaveBeenCalled();
+
+    newRouterParams = {...newRouterParams, metricsType: METRICSTYPE_TRAFFICSOURCES, group: GROUPTYPE_AGENTOS};
+    store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerParams: newRouterParams}));
+    expect(routingService.loadPodcastTotals).toHaveBeenCalled();
+
+    newRouterParams = {...newRouterParams, podcastId: '75'};
+    store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerParams: newRouterParams}));
+    expect(routingService.loadPodcastTotals).toHaveBeenCalled();
+
+    newRouterParams = {...newRouterParams, metricsType: METRICSTYPE_DEMOGRAPHICS, group: GROUPTYPE_GEOCOUNTRY};
+    store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerParams: newRouterParams}));
+    expect(routingService.loadPodcastTotals).toHaveBeenCalled();
+
+    newRouterParams = {...newRouterParams,
+      beginDate: dateUtil.beginningOfLastYearUTC().toDate(), endDate: dateUtil.endOfLastYearUTC().toDate()};
+    store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerParams: newRouterParams}));
+    expect(routingService.loadPodcastTotals).toHaveBeenCalled();
+  });
+
+  it('should reload grouped (geo/agent) podcast ranks if podcast, metrics type, group, interval, or begin/end dates change', () => {
+    let newRouterParams = routerParams;
+    spyOn(routingService, 'loadPodcastRanks').and.callThrough();
+
+    store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerParams: newRouterParams}));
+    expect(routingService.loadPodcastRanks).not.toHaveBeenCalled();
+
+    newRouterParams = {...newRouterParams, metricsType: METRICSTYPE_TRAFFICSOURCES, group: GROUPTYPE_AGENTOS};
+    store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerParams: newRouterParams}));
+    expect(routingService.loadPodcastRanks).toHaveBeenCalled();
+
+    newRouterParams = {...newRouterParams, podcastId: '75'};
+    store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerParams: newRouterParams}));
+    expect(routingService.loadPodcastRanks).toHaveBeenCalled();
+
+    newRouterParams = {...newRouterParams, metricsType: METRICSTYPE_DEMOGRAPHICS, group: GROUPTYPE_GEOCOUNTRY};
+    store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerParams: newRouterParams}));
+    expect(routingService.loadPodcastRanks).toHaveBeenCalled();
+
+    newRouterParams = {...newRouterParams,
+      beginDate: dateUtil.beginningOfLastYearUTC().toDate(), endDate: dateUtil.endOfLastYearUTC().toDate()};
+    store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerParams: newRouterParams}));
+    expect(routingService.loadPodcastRanks).toHaveBeenCalled();
+
+    newRouterParams = {...newRouterParams, interval: INTERVAL_MONTHLY};
+    store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerParams: newRouterParams}));
+    expect(routingService.loadPodcastRanks).toHaveBeenCalled();
   });
 
   it('should save routerState in localStorage', () => {

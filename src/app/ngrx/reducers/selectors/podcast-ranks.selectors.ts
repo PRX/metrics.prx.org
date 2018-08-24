@@ -1,6 +1,6 @@
 import { createSelector, createFeatureSelector } from '@ngrx/store';
 import * as fromPodcastRanks from '../podcast-ranks.reducer';
-import { PodcastRanks, RanksRank, IntervalModel } from '../models';
+import { PodcastRanks, Rank, IntervalModel } from '../models';
 import { selectPodcastRoute, selectGroupRoute, selectIntervalRoute } from './router.selectors';
 import { TimeseriesChartModel } from 'ngx-prx-styleguide';
 import { getColor, neutralColor, mapMetricsToTimeseriesData } from '../../../shared/util/chart.util';
@@ -47,7 +47,7 @@ export const selectRoutedPodcastRanksChartMetrics = createSelector(
   selectRoutedPodcastRanks,
   (podcastRanks: PodcastRanks): TimeseriesChartModel[] => {
     if (podcastRanks && podcastRanks.ranks && podcastRanks.downloads) {
-      return podcastRanks.ranks.map((rank: RanksRank, i: number) => {
+      return podcastRanks.ranks.map((rank: Rank, i: number) => {
         const downloads = podcastRanks.downloads.map(data => [data[0], data[1][i]]);
         return {
           data: mapMetricsToTimeseriesData(downloads),

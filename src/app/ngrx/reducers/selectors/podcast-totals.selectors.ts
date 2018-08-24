@@ -1,6 +1,6 @@
 import { createSelector, createFeatureSelector } from '@ngrx/store';
 import * as fromPodcastTotals from '../podcast-totals.reducer';
-import { PodcastTotals, TotalsRank, TotalsTableRow } from '../models';
+import { PodcastTotals, Rank, TotalsTableRow } from '../models';
 import { selectPodcastRoute, selectGroupRoute } from './router.selectors';
 import { getColor } from '../../../shared/util/chart.util';
 
@@ -44,7 +44,7 @@ export const selectRoutedPodcastTotals = createSelector(
 export const selectRoutedPodcastTotalsTotalDownloads = createSelector(
   selectRoutedPodcastTotals,
   (podcastRanks: PodcastTotals): number => {
-    return podcastRanks ? podcastRanks.ranks.reduce((acc, rank) => acc += rank.count, 0) : undefined;
+    return podcastRanks ? podcastRanks.ranks.reduce((acc, rank) => acc += rank.total, 0) : undefined;
   }
 );
 
@@ -53,13 +53,14 @@ export const selectRoutedPodcastTotalsTableMetrics = createSelector(
   selectRoutedPodcastTotalsTotalDownloads,
   (podcastTotals: PodcastTotals, totalDownloads: number): TotalsTableRow[] => {
     if (podcastTotals && podcastTotals.ranks) {
-      return podcastTotals.ranks.map((rank: TotalsRank, i) => {
-        // show just one decimal place?
-        const percent = Math.round(rank.count * 1000 / totalDownloads) / 10;
+      return podcastTotals.ranks.map((rank: Rank, i) => {
+        // show just one decimal place? maybe instead do just 2 significant digits?
+        // const percent = Math.round(rank.count * 1000 / totalDownloads) / 10;
+        const percent = rank.total * 100 / totalDownloads;
         return {
           color: i < 10 ? getColor(i) : undefined,
           label: rank.label,
-          value: rank.count,
+          value: rank.total,
           percent
         };
       });

@@ -1,4 +1,4 @@
-import { RanksRank } from './ranks-rank.model';
+import { Rank } from './rank.model';
 import { IntervalModel } from './interval.model';
 
 export interface PodcastRanks {
@@ -7,5 +7,5 @@ export interface PodcastRanks {
   group: string;
   interval: IntervalModel;
   downloads: any[][];
-  ranks: RanksRank[];
+  ranks: Rank[];
 }

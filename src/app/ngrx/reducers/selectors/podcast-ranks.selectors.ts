@@ -1,9 +1,10 @@
 import { createSelector, createFeatureSelector } from '@ngrx/store';
 import * as fromPodcastRanks from '../podcast-ranks.reducer';
-import { PodcastRanks, Rank, IntervalModel } from '../models';
+import { PodcastRanks, Rank, IntervalModel, PodcastGroupCharted } from '../models';
 import { selectPodcastRoute, selectGroupRoute, selectIntervalRoute } from './router.selectors';
 import { TimeseriesChartModel } from 'ngx-prx-styleguide';
 import { getColor, neutralColor, mapMetricsToTimeseriesData } from '../../../shared/util/chart.util';
+import { selectRoutedPodcastGroupCharted } from './podcast-group-charted.selectors';
 
 export const selectPodcastRanksState = createFeatureSelector<fromPodcastRanks.State>('podcastRanks');
 
@@ -45,16 +46,21 @@ export const selectRoutedPodcastRanks = createSelector(
 
 export const selectRoutedPodcastRanksChartMetrics = createSelector(
   selectRoutedPodcastRanks,
-  (podcastRanks: PodcastRanks): TimeseriesChartModel[] => {
+  selectRoutedPodcastGroupCharted,
+  (podcastRanks: PodcastRanks, groupsCharted: PodcastGroupCharted[]): TimeseriesChartModel[] => {
     if (podcastRanks && podcastRanks.ranks && podcastRanks.downloads) {
-      return podcastRanks.ranks.map((rank: Rank, i: number) => {
-        const downloads = podcastRanks.downloads.map(data => [data[0], data[1][i]]);
-        return {
-          data: mapMetricsToTimeseriesData(downloads),
-          label: rank.label,
-          color: rank.label === 'Other' ? neutralColor : getColor(i)
-        };
-      });
+      return podcastRanks.ranks
+        .map((rank: Rank, i: number) => {
+          const downloads = podcastRanks.downloads.map(data => [data[0], data[1][i]]);
+          return {
+            data: mapMetricsToTimeseriesData(downloads),
+            label: rank.label,
+            color: rank.label === 'Other' ? neutralColor : getColor(i)
+          };
+        })
+        .filter((entry: TimeseriesChartModel) => {
+          return groupsCharted.filter(group => group.charted).map(group => group.groupName).indexOf(entry.label) > -1;
+        });
     }
   }
 );

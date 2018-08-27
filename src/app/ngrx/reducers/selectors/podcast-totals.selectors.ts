@@ -1,8 +1,9 @@
 import { createSelector, createFeatureSelector } from '@ngrx/store';
 import * as fromPodcastTotals from '../podcast-totals.reducer';
-import { PodcastTotals, Rank, TotalsTableRow } from '../models';
+import { PodcastTotals, Rank, TotalsTableRow, PodcastGroupCharted } from '../models';
 import { selectPodcastRoute, selectGroupRoute } from './router.selectors';
 import { getColor } from '../../../shared/util/chart.util';
+import { selectRoutedPodcastGroupCharted } from './podcast-group-charted.selectors';
 
 export const selectPodcastTotalsState = createFeatureSelector<fromPodcastTotals.State>('podcastTotals');
 
@@ -51,7 +52,8 @@ export const selectRoutedPodcastTotalsTotalDownloads = createSelector(
 export const selectRoutedPodcastTotalsTableMetrics = createSelector(
   selectRoutedPodcastTotals,
   selectRoutedPodcastTotalsTotalDownloads,
-  (podcastTotals: PodcastTotals, totalDownloads: number): TotalsTableRow[] => {
+  selectRoutedPodcastGroupCharted,
+  (podcastTotals: PodcastTotals, totalDownloads: number, groupsCharted: PodcastGroupCharted[]): TotalsTableRow[] => {
     if (podcastTotals && podcastTotals.ranks) {
       return podcastTotals.ranks.map((rank: Rank, i) => {
         // show just one decimal place? maybe instead do just 2 significant digits?
@@ -61,7 +63,8 @@ export const selectRoutedPodcastTotalsTableMetrics = createSelector(
           color: i < 10 ? getColor(i) : undefined,
           label: rank.label,
           value: rank.total,
-          percent
+          percent,
+          charted: groupsCharted.filter(group => group.charted).map(group => group.groupName).indexOf(rank.label) > -1
         };
       });
     }

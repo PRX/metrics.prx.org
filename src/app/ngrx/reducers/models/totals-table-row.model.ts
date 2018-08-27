@@ -3,4 +3,5 @@ export interface TotalsTableRow {
   label: string;
   value: number;
   percent: number;
+  charted: boolean;
 }

@@ -33,14 +33,14 @@ export function reducer(
       };
     }
     case ActionTypes.CASTLE_PODCAST_TOTALS_SUCCESS: {
-      const { id, group, interval, downloads, ranks } = action.payload;
+      const { id, group, downloads, ranks } = action.payload;
       // Note that there will be a breaking change with upsert in Ngrx/entity v6, no longer users Update interface
       // https://github.com/ngrx/platform/commit/a0f45ff035726f106f3f34ddf9b5025c54fc63e0
       return {
         ...adapter.upsertOne({
           id: `${id}-${group}`,
           changes: {
-            key: `${id}-${group}`, podcastId: id, group, interval, downloads, ranks
+            key: `${id}-${group}`, podcastId: id, group, downloads, ranks
           }
         }, state),
         loading: false,

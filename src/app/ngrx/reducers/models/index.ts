@@ -13,3 +13,4 @@ export { Rank } from './rank.model';
 export { PodcastRanks } from './podcast-ranks.model';
 export { PodcastTotals } from './podcast-totals.model';
 export { TotalsTableRow } from './totals-table-row.model';
+export { PodcastGroupCharted } from './podcast-group-charted.model';

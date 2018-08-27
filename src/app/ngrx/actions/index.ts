@@ -36,7 +36,12 @@ import { CustomRouterNavigationAction,
   RouteChartTypeAction, RouteIntervalAction,
   RouteStandardRangeAction, RouteAdvancedRangeAction,
   RouteMetricsGroupTypeAction } from './router.action.creator';
-import { ChartSingleEpisodeAction, ChartToggleEpisodeAction, ChartTogglePodcastAction } from './chart-toggle.action.creator';
+import {
+  ChartSingleEpisodeAction,
+  ChartToggleEpisodeAction,
+  ChartTogglePodcastAction,
+  ChartTogglePodcastGroupAction
+} from './chart-toggle.action.creator';
 
 export type AllActions
   = CmsAccountAction
@@ -78,7 +83,8 @@ export type AllActions
   | RouteMetricsGroupTypeAction
   | ChartSingleEpisodeAction
   | ChartToggleEpisodeAction
-  | ChartTogglePodcastAction;
+  | ChartTogglePodcastAction
+  | ChartTogglePodcastGroupAction;
 
 export { ActionTypes } from './action.types';
 export { CmsAccountSuccessPayload, CmsAccountSuccessAction,
@@ -117,4 +123,5 @@ export { CustomRouterNavigationPayload, CustomRouterNavigationAction,
   RouteMetricsGroupTypePayload, RouteMetricsGroupTypeAction } from './router.action.creator';
 export { ChartSingleEpisodePayload, ChartSingleEpisodeAction,
   ChartToggleEpisodePayload, ChartToggleEpisodeAction,
-  ChartTogglePodcastPayload, ChartTogglePodcastAction } from './chart-toggle.action.creator';
+  ChartTogglePodcastPayload, ChartTogglePodcastAction,
+  ChartTogglePodcastGroupPayload, ChartTogglePodcastGroupAction } from './chart-toggle.action.creator';

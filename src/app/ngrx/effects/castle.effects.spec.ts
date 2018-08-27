@@ -468,7 +468,7 @@ describe('CastleEffects', () => {
       group: GROUPTYPE_AGENTNAME,
       ranks: podcastAgentNameRanks.map(rank => {
         const { label, total, code} = rank;
-        return {label, count: total, code};
+        return {label, total, code};
       })
     });
 

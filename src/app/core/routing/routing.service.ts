@@ -148,7 +148,7 @@ export class RoutingService {
     }
     switch (routerParams.metricsType) {
       case METRICSTYPE_DOWNLOADS:
-        if (!routerParams.chartType || /* routerParams.chartType = CHARTTYPE_HORIZBAR */ routerParams.chartType === CHARTTYPE_LINE) {
+        if (!routerParams.chartType || routerParams.chartType === CHARTTYPE_HORIZBAR) {
           routerParams.chartType = <ChartType>CHARTTYPE_PODCAST;
         } else if (routerParams.chartType === <ChartType>CHARTTYPE_LINE) {
           routerParams.chartType = CHARTTYPE_EPISODES;
@@ -156,8 +156,7 @@ export class RoutingService {
         break;
       case METRICSTYPE_TRAFFICSOURCES:
         if (!routerParams.chartType || routerParams.chartType === CHARTTYPE_PODCAST) {
-          // routerParams.chartType = CHARTTYPE_HORIZBAR; // TODO: rotated axis in chart
-          routerParams.chartType = CHARTTYPE_LINE;
+          routerParams.chartType = CHARTTYPE_HORIZBAR;
         } else if (routerParams.chartType === CHARTTYPE_EPISODES) {
           routerParams.chartType = CHARTTYPE_LINE;
         }

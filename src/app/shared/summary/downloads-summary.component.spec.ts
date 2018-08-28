@@ -43,7 +43,7 @@ describe('DownloadsSummaryComponent', () => {
     });
   }));
 
-  it('should show total value according to metrics and group type router params', () => {
+  it('should show total value', () => {
     const pipe = new LargeNumberPipe();
     expect(de.query(By.css('.value')).nativeElement.innerText).toEqual(pipe.transform(metricsUtil.getTotal(podDownloads)));
   });

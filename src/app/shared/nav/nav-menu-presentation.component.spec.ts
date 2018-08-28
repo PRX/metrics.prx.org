@@ -10,14 +10,6 @@ import {
 } from '../../ngrx';
 
 import { NavMenuPresentationComponent } from './nav-menu-presentation.component';
-import {PodcastNavDropdownComponent} from "../podcast-nav/podcast-nav-dropdown.component";
-import {PodcastNavListComponent} from "../podcast-nav/podcast-nav-list.component";
-
-@Component({
-  selector: 'metrics-test-component',
-  template: ``
-})
-class TestComponent {}
 
 describe('NavMenuPresentationComponent', () => {
   let comp: NavMenuPresentationComponent;
@@ -41,8 +33,7 @@ describe('NavMenuPresentationComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [
-        NavMenuPresentationComponent,
-        TestComponent
+        NavMenuPresentationComponent
       ]
     }).compileComponents().then(() => {
       fix = TestBed.createComponent(NavMenuPresentationComponent);
@@ -88,5 +79,14 @@ describe('NavMenuPresentationComponent', () => {
     comp.open = true;
     window.dispatchEvent(new Event('scroll'));
     expect(comp.open).toBeFalsy();
+  });
+
+  it('should accordion nav sections', () => {
+    comp.ngOnChanges();
+    expect(comp.types.find(t => t.type === comp.routerParams.metricsType).expanded).toBeTruthy();
+    comp.accordionMetricsType(METRICSTYPE_TRAFFICSOURCES);
+    expect(comp.types.find(t => t.type === METRICSTYPE_TRAFFICSOURCES).expanded).toBeTruthy();
+    expect(comp.types.find(t => t.type === METRICSTYPE_DOWNLOADS).expanded).toBeFalsy();
+    expect(comp.types.find(t => t.type === METRICSTYPE_DEMOGRAPHICS).expanded).toBeFalsy();
   });
 });

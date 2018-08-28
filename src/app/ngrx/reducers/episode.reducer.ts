@@ -56,7 +56,7 @@ export function reducer(
       };
     }
     case ActionTypes.CASTLE_EPISODE_PAGE_LOAD: {
-      return {...state, pagesLoading: addToArray(state.pagesLoading, action.payload.page)};
+      return {...state, error: null, pagesLoading: addToArray(state.pagesLoading, action.payload.page)};
     }
     case ActionTypes.CASTLE_EPISODE_PAGE_SUCCESS: {
       return {
@@ -69,7 +69,11 @@ export function reducer(
       };
     }
     case ActionTypes.CASTLE_EPISODE_PAGE_FAILURE: {
-      return {...state, error: action.payload.error};
+      return {
+        ...state,
+        error: action.payload.error,
+        pagesLoading: []
+      };
     }
     default: {
       return state;

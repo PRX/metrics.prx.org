@@ -16,7 +16,6 @@ import { CastleService } from '../../core';
 import { Episode, RouterParams, getMetricsProperty, METRICSTYPE_DOWNLOADS,
   PODCAST_PAGE_SIZE, EPISODE_PAGE_SIZE } from '../';
 import * as localStorageUtil from '../../shared/util/local-storage.util';
-import {CastlePodcastPageLoadPayload} from "../actions/castle.action.creator";
 
 @Injectable()
 export class CastleEffects {

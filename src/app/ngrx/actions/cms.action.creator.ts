@@ -21,3 +21,12 @@ export class CmsAccountFailureAction implements Action {
   readonly type = ActionTypes.CMS_ACCOUNT_FAILURE;
   constructor(public payload: any) {}
 }
+
+export interface CmsAccountRetryActionsPayload {
+  actions: Action[];
+}
+
+export class CmsAccountRetryActionsAction implements Action {
+  readonly type = ActionTypes.CMS_ACCOUNT_RETRY_ACTIONS;
+  constructor(public payload: CmsAccountRetryActionsPayload) {}
+}

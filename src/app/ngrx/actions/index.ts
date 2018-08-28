@@ -1,5 +1,5 @@
 import { RouterNavigationAction } from '@ngrx/router-store';
-import { CmsAccountAction, CmsAccountSuccessAction, CmsAccountFailureAction } from './cms.action.creator';
+import { CmsAccountAction, CmsAccountSuccessAction, CmsAccountFailureAction, CmsAccountRetryActionsAction } from './cms.action.creator';
 import {
   CastlePodcastPageLoadAction,
   CastlePodcastPageSuccessAction,
@@ -47,6 +47,7 @@ export type AllActions
   = CmsAccountAction
   | CmsAccountSuccessAction
   | CmsAccountFailureAction
+  | CmsAccountRetryActionsAction
   | CastlePodcastPageLoadAction
   | CastlePodcastPageSuccessAction
   | CastlePodcastPageFailureAction
@@ -88,7 +89,8 @@ export type AllActions
 
 export { ActionTypes } from './action.types';
 export { CmsAccountSuccessPayload, CmsAccountSuccessAction,
-  CmsAccountAction, CmsAccountFailureAction } from './cms.action.creator';
+  CmsAccountAction, CmsAccountFailureAction,
+  CmsAccountRetryActionsPayload, CmsAccountRetryActionsAction } from './cms.action.creator';
 export {
   CastlePodcastPageLoadPayload, CastlePodcastPageLoadAction,
   CastlePodcastPageSuccessPayload, CastlePodcastPageSuccessAction, CastlePodcastPageFailureAction,

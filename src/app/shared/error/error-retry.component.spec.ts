@@ -52,10 +52,10 @@ describe('ErrorRetryComponent', () => {
     expect(de.query(By.css('button'))).not.toBeNull();
   });
 
-  it('should dispatch retry actions when Retry button is clicked', () => {
+  it('should dispatch retry action when Retry button is clicked', () => {
     setRetryActions();
     spyOn(store, 'dispatch').and.callThrough();
     de.query(By.css('button')).nativeElement.click();
-    expect(store.dispatch).toHaveBeenCalledWith(comp.retryActions[0]);
+    expect(store.dispatch).toHaveBeenCalledWith(new ACTIONS.CmsAccountRetryActionsAction({actions: comp.retryActions}));
   });
 });

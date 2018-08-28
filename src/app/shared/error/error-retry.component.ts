@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { AllActions } from '../../ngrx/actions/index';
+import { AllActions, CmsAccountRetryActionsAction } from '../../ngrx/actions/';
 
 @Component({
   selector: 'metrics-error-retry',
@@ -18,6 +18,6 @@ export class ErrorRetryComponent {
   constructor(private store: Store<any>) {}
 
   retry() {
-    this.retryActions.forEach(action => this.store.dispatch(action));
+    this.store.dispatch(new CmsAccountRetryActionsAction({actions: this.retryActions}));
   }
 }

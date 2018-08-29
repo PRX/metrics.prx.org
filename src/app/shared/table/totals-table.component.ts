@@ -1,6 +1,6 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { TotalsTableRow, RouterParams, getGroupName } from '../../ngrx/';
-import { neutralColor } from '../util/chart.util';
+import { TotalsTableRow, RouterParams, getGroupName, CHARTTYPE_HORIZBAR } from '../../ngrx/';
+import { neutralColor, standardColor } from '../util/chart.util';
 
 @Component({
   selector: 'metrics-totals-table',
@@ -13,7 +13,7 @@ import { neutralColor } from '../util/chart.util';
       </div>
       <div class="row" *ngFor="let data of tableData.slice(0, numRowsWithToggle)">
         <div>
-          <prx-checkbox small [checked]="data.charted" [color]="data.color"
+          <prx-checkbox small [checked]="data.charted" [color]="routerParams.chartType === horizbar ? blue : data.color"
                         (change)="toggleEntry.emit({podcastId: routerParams.podcastId, groupName: data.label, charted: $event})">
             {{data.label}}
           </prx-checkbox>
@@ -26,7 +26,7 @@ import { neutralColor } from '../util/chart.util';
     <div class="table">
       <div *ngIf="tableData?.length > numRowsWithToggle && numRowsWithToggle > 0" class="other header row">
         <div>
-          <prx-checkbox small [checked]="otherCharted" [color]="grey"
+          <prx-checkbox small [checked]="otherCharted" [color]="routerParams.chartType === horizbar ? blue : grey"
                         (change)="toggleEntry.emit({podcastId: routerParams.podcastId, groupName: 'Other', charted: $event})">
             Others:
           </prx-checkbox>
@@ -52,6 +52,8 @@ export class TotalsTableComponent {
   @Output() toggleEntry = new EventEmitter<{podcastId: string, groupName: string, charted: boolean}>();
   getGroupName = getGroupName;
   grey = neutralColor;
+  blue = standardColor;
+  horizbar = CHARTTYPE_HORIZBAR;
 
   get otherCharted() {
     return this.chartData && !!this.chartData.find(entry => entry['label'] === 'Other');

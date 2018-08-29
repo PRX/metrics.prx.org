@@ -1,5 +1,5 @@
 export interface Rank {
   total: number;
   label: string;
-  code: number;
+  code: number | string;
 }

@@ -1,14 +1,48 @@
 nav {
-  padding-top: 40px;
+  padding-top: 30px;
   list-style: none;
 }
 .dropdown-button {
   display: none;
 }
 
+button {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+button.section {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  text-align: left;
+  padding: 30px 30px 10px;
+  text-transform: uppercase;
+}
+button.nav:hover, button.nav:focus, button.active {
+  color: #0070a1;
+}
+img.icon {
+  min-width: 2em;
+  width: 2em;
+  height: 2em;
+}
+button .text {
+  padding-left: 10px;
+}
+ul {
+  /* 2em (img width) + 30px (button padding) + 1px (button border) */
+  margin-left: calc(2em + 31px);
+}
+
 @media (max-width: 768px) {
   nav {
     padding: 0;
+  }
+
+  button.section {
+    padding: 10px 20px;
   }
 
   .dropdown {
@@ -81,34 +115,4 @@ nav {
   .open .overlay {
     display: block;
   }
-}
-
-button {
-  font-family: 'Montserrat', sans-serif;
-  font-weight: 600;
-  white-space: nowrap;
-}
-
-button.section {
-  display: flex;
-  align-items: center;
-  width: 100%;
-  text-align: left;
-  padding: 10px 20px;
-  text-transform: uppercase;
-}
-button.nav:hover, button.nav:focus, button.active {
-  color: #0070a1;
-}
-img.icon {
-  min-width: 2em;
-  width: 2em;
-  height: 2em;
-}
-button .text {
-  padding-left: 10px;
-}
-ul {
-  /* 2em (img width) + 20px (button padding) + 1px (button border) */
-  margin-left: calc(2em + 21px);
 }

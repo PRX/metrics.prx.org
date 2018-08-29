@@ -65,9 +65,15 @@ export class NavMenuPresentationComponent implements OnChanges {
   }
 
   ngOnChanges() {
+    this.initAccordion();
+  }
+
+  initAccordion() {
     this.types.forEach(t => {
       if (t.type === this.routerParams.metricsType) {
         t.expanded = true;
+      } else {
+        t.expanded = false;
       }
     });
   }
@@ -89,6 +95,9 @@ export class NavMenuPresentationComponent implements OnChanges {
 
   toggleOpen() {
     this.open = !this.open;
+    if (this.open) {
+      this.initAccordion();
+    }
   }
 
   getTypeWithIcon(metricsType: MetricsType) {

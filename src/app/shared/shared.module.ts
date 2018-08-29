@@ -3,7 +3,7 @@ import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 
 import { AuthGuard, DeactivateGuard, UnauthGuard,
-  ChartsModule, DatepickerModule, ImageModule, SpinnerModule } from 'ngx-prx-styleguide';
+  ChartsModule, DatepickerModule, FancyFormModule, ImageModule, SpinnerModule } from 'ngx-prx-styleguide';
 
 import { ErrorRetryComponent } from './error/error-retry.component';
 import { MetricsTypeHeadingComponent } from './menu/metrics-type-heading.component';
@@ -23,6 +23,7 @@ import { EpisodePageComponent } from './paging/episode-page.component';
 import { AbrevNumberPipe } from './pipes/abrev-number.pipe';
 import { LargeNumberPipe } from './pipes/large-number.pipe';
 import { DownloadsSummaryComponent } from './summary/downloads-summary.component';
+import { TotalsTableComponent } from './table/totals-table.component';
 
 @NgModule({
   declarations: [
@@ -43,7 +44,8 @@ import { DownloadsSummaryComponent } from './summary/downloads-summary.component
     PodcastNavListComponent,
     PodcastNavComponent,
     StandardDateRangeComponent,
-    StandardDateRangeDropdownComponent
+    StandardDateRangeDropdownComponent,
+    TotalsTableComponent
   ],
   exports: [
     CommonModule,
@@ -57,13 +59,15 @@ import { DownloadsSummaryComponent } from './summary/downloads-summary.component
     LargeNumberPipe,
     EpisodePageComponent,
     NavMenuContainerComponent,
-    PodcastNavComponent
+    PodcastNavComponent,
+    TotalsTableComponent
   ],
   imports: [
     CommonModule,
     RouterModule,
     ChartsModule,
     DatepickerModule,
+    FancyFormModule,
     ImageModule,
     SpinnerModule
   ],

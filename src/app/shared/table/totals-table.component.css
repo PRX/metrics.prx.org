@@ -1,0 +1,47 @@
+.table {
+  margin: 0 -20px;
+}
+.header > div {
+  font-weight: 700;
+  margin: 10px 0;
+}
+.header > div:first-child {
+  padding-left: 20px;
+}
+.row {
+  display: flex;
+  padding-left: 20px;
+}
+.row:nth-child(even) {
+  background-color: #f0f0f0;
+}
+.row > div {
+  flex-basis: calc(33% - 40px/3);
+}
+.number {
+  text-align: right;
+  white-space: nowrap;
+}
+.percent {
+  color: #676767;
+}
+
+.other.header {
+  margin-top: 20px;
+}
+.other.row:not(.header) > div:first-child {
+  padding-left: 20px;
+  font-size: 12px;
+}
+
+@media (max-width: 768px) {
+  .growth {
+    display: none;
+  }
+  .table {
+    margin: 0 -10px;
+  }
+  .row > div {
+    flex-basis: calc(50% - 40px/2);
+  }
+}

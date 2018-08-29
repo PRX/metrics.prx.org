@@ -4,7 +4,7 @@ import { DebugElement } from '@angular/core';
 
 import { reducers } from '../../ngrx/reducers';
 import { RouteIntervalAction } from '../../ngrx/actions';
-import { INTERVAL_DAILY, INTERVAL_WEEKLY } from '../../ngrx';
+import { INTERVAL_DAILY, INTERVAL_WEEKLY, METRICSTYPE_DOWNLOADS } from '../../ngrx';
 import * as dateUtil from '../util/date';
 
 import { IntervalDropdownComponent } from './interval-dropdown.component';
@@ -33,6 +33,7 @@ describe('IntervalDropdownComponent', () => {
       store = TestBed.get(Store);
 
       comp.routerParams = {
+        metricsType: METRICSTYPE_DOWNLOADS,
         beginDate: dateUtil.beginningOfLastMonthUTC().toDate(),
         endDate: dateUtil.endOfLastMonthUTC().toDate(),
         interval: INTERVAL_DAILY

@@ -1,7 +1,9 @@
 import { Component, Input, OnChanges, HostListener } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { RouterParams, IntervalModel,
-  INTERVAL_MONTHLY, INTERVAL_WEEKLY, INTERVAL_DAILY, INTERVAL_HOURLY } from '../../ngrx';
+import {
+  RouterParams, IntervalModel,
+  INTERVAL_MONTHLY, INTERVAL_WEEKLY, INTERVAL_DAILY, INTERVAL_HOURLY, METRICSTYPE_DOWNLOADS
+} from '../../ngrx';
 import { RouteIntervalAction } from '../../ngrx/actions';
 import * as dateUtil from '../util/date';
 
@@ -51,7 +53,8 @@ export class IntervalDropdownComponent implements OnChanges {
      40 days at 1h
      2.7 years at 1d
      */
-    if (dateUtil.isMoreThanXDays(40, this.routerParams.beginDate, this.routerParams.endDate)) {
+    if (this.routerParams.metricsType !== METRICSTYPE_DOWNLOADS ||
+      dateUtil.isMoreThanXDays(40, this.routerParams.beginDate, this.routerParams.endDate)) {
       return [INTERVAL_DAILY, INTERVAL_WEEKLY, INTERVAL_MONTHLY];
     } else {
       return [INTERVAL_HOURLY, INTERVAL_DAILY, INTERVAL_WEEKLY, INTERVAL_MONTHLY];

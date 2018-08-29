@@ -51,8 +51,9 @@ describe('TotalsTableComponent', () => {
     });
   }));
 
-  it('should show numRowsWithToggle || data.length checkboxes', () => {
-    expect(de.queryAll(By.css('prx-checkbox')).length).toEqual(Math.min(comp.tableData.length, comp.numRowsWithToggle));
+  it('should show numRowsWithToggle || data.length + 1 for Others checkboxes', () => {
+    const expected = comp.tableData.length < comp.numRowsWithToggle ? comp.tableData.length : comp.numRowsWithToggle + 1;
+    expect(de.queryAll(By.css('prx-checkbox')).length).toEqual(expected);
   });
 
   it('should emit toggleEntry event when checkbox is clicked', () => {

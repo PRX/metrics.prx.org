@@ -5,7 +5,7 @@
   font-weight: 700;
   margin: 10px 0;
 }
-.header > div:first-child {
+.header:not(.other) > div:first-child {
   padding-left: 20px;
 }
 .row {

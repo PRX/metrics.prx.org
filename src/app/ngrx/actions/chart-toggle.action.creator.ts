@@ -1,6 +1,5 @@
 import { Action } from '@ngrx/store';
 import { ActionTypes } from './action.types';
-import { GroupType } from '../';
 
 export interface ChartSingleEpisodePayload {
   guid: string;

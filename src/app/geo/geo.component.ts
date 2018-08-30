@@ -11,7 +11,6 @@ import {
   selectRoutedPodcastTotalsTableMetrics,
   selectRouter
 } from '../ngrx/reducers/selectors';
-import { generateShades } from "../shared/util/chart.util";
 
 @Component ({
   template: `

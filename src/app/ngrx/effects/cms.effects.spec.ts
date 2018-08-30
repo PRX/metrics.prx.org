@@ -85,22 +85,6 @@ describe('CmsEffects', () => {
       expect(effects.loadAccount$).toBeObservable(expect$);
     });
 
-    it('reloads the account to retry failed actions', () => {
-      spyOn(store, 'dispatch').and.callThrough();
-      const accounts = auth.mockItems('prx:accounts', [
-        {name: 'TheAccountName', type: 'IndividualAccount', id: 111},
-        {name: 'DefaultName', type: 'DefaultAccount', id: 222}
-      ]);
-      const retryActions = [new ACTIONS.CastlePodcastPageLoadAction({page: 1, all: true})];
-      const action = new ACTIONS.CmsAccountRetryActionsAction({actions: retryActions});
-      const account = {id: 111, name: 'TheAccountName', doc: accounts[0]};
-      const completion = new ACTIONS.CmsAccountSuccessAction({account});
-      actions$ = hot('-a', {a: action});
-      expect$ = cold('-r', {r: completion});
-      expect(effects.retryActions$).toBeObservable(expect$);
-      expect(store.dispatch).toHaveBeenCalledWith(retryActions[0]);
-    });
-
   });
 
 });

@@ -56,6 +56,6 @@ describe('ErrorRetryComponent', () => {
     setRetryActions();
     spyOn(store, 'dispatch').and.callThrough();
     de.query(By.css('button')).nativeElement.click();
-    expect(store.dispatch).toHaveBeenCalledWith(new ACTIONS.CmsAccountRetryActionsAction({actions: comp.retryActions}));
+    expect(store.dispatch).toHaveBeenCalledWith(comp.retryActions[0]);
   });
 });

@@ -16,8 +16,7 @@ import { DateRangeSummaryComponent } from './date/date-range-summary.component';
 import { IntervalDropdownComponent } from './interval-dropdown.component';
 import { StandardDateRangeDropdownComponent } from './date/standard-date-range-dropdown.component';
 import { StandardDateRangeComponent } from './date/standard-date-range.component';
-import { DownloadsSummaryContainerComponent } from '../summary/downloads-summary-container.component';
-import { DownloadsSummaryItemComponent } from '../summary/downloads-summary-item.component';
+import { DownloadsSummaryComponent } from '../summary/downloads-summary.component';
 import { LargeNumberPipe } from '../pipes/large-number.pipe';
 import { DatepickerModule } from 'ngx-prx-styleguide';
 
@@ -43,8 +42,7 @@ describe('MenuBarComponent', () => {
         ChartTypeComponent,
         CustomDateRangeDropdownComponent,
         DateRangeSummaryComponent,
-        DownloadsSummaryContainerComponent,
-        DownloadsSummaryItemComponent,
+        DownloadsSummaryComponent,
         IntervalDropdownComponent,
         LargeNumberPipe,
         MetricsTypeHeadingComponent,
@@ -58,12 +56,12 @@ describe('MenuBarComponent', () => {
     }).compileComponents().then(() => {
       fix = TestBed.createComponent(MenuBarComponent);
       comp = fix.componentInstance;
-      fix.detectChanges();
       de = fix.debugElement;
       el = de.nativeElement;
       store = TestBed.get(Store);
 
       store.dispatch(new CustomRouterNavigationAction({routerParams}));
+      fix.detectChanges();
     });
   }));
 

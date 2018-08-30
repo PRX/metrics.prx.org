@@ -3,8 +3,9 @@ import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 
 import { AuthGuard, DeactivateGuard, UnauthGuard,
-  ChartsModule, DatepickerModule, ImageModule, SpinnerModule } from 'ngx-prx-styleguide';
+  ChartsModule, DatepickerModule, FancyFormModule, ImageModule, SpinnerModule } from 'ngx-prx-styleguide';
 
+import { ErrorRetryComponent } from './error/error-retry.component';
 import { MetricsTypeHeadingComponent } from './menu/metrics-type-heading.component';
 import { ChartTypeComponent } from './menu/chart-type.component';
 import { IntervalDropdownComponent } from './menu/interval-dropdown.component';
@@ -16,12 +17,13 @@ import { CustomDateRangeDropdownComponent } from './menu/date/custom-date-range-
 import { DateRangeSummaryComponent } from './menu/date/date-range-summary.component';
 import { StandardDateRangeComponent } from './menu/date/standard-date-range.component';
 import { StandardDateRangeDropdownComponent } from './menu/date/standard-date-range-dropdown.component';
-import { NavMenuComponent } from './nav/nav-menu.component';
+import { NavMenuContainerComponent } from './nav/nav-menu-container.component';
+import { NavMenuPresentationComponent } from './nav/nav-menu-presentation.component';
 import { EpisodePageComponent } from './paging/episode-page.component';
 import { AbrevNumberPipe } from './pipes/abrev-number.pipe';
 import { LargeNumberPipe } from './pipes/large-number.pipe';
-import { DownloadsSummaryContainerComponent } from './summary/downloads-summary-container.component';
-import { DownloadsSummaryItemComponent } from './summary/downloads-summary-item.component';
+import { DownloadsSummaryComponent } from './summary/downloads-summary.component';
+import { TotalsTableComponent } from './table/totals-table.component';
 
 @NgModule({
   declarations: [
@@ -29,38 +31,43 @@ import { DownloadsSummaryItemComponent } from './summary/downloads-summary-item.
     ChartTypeComponent,
     CustomDateRangeDropdownComponent,
     DateRangeSummaryComponent,
-    DownloadsSummaryContainerComponent,
-    DownloadsSummaryItemComponent,
+    DownloadsSummaryComponent,
     EpisodePageComponent,
+    ErrorRetryComponent,
     IntervalDropdownComponent,
     LargeNumberPipe,
     MenuBarComponent,
     MetricsTypeHeadingComponent,
-    NavMenuComponent,
+    NavMenuContainerComponent,
+    NavMenuPresentationComponent,
     PodcastNavDropdownComponent,
     PodcastNavListComponent,
     PodcastNavComponent,
     StandardDateRangeComponent,
-    StandardDateRangeDropdownComponent
+    StandardDateRangeDropdownComponent,
+    TotalsTableComponent
   ],
   exports: [
     CommonModule,
     ChartsModule,
     DatepickerModule,
+    ErrorRetryComponent,
     ImageModule,
     AbrevNumberPipe,
     MenuBarComponent,
     SpinnerModule,
     LargeNumberPipe,
     EpisodePageComponent,
-    NavMenuComponent,
-    PodcastNavComponent
+    NavMenuContainerComponent,
+    PodcastNavComponent,
+    TotalsTableComponent
   ],
   imports: [
     CommonModule,
     RouterModule,
     ChartsModule,
     DatepickerModule,
+    FancyFormModule,
     ImageModule,
     SpinnerModule
   ],

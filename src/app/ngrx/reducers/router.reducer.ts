@@ -17,6 +17,9 @@ export function CustomRouterReducer(state: RouterParams = initialState, action: 
       if (action.payload.routerParams.metricsType) {
         newState.metricsType = action.payload.routerParams.metricsType;
       }
+      if (action.payload.routerParams.group) {
+        newState.group = action.payload.routerParams.group;
+      }
       if (action.payload.routerParams.chartType) {
         newState.chartType = action.payload.routerParams.chartType;
       }

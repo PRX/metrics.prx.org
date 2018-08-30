@@ -25,10 +25,10 @@ export function PodcastMetricsReducer(state: PodcastMetricsModel[] = initialStat
       const podcastIdx = podcastIndex(state, id);
       let podcast: PodcastMetricsModel, newState: PodcastMetricsModel[];
       if (podcastIdx > -1) {
-        podcast = {...state[podcastIdx], loading: true, loaded: false};
+        podcast = {...state[podcastIdx], error: null, loading: true, loaded: false};
         newState = [...state.slice(0, podcastIdx), podcast, ...state.slice(podcastIdx + 1)];
       } else {
-        podcast = {id, charted: true, loading: true, loaded: false};
+        podcast = {id, charted: true, error: null, loading: true, loaded: false};
         newState = [podcast, ...state];
       }
       return newState;

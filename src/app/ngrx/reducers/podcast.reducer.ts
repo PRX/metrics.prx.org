@@ -24,6 +24,12 @@ export function reducer(
   action: AllActions
 ): State {
   switch (action.type) {
+    case ActionTypes.CASTLE_PODCAST_PAGE_LOAD: {
+      return {
+        ...state,
+        error: null
+      };
+    }
     case ActionTypes.CASTLE_PODCAST_PAGE_SUCCESS: {
       return adapter.upsertMany(action.payload.podcasts.map(podcast => {
         return {

@@ -1,6 +1,6 @@
 import { Action } from '@ngrx/store';
 import { ActionTypes } from './action.types';
-import { RouterParams, ChartType, IntervalModel, MetricsType } from '../';
+import { RouterParams, ChartType, IntervalModel, MetricsType, GroupType } from '../';
 
 // CustomRouterNavigation happens as a result of
 // the StoreRouterConnectingModule and the RouterStateSerializer and the customRouterNavigation$ routing effect
@@ -78,12 +78,13 @@ export class RouteEpisodePageAction implements Action {
   constructor(public payload: RouteEpisodePagePayload) {}
 }
 
-export interface RouteMetricsTypePayload {
+export interface RouteMetricsGroupTypePayload {
   metricsType: MetricsType;
+  group?: GroupType;
 }
 
-export class RouteMetricsTypeAction implements Action {
-  readonly type = ActionTypes.ROUTE_METRICS_TYPE;
+export class RouteMetricsGroupTypeAction implements Action {
+  readonly type = ActionTypes.ROUTE_METRICS_GROUP_TYPE;
 
-  constructor(public payload: RouteMetricsTypePayload) {}
+  constructor(public payload: RouteMetricsGroupTypePayload) {}
 }

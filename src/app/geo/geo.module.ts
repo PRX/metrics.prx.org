@@ -3,12 +3,14 @@ import { CommonModule } from '@angular/common';
 
 import { SharedModule } from '../shared';
 import { GeoComponent } from './geo.component';
+import { SoonComponent } from './soon.component';
 
 import { geoRouting } from './geo.routing';
 
 @NgModule({
   declarations: [
-    GeoComponent
+    GeoComponent,
+    SoonComponent
   ],
   imports: [
     CommonModule,

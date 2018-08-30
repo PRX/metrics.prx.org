@@ -1,6 +1,6 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnChanges } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { RouterParams, INTERVAL_HOURLY, IntervalModel, IntervalList } from '../../../ngrx';
+import { RouterParams, INTERVAL_HOURLY, IntervalModel, IntervalList, METRICSTYPE_DOWNLOADS } from '../../../ngrx';
 import * as dateUtil from '../../util/date';
 import { GoogleAnalyticsEventAction, RouteAdvancedRangeAction } from '../../../ngrx/actions';
 
@@ -48,16 +48,22 @@ import { GoogleAnalyticsEventAction, RouteAdvancedRangeAction } from '../../../n
   styleUrls: ['../dropdown.css', './custom-date-range-dropdown.component.css']
 })
 
-export class CustomDateRangeDropdownComponent {
+export class CustomDateRangeDropdownComponent implements OnChanges {
   @Input() routerParams: RouterParams;
   tempRange: RouterParams;
-  intervalList = IntervalList;
+  intervalList: IntervalModel[];
   userChoseRange: string;
   CUSTOM_DATE = 'custom-date';
   STANDARD_DATE = 'standard-date';
   open = false;
 
   constructor(public store: Store<any>) {}
+
+  ngOnChanges() {
+    this.intervalList = IntervalList.filter(interval => {
+      return this.routerParams.metricsType === METRICSTYPE_DOWNLOADS || interval !== INTERVAL_HOURLY;
+    });
+  }
 
   onIntervalChange(interval: IntervalModel) {
     this.tempRange.interval = interval;

@@ -42,10 +42,10 @@ export function EpisodeMetricsReducer(state: EpisodeMetricsModel[] = initialStat
       const epIdx = episodeIndex(state, guid);
       let episode: EpisodeMetricsModel, newState: EpisodeMetricsModel[];
       if (epIdx > -1) {
-        episode = {...state[epIdx], podcastId, guid, page, loading: true, loaded: false};
+        episode = {...state[epIdx], podcastId, guid, page, error: null, loading: true, loaded: false};
         newState = [...state.slice(0, epIdx), episode, ...state.slice(epIdx + 1)];
       } else {
-        episode = {podcastId, guid, page, loading: true, loaded: false};
+        episode = {podcastId, guid, page, error: null, loading: true, loaded: false};
         newState = [episode, ...state];
       }
       return newState;

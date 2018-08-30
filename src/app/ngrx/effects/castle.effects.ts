@@ -16,7 +16,6 @@ import { CastleService } from '../../core';
 import { Episode, RouterParams, getMetricsProperty, METRICSTYPE_DOWNLOADS,
   PODCAST_PAGE_SIZE, EPISODE_PAGE_SIZE } from '../';
 import * as localStorageUtil from '../../shared/util/local-storage.util';
-import {CastlePodcastPageLoadPayload} from "../actions/castle.action.creator";
 
 @Injectable()
 export class CastleEffects {
@@ -310,6 +309,62 @@ export class CastleEffects {
             }
           })
         );
+    })
+  );
+
+  // basic - load > success/failure podcast totals
+  @Effect()
+  loadPodcastRanks$: Observable<Action> = this.actions$.pipe(
+    ofType(ACTIONS.ActionTypes.CASTLE_PODCAST_RANKS_LOAD),
+    map((action: ACTIONS.CastlePodcastRanksLoadAction) => action.payload),
+    switchMap((payload: ACTIONS.CastlePodcastRanksLoadPayload) => {
+      const { id, interval, group, beginDate, endDate } = payload;
+      return this.castle.follow('prx:podcast-ranks', {
+        id,
+        group,
+        interval: interval.value,
+        from: beginDate.toISOString(),
+        to: endDate.toISOString()
+      }).pipe(
+        map(metrics => {
+          return new ACTIONS.CastlePodcastRanksSuccessAction({
+            id,
+            group,
+            interval,
+            downloads: metrics['downloads'],
+            ranks: metrics['ranks']
+          });
+        }),
+        catchError(error => Observable.of(new ACTIONS.CastlePodcastRanksFailureAction({id, group, error})))
+      );
+    })
+  );
+
+  // basic - load > success/failure podcast totals
+  @Effect()
+  loadPodcastTotals$: Observable<Action> = this.actions$.pipe(
+    ofType(ACTIONS.ActionTypes.CASTLE_PODCAST_TOTALS_LOAD),
+    map((action: ACTIONS.CastlePodcastTotalsLoadAction) => action.payload),
+    switchMap((payload: ACTIONS.CastlePodcastTotalsLoadPayload) => {
+      const { id, group, beginDate, endDate } = payload;
+      return this.castle.follow('prx:podcast-totals', {
+        id,
+        group,
+        from: beginDate.toISOString(),
+        to: endDate.toISOString()
+      }).pipe(
+        map(metrics => {
+          return new ACTIONS.CastlePodcastTotalsSuccessAction({
+            id,
+            group,
+            ranks: metrics['ranks'].map(rank => {
+              const { count, label, code }  = rank;
+              return { total: count, label, code };
+            })
+          });
+        }),
+        catchError(error => Observable.of(new ACTIONS.CastlePodcastTotalsFailureAction({id, group, error})))
+      );
     })
   );
 

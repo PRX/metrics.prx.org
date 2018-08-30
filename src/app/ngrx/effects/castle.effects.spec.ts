@@ -8,14 +8,18 @@ import { getActions, TestActions } from './test.actions';
 import { HalService, MockHalService } from 'ngx-prx-styleguide';
 import { CastleService } from '../../core';
 
-import { MetricsType, getMetricsProperty,
-  METRICSTYPE_DOWNLOADS, INTERVAL_DAILY, PODCAST_PAGE_SIZE, EPISODE_PAGE_SIZE } from '../';
+import {
+  MetricsType, getMetricsProperty,
+  METRICSTYPE_DOWNLOADS, INTERVAL_DAILY, PODCAST_PAGE_SIZE, EPISODE_PAGE_SIZE, GROUPTYPE_AGENTNAME
+} from '../';
 import { reducers } from '../../ngrx/reducers';
 import * as ACTIONS from '../actions';
 import { CastleEffects } from './castle.effects';
 import * as localStorageUtil from '../../shared/util/local-storage.util';
+import * as dateUtil from '../../shared/util/date';
 
-import { routerParams, podcast, episodes, podDownloads, ep0Downloads } from '../../../testing/downloads.fixtures';
+import { routerParams, podcast, episodes, podDownloads, ep0Downloads,
+  podcastAgentNameRanks, podcastAgentNameDownloads } from '../../../testing/downloads.fixtures';
 
 describe('CastleEffects', () => {
   let effects: CastleEffects;
@@ -54,6 +58,16 @@ describe('CastleEffects', () => {
       downloads: ep0Downloads
     }]);
     castle.root.mockItems('prx:podcasts', [podcast]);
+    castle.root.mock('prx:podcast-ranks', {
+      downloads: podcastAgentNameDownloads,
+      ranks: podcastAgentNameRanks
+    });
+    castle.root.mock('prx:podcast-totals', {
+      ranks: podcastAgentNameRanks.map(rank => {
+        const { total, label, code } = rank;
+        return { count: total, label, code};
+      })
+    });
 
     TestBed.configureTestingModule({
       imports: [
@@ -413,5 +427,53 @@ describe('CastleEffects', () => {
       });
     });
 
+  });
+
+  it('should load grouped podcast ranks', () => {
+    const action = {
+      type: ACTIONS.ActionTypes.CASTLE_PODCAST_RANKS_LOAD,
+      payload: {
+        id: podcast.id,
+        group: GROUPTYPE_AGENTNAME,
+        interval: INTERVAL_DAILY,
+        beginDate: dateUtil.beginningOfLast28DaysUTC().toDate(),
+        endDate: dateUtil.endOfTodayUTC()
+      }
+    };
+    const success = new ACTIONS.CastlePodcastRanksSuccessAction({
+      id: podcast.id,
+      group: GROUPTYPE_AGENTNAME,
+      interval: INTERVAL_DAILY,
+      ranks: podcastAgentNameRanks,
+      downloads: podcastAgentNameDownloads
+    });
+
+    actions$.stream = hot('-a', { a: action });
+    const expected = cold('-r', { r: success });
+    expect(effects.loadPodcastRanks$).toBeObservable(expected);
+  });
+
+  it('should load grouped podcast totals', () => {
+    const action = {
+      type: ACTIONS.ActionTypes.CASTLE_PODCAST_TOTALS_LOAD,
+      payload: {
+        id: podcast.id,
+        group: GROUPTYPE_AGENTNAME,
+        beginDate: dateUtil.beginningOfLast28DaysUTC().toDate(),
+        endDate: dateUtil.endOfTodayUTC()
+      }
+    };
+    const success = new ACTIONS.CastlePodcastTotalsSuccessAction({
+      id: podcast.id,
+      group: GROUPTYPE_AGENTNAME,
+      ranks: podcastAgentNameRanks.map(rank => {
+        const { label, total, code} = rank;
+        return {label, total, code};
+      })
+    });
+
+    actions$.stream = hot('-a', { a: action });
+    const expected = cold('-r', { r: success });
+    expect(effects.loadPodcastTotals$).toBeObservable(expected);
   });
 });

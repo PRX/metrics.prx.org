@@ -24,6 +24,3 @@ export const selectAllPodcasts = createSelector(
 
 export const selectRoutedPodcast = createSelector(selectPodcastEntities, selectPodcastRoute,
   (entities, podcastId) => entities[podcastId]);
-
-export const selectRoutedPodcastLoaded = createSelector(selectPodcastIds, selectPodcastRoute,
-  (ids: string[], podcastId: string) => ids.indexOf(podcastId) !== -1);

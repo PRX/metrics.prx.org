@@ -1,14 +1,25 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { DebugElement } from '@angular/core';
+import { By } from '@angular/platform-browser';
 import { RouterTestingModule } from '@angular/router/testing';
-import { StoreModule } from '@ngrx/store';
+import { StoreModule, Store } from '@ngrx/store';
 
 import { SharedModule } from '../shared/shared.module';
+import * as ACTIONS from '../ngrx/actions';
 import { reducers } from '../ngrx/reducers';
 
 import { GeoComponent } from './geo.component';
+import { SoonComponent } from './soon.component';
+import {
+  podcast,
+  podcastGeoCountryDownloads,
+  podcastGeoCountryRanks,
+  routerParams as downloadParams
+} from '../../testing/downloads.fixtures';
+import { GroupType, GROUPTYPE_GEOCOUNTRY, MetricsType, METRICSTYPE_DEMOGRAPHICS } from '../ngrx/reducers/models';
 
 describe('GeoComponent', () => {
+  let store: Store<any>;
   let comp: GeoComponent;
   let fix: ComponentFixture<GeoComponent>;
   let de: DebugElement;
@@ -17,7 +28,8 @@ describe('GeoComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [
-        GeoComponent
+        GeoComponent,
+        SoonComponent
       ],
       imports: [
         SharedModule,
@@ -30,10 +42,54 @@ describe('GeoComponent', () => {
       fix.detectChanges();
       de = fix.debugElement;
       el = de.nativeElement;
+      store = TestBed.get(Store);
     });
   }));
+
+  const routerParams = {...downloadParams, metricsType:<MetricsType>METRICSTYPE_DEMOGRAPHICS, group: <GroupType>GROUPTYPE_GEOCOUNTRY};
+  function dispatchRouterNavigation() {
+    store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerParams}));
+  }
+
+  function dispatchPodcasts() {
+    store.dispatch(new ACTIONS.CastlePodcastPageSuccessAction(
+      {podcasts: [podcast], page: 1, total: 1}));
+  }
+
+  function dispatchPodcastGeoCountryTotals() {
+    store.dispatch(new ACTIONS.CastlePodcastTotalsSuccessAction({
+      id: routerParams.podcastId,
+      group: GROUPTYPE_GEOCOUNTRY,
+      ranks: podcastGeoCountryRanks
+    }));
+  }
+
+  function dispatchPodcastGeoCountryRanks() {
+    store.dispatch(new ACTIONS.CastlePodcastRanksSuccessAction({
+      id: routerParams.podcastId,
+      group: GROUPTYPE_GEOCOUNTRY,
+      interval: routerParams.interval,
+      ranks: podcastGeoCountryRanks,
+      downloads: podcastGeoCountryDownloads
+    }));
+  }
 
   it('should create the component', async(() => {
     expect(comp).toBeTruthy();
   }));
+
+  it('should show loading spinner when loading', () => {
+    fix.detectChanges();
+    expect(de.query(By.css('prx-spinner'))).not.toBeNull();
+  });
+
+  it('should show a totals table', () => {
+    dispatchPodcasts();
+    dispatchRouterNavigation();
+    dispatchPodcastGeoCountryTotals();
+    dispatchPodcastGeoCountryRanks();
+    fix.detectChanges();
+    expect(de.query(By.css('prx-spinner'))).toBeNull();
+    expect(de.query(By.css('metrics-totals-table'))).not.toBeNull();
+  });
 });

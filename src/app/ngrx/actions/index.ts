@@ -19,15 +19,29 @@ import {
   CastleEpisodeMetricsLoadAction,
   CastleEpisodeMetricsSuccessAction,
   CastleEpisodeMetricsFailureAction,
-  CastlePodcastPageLoadPayload
+  CastlePodcastRanksLoadAction,
+  CastlePodcastRanksSuccessAction,
+  CastlePodcastRanksFailureAction,
+  CastlePodcastRanksSuccessPayload,
+  CastlePodcastRanksFailurePayload,
+  CastlePodcastTotalsLoadAction,
+  CastlePodcastTotalsSuccessAction,
+  CastlePodcastTotalsFailureAction,
+  CastlePodcastTotalsSuccessPayload,
+  CastlePodcastTotalsFailurePayload
 } from './castle.action.creator';
 import { GoogleAnalyticsEventAction } from './google-analytics.action.creator';
 import { CustomRouterNavigationAction,
   RoutePodcastAction, RouteEpisodePageAction,
   RouteChartTypeAction, RouteIntervalAction,
   RouteStandardRangeAction, RouteAdvancedRangeAction,
-  RouteMetricsTypeAction } from './router.action.creator';
-import { ChartSingleEpisodeAction, ChartToggleEpisodeAction, ChartTogglePodcastAction } from './chart-toggle.action.creator';
+  RouteMetricsGroupTypeAction } from './router.action.creator';
+import {
+  ChartSingleEpisodeAction,
+  ChartToggleEpisodeAction,
+  ChartTogglePodcastAction,
+  ChartTogglePodcastGroupAction
+} from './chart-toggle.action.creator';
 
 export type AllActions
   = CmsAccountAction
@@ -51,6 +65,12 @@ export type AllActions
   | CastleEpisodePerformanceMetricsLoadAction
   | CastleEpisodePerformanceMetricsSuccessAction
   | CastleEpisodePerformanceMetricsFailureAction
+  | CastlePodcastRanksLoadAction
+  | CastlePodcastRanksSuccessAction
+  | CastlePodcastRanksFailureAction
+  | CastlePodcastTotalsLoadAction
+  | CastlePodcastTotalsSuccessAction
+  | CastlePodcastTotalsFailureAction
   | RouterNavigationAction
   | GoogleAnalyticsEventAction
   | CustomRouterNavigationAction
@@ -60,10 +80,11 @@ export type AllActions
   | RouteIntervalAction
   | RouteStandardRangeAction
   | RouteAdvancedRangeAction
-  | RouteMetricsTypeAction
+  | RouteMetricsGroupTypeAction
   | ChartSingleEpisodeAction
   | ChartToggleEpisodeAction
-  | ChartTogglePodcastAction;
+  | ChartTogglePodcastAction
+  | ChartTogglePodcastGroupAction;
 
 export { ActionTypes } from './action.types';
 export { CmsAccountSuccessPayload, CmsAccountSuccessAction,
@@ -84,7 +105,13 @@ export {
   CastleEpisodePerformanceMetricsFailureAction,
   CastleEpisodeMetricsLoadPayload, CastleEpisodeMetricsLoadAction,
   CastleEpisodeMetricsSuccessPayload, CastleEpisodeMetricsSuccessAction,
-  CastleEpisodeMetricsFailurePayload, CastleEpisodeMetricsFailureAction } from './castle.action.creator';
+  CastleEpisodeMetricsFailurePayload, CastleEpisodeMetricsFailureAction,
+  CastlePodcastRanksLoadPayload, CastlePodcastRanksLoadAction,
+  CastlePodcastRanksSuccessPayload, CastlePodcastRanksSuccessAction,
+  CastlePodcastRanksFailurePayload, CastlePodcastRanksFailureAction,
+  CastlePodcastTotalsLoadPayload, CastlePodcastTotalsLoadAction,
+  CastlePodcastTotalsSuccessPayload, CastlePodcastTotalsSuccessAction,
+  CastlePodcastTotalsFailurePayload, CastlePodcastTotalsFailureAction } from './castle.action.creator';
 export { GoogleAnalyticsEventPayload, GoogleAnalyticsEventAction } from './google-analytics.action.creator';
 export { CustomRouterNavigationPayload, CustomRouterNavigationAction,
   RoutePodcastPayload, RoutePodcastAction,
@@ -93,7 +120,8 @@ export { CustomRouterNavigationPayload, CustomRouterNavigationAction,
   RouteIntervalPayload, RouteIntervalAction,
   RouteAdvancedRangePayload, RouteAdvancedRangeAction,
   RouteStandardRangePayload, RouteStandardRangeAction,
-  RouteMetricsTypePayload, RouteMetricsTypeAction } from './router.action.creator';
+  RouteMetricsGroupTypePayload, RouteMetricsGroupTypeAction } from './router.action.creator';
 export { ChartSingleEpisodePayload, ChartSingleEpisodeAction,
   ChartToggleEpisodePayload, ChartToggleEpisodeAction,
-  ChartTogglePodcastPayload, ChartTogglePodcastAction } from './chart-toggle.action.creator';
+  ChartTogglePodcastPayload, ChartTogglePodcastAction,
+  ChartTogglePodcastGroupPayload, ChartTogglePodcastGroupAction } from './chart-toggle.action.creator';

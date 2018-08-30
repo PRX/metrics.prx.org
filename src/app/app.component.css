@@ -13,13 +13,13 @@ article {
 }
 
 metrics-nav-menu {
-  min-width: 200px;
+  min-width: 250px;
   background-color: #f0f0f0;
 }
 
 .content {
   padding: 20px;
-  max-width: calc(100% - 200px);
+  max-width: calc(100% - 250px);
   min-height: 500px;
   flex-grow: 1;
   background-color: white;

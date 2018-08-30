@@ -11,6 +11,7 @@ import {
   selectRoutedPodcastTotalsTableMetrics,
   selectRouter
 } from '../ngrx/reducers/selectors';
+import { generateShades } from "../shared/util/chart.util";
 
 @Component ({
   template: `
@@ -18,13 +19,12 @@ import {
                  loadingMessage="Please wait..."></prx-spinner>
     <section *ngIf="loaded$ | async">
       <metrics-menu-bar></metrics-menu-bar>
-      <section class="content soon">coming soon</section>
+      <metrics-soon [routerParams]="routerParams$ | async"></metrics-soon>
       <metrics-totals-table numRowsWithToggle="0" [tableData]="tableData$ | async" [routerParams]="routerParams$ | async">
       </metrics-totals-table>
     </section>
     <metrics-error-retry [retryActions]="errors$ | async"></metrics-error-retry>
-  `,
-  styleUrls: ['../shared/nav/soon.css']
+  `
 })
 
 export class GeoComponent implements OnInit {

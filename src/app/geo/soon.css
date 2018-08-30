@@ -1,0 +1,34 @@
+.soon {
+  height: 320px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-transform: uppercase;
+  font-size: 1.2em;
+  letter-spacing: .05em;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  position: relative;
+  z-index: 1;
+}
+.filter {
+  background-color: #fff;
+  height: 320px;
+  width: 100%;
+  opacity: .5;
+  position: absolute;
+  z-index: 2;
+}
+.text {
+  z-index: 3;
+}
+.geocountry {
+  background-image: url('/assets/images/geocountry.png');
+}
+.geosubdiv {
+  background-image: url('/assets/images/geosubdiv.png');
+}
+.geometro {
+  background-image: url('/assets/images/geometro.png');
+}

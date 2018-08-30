@@ -9,6 +9,7 @@ import * as ACTIONS from '../ngrx/actions';
 import { reducers } from '../ngrx/reducers';
 
 import { GeoComponent } from './geo.component';
+import { SoonComponent } from './soon.component';
 import {
   podcast,
   podcastGeoCountryDownloads,
@@ -27,7 +28,8 @@ describe('GeoComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [
-        GeoComponent
+        GeoComponent,
+        SoonComponent
       ],
       imports: [
         SharedModule,

@@ -4,6 +4,7 @@ export interface RouterParams {
   podcastId?: string;
   metricsType?: MetricsType;
   group?: GroupType;
+  filter?: string;
   chartType?: ChartType;
   interval?: IntervalModel;
   episodePage?: number;

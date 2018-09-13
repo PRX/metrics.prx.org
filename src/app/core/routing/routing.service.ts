@@ -85,6 +85,19 @@ export class RoutingService {
         }
         break;
       case METRICSTYPE_DEMOGRAPHICS:
+        if (this.isPodcastChanged(newRouterParams) || this.isMetricsTypeChanged(newRouterParams) || this.isGroupChanged(newRouterParams) ||
+          this.isBeginDateChanged(newRouterParams) || this.isEndDateChanged(newRouterParams)) {
+          this.loadPodcastTotals(newRouterParams);
+        }
+        if (this.isPodcastChanged(newRouterParams) || this.isMetricsTypeChanged(newRouterParams) || this.isGroupChanged(newRouterParams) ||
+          this.isBeginDateChanged(newRouterParams) || this.isEndDateChanged(newRouterParams) || this.isIntervalChanged(newRouterParams)) {
+          this.loadPodcastRanks(newRouterParams);
+        }
+        if (newRouterParams.group === GROUPTYPE_GEOCOUNTRY && this.isFilterChanged(newRouterParams)) {
+          this.loadPodcastTotals({...newRouterParams, group: GROUPTYPE_GEOSUBDIV, filter: newRouterParams.filter});
+          this.loadPodcastRanks({...newRouterParams, group: GROUPTYPE_GEOSUBDIV, filter: newRouterParams.filter});
+        }
+        break;
       case METRICSTYPE_TRAFFICSOURCES:
         if (this.isPodcastChanged(newRouterParams) || this.isMetricsTypeChanged(newRouterParams) || this.isGroupChanged(newRouterParams) ||
           this.isBeginDateChanged(newRouterParams) || this.isEndDateChanged(newRouterParams)) {
@@ -113,6 +126,9 @@ export class RoutingService {
     }
     if (routerParams.endDate) {
       params['endDate'] = routerParams.endDate.toUTCString();
+    }
+    if (routerParams.filter) {
+      params['filter'] = routerParams.filter;
     }
 
     localStorageUtil.setItem(localStorageUtil.KEY_ROUTER_PARAMS, routerParams);
@@ -205,6 +221,11 @@ export class RoutingService {
       (!this.routerParams || this.routerParams.group !== newRouterParams.group);
   }
 
+  isFilterChanged(newRouterParams: RouterParams): boolean {
+    return newRouterParams && newRouterParams.filter &&
+      (!this.routerParams || this.routerParams.filter !== newRouterParams.filter);
+  }
+
   isPodcastChanged(newRouterParams: RouterParams): boolean {
     return newRouterParams && newRouterParams.podcastId &&
       (!this.routerParams || this.routerParams.podcastId !== newRouterParams.podcastId);
@@ -267,6 +288,7 @@ export class RoutingService {
     this.store.dispatch(new ACTIONS.CastlePodcastTotalsLoadAction({
       id: newRouterParams.podcastId,
       group: newRouterParams.group,
+      filter: newRouterParams.filter,
       beginDate: newRouterParams.beginDate,
       endDate: newRouterParams.endDate
     }));
@@ -276,6 +298,7 @@ export class RoutingService {
     this.store.dispatch(new ACTIONS.CastlePodcastRanksLoadAction({
       id: newRouterParams.podcastId,
       group: newRouterParams.group,
+      filter: newRouterParams.filter,
       interval: newRouterParams.interval,
       beginDate: newRouterParams.beginDate,
       endDate: newRouterParams.endDate

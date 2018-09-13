@@ -41,6 +41,9 @@ export class CustomSerializer implements RouterStateSerializer<RouterParams> {
       if (params['group']) {
         routerParams.group = params['group'];
       }
+      if (params['filter']) {
+        routerParams.filter = params['filter'];
+      }
       if (params['chartType']) {
         routerParams.chartType = params['chartType'];
       }

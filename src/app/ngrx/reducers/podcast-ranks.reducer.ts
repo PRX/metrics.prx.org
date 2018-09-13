@@ -1,5 +1,5 @@
 import { EntityState, EntityAdapter, createEntityAdapter } from '@ngrx/entity';
-import { PodcastRanks } from './models/podcast-ranks.model';
+import { PodcastRanks, GROUPTYPE_GEOSUBDIV } from './models';
 import { ActionTypes, AllActions } from '../actions';
 
 export interface State extends EntityState<PodcastRanks> {
@@ -33,14 +33,15 @@ export function reducer(
       };
     }
     case ActionTypes.CASTLE_PODCAST_RANKS_SUCCESS: {
-      const { id, group, interval, downloads, ranks } = action.payload;
+      const { id, group, filter, interval, downloads, ranks } = action.payload;
+      const key = group === GROUPTYPE_GEOSUBDIV ? `${id}-${group}-${filter}-${interval.key}` : `${id}-${group}-${interval.key}`;
       // Note that there will be a breaking change with upsert in Ngrx/entity v6, no longer users Update interface
       // https://github.com/ngrx/platform/commit/a0f45ff035726f106f3f34ddf9b5025c54fc63e0
       return {
         ...adapter.upsertOne({
-          id: `${id}-${group}-${interval.key}`,
+          id: key,
           changes: {
-            key: `${id}-${group}-${interval.key}`, podcastId: id, group, interval, downloads, ranks
+            key, podcastId: id, group, filter, interval, downloads, ranks
           }
         }, state),
         loading: false,

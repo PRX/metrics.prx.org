@@ -20,9 +20,7 @@ export function CustomRouterReducer(state: RouterParams = initialState, action: 
       if (action.payload.routerParams.group) {
         newState.group = action.payload.routerParams.group;
       }
-      if (action.payload.routerParams.filter) {
-        newState.filter = action.payload.routerParams.filter;
-      }
+      newState.filter = action.payload.routerParams.filter;
       if (action.payload.routerParams.chartType) {
         newState.chartType = action.payload.routerParams.chartType;
       }

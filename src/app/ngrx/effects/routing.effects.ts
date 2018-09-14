@@ -116,7 +116,7 @@ export class RoutingEffects {
     map((action: ACTIONS.RouteGroupFilterAction) => action.payload),
     switchMap((payload: ACTIONS.RouteGroupFilterPayload) => {
       const { filter } = payload;
-      this.routingService.normalizeAndRoute(({filter: filter.code}));
+      this.routingService.normalizeAndRoute(({filter}));
       return Observable.of(null);
     })
   );

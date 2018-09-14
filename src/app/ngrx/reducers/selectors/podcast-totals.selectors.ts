@@ -44,6 +44,16 @@ export const selectRoutedPodcastTotals = createSelector(
   }
 );
 
+export const selectNestedPodcastTotals = createSelector(
+  selectPodcastRoute,
+  selectFilterRoute,
+  selectPodcastTotalsEntities,
+  (podcastId: string, filter: string, podcastTotalsEntities): PodcastTotals => {
+    const group = GROUPTYPE_GEOSUBDIV;
+    return podcastTotalsEntities[`${podcastId}-${group}-${filter}`];
+  }
+);
+
 export const selectRoutedPodcastTotalsTotalDownloads = createSelector(
   selectRoutedPodcastTotals,
   (podcastRanks: PodcastTotals): number => {
@@ -63,10 +73,29 @@ export const selectRoutedPodcastTotalsTableMetrics = createSelector(
         const percent = rank.total * 100 / totalDownloads;
         return {
           color: i < 10 ? getColor(i) : undefined,
+          code: rank.code,
           label: rank.label,
           value: rank.total,
           percent,
           charted: groupsCharted.filter(group => group.charted).map(group => group.groupName).indexOf(rank.label) > -1
+        };
+      });
+    }
+  }
+);
+
+export const selectNestedPodcastTotalsTableMetrics = createSelector(
+  selectNestedPodcastTotals,
+  (podcastTotals: PodcastTotals): TotalsTableRow[] => {
+    if (podcastTotals && podcastTotals.ranks) {
+      return podcastTotals.ranks.map((rank: Rank, i) => {
+        // show just one decimal place? maybe instead do just 2 significant digits?
+        // const percent = Math.round(rank.count * 1000 / totalDownloads) / 10;
+        return {
+          color: i < 10 ? getColor(i) : undefined,
+          code: rank.code,
+          label: rank.label,
+          value: rank.total
         };
       });
     }

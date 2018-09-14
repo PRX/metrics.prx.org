@@ -340,7 +340,9 @@ export class CastleEffects {
             filter,
             interval,
             downloads: metrics['downloads'],
-            ranks: metrics['ranks']
+            ranks: metrics['ranks'].map(r => {
+              return { ...r, code: String(r.code) };
+            })
           });
         }),
         catchError(error => Observable.of(new ACTIONS.CastlePodcastRanksFailureAction({id, group, filter, error})))
@@ -373,7 +375,7 @@ export class CastleEffects {
             filter,
             ranks: metrics['ranks'].map(rank => {
               const { count, label, code }  = rank;
-              return { total: count, label, code };
+              return { total: count, label, code: String(code) };
             })
           });
         }),

@@ -11,7 +11,6 @@ import {
   CHARTTYPE_PODCAST,
   CHARTTYPE_EPISODES,
   CHARTTYPE_LINE,
-  CHARTTYPE_BAR,
   CHARTTYPE_HORIZBAR,
   INTERVAL_DAILY,
   METRICSTYPE_DEMOGRAPHICS,
@@ -127,9 +126,7 @@ export class RoutingService {
     if (routerParams.endDate) {
       params['endDate'] = routerParams.endDate.toUTCString();
     }
-    if (routerParams.filter) {
-      params['filter'] = routerParams.filter;
-    }
+    params['filter'] = routerParams.filter;
 
     localStorageUtil.setItem(localStorageUtil.KEY_ROUTER_PARAMS, routerParams);
 

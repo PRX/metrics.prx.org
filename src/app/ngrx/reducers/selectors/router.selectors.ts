@@ -1,6 +1,6 @@
 import { createSelector } from '@ngrx/store';
 import { RootState, selectAppState } from '../';
-import { RouterParams, GROUPTYPE_GEOCOUNTRY } from '../models';
+import { RouterParams, GROUPTYPE_GEOCOUNTRY, GROUPTYPE_GEOMETRO } from '../models';
 
 export const selectRouter = createSelector(selectAppState, (state: RootState) => state.router);
 export const selectPodcastRoute = createSelector(selectRouter, (routerParams: RouterParams) => routerParams.podcastId);
@@ -9,6 +9,8 @@ export const selectGroupRoute = createSelector(selectRouter, (routerParams: Rout
 export const selectFilterRoute = createSelector(selectRouter, (routerParams: RouterParams) => routerParams.filter);
 export const selectIsGroupGeoCountry = createSelector(selectRouter,
   (routerParams: RouterParams) => routerParams.group === GROUPTYPE_GEOCOUNTRY);
+export const selectIsGroupGeoMetro = createSelector(selectRouter,
+  (routerParams: RouterParams) => routerParams.group === GROUPTYPE_GEOMETRO);
 export const selectChartTypeRoute = createSelector(selectRouter, (routerParams: RouterParams) => routerParams.chartType);
 export const selectIntervalRoute = createSelector(selectRouter, (routerParams: RouterParams) => routerParams.interval);
 export const selectPageRoute = createSelector(selectRouter, (routerParams: RouterParams) => routerParams.episodePage);

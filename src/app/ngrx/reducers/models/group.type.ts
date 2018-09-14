@@ -8,12 +8,6 @@ export const GROUPTYPE_GEOMETRO = 'geometro';
 export const GROUPTYPE_GEOSUBDIV = 'geosubdiv';
 export type GroupType = 'agentname' | 'agentos' | 'agenttype' | 'geocountry' | 'geometro' | 'geosubdiv';
 
-export interface GroupFilter {
-  id?: string; // id property is needed for @ngrx/entity but really we're using code as the id
-  label: string;
-  code: string;
-}
-
 export const getGroupName = (metricsType: MetricsType, group: GroupType) => {
   switch (metricsType) {
     case METRICSTYPE_DOWNLOADS:

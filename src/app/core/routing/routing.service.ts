@@ -126,7 +126,9 @@ export class RoutingService {
     if (routerParams.endDate) {
       params['endDate'] = routerParams.endDate.toUTCString();
     }
-    params['filter'] = routerParams.filter;
+    if (routerParams.metricsType === METRICSTYPE_DEMOGRAPHICS && routerParams.group === GROUPTYPE_GEOCOUNTRY) {
+      params['filter'] = routerParams.filter;
+    }
 
     localStorageUtil.setItem(localStorageUtil.KEY_ROUTER_PARAMS, routerParams);
 

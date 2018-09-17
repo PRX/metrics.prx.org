@@ -41,10 +41,10 @@ export class CustomSerializer implements RouterStateSerializer<RouterParams> {
       if (params['group']) {
         routerParams.group = params['group'];
       }
-      if (params['filter'] && params['filter'] !== 'undefined') {
-        routerParams.filter = params['filter'];
-      } else {
+      if (params['filter'] === 'undefined') {
         routerParams.filter = undefined;
+      } else if (params['filter']) {
+        routerParams.filter = params['filter'];
       }
       if (params['chartType']) {
         routerParams.chartType = params['chartType'];

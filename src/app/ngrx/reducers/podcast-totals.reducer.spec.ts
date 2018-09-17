@@ -18,12 +18,12 @@ describe('PodcastTotals Reducer', () => {
   });
 
   it('should set loading, loaded, and unset error on podcast ranks load', () => {
-    const { group, beginDate, endDate } = routerParams;
+    const { podcastId, group, beginDate, endDate } = routerParams;
     const newState = reducer(initialState,
-      new ACTIONS.CastlePodcastTotalsLoadAction({id: routerParams.podcastId, group, beginDate, endDate}));
-    expect(newState.loading).toBeTruthy();
-    expect(newState.loaded).toBeFalsy();
-    expect(newState.error).toBeNull();
+      new ACTIONS.CastlePodcastTotalsLoadAction({id: podcastId, group, beginDate, endDate}));
+    expect(newState.entities[`${podcastId}-${group}`].loading).toBeTruthy();
+    expect(newState.entities[`${podcastId}-${group}`].loaded).toBeFalsy();
+    expect(newState.entities[`${podcastId}-${group}`].error).toBeNull();
   });
 
   it('should set podcast totals entities and loaded on podcast totals success', () => {
@@ -37,14 +37,16 @@ describe('PodcastTotals Reducer', () => {
       key: `${routerParams.podcastId}-${routerParams.group}`,
       podcastId: routerParams.podcastId,
       group: routerParams.group,
-      ranks: podcastAgentNameRanks
+      filter: undefined,
+      ranks: podcastAgentNameRanks,
+      loaded: true,
+      loading: false
     });
-    expect(newState.loaded).toBeTruthy();
   });
 
   it('should set error on failure', () => {
     const newState = reducer(initialState, new ACTIONS.CastlePodcastTotalsFailureAction({
       id: routerParams.podcastId, group: GROUPTYPE_AGENTNAME, error: 'something went wrong'}));
-    expect(newState.error).not.toBeUndefined();
+    expect(newState.entities[`${routerParams.podcastId}-${routerParams.group}`].error).not.toBeUndefined();
   });
 });

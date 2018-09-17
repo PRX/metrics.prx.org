@@ -341,7 +341,7 @@ export class CastleEffects {
             interval,
             downloads: metrics['downloads'],
             ranks: metrics['ranks'].map(r => {
-              return { ...r, code: String(r.code) };
+              return { ...r, code: r.code && String(r.code) };
             })
           });
         }),
@@ -375,7 +375,7 @@ export class CastleEffects {
             filter,
             ranks: metrics['ranks'].map(rank => {
               const { count, label, code }  = rank;
-              return { total: count, label, code: String(code) };
+              return { total: count, label, code: code && String(code) };
             })
           });
         }),

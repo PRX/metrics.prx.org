@@ -16,7 +16,7 @@ import {
   podcastGeoCountryRanks,
   routerParams as downloadParams
 } from '../../testing/downloads.fixtures';
-import { GroupType, GROUPTYPE_GEOCOUNTRY, MetricsType, METRICSTYPE_DEMOGRAPHICS } from '../ngrx/reducers/models';
+import { GroupType, GROUPTYPE_GEOCOUNTRY, GROUPTYPE_GEOSUBDIV, GROUPTYPE_GEOMETRO, MetricsType, METRICSTYPE_DEMOGRAPHICS } from '../ngrx/reducers/models';
 
 describe('GeoComponent', () => {
   let store: Store<any>;
@@ -51,6 +51,10 @@ describe('GeoComponent', () => {
     store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerParams}));
   }
 
+  function dispatchRouteGeoMetro() {
+    store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerParams: {...routerParams, group: <GroupType>GROUPTYPE_GEOMETRO}}));
+  }
+
   function dispatchPodcasts() {
     store.dispatch(new ACTIONS.CastlePodcastPageSuccessAction(
       {podcasts: [podcast], page: 1, total: 1}));
@@ -64,10 +68,28 @@ describe('GeoComponent', () => {
     }));
   }
 
+  function dispatchPodcastGeoMetroTotals() {
+    store.dispatch(new ACTIONS.CastlePodcastTotalsSuccessAction({
+      id: routerParams.podcastId,
+      group: GROUPTYPE_GEOMETRO,
+      ranks: podcastGeoCountryRanks
+    }));
+  }
+
   function dispatchPodcastGeoCountryRanks() {
     store.dispatch(new ACTIONS.CastlePodcastRanksSuccessAction({
       id: routerParams.podcastId,
       group: GROUPTYPE_GEOCOUNTRY,
+      interval: routerParams.interval,
+      ranks: podcastGeoCountryRanks,
+      downloads: podcastGeoCountryDownloads
+    }));
+  }
+
+  function dispatchPodcastGeoMetroRanks() {
+    store.dispatch(new ACTIONS.CastlePodcastRanksSuccessAction({
+      id: routerParams.podcastId,
+      group: GROUPTYPE_GEOMETRO,
       interval: routerParams.interval,
       ranks: podcastGeoCountryRanks,
       downloads: podcastGeoCountryDownloads
@@ -83,11 +105,21 @@ describe('GeoComponent', () => {
     expect(de.query(By.css('prx-spinner'))).not.toBeNull();
   });
 
-  it('should show a totals table', () => {
+  it('should show a nested totals table for GeoCountry', () => {
     dispatchPodcasts();
     dispatchRouterNavigation();
     dispatchPodcastGeoCountryTotals();
     dispatchPodcastGeoCountryRanks();
+    fix.detectChanges();
+    expect(de.query(By.css('prx-spinner'))).toBeNull();
+    expect(de.query(By.css('metrics-nested-totals-table'))).not.toBeNull();
+  });
+
+  it('should show a totals table for GeoMetro', () => {
+    dispatchPodcasts();
+    dispatchRouteGeoMetro();
+    dispatchPodcastGeoMetroTotals();
+    dispatchPodcastGeoMetroRanks();
     fix.detectChanges();
     expect(de.query(By.css('prx-spinner'))).toBeNull();
     expect(de.query(By.css('metrics-totals-table'))).not.toBeNull();

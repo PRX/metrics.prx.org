@@ -41,6 +41,7 @@ describe('TotalsTableComponent', () => {
         return {
           color: getColor(i),
           label: rank.label,
+          code: rank.code,
           value: rank.total,
           percent: rank.total / total,
           charted: i < 10

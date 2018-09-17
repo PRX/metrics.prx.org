@@ -19,12 +19,12 @@ describe('Podcast Ranks Reducer', () => {
   });
 
   it('should set loading, loaded, and unset error on podcast ranks load', () => {
-    const { group, interval, beginDate, endDate } = routerParams;
+    const { podcastId, group, interval, beginDate, endDate } = routerParams;
     const newState = reducer(initialState,
-      new ACTIONS.CastlePodcastRanksLoadAction({id: routerParams.podcastId, group, interval, beginDate, endDate}));
-    expect(newState.loading).toBeTruthy();
-    expect(newState.loaded).toBeFalsy();
-    expect(newState.error).toBeNull();
+      new ACTIONS.CastlePodcastRanksLoadAction({id: podcastId, group, interval, beginDate, endDate}));
+    expect(newState.entities[`${podcastId}-${group}-${interval.key}`].loading).toBeTruthy();
+    expect(newState.entities[`${podcastId}-${group}-${interval.key}`].loaded).toBeFalsy();
+    expect(newState.entities[`${podcastId}-${group}-${interval.key}`].error).toBeNull();
   });
 
   it('should set podcast ranks entities and loaded on podcast ranks success', () => {
@@ -38,16 +38,19 @@ describe('Podcast Ranks Reducer', () => {
       key: `${routerParams.podcastId}-${routerParams.group}-${routerParams.interval.key}`,
       podcastId: routerParams.podcastId,
       group: routerParams.group,
+      filter: undefined,
       interval: routerParams.interval,
       downloads: podcastAgentNameDownloads,
-      ranks: podcastAgentNameRanks
+      ranks: podcastAgentNameRanks,
+      loaded: true,
+      loading: false
     });
-    expect(newState.loaded).toBeTruthy();
   });
 
   it('should set error on failure', () => {
     const newState = reducer(initialState,
-      new ACTIONS.CastlePodcastRanksFailureAction({id: routerParams.podcastId, group: GROUPTYPE_AGENTNAME, error: 'something went wrong'}));
-    expect(newState.error).not.toBeUndefined();
+      new ACTIONS.CastlePodcastRanksFailureAction({id: routerParams.podcastId, group: GROUPTYPE_AGENTNAME, interval: routerParams.interval,
+        error: 'something went wrong'}));
+    expect(newState.entities[`${routerParams.podcastId}-${routerParams.group}-${routerParams.interval.key}`].error).not.toBeUndefined();
   });
 });

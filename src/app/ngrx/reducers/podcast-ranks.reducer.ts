@@ -73,5 +73,3 @@ export const {
 export const selectPodcastRanksKeys = selectIds;
 export const selectPodcastRanksEntities = selectEntities;
 export const selectAllPodcastRanks = selectAll;
-
-export const getError = (state: State) => state.error;

@@ -443,6 +443,7 @@ describe('CastleEffects', () => {
     const success = new ACTIONS.CastlePodcastRanksSuccessAction({
       id: podcast.id,
       group: GROUPTYPE_AGENTNAME,
+      filter: undefined,
       interval: INTERVAL_DAILY,
       ranks: podcastAgentNameRanks,
       downloads: podcastAgentNameDownloads
@@ -466,6 +467,7 @@ describe('CastleEffects', () => {
     const success = new ACTIONS.CastlePodcastTotalsSuccessAction({
       id: podcast.id,
       group: GROUPTYPE_AGENTNAME,
+      filter: undefined,
       ranks: podcastAgentNameRanks.map(rank => {
         const { label, total, code} = rank;
         return {label, total, code};

@@ -16,11 +16,6 @@ import { selectRoutedPodcastGroupCharted } from './podcast-group-charted.selecto
 
 export const selectPodcastRanksState = createFeatureSelector<fromPodcastRanks.State>('podcastRanks');
 
-export const selectPodcastRanksError = createSelector(
-  selectPodcastRanksState,
-  fromPodcastRanks.getError
-);
-
 export const selectPodcastRanksKeys = createSelector(
   selectPodcastRanksState,
   fromPodcastRanks.selectPodcastRanksKeys

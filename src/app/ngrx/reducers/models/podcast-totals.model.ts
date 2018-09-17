@@ -5,4 +5,7 @@ export interface PodcastTotals {
   podcastId: string;
   group: string;
   ranks: Rank[];
+  loaded: boolean;
+  loading: boolean;
+  error: any;
 }

@@ -11,7 +11,7 @@ import { neutralColor, standardColor } from '../util/chart.util';
         <div class="number charted">Downloads</div>
         <div class="number growth"></div>
       </div>
-      <div class="row" *ngFor="let data of tableData.slice(0, numRowsWithToggle)">
+      <div class="row" *ngFor="let data of tableData?.slice(0, numRowsWithToggle)">
         <div>
           <prx-checkbox small [checked]="data.charted" [color]="getDataLegendColor(data)"
                         (change)="toggleEntry.emit({podcastId: routerParams.podcastId, groupName: data.label, charted: $event})">
@@ -32,7 +32,7 @@ import { neutralColor, standardColor } from '../util/chart.util';
           </prx-checkbox>
         </div>
       </div>
-      <div class="other row" *ngFor="let data of tableData.slice(numRowsWithToggle)">
+      <div class="other row" *ngFor="let data of tableData?.slice(numRowsWithToggle)">
         <div>{{data.label}}</div>
         <div class="number charted">{{data.value | largeNumber}} <span class="percent">({{data.percent.toPrecision(2)}}%)</span></div>
         <div class="number growth"></div>

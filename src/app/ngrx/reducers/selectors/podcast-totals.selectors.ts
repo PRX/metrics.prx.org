@@ -7,19 +7,6 @@ import { selectRoutedPodcastGroupCharted } from './podcast-group-charted.selecto
 
 export const selectPodcastTotalsState = createFeatureSelector<fromPodcastTotals.State>('podcastTotals');
 
-export const selectPodcastTotalsLoaded = createSelector(
-  selectPodcastTotalsState,
-  fromPodcastTotals.getLoaded
-);
-export const selectPodcastTotalsLoading = createSelector(
-  selectPodcastTotalsState,
-  fromPodcastTotals.getLoading
-);
-export const selectPodcastTotalsError = createSelector(
-  selectPodcastTotalsState,
-  fromPodcastTotals.getError
-);
-
 export const selectPodcastTotalsKeys = createSelector(
   selectPodcastTotalsState,
   fromPodcastTotals.selectPodcastTotalsKeys
@@ -33,6 +20,19 @@ export const selectAllPodcastTotals = createSelector(
   fromPodcastTotals.selectAllPodcastTotals
 );
 
+export const selectAllPodcastTotalsErrors = createSelector(
+  selectAllPodcastTotals,
+  (totals: PodcastTotals[]) => {
+    return totals.filter(t => t.error);
+  });
+
+export const selectAllPodcastTotalsLoading = createSelector(selectAllPodcastTotals, (totals: PodcastTotals[]) => {
+  return totals.some((t: PodcastTotals) => t.loading);
+});
+export const selectAllPodcastTotalsLoaded = createSelector(selectAllPodcastTotals, (totals: PodcastTotals[]) => {
+  return totals.every((t: PodcastTotals) => t.loaded);
+});
+
 export const selectRoutedPodcastTotals = createSelector(
   selectPodcastRoute,
   selectGroupRoute,
@@ -42,6 +42,21 @@ export const selectRoutedPodcastTotals = createSelector(
     return group === GROUPTYPE_GEOSUBDIV ?
       podcastTotalsEntities[`${podcastId}-${group}-${filter}`] : podcastTotalsEntities[`${podcastId}-${group}`];
   }
+);
+
+export const selectRoutedPodcastTotalsLoading = createSelector(
+  selectRoutedPodcastTotals,
+  (totals: PodcastTotals) => !totals || totals.loading
+);
+
+export const selectRoutedPodcastTotalsLoaded = createSelector(
+  selectRoutedPodcastTotals,
+  (totals: PodcastTotals) => totals && totals.loaded
+);
+
+export const selectRoutedPodcastTotalsError = createSelector(
+  selectRoutedPodcastTotals,
+  (totals: PodcastTotals) => totals && totals.error
 );
 
 export const selectNestedPodcastTotals = createSelector(
@@ -54,10 +69,25 @@ export const selectNestedPodcastTotals = createSelector(
   }
 );
 
+export const selectNestedPodcastTotalsLoading = createSelector(
+  selectNestedPodcastTotals,
+  (totals: PodcastTotals) => !totals || totals.loading
+);
+
+export const selectNestedPodcastTotalsLoaded = createSelector(
+  selectNestedPodcastTotals,
+  (totals: PodcastTotals) => totals && totals.loaded
+);
+
+export const selectNestedPodcastTotalsError = createSelector(
+  selectNestedPodcastTotals,
+  (totals: PodcastTotals) => totals && totals.error
+);
+
 export const selectRoutedPodcastTotalsTotalDownloads = createSelector(
   selectRoutedPodcastTotals,
   (podcastRanks: PodcastTotals): number => {
-    return podcastRanks ? podcastRanks.ranks.reduce((acc, rank) => acc += rank.total, 0) : undefined;
+    return podcastRanks && podcastRanks.ranks ? podcastRanks.ranks.reduce((acc, rank) => acc += rank.total, 0) : undefined;
   }
 );
 

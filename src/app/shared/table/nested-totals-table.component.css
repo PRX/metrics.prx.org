@@ -17,13 +17,13 @@
 .header > div:first-child {
   padding-left: 20px;
 }
-.primary-row > div, .nested-row > div {
+.primary-row > *, .nested-row > * {
   flex-basis: 30%;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
-.primary-row > div:first-child, .nested-row > div:first-child {
+.primary-row > *:first-child, .nested-row > *:first-child {
   flex-basis: 40%;
   font-size: 0.8em;
 }
@@ -35,7 +35,7 @@
   padding: 0 20px;
 }
 .number {
-  text-align: right;
+  /*text-align: right;?*/
   white-space: nowrap;
 }
 .percent {
@@ -65,6 +65,19 @@ input[type=checkbox].accordion:checked + label > .triangle {
   border-top: 6px solid #1a1a1a;
   border-bottom: 0;
   margin-left: 0;
+}
+
+prx-spinner {
+  position: relative;
+  display: block;
+  min-height: 96px;
+  background: #f0f0f0;
+}
+
+.nested-row > metrics-error-retry:first-child {
+  flex-basis: 100%;
+  text-align: center;
+  padding-bottom: 24px;
 }
 
 @media (max-width: 768px) {

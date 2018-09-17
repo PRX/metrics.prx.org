@@ -345,7 +345,7 @@ export class CastleEffects {
             })
           });
         }),
-        catchError(error => Observable.of(new ACTIONS.CastlePodcastRanksFailureAction({id, group, filter, error})))
+        catchError(error => Observable.of(new ACTIONS.CastlePodcastRanksFailureAction({id, group, filter, interval, error})))
       );
     })
   );

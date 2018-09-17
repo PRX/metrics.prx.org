@@ -241,6 +241,7 @@ export interface CastlePodcastRanksFailurePayload {
   id: string;
   group: string;
   filter?: string;
+  interval: IntervalModel;
   error: any;
 }
 

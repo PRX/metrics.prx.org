@@ -1,5 +1,6 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { TotalsTableRow, RouterParams, getGroupName, CHARTTYPE_HORIZBAR } from '../../ngrx/';
+import {TotalsTableRow, RouterParams, getGroupName, CHARTTYPE_HORIZBAR, GROUPTYPE_GEOSUBDIV} from '../../ngrx/';
+import * as ACTIONS from '../../ngrx/actions';
 import { neutralColor, standardColor } from '../util/chart.util';
 
 @Component({
@@ -12,7 +13,7 @@ import { neutralColor, standardColor } from '../util/chart.util';
         <div class="number percent">%</div>
         <div class="number growth"></div>
       </div>
-      <div *ngFor="let data of tableData?.slice(numRowsWithToggle)">
+      <div *ngFor="let data of tableData">
         <div class="primary-row">
           <div>
             <input type="checkbox"
@@ -29,7 +30,17 @@ import { neutralColor, standardColor } from '../util/chart.util';
           <div class="nested-row" *ngFor="let nested of nestedData">
             <div>{{nested.label}}</div>
             <div class="number charted">{{nested.value | largeNumber}}</div>
+          </div>
+          <div class="nested-row" *ngIf="nestedDataLoading && !nestedData?.length">
             <div></div>
+            <prx-spinner></prx-spinner>
+          </div>
+          <div class="nested-row" *ngIf="nestedDataLoaded && !nestedData?.length">
+            <div>No results</div>
+            <div class="charted"></div>
+          </div>
+          <div class="nested-row" *ngIf="nestedDataError">
+            <metrics-error-retry [retryActions]="nestedDataRetryAction"></metrics-error-retry>
           </div>
         </div>
       </div>
@@ -42,22 +53,23 @@ export class NestedTotalsTableComponent {
   @Input() chartData: any[];
   @Input() tableData: TotalsTableRow[];
   @Input() nestedData: TotalsTableRow[];
+  @Input() nestedDataLoading: boolean;
+  @Input() nestedDataLoaded: boolean;
+  @Input() nestedDataError: any;
   @Input() numRowsWithToggle = 10;
   @Input() routerParams: RouterParams;
   @Output() toggleEntry = new EventEmitter<{podcastId: string, groupName: string, charted: boolean}>();
   @Output() discloseNestedData = new EventEmitter<string>();
   getGroupName = getGroupName;
 
-  get otherCharted() {
-    return this.chartData && !!this.chartData.find(entry => entry['label'] === 'Other');
-  }
-
-  getDataLegendColor(data: TotalsTableRow) {
-    return this.routerParams.chartType === CHARTTYPE_HORIZBAR ? standardColor : data.color;
-  }
-
-  getOtherLegendColor() {
-    return this.routerParams.chartType === CHARTTYPE_HORIZBAR ? standardColor : neutralColor;
+  get nestedDataRetryAction() {
+    return [new ACTIONS.CastlePodcastTotalsLoadAction({
+      id: this.routerParams.podcastId,
+      group: GROUPTYPE_GEOSUBDIV,
+      filter: this.routerParams.filter,
+      beginDate: this.routerParams.beginDate,
+      endDate: this.routerParams.endDate
+    })];
   }
 
   onAccordion(event: Event, data: TotalsTableRow) {

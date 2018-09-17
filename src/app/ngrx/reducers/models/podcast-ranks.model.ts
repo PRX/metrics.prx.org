@@ -8,4 +8,7 @@ export interface PodcastRanks {
   interval: IntervalModel;
   downloads: any[][];
   ranks: Rank[];
+  loaded: boolean;
+  loading: boolean;
+  error: any
 }

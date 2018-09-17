@@ -16,14 +16,6 @@ import { selectRoutedPodcastGroupCharted } from './podcast-group-charted.selecto
 
 export const selectPodcastRanksState = createFeatureSelector<fromPodcastRanks.State>('podcastRanks');
 
-export const selectPodcastRanksLoaded = createSelector(
-  selectPodcastRanksState,
-  fromPodcastRanks.getLoaded
-);
-export const selectPodcastRanksLoading = createSelector(
-  selectPodcastRanksState,
-  fromPodcastRanks.getLoading
-);
 export const selectPodcastRanksError = createSelector(
   selectPodcastRanksState,
   fromPodcastRanks.getError
@@ -42,6 +34,16 @@ export const selectAllPodcastRanks = createSelector(
   fromPodcastRanks.selectAllPodcastRanks
 );
 
+export const selectAllPodcastRanksLoading = createSelector(selectAllPodcastRanks, (ranks: PodcastRanks[]) => {
+  return ranks.some((r: PodcastRanks) => r.loading);
+});
+export const selectAllPodcastRanksLoaded = createSelector(selectAllPodcastRanks, (ranks: PodcastRanks[]) => {
+  return ranks.every((r: PodcastRanks) => r.loaded);
+});
+export const selectAllPodcastRanksErrors = createSelector(selectAllPodcastRanks, (ranks: PodcastRanks[]) => {
+  return ranks.filter((r: PodcastRanks) => r.error);
+});
+
 export const selectRoutedPodcastRanks = createSelector(
   selectPodcastRoute,
   selectGroupRoute,
@@ -53,6 +55,47 @@ export const selectRoutedPodcastRanks = createSelector(
       podcastRanksEntities[`${podcastId}-${group}-${filter}-${interval && interval.key}`] :
       podcastRanksEntities[`${podcastId}-${group}-${interval && interval.key}`];
   }
+);
+
+export const selectRoutedPodcastRanksLoading = createSelector(
+  selectRoutedPodcastRanks,
+  (ranks: PodcastRanks) => !ranks || ranks.loading
+);
+
+export const selectRoutedPodcastRanksLoaded = createSelector(
+  selectRoutedPodcastRanks,
+  (ranks: PodcastRanks) => ranks && ranks.loaded
+);
+
+export const selectRoutedPodcastRanksError = createSelector(
+  selectRoutedPodcastRanks,
+  (ranks: PodcastRanks) => ranks && ranks.error
+);
+
+export const selectNestedPodcastRanks = createSelector(
+  selectPodcastRoute,
+  selectFilterRoute,
+  selectIntervalRoute,
+  selectPodcastRanksEntities,
+  (podcastId: string, filter: string, interval: IntervalModel, podcastRanksEntities): PodcastRanks => {
+    const group = GROUPTYPE_GEOSUBDIV;
+    return podcastRanksEntities[`${podcastId}-${group}-${filter}-${interval && interval.key}`];
+  }
+);
+
+export const selectNestedPodcastRanksLoading = createSelector(
+  selectNestedPodcastRanks,
+  (ranks: PodcastRanks) => !ranks || ranks.loading
+);
+
+export const selectNestedPodcastRanksLoaded = createSelector(
+  selectNestedPodcastRanks,
+  (ranks: PodcastRanks) => ranks && ranks.loaded
+);
+
+export const selectNestedPodcastRanksError = createSelector(
+  selectNestedPodcastRanks,
+  (ranks: PodcastRanks) => ranks && ranks.error
 );
 
 export const selectRoutedPodcastRanksChartMetrics = createSelector(
@@ -93,6 +136,6 @@ export const selectRoutedPodcastRanksChartMetrics = createSelector(
 export const selectRoutedPodcastRanksTotalDownloads = createSelector(
   selectRoutedPodcastRanks,
   (podcastRanks: PodcastRanks): number => {
-    return podcastRanks ? podcastRanks.ranks.reduce((acc, rank) => acc += rank.total, 0) : undefined;
+    return podcastRanks && podcastRanks.ranks ? podcastRanks.ranks.reduce((acc, rank) => acc += rank.total, 0) : undefined;
   }
 );

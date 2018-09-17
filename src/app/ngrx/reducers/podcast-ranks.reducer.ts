@@ -4,9 +4,6 @@ import { ActionTypes, AllActions } from '../actions';
 
 export interface State extends EntityState<PodcastRanks> {
   // additional entities state properties
-  loaded: boolean;
-  loading: boolean;
-  error?: any;
 }
 
 export const adapter: EntityAdapter<PodcastRanks> = createEntityAdapter<PodcastRanks>({
@@ -15,8 +12,6 @@ export const adapter: EntityAdapter<PodcastRanks> = createEntityAdapter<PodcastR
 
 export const initialState: State = adapter.getInitialState({
   // additional entity state properties
-  loaded: false,
-  loading: false
 });
 
 export function reducer(
@@ -25,11 +20,15 @@ export function reducer(
 ): State {
   switch (action.type) {
     case ActionTypes.CASTLE_PODCAST_RANKS_LOAD: {
+      const { id, group, filter, interval } = action.payload;
+      const key = group === GROUPTYPE_GEOSUBDIV ? `${id}-${group}-${filter}-${interval.key}` : `${id}-${group}-${interval.key}`;
       return {
-        ...state,
-        loading: true,
-        loaded: false,
-        error: null
+        ...adapter.upsertOne({
+          id: key,
+          changes: {
+            key, podcastId: id, group, filter, interval, error: null, loading: true, loaded: false
+          }
+        }, state)
       };
     }
     case ActionTypes.CASTLE_PODCAST_RANKS_SUCCESS: {
@@ -41,20 +40,21 @@ export function reducer(
         ...adapter.upsertOne({
           id: key,
           changes: {
-            key, podcastId: id, group, filter, interval, downloads, ranks
+            key, podcastId: id, group, filter, interval, downloads, ranks, loading: false, loaded: true
           }
-        }, state),
-        loading: false,
-        loaded: true
+        }, state)
       };
     }
     case ActionTypes.CASTLE_PODCAST_RANKS_FAILURE: {
-      const { error } = action.payload;
+      const { id, group, filter, interval, error } = action.payload;
+      const key = group === GROUPTYPE_GEOSUBDIV ? `${id}-${group}-${filter}-${interval.key}` : `${id}-${group}-${interval.key}`;
       return {
-        ...state,
-        loading: false,
-        loaded: false,
-        error
+        ...adapter.upsertOne({
+          id: key,
+          changes: {
+            key, podcastId: id, group, filter, interval, error, loading: false, loaded: false
+          }
+        }, state)
       };
     }
 
@@ -74,6 +74,4 @@ export const selectPodcastRanksKeys = selectIds;
 export const selectPodcastRanksEntities = selectEntities;
 export const selectAllPodcastRanks = selectAll;
 
-export const getLoaded = (state: State) => state.loaded;
-export const getLoading = (state: State) => state.loading;
 export const getError = (state: State) => state.error;

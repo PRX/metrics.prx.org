@@ -7,6 +7,7 @@ import * as ACTIONS from '../ngrx/actions';
 import {
   select500ErrorReloadActions,
   selectGroupedPodcastDataLoaded, selectGroupedPodcastDataLoading,
+  selectNestedPodcastTotalsLoaded, selectNestedPodcastTotalsLoading, selectNestedPodcastTotalsError,
   selectRoutedPodcastRanksChartMetrics,
   selectRoutedPodcastTotalsTableMetrics,
   selectNestedPodcastTotalsTableMetrics,
@@ -26,8 +27,12 @@ import {
                             numRowsWithToggle="0" [tableData]="tableData$ | async" [routerParams]="routerParams$ | async">
       </metrics-totals-table>
       <metrics-nested-totals-table *ngIf="isGroupGeoCountry$ | async"
-                                   numRowsWithToggle="0" [routerParams]="routerParams$ | async"
-                                   [tableData]="tableData$ | async" [nestedData]="nestedData$ | async"
+                                   [routerParams]="routerParams$ | async"
+                                   [tableData]="tableData$ | async"
+                                   [nestedData]="nestedData$ | async"
+                                   [nestedDataLoading]="nestedTotalsLoading$ | async"
+                                   [nestedDataLoaded]="nestedTotalsLoaded$ | async"
+                                   [nestedDataError]="nestedTotalsError$ | async"
                                    (discloseNestedData)="groupFilter($event)">
       </metrics-nested-totals-table>
     </section>
@@ -42,6 +47,9 @@ export class GeoComponent implements OnInit {
   nestedData$: Observable<TotalsTableRow[]>;
   loading$: Observable<boolean>;
   loaded$: Observable<boolean>;
+  nestedTotalsLoading$: Observable<boolean>;
+  nestedTotalsLoaded$: Observable<boolean>;
+  nestedTotalsError$: Observable<any>;
   errors$: Observable<ACTIONS.AllActions[]>;
   isGroupGeoCountry$: Observable<boolean>;
   isGroupGeoMetro$: Observable<boolean>;
@@ -55,6 +63,9 @@ export class GeoComponent implements OnInit {
     this.nestedData$ = this.store.pipe(select(selectNestedPodcastTotalsTableMetrics));
     this.loaded$ = this.store.pipe(select(selectGroupedPodcastDataLoaded));
     this.loading$ = this.store.pipe(select(selectGroupedPodcastDataLoading));
+    this.nestedTotalsLoading$ = this.store.pipe(select(selectNestedPodcastTotalsLoading));
+    this.nestedTotalsLoaded$ = this.store.pipe(select(selectNestedPodcastTotalsLoaded));
+    this.nestedTotalsError$ = this.store.pipe(select(selectNestedPodcastTotalsError));
     this.errors$ = this.store.pipe(select(select500ErrorReloadActions));
     this.isGroupGeoCountry$ = this.store.pipe(select(selectIsGroupGeoCountry));
     this.isGroupGeoMetro$ = this.store.pipe(select(selectIsGroupGeoMetro));

@@ -4,9 +4,6 @@ import { ActionTypes, AllActions } from '../actions';
 
 export interface State extends EntityState<PodcastTotals> {
   // additional entities state properties
-  loaded: boolean;
-  loading: boolean;
-  error?: any;
 }
 
 export const adapter: EntityAdapter<PodcastTotals> = createEntityAdapter<PodcastTotals>({
@@ -15,8 +12,6 @@ export const adapter: EntityAdapter<PodcastTotals> = createEntityAdapter<Podcast
 
 export const initialState: State = adapter.getInitialState({
   // additional entity state properties
-  loaded: false,
-  loading: false
 });
 
 export function reducer(
@@ -25,11 +20,15 @@ export function reducer(
 ): State {
   switch (action.type) {
     case ActionTypes.CASTLE_PODCAST_TOTALS_LOAD: {
+      const { id, group, filter } = action.payload;
+      const key = group === GROUPTYPE_GEOSUBDIV ? `${id}-${group}-${filter}` : `${id}-${group}`;
       return {
-        ...state,
-        loading: true,
-        loaded: false,
-        error: null
+        ...adapter.upsertOne({
+          id: key,
+          changes: {
+            key, podcastId: id, group, filter, error: null, loading: true, loaded: false
+          }
+        }, state)
       };
     }
     case ActionTypes.CASTLE_PODCAST_TOTALS_SUCCESS: {
@@ -41,20 +40,21 @@ export function reducer(
         ...adapter.upsertOne({
           id: key,
           changes: {
-            key, podcastId: id, group, filter, ranks
+            key, podcastId: id, group, filter, ranks, loading: false, loaded: true
           }
-        }, state),
-        loading: false,
-        loaded: true
+        }, state)
       };
     }
     case ActionTypes.CASTLE_PODCAST_TOTALS_FAILURE: {
-      const { error } = action.payload;
+      const { id, group, filter, error } = action.payload;
+      const key = group === GROUPTYPE_GEOSUBDIV ? `${id}-${group}-${filter}` : `${id}-${group}`;
       return {
-        ...state,
-        loading: false,
-        loaded: false,
-        error
+        ...adapter.upsertOne({
+          id: key,
+          changes: {
+            key, podcastId: id, group, filter, error, loading: false, loaded: false
+          }
+        }, state)
       };
     }
 
@@ -73,7 +73,3 @@ export const {
 export const selectPodcastTotalsKeys = selectIds;
 export const selectPodcastTotalsEntities = selectEntities;
 export const selectAllPodcastTotals = selectAll;
-
-export const getLoaded = (state: State) => state.loaded;
-export const getLoading = (state: State) => state.loading;
-export const getError = (state: State) => state.error;

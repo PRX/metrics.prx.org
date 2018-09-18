@@ -68,4 +68,24 @@ describe('CustomSerializer', () => {
     const result = serializer.serialize(routerSnapshot);
     expect(result).toEqual(routerParams);
   });
+
+  it('should transform the string "undefined" for filter to undefined', () => {
+    const routerSnapshot = {
+      url: '/70/demographics/geocountry/geo/daily;' +
+        'episodePage=1;standardRange=3%20months;filter=undefined',
+      root: {
+        firstChild: {
+          params: {
+            podcastId: '70',
+            chartType: CHARTTYPE_PODCAST,
+            interval: INTERVAL_DAILY.key,
+            episodePage: '1',
+            standardRange: dateUtil.THIS_MONTH_PLUS_2_MONTHS
+          }
+        }
+      }
+    };
+    const result = serializer.serialize(routerSnapshot);
+    expect(result.filter).toBeUndefined();
+  });
 });

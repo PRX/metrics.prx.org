@@ -15,8 +15,7 @@ import {
   CHARTTYPE_PODCAST,
   CHARTTYPE_EPISODES,
   INTERVAL_HOURLY,
-  METRICSTYPE_DOWNLOADS,
-  GroupType
+  METRICSTYPE_DOWNLOADS
 } from '../';
 import { reducers } from '../reducers';
 import * as ACTIONS from '../actions';
@@ -168,5 +167,14 @@ describe('RoutingEffects', () => {
     const expected = cold('-r', { r: null });
     expect(effects.routeMetricsGroupType$).toBeObservable(expected);
     expect(effects.routingService.normalizeAndRoute).toHaveBeenCalledWith({metricsType: METRICSTYPE_DOWNLOADS, group: undefined});
+  });
+
+  it('should route to filter', () => {
+    const action = new ACTIONS.RouteGroupFilterAction({filter: METRICSTYPE_DOWNLOADS});
+    store.dispatch(action);
+    actions$.stream = hot('-a', { a: action });
+    const expected = cold('-r', { r: null });
+    expect(effects.routeGroupFilter$).toBeObservable(expected);
+    expect(effects.routingService.normalizeAndRoute).toHaveBeenCalledWith({filter: METRICSTYPE_DOWNLOADS});
   });
 });

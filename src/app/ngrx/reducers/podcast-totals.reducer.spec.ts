@@ -2,9 +2,9 @@ import { reducer, initialState } from './podcast-totals.reducer';
 import * as ACTIONS from '../actions';
 import {
   routerParams as downloadParams,
-  podcastAgentNameRanks
+  podcastAgentNameRanks, podcastAgentNameDownloads
 } from '../../../testing/downloads.fixtures';
-import { GROUPTYPE_AGENTNAME, METRICSTYPE_TRAFFICSOURCES } from './models';
+import {GROUPTYPE_AGENTNAME, GROUPTYPE_GEOSUBDIV, METRICSTYPE_TRAFFICSOURCES} from './models';
 
 describe('PodcastTotals Reducer', () => {
   const routerParams = {...downloadParams, metricsType: METRICSTYPE_TRAFFICSOURCES, group: GROUPTYPE_AGENTNAME};
@@ -42,6 +42,15 @@ describe('PodcastTotals Reducer', () => {
       loaded: true,
       loading: false
     });
+  });
+
+  it('should include filter in key for geo subdiv', () => {
+    const newState = reducer(initialState,
+      new ACTIONS.CastlePodcastTotalsSuccessAction({
+        id: routerParams.podcastId, group: GROUPTYPE_GEOSUBDIV,
+        ranks: podcastAgentNameRanks}));
+    expect(newState.entities[`${routerParams.podcastId}-${GROUPTYPE_GEOSUBDIV}-${routerParams.filter}`])
+      .not.toBeNull();
   });
 
   it('should set error on failure', () => {

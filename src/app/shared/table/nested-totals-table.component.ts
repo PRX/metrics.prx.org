@@ -1,7 +1,6 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-import {TotalsTableRow, RouterParams, getGroupName, CHARTTYPE_HORIZBAR, GROUPTYPE_GEOSUBDIV} from '../../ngrx/';
+import {TotalsTableRow, RouterParams, getGroupName, GROUPTYPE_GEOSUBDIV} from '../../ngrx/';
 import * as ACTIONS from '../../ngrx/actions';
-import { neutralColor, standardColor } from '../util/chart.util';
 
 @Component({
   selector: 'metrics-nested-totals-table',
@@ -50,15 +49,12 @@ import { neutralColor, standardColor } from '../util/chart.util';
 })
 
 export class NestedTotalsTableComponent {
-  @Input() chartData: any[];
   @Input() tableData: TotalsTableRow[];
   @Input() nestedData: TotalsTableRow[];
   @Input() nestedDataLoading: boolean;
   @Input() nestedDataLoaded: boolean;
   @Input() nestedDataError: any;
-  @Input() numRowsWithToggle = 10;
   @Input() routerParams: RouterParams;
-  @Output() toggleEntry = new EventEmitter<{podcastId: string, groupName: string, charted: boolean}>();
   @Output() discloseNestedData = new EventEmitter<string>();
   getGroupName = getGroupName;
 

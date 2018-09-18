@@ -12,6 +12,7 @@ import {
   CHARTTYPE_EPISODES,
   CHARTTYPE_LINE,
   CHARTTYPE_HORIZBAR,
+  CHARTTYPE_GEOCHART,
   INTERVAL_DAILY,
   METRICSTYPE_DEMOGRAPHICS,
   METRICSTYPE_DOWNLOADS,
@@ -163,15 +164,22 @@ export class RoutingService {
     }
     switch (routerParams.metricsType) {
       case METRICSTYPE_DOWNLOADS:
-        if (!routerParams.chartType || routerParams.chartType === CHARTTYPE_HORIZBAR) {
+        if (!routerParams.chartType || routerParams.chartType === CHARTTYPE_HORIZBAR || routerParams.chartType === CHARTTYPE_GEOCHART) {
           routerParams.chartType = <ChartType>CHARTTYPE_PODCAST;
         } else if (routerParams.chartType === <ChartType>CHARTTYPE_LINE) {
           routerParams.chartType = CHARTTYPE_EPISODES;
         }
         break;
       case METRICSTYPE_TRAFFICSOURCES:
-        if (!routerParams.chartType || routerParams.chartType === CHARTTYPE_PODCAST) {
+        if (!routerParams.chartType || routerParams.chartType === CHARTTYPE_PODCAST || routerParams.chartType === CHARTTYPE_GEOCHART) {
           routerParams.chartType = CHARTTYPE_HORIZBAR;
+        } else if (routerParams.chartType === CHARTTYPE_EPISODES) {
+          routerParams.chartType = CHARTTYPE_LINE;
+        }
+        break;
+      case METRICSTYPE_DEMOGRAPHICS:
+        if (!routerParams.chartType || routerParams.chartType === CHARTTYPE_PODCAST) {
+          routerParams.chartType = CHARTTYPE_GEOCHART;
         } else if (routerParams.chartType === CHARTTYPE_EPISODES) {
           routerParams.chartType = CHARTTYPE_LINE;
         }

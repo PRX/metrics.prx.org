@@ -2,8 +2,11 @@
   display: flex;
   border-top: 1px solid #ddd;
 }
-.row > div {
+.row > * {
   flex-basis: 30%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .row > div:first-child {
   flex-basis: 40%;
@@ -32,6 +35,9 @@
 .percent {
   color: #818181;
 }
+div.percent {
+  display: none;
+}
 
 .other.header {
   margin-top: 20px;
@@ -42,6 +48,12 @@
 }
 
 @media (max-width: 768px) {
+  span.percent {
+    display: none;
+  }
+  div.percent {
+    display: block;
+  }
   .growth {
     display: none;
   }
@@ -49,6 +61,12 @@
     flex-basis: calc(50% - 40px/2);
   }
   .row > div.charted {
+    background-color: transparent;
+    color: #818181;
     padding: 0 5px;
+  }
+  .number {
+    color: #818181;
+    text-align: right;
   }
 }

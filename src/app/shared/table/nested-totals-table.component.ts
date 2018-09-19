@@ -19,7 +19,9 @@ import * as ACTIONS from '../../ngrx/actions';
                    [id]="data.code" class="accordion"
                    [checked]="routerParams?.filter === data.code"
                    (change)="onAccordion($event, data)">
-            <label [for]="data.code"><span class="triangle"></span>{{data.label}}</label>
+            <label [for]="data.code" [title]="data.label">
+              <span class="triangle"></span><span class="label">{{data.label}}</span>
+            </label>
           </div>
           <div class="number charted">{{data.value | largeNumber}} <span class="percent">({{data.percent.toPrecision(2)}}%)</span></div>
           <div class="number percent">({{data.percent.toPrecision(2)}}%)</div>
@@ -32,7 +34,8 @@ import * as ACTIONS from '../../ngrx/actions';
           </div>
           <div class="nested-row" *ngIf="nestedDataLoading && !nestedData?.length">
             <div></div>
-            <prx-spinner></prx-spinner>
+            <prx-spinner ></prx-spinner>
+            <prx-spinner inverse="true" class="mobile-spinner"></prx-spinner>
           </div>
           <div class="nested-row" *ngIf="nestedDataLoaded && !nestedData?.length">
             <div>No results</div>

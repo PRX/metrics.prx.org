@@ -48,6 +48,10 @@ div.percent {
 input[type=checkbox].accordion {
   display: none;
 }
+input[type=checkbox].accordion + label {
+  display: flex;
+  align-items: center;
+}
 input[type=checkbox].accordion + label > .triangle {
   border-left: 6px solid #1a1a1a;
   border-right: 0;
@@ -67,11 +71,21 @@ input[type=checkbox].accordion:checked + label > .triangle {
   margin-left: 0;
 }
 
+.label {
+  display: inline-block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 prx-spinner {
   position: relative;
   display: block;
   min-height: 96px;
   background: #f0f0f0;
+}
+.mobile-spinner {
+  display: none;
 }
 
 .nested-row > metrics-error-retry:first-child {
@@ -81,6 +95,9 @@ prx-spinner {
 }
 
 @media (max-width: 768px) {
+  .header > div:first-child {
+    padding-left: 0;
+  }
   span.percent {
     display: none;
   }
@@ -91,7 +108,35 @@ prx-spinner {
     display: none;
     flex-basis: 0;
   }
+  prx-spinner {
+    display: none;
+    background-color: transparent;
+  }
+  prx-spinner.mobile-spinner {
+    display: block;
+  }
   .primary-row > div.charted, .nested-row > div.charted  {
+    background-color: transparent;
+    color: #818181;
     padding: 0 5px;
+  }
+  .number {
+    color: #818181;
+    text-align: right;
+  }
+  input[type=checkbox].accordion + label {
+    flex-direction: row-reverse;
+    justify-content: flex-end;
+    align-items: normal;
+  }
+  input[type=checkbox].accordion + label > .triangle, input[type=checkbox].accordion:checked + label > .triangle {
+    border: none;
+    margin-left: 6px;
+  }
+  input[type=checkbox].accordion + label > .triangle:after {
+    display: block;
+    content: '^';
+    transform: rotate(180deg);
+    color: #818181;
   }
 }

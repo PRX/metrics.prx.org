@@ -9,6 +9,7 @@ import { neutralColor, standardColor } from '../util/chart.util';
       <div class="header row">
         <div>{{getGroupName(routerParams.metricsType, routerParams.group)}}</div>
         <div class="number charted">Downloads</div>
+        <div class="number percent">%</div>
         <div class="number growth"></div>
       </div>
       <div class="row" *ngFor="let data of tableData?.slice(0, numRowsWithToggle)">
@@ -19,6 +20,7 @@ import { neutralColor, standardColor } from '../util/chart.util';
           </prx-checkbox>
         </div>
         <div class="number charted">{{data.value | largeNumber}} <span class="percent">({{data.percent.toPrecision(2)}}%)</span></div>
+        <div class="number percent">({{data.percent.toPrecision(2)}}%)</div>
         <div class="number growth"></div>
       </div>
     </div>
@@ -35,6 +37,7 @@ import { neutralColor, standardColor } from '../util/chart.util';
       <div class="other row" *ngFor="let data of tableData?.slice(numRowsWithToggle)">
         <div>{{data.label}}</div>
         <div class="number charted">{{data.value | largeNumber}} <span class="percent">({{data.percent.toPrecision(2)}}%)</span></div>
+        <div class="number percent">({{data.percent.toPrecision(2)}}%)</div>
         <div class="number growth"></div>
       </div>
     </div>

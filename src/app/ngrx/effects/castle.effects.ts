@@ -146,6 +146,7 @@ export class CastleEffects {
   );
 
   // on episode page success if loading all episode pages and not yet finished, load next page
+  /* Episode loading TBD but this isn't needed for now
   @Effect()
   loadNextEpisodePage$: Observable<Action> = this.actions$.pipe(
     ofType(ACTIONS.ActionTypes.CASTLE_EPISODE_PAGE_SUCCESS),
@@ -160,6 +161,7 @@ export class CastleEffects {
         {podcastId: episodes[0].podcastId, page: page + 1, all}));
     })
   );
+  */
 
   // whenever an episode page is loaded that is the currently routed page,
   // call the load actions for podcast and episode metrics

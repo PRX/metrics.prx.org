@@ -358,7 +358,8 @@ describe('CastleEffects', () => {
       expect(effects.loadEpisodePage$).toBeObservable(expected);
     });
 
-    it('should load next page of episodes', () => {
+    // Episode loading TBD
+    /*xit('should load next page of episodes', () => {
       const pageOfEpisodes = new Array(EPISODE_PAGE_SIZE).fill(episodes[0]);
       const firstPageAction = new ACTIONS.CastleEpisodePageSuccessAction({
         episodes: pageOfEpisodes,
@@ -374,7 +375,7 @@ describe('CastleEffects', () => {
       actions$.stream = hot('-a', { a: firstPageAction });
       const expected = cold('-r', { r: nextPageLoadAction });
       expect(effects.loadNextEpisodePage$).toBeObservable(expected);
-    });
+    });*/
 
     it('fails to load a page of episodes', () => {
       const error = new Error('Whaaaa?');

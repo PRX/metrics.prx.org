@@ -33,7 +33,7 @@
   overflow-y: hidden;
   position: absolute;
   right: 0;
-  z-index: 997;
+  z-index: 999999;/* zendesk widget + 1 */
   background-color: white;
   box-shadow: 0 5px 15px -5px rgba(0,0,0,.5);
 }
@@ -44,7 +44,7 @@
 }
 .open .dropdown-content.rollout {
   height: auto;
-  max-height: 500px;
+  max-height: calc(100vh - 200px);
   transition: max-height 0.2s;
 }
 

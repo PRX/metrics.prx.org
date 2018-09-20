@@ -8,30 +8,37 @@ import {
   routerParams as downloadParams
 } from '../../../testing/downloads.fixtures';
 
-import { TotalsTableComponent } from './totals-table.component';
+import { NestedTotalsTableComponent } from './nested-totals-table.component';
 import { LargeNumberPipe } from '../pipes/large-number.pipe';
-import { FancyFormModule } from 'ngx-prx-styleguide';
-import { MetricsType, GroupType, GROUPTYPE_AGENTNAME, METRICSTYPE_TRAFFICSOURCES } from '../../ngrx/reducers/models';
+import { ErrorRetryComponent } from '../error/error-retry.component';
+import { SpinnerModule } from 'ngx-prx-styleguide';
+import {
+  MetricsType,
+  GroupType,
+  GROUPTYPE_GEOCOUNTRY,
+  METRICSTYPE_DEMOGRAPHICS
+} from '../../ngrx/reducers/models';
 
-describe('TotalsTableComponent', () => {
-  const routerParams = {...downloadParams, metricsType: <MetricsType>METRICSTYPE_TRAFFICSOURCES, group: <GroupType>GROUPTYPE_AGENTNAME};
+describe('NestedTotalsTableComponent', () => {
+  const routerParams = {...downloadParams, metricsType: <MetricsType>METRICSTYPE_DEMOGRAPHICS, group: <GroupType>GROUPTYPE_GEOCOUNTRY};
 
-  let comp: TotalsTableComponent;
-  let fix: ComponentFixture<TotalsTableComponent>;
+  let comp: NestedTotalsTableComponent;
+  let fix: ComponentFixture<NestedTotalsTableComponent>;
   let de: DebugElement;
   let el: HTMLElement;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [
-        TotalsTableComponent,
+        NestedTotalsTableComponent,
+        ErrorRetryComponent,
         LargeNumberPipe
       ],
       imports: [
-        FancyFormModule
+        SpinnerModule
       ]
     }).compileComponents().then(() => {
-      fix = TestBed.createComponent(TotalsTableComponent);
+      fix = TestBed.createComponent(NestedTotalsTableComponent);
       comp = fix.componentInstance;
       de = fix.debugElement;
       el = de.nativeElement;
@@ -47,21 +54,23 @@ describe('TotalsTableComponent', () => {
           charted: i < 10
         };
       });
+      comp.nestedData = podcastAgentNameRanks.map((rank, i) => {
+        return {
+          color: getColor(i),
+          label: rank.label,
+          code: rank.code,
+          value: rank.total
+        };
+      });
       comp.routerParams = routerParams;
       fix.detectChanges();
     });
   }));
 
-  it('should show numRowsWithToggle || data.length + 1 for Others checkboxes', () => {
-    const expected = comp.tableData.length < comp.numRowsWithToggle ? comp.tableData.length : comp.numRowsWithToggle + 1;
-    expect(de.queryAll(By.css('prx-checkbox')).length).toEqual(expected);
-  });
-
-  it('should emit toggleEntry event when checkbox is clicked', () => {
-    spyOn(comp.toggleEntry, 'emit').and.callThrough();
+  it('should emit discloseNestedData event when disclosure triangle or label is clicked', () => {
+    spyOn(comp.discloseNestedData, 'emit').and.callThrough();
     const checkboxes = de.queryAll(By.css('input[type="checkbox"]'));
     checkboxes[0].nativeElement.click();
-    expect(comp.toggleEntry.emit).toHaveBeenCalledWith(
-      {podcastId: routerParams.podcastId, groupName: podcastAgentNameRanks[0].label, charted: false});
+    expect(comp.discloseNestedData.emit).toHaveBeenCalledWith(comp.tableData[0].code);
   });
 });

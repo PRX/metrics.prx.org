@@ -88,3 +88,13 @@ export class RouteMetricsGroupTypeAction implements Action {
 
   constructor(public payload: RouteMetricsGroupTypePayload) {}
 }
+
+export interface RouteGroupFilterPayload {
+  filter: string;
+}
+
+export class RouteGroupFilterAction implements Action {
+  readonly type = ActionTypes.ROUTE_GROUP_FILTER;
+
+  constructor(public payload: RouteGroupFilterPayload) {}
+}

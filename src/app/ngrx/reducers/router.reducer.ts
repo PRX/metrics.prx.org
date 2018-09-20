@@ -20,6 +20,10 @@ export function CustomRouterReducer(state: RouterParams = initialState, action: 
       if (action.payload.routerParams.group) {
         newState.group = action.payload.routerParams.group;
       }
+      // filter can be explicitly set to undefined
+      if (action.payload.routerParams.hasOwnProperty('filter')) {
+        newState.filter = action.payload.routerParams.filter;
+      }
       if (action.payload.routerParams.chartType) {
         newState.chartType = action.payload.routerParams.chartType;
       }

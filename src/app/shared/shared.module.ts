@@ -23,6 +23,7 @@ import { EpisodePageComponent } from './paging/episode-page.component';
 import { AbrevNumberPipe } from './pipes/abrev-number.pipe';
 import { LargeNumberPipe } from './pipes/large-number.pipe';
 import { DownloadsSummaryComponent } from './summary/downloads-summary.component';
+import { NestedTotalsTableComponent } from './table/nested-totals-table.component';
 import { TotalsTableComponent } from './table/totals-table.component';
 
 @NgModule({
@@ -40,6 +41,7 @@ import { TotalsTableComponent } from './table/totals-table.component';
     MetricsTypeHeadingComponent,
     NavMenuContainerComponent,
     NavMenuPresentationComponent,
+    NestedTotalsTableComponent,
     PodcastNavDropdownComponent,
     PodcastNavListComponent,
     PodcastNavComponent,
@@ -59,6 +61,7 @@ import { TotalsTableComponent } from './table/totals-table.component';
     LargeNumberPipe,
     EpisodePageComponent,
     NavMenuContainerComponent,
+    NestedTotalsTableComponent,
     PodcastNavComponent,
     TotalsTableComponent
   ],

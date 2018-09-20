@@ -51,7 +51,7 @@ export class NavMenuPresentationComponent implements OnChanges {
       groups: ['']
     },
     {type: METRICSTYPE_DEMOGRAPHICS, icon: '/assets/images/ic_globe_grey-darkest.svg', expanded: false,
-      groups: [GROUPTYPE_GEOCOUNTRY, GROUPTYPE_GEOMETRO, GROUPTYPE_GEOSUBDIV]
+      groups: [GROUPTYPE_GEOCOUNTRY, GROUPTYPE_GEOMETRO]
     },
     {type: METRICSTYPE_TRAFFICSOURCES, icon: '/assets/images/ic_smartphone_grey-darkest.svg', expanded: false,
       groups: [GROUPTYPE_AGENTOS, GROUPTYPE_AGENTTYPE, GROUPTYPE_AGENTNAME]

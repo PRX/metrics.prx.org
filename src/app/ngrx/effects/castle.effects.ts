@@ -13,8 +13,10 @@ import * as ACTIONS from '../actions';
 import { selectRouter } from '../reducers/selectors';
 import { HalDoc } from '../../core';
 import { CastleService } from '../../core';
-import { Episode, RouterParams, getMetricsProperty, METRICSTYPE_DOWNLOADS,
-  PODCAST_PAGE_SIZE, EPISODE_PAGE_SIZE } from '../';
+import {
+  Episode, RouterParams, getMetricsProperty, METRICSTYPE_DOWNLOADS,
+  PODCAST_PAGE_SIZE, EPISODE_PAGE_SIZE, GROUPTYPE_GEOSUBDIV
+} from '../';
 import * as localStorageUtil from '../../shared/util/local-storage.util';
 
 @Injectable()
@@ -144,6 +146,7 @@ export class CastleEffects {
   );
 
   // on episode page success if loading all episode pages and not yet finished, load next page
+  /* Episode loading TBD but this isn't needed for now
   @Effect()
   loadNextEpisodePage$: Observable<Action> = this.actions$.pipe(
     ofType(ACTIONS.ActionTypes.CASTLE_EPISODE_PAGE_SUCCESS),
@@ -158,6 +161,7 @@ export class CastleEffects {
         {podcastId: episodes[0].podcastId, page: page + 1, all}));
     })
   );
+  */
 
   // whenever an episode page is loaded that is the currently routed page,
   // call the load actions for podcast and episode metrics
@@ -317,25 +321,33 @@ export class CastleEffects {
   loadPodcastRanks$: Observable<Action> = this.actions$.pipe(
     ofType(ACTIONS.ActionTypes.CASTLE_PODCAST_RANKS_LOAD),
     map((action: ACTIONS.CastlePodcastRanksLoadAction) => action.payload),
-    switchMap((payload: ACTIONS.CastlePodcastRanksLoadPayload) => {
-      const { id, interval, group, beginDate, endDate } = payload;
-      return this.castle.follow('prx:podcast-ranks', {
+    mergeMap((payload: ACTIONS.CastlePodcastRanksLoadPayload) => {
+      const { id, interval, group, filter, beginDate, endDate } = payload;
+      const params = {
         id,
         group,
         interval: interval.value,
         from: beginDate.toISOString(),
         to: endDate.toISOString()
-      }).pipe(
+      };
+      if (group === GROUPTYPE_GEOSUBDIV && filter) {
+        params['filters'] = `geocountry:${filter}`;
+      }
+
+      return this.castle.follow('prx:podcast-ranks', {...params}).pipe(
         map(metrics => {
           return new ACTIONS.CastlePodcastRanksSuccessAction({
             id,
             group,
+            filter,
             interval,
             downloads: metrics['downloads'],
-            ranks: metrics['ranks']
+            ranks: metrics['ranks'].map(r => {
+              return { ...r, code: r.code && String(r.code) };
+            })
           });
         }),
-        catchError(error => Observable.of(new ACTIONS.CastlePodcastRanksFailureAction({id, group, error})))
+        catchError(error => Observable.of(new ACTIONS.CastlePodcastRanksFailureAction({id, group, filter, interval, error})))
       );
     })
   );
@@ -345,25 +357,31 @@ export class CastleEffects {
   loadPodcastTotals$: Observable<Action> = this.actions$.pipe(
     ofType(ACTIONS.ActionTypes.CASTLE_PODCAST_TOTALS_LOAD),
     map((action: ACTIONS.CastlePodcastTotalsLoadAction) => action.payload),
-    switchMap((payload: ACTIONS.CastlePodcastTotalsLoadPayload) => {
-      const { id, group, beginDate, endDate } = payload;
-      return this.castle.follow('prx:podcast-totals', {
+    mergeMap((payload: ACTIONS.CastlePodcastTotalsLoadPayload) => {
+      const { id, group, filter, beginDate, endDate } = payload;
+      const params = {
         id,
         group,
         from: beginDate.toISOString(),
         to: endDate.toISOString()
-      }).pipe(
+      };
+      if (group === GROUPTYPE_GEOSUBDIV && filter) {
+        params['filters'] = `geocountry:${filter}`;
+      }
+
+      return this.castle.follow('prx:podcast-totals', {...params}).pipe(
         map(metrics => {
           return new ACTIONS.CastlePodcastTotalsSuccessAction({
             id,
             group,
+            filter,
             ranks: metrics['ranks'].map(rank => {
               const { count, label, code }  = rank;
-              return { total: count, label, code };
+              return { total: count, label, code: code && String(code) };
             })
           });
         }),
-        catchError(error => Observable.of(new ACTIONS.CastlePodcastTotalsFailureAction({id, group, error})))
+        catchError(error => Observable.of(new ACTIONS.CastlePodcastTotalsFailureAction({id, group, filter, error})))
       );
     })
   );

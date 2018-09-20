@@ -1,5 +1,5 @@
 import { CustomRouterNavigationAction } from '../actions';
-import { RouterParams, INTERVAL_DAILY, INTERVAL_HOURLY, CHARTTYPE_STACKED, METRICSTYPE_DOWNLOADS } from '../';
+import { RouterParams, INTERVAL_DAILY, INTERVAL_HOURLY, CHARTTYPE_STACKED, METRICSTYPE_DOWNLOADS, GROUPTYPE_GEOCOUNTRY } from '../';
 import { CustomRouterReducer } from './router.reducer';
 import * as dateUtil from '../../shared/util/date';
 
@@ -25,6 +25,24 @@ describe('CustomRouterReducer', () => {
     newState = CustomRouterReducer(newState,
       new CustomRouterNavigationAction({routerParams: {metricsType: METRICSTYPE_DOWNLOADS}}));
     expect(newState.metricsType).toEqual(METRICSTYPE_DOWNLOADS);
+  });
+
+  it ('should update with new group', () => {
+    newState = CustomRouterReducer(newState,
+      new CustomRouterNavigationAction({routerParams: {group: GROUPTYPE_GEOCOUNTRY}}));
+    expect(newState.group).toEqual(GROUPTYPE_GEOCOUNTRY);
+  });
+
+  it ('should allow filter to be explicitly set to null', () => {
+    newState = CustomRouterReducer(newState,
+      new CustomRouterNavigationAction({routerParams: {}}));
+    expect(newState.hasOwnProperty('filter')).toBeFalsy();
+    newState = CustomRouterReducer(newState,
+      new CustomRouterNavigationAction({routerParams: {filter: 'US'}}));
+    expect(newState.filter).toEqual('US');
+    newState = CustomRouterReducer(newState,
+      new CustomRouterNavigationAction({routerParams: {filter: undefined}}));
+    expect(newState.filter).toBeUndefined();
   });
 
   it ('should update with new chart type', () => {
@@ -68,23 +86,6 @@ describe('CustomRouterReducer', () => {
       new CustomRouterNavigationAction({routerParams: {beginDate: dateUtil.beginningOfTodayUTC().subtract(18, 'days').toDate()}}));
     expect(newState.standardRange).toBeUndefined();
   });
-
-  /*it('should update chartPodcast if defined', () => {
-    newState = CustomRouterReducer(newState,
-      new CustomRouterNavigationAction({routerParams: {chartPodcast: true}}));
-    expect(newState.chartPodcast).toEqual(true);
-    newState = CustomRouterReducer(newState,
-      new CustomRouterNavigationAction({routerParams: {}}));
-    expect(newState.chartPodcast).toEqual(true);
-  });
-
-  it('should update episode Ids', () => {
-    newState = CustomRouterReducer(newState,
-      new CustomRouterNavigationAction({routerParams: {episodeIds: [123, 1234]}}));
-    expect(newState.episodeIds.length).toEqual(2);
-    expect(newState.episodeIds[0]).toEqual(123);
-    expect(newState.episodeIds[1]).toEqual(1234);
-  });*/
 
   it ('should retain other fields when updating', () => {
     expect(newState.interval.key).toEqual('daily');

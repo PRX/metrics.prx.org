@@ -110,6 +110,17 @@ export class RoutingEffects {
    })
  );
 
+  @Effect({dispatch: false})
+  routeGroupFilter$: Observable<void> = this.actions$.pipe(
+    ofType(ActionTypes.ROUTE_GROUP_FILTER),
+    map((action: ACTIONS.RouteGroupFilterAction) => action.payload),
+    switchMap((payload: ACTIONS.RouteGroupFilterPayload) => {
+      const { filter } = payload;
+      this.routingService.normalizeAndRoute(({filter}));
+      return Observable.of(null);
+    })
+  );
+
   constructor(private actions$: Actions,
               public routingService: RoutingService) {}
 }

@@ -10,7 +10,8 @@ import { CastleService } from '../../core';
 
 import {
   MetricsType, getMetricsProperty,
-  METRICSTYPE_DOWNLOADS, INTERVAL_DAILY, PODCAST_PAGE_SIZE, EPISODE_PAGE_SIZE, GROUPTYPE_AGENTNAME
+  METRICSTYPE_DOWNLOADS, INTERVAL_DAILY, PODCAST_PAGE_SIZE, EPISODE_PAGE_SIZE,
+  GROUPTYPE_AGENTNAME
 } from '../';
 import { reducers } from '../../ngrx/reducers';
 import * as ACTIONS from '../actions';
@@ -18,8 +19,15 @@ import { CastleEffects } from './castle.effects';
 import * as localStorageUtil from '../../shared/util/local-storage.util';
 import * as dateUtil from '../../shared/util/date';
 
-import { routerParams, podcast, episodes, podDownloads, ep0Downloads,
-  podcastAgentNameRanks, podcastAgentNameDownloads } from '../../../testing/downloads.fixtures';
+import {
+  routerParams,
+  podcast,
+  episodes,
+  podDownloads,
+  ep0Downloads,
+  podcastAgentNameRanks,
+  podcastAgentNameDownloads
+} from '../../../testing/downloads.fixtures';
 
 describe('CastleEffects', () => {
   let effects: CastleEffects;
@@ -350,7 +358,8 @@ describe('CastleEffects', () => {
       expect(effects.loadEpisodePage$).toBeObservable(expected);
     });
 
-    it('should load next page of episodes', () => {
+    // Episode loading TBD
+    /*xit('should load next page of episodes', () => {
       const pageOfEpisodes = new Array(EPISODE_PAGE_SIZE).fill(episodes[0]);
       const firstPageAction = new ACTIONS.CastleEpisodePageSuccessAction({
         episodes: pageOfEpisodes,
@@ -366,7 +375,7 @@ describe('CastleEffects', () => {
       actions$.stream = hot('-a', { a: firstPageAction });
       const expected = cold('-r', { r: nextPageLoadAction });
       expect(effects.loadNextEpisodePage$).toBeObservable(expected);
-    });
+    });*/
 
     it('fails to load a page of episodes', () => {
       const error = new Error('Whaaaa?');
@@ -429,7 +438,7 @@ describe('CastleEffects', () => {
 
   });
 
-  it('should load grouped podcast ranks', () => {
+  it('should load more than one grouped podcast ranks at a time', () => {
     const action = {
       type: ACTIONS.ActionTypes.CASTLE_PODCAST_RANKS_LOAD,
       payload: {
@@ -443,17 +452,18 @@ describe('CastleEffects', () => {
     const success = new ACTIONS.CastlePodcastRanksSuccessAction({
       id: podcast.id,
       group: GROUPTYPE_AGENTNAME,
+      filter: undefined,
       interval: INTERVAL_DAILY,
       ranks: podcastAgentNameRanks,
       downloads: podcastAgentNameDownloads
     });
 
-    actions$.stream = hot('-a', { a: action });
-    const expected = cold('-r', { r: success });
+    actions$.stream = hot('-ab', { a: action, b: action });
+    const expected = cold('-ab', { a: success, b: success });
     expect(effects.loadPodcastRanks$).toBeObservable(expected);
   });
 
-  it('should load grouped podcast totals', () => {
+  it('should load more than one grouped podcast totals at a time', () => {
     const action = {
       type: ACTIONS.ActionTypes.CASTLE_PODCAST_TOTALS_LOAD,
       payload: {
@@ -466,14 +476,15 @@ describe('CastleEffects', () => {
     const success = new ACTIONS.CastlePodcastTotalsSuccessAction({
       id: podcast.id,
       group: GROUPTYPE_AGENTNAME,
+      filter: undefined,
       ranks: podcastAgentNameRanks.map(rank => {
         const { label, total, code} = rank;
         return {label, total, code};
       })
     });
 
-    actions$.stream = hot('-a', { a: action });
-    const expected = cold('-r', { r: success });
+    actions$.stream = hot('-ab', { a: action, b: action });
+    const expected = cold('-ab', { a: success, b: success });
     expect(effects.loadPodcastTotals$).toBeObservable(expected);
   });
 });

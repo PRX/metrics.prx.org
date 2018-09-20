@@ -4,8 +4,8 @@ import { selectEpisodeError } from './episode.selectors';
 import { selectPodcastError } from './podcast.selectors';
 import { selectEpisodeMetricsError } from './episode-metrics.selectors';
 import { selectPodcastMetricsError } from './podcast-metrics.selectors';
-import { selectPodcastRanksError } from './podcast-ranks.selectors';
-import { selectPodcastTotalsError } from './podcast-totals.selectors';
+import { selectRoutedPodcastRanksError } from './podcast-ranks.selectors';
+import { selectRoutedPodcastTotalsError } from './podcast-totals.selectors';
 import * as ACTIONS from '../../actions';
 import { PodcastMetricsModel } from '../podcast-metrics.reducer';
 import { EpisodeMetricsModel } from '../episode-metrics.reducer';
@@ -17,8 +17,8 @@ export const select500ErrorReloadActions =
     selectEpisodeError,
     selectPodcastMetricsError,
     selectEpisodeMetricsError,
-    selectPodcastRanksError,
-    selectPodcastTotalsError,
+    selectRoutedPodcastRanksError,
+    selectRoutedPodcastTotalsError,
   (routerParams: RouterParams,
    podcastError: any,
    episodeError: any,
@@ -70,7 +70,7 @@ export const select500ErrorReloadActions =
         }));
       }
       if (podcastTotalsError) {
-        const { podcastId, group, interval, beginDate, endDate } = routerParams;
+        const { podcastId, group, beginDate, endDate } = routerParams;
         actions.push(new ACTIONS.CastlePodcastTotalsLoadAction({
           id: podcastId,
           group,

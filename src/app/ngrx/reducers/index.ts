@@ -47,4 +47,3 @@ export const reducers: ActionReducerMap<RootState> = {
 export { CustomSerializer } from './router.serializer';
 
 export const selectAppState = (state: RootState) => state;
-

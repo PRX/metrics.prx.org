@@ -30,12 +30,6 @@ export const geoRoutes: Routes = [
     component: GeoComponent,
     canActivate: [AuthGuard],
     canDeactivate: [DeactivateGuard]
-  },
-  {
-    path: ':podcastId/demographics',
-    component: GeoComponent,
-    canActivate: [AuthGuard],
-    canDeactivate: [DeactivateGuard]
   }
 ];
 

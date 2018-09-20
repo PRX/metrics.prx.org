@@ -3,8 +3,8 @@ import { selectRoutedPageLoaded } from './episode.selectors';
 import { selectRoutedPodcast, selectPodcastError } from './podcast.selectors';
 import { selectRoutedEpisodePageMetricsLoaded } from './episode-metrics.selectors';
 import { selectPodcastMetricsLoaded } from './podcast-metrics.selectors';
-import { selectPodcastRanksLoaded } from './podcast-ranks.selectors';
-import { selectPodcastTotalsLoaded } from './podcast-totals.selectors';
+import { selectRoutedPodcastRanksLoaded } from './podcast-ranks.selectors';
+import { selectRoutedPodcastTotalsLoaded } from './podcast-totals.selectors';
 
 export const selectCatalogLoaded = createSelector(
   selectRoutedPageLoaded,
@@ -28,8 +28,8 @@ export const selectLoaded = createSelector(
 export const selectGroupedPodcastDataLoaded = createSelector(
   selectRoutedPodcast,
   selectPodcastError,
-  selectPodcastRanksLoaded,
-  selectPodcastTotalsLoaded,
+  selectRoutedPodcastRanksLoaded,
+  selectRoutedPodcastTotalsLoaded,
   (podcast, podcastError, ranksLoaded, totalsLoaded) => {
     return podcast && !podcastError && ranksLoaded && totalsLoaded;
   });

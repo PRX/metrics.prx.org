@@ -1,29 +1,42 @@
-.table {
-  margin: 0 -20px;
+.row {
+  display: flex;
+  border-top: 1px solid #ddd;
+}
+.row > * {
+  flex-basis: 30%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.row > div:first-child {
+  flex-basis: 40%;
+  font-size: 0.8em;
+}
+.row.header {
+  border-top: none;
 }
 .header > div {
-  font-weight: 700;
-  margin: 10px 0;
+  color: #818181;
+  text-transform: uppercase;
+  font-size: 0.8em;
 }
 .header:not(.other) > div:first-child {
   padding-left: 20px;
 }
-.row {
-  display: flex;
-  padding-left: 20px;
-}
-.row:nth-child(even) {
+.row > div.charted, .row > div.charted  {
   background-color: #f0f0f0;
+  padding: 0 20px;
 }
-.row > div {
-  flex-basis: calc(33% - 40px/3);
-}
+
 .number {
-  text-align: right;
+  /*text-align: right;?*/
   white-space: nowrap;
 }
 .percent {
-  color: #676767;
+  color: #818181;
+}
+div.percent {
+  display: none;
 }
 
 .other.header {
@@ -31,17 +44,29 @@
 }
 .other.row:not(.header) > div:first-child {
   padding-left: 20px;
-  font-size: 12px;
+  font-size: 0.8em;
 }
 
 @media (max-width: 768px) {
+  span.percent {
+    display: none;
+  }
+  div.percent {
+    display: block;
+  }
   .growth {
     display: none;
   }
-  .table {
-    margin: 0 -10px;
-  }
   .row > div {
     flex-basis: calc(50% - 40px/2);
+  }
+  .row > div.charted {
+    background-color: transparent;
+    color: #818181;
+    padding: 0 5px;
+  }
+  .number {
+    color: #818181;
+    text-align: right;
   }
 }

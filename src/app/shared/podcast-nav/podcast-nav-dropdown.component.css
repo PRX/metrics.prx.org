@@ -1,5 +1,6 @@
 .dropdown-button, .open .dropdown-button {
   height: 73px;
+  max-width: calc(100vw - 180px);
   display: flex;
   align-items: center;
 }
@@ -11,13 +12,19 @@
 .single, .dropdown-button > button {
   margin: 0;
   padding: 0 10px;
+}
+.dropdown-button > button:hover, .dropdown-button > button:focus {
+  background-color: transparent;
+}
+.button-text {
   color: #ffffff;
   font-family: 'Montserrat', sans-serif;
   font-weight: 700;
   text-transform: uppercase;
-}
-.dropdown-button > button:hover, .dropdown-button > button:focus {
-  background-color: transparent;
+  max-width: calc(100% - 12px);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .down-arrow {
   border-top-color: #ffffff;

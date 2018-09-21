@@ -10,7 +10,7 @@ import { CastleService } from '../../core';
 
 import {
   MetricsType, getMetricsProperty,
-  METRICSTYPE_DOWNLOADS, INTERVAL_DAILY, PODCAST_PAGE_SIZE, EPISODE_PAGE_SIZE,
+  METRICSTYPE_DOWNLOADS, INTERVAL_DAILY, PODCAST_PAGE_SIZE,
   GROUPTYPE_AGENTNAME
 } from '../';
 import { reducers } from '../../ngrx/reducers';
@@ -445,8 +445,8 @@ describe('CastleEffects', () => {
         id: podcast.id,
         group: GROUPTYPE_AGENTNAME,
         interval: INTERVAL_DAILY,
-        beginDate: dateUtil.beginningOfLast28DaysUTC().toDate(),
-        endDate: dateUtil.endOfTodayUTC()
+        beginDate: routerParams.beginDate,
+        endDate: routerParams.endDate,
       }
     };
     const success = new ACTIONS.CastlePodcastRanksSuccessAction({
@@ -454,6 +454,8 @@ describe('CastleEffects', () => {
       group: GROUPTYPE_AGENTNAME,
       filter: undefined,
       interval: INTERVAL_DAILY,
+      beginDate: routerParams.beginDate,
+      endDate: routerParams.endDate,
       ranks: podcastAgentNameRanks,
       downloads: podcastAgentNameDownloads
     });
@@ -469,14 +471,16 @@ describe('CastleEffects', () => {
       payload: {
         id: podcast.id,
         group: GROUPTYPE_AGENTNAME,
-        beginDate: dateUtil.beginningOfLast28DaysUTC().toDate(),
-        endDate: dateUtil.endOfTodayUTC()
+        beginDate: routerParams.beginDate,
+        endDate: routerParams.endDate
       }
     };
     const success = new ACTIONS.CastlePodcastTotalsSuccessAction({
       id: podcast.id,
       group: GROUPTYPE_AGENTNAME,
       filter: undefined,
+      beginDate: routerParams.beginDate,
+      endDate: routerParams.endDate,
       ranks: podcastAgentNameRanks.map(rank => {
         const { label, total, code} = rank;
         return {label, total, code};

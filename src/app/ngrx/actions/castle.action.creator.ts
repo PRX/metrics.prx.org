@@ -227,6 +227,8 @@ export interface CastlePodcastRanksSuccessPayload {
   group: string;
   filter?: string;
   interval: IntervalModel;
+  beginDate: Date;
+  endDate: Date;
   downloads: any[][];
   ranks: Rank[];
 }
@@ -242,6 +244,8 @@ export interface CastlePodcastRanksFailurePayload {
   group: string;
   filter?: string;
   interval: IntervalModel;
+  beginDate: Date;
+  endDate: Date;
   error: any;
 }
 
@@ -269,6 +273,8 @@ export interface CastlePodcastTotalsSuccessPayload {
   id: string;
   group: string;
   filter?: string;
+  beginDate: Date;
+  endDate: Date;
   ranks: Rank[];
 }
 
@@ -282,6 +288,8 @@ export interface CastlePodcastTotalsFailurePayload {
   id: string;
   group: string;
   filter?: string;
+  beginDate: Date;
+  endDate: Date;
   error: any;
 }
 

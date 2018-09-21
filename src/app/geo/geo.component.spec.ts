@@ -16,7 +16,7 @@ import {
   podcastGeoCountryRanks,
   routerParams as downloadParams
 } from '../../testing/downloads.fixtures';
-import { GroupType, GROUPTYPE_GEOCOUNTRY, GROUPTYPE_GEOSUBDIV, GROUPTYPE_GEOMETRO, MetricsType, METRICSTYPE_DEMOGRAPHICS } from '../ngrx/reducers/models';
+import { GroupType, GROUPTYPE_GEOCOUNTRY, GROUPTYPE_GEOMETRO, MetricsType, METRICSTYPE_DEMOGRAPHICS } from '../ngrx/reducers/models';
 
 describe('GeoComponent', () => {
   let store: Store<any>;
@@ -46,7 +46,7 @@ describe('GeoComponent', () => {
     });
   }));
 
-  const routerParams = {...downloadParams, metricsType:<MetricsType>METRICSTYPE_DEMOGRAPHICS, group: <GroupType>GROUPTYPE_GEOCOUNTRY};
+  const routerParams = {...downloadParams, metricsType: <MetricsType>METRICSTYPE_DEMOGRAPHICS, group: <GroupType>GROUPTYPE_GEOCOUNTRY};
   function dispatchRouterNavigation() {
     store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerParams}));
   }
@@ -64,6 +64,9 @@ describe('GeoComponent', () => {
     store.dispatch(new ACTIONS.CastlePodcastTotalsSuccessAction({
       id: routerParams.podcastId,
       group: GROUPTYPE_GEOCOUNTRY,
+      filter: routerParams.filter,
+      beginDate: routerParams.beginDate,
+      endDate: routerParams.endDate,
       ranks: podcastGeoCountryRanks
     }));
   }
@@ -72,6 +75,9 @@ describe('GeoComponent', () => {
     store.dispatch(new ACTIONS.CastlePodcastTotalsSuccessAction({
       id: routerParams.podcastId,
       group: GROUPTYPE_GEOMETRO,
+      filter: routerParams.filter,
+      beginDate: routerParams.beginDate,
+      endDate: routerParams.endDate,
       ranks: podcastGeoCountryRanks
     }));
   }
@@ -81,6 +87,9 @@ describe('GeoComponent', () => {
       id: routerParams.podcastId,
       group: GROUPTYPE_GEOCOUNTRY,
       interval: routerParams.interval,
+      filter: routerParams.filter,
+      beginDate: routerParams.beginDate,
+      endDate: routerParams.endDate,
       ranks: podcastGeoCountryRanks,
       downloads: podcastGeoCountryDownloads
     }));
@@ -91,6 +100,9 @@ describe('GeoComponent', () => {
       id: routerParams.podcastId,
       group: GROUPTYPE_GEOMETRO,
       interval: routerParams.interval,
+      filter: routerParams.filter,
+      beginDate: routerParams.beginDate,
+      endDate: routerParams.endDate,
       ranks: podcastGeoCountryRanks,
       downloads: podcastGeoCountryDownloads
     }));

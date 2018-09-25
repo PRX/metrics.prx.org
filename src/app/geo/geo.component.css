@@ -5,3 +5,9 @@ metrics-geochart-map {
   background-color: white;
   height: 320px;
 }
+
+@media (max-width: 768px) {
+  metrics-geochart-map {
+    height: initial;
+  }
+}

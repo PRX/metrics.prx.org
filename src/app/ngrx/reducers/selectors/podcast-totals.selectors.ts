@@ -7,7 +7,6 @@ import { selectPodcastRoute, selectMetricsTypeRoute, selectGroupRoute,
   selectFilterRoute, selectBeginDateRoute, selectEndDateRoute } from './router.selectors';
 import { getColor } from '../../../shared/util/chart.util';
 import { selectRoutedPodcastGroupCharted } from './podcast-group-charted.selectors';
-import {TimeseriesChartModel} from "ngx-prx-styleguide";
 
 export const selectPodcastTotalsState = createFeatureSelector<fromPodcastTotals.State>('podcastTotals');
 

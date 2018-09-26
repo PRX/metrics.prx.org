@@ -53,6 +53,10 @@ puts "AUTH_CLIENT_ID=#{client.key}"
 
 Enter in the client id in `.env`, setting `AUTH_CLIENT_ID` to the value from above.
 
+### GOOGLE_API_KEY
+You will need to get a Google API key for your .env for use with Google Geochart.
+You can add one for your development environment under the project in the Google Cloud Platform API -> Credentials.
+
 ## Local Install
 
 Make sure you're running the node version in `.nvmrc`, and you're off!!

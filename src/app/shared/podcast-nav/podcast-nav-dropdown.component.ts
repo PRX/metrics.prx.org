@@ -7,7 +7,7 @@ import { Podcast } from '../../ngrx';
     <div *ngIf="podcasts?.length > 1" class="dropdown" [class.open]="open">
       <div class="overlay" (click)="toggleOpen()"></div>
       <div class="dropdown-button">
-        <button (click)="toggleOpen()" >{{ selectedPodcast?.title }}<span class="down-arrow"></span></button>
+        <button (click)="toggleOpen()"><span class="button-text">{{selectedPodcast?.title}}</span><span class="down-arrow"></span></button>
       </div>
       <div class="dropdown-content rollout">
         <metrics-podcast-nav-list
@@ -17,7 +17,7 @@ import { Podcast } from '../../ngrx';
         </metrics-podcast-nav-list>
       </div>
     </div>
-    <span class="single" *ngIf="podcasts?.length === 1 && selectedPodcast">{{ selectedPodcast.title }}</span>
+    <span class="single button-text" *ngIf="podcasts?.length === 1 && selectedPodcast">{{selectedPodcast?.title}}</span>
   `,
   styleUrls: ['../menu/dropdown.css', './podcast-nav-dropdown.component.css']
 })

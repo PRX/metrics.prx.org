@@ -25,3 +25,6 @@ HOST=https://metrics.prx.dev
 
 # metrics
 CASTLE_HOST=
+
+# Google Geochart API Key
+GOOGLE_API_KEY=

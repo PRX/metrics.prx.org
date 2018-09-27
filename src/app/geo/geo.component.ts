@@ -9,6 +9,8 @@ import {
   selectGroupedPodcastDataLoaded, selectGroupedPodcastDataLoading,
   selectNestedPodcastTotalsLoaded, selectNestedPodcastTotalsLoading, selectNestedPodcastTotalsError,
   selectRoutedPodcastRanksChartMetrics,
+  selectRoutedPodcastTotalsGeochartMetrics,
+  selectNestedPodcastTotalsGeochartMetrics,
   selectRoutedPodcastTotalsTableMetrics,
   selectNestedPodcastTotalsTableMetrics,
   selectRouter,
@@ -22,7 +24,11 @@ import {
                  loadingMessage="Please wait..."></prx-spinner>
     <section *ngIf="loaded$ | async">
       <metrics-menu-bar></metrics-menu-bar>
-      <metrics-soon [routerParams]="routerParams$ | async"></metrics-soon>
+      <metrics-soon *ngIf="isGroupGeoMetro$ | async" [routerParams]="routerParams$ | async"></metrics-soon>
+      <metrics-geochart-map *ngIf="isGroupGeoCountry$ | async"
+                            [data]="geochartData$ | async"
+                            [nestedData]="geochartNestedData$ | async"
+                            [routerParams]="routerParams$ | async"></metrics-geochart-map>
       <metrics-totals-table *ngIf="isGroupGeoMetro$ | async"
                             numRowsWithToggle="0" [tableData]="tableData$ | async" [routerParams]="routerParams$ | async">
       </metrics-totals-table>
@@ -37,12 +43,15 @@ import {
       </metrics-nested-totals-table>
     </section>
     <metrics-error-retry [retryActions]="errors$ | async"></metrics-error-retry>
-  `
+  `,
+  styleUrls: ['./geo.component.css']
 })
 
 export class GeoComponent implements OnInit {
   routerParams$: Observable<RouterParams>;
   chartData$: Observable<CategoryChartModel[] | TimeseriesChartModel[]>;
+  geochartData$: Observable<any[][]>;
+  geochartNestedData$: Observable<any[][]>;
   tableData$: Observable<TotalsTableRow[]>;
   nestedData$: Observable<TotalsTableRow[]>;
   loading$: Observable<boolean>;
@@ -59,6 +68,8 @@ export class GeoComponent implements OnInit {
   ngOnInit() {
     this.routerParams$ = this.store.pipe(select(selectRouter));
     this.chartData$ = this.store.pipe(select(selectRoutedPodcastRanksChartMetrics));
+    this.geochartData$ = this.store.pipe(select(selectRoutedPodcastTotalsGeochartMetrics));
+    this.geochartNestedData$ = this.store.pipe(select(selectNestedPodcastTotalsGeochartMetrics));
     this.tableData$ = this.store.pipe(select(selectRoutedPodcastTotalsTableMetrics));
     this.nestedData$ = this.store.pipe(select(selectNestedPodcastTotalsTableMetrics));
     this.loaded$ = this.store.pipe(select(selectGroupedPodcastDataLoaded));

@@ -1,7 +1,10 @@
 import { createSelector, createFeatureSelector } from '@ngrx/store';
 import * as fromPodcastTotals from '../podcast-totals.reducer';
-import { PodcastTotals, Rank, TotalsTableRow, PodcastGroupCharted, GROUPTYPE_GEOSUBDIV } from '../models';
-import { selectPodcastRoute, selectGroupRoute, selectFilterRoute } from './router.selectors';
+import { PodcastTotals, Rank, podcastTotalsKey,
+  TotalsTableRow, PodcastGroupCharted,
+  MetricsType, GroupType, GROUPTYPE_GEOSUBDIV, getGroupName } from '../models';
+import { selectPodcastRoute, selectMetricsTypeRoute, selectGroupRoute,
+  selectFilterRoute, selectBeginDateRoute, selectEndDateRoute } from './router.selectors';
 import { getColor } from '../../../shared/util/chart.util';
 import { selectRoutedPodcastGroupCharted } from './podcast-group-charted.selectors';
 
@@ -37,10 +40,11 @@ export const selectRoutedPodcastTotals = createSelector(
   selectPodcastRoute,
   selectGroupRoute,
   selectFilterRoute,
+  selectBeginDateRoute,
+  selectEndDateRoute,
   selectPodcastTotalsEntities,
-  (podcastId: string, group: string, filter: string, podcastTotalsEntities): PodcastTotals => {
-    return group === GROUPTYPE_GEOSUBDIV ?
-      podcastTotalsEntities[`${podcastId}-${group}-${filter}`] : podcastTotalsEntities[`${podcastId}-${group}`];
+  (podcastId: string, group: GroupType, filter: string, beginDate: Date, endDate: Date, podcastTotalsEntities): PodcastTotals => {
+    return podcastTotalsEntities[podcastTotalsKey(podcastId, group, filter, beginDate, endDate)];
   }
 );
 
@@ -62,10 +66,11 @@ export const selectRoutedPodcastTotalsError = createSelector(
 export const selectNestedPodcastTotals = createSelector(
   selectPodcastRoute,
   selectFilterRoute,
+  selectBeginDateRoute,
+  selectEndDateRoute,
   selectPodcastTotalsEntities,
-  (podcastId: string, filter: string, podcastTotalsEntities): PodcastTotals => {
-    const group = GROUPTYPE_GEOSUBDIV;
-    return podcastTotalsEntities[`${podcastId}-${group}-${filter}`];
+  (podcastId: string, filter: string, beginDate: Date, endDate: Date, podcastTotalsEntities): PodcastTotals => {
+    return podcastTotalsEntities[podcastTotalsKey(podcastId, GROUPTYPE_GEOSUBDIV, filter, beginDate, endDate)];
   }
 );
 
@@ -128,6 +133,32 @@ export const selectNestedPodcastTotalsTableMetrics = createSelector(
           value: rank.total
         };
       });
+    }
+  }
+);
+
+export const selectRoutedPodcastTotalsGeochartMetrics = createSelector(
+  selectRoutedPodcastTotals,
+  selectMetricsTypeRoute,
+  selectGroupRoute,
+  (podcastTotals: PodcastTotals, metricsType: MetricsType, group: GroupType): any[][] => {
+    if (podcastTotals && podcastTotals.ranks) {
+      // @ts-ignore TypeScript does not like mixed type arrays
+      return [[getGroupName(metricsType, group), 'Downloads']].concat(podcastTotals.ranks.map((rank: Rank, i) => {
+        return [rank.label, rank.total];
+      }));
+    }
+  }
+);
+
+export const selectNestedPodcastTotalsGeochartMetrics = createSelector(
+  selectNestedPodcastTotals,
+  (podcastTotals: PodcastTotals): any[][] => {
+    if (podcastTotals && podcastTotals.ranks) {
+      // @ts-ignore TypeScript does not like mixed type arrays
+      return [['Region', 'Downloads']].concat(podcastTotals.ranks.map((rank: Rank, i) => {
+        return [rank.label, rank.total];
+      }));
     }
   }
 );

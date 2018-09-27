@@ -93,8 +93,15 @@ export class RoutingService {
           this.isBeginDateChanged(newRouterParams) || this.isEndDateChanged(newRouterParams) || this.isIntervalChanged(newRouterParams)) {
           this.loadPodcastRanks(newRouterParams);
         }
-        if (newRouterParams.group === GROUPTYPE_GEOCOUNTRY && this.isFilterChanged(newRouterParams)) {
+        if (newRouterParams.group === GROUPTYPE_GEOCOUNTRY && newRouterParams.filter &&
+          (this.isFilterChanged(newRouterParams) || this.isPodcastChanged(newRouterParams) ||
+            this.isBeginDateChanged(newRouterParams) || this.isEndDateChanged(newRouterParams))) {
           this.loadPodcastTotals({...newRouterParams, group: GROUPTYPE_GEOSUBDIV, filter: newRouterParams.filter});
+        }
+        if (newRouterParams.group === GROUPTYPE_GEOCOUNTRY && newRouterParams.filter &&
+          (this.isFilterChanged(newRouterParams) || this.isPodcastChanged(newRouterParams) ||
+            this.isBeginDateChanged(newRouterParams) || this.isEndDateChanged(newRouterParams) ||
+            this.isIntervalChanged(newRouterParams))) {
           this.loadPodcastRanks({...newRouterParams, group: GROUPTYPE_GEOSUBDIV, filter: newRouterParams.filter});
         }
         break;

@@ -1,0 +1,13 @@
+metrics-geochart-map {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: white;
+  height: 320px;
+}
+
+@media (max-width: 768px) {
+  metrics-geochart-map {
+    height: initial;
+  }
+}

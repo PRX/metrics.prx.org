@@ -341,13 +341,16 @@ export class CastleEffects {
             group,
             filter,
             interval,
+            beginDate,
+            endDate,
             downloads: metrics['downloads'],
             ranks: metrics['ranks'].map(r => {
               return { ...r, code: r.code && String(r.code) };
             })
           });
         }),
-        catchError(error => Observable.of(new ACTIONS.CastlePodcastRanksFailureAction({id, group, filter, interval, error})))
+        catchError(error => Observable.of(
+          new ACTIONS.CastlePodcastRanksFailureAction({id, group, filter, interval, beginDate, endDate, error})))
       );
     })
   );
@@ -375,13 +378,15 @@ export class CastleEffects {
             id,
             group,
             filter,
+            beginDate,
+            endDate,
             ranks: metrics['ranks'].map(rank => {
               const { count, label, code }  = rank;
               return { total: count, label, code: code && String(code) };
             })
           });
         }),
-        catchError(error => Observable.of(new ACTIONS.CastlePodcastTotalsFailureAction({id, group, filter, error})))
+        catchError(error => Observable.of(new ACTIONS.CastlePodcastTotalsFailureAction({id, group, filter, beginDate, endDate, error})))
       );
     })
   );

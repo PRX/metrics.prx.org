@@ -12,7 +12,8 @@ import { MetricsType, GroupType, GROUPTYPE_AGENTNAME, METRICSTYPE_TRAFFICSOURCES
 
 import { UserAgentsComponent } from './user-agents.component';
 import { UserAgentsChartComponent } from './user-agents-chart.component';
-import { podcast, routerParams as downloadParams, podcastAgentNameRanks, podcastAgentNameDownloads } from '../../testing/downloads.fixtures';
+import { podcast, routerParams as downloadParams,
+  podcastAgentNameRanks, podcastAgentNameDownloads } from '../../testing/downloads.fixtures';
 
 describe('UserAgentsComponent', () => {
   let store: Store<any>;
@@ -57,6 +58,8 @@ describe('UserAgentsComponent', () => {
     store.dispatch(new ACTIONS.CastlePodcastTotalsSuccessAction({
       id: routerParams.podcastId,
       group: GROUPTYPE_AGENTNAME,
+      beginDate: routerParams.beginDate,
+      endDate: routerParams.endDate,
       ranks: podcastAgentNameRanks
     }));
   }
@@ -66,6 +69,8 @@ describe('UserAgentsComponent', () => {
       id: routerParams.podcastId,
       group: GROUPTYPE_AGENTNAME,
       interval: routerParams.interval,
+      beginDate: routerParams.beginDate,
+      endDate: routerParams.endDate,
       ranks: podcastAgentNameRanks,
       downloads: podcastAgentNameDownloads
     }));

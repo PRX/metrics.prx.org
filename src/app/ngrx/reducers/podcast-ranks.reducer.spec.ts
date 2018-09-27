@@ -5,10 +5,10 @@ import {
   podcastAgentNameRanks,
   podcastAgentNameDownloads
 } from '../../../testing/downloads.fixtures';
-import { GROUPTYPE_AGENTNAME, GROUPTYPE_GEOSUBDIV, METRICSTYPE_TRAFFICSOURCES } from './models';
+import { GroupType, GROUPTYPE_AGENTNAME, METRICSTYPE_TRAFFICSOURCES, podcastRanksKey } from './models';
 
 describe('Podcast Ranks Reducer', () => {
-  const routerParams = {...downloadParams, metricsType: METRICSTYPE_TRAFFICSOURCES, group: GROUPTYPE_AGENTNAME};
+  const routerParams = {...downloadParams, metricsType: METRICSTYPE_TRAFFICSOURCES, group: <GroupType>GROUPTYPE_AGENTNAME};
 
   describe('unknown action', () => {
     it('should return the initial state', () => {
@@ -19,27 +19,32 @@ describe('Podcast Ranks Reducer', () => {
   });
 
   it('should set loading, loaded, and unset error on podcast ranks load', () => {
-    const { podcastId, group, interval, beginDate, endDate } = routerParams;
+    const { podcastId, group, filter, interval, beginDate, endDate } = routerParams;
     const newState = reducer(initialState,
       new ACTIONS.CastlePodcastRanksLoadAction({id: podcastId, group, interval, beginDate, endDate}));
-    expect(newState.entities[`${podcastId}-${group}-${interval.key}`].loading).toBeTruthy();
-    expect(newState.entities[`${podcastId}-${group}-${interval.key}`].loaded).toBeFalsy();
-    expect(newState.entities[`${podcastId}-${group}-${interval.key}`].error).toBeNull();
+    const key = podcastRanksKey(podcastId, group, filter, interval, beginDate, endDate);
+    expect(newState.entities[key].loading).toBeTruthy();
+    expect(newState.entities[key].loaded).toBeFalsy();
+    expect(newState.entities[key].error).toBeNull();
   });
 
   it('should set podcast ranks entities and loaded on podcast ranks success', () => {
+    const { podcastId, group, filter, interval, beginDate, endDate } = routerParams;
+    const key = podcastRanksKey(podcastId, group, filter, interval, beginDate, endDate);
     const newState = reducer(initialState,
       new ACTIONS.CastlePodcastRanksSuccessAction({
-        id: routerParams.podcastId, group: routerParams.group, interval: routerParams.interval,
+        id: podcastId, group, interval, beginDate, endDate,
         ranks: podcastAgentNameRanks, downloads: podcastAgentNameDownloads}));
-    expect(newState.entities[`${routerParams.podcastId}-${routerParams.group}-${routerParams.interval.key}`]).toEqual({
+    expect(newState.entities[key]).toEqual({
       // @ts-ignore using upsert adds 'id' property to entity, seems like ngrx/entity v6 gets rid of this
-      id: `${routerParams.podcastId}-${routerParams.group}-${routerParams.interval.key}`,
-      key: `${routerParams.podcastId}-${routerParams.group}-${routerParams.interval.key}`,
-      podcastId: routerParams.podcastId,
-      group: routerParams.group,
-      filter: undefined,
-      interval: routerParams.interval,
+      id: key,
+      key,
+      podcastId,
+      group,
+      filter,
+      interval,
+      beginDate,
+      endDate,
       downloads: podcastAgentNameDownloads,
       ranks: podcastAgentNameRanks,
       loaded: true,
@@ -48,18 +53,20 @@ describe('Podcast Ranks Reducer', () => {
   });
 
   it('should include filter in key for geo subdiv', () => {
+    const { podcastId, group, filter, interval, beginDate, endDate } = routerParams;
     const newState = reducer(initialState,
       new ACTIONS.CastlePodcastRanksSuccessAction({
-        id: routerParams.podcastId, group: GROUPTYPE_GEOSUBDIV, interval: routerParams.interval,
+        id: podcastId, group, interval, beginDate, endDate,
         ranks: podcastAgentNameRanks, downloads: podcastAgentNameDownloads}));
-    expect(newState.entities[`${routerParams.podcastId}-${GROUPTYPE_GEOSUBDIV}-${routerParams.filter}-${routerParams.interval.key}`])
-      .not.toBeNull();
+    expect(newState.entities[podcastRanksKey(podcastId, group, filter, interval, beginDate, endDate)]).not.toBeNull();
   });
 
   it('should set error on failure', () => {
+    const { podcastId, group, filter, interval, beginDate, endDate } = routerParams;
     const newState = reducer(initialState,
-      new ACTIONS.CastlePodcastRanksFailureAction({id: routerParams.podcastId, group: GROUPTYPE_AGENTNAME, interval: routerParams.interval,
+      new ACTIONS.CastlePodcastRanksFailureAction({
+        id: podcastId, group, interval, beginDate, endDate,
         error: 'something went wrong'}));
-    expect(newState.entities[`${routerParams.podcastId}-${routerParams.group}-${routerParams.interval.key}`].error).not.toBeUndefined();
+    expect(newState.entities[podcastRanksKey(podcastId, group, filter, interval, beginDate, endDate)].error).not.toBeUndefined();
   });
 });

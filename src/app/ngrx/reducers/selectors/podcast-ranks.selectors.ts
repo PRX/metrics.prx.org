@@ -3,13 +3,21 @@ import * as fromPodcastRanks from '../podcast-ranks.reducer';
 import {
   PodcastRanks,
   Rank,
+  podcastRanksKey,
+  GroupType,
   IntervalModel,
   PodcastGroupCharted,
   ChartType,
   CHARTTYPE_HORIZBAR,
   GROUPTYPE_GEOSUBDIV
 } from '../models';
-import { selectPodcastRoute, selectChartTypeRoute, selectGroupRoute, selectFilterRoute, selectIntervalRoute } from './router.selectors';
+import { selectPodcastRoute,
+  selectChartTypeRoute,
+  selectGroupRoute,
+  selectFilterRoute,
+  selectIntervalRoute,
+  selectBeginDateRoute,
+  selectEndDateRoute } from './router.selectors';
 import { CategoryChartModel, TimeseriesChartModel } from 'ngx-prx-styleguide';
 import { getColor, neutralColor, mapMetricsToTimeseriesData } from '../../../shared/util/chart.util';
 import { selectRoutedPodcastGroupCharted } from './podcast-group-charted.selectors';
@@ -44,11 +52,17 @@ export const selectRoutedPodcastRanks = createSelector(
   selectGroupRoute,
   selectFilterRoute,
   selectIntervalRoute,
+  selectBeginDateRoute,
+  selectEndDateRoute,
   selectPodcastRanksEntities,
-  (podcastId: string, group: string, filter: string, interval: IntervalModel, podcastRanksEntities): PodcastRanks => {
-    return group === GROUPTYPE_GEOSUBDIV ?
-      podcastRanksEntities[`${podcastId}-${group}-${filter}-${interval && interval.key}`] :
-      podcastRanksEntities[`${podcastId}-${group}-${interval && interval.key}`];
+  (podcastId: string,
+   group: GroupType,
+   filter: string,
+   interval: IntervalModel,
+   beginDate: Date,
+   endDate: Date,
+   podcastRanksEntities): PodcastRanks => {
+    return podcastRanksEntities[podcastRanksKey(podcastId, group, filter, interval, beginDate, endDate)];
   }
 );
 
@@ -71,10 +85,16 @@ export const selectNestedPodcastRanks = createSelector(
   selectPodcastRoute,
   selectFilterRoute,
   selectIntervalRoute,
+  selectBeginDateRoute,
+  selectEndDateRoute,
   selectPodcastRanksEntities,
-  (podcastId: string, filter: string, interval: IntervalModel, podcastRanksEntities): PodcastRanks => {
-    const group = GROUPTYPE_GEOSUBDIV;
-    return podcastRanksEntities[`${podcastId}-${group}-${filter}-${interval && interval.key}`];
+  (podcastId: string,
+   filter: string,
+   interval: IntervalModel,
+   beginDate: Date,
+   endDate: Date,
+   podcastRanksEntities): PodcastRanks => {
+    return podcastRanksEntities[podcastRanksKey(podcastId, GROUPTYPE_GEOSUBDIV, filter, interval, beginDate, endDate)];
   }
 );
 

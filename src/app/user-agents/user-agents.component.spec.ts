@@ -44,7 +44,7 @@ describe('UserAgentsComponent', () => {
     });
   }));
 
-  const routerParams = {...downloadParams, metricsType:<MetricsType>METRICSTYPE_TRAFFICSOURCES, group: <GroupType>GROUPTYPE_AGENTNAME};
+  const routerParams = {...downloadParams, metricsType: <MetricsType>METRICSTYPE_TRAFFICSOURCES, group: <GroupType>GROUPTYPE_AGENTNAME};
   function dispatchRouterNavigation() {
     store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerParams}));
   }

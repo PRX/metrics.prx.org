@@ -52,7 +52,7 @@ export class GeochartMapComponent implements OnInit, OnChanges, AfterViewInit {
       distinctUntilChanged()).subscribe(() => this.drawMap());
   }
 
-  getMapWidthOrHeight():{width?: number, height?: number} {
+  getMapWidthOrHeight(): {width?: number, height?: number} {
     if (this.windowSize && this.windowSize.width && this.windowSize.width <= 768) {
       return {width: this.windowSize.width - 40};
     } else {

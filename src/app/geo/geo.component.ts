@@ -7,7 +7,8 @@ import * as ACTIONS from '../ngrx/actions';
 import {
   select500ErrorReloadActions,
   selectGroupedPodcastDataLoaded, selectGroupedPodcastDataLoading,
-  selectNestedPodcastTotalsLoaded, selectNestedPodcastTotalsLoading, selectNestedPodcastTotalsError,
+  selectNestedPodcastTotalsLoaded, selectNestedPodcastTotalsLoading,
+  selectNested500ErrorReloadActions,
   selectRoutedPodcastRanksChartMetrics,
   selectRoutedPodcastTotals,
   selectNestedPodcastTotals,
@@ -26,6 +27,8 @@ import {
       <metrics-menu-bar></metrics-menu-bar>
       <metrics-geochart-map [data]="geochartData$ | async"
                             [nestedData]="nestedGeochartData$ | async"
+                            [nestedDataLoading]="nestedTotalsLoading$ | async"
+                            [nestedDataLoaded]="nestedTotalsLoaded$ | async"
                             [routerParams]="routerParams$ | async"></metrics-geochart-map>
       <metrics-totals-table *ngIf="isGroupGeoMetro$ | async"
                             numRowsWithToggle="0" [tableData]="tableData$ | async" [routerParams]="routerParams$ | async">
@@ -36,7 +39,7 @@ import {
                                    [nestedData]="nestedTableData$ | async"
                                    [nestedDataLoading]="nestedTotalsLoading$ | async"
                                    [nestedDataLoaded]="nestedTotalsLoaded$ | async"
-                                   [nestedDataError]="nestedTotalsError$ | async"
+                                   [nestedDataErrorActions]="nestedTotalsErrorActions$ | async"
                                    (discloseNestedData)="groupFilter($event)">
       </metrics-nested-totals-table>
     </section>
@@ -56,7 +59,7 @@ export class GeoComponent implements OnInit {
   loaded$: Observable<boolean>;
   nestedTotalsLoading$: Observable<boolean>;
   nestedTotalsLoaded$: Observable<boolean>;
-  nestedTotalsError$: Observable<any>;
+  nestedTotalsErrorActions$: Observable<ACTIONS.AllActions[]>;
   errors$: Observable<ACTIONS.AllActions[]>;
   isGroupGeoCountry$: Observable<boolean>;
   isGroupGeoMetro$: Observable<boolean>;
@@ -74,7 +77,7 @@ export class GeoComponent implements OnInit {
     this.loading$ = this.store.pipe(select(selectGroupedPodcastDataLoading));
     this.nestedTotalsLoading$ = this.store.pipe(select(selectNestedPodcastTotalsLoading));
     this.nestedTotalsLoaded$ = this.store.pipe(select(selectNestedPodcastTotalsLoaded));
-    this.nestedTotalsError$ = this.store.pipe(select(selectNestedPodcastTotalsError));
+    this.nestedTotalsErrorActions$ = this.store.pipe(select(selectNested500ErrorReloadActions));
     this.errors$ = this.store.pipe(select(select500ErrorReloadActions));
     this.isGroupGeoCountry$ = this.store.pipe(select(selectIsGroupGeoCountry));
     this.isGroupGeoMetro$ = this.store.pipe(select(selectIsGroupGeoMetro));

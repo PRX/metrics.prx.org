@@ -9,7 +9,10 @@ declare const google: any;
 
 @Component({
   selector: 'metrics-geochart-map',
-  template: `<div #geo></div>`
+  template: `
+    <div #geo></div>
+    <prx-spinner overlay="true" *ngIf="routerParams?.filter && nestedDataLoading"></prx-spinner>
+  `
 })
 
 export class GeochartMapComponent implements OnInit, OnChanges, AfterViewInit {
@@ -18,6 +21,8 @@ export class GeochartMapComponent implements OnInit, OnChanges, AfterViewInit {
   @Input() routerParams: RouterParams;
   @Input() data: PodcastTotals;
   @Input() nestedData: PodcastTotals;
+  @Input() nestedDataLoading: boolean;
+  @Input() nestedDataLoaded: boolean;
   windowSize: {width: number, height: number};
   colors = ['#e5f5fb', '#a6cee3', '#01a0dc', '#008fc5', '#0089bd', '#1f78b4'];
 

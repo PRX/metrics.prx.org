@@ -1,5 +1,5 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-import {TotalsTableRow, RouterParams, getGroupName, GROUPTYPE_GEOSUBDIV} from '../../ngrx/';
+import { TotalsTableRow, RouterParams, getGroupName } from '../../ngrx/';
 import * as ACTIONS from '../../ngrx/actions';
 
 @Component({
@@ -41,8 +41,8 @@ import * as ACTIONS from '../../ngrx/actions';
             <div>No results</div>
             <div class="charted"></div>
           </div>
-          <div class="nested-row" *ngIf="nestedDataError">
-            <metrics-error-retry [retryActions]="nestedDataRetryAction"></metrics-error-retry>
+          <div class="nested-row" *ngIf="nestedDataErrorActions?.length">
+            <metrics-error-retry [retryActions]="nestedDataErrorActions"></metrics-error-retry>
           </div>
         </div>
       </div>
@@ -56,20 +56,10 @@ export class NestedTotalsTableComponent {
   @Input() nestedData: TotalsTableRow[];
   @Input() nestedDataLoading: boolean;
   @Input() nestedDataLoaded: boolean;
-  @Input() nestedDataError: any;
+  @Input() nestedDataErrorActions: ACTIONS.AllActions[];
   @Input() routerParams: RouterParams;
   @Output() discloseNestedData = new EventEmitter<string>();
   getGroupName = getGroupName;
-
-  get nestedDataRetryAction() {
-    return [new ACTIONS.CastlePodcastTotalsLoadAction({
-      id: this.routerParams.podcastId,
-      group: GROUPTYPE_GEOSUBDIV,
-      filter: this.routerParams.filter,
-      beginDate: this.routerParams.beginDate,
-      endDate: this.routerParams.endDate
-    })];
-  }
 
   onAccordion(event: Event, data: TotalsTableRow) {
     this.discloseNestedData.emit(event.target['checked'] ? data.code : undefined);

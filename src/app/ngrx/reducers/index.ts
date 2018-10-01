@@ -2,14 +2,14 @@ import { ActionReducerMap } from '@ngrx/store';
 import { RouterReducerState, routerReducer } from '@ngrx/router-store';
 import { AccountReducer, AccountState } from './account.reducer';
 import * as fromPodcast from './podcast.reducer';
+import * as fromPodcastDownloads from './podcast-downloads.reducer';
 import { PodcastMetricsReducer, PodcastMetricsModel } from './podcast-metrics.reducer';
-import { PodcastPerformanceMetricsReducer, PodcastPerformanceMetricsState } from './podcast-performance-metrics.reducer';
 import * as fromPodcastRanks from './podcast-ranks.reducer';
 import * as fromPodcastTotals from './podcast-totals.reducer';
 import * as fromPodcastGroupCharted from './podcast-group-charted.reducer';
 import * as fromEpisode from './episode.reducer';
+import * as fromEpisodeDownloads from './episode-downloads.reducer';
 import { EpisodeMetricsReducer, EpisodeMetricsModel } from './episode-metrics.reducer';
-import { EpisodePerformanceMetricsReducer, EpisodePerformanceMetricsState } from './episode-performance-metrics.reducer';
 import { CustomRouterReducer } from './router.reducer';
 import { RouterParams } from './models';
 
@@ -19,13 +19,13 @@ export interface RootState {
   account: AccountState;
   podcast: fromPodcast.State;
   episode: fromEpisode.State;
+  podcastDownloads: fromPodcastDownloads.State;
+  episodeDownloads: fromEpisodeDownloads.State;
   podcastMetrics: PodcastMetricsModel[];
-  podcastPerformanceMetrics: PodcastPerformanceMetricsState;
   podcastRanks: fromPodcastRanks.State;
   podcastTotals: fromPodcastTotals.State;
   podcastGroupCharted: fromPodcastGroupCharted.State;
   episodeMetrics: EpisodeMetricsModel[];
-  episodePerformanceMetrics: EpisodePerformanceMetricsState;
 }
 
 // TypeScript is complaining about this ActionReducerMap again, not sure why ugh
@@ -35,13 +35,13 @@ export const reducers: ActionReducerMap<RootState> = {
   account: AccountReducer,
   podcast: fromPodcast.reducer,
   episode: fromEpisode.reducer,
+  podcastDownloads: fromPodcastDownloads.reducer,
+  episodeDownloads: fromEpisodeDownloads.reducer,
   podcastMetrics: PodcastMetricsReducer,
-  podcastPerformanceMetrics: PodcastPerformanceMetricsReducer,
   podcastRanks: fromPodcastRanks.reducer,
   podcastTotals: fromPodcastTotals.reducer,
   podcastGroupCharted: fromPodcastGroupCharted.reducer,
   episodeMetrics: EpisodeMetricsReducer,
-  episodePerformanceMetrics: EpisodePerformanceMetricsReducer
 };
 
 export { CustomSerializer } from './router.serializer';

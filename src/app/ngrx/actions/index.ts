@@ -7,12 +7,12 @@ import {
   CastleEpisodePageLoadAction,
   CastleEpisodePageSuccessAction,
   CastleEpisodePageFailureAction,
-  CastlePodcastPerformanceMetricsLoadAction,
-  CastlePodcastPerformanceMetricsSuccessAction,
-  CastlePodcastPerformanceMetricsFailureAction,
-  CastleEpisodePerformanceMetricsLoadAction,
-  CastleEpisodePerformanceMetricsSuccessAction,
-  CastleEpisodePerformanceMetricsFailureAction,
+  CastlePodcastAllTimeDownloadsLoadAction,
+  CastlePodcastAllTimeDownloadsSuccessAction,
+  CastlePodcastAllTimeDownloadsFailureAction,
+  CastleEpisodeAllTimeDownloadsLoadAction,
+  CastleEpisodeAllTimeDownloadsSuccessAction,
+  CastleEpisodeAllTimeDownloadsFailureAction,
   CastlePodcastMetricsLoadAction,
   CastlePodcastMetricsSuccessAction,
   CastlePodcastMetricsFailureAction,
@@ -59,12 +59,12 @@ export type AllActions
   | CastleEpisodeMetricsLoadAction
   | CastleEpisodeMetricsSuccessAction
   | CastleEpisodeMetricsFailureAction
-  | CastlePodcastPerformanceMetricsLoadAction
-  | CastlePodcastPerformanceMetricsSuccessAction
-  | CastlePodcastPerformanceMetricsFailureAction
-  | CastleEpisodePerformanceMetricsLoadAction
-  | CastleEpisodePerformanceMetricsSuccessAction
-  | CastleEpisodePerformanceMetricsFailureAction
+  | CastlePodcastAllTimeDownloadsLoadAction
+  | CastlePodcastAllTimeDownloadsSuccessAction
+  | CastlePodcastAllTimeDownloadsFailureAction
+  | CastleEpisodeAllTimeDownloadsLoadAction
+  | CastleEpisodeAllTimeDownloadsSuccessAction
+  | CastleEpisodeAllTimeDownloadsFailureAction
   | CastlePodcastRanksLoadAction
   | CastlePodcastRanksSuccessAction
   | CastlePodcastRanksFailureAction
@@ -98,12 +98,12 @@ export {
   CastlePodcastMetricsLoadPayload, CastlePodcastMetricsLoadAction,
   CastlePodcastMetricsSuccessPayload, CastlePodcastMetricsSuccessAction,
   CastlePodcastMetricsFailurePayload, CastlePodcastMetricsFailureAction,
-  CastlePodcastPerformanceMetricsLoadPayload, CastlePodcastPerformanceMetricsLoadAction,
-  CastlePodcastPerformanceMetricsSuccessPayload, CastlePodcastPerformanceMetricsSuccessAction,
-  CastlePodcastPerformanceMetricsFailureAction,
-  CastleEpisodePerformanceMetricsLoadPayload, CastleEpisodePerformanceMetricsLoadAction,
-  CastleEpisodePerformanceMetricsSuccessPayload, CastleEpisodePerformanceMetricsSuccessAction,
-  CastleEpisodePerformanceMetricsFailureAction,
+  CastlePodcastAllTimeDownloadsLoadPayload, CastlePodcastAllTimeDownloadsLoadAction,
+  CastlePodcastAllTimeDownloadsSuccessPayload, CastlePodcastAllTimeDownloadsSuccessAction,
+  CastlePodcastAllTimeDownloadsFailureAction,
+  CastleEpisodeAllTimeDownloadsLoadPayload, CastleEpisodeAllTimeDownloadsLoadAction,
+  CastleEpisodeAllTimeDownloadsSuccessPayload, CastleEpisodeAllTimeDownloadsSuccessAction,
+  CastleEpisodeAllTimeDownloadsFailureAction,
   CastleEpisodeMetricsLoadPayload, CastleEpisodeMetricsLoadAction,
   CastleEpisodeMetricsSuccessPayload, CastleEpisodeMetricsSuccessAction,
   CastleEpisodeMetricsFailurePayload, CastleEpisodeMetricsFailureAction,

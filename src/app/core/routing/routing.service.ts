@@ -280,9 +280,9 @@ export class RoutingService {
       beginDate: newRouterParams.beginDate,
       endDate: newRouterParams.endDate
     }));
-    this.store.dispatch(new ACTIONS.CastlePodcastPerformanceMetricsLoadAction({id: newRouterParams.podcastId}));
+    this.store.dispatch(new ACTIONS.CastlePodcastAllTimeDownloadsLoadAction({id: newRouterParams.podcastId}));
     this.episodes.forEach((episode: Episode) => {
-      this.store.dispatch(new ACTIONS.CastleEpisodePerformanceMetricsLoadAction({
+      this.store.dispatch(new ACTIONS.CastleEpisodeAllTimeDownloadsLoadAction({
         podcastId: episode.podcastId,
         guid: episode.guid
       }));

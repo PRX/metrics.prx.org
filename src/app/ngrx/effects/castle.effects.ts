@@ -306,7 +306,6 @@ export class CastleEffects {
             if (error.status === 404) {
               return Observable.of(new ACTIONS.CastleEpisodeAllTimeDownloadsSuccessAction({podcastId, guid, total: 0}));
             } else {
-              // TODO: can I write a test for this failure? what's up?
               return Observable.of(new ACTIONS.CastleEpisodeAllTimeDownloadsFailureAction({podcastId, guid, error}));
             }
           })

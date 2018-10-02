@@ -4,12 +4,19 @@ import { selectEpisodeError } from './episode.selectors';
 import { selectPodcastError } from './podcast.selectors';
 import { selectEpisodeMetricsError } from './episode-metrics.selectors';
 import { selectPodcastMetricsError } from './podcast-metrics.selectors';
-import { selectRoutedPodcastRanksError } from './podcast-ranks.selectors';
-import { selectRoutedPodcastTotalsError } from './podcast-totals.selectors';
+import { selectRoutedPodcastRanksError, selectNestedPodcastRanksError } from './podcast-ranks.selectors';
+import { selectRoutedPodcastTotalsError, selectNestedPodcastTotalsError } from './podcast-totals.selectors';
 import * as ACTIONS from '../../actions';
 import { PodcastMetricsModel } from '../podcast-metrics.reducer';
 import { EpisodeMetricsModel } from '../episode-metrics.reducer';
-import { RouterParams, METRICSTYPE_DOWNLOADS } from '../models';
+import { RouterParams, METRICSTYPE_DOWNLOADS, GROUPTYPE_GEOSUBDIV } from '../models';
+
+// this feels like it's starting to cross a boundary of responsibility here, so it seems important to note that
+// these actions are not being dispatched by the reducers/selectors
+// rather, these actions have parameters that are dependent on the router state,
+// so the components that initiate these actions are using selectors on the state to build the actions
+// that is all we're doing, producing actions, plain objects (to be dispatched elsewhere)
+// reducers don't dispatch actions, reducers are pure functions and dispatching actions would be a side effect
 
 export const select500ErrorReloadActions =
   createSelector(selectRouter,
@@ -59,7 +66,7 @@ export const select500ErrorReloadActions =
           })));
       }
     } else {
-      if (podcastRanksError) {
+      if (podcastRanksError && podcastRanksError.status === 500) {
         const { podcastId, group, interval, beginDate, endDate } = routerParams;
         actions.push(new ACTIONS.CastlePodcastRanksLoadAction({
           id: podcastId,
@@ -69,7 +76,7 @@ export const select500ErrorReloadActions =
           endDate
         }));
       }
-      if (podcastTotalsError) {
+      if (podcastTotalsError && podcastTotalsError.status === 500) {
         const { podcastId, group, beginDate, endDate } = routerParams;
         actions.push(new ACTIONS.CastlePodcastTotalsLoadAction({
           id: podcastId,
@@ -78,6 +85,31 @@ export const select500ErrorReloadActions =
           endDate
         }));
       }
+    }
+    return actions;
+  });
+
+export const selectNested500ErrorReloadActions = createSelector(selectRouter, selectNestedPodcastRanksError, selectNestedPodcastTotalsError,
+  (routerParams: RouterParams, ranksError: any, totalsError: any) => {
+  const actions = [];
+    if (ranksError && ranksError.status === 500) {
+      actions.push(new ACTIONS.CastlePodcastRanksLoadAction({
+        id: routerParams.podcastId,
+        group: GROUPTYPE_GEOSUBDIV,
+        filter: routerParams.filter,
+        interval: routerParams.interval,
+        beginDate: routerParams.beginDate,
+        endDate: routerParams.endDate
+      }));
+    }
+    if (totalsError && totalsError.status === 500) {
+      actions.push(new ACTIONS.CastlePodcastTotalsLoadAction({
+        id: routerParams.podcastId,
+        group: GROUPTYPE_GEOSUBDIV,
+        filter: routerParams.filter,
+        beginDate: routerParams.beginDate,
+        endDate: routerParams.endDate
+      }));
     }
     return actions;
   });

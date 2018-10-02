@@ -1,6 +1,6 @@
 import { Component, Input, OnInit, OnChanges, SimpleChanges, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 import { Env } from '../core/core.env';
-import { GROUPTYPE_GEOCOUNTRY, GROUPTYPE_GEOMETRO, RouterParams } from '../ngrx/index';
+import { GROUPTYPE_GEOCOUNTRY, GROUPTYPE_GEOMETRO, getGroupName, RouterParams, PodcastTotals, Rank } from '../ngrx/index';
 import { fromEvent } from 'rxjs/observable/fromEvent';
 import { map } from 'rxjs/operators/map';
 import { distinctUntilChanged } from 'rxjs/operators';
@@ -9,15 +9,20 @@ declare const google: any;
 
 @Component({
   selector: 'metrics-geochart-map',
-  template: `<div #geo></div>`
+  template: `
+    <div #geo></div>
+    <prx-spinner overlay="true" *ngIf="routerParams?.filter && nestedDataLoading"></prx-spinner>
+  `
 })
 
 export class GeochartMapComponent implements OnInit, OnChanges, AfterViewInit {
   private static googleLoaded: boolean;
   @ViewChild('geo') el: ElementRef;
   @Input() routerParams: RouterParams;
-  @Input() data: any[][];
-  @Input() nestedData: any[][];
+  @Input() data: PodcastTotals;
+  @Input() nestedData: PodcastTotals;
+  @Input() nestedDataLoading: boolean;
+  @Input() nestedDataLoaded: boolean;
   windowSize: {width: number, height: number};
   colors = ['#e5f5fb', '#a6cee3', '#01a0dc', '#008fc5', '#0089bd', '#1f78b4'];
 
@@ -33,9 +38,7 @@ export class GeochartMapComponent implements OnInit, OnChanges, AfterViewInit {
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    if (changes.data) {
-      this.drawMap();
-    }
+    this.drawMap();
   }
 
   ngAfterViewInit() {
@@ -49,45 +52,49 @@ export class GeochartMapComponent implements OnInit, OnChanges, AfterViewInit {
       distinctUntilChanged()).subscribe(() => this.drawMap());
   }
 
+  getMapWidthOrHeight(): {width?: number, height?: number} {
+    if (this.windowSize && this.windowSize.width && this.windowSize.width <= 768) {
+      return {width: this.windowSize.width - 40};
+    } else {
+      return {height: 320};
+    }
+  }
+
+  toGoogleDataTable(ranks: Rank[]) {
+    const data = new google.visualization.DataTable();
+    data.addColumn('string', getGroupName(this.routerParams.metricsType, this.routerParams.group));
+    data.addColumn('number', 'Downloads');
+    data.addRows(ranks.map(d => [{v: d.code, f: d.label}, d.total]));
+    return data;
+  }
+
   drawMap() {
-    if (GeochartMapComponent.googleLoaded && google.visualization && this.data) {
-      let width, height;
-      if (this.windowSize && this.windowSize.width && this.windowSize.width <= 768) {
-        width = this.windowSize.width - 40;
-      } else {
-        height = 320;
-      }
+    if (GeochartMapComponent.googleLoaded && google.visualization) {
       const options = {
         displayMode: 'region',
         colorAxis: {colors: this.colors},
-        legend: 'none'
+        legend: 'none',
+        ...this.getMapWidthOrHeight()
       };
-      if (width) {
-        options['width'] = width;
-      }
-      if (height) {
-        options['height'] = height;
-      }
 
       let data;
-      /* TODO: other regions are not working yet, need to use region codes and format rows for displaying name,
-      see https://developers.google.com/chart/interactive/docs/reference#DataTable
-      if (this.routerParams.group === GROUPTYPE_GEOCOUNTRY && this.routerParams.filter && this.nestedData) {
+      if (this.routerParams.group === GROUPTYPE_GEOCOUNTRY && this.routerParams.filter && this.nestedData && this.nestedData.ranks) {
         options['region'] = this.routerParams.filter;
         options['resolution'] = 'provinces';
-        data = google.visualization.arrayToDataTable(this.nestedData);
-      } else */
-      if (this.routerParams.group === GROUPTYPE_GEOCOUNTRY) {
+        data = this.toGoogleDataTable(this.nestedData.ranks);
+      } else if (this.routerParams.group === GROUPTYPE_GEOCOUNTRY && this.data && this.data.ranks) {
         options['region'] = 'world';
-        data = google.visualization.arrayToDataTable(this.data);
-      } else if (this.routerParams.group === GROUPTYPE_GEOMETRO) {
+        data = this.toGoogleDataTable(this.data.ranks);
+      } else if (this.routerParams.group === GROUPTYPE_GEOMETRO && this.data && this.data.ranks) {
         options['region'] = 'US';
         options['resolution'] = 'metros';
-        data = google.visualization.arrayToDataTable(this.data);
+        data = this.toGoogleDataTable(this.data.ranks);
       }
 
-      const chart = new google.visualization.GeoChart(this.el.nativeElement);
-      chart.draw(data, options);
+      if (data) {
+        const chart = new google.visualization.GeoChart(this.el.nativeElement);
+        chart.draw(data, options);
+      }
     }
   }
 }

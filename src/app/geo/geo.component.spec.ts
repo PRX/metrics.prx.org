@@ -9,7 +9,6 @@ import * as ACTIONS from '../ngrx/actions';
 import { reducers } from '../ngrx/reducers';
 
 import { GeoComponent } from './geo.component';
-import { SoonComponent } from './soon.component';
 import { GeochartMapComponent } from './geochart.map.component';
 import {
   podcast,
@@ -30,8 +29,7 @@ describe('GeoComponent', () => {
     TestBed.configureTestingModule({
       declarations: [
         GeoComponent,
-        GeochartMapComponent,
-        SoonComponent
+        GeochartMapComponent
       ],
       imports: [
         SharedModule,

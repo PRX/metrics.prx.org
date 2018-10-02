@@ -54,7 +54,7 @@ describe('Episode Reducer', () => {
       new ACTIONS.CastleEpisodePageSuccessAction({page: 2, total: episodes.length, all: true, episodes}));
     expect(newState.total).toEqual(episodes.length);
     newState = reducer(newState,
-      new ACTIONS.CastleEpisodePageSuccessAction({page: 1, total: 25, all:true, episodes}));
+      new ACTIONS.CastleEpisodePageSuccessAction({page: 1, total: 25, all: true, episodes}));
     expect(newState.total).toEqual(25);
     newState = reducer(newState,
       new ACTIONS.CastleEpisodePageSuccessAction({page: 2, total: episodes.length, all: true, episodes}));

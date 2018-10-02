@@ -2,7 +2,7 @@ import { EntityState, EntityAdapter, createEntityAdapter } from '@ngrx/entity';
 import { PodcastGroupCharted, Rank } from './models';
 import { ActionTypes, AllActions } from '../actions';
 
-export interface State extends EntityState<PodcastGroupCharted> {}
+export type State = EntityState<PodcastGroupCharted>;
 
 export const adapter: EntityAdapter<PodcastGroupCharted> = createEntityAdapter<PodcastGroupCharted>({
   selectId: ((p: PodcastGroupCharted) => p.key)

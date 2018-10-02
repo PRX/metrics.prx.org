@@ -2,8 +2,8 @@ import { createSelector, createFeatureSelector } from '@ngrx/store';
 import * as fromPodcastTotals from '../podcast-totals.reducer';
 import { PodcastTotals, Rank, podcastTotalsKey,
   TotalsTableRow, PodcastGroupCharted,
-  MetricsType, GroupType, GROUPTYPE_GEOSUBDIV, getGroupName } from '../models';
-import { selectPodcastRoute, selectMetricsTypeRoute, selectGroupRoute,
+  GroupType, GROUPTYPE_GEOSUBDIV } from '../models';
+import { selectPodcastRoute, selectGroupRoute,
   selectFilterRoute, selectBeginDateRoute, selectEndDateRoute } from './router.selectors';
 import { getColor } from '../../../shared/util/chart.util';
 import { selectRoutedPodcastGroupCharted } from './podcast-group-charted.selectors';
@@ -137,28 +137,3 @@ export const selectNestedPodcastTotalsTableMetrics = createSelector(
   }
 );
 
-export const selectRoutedPodcastTotalsGeochartMetrics = createSelector(
-  selectRoutedPodcastTotals,
-  selectMetricsTypeRoute,
-  selectGroupRoute,
-  (podcastTotals: PodcastTotals, metricsType: MetricsType, group: GroupType): any[][] => {
-    if (podcastTotals && podcastTotals.ranks) {
-      // @ts-ignore TypeScript does not like mixed type arrays
-      return [[getGroupName(metricsType, group), 'Downloads']].concat(podcastTotals.ranks.map((rank: Rank, i) => {
-        return [rank.label, rank.total];
-      }));
-    }
-  }
-);
-
-export const selectNestedPodcastTotalsGeochartMetrics = createSelector(
-  selectNestedPodcastTotals,
-  (podcastTotals: PodcastTotals): any[][] => {
-    if (podcastTotals && podcastTotals.ranks) {
-      // @ts-ignore TypeScript does not like mixed type arrays
-      return [['Region', 'Downloads']].concat(podcastTotals.ranks.map((rank: Rank, i) => {
-        return [rank.label, rank.total];
-      }));
-    }
-  }
-);

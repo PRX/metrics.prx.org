@@ -15,7 +15,7 @@ export interface PodcastRanks {
   ranks: Rank[];
   loaded: boolean;
   loading: boolean;
-  error: any
+  error: any;
 }
 
 export function podcastRanksKey(podcastId: string,

@@ -1,5 +1,6 @@
 import { createSelector } from '@ngrx/store';
-import { Episode, RouterParams, PodcastAllTimeDownloads, EpisodeAllTimeDownloads, DownloadsTableModel, CHARTTYPE_PODCAST, CHARTTYPE_EPISODES } from '../models';
+import { Episode, RouterParams, PodcastAllTimeDownloads, EpisodeAllTimeDownloads, DownloadsTableModel,
+  CHARTTYPE_PODCAST, CHARTTYPE_EPISODES } from '../models';
 import { selectRouter } from './router.selectors';
 import { selectRoutedPageEpisodes } from './episode.selectors';
 import { PodcastMetricsModel } from '../podcast-metrics.reducer';

@@ -18,15 +18,18 @@ export const selectAllEpisodeAllTimeDownloads = createSelector(
   fromEpisodeAllTimeDownloads.selectAllEpisodeAllTimeDownloads
 );
 
-export const selectAllEpisodeAllTimeDownloadsLoading = createSelector(selectAllEpisodeAllTimeDownloads, (downloads: EpisodeAllTimeDownloads[]) => {
-  return downloads.some((m: EpisodeAllTimeDownloads) => m.loading);
-});
-export const selectAllEpisodeAllTimeDownloadsLoaded = createSelector(selectAllEpisodeAllTimeDownloads, (downloads: EpisodeAllTimeDownloads[]) => {
-  return downloads.every((m: EpisodeAllTimeDownloads) => m.loaded || m.loaded === undefined);
-});
-export const selectAllEpisodeAllTimeDownloadsError = createSelector(selectAllEpisodeAllTimeDownloads, (downloads: EpisodeAllTimeDownloads[]) => {
-  return downloads.filter(m => m.error);
-});
+export const selectAllEpisodeAllTimeDownloadsLoading =
+  createSelector(selectAllEpisodeAllTimeDownloads, (downloads: EpisodeAllTimeDownloads[]) => {
+    return downloads.some((m: EpisodeAllTimeDownloads) => m.loading);
+  });
+export const selectAllEpisodeAllTimeDownloadsLoaded =
+  createSelector(selectAllEpisodeAllTimeDownloads, (downloads: EpisodeAllTimeDownloads[]) => {
+    return downloads.every((m: EpisodeAllTimeDownloads) => m.loaded || m.loaded === undefined);
+  });
+export const selectAllEpisodeAllTimeDownloadsError =
+  createSelector(selectAllEpisodeAllTimeDownloads, (downloads: EpisodeAllTimeDownloads[]) => {
+    return downloads.filter(m => m.error);
+  });
 
 export const selectRoutedPageEpisodeAllTimeDownloads = createSelector(selectRoutedPageEpisodes, selectEpisodeAllTimeDownloadsEntities,
   (episodes: Episode[], entities): EpisodeAllTimeDownloads[] => {

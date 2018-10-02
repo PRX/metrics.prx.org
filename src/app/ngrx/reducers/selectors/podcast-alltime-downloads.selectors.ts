@@ -18,15 +18,18 @@ export const selectAllPodcastAllTimeDownloads = createSelector(
   fromPodcastAllTimeDownloads.selectAllPodcastAllTimeDownloads
 );
 
-export const selectAllPodcastAllTimeDownloadsLoading = createSelector(selectAllPodcastAllTimeDownloads, (downloads: PodcastAllTimeDownloads[]) => {
-  return downloads.some((m: PodcastAllTimeDownloads) => m.loading);
-});
-export const selectAllPodcastAllTimeDownloadsLoaded = createSelector(selectAllPodcastAllTimeDownloads, (downloads: PodcastAllTimeDownloads[]) => {
-  return downloads.every((m: PodcastAllTimeDownloads) => m.loaded || m.loaded === undefined);
-});
-export const selectAllPodcastAllTimeDownloadsError = createSelector(selectAllPodcastAllTimeDownloads, (downloads: PodcastAllTimeDownloads[]) => {
-  return downloads.filter(m => m.error);
-});
+export const selectAllPodcastAllTimeDownloadsLoading =
+  createSelector(selectAllPodcastAllTimeDownloads, (downloads: PodcastAllTimeDownloads[]) => {
+    return downloads.some((m: PodcastAllTimeDownloads) => m.loading);
+  });
+export const selectAllPodcastAllTimeDownloadsLoaded =
+  createSelector(selectAllPodcastAllTimeDownloads, (downloads: PodcastAllTimeDownloads[]) => {
+    return downloads.every((m: PodcastAllTimeDownloads) => m.loaded || m.loaded === undefined);
+  });
+export const selectAllPodcastAllTimeDownloadsError =
+  createSelector(selectAllPodcastAllTimeDownloads, (downloads: PodcastAllTimeDownloads[]) => {
+    return downloads.filter(m => m.error);
+  });
 
 export const selectRoutedPodcastAllTimeDownloads = createSelector(selectPodcastAllTimeDownloadsEntities, selectPodcastRoute,
   (entities, podcastId) => entities[podcastId]);

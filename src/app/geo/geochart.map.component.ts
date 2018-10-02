@@ -73,15 +73,9 @@ export class GeochartMapComponent implements OnInit, OnChanges, AfterViewInit {
       const options = {
         displayMode: 'region',
         colorAxis: {colors: this.colors},
-        legend: 'none'
+        legend: 'none',
+        ...this.getMapWidthOrHeight()
       };
-      const { width, height } = this.getMapWidthOrHeight();
-      if (width) {
-        options['width'] = width;
-      }
-      if (height) {
-        options['height'] = height;
-      }
 
       let data;
       if (this.routerParams.group === GROUPTYPE_GEOCOUNTRY && this.routerParams.filter && this.nestedData && this.nestedData.ranks) {

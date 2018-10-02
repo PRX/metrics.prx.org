@@ -277,11 +277,11 @@ export class CastleEffects {
             const { total } = metrics[0]['downloads'];
             return new ACTIONS.CastlePodcastAllTimeDownloadsSuccessAction({id, total});
           }),
-          catchError(error => {
+          catchError((error): Observable<Action> => {
             if (error.status === 404) {
               return Observable.of(new ACTIONS.CastlePodcastAllTimeDownloadsSuccessAction({id, total: 0}));
             } else {
-              Observable.of(new ACTIONS.CastlePodcastAllTimeDownloadsFailureAction({id, error}));
+              return Observable.of(new ACTIONS.CastlePodcastAllTimeDownloadsFailureAction({id, error}));
             }
           })
         );
@@ -302,10 +302,11 @@ export class CastleEffects {
             const { total } = metrics[0]['downloads'];
             return new ACTIONS.CastleEpisodeAllTimeDownloadsSuccessAction({podcastId, guid, total});
           }),
-          catchError(error => {
+          catchError((error): Observable<Action> => {
             if (error.status === 404) {
               return Observable.of(new ACTIONS.CastleEpisodeAllTimeDownloadsSuccessAction({podcastId, guid, total: 0}));
             } else {
+              // TODO: can I write a test for this failure? what's up?
               return Observable.of(new ACTIONS.CastleEpisodeAllTimeDownloadsFailureAction({podcastId, guid, error}));
             }
           })

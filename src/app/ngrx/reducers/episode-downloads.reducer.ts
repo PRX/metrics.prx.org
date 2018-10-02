@@ -33,7 +33,7 @@ export function reducer(
         ...adapter.upsertOne({
           id: guid,
           changes: {
-            guid, podcastId, allTimeDownloads: total
+            guid, podcastId, allTimeDownloads: total, loading: false, loaded: true
           }
         }, state)
       };

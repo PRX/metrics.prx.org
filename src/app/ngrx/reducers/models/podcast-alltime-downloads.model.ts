@@ -1,4 +1,4 @@
-export interface PodcastDownloads {
+export interface PodcastAllTimeDownloads {
   id: string;
   allTimeDownloads?: number;
   loaded?: boolean;

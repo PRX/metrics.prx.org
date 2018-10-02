@@ -1,11 +1,11 @@
 import { EntityState, EntityAdapter, createEntityAdapter } from '@ngrx/entity';
-import { EpisodeDownloads } from './models/';
+import { EpisodeAllTimeDownloads } from './models/';
 import { AllActions, ActionTypes } from '../actions';
 
-export type State = EntityState<EpisodeDownloads>;
+export type State = EntityState<EpisodeAllTimeDownloads>;
 
-export const adapter: EntityAdapter<EpisodeDownloads> = createEntityAdapter<EpisodeDownloads>({
-  selectId: (e: EpisodeDownloads) => e.guid,
+export const adapter: EntityAdapter<EpisodeAllTimeDownloads> = createEntityAdapter<EpisodeAllTimeDownloads>({
+  selectId: (e: EpisodeAllTimeDownloads) => e.guid,
 });
 
 export const initialState: State = adapter.getInitialState({});
@@ -62,6 +62,6 @@ export const {
   selectAll,
 } = adapter.getSelectors();
 
-export const selectEpisodeDownloadsGuids = selectIds;
-export const selectEpisodeDownloadsEntities = selectEntities;
-export const selectAllEpisodeDownloads = selectAll;
+export const selectEpisodeAllTimeDownloadsGuids = selectIds;
+export const selectEpisodeAllTimeDownloadsEntities = selectEntities;
+export const selectAllEpisodeAllTimeDownloads = selectAll;

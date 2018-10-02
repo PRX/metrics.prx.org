@@ -1,14 +1,12 @@
-import { reducer, initialState } from './podcast-downloads.reducer';
+import { reducer, initialState } from './podcast-alltime-downloads.reducer';
 import * as ACTIONS from '../actions';
 import {podcast, podAllTimeDownloadsOff, podAllTimeDownloads} from '../../../testing/downloads.fixtures';
 
-describe('PodcastDownloads Reducer', () => {
+describe('PodcastAllTimeDownloads Reducer', () => {
   describe('unknown action', () => {
     it('should return the initial state', () => {
       const action = {} as any;
-
       const result = reducer(initialState, action);
-
       expect(result).toBe(initialState);
     });
 

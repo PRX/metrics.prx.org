@@ -2,13 +2,13 @@ import { ActionReducerMap } from '@ngrx/store';
 import { RouterReducerState, routerReducer } from '@ngrx/router-store';
 import { AccountReducer, AccountState } from './account.reducer';
 import * as fromPodcast from './podcast.reducer';
-import * as fromPodcastDownloads from './podcast-downloads.reducer';
+import * as fromPodcastAllTimeDownloads from './podcast-alltime-downloads.reducer';
 import { PodcastMetricsReducer, PodcastMetricsModel } from './podcast-metrics.reducer';
 import * as fromPodcastRanks from './podcast-ranks.reducer';
 import * as fromPodcastTotals from './podcast-totals.reducer';
 import * as fromPodcastGroupCharted from './podcast-group-charted.reducer';
 import * as fromEpisode from './episode.reducer';
-import * as fromEpisodeDownloads from './episode-downloads.reducer';
+import * as fromEpisodeAllTimeDownloads from './episode-alltime-downloads.reducer';
 import { EpisodeMetricsReducer, EpisodeMetricsModel } from './episode-metrics.reducer';
 import { CustomRouterReducer } from './router.reducer';
 import { RouterParams } from './models';
@@ -19,8 +19,8 @@ export interface RootState {
   account: AccountState;
   podcast: fromPodcast.State;
   episode: fromEpisode.State;
-  podcastDownloads: fromPodcastDownloads.State;
-  episodeDownloads: fromEpisodeDownloads.State;
+  podcastAllTimeDownloads: fromPodcastAllTimeDownloads.State;
+  episodeAllTimeDownloads: fromEpisodeAllTimeDownloads.State;
   podcastMetrics: PodcastMetricsModel[];
   podcastRanks: fromPodcastRanks.State;
   podcastTotals: fromPodcastTotals.State;
@@ -35,8 +35,8 @@ export const reducers: ActionReducerMap<RootState> = {
   account: AccountReducer,
   podcast: fromPodcast.reducer,
   episode: fromEpisode.reducer,
-  podcastDownloads: fromPodcastDownloads.reducer,
-  episodeDownloads: fromEpisodeDownloads.reducer,
+  podcastAllTimeDownloads: fromPodcastAllTimeDownloads.reducer,
+  episodeAllTimeDownloads: fromEpisodeAllTimeDownloads.reducer,
   podcastMetrics: PodcastMetricsReducer,
   podcastRanks: fromPodcastRanks.reducer,
   podcastTotals: fromPodcastTotals.reducer,

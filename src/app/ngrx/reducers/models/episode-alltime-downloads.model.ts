@@ -1,4 +1,4 @@
-export interface EpisodeDownloads {
+export interface EpisodeAllTimeDownloads {
   podcastId: string;
   guid: string;
   allTimeDownloads?: number;

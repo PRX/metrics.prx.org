@@ -1,23 +1,23 @@
 import { createSelector } from '@ngrx/store';
-import { Episode, RouterParams, PodcastDownloads, EpisodeDownloads, DownloadsTableModel, CHARTTYPE_PODCAST, CHARTTYPE_EPISODES } from '../models';
+import { Episode, RouterParams, PodcastAllTimeDownloads, EpisodeAllTimeDownloads, DownloadsTableModel, CHARTTYPE_PODCAST, CHARTTYPE_EPISODES } from '../models';
 import { selectRouter } from './router.selectors';
 import { selectRoutedPageEpisodes } from './episode.selectors';
 import { PodcastMetricsModel } from '../podcast-metrics.reducer';
 import { selectRoutedPodcastMetrics } from './podcast-metrics.selectors';
-import { selectRoutedPodcastDownloads } from './podcast-downloads.selectors';
+import { selectRoutedPodcastAllTimeDownloads } from './podcast-alltime-downloads.selectors';
 import { EpisodeMetricsModel } from '../episode-metrics.reducer';
 import { selectRoutedEpisodePageMetrics } from './episode-metrics.selectors';
-import { selectRoutedPageEpisodeDownloads } from './episode-downloads.selectors';
+import { selectRoutedPageEpisodeAllTimeDownloads } from './episode-alltime-downloads.selectors';
 import { metricsData, getTotal } from '../../../shared/util/metrics.util';
 import { mapMetricsToTimeseriesData, neutralColor, standardColor, getColor } from '../../../shared/util/chart.util';
 
 export const selectDownloadTablePodcastMetrics = createSelector(
   selectRouter,
   selectRoutedPodcastMetrics,
-  selectRoutedPodcastDownloads,
+  selectRoutedPodcastAllTimeDownloads,
   (routerParams: RouterParams,
    podcastMetrics: PodcastMetricsModel,
-   podcastDownloads: PodcastDownloads): DownloadsTableModel => {
+   podcastDownloads: PodcastAllTimeDownloads): DownloadsTableModel => {
     let podcastData: DownloadsTableModel;
 
     if (podcastMetrics && routerParams.chartType !== CHARTTYPE_EPISODES) {
@@ -49,11 +49,11 @@ export const selectDownloadTableEpisodeMetrics = createSelector(
   selectRouter,
   selectRoutedPageEpisodes,
   selectRoutedEpisodePageMetrics,
-  selectRoutedPageEpisodeDownloads,
+  selectRoutedPageEpisodeAllTimeDownloads,
   (routerParams: RouterParams,
    episodes: Episode[],
    episodeMetrics: EpisodeMetricsModel[],
-   episodeDownloads: EpisodeDownloads[]): DownloadsTableModel[] => {
+   episodeDownloads: EpisodeAllTimeDownloads[]): DownloadsTableModel[] => {
     let episodesData: DownloadsTableModel[];
 
     if (episodes.length && episodeMetrics.length && episodeDownloads.length) {

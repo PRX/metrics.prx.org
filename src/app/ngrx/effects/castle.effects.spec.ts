@@ -96,69 +96,97 @@ describe('CastleEffects', () => {
     store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerParams}));
   }));
 
-  it('should request podcast performance metrics from castle', () => {
+  it('should request podcast all time downloads from castle', () => {
     const action = {
-      type: ACTIONS.ActionTypes.CASTLE_PODCAST_PERFORMANCE_METRICS_LOAD,
+      type: ACTIONS.ActionTypes.CASTLE_PODCAST_ALLTIME_DOWNLOADS_LOAD,
       payload: {
         id: podcast.id
       }
     };
-    const success = new ACTIONS.CastlePodcastPerformanceMetricsSuccessAction({
+    const success = new ACTIONS.CastlePodcastAllTimeDownloadsSuccessAction({
       id: podcast.id,
-      total: 10,
-      this7days: 5,
-      previous7days: 6,
-      today: 1,
-      yesterday: 1
+      total: 10
     });
 
     actions$.stream = hot('-a', { a: action });
     const expected = cold('-r', { r: success });
-    expect(effects.loadPodcastPerformanceMetrics$).toBeObservable(expected);
+    expect(effects.loadPodcastAllTimeDownloads$).toBeObservable(expected);
   });
 
-  it('should request episode performance metrics from castle', () => {
+  it('should return a failure action on non 404 errors for all time podcast downloads', () => {
+    const error: any = {status: 500, message: 'this is an error'};
+    castle.root.mockError('prx:podcast', error);
     const action = {
-      type: ACTIONS.ActionTypes.CASTLE_EPISODE_PERFORMANCE_METRICS_LOAD,
+      type: ACTIONS.ActionTypes.CASTLE_PODCAST_ALLTIME_DOWNLOADS_LOAD,
+      payload: {
+        id: podcast.id
+      }
+    };
+    const failure = new ACTIONS.CastlePodcastAllTimeDownloadsFailureAction({
+      id: podcast.id,
+      error
+    });
+
+    actions$.stream = hot('-a', { a: action });
+    const expected = cold('-r', { r: failure });
+    expect(effects.loadPodcastAllTimeDownloads$).toBeObservable(expected);
+  });
+
+  it('should request episode all time downloads from castle', () => {
+    const action = {
+      type: ACTIONS.ActionTypes.CASTLE_EPISODE_ALLTIME_DOWNLOADS_LOAD,
       payload: { podcastId: episodes[0].podcastId, guid: episodes[0].guid }
     };
-    const success = new ACTIONS.CastleEpisodePerformanceMetricsSuccessAction({
+    const success = new ACTIONS.CastleEpisodeAllTimeDownloadsSuccessAction({
       podcastId: episodes[0].podcastId,
       guid: episodes[0].guid,
-      total: 11,
-      this7days: 5,
-      previous7days: 6,
-      today: 1,
-      yesterday: 1
+      total: 11
     });
 
     actions$.stream = hot('-a', { a: action });
     const expected = cold('-r', { r: success });
-    expect(effects.loadEpisodePerformanceMetrics$).toBeObservable(expected);
+    expect(effects.loadEpisodeAllTimeDownloads$).toBeObservable(expected);
   });
 
-  it('should return 0 on 404s for all time episode metrics', () => {
+  it('should return 0 downloads on 404s for all time episode downloads', () => {
     castle.root.mockError('prx:episode', <any> {status: 404, message: 'this is an error'});
     const action = {
-      type: ACTIONS.ActionTypes.CASTLE_EPISODE_PERFORMANCE_METRICS_LOAD,
+      type: ACTIONS.ActionTypes.CASTLE_EPISODE_ALLTIME_DOWNLOADS_LOAD,
       payload: {
         podcastId: episodes[0].podcastId,
         guid: episodes[0].guid,
       }
     };
-    const success = new ACTIONS.CastleEpisodePerformanceMetricsSuccessAction({
+    const success = new ACTIONS.CastleEpisodeAllTimeDownloadsSuccessAction({
       podcastId: episodes[0].podcastId,
       guid: episodes[0].guid,
-      total: 0,
-      this7days: 0,
-      previous7days: 0,
-      today: 0,
-      yesterday: 0
+      total: 0
     });
 
     actions$.stream = hot('-a', { a: action });
     const expected = cold('-r', { r: success });
-    expect(effects.loadEpisodePerformanceMetrics$).toBeObservable(expected);
+    expect(effects.loadEpisodeAllTimeDownloads$).toBeObservable(expected);
+  });
+
+  it('should return a failure action on non 404 errors for all time episode downloads', () => {
+    const error: any = {status: 500, message: 'this is an error'};
+    castle.root.mockError('prx:episode', error);
+    const action = {
+      type: ACTIONS.ActionTypes.CASTLE_EPISODE_ALLTIME_DOWNLOADS_LOAD,
+      payload: {
+        podcastId: episodes[0].podcastId,
+        guid: episodes[0].guid,
+      }
+    };
+    const failure = new ACTIONS.CastleEpisodeAllTimeDownloadsFailureAction({
+      podcastId: episodes[0].podcastId,
+      guid: episodes[0].guid,
+      error
+    });
+
+    actions$.stream = hot('-a', { a: action });
+    const expected = cold('-r', { r: failure });
+    expect(effects.loadEpisodeAllTimeDownloads$).toBeObservable(expected);
   });
 
   it('should load podcast metrics', () => {
@@ -387,7 +415,7 @@ describe('CastleEffects', () => {
       expect(effects.loadEpisodePage$).toBeObservable(expected);
     });
 
-    it('should load metrics on episode page success', () => {
+    it('should load downloads on episode page success', () => {
       spyOn(store, 'dispatch').and.callThrough();
       const action = new ACTIONS.CastleEpisodePageSuccessAction({
         episodes,
@@ -428,10 +456,10 @@ describe('CastleEffects', () => {
           beginDate: routerParams.beginDate,
           endDate: routerParams.endDate
         }));
-      expect(store.dispatch).toHaveBeenCalledWith(new ACTIONS.CastlePodcastPerformanceMetricsLoadAction({id: episodes[0].podcastId}));
+      expect(store.dispatch).toHaveBeenCalledWith(new ACTIONS.CastlePodcastAllTimeDownloadsLoadAction({id: episodes[0].podcastId}));
       episodes.forEach(e => {
         expect(store.dispatch).toHaveBeenCalledWith(
-          new ACTIONS.CastleEpisodePerformanceMetricsLoadAction({podcastId: e.podcastId, guid: e.guid})
+          new ACTIONS.CastleEpisodeAllTimeDownloadsLoadAction({podcastId: e.podcastId, guid: e.guid})
         );
       });
     });

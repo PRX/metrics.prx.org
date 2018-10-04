@@ -4,9 +4,9 @@ import { StoreModule, Store, select } from '@ngrx/store';
 import { RootState, reducers } from '../';
 import { DownloadsTableModel, getMetricsProperty } from '../models';
 import { routerParams,  podcast, episodes,
-  podDownloads, podPerformance, podPerformanceOff,
+  podDownloads, podAllTimeDownloads, podAllTimeDownloadsOff,
   ep0Downloads, ep1Downloads,
-  ep0Performance, ep0PerformanceOff, ep1Performance, ep1PerformanceOff } from '../../../../testing/downloads.fixtures';
+  ep0AllTimeDownloads, ep0AllTimeDownloadsOff, ep1AllTimeDownloads, ep1AllTimeDownloadsOff } from '../../../../testing/downloads.fixtures';
 import * as ACTIONS from '../../actions';
 import * as chartUtil from '../../../shared/util/chart.util';
 import * as metricsUtil from '../../../shared/util/metrics.util';
@@ -40,11 +40,11 @@ describe('Downloads Table Selectors', () => {
       podcastId: episodes[1].podcastId, page: episodes[1].page, guid: episodes[1].guid,
       metricsPropertyName, metrics: ep1Downloads}));
     store.dispatch(new ACTIONS.CastlePodcastMetricsSuccessAction({id: podcast.id, metricsPropertyName, metrics: podDownloads}));
-    store.dispatch(new ACTIONS.CastlePodcastPerformanceMetricsSuccessAction({id: podcast.id, ...podPerformance }));
-    store.dispatch(new ACTIONS.CastleEpisodePerformanceMetricsSuccessAction({
-      podcastId: episodes[0].podcastId, guid: episodes[0].guid, ...ep0Performance}));
-    store.dispatch(new ACTIONS.CastleEpisodePerformanceMetricsSuccessAction({
-      podcastId: episodes[1].podcastId, guid: episodes[1].guid, ...ep1Performance}));
+    store.dispatch(new ACTIONS.CastlePodcastAllTimeDownloadsSuccessAction({id: podcast.id, ...podAllTimeDownloads}));
+    store.dispatch(new ACTIONS.CastleEpisodeAllTimeDownloadsSuccessAction({
+      podcastId: episodes[0].podcastId, guid: episodes[0].guid, ...ep0AllTimeDownloads}));
+    store.dispatch(new ACTIONS.CastleEpisodeAllTimeDownloadsSuccessAction({
+      podcastId: episodes[1].podcastId, guid: episodes[1].guid, ...ep1AllTimeDownloads}));
   });
 
   describe('podcast download table metrics', () => {
@@ -59,18 +59,18 @@ describe('Downloads Table Selectors', () => {
     });
 
     it('should include podcast all time total downloads', () => {
-      expect(result.allTimeDownloads).toEqual(podPerformance.total);
+      expect(result.allTimeDownloads).toEqual(podAllTimeDownloads.total);
     });
 
     it('should use total for range for all time if larger than all time total rollup', () => {
-      store.dispatch(new ACTIONS.CastlePodcastPerformanceMetricsSuccessAction({id: podcast.id, ...podPerformanceOff }));
-      expect(result.allTimeDownloads).not.toEqual(podPerformanceOff.total);
+      store.dispatch(new ACTIONS.CastlePodcastAllTimeDownloadsSuccessAction({id: podcast.id, ...podAllTimeDownloadsOff }));
+      expect(result.allTimeDownloads).not.toEqual(podAllTimeDownloadsOff.total);
       expect(result.allTimeDownloads).toEqual(metricsUtil.getTotal(podDownloads));
     });
 
     it('should keep podcast in table for stacked chart when unselected for charting', () => {
       store.dispatch(new ACTIONS.ChartTogglePodcastAction({id: podcast.id, charted: false}));
-      expect(result.allTimeDownloads).toEqual(podPerformance.total);
+      expect(result.allTimeDownloads).toEqual(podAllTimeDownloads.total);
     });
   });
 
@@ -98,18 +98,18 @@ describe('Downloads Table Selectors', () => {
     });
 
     it('should include episode all time total downloads', () => {
-      expect(result[0].allTimeDownloads).toEqual(ep0Performance.total);
-      expect(result[1].allTimeDownloads).toEqual(ep1Performance.total);
+      expect(result[0].allTimeDownloads).toEqual(ep0AllTimeDownloads.total);
+      expect(result[1].allTimeDownloads).toEqual(ep1AllTimeDownloads.total);
     });
 
     it('should use total for range for all time if larger than all time total rollup', () => {
-      store.dispatch(new ACTIONS.CastleEpisodePerformanceMetricsSuccessAction({
-        podcastId: episodes[0].podcastId, guid: episodes[0].guid, ...ep0PerformanceOff}));
-      store.dispatch(new ACTIONS.CastleEpisodePerformanceMetricsSuccessAction({
-        podcastId: episodes[1].podcastId, guid: episodes[1].guid, ...ep1PerformanceOff}));
-      expect(result[0].allTimeDownloads).not.toEqual(ep0PerformanceOff.total);
+      store.dispatch(new ACTIONS.CastleEpisodeAllTimeDownloadsSuccessAction({
+        podcastId: episodes[0].podcastId, guid: episodes[0].guid, ...ep0AllTimeDownloadsOff}));
+      store.dispatch(new ACTIONS.CastleEpisodeAllTimeDownloadsSuccessAction({
+        podcastId: episodes[1].podcastId, guid: episodes[1].guid, ...ep1AllTimeDownloadsOff}));
+      expect(result[0].allTimeDownloads).not.toEqual(ep0AllTimeDownloadsOff.total);
       expect(result[0].allTimeDownloads).toEqual(metricsUtil.getTotal(ep0Downloads));
-      expect(result[1].allTimeDownloads).not.toEqual(ep1PerformanceOff.total);
+      expect(result[1].allTimeDownloads).not.toEqual(ep1AllTimeDownloadsOff.total);
       expect(result[1].allTimeDownloads).toEqual(metricsUtil.getTotal(ep1Downloads));
     });
   });

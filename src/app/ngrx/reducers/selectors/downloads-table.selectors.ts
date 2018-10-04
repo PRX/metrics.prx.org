@@ -1,25 +1,24 @@
 import { createSelector } from '@ngrx/store';
-import { Episode, RouterParams, DownloadsTableModel, CHARTTYPE_PODCAST, CHARTTYPE_EPISODES } from '../models';
+import { Episode, RouterParams, PodcastAllTimeDownloads, EpisodeAllTimeDownloads, DownloadsTableModel,
+  CHARTTYPE_PODCAST, CHARTTYPE_EPISODES } from '../models';
 import { selectRouter } from './router.selectors';
 import { selectRoutedPageEpisodes } from './episode.selectors';
 import { PodcastMetricsModel } from '../podcast-metrics.reducer';
 import { selectRoutedPodcastMetrics } from './podcast-metrics.selectors';
-import { PodcastPerformanceMetricsModel } from '../podcast-performance-metrics.reducer';
-import { selectRoutedPodcastPerformanceMetrics } from './podcast-performance-metrics.selectors';
+import { selectRoutedPodcastAllTimeDownloads } from './podcast-alltime-downloads.selectors';
 import { EpisodeMetricsModel } from '../episode-metrics.reducer';
 import { selectRoutedEpisodePageMetrics } from './episode-metrics.selectors';
-import { EpisodePerformanceMetricsModel } from '../episode-performance-metrics.reducer';
-import { selectRoutedEpisodePagePerformanceMetrics } from './episode-performance-metrics.selectors';
+import { selectRoutedPageEpisodeAllTimeDownloads } from './episode-alltime-downloads.selectors';
 import { metricsData, getTotal } from '../../../shared/util/metrics.util';
 import { mapMetricsToTimeseriesData, neutralColor, standardColor, getColor } from '../../../shared/util/chart.util';
 
 export const selectDownloadTablePodcastMetrics = createSelector(
   selectRouter,
   selectRoutedPodcastMetrics,
-  selectRoutedPodcastPerformanceMetrics,
+  selectRoutedPodcastAllTimeDownloads,
   (routerParams: RouterParams,
    podcastMetrics: PodcastMetricsModel,
-   podcastPerformanceMetrics: PodcastPerformanceMetricsModel): DownloadsTableModel => {
+   podcastDownloads: PodcastAllTimeDownloads): DownloadsTableModel => {
     let podcastData: DownloadsTableModel;
 
     if (podcastMetrics && routerParams.chartType !== CHARTTYPE_EPISODES) {
@@ -34,11 +33,11 @@ export const selectDownloadTablePodcastMetrics = createSelector(
           totalForPeriod,
           charted: podcastMetrics.charted
         };
-        if (podcastPerformanceMetrics) {
-          if (totalForPeriod > podcastPerformanceMetrics.total) {
+        if (podcastDownloads) {
+          if (totalForPeriod > podcastDownloads.allTimeDownloads) {
             podcastData.allTimeDownloads = totalForPeriod;
           } else {
-            podcastData.allTimeDownloads = podcastPerformanceMetrics.total;
+            podcastData.allTimeDownloads = podcastDownloads.allTimeDownloads;
           }
         }
       }
@@ -51,20 +50,20 @@ export const selectDownloadTableEpisodeMetrics = createSelector(
   selectRouter,
   selectRoutedPageEpisodes,
   selectRoutedEpisodePageMetrics,
-  selectRoutedEpisodePagePerformanceMetrics,
+  selectRoutedPageEpisodeAllTimeDownloads,
   (routerParams: RouterParams,
    episodes: Episode[],
    episodeMetrics: EpisodeMetricsModel[],
-   episodePerformanceMetrics: EpisodePerformanceMetricsModel[]): DownloadsTableModel[] => {
+   episodeDownloads: EpisodeAllTimeDownloads[]): DownloadsTableModel[] => {
     let episodesData: DownloadsTableModel[];
 
-    if (episodes.length && episodeMetrics.length && episodePerformanceMetrics.length) {
+    if (episodes.length && episodeMetrics.length && episodeDownloads.length) {
       episodesData = episodes
         .filter(episode => metricsData(routerParams, episodeMetrics.find(e => e.guid === episode.guid)))
         .sort((a: Episode, b: Episode) => b.publishedAt.valueOf() - a.publishedAt.valueOf())
         .map((episode: Episode, idx) => {
           const metrics = episodeMetrics.find(e => e.guid === episode.guid);
-          const performanceMetrics = episodePerformanceMetrics.find(e => e.guid === episode.guid);
+          const downloads = episodeDownloads.find(e => e.guid === episode.guid);
           const data = metricsData(routerParams, metrics);
           const totalForPeriod = getTotal(data);
           const episodeTableData: DownloadsTableModel = {
@@ -76,11 +75,11 @@ export const selectDownloadTableEpisodeMetrics = createSelector(
             totalForPeriod,
             charted: metrics.charted
           };
-          if (performanceMetrics) {
-            if (totalForPeriod > performanceMetrics.total) {
+          if (downloads) {
+            if (totalForPeriod > downloads.allTimeDownloads) {
               episodeTableData.allTimeDownloads = totalForPeriod;
             } else {
-              episodeTableData.allTimeDownloads = performanceMetrics.total;
+              episodeTableData.allTimeDownloads = downloads.allTimeDownloads;
             }
           }
           return episodeTableData;

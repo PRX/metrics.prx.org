@@ -183,9 +183,9 @@ export class CastleEffects {
         beginDate: this.routerParams.beginDate,
         endDate: this.routerParams.endDate
       }));
-      this.store.dispatch(new ACTIONS.CastlePodcastPerformanceMetricsLoadAction({id: episodes[0].podcastId}));
+      this.store.dispatch(new ACTIONS.CastlePodcastAllTimeDownloadsLoadAction({id: episodes[0].podcastId}));
       return episodes.map((episode: Episode) => {
-        this.store.dispatch(new ACTIONS.CastleEpisodePerformanceMetricsLoadAction({
+        this.store.dispatch(new ACTIONS.CastleEpisodeAllTimeDownloadsLoadAction({
           podcastId: episode.podcastId,
           guid: episode.guid
         }));
@@ -265,24 +265,23 @@ export class CastleEffects {
 
   // basic - load > success/failure podcast performance
   @Effect()
-  loadPodcastPerformanceMetrics$: Observable<Action> = this.actions$.pipe(
-    ofType(ACTIONS.ActionTypes.CASTLE_PODCAST_PERFORMANCE_METRICS_LOAD),
-    map((action: ACTIONS.CastlePodcastPerformanceMetricsLoadAction) => action.payload),
-    switchMap((payload: ACTIONS.CastlePodcastPerformanceMetricsLoadPayload) => {
+  loadPodcastAllTimeDownloads$: Observable<Action> = this.actions$.pipe(
+    ofType(ACTIONS.ActionTypes.CASTLE_PODCAST_ALLTIME_DOWNLOADS_LOAD),
+    map((action: ACTIONS.CastlePodcastAllTimeDownloadsLoadAction) => action.payload),
+    switchMap((payload: ACTIONS.CastlePodcastAllTimeDownloadsLoadPayload) => {
       const { id } = payload;
       return this.castle
         .followList('prx:podcast', {id})
         .pipe(
             map(metrics => {
-            const { total, previous7days, this7days, yesterday, today } = metrics[0]['downloads'];
-            return new ACTIONS.CastlePodcastPerformanceMetricsSuccessAction({id, total, previous7days, this7days, yesterday, today});
+            const { total } = metrics[0]['downloads'];
+            return new ACTIONS.CastlePodcastAllTimeDownloadsSuccessAction({id, total});
           }),
-          catchError(error => {
+          catchError((error): Observable<Action> => {
             if (error.status === 404) {
-              return Observable.of(new ACTIONS.CastlePodcastPerformanceMetricsSuccessAction({
-                id, total: 0, previous7days: 0, this7days: 0, yesterday: 0, today: 0}));
+              return Observable.of(new ACTIONS.CastlePodcastAllTimeDownloadsSuccessAction({id, total: 0}));
             } else {
-              Observable.of(new ACTIONS.CastlePodcastPerformanceMetricsFailureAction({id, error}));
+              return Observable.of(new ACTIONS.CastlePodcastAllTimeDownloadsFailureAction({id, error}));
             }
           })
         );
@@ -291,25 +290,23 @@ export class CastleEffects {
 
   // basic - load > success/failure episode performance
   @Effect()
-  loadEpisodePerformanceMetrics$: Observable<Action> = this.actions$.pipe(
-    ofType(ACTIONS.ActionTypes.CASTLE_EPISODE_PERFORMANCE_METRICS_LOAD),
-    map((action: ACTIONS.CastleEpisodePerformanceMetricsLoadAction) => action.payload),
-    mergeMap((payload: ACTIONS.CastleEpisodePerformanceMetricsLoadPayload) => {
+  loadEpisodeAllTimeDownloads$: Observable<Action> = this.actions$.pipe(
+    ofType(ACTIONS.ActionTypes.CASTLE_EPISODE_ALLTIME_DOWNLOADS_LOAD),
+    map((action: ACTIONS.CastleEpisodeAllTimeDownloadsLoadAction) => action.payload),
+    mergeMap((payload: ACTIONS.CastleEpisodeAllTimeDownloadsLoadPayload) => {
       const { podcastId, guid } = payload;
       return this.castle
         .followList('prx:episode', {guid})
         .pipe(
           map(metrics => {
-            const { total, previous7days, this7days, yesterday, today } = metrics[0]['downloads'];
-            return new ACTIONS.CastleEpisodePerformanceMetricsSuccessAction({podcastId, guid,
-              total, previous7days, this7days, yesterday, today});
+            const { total } = metrics[0]['downloads'];
+            return new ACTIONS.CastleEpisodeAllTimeDownloadsSuccessAction({podcastId, guid, total});
           }),
-          catchError(error => {
+          catchError((error): Observable<Action> => {
             if (error.status === 404) {
-              return Observable.of(new ACTIONS.CastleEpisodePerformanceMetricsSuccessAction({podcastId, guid,
-                total: 0, previous7days: 0, this7days: 0, yesterday: 0, today: 0}));
+              return Observable.of(new ACTIONS.CastleEpisodeAllTimeDownloadsSuccessAction({podcastId, guid, total: 0}));
             } else {
-              return Observable.of(new ACTIONS.CastleEpisodePerformanceMetricsFailureAction({podcastId, guid, error}));
+              return Observable.of(new ACTIONS.CastleEpisodeAllTimeDownloadsFailureAction({podcastId, guid, error}));
             }
           })
         );

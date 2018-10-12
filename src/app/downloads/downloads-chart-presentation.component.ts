@@ -12,7 +12,8 @@ import { largeNumberFormat } from '../shared/pipes/large-number.pipe';
     <prx-timeseries-chart *ngIf="chartData" [type]="chartType" [stacked]="stacked" [datasets]="chartData"
                           [formatX]="dateFormat()" [formatY]="largeNumberFormat" [minY]="minY"
                           [showPoints]="showPoints" [strokeWidth]="strokeWidth"
-                          [pointRadius]="pointRadius" [pointRadiusOnHover]="pointRadiusOnHover">
+                          [pointRadius]="pointRadius" [pointRadiusOnHover]="pointRadiusOnHover"
+                          [maxTicks]="maxTicks">
     </prx-timeseries-chart>
     <div class="placeholder" *ngIf="!chartData">
       You have no data selected. Would you like to view the <button class="btn-link" (click)="placeholder.emit()">Podcast chart</button>?
@@ -107,6 +108,12 @@ export class DownloadsChartPresentationComponent {
   get minY(): number {
     if (this.routerParams.chartType === CHARTTYPE_EPISODES) {
       return 0;
+    }
+  }
+
+  get maxTicks(): number {
+    if (this.routerParams.interval === INTERVAL_HOURLY) {
+      return 48;
     }
   }
 }

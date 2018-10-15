@@ -185,7 +185,7 @@ export class RoutingService {
         }
         break;
       case METRICSTYPE_DEMOGRAPHICS:
-        if (!routerParams.chartType || routerParams.chartType === CHARTTYPE_PODCAST) {
+        if (!routerParams.chartType || routerParams.chartType === CHARTTYPE_PODCAST || routerParams.chartType === CHARTTYPE_HORIZBAR) {
           routerParams.chartType = CHARTTYPE_GEOCHART;
         } else if (routerParams.chartType === CHARTTYPE_EPISODES) {
           routerParams.chartType = CHARTTYPE_LINE;

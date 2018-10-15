@@ -4,13 +4,15 @@ import { CommonModule } from '@angular/common';
 import { SharedModule } from '../shared';
 import { GeoComponent } from './geo.component';
 import { GeochartMapComponent } from './geochart.map.component';
+import { GeoChartComponent } from './geo-chart.component';
 
 import { geoRouting } from './geo.routing';
 
 @NgModule({
   declarations: [
     GeoComponent,
-    GeochartMapComponent
+    GeochartMapComponent,
+    GeoChartComponent
   ],
   imports: [
     CommonModule,

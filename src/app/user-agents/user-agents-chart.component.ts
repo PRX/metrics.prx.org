@@ -1,15 +1,8 @@
 import { Component, Input } from '@angular/core';
-import {
-  CHARTTYPE_HORIZBAR,
-  CHARTTYPE_LINE,
-  CHARTTYPE_STACKED,
-  INTERVAL_DAILY,
-  INTERVAL_MONTHLY,
-  INTERVAL_WEEKLY
-} from '../ngrx';
-import * as dateFormat from '../shared/util/date/';
+import { CHARTTYPE_HORIZBAR, RouterParams } from '../ngrx';
 import { largeNumberFormat } from '../shared/pipes/large-number.pipe';
 import { CategoryChartModel, TimeseriesChartModel } from 'ngx-prx-styleguide';
+import * as chartUtil from '../shared/util/chart.util';
 
 @Component({
   selector: 'metrics-user-agents-chart',
@@ -29,87 +22,43 @@ import { CategoryChartModel, TimeseriesChartModel } from 'ngx-prx-styleguide';
 })
 export class UserAgentsChartComponent {
   @Input() chartData: CategoryChartModel[] | TimeseriesChartModel[];
-  @Input() routerParams;
+  @Input() routerParams: RouterParams;
   largeNumberFormat = largeNumberFormat;
 
   get isBarChart() {
-    return this.routerParams.chartType === CHARTTYPE_HORIZBAR;
+    return this.routerParams && this.routerParams.chartType === CHARTTYPE_HORIZBAR;
   }
 
   get chartType(): string {
-    switch (this.routerParams.chartType) {
-      case CHARTTYPE_HORIZBAR:
-        return 'bar';
-      case CHARTTYPE_LINE:
-        return 'line';
-      case CHARTTYPE_STACKED:
-        return 'area';
-    }
+    return this.routerParams && chartUtil.c3ChartType(this.routerParams.chartType);
   }
 
   get stacked(): boolean {
-    return this.routerParams.chartType === CHARTTYPE_STACKED;
+    return this.routerParams && chartUtil.isStacked(this.routerParams.chartType);
   }
 
   dateFormat(): Function {
-    switch (this.routerParams.interval) {
-      case INTERVAL_MONTHLY:
-        return dateFormat.monthDateYear;
-      case INTERVAL_WEEKLY:
-      case INTERVAL_DAILY:
-      default:
-        return dateFormat.monthDate;
-    }
+    return this.routerParams && chartUtil.chartDateFormat(this.routerParams.interval);
   }
 
   get showPoints(): boolean {
-    switch (this.routerParams.chartType) {
-      case CHARTTYPE_HORIZBAR:
-      case CHARTTYPE_LINE:
-        return true;
-      case CHARTTYPE_STACKED:
-        return false;
-    }
+    return this.routerParams && chartUtil.showPoints(this.routerParams.chartType);
   }
 
   get strokeWidth(): number {
-    switch (this.routerParams.chartType) {
-      case CHARTTYPE_HORIZBAR:
-        return 3;
-      case CHARTTYPE_LINE:
-        return 2.5;
-      case CHARTTYPE_STACKED:
-        return 1;
-    }
+    return this.routerParams && chartUtil.strokeWidth(this.routerParams.chartType);
   }
 
   get pointRadius(): number {
-    switch (this.routerParams.chartType) {
-      case CHARTTYPE_HORIZBAR:
-        return this.chartData && this.chartData.length &&
-        this.chartData[0]['data'] && this.chartData[0]['data'].length <= 20 ? 3.75 : 0;
-      case CHARTTYPE_LINE:
-        return this.chartData && this.chartData.length &&
-            this.chartData[0]['data'] && this.chartData[0]['data'].length <= 20 ? 3.25 : 0;
-      case CHARTTYPE_STACKED:
-        return 1;
-    }
+    return this.routerParams && this.chartData && this.chartData.length && this.chartData[0]['data'] &&
+      chartUtil.pointRadius(this.routerParams.chartType, this.chartData[0]['data'].length);
   }
 
   get pointRadiusOnHover(): number {
-    switch (this.routerParams.chartType) {
-      case CHARTTYPE_HORIZBAR:
-        return 3.75;
-      case CHARTTYPE_LINE:
-        return 3.25;
-      case CHARTTYPE_STACKED:
-        return 1;
-    }
+    return this.routerParams && chartUtil.pointRadiusOnHover(this.routerParams.chartType);
   }
 
   get minY(): number {
-    if (this.routerParams.chartType === CHARTTYPE_LINE) {
-      return 0;
-    }
+    return this.routerParams && chartUtil.minY(this.routerParams.chartType);
   }
 }

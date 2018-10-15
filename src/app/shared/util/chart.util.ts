@@ -1,6 +1,20 @@
 import * as moment from 'moment';
 import { TimeseriesDatumModel } from 'ngx-prx-styleguide';
 import * as tinycolor2 from 'tinycolor2';
+import {
+  CHARTTYPE_EPISODES,
+  CHARTTYPE_HORIZBAR,
+  CHARTTYPE_LINE,
+  CHARTTYPE_PODCAST,
+  CHARTTYPE_STACKED,
+  ChartType,
+  INTERVAL_DAILY,
+  INTERVAL_HOURLY,
+  INTERVAL_MONTHLY,
+  INTERVAL_WEEKLY,
+  IntervalModel
+} from '../../ngrx';
+import * as dateFormat from './date/date.format';
 
 // metrics data is an array of arrays of [datetime string, numeric value]
 export const mapMetricsToTimeseriesData = (data: any[][]): TimeseriesDatumModel[] => {
@@ -53,4 +67,81 @@ export const getColor = (index) => {
 };
 export const getShade = (total, index) => {
   return generateShades(total)[index % total];
+};
+
+export const chartDateFormat = (interval: IntervalModel): Function => {
+  switch (interval) {
+    case INTERVAL_MONTHLY:
+      return dateFormat.monthDateYear;
+    case INTERVAL_WEEKLY:
+    case INTERVAL_DAILY:
+      return dateFormat.monthDate;
+    case INTERVAL_HOURLY:
+      return dateFormat.hourly;
+    default:
+      return dateFormat.UTCString;
+  }
+};
+
+export const c3ChartType = (chartType: ChartType): string => {
+  switch (chartType) {
+    case CHARTTYPE_PODCAST:
+    case CHARTTYPE_HORIZBAR:
+      return 'bar';
+    case CHARTTYPE_EPISODES:
+    case CHARTTYPE_LINE:
+      return 'line';
+    case CHARTTYPE_STACKED:
+      return 'area';
+  }
+};
+
+export const isStacked = (chartType: ChartType): boolean => {
+  return chartType === CHARTTYPE_STACKED;
+};
+
+export const showPoints = (chartType: ChartType): boolean => {
+  switch (chartType) {
+    case CHARTTYPE_EPISODES:
+    case CHARTTYPE_LINE:
+      return true;
+    case CHARTTYPE_STACKED:
+      return false;
+  }
+};
+
+export const strokeWidth = (chartType: ChartType): number => {
+  switch (chartType) {
+    case CHARTTYPE_EPISODES:
+    case CHARTTYPE_LINE:
+      return 2.5;
+    case CHARTTYPE_STACKED:
+      return 1;
+  }
+};
+
+export const pointRadius = (chartType: ChartType, dataLength): number => {
+  switch (chartType) {
+    case CHARTTYPE_EPISODES:
+    case CHARTTYPE_LINE:
+      return dataLength <= 20 ? 3.25 : 0;
+    case CHARTTYPE_STACKED:
+      return 1;
+  }
+};
+
+export const pointRadiusOnHover = (chartType: ChartType): number => {
+  switch (chartType) {
+    case CHARTTYPE_LINE:
+    case CHARTTYPE_EPISODES:
+      return 3.25;
+    case CHARTTYPE_STACKED:
+      return 1;
+  }
+};
+
+export const minY = (chartType: ChartType): number => {
+  if (chartType === CHARTTYPE_EPISODES || chartType === CHARTTYPE_LINE) {
+    return 0;
+  }
 };

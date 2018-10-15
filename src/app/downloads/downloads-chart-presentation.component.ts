@@ -3,8 +3,8 @@ import { TimeseriesChartModel } from 'ngx-prx-styleguide';
 import { RouterParams,
   INTERVAL_MONTHLY, INTERVAL_WEEKLY, INTERVAL_DAILY, INTERVAL_HOURLY,
   CHARTTYPE_PODCAST, CHARTTYPE_EPISODES, CHARTTYPE_STACKED } from '../ngrx';
-import * as dateFormat from '../shared/util/date/date.format';
 import { largeNumberFormat } from '../shared/pipes/large-number.pipe';
+import * as chartUtil from '../shared/util/chart.util';
 
 @Component({
   selector: 'metrics-downloads-chart-presentation',
@@ -28,87 +28,36 @@ export class DownloadsChartPresentationComponent {
   largeNumberFormat = largeNumberFormat;
 
   dateFormat(): Function {
-    if (this.routerParams) {
-      switch (this.routerParams.interval) {
-        case INTERVAL_MONTHLY:
-          return dateFormat.monthDateYear;
-        case INTERVAL_WEEKLY:
-        case INTERVAL_DAILY:
-          return dateFormat.monthDate;
-        case INTERVAL_HOURLY:
-          return dateFormat.hourly;
-        default:
-          return dateFormat.UTCString;
-      }
-    } else {
-      return dateFormat.UTCString;
-    }
+    return this.routerParams && chartUtil.chartDateFormat(this.routerParams.interval);
   }
 
   get chartType(): string {
-    switch (this.routerParams.chartType) {
-      case CHARTTYPE_PODCAST:
-        return 'bar';
-      case CHARTTYPE_EPISODES:
-        return 'line';
-      case CHARTTYPE_STACKED:
-        return 'area';
-    }
+    return this.routerParams && chartUtil.c3ChartType(this.routerParams.chartType);
   }
 
   get stacked(): boolean {
-    return this.routerParams.chartType === CHARTTYPE_STACKED;
+    return this.routerParams && chartUtil.isStacked(this.routerParams.chartType);
   }
 
   get showPoints(): boolean {
-    switch (this.routerParams.chartType) {
-      case CHARTTYPE_PODCAST:
-      case CHARTTYPE_EPISODES:
-        return true;
-      case CHARTTYPE_STACKED:
-        return false;
-    }
+    return this.routerParams && chartUtil.showPoints(this.routerParams.chartType);
   }
 
   get strokeWidth(): number {
-    switch (this.routerParams.chartType) {
-      case CHARTTYPE_PODCAST:
-        return 3;
-      case CHARTTYPE_EPISODES:
-        return 2.5;
-      case CHARTTYPE_STACKED:
-        return 1;
-    }
+    return this.routerParams && chartUtil.strokeWidth(this.routerParams.chartType);
   }
 
   get pointRadius(): number {
-    switch (this.routerParams.chartType) {
-      case CHARTTYPE_PODCAST:
-        return this.chartData && this.chartData.length &&
-        this.chartData[0].data && this.chartData[0].data.length <= 40 ? 3.75 : 0;
-      case CHARTTYPE_EPISODES:
-        return this.chartData && this.chartData.length &&
-        this.chartData[0].data && this.chartData[0].data.length <= 20 ? 3.25 : 0;
-      case CHARTTYPE_STACKED:
-        return 1;
-    }
+    return this.routerParams && this.chartData && this.chartData.length && this.chartData[0]['data'] &&
+      chartUtil.pointRadius(this.routerParams.chartType, this.chartData[0]['data'].length);
   }
 
   get pointRadiusOnHover(): number {
-    switch (this.routerParams.chartType) {
-      case CHARTTYPE_PODCAST:
-        return 3.75;
-      case CHARTTYPE_EPISODES:
-        return 3.25;
-      case CHARTTYPE_STACKED:
-        return 1;
-    }
+    return this.routerParams && chartUtil.pointRadiusOnHover(this.routerParams.chartType);
   }
 
   get minY(): number {
-    if (this.routerParams.chartType === CHARTTYPE_EPISODES) {
-      return 0;
-    }
+    return this.routerParams && chartUtil.minY(this.routerParams.chartType);
   }
 
   get maxTicks(): number {

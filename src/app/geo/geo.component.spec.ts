@@ -9,6 +9,7 @@ import * as ACTIONS from '../ngrx/actions';
 import { reducers } from '../ngrx/reducers';
 
 import { GeoComponent } from './geo.component';
+import { GeoChartComponent } from './geo-chart.component';
 import { GeochartMapComponent } from './geochart.map.component';
 import {
   podcast,
@@ -16,7 +17,10 @@ import {
   podcastGeoCountryRanks,
   routerParams as downloadParams
 } from '../../testing/downloads.fixtures';
-import { GroupType, GROUPTYPE_GEOCOUNTRY, GROUPTYPE_GEOMETRO, MetricsType, METRICSTYPE_DEMOGRAPHICS } from '../ngrx/reducers/models';
+import {
+  ChartType, CHARTTYPE_LINE,
+  GroupType, GROUPTYPE_GEOCOUNTRY, GROUPTYPE_GEOMETRO,
+  MetricsType, METRICSTYPE_DEMOGRAPHICS } from '../ngrx/reducers/models';
 
 describe('GeoComponent', () => {
   let store: Store<any>;
@@ -29,6 +33,7 @@ describe('GeoComponent', () => {
     TestBed.configureTestingModule({
       declarations: [
         GeoComponent,
+        GeoChartComponent,
         GeochartMapComponent
       ],
       imports: [
@@ -47,12 +52,16 @@ describe('GeoComponent', () => {
   }));
 
   const routerParams = {...downloadParams, metricsType: <MetricsType>METRICSTYPE_DEMOGRAPHICS, group: <GroupType>GROUPTYPE_GEOCOUNTRY};
-  function dispatchRouterNavigation() {
+  function dispatchRouteGeoCountry() {
     store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerParams}));
   }
 
   function dispatchRouteGeoMetro() {
     store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerParams: {...routerParams, group: <GroupType>GROUPTYPE_GEOMETRO}}));
+  }
+
+  function dispatchRouteGeoLineChart() {
+    store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerParams: {...routerParams, chartType: <ChartType>CHARTTYPE_LINE}}));
   }
 
   function dispatchPodcasts() {
@@ -117,9 +126,12 @@ describe('GeoComponent', () => {
     expect(de.query(By.css('prx-spinner'))).not.toBeNull();
   });
 
-  it('should show a nested totals table for GeoCountry', () => {
+  beforeEach(() => {
     dispatchPodcasts();
-    dispatchRouterNavigation();
+  });
+
+  it('should show a nested totals table for GeoCountry', () => {
+    dispatchRouteGeoCountry();
     dispatchPodcastGeoCountryTotals();
     dispatchPodcastGeoCountryRanks();
     fix.detectChanges();
@@ -128,12 +140,20 @@ describe('GeoComponent', () => {
   });
 
   it('should show a totals table for GeoMetro', () => {
-    dispatchPodcasts();
     dispatchRouteGeoMetro();
     dispatchPodcastGeoMetroTotals();
     dispatchPodcastGeoMetroRanks();
     fix.detectChanges();
     expect(de.query(By.css('prx-spinner'))).toBeNull();
     expect(de.query(By.css('metrics-totals-table'))).not.toBeNull();
+  });
+
+  it('should show a chart for non geo chart types', () => {
+    dispatchRouteGeoLineChart();
+    dispatchPodcastGeoCountryTotals();
+    dispatchPodcastGeoCountryRanks();
+    fix.detectChanges();
+    expect(de.query(By.css('prx-spinner'))).toBeNull();
+    expect(de.query(By.css('metrics-geo-chart'))).not.toBeNull();
   });
 });

@@ -1,14 +1,20 @@
-metrics-geochart-map {
+.chart-container {
   position: relative;
+  height: 320px;
+}
+metrics-geochart-map {
   display: flex;
   align-items: center;
   justify-content: center;
   background-color: white;
-  height: 320px;
 }
 
 @media (max-width: 768px) {
-  metrics-geochart-map {
+  .chart-container {
     height: initial;
+  }
+  prx-spinner {
+    display: block;
+    height: 320px;
   }
 }

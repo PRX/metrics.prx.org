@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { RouterParams } from '../ngrx';
+import {GROUPTYPE_GEOCOUNTRY, GROUPTYPE_GEOMETRO, RouterParams} from '../ngrx';
 import { TimeseriesChartModel } from 'ngx-prx-styleguide';
 import { largeNumberFormat } from '../shared/pipes/large-number.pipe';
 import * as chartUtil from '../shared/util/chart.util';
@@ -7,8 +7,8 @@ import * as chartUtil from '../shared/util/chart.util';
 @Component({
   selector: 'metrics-geo-chart',
   template: `
-    <prx-timeseries-chart *ngIf="chartData && chartData.length" [type]="chartType"
-                          [stacked]="stacked" [datasets]="chartData"
+    <prx-timeseries-chart *ngIf="data && data.length" [type]="chartType"
+                          [stacked]="stacked" [datasets]="data"
                           [formatX]="dateFormat()" [formatY]="largeNumberFormat" [minY]="minY"
                           [showPoints]="showPoints" [strokeWidth]="strokeWidth"
                           [pointRadius]="pointRadius" [pointRadiusOnHover]="pointRadiusOnHover">
@@ -17,8 +17,19 @@ import * as chartUtil from '../shared/util/chart.util';
 })
 export class GeoChartComponent {
   @Input() chartData: TimeseriesChartModel[];
+  @Input() nestedData: TimeseriesChartModel[];
   @Input() routerParams: RouterParams;
   largeNumberFormat = largeNumberFormat;
+
+  get data(): TimeseriesChartModel[] {
+    let data;
+    if (this.routerParams && this.routerParams.group === GROUPTYPE_GEOCOUNTRY && this.routerParams.filter && this.nestedData) {
+      data = this.nestedData;
+    } else {
+      data = this.chartData;
+    }
+    return data;
+  }
 
   dateFormat(): Function {
     return this.routerParams && chartUtil.chartDateFormat(this.routerParams.interval);

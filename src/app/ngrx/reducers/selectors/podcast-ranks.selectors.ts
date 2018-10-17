@@ -154,6 +154,23 @@ export const selectRoutedPodcastRanksChartMetrics = createSelector(
   }
 );
 
+export const selectNestedPodcastRanksChartMetrics = createSelector(
+  selectNestedPodcastRanks,
+  (podcastRanks: PodcastRanks): TimeseriesChartModel[] => {
+    return podcastRanks && podcastRanks.ranks && podcastRanks.ranks
+      .map((rank: Rank, i: number) => {
+        const downloads = podcastRanks.downloads
+          .map(data => [data[0], data[1][i]]);
+        return {
+          data: mapMetricsToTimeseriesData(downloads),
+          label: rank.label,
+          color: rank.label === 'Other' ? neutralColor : getColor(i)
+        };
+      })
+      .filter((entry: TimeseriesChartModel) => entry.label !== 'Other');
+  }
+);
+
 export const selectRoutedPodcastRanksTotalDownloads = createSelector(
   selectRoutedPodcastRanks,
   (podcastRanks: PodcastRanks): number => {

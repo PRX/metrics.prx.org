@@ -9,7 +9,9 @@ import {
   PodcastGroupCharted,
   ChartType,
   CHARTTYPE_HORIZBAR,
-  GROUPTYPE_GEOSUBDIV
+  GROUPTYPE_GEOSUBDIV,
+  GROUPTYPE_GEOCOUNTRY,
+  GROUPTYPE_GEOMETRO
 } from '../models';
 import { selectPodcastRoute,
   selectChartTypeRoute,
@@ -116,9 +118,11 @@ export const selectNestedPodcastRanksError = createSelector(
 export const selectRoutedPodcastRanksChartMetrics = createSelector(
   selectRoutedPodcastRanks,
   selectRoutedPodcastGroupCharted,
+  selectGroupRoute,
   selectChartTypeRoute,
   (podcastRanks: PodcastRanks,
    groupsCharted: PodcastGroupCharted[],
+   groupRoute: GroupType,
    chartType: ChartType): CategoryChartModel[] | TimeseriesChartModel[] => {
     if (podcastRanks && podcastRanks.ranks && podcastRanks.downloads) {
       if (chartType === CHARTTYPE_HORIZBAR) {
@@ -141,7 +145,9 @@ export const selectRoutedPodcastRanksChartMetrics = createSelector(
             };
           })
           .filter((entry: TimeseriesChartModel) => {
-            return groupsCharted.filter(group => group.charted).map(group => group.groupName).indexOf(entry.label) > -1;
+            return groupsCharted.find(g => g.charted && g.groupName === entry.label &&
+              ((groupRoute !== GROUPTYPE_GEOCOUNTRY &&
+                groupRoute !== GROUPTYPE_GEOMETRO) || entry.label !== 'Other'));
           });
       }
     }

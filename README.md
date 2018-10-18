@@ -88,6 +88,8 @@ puma-dev is used for ssl support, and on MacOS you will also need to accept the 
 * Open https://metrics.prx.dev in Safari
 * The certificate gets incorrectly saved in Keychain Access under login -> Certificates. Move the certificate to System -> Certificates.
 
+Warning: puma-dev may not be compatible with your docker proxy
+
 ## Docker Install
 
  Or if you really want to, you can develop via docker-compose.

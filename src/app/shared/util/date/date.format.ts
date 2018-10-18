@@ -25,5 +25,7 @@ export const monthYear = (date: Date): string => {
 };
 
 export const hourly = (date: Date): string => {
-  return moment(date).format('MMM D, h:mm A');
+  return date.getMinutes() < 30 ?
+    moment(date).format('MMM D, h:00 A') :
+    moment(date).add(1, 'hours').format('MMM D, h:00 A');
 };

@@ -18,6 +18,7 @@ describe('date format', () => {
 
   it('should format hourly dates in local timezone', () => {
     const date = new Date();
+    date.setMinutes(0);
     const dateString = dateFormat.hourly(date);
     let hours;
     if (date.getHours() === 0) {
@@ -26,6 +27,22 @@ describe('date format', () => {
       hours = date.getHours() % 12;
     } else {
       hours = date.getHours();
+    }
+    expect(parseInt(dateString.slice(dateString.indexOf(', ') + 1), 10)).toEqual(hours);
+  });
+
+  it('should round hourly date format to the nearest hour', () => {
+    const date = new Date();
+    date.setMinutes(39);
+    const dateString = dateFormat.hourly(date);
+    let hours;
+    const roundedHours = date.getMinutes() > 30 ? (date.getHours() + 1) % 24 : date.getHours();
+    if (roundedHours === 0) {
+      hours = 12;
+    } else if (roundedHours > 12) {
+      hours = roundedHours % 12;
+    } else {
+      hours = roundedHours;
     }
     expect(parseInt(dateString.slice(dateString.indexOf(', ') + 1), 10)).toEqual(hours);
   });

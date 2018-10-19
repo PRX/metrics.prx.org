@@ -76,7 +76,6 @@ export class GeoComponent implements OnInit {
   nestedChartData$: Observable<TimeseriesChartModel[]>;
   nestedRanksLoading$: Observable<boolean>;
   nestedRanksLoaded$: Observable<boolean>;
-  nestedRanksErrorActions$: Observable<ACTIONS.AllActions[]>;
   geochartData$: Observable<PodcastTotals>;
   nestedGeochartData$: Observable<PodcastTotals>;
   tableData$: Observable<TotalsTableRow[]>;

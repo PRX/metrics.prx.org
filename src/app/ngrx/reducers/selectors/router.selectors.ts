@@ -1,6 +1,6 @@
 import { createSelector } from '@ngrx/store';
 import { RootState, selectAppState } from '../';
-import {RouterParams, GROUPTYPE_GEOCOUNTRY, GROUPTYPE_GEOMETRO, CHARTTYPE_GEOCHART} from '../models';
+import { RouterParams } from '../models';
 
 export const selectRouter = createSelector(selectAppState, (state: RootState) => state.router);
 export const selectPodcastRoute = createSelector(selectRouter, (routerParams: RouterParams) => routerParams.podcastId);

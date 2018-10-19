@@ -27,7 +27,7 @@ describe('GeochartMapComponent', () => {
     });
   }));
 
-  it('should redraw map on window resize', () => {
+  it('should have timeseries chart', () => {
     comp.chartData = [
       {
         color: '#ff7f00',

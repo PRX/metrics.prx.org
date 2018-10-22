@@ -156,6 +156,26 @@ export const podcastAgentNameDownloads = [
   ['2018-08-22T00:00:00Z', [229209, 43188, 37749, 30602, 17483, 22219, 16251, 6255, 8171, 4091, 32346]]
 ];
 
+export const podcastAgentTypeRanks = [
+  {total: 6432491, label: 'Mobile App', code: '36'},
+  {total: 882208, label: 'Smart Watch', code: '68'},
+  {total: 498179, label: 'Desktop App', code: '35'},
+  {total: 185507, label: 'Unknown', code: '0'},
+  {total: 144301, label: 'Desktop Browser', code: '39'},
+  {total: 138051, label: 'Mobile Browser', code: '40'},
+  {total: 15888, label: 'Smart Home', code: '37'},
+  {total: 3126, label: 'Smart TV', code: '38'},
+  {total: 0, label: 'Other', code: null}
+];
+
+export const podcastAgentTypeDownloads = [
+  ['2018-10-18T00:00:00Z', [195835, 27472, 20467, 942, 5708, 5841, 542, 121, 0]],
+  ['2018-10-19T00:00:00Z', [148539, 22692, 16419, 1114, 4449, 5078, 480, 96, 0]],
+  ['2018-10-20T00:00:00Z', [113545, 20957, 11882, 544, 3147, 4177, 670, 108, 0]],
+  ['2018-10-21T00:00:00Z', [114359, 18855, 15933, 640, 3593, 4075, 661, 102, 0]],
+  ['2018-10-22T00:00:00Z', [89763, 15517, 11340, 1454, 2713, 3076, 340, 72, 0]]
+];
+
 export const podcastGeoCountryRanks = [
   {total: 549016, label: 'United States', code: 'US'},
   {total: 71474, label: 'United Kingdom', code: 'GB'},

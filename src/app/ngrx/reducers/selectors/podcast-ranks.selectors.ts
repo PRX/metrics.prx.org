@@ -132,10 +132,12 @@ export const selectRoutedPodcastRanksChartMetrics = createSelector(
             label: rank.label
           };
         }).filter((entry: CategoryChartModel) => {
-          return groupsCharted.filter(group => group.charted).map(group => group.groupName).indexOf(entry.label) > -1;
+          return (entry.label !== 'Other' || entry.value !== 0) &&
+            groupsCharted.filter(group => group.charted).map(group => group.groupName).indexOf(entry.label) > -1;
         });
       } else {
         return podcastRanks.ranks
+          .filter((rank: Rank) => rank.label !== 'Other' || rank.total !== 0)
           .map((rank: Rank, i: number) => {
             const downloads = podcastRanks.downloads.map(data => [data[0], data[1][i]]);
             return {

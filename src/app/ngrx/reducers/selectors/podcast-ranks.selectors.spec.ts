@@ -4,7 +4,7 @@ import { reducers, RootState } from '../';
 import {
   ChartType, CHARTTYPE_STACKED, CHARTTYPE_HORIZBAR,
   GroupType, GROUPTYPE_GEOCOUNTRY, GROUPTYPE_GEOSUBDIV, GROUPTYPE_AGENTNAME,
-  MetricsType, METRICSTYPE_DEMOGRAPHICS, METRICSTYPE_TRAFFICSOURCES
+  MetricsType, METRICSTYPE_DEMOGRAPHICS, METRICSTYPE_TRAFFICSOURCES, GROUPTYPE_AGENTTYPE
 } from '../models';
 import * as ACTIONS from '../../actions';
 import {
@@ -12,8 +12,10 @@ import {
   podcastGeoCountryRanks,
   podcastGeoSubdivDownloads,
   podcastGeoSubdivRanks,
-  podcastAgentNameRanks,
   podcastAgentNameDownloads,
+  podcastAgentNameRanks,
+  podcastAgentTypeDownloads,
+  podcastAgentTypeRanks,
   routerParams as downloadParams
 } from '../../../../testing/downloads.fixtures';
 import { CategoryChartModel, TimeseriesChartModel } from 'ngx-prx-styleguide';
@@ -55,6 +57,15 @@ describe('Podcast Ranks Selectors', () => {
     }}));
   }
 
+  function dispatchRouteAgentType() {
+    store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerParams: {
+        ...routerParams,
+        metricsType: <MetricsType>METRICSTYPE_TRAFFICSOURCES,
+        group: <GroupType>GROUPTYPE_AGENTTYPE,
+        chartType: <ChartType>CHARTTYPE_HORIZBAR
+      }}));
+  }
+
   function dispatchPodcastGeoCountryRanks() {
     store.dispatch(new ACTIONS.CastlePodcastRanksSuccessAction({
       id: routerParams.podcastId,
@@ -92,6 +103,18 @@ describe('Podcast Ranks Selectors', () => {
     }));
   }
 
+  function dispatchPodcastAgentTypeRanks() {
+    store.dispatch(new ACTIONS.CastlePodcastRanksSuccessAction({
+      id: routerParams.podcastId,
+      group: GROUPTYPE_AGENTTYPE,
+      interval: routerParams.interval,
+      beginDate: routerParams.beginDate,
+      endDate: routerParams.endDate,
+      ranks: podcastAgentTypeRanks,
+      downloads: podcastAgentTypeDownloads
+    }));
+  }
+
   describe('geo podcast ranks', () => {
     let result: TimeseriesChartModel[];
 
@@ -121,7 +144,7 @@ describe('Podcast Ranks Selectors', () => {
   describe('totals (horizontal bar) podcast ranks', () => {
     let result: CategoryChartModel[];
 
-    beforeEach(() => {
+    it('should transform podcast ranks to category chart model', () => {
       dispatchRouteAgentName();
       dispatchPodcastAgentNameRanks();
 
@@ -129,13 +152,23 @@ describe('Podcast Ranks Selectors', () => {
         result = <CategoryChartModel[]>data;
       });
 
-      it('should transform podcast ranks to category chart model', () => {
-        expect(result.length).toEqual(podcastAgentNameRanks.length);
-        expect(result[0].label).toEqual(podcastAgentNameRanks[0].label);
-        expect(result[0].value).toEqual(podcastAgentNameRanks[0].total);
-        expect(result[1].label).toEqual(podcastAgentNameRanks[1].label);
-        expect(result[1].value).toEqual(podcastAgentNameRanks[1].total);
+      expect(result.length).toEqual(podcastAgentNameRanks.length);
+      expect(result[0].label).toEqual(podcastAgentNameRanks[0].label);
+      expect(result[0].value).toEqual(podcastAgentNameRanks[0].total);
+      expect(result[1].label).toEqual(podcastAgentNameRanks[1].label);
+      expect(result[1].value).toEqual(podcastAgentNameRanks[1].total);
+    });
+
+    it('should not include "Other" data if total value is zero', () => {
+      dispatchRouteAgentType();
+      dispatchPodcastAgentTypeRanks();
+
+      store.pipe(select(podcastRanks.selectRoutedPodcastRanksChartMetrics)).subscribe((data) => {
+        result = <CategoryChartModel[]>data;
       });
+
+      expect(result.length).toEqual(podcastAgentTypeRanks.length - 1);
+      expect(result.find(r => r.label === 'Other')).toBeUndefined();
     });
   });
 

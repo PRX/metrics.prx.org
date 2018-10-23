@@ -9,7 +9,9 @@ import {
   PodcastGroupCharted,
   ChartType,
   CHARTTYPE_HORIZBAR,
-  GROUPTYPE_GEOSUBDIV
+  GROUPTYPE_GEOSUBDIV,
+  GROUPTYPE_GEOCOUNTRY,
+  GROUPTYPE_GEOMETRO
 } from '../models';
 import { selectPodcastRoute,
   selectChartTypeRoute,
@@ -116,9 +118,11 @@ export const selectNestedPodcastRanksError = createSelector(
 export const selectRoutedPodcastRanksChartMetrics = createSelector(
   selectRoutedPodcastRanks,
   selectRoutedPodcastGroupCharted,
+  selectGroupRoute,
   selectChartTypeRoute,
   (podcastRanks: PodcastRanks,
    groupsCharted: PodcastGroupCharted[],
+   groupRoute: GroupType,
    chartType: ChartType): CategoryChartModel[] | TimeseriesChartModel[] => {
     if (podcastRanks && podcastRanks.ranks && podcastRanks.downloads) {
       if (chartType === CHARTTYPE_HORIZBAR) {
@@ -128,10 +132,12 @@ export const selectRoutedPodcastRanksChartMetrics = createSelector(
             label: rank.label
           };
         }).filter((entry: CategoryChartModel) => {
-          return groupsCharted.filter(group => group.charted).map(group => group.groupName).indexOf(entry.label) > -1;
+          return (entry.label !== 'Other' || entry.value !== 0) &&
+            groupsCharted.filter(group => group.charted).map(group => group.groupName).indexOf(entry.label) > -1;
         });
       } else {
         return podcastRanks.ranks
+          .filter((rank: Rank) => rank.label !== 'Other' || rank.total !== 0)
           .map((rank: Rank, i: number) => {
             const downloads = podcastRanks.downloads.map(data => [data[0], data[1][i]]);
             return {
@@ -141,10 +147,29 @@ export const selectRoutedPodcastRanksChartMetrics = createSelector(
             };
           })
           .filter((entry: TimeseriesChartModel) => {
-            return groupsCharted.filter(group => group.charted).map(group => group.groupName).indexOf(entry.label) > -1;
+            return groupsCharted.find(g => g.charted && g.groupName === entry.label &&
+              ((groupRoute !== GROUPTYPE_GEOCOUNTRY &&
+                groupRoute !== GROUPTYPE_GEOMETRO) || entry.label !== 'Other'));
           });
       }
     }
+  }
+);
+
+export const selectNestedPodcastRanksChartMetrics = createSelector(
+  selectNestedPodcastRanks,
+  (podcastRanks: PodcastRanks): TimeseriesChartModel[] => {
+    return podcastRanks && podcastRanks.ranks && podcastRanks.ranks
+      .map((rank: Rank, i: number) => {
+        const downloads = podcastRanks.downloads
+          .map(data => [data[0], data[1][i]]);
+        return {
+          data: mapMetricsToTimeseriesData(downloads),
+          label: rank.label,
+          color: rank.label === 'Other' ? neutralColor : getColor(i)
+        };
+      })
+      .filter((entry: TimeseriesChartModel) => entry.label !== 'Other');
   }
 );
 

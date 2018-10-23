@@ -1,9 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { DebugElement } from '@angular/core';
-import { By } from '@angular/platform-browser';
 import { GeochartMapComponent } from './geochart.map.component';
-import { SpinnerModule } from 'ngx-prx-styleguide';
-import { METRICSTYPE_DEMOGRAPHICS, GROUPTYPE_GEOCOUNTRY } from '../ngrx/reducers/models';
 
 describe('GeochartMapComponent', () => {
   let comp: GeochartMapComponent;
@@ -15,9 +12,6 @@ describe('GeochartMapComponent', () => {
     TestBed.configureTestingModule({
       declarations: [
         GeochartMapComponent
-      ],
-      imports: [
-        SpinnerModule
       ]
     }).compileComponents().then(() => {
       fix = TestBed.createComponent(GeochartMapComponent);
@@ -49,12 +43,5 @@ describe('GeochartMapComponent', () => {
     const resize = comp.getMapWidthOrHeight();
     expect(resize.height).toEqual(320);
     expect(resize.width).toBeUndefined();
-  });
-
-  it('should show a loading spinner when nested data is loading', () => {
-    comp.routerParams = {podcastId: '75', metricsType: METRICSTYPE_DEMOGRAPHICS, group: GROUPTYPE_GEOCOUNTRY, filter: 'US'};
-    comp.nestedDataLoading = true;
-    fix.detectChanges();
-    expect(de.query(By.css('prx-spinner'))).not.toBeUndefined();
   });
 });

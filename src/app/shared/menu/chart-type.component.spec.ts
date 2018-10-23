@@ -5,7 +5,7 @@ import { By } from '@angular/platform-browser';
 
 import { reducers } from '../../ngrx/reducers';
 import { RouteChartTypeAction } from '../../ngrx/actions';
-import { CHARTTYPE_PODCAST, CHARTTYPE_EPISODES, CHARTTYPE_STACKED } from '../../ngrx';
+import { CHARTTYPE_PODCAST, CHARTTYPE_EPISODES, CHARTTYPE_STACKED, METRICSTYPE_DOWNLOADS } from '../../ngrx';
 
 import { ChartTypeComponent } from './chart-type.component';
 
@@ -30,6 +30,7 @@ describe('ChartTypeComponent', () => {
       de = fix.debugElement;
       el = de.nativeElement;
       store = TestBed.get(Store);
+      comp.metricsType = METRICSTYPE_DOWNLOADS;
       fix.detectChanges();
 
       spyOn(store, 'dispatch').and.callThrough();

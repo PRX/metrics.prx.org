@@ -3,7 +3,7 @@ import { TimeseriesChartModel } from 'ngx-prx-styleguide';
 import { Episode, RouterParams, CHARTTYPE_EPISODES, CHARTTYPE_PODCAST, CHARTTYPE_STACKED } from '../models';
 import { selectRouter } from './router.selectors';
 import { selectRoutedPageEpisodes } from './episode.selectors';
-import { PodcastMetricsModel } from '../podcast-metrics.reducer';
+import { PodcastMetrics } from "../models/podcast-metrics.model";
 import { selectRoutedPodcastMetrics } from './podcast-metrics.selectors';
 import { EpisodeMetricsModel } from '../episode-metrics.reducer';
 import { selectRoutedEpisodePageMetrics } from './episode-metrics.selectors';
@@ -18,7 +18,7 @@ export const selectDownloadChartMetrics = createSelector(
   selectRoutedEpisodePageMetrics,
   (routerParams: RouterParams,
    episodes: Episode[],
-   podcastMetrics: PodcastMetricsModel,
+   podcastMetrics: PodcastMetrics,
    episodeMetrics: EpisodeMetricsModel[]): TimeseriesChartModel[] => {
     let chartedPodcastMetrics: TimeseriesChartModel,
       chartedEpisodeMetrics: TimeseriesChartModel[];

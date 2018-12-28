@@ -9,5 +9,5 @@ export { RouterParams, DownloadsTableModel,
   GROUPTYPE_AGENTNAME, GROUPTYPE_AGENTOS, GROUPTYPE_AGENTTYPE,
   GROUPTYPE_GEOCOUNTRY, GROUPTYPE_GEOMETRO, GROUPTYPE_GEOSUBDIV, GroupType, getGroupName,
   Rank, PodcastRanks, PodcastTotals, TotalsTableRow, PodcastGroupCharted } from './reducers/models';
-export { PodcastMetricsModel } from './reducers/podcast-metrics.reducer';
+export { PodcastMetrics } from './reducers/models/podcast-metrics.model';
 export { EpisodeMetricsModel } from './reducers/episode-metrics.reducer';

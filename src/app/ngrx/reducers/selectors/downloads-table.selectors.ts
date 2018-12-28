@@ -3,7 +3,7 @@ import { Episode, RouterParams, PodcastAllTimeDownloads, EpisodeAllTimeDownloads
   CHARTTYPE_PODCAST, CHARTTYPE_EPISODES } from '../models';
 import { selectRouter } from './router.selectors';
 import { selectRoutedPageEpisodes } from './episode.selectors';
-import { PodcastMetricsModel } from '../podcast-metrics.reducer';
+import { PodcastMetrics } from "../models/podcast-metrics.model";
 import { selectRoutedPodcastMetrics } from './podcast-metrics.selectors';
 import { selectRoutedPodcastAllTimeDownloads } from './podcast-alltime-downloads.selectors';
 import { EpisodeMetricsModel } from '../episode-metrics.reducer';
@@ -17,7 +17,7 @@ export const selectDownloadTablePodcastMetrics = createSelector(
   selectRoutedPodcastMetrics,
   selectRoutedPodcastAllTimeDownloads,
   (routerParams: RouterParams,
-   podcastMetrics: PodcastMetricsModel,
+   podcastMetrics: PodcastMetrics,
    podcastDownloads: PodcastAllTimeDownloads): DownloadsTableModel => {
     let podcastData: DownloadsTableModel;
 

@@ -7,7 +7,7 @@ import { selectPodcastMetricsError } from './podcast-metrics.selectors';
 import { selectRoutedPodcastRanksError, selectNestedPodcastRanksError } from './podcast-ranks.selectors';
 import { selectRoutedPodcastTotalsError, selectNestedPodcastTotalsError } from './podcast-totals.selectors';
 import * as ACTIONS from '../../actions';
-import { PodcastMetricsModel } from '../podcast-metrics.reducer';
+import { PodcastMetrics } from "../models/podcast-metrics.model";
 import { EpisodeMetricsModel } from '../episode-metrics.reducer';
 import { RouterParams, METRICSTYPE_DOWNLOADS, GROUPTYPE_GEOSUBDIV } from '../models';
 
@@ -29,7 +29,7 @@ export const select500ErrorReloadActions =
   (routerParams: RouterParams,
    podcastError: any,
    episodeError: any,
-   podcastMetricsErrors: PodcastMetricsModel[],
+   podcastMetricsErrors: PodcastMetrics[],
    episodeMetricsErrors: EpisodeMetricsModel[],
    podcastRanksError: any,
    podcastTotalsError: any) => {

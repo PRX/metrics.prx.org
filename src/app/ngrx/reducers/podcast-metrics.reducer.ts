@@ -1,29 +1,19 @@
-import * as ACTIONS from '../actions';
-
-export interface PodcastMetricsModel {
-  id: string;
-  monthlyReach?: any[][];
-  weeklyReach?: any[][];
-  dailyReach?: any[][];
-  hourlyReach?: any[][];
-  charted?: boolean;
-  loaded?: boolean;
-  loading?: boolean;
-  error?: any;
-}
+import { EntityState, EntityAdapter, createEntityAdapter } from '@ngrx/entity';
+import { ActionTypes, AllActions } from '../actions'
+import { PodcastMetrics } from './models/podcast-metrics.model';
 
 const initialState = [];
 
-const podcastIndex = (state: PodcastMetricsModel[], id: string) => {
+const podcastIndex = (state: PodcastMetrics[], id: string) => {
   return state.findIndex(p => p.id === id);
 };
 
-export function PodcastMetricsReducer(state: PodcastMetricsModel[] = initialState, action: ACTIONS.AllActions) {
+export function PodcastMetricsReducer(state: PodcastMetrics[] = initialState, action: AllActions) {
   switch (action.type) {
-    case ACTIONS.ActionTypes.CASTLE_PODCAST_METRICS_LOAD: {
+    case ActionTypes.CASTLE_PODCAST_METRICS_LOAD: {
       const { id } = action.payload;
       const podcastIdx = podcastIndex(state, id);
-      let podcast: PodcastMetricsModel, newState: PodcastMetricsModel[];
+      let podcast: PodcastMetrics, newState: PodcastMetrics[];
       if (podcastIdx > -1) {
         podcast = {...state[podcastIdx], error: null, loading: true, loaded: false};
         newState = [...state.slice(0, podcastIdx), podcast, ...state.slice(podcastIdx + 1)];
@@ -33,10 +23,10 @@ export function PodcastMetricsReducer(state: PodcastMetricsModel[] = initialStat
       }
       return newState;
     }
-    case ACTIONS.ActionTypes.CASTLE_PODCAST_METRICS_SUCCESS: {
+    case ActionTypes.CASTLE_PODCAST_METRICS_SUCCESS: {
       const { id, metricsPropertyName, metrics } = action.payload;
       const podcastIdx = podcastIndex(state, id);
-      let podcast: PodcastMetricsModel, newState: PodcastMetricsModel[];
+      let podcast: PodcastMetrics, newState: PodcastMetrics[];
       if (podcastIdx > -1) {
         podcast = {...state[podcastIdx], loading: false, loaded: true};
         podcast[metricsPropertyName] = metrics;
@@ -48,10 +38,10 @@ export function PodcastMetricsReducer(state: PodcastMetricsModel[] = initialStat
       }
       return newState;
     }
-    case ACTIONS.ActionTypes.CASTLE_PODCAST_METRICS_FAILURE: {
+    case ActionTypes.CASTLE_PODCAST_METRICS_FAILURE: {
       const { id, error } = action.payload;
       const podcastIdx = podcastIndex(state, id);
-      let podcast: PodcastMetricsModel, newState: PodcastMetricsModel[];
+      let podcast: PodcastMetrics, newState: PodcastMetrics[];
       if (podcastIdx > -1) {
         podcast = {...state[podcastIdx], error, loading: false, loaded: false};
         newState = [...state.slice(0, podcastIdx), podcast, ...state.slice(podcastIdx + 1)];
@@ -61,7 +51,7 @@ export function PodcastMetricsReducer(state: PodcastMetricsModel[] = initialStat
       }
       return newState;
     }
-    case ACTIONS.ActionTypes.CHART_TOGGLE_PODCAST: {
+    case ActionTypes.CHART_TOGGLE_PODCAST: {
       const { id, charted } = action.payload;
       const podcastIdx = podcastIndex(state, id);
       if (podcastIdx > -1) {

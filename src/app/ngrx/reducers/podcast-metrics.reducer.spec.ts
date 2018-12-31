@@ -1,7 +1,8 @@
 import { CastlePodcastMetricsSuccessAction } from '../actions/castle.action.creator';
 import { RouterParams, INTERVAL_DAILY, MetricsType, METRICSTYPE_DOWNLOADS, getMetricsProperty } from './models';
-import { PodcastMetricsReducer } from './podcast-metrics.reducer';
+import { PodcastMetricsReducer, PodcastMetricsState, selectAllPodcastMetrics } from './podcast-metrics.reducer';
 import { podcast } from '../../../testing/downloads.fixtures';
+import { ChartTogglePodcastAction } from '../actions';
 
 describe('PodcastMetricsReducer', () => {
   let newState;
@@ -63,5 +64,28 @@ describe('PodcastMetricsReducer', () => {
       })
     );
     expect(newState.length).toEqual(2);
+  });
+
+  fit('should toggle the charted state of a podcast', () => {
+    // TODO: Go back to before hook method of setting initial state
+    const initialState: PodcastMetricsState = {
+      ids: ['71'],
+      entities: {
+        71: {
+          id: '71',
+          charted: true
+        }
+      }
+    }
+
+    // const oldChartedState = newState[0].charted
+    const oldPodcastState = selectAllPodcastMetrics(initialState)[0];
+    newState = PodcastMetricsReducer(initialState,
+      new ChartTogglePodcastAction({
+        id: oldPodcastState.id,
+        charted: !oldPodcastState.charted
+      })
+    );
+    expect(newState.entities[oldPodcastState.id].charted).toEqual(!oldPodcastState.charted);
   });
 });

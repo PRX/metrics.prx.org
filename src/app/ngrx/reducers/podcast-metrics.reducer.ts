@@ -1,14 +1,20 @@
 import { EntityState, EntityAdapter, createEntityAdapter } from '@ngrx/entity';
 import { ActionTypes, AllActions } from '../actions'
 import { PodcastMetrics } from './models/podcast-metrics.model';
+import { UpdateStr } from '@ngrx/entity/src/models';
 
-const initialState = [];
+export interface PodcastMetricsState extends EntityState<PodcastMetrics> {
 
+}
 const podcastIndex = (state: PodcastMetrics[], id: string) => {
   return state.findIndex(p => p.id === id);
 };
 
-export function PodcastMetricsReducer(state: PodcastMetrics[] = initialState, action: AllActions) {
+export const adapter: EntityAdapter<PodcastMetrics> = createEntityAdapter<PodcastMetrics>(); 
+
+export const initialState: EntityState<PodcastMetrics> = adapter.getInitialState();
+
+export function PodcastMetricsReducer(state: PodcastMetricsState = initialState, action: AllActions) {
   switch (action.type) {
     case ActionTypes.CASTLE_PODCAST_METRICS_LOAD: {
       const { id } = action.payload;
@@ -52,14 +58,22 @@ export function PodcastMetricsReducer(state: PodcastMetrics[] = initialState, ac
       return newState;
     }
     case ActionTypes.CHART_TOGGLE_PODCAST: {
-      const { id, charted } = action.payload;
-      const podcastIdx = podcastIndex(state, id);
-      if (podcastIdx > -1) {
-        const podcast = {...state[podcastIdx], charted};
-        return [...state.slice(0, podcastIdx), podcast, ...state.slice(podcastIdx + 1)];
+      const podcastUpdate: UpdateStr<PodcastMetrics> = {
+        id: action.payload.id,
+        changes: {
+          charted: action.payload.charted
+        }
       }
+      return adapter.updateOne(podcastUpdate, state);
     }
-    break;
+    default:
+      return state;
   }
-  return state;
 }
+
+export const {
+  selectIds: selectPodcastMetricsIds,
+  selectEntities: selectPodcastMetricsEntities,
+  selectAll: selectAllPodcastMetrics,
+  selectTotal: selectTotalPodcastMetrics,
+} = adapter.getSelectors();

@@ -48,7 +48,13 @@ module.exports = function (config) {
     colors: true,
     logLevel: config.LOG_INFO,
     autoWatch: true,
-    browsers: [process.env.PHANTOM ? 'PhantomJS' : 'Chrome'],
-    singleRun: false
+    browsers: [process.env.PHANTOM ? 'PhantomJS' : 'ChromeRemoteDebug'],
+    singleRun: false,
+    customLaunchers: {
+      ChromeRemoteDebug: {
+        base: 'Chrome',
+        flags: ['--remote-debugging-port=9222']
+      }
+    }
   });
 };

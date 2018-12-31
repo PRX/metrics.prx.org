@@ -1,11 +1,11 @@
 import { CastlePodcastMetricsSuccessAction } from '../actions/castle.action.creator';
 import { RouterParams, INTERVAL_DAILY, MetricsType, METRICSTYPE_DOWNLOADS, getMetricsProperty } from './models';
-import { PodcastMetricsReducer, PodcastMetricsState, selectAllPodcastMetrics } from './podcast-metrics.reducer';
+import { PodcastMetricsReducer, selectAllPodcastMetrics, selectPodcastMetricsIds, initialState as podcastMetricsInitialState } from './podcast-metrics.reducer';
 import { podcast } from '../../../testing/downloads.fixtures';
 import { ChartTogglePodcastAction } from '../actions';
 
 describe('PodcastMetricsReducer', () => {
-  let newState;
+  let initialState;
   const routerParams: RouterParams = {
     metricsType: <MetricsType>METRICSTYPE_DOWNLOADS,
     beginDate: new Date('2017-08-27T00:00:00Z'),
@@ -14,7 +14,7 @@ describe('PodcastMetricsReducer', () => {
   };
   const metricsPropertyName = getMetricsProperty(routerParams.interval, routerParams.metricsType);
   beforeEach(() => {
-    newState = PodcastMetricsReducer(undefined,
+    initialState = PodcastMetricsReducer(podcastMetricsInitialState,
       new CastlePodcastMetricsSuccessAction({
         id: podcast.id,
         metricsPropertyName,
@@ -24,14 +24,15 @@ describe('PodcastMetricsReducer', () => {
   });
 
   it('should update with new podcast metrics', () => {
-    expect(newState.length).toEqual(1);
-    expect(newState[0].id).toEqual(podcast.id);
+    const allPodcastMetrics = selectAllPodcastMetrics(initialState)
+    expect(allPodcastMetrics.length).toEqual(1);
+    expect(allPodcastMetrics[0].id).toEqual(podcast.id);
   });
 
   it('should update existing podcast metrics keyed by id', () => {
-    newState = PodcastMetricsReducer(newState,
+    let newState = PodcastMetricsReducer(initialState,
       new CastlePodcastMetricsSuccessAction({
-        id: podcast.id,
+        id: <string>selectPodcastMetricsIds(initialState)[0],
         metricsPropertyName,
         metrics: [
           ['2017-08-27T00:00:00Z', 52522],
@@ -49,38 +50,27 @@ describe('PodcastMetricsReducer', () => {
         ]
       })
     );
-    expect(newState.length).toEqual(1);
-    expect(newState[0].id).toEqual(podcast.id);
-    expect(newState[0].dailyReach.length).toEqual(12);
-    expect(newState[0].dailyReach[0][1]).toEqual(52522);
+    const allPodcastMetrics = selectAllPodcastMetrics(newState)
+    expect(allPodcastMetrics.length).toEqual(1);
+    expect(allPodcastMetrics[0].id).toEqual(<string>selectPodcastMetricsIds(initialState)[0]);
+    expect(allPodcastMetrics[0][metricsPropertyName].length).toEqual(12);
+    expect(allPodcastMetrics[0][metricsPropertyName][0][1]).toEqual(52522);
   });
 
   it ('should add new podcast metrics', () => {
-    newState = PodcastMetricsReducer(newState,
+    let newState = PodcastMetricsReducer(initialState,
       new CastlePodcastMetricsSuccessAction({
         id: '71',
         metricsPropertyName,
         metrics: []
       })
     );
-    expect(newState.length).toEqual(2);
+    expect(selectAllPodcastMetrics(newState).length).toEqual(2);
   });
 
-  fit('should toggle the charted state of a podcast', () => {
-    // TODO: Go back to before hook method of setting initial state
-    const initialState: PodcastMetricsState = {
-      ids: ['71'],
-      entities: {
-        71: {
-          id: '71',
-          charted: true
-        }
-      }
-    }
-
-    // const oldChartedState = newState[0].charted
+  it('should toggle the charted state of a podcast', () => {
     const oldPodcastState = selectAllPodcastMetrics(initialState)[0];
-    newState = PodcastMetricsReducer(initialState,
+    let newState = PodcastMetricsReducer(initialState,
       new ChartTogglePodcastAction({
         id: oldPodcastState.id,
         charted: !oldPodcastState.charted

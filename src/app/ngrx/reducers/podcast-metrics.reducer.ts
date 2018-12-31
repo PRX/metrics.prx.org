@@ -30,19 +30,15 @@ export function PodcastMetricsReducer(state: PodcastMetricsState = initialState,
       return newState;
     }
     case ActionTypes.CASTLE_PODCAST_METRICS_SUCCESS: {
+
       const { id, metricsPropertyName, metrics } = action.payload;
-      const podcastIdx = podcastIndex(state, id);
-      let podcast: PodcastMetrics, newState: PodcastMetrics[];
-      if (podcastIdx > -1) {
-        podcast = {...state[podcastIdx], loading: false, loaded: true};
-        podcast[metricsPropertyName] = metrics;
-        newState = [...state.slice(0, podcastIdx), podcast, ...state.slice(podcastIdx + 1)];
-      } else {
-        podcast = {id, charted: true, loading: false, loaded: true};
-        podcast[metricsPropertyName] = metrics;
-        newState = [podcast, ...state];
+      const podcastUpdate: UpdateStr<PodcastMetrics> = {
+        id: id,
+        changes: {
+          [metricsPropertyName]: metrics
+        }
       }
-      return newState;
+      return adapter.upsertOne(podcastUpdate, state);
     }
     case ActionTypes.CASTLE_PODCAST_METRICS_FAILURE: {
       const { id, error } = action.payload;

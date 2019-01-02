@@ -3,7 +3,7 @@ import { TimeseriesChartModel } from 'ngx-prx-styleguide';
 import { Episode, RouterParams, CHARTTYPE_EPISODES, CHARTTYPE_PODCAST, CHARTTYPE_STACKED } from '../models';
 import { selectRouter } from './router.selectors';
 import { selectRoutedPageEpisodes } from './episode.selectors';
-import { PodcastDownloads } from "../models/podcast-downloads.model";
+import { PodcastDownloads } from '../models/podcast-downloads.model';
 import { selectRoutedPodcastDownloads } from './podcast-downloads.selectors';
 import { EpisodeMetricsModel } from '../episode-metrics.reducer';
 import { selectRoutedEpisodePageMetrics } from './episode-metrics.selectors';

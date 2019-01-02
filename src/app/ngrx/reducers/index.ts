@@ -3,8 +3,7 @@ import { RouterReducerState, routerReducer } from '@ngrx/router-store';
 import { AccountReducer, AccountState } from './account.reducer';
 import * as fromPodcast from './podcast.reducer';
 import * as fromPodcastAllTimeDownloads from './podcast-alltime-downloads.reducer';
-import { PodcastMetricsReducer } from './podcast-metrics.reducer';
-import { PodcastMetrics } from "./models/podcast-metrics.model";
+import { PodcastMetricsReducer, PodcastMetricsState } from './podcast-metrics.reducer';
 import * as fromPodcastRanks from './podcast-ranks.reducer';
 import * as fromPodcastTotals from './podcast-totals.reducer';
 import * as fromPodcastGroupCharted from './podcast-group-charted.reducer';
@@ -22,7 +21,7 @@ export interface RootState {
   episode: fromEpisode.State;
   podcastAllTimeDownloads: fromPodcastAllTimeDownloads.State;
   episodeAllTimeDownloads: fromEpisodeAllTimeDownloads.State;
-  podcastMetrics: PodcastMetrics[];
+  podcastMetrics: PodcastMetricsState;
   podcastRanks: fromPodcastRanks.State;
   podcastTotals: fromPodcastTotals.State;
   podcastGroupCharted: fromPodcastGroupCharted.State;

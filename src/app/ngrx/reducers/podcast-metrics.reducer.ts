@@ -28,12 +28,15 @@ export function PodcastMetricsReducer(state: PodcastMetricsState = initialState,
     }
     case ActionTypes.CASTLE_PODCAST_METRICS_SUCCESS: {
       const { id, metricsPropertyName, metrics } = action.payload;
+      const currentIds = <string[]>selectPodcastMetricsIds(state);
+      const charted = currentIds.includes(id);
       const podcastUpdate: UpdateStr<PodcastMetrics> = {
         id,
         changes: {
           [metricsPropertyName]: metrics,
           loading: false,
-          loaded: true
+          loaded: true,
+          ...(charted && { charted }) // Conditionally add charted as object member
         }
       }
       return adapter.upsertOne(podcastUpdate, state);

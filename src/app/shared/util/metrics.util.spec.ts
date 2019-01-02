@@ -1,8 +1,8 @@
 import * as moment from 'moment';
-import { Podcast, Episode, RouterParams, PodcastMetricsModel, EpisodeMetricsModel,
+import { Podcast, Episode, RouterParams, PodcastDownloads, EpisodeMetricsModel,
   INTERVAL_HOURLY, INTERVAL_DAILY, INTERVAL_WEEKLY, INTERVAL_MONTHLY, MetricsType, METRICSTYPE_DOWNLOADS } from '../../ngrx';
 import * as dateUtil from './date/date.util';
-import { findPodcastMetrics, metricsData, getTotal, getWeightedAverage } from './metrics.util';
+import { findPodcastDownloads, metricsData, getTotal, getWeightedAverage } from './metrics.util';
 
 describe('metrics util', () => {
   const podcasts: Podcast[] = [
@@ -60,7 +60,7 @@ describe('metrics util', () => {
     ['2017-09-06T00:00:00Z', 162900],
     ['2017-09-07T00:00:00Z', 46858]
   ];
-  const podcastMetrics: PodcastMetricsModel[] = [
+  const PodcastDownloads: PodcastDownloads[] = [
     {
       id: '70',
       dailyReach: [...metrics]
@@ -92,11 +92,11 @@ describe('metrics util', () => {
   ];
 
   it('should find podcast metrics matching routerParams', () => {
-    expect(findPodcastMetrics(routerParams, podcastMetrics).id).toEqual('70');
+    expect(findPodcastDownloads(routerParams, PodcastDownloads).id).toEqual('70');
   });
 
   it('should get metrics array according to interval and metrics type', () => {
-    expect(metricsData(routerParams, podcastMetrics[0]).length).toEqual(12);
+    expect(metricsData(routerParams, PodcastDownloads[0]).length).toEqual(12);
     // no hourly
     expect(metricsData({interval: INTERVAL_HOURLY, metricsType: <MetricsType>METRICSTYPE_DOWNLOADS}, episodeMetrics[0])).toBeUndefined();
   });

@@ -2,7 +2,7 @@ import { createSelector } from '@ngrx/store';
 import { selectRoutedPageLoaded } from './episode.selectors';
 import { selectRoutedPodcast, selectPodcastError } from './podcast.selectors';
 import { selectRoutedEpisodePageMetricsLoaded } from './episode-metrics.selectors';
-import { selectPodcastMetricsLoaded } from './podcast-metrics.selectors';
+import { selectPodcastDownloadsLoaded } from './podcast-downloads.selectors';
 import { selectRoutedPodcastRanksLoaded } from './podcast-ranks.selectors';
 import { selectRoutedPodcastTotalsLoaded } from './podcast-totals.selectors';
 
@@ -15,9 +15,9 @@ export const selectCatalogLoaded = createSelector(
   });
 export const selectMetricsLoaded = createSelector(
   selectRoutedEpisodePageMetricsLoaded,
-  selectPodcastMetricsLoaded,
-  (episodeMetrics, podcastMetrics) => {
-    return episodeMetrics && podcastMetrics;
+  selectPodcastDownloadsLoaded,
+  (episodeMetrics, PodcastDownloads) => {
+    return episodeMetrics && PodcastDownloads;
   });
 export const selectLoaded = createSelector(
   selectCatalogLoaded,

@@ -13,9 +13,9 @@ import {
   CastleEpisodeAllTimeDownloadsLoadAction,
   CastleEpisodeAllTimeDownloadsSuccessAction,
   CastleEpisodeAllTimeDownloadsFailureAction,
-  CastlePodcastMetricsLoadAction,
-  CastlePodcastMetricsSuccessAction,
-  CastlePodcastMetricsFailureAction,
+  CastlePodcastDownloadsLoadAction,
+  CastlePodcastDownloadsSuccessAction,
+  CastlePodcastDownloadsFailureAction,
   CastleEpisodeMetricsLoadAction,
   CastleEpisodeMetricsSuccessAction,
   CastleEpisodeMetricsFailureAction,
@@ -53,9 +53,9 @@ export type AllActions
   | CastleEpisodePageLoadAction
   | CastleEpisodePageSuccessAction
   | CastleEpisodePageFailureAction
-  | CastlePodcastMetricsLoadAction
-  | CastlePodcastMetricsSuccessAction
-  | CastlePodcastMetricsFailureAction
+  | CastlePodcastDownloadsLoadAction
+  | CastlePodcastDownloadsSuccessAction
+  | CastlePodcastDownloadsFailureAction
   | CastleEpisodeMetricsLoadAction
   | CastleEpisodeMetricsSuccessAction
   | CastleEpisodeMetricsFailureAction
@@ -95,9 +95,9 @@ export {
   CastlePodcastPageSuccessPayload, CastlePodcastPageSuccessAction, CastlePodcastPageFailureAction,
   CastleEpisodePageLoadPayload, CastleEpisodePageLoadAction,
   CastleEpisodePageSuccessPayload, CastleEpisodePageSuccessAction, CastleEpisodePageFailureAction,
-  CastlePodcastMetricsLoadPayload, CastlePodcastMetricsLoadAction,
-  CastlePodcastMetricsSuccessPayload, CastlePodcastMetricsSuccessAction,
-  CastlePodcastMetricsFailurePayload, CastlePodcastMetricsFailureAction,
+  CastlePodcastDownloadsLoadPayload, CastlePodcastDownloadsLoadAction,
+  CastlePodcastDownloadsSuccessPayload, CastlePodcastDownloadsSuccessAction,
+  CastlePodcastDownloadsFailurePayload, CastlePodcastDownloadsFailureAction,
   CastlePodcastAllTimeDownloadsLoadPayload, CastlePodcastAllTimeDownloadsLoadAction,
   CastlePodcastAllTimeDownloadsSuccessPayload, CastlePodcastAllTimeDownloadsSuccessAction,
   CastlePodcastAllTimeDownloadsFailurePayload, CastlePodcastAllTimeDownloadsFailureAction,

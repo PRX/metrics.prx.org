@@ -4,7 +4,7 @@ import { DebugElement } from '@angular/core';
 import { StoreModule, Store } from '@ngrx/store';
 
 import { reducers, RootState } from '../../ngrx/reducers';
-import { CustomRouterNavigationAction, CastlePodcastMetricsSuccessAction } from '../../ngrx/actions';
+import { CustomRouterNavigationAction, CastlePodcastDownloadsSuccessAction } from '../../ngrx/actions';
 import { getMetricsProperty } from '../../ngrx';
 import * as metricsUtil from '../util/metrics.util';
 import { routerParams, podcast, podDownloads } from '../../../testing/downloads.fixtures';
@@ -37,7 +37,7 @@ describe('DownloadsSummaryComponent', () => {
 
       const metricsPropertyName = getMetricsProperty(routerParams.interval, routerParams.metricsType);
       store.dispatch(new CustomRouterNavigationAction({routerParams}));
-      store.dispatch(new CastlePodcastMetricsSuccessAction({
+      store.dispatch(new CastlePodcastDownloadsSuccessAction({
         id: podcast.id, metricsPropertyName, metrics: podDownloads}));
       fix.detectChanges();
     });

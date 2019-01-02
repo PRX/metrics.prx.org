@@ -15,7 +15,7 @@ export function PodcastDownloadsReducer(state: PodcastDownloadsState = initialSt
     case ActionTypes.CASTLE_PODCAST_DOWNLOADS_LOAD: {
       const { id } = action.payload;
       const currentIds = <string[]>selectPodcastDownloadsIds(state);
-      const charted = includes(currentIds, id);
+      const charted = !includes(currentIds, id);
       const podcastUpdate: UpdateStr<PodcastDownloads> = {
         id,
         changes: {
@@ -30,7 +30,7 @@ export function PodcastDownloadsReducer(state: PodcastDownloadsState = initialSt
     case ActionTypes.CASTLE_PODCAST_DOWNLOADS_SUCCESS: {
       const { id, metricsPropertyName, metrics } = action.payload;
       const currentIds = <string[]>selectPodcastDownloadsIds(state);
-      const charted = includes(currentIds, id);
+      const charted = !includes(currentIds, id);
       const podcastUpdate: UpdateStr<PodcastDownloads> = {
         id,
         changes: {

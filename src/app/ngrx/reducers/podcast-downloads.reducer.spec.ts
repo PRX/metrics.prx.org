@@ -24,7 +24,7 @@ describe('PodcastDownloadsReducer', () => {
     );
   });
 
-  it('should set loading status for new loading entities', () => {
+  it('should set loading and charted status for new loading entities', () => {
     const id = '1337';
     const loadActionPayload = {
       id,
@@ -39,14 +39,14 @@ describe('PodcastDownloadsReducer', () => {
     const allPodcastDownloads = selectAllPodcastDownloads(newState);
     const loadingEntity = selectPodcastDownloadsEntities(newState)[id];
     expect(allPodcastDownloads.length).toEqual(2);
-    expect(Object.keys(loadingEntity)).not.toContain('charted');
+    expect(loadingEntity.charted).toEqual(true);
     expect(loadingEntity.error).toBe(null);
     expect(loadingEntity.loading).toEqual(true);
     expect(loadingEntity.loaded).toEqual(false);
     expect(loadingEntity.id).toEqual(id);
   });
 
-  it('should set loading and charted status for existing loading entities', () => {
+  it('should set loading status for existing loading entities', () => {
     const id = <string>selectPodcastDownloadsIds(initialState)[0];
     const loadActionPayload = {
       id,
@@ -61,7 +61,6 @@ describe('PodcastDownloadsReducer', () => {
     const allPodcastDownloads = selectAllPodcastDownloads(newState);
     const loadingEntity = selectPodcastDownloadsEntities(newState)[id];
     expect(allPodcastDownloads.length).toEqual(1);
-    expect(loadingEntity.charted).toEqual(true);
     expect(loadingEntity.error).toBe(null);
     expect(loadingEntity.loading).toEqual(true);
     expect(loadingEntity.loaded).toEqual(false);

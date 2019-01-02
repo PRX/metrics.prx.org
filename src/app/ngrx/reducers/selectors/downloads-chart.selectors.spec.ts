@@ -42,8 +42,6 @@ describe('Downloads Chart Selectors', () => {
         metricsPropertyName, metrics: ep1Downloads}));
       store.dispatch(new ACTIONS.CastlePodcastDownloadsSuccessAction({
         id: podcast.id, metricsPropertyName, metrics: podDownloads}));
-      store.dispatch(new ACTIONS.ChartTogglePodcastAction({
-        id: podcast.id, charted: true}));
 
       store.pipe(select(selectDownloadChartMetrics)).subscribe((data) => {
         result = data;

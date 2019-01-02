@@ -1,7 +1,7 @@
 import { createSelector, createFeatureSelector } from '@ngrx/store';
 import { RootState, selectAppState } from '../';
 import { RouterParams, getMetricsProperty, METRICSTYPE_DOWNLOADS } from '../models';
-import { PodcastDownloads } from "../models/podcast-downloads.model";
+import { PodcastDownloads } from '../models/podcast-downloads.model';
 import { selectRouter, selectPodcastRoute } from './router.selectors';
 import * as metricsUtil from '../../../shared/util/metrics.util';
 import { PodcastDownloadsState, selectAllPodcastDownloads } from '../podcast-downloads.reducer';

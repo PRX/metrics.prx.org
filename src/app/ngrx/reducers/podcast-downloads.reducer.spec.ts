@@ -1,6 +1,16 @@
-import { CastlePodcastDownloadsSuccessAction, CastlePodcastDownloadsFailureAction, CastlePodcastDownloadsLoadAction } from '../actions/castle.action.creator';
+import {
+  CastlePodcastDownloadsSuccessAction,
+  CastlePodcastDownloadsFailureAction,
+  CastlePodcastDownloadsLoadAction
+} from '../actions/castle.action.creator';
 import { RouterParams, INTERVAL_DAILY, MetricsType, METRICSTYPE_DOWNLOADS, getMetricsProperty } from './models';
-import { PodcastDownloadsReducer, selectAllPodcastDownloads, selectPodcastDownloadsIds, initialState as PodcastDownloadsInitialState, selectPodcastDownloadsEntities } from './podcast-downloads.reducer';
+import {
+  PodcastDownloadsReducer,
+  selectAllPodcastDownloads,
+  selectPodcastDownloadsIds,
+  initialState as PodcastDownloadsInitialState,
+  selectPodcastDownloadsEntities
+} from './podcast-downloads.reducer';
 import { podcast } from '../../../testing/downloads.fixtures';
 import { ChartTogglePodcastAction } from '../actions';
 
@@ -32,8 +42,8 @@ describe('PodcastDownloadsReducer', () => {
       interval: routerParams.interval,
       beginDate: routerParams.beginDate,
       endDate: routerParams.endDate
-    }
-    let newState = PodcastDownloadsReducer(initialState,
+    };
+    const newState = PodcastDownloadsReducer(initialState,
       new CastlePodcastDownloadsLoadAction(loadActionPayload));
 
     const allPodcastDownloads = selectAllPodcastDownloads(newState);
@@ -54,8 +64,8 @@ describe('PodcastDownloadsReducer', () => {
       interval: routerParams.interval,
       beginDate: routerParams.beginDate,
       endDate: routerParams.endDate
-    }
-    let newState = PodcastDownloadsReducer(initialState,
+    };
+    const newState = PodcastDownloadsReducer(initialState,
       new CastlePodcastDownloadsLoadAction(loadActionPayload));
 
     const allPodcastDownloads = selectAllPodcastDownloads(newState);
@@ -70,7 +80,7 @@ describe('PodcastDownloadsReducer', () => {
   it('should appropriately handle failure', () => {
     const id = '404';
     const error = 'There was a problem';
-    let newState = PodcastDownloadsReducer(initialState,
+    const newState = PodcastDownloadsReducer(initialState,
       new CastlePodcastDownloadsFailureAction({ id, error }));
 
     const allPodcastDownloads = selectAllPodcastDownloads(newState);
@@ -80,17 +90,17 @@ describe('PodcastDownloadsReducer', () => {
     expect(failedEntity.loaded).toEqual(true);
     expect(failedEntity.error).toEqual(error);
     expect(failedEntity.id).toEqual(id);
-  })
+  });
 
   it('should update with new podcast metrics', () => {
-    const allPodcastDownloads = selectAllPodcastDownloads(initialState)
+    const allPodcastDownloads = selectAllPodcastDownloads(initialState);
     expect(allPodcastDownloads.length).toEqual(1);
     expect(allPodcastDownloads[0].id).toEqual(podcast.id);
   });
 
   it('should update existing podcast metrics keyed by id', () => {
     const id = <string>selectPodcastDownloadsIds(initialState)[0];
-    let newState = PodcastDownloadsReducer(initialState,
+    const newState = PodcastDownloadsReducer(initialState,
       new CastlePodcastDownloadsSuccessAction({
         id,
         metricsPropertyName,
@@ -120,7 +130,7 @@ describe('PodcastDownloadsReducer', () => {
   });
 
   it ('should add new podcast metrics', () => {
-    let newState = PodcastDownloadsReducer(initialState,
+    const newState = PodcastDownloadsReducer(initialState,
       new CastlePodcastDownloadsSuccessAction({
         id: '71',
         metricsPropertyName,
@@ -132,7 +142,7 @@ describe('PodcastDownloadsReducer', () => {
 
   it('should toggle the charted state of a podcast', () => {
     const oldPodcastState = selectAllPodcastDownloads(initialState)[0];
-    let newState = PodcastDownloadsReducer(initialState,
+    const newState = PodcastDownloadsReducer(initialState,
       new ChartTogglePodcastAction({
         id: oldPodcastState.id,
         charted: !oldPodcastState.charted

@@ -1,7 +1,13 @@
 import { Component } from '@angular/core';
 import { Store, select } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
-import { selectRouter, selectMetricsTypeRoute, selectChartTypeRoute, selectIntervalRoute, selectStandardRangeRoute } from '../../ngrx/reducers/selectors';
+import {
+  selectRouter,
+  selectMetricsTypeRoute,
+  selectChartTypeRoute,
+  selectIntervalRoute,
+  selectStandardRangeRoute
+} from '../../ngrx/reducers/selectors';
 import { RouterParams, IntervalModel, MetricsType, ChartType } from '../../ngrx';
 
 @Component({

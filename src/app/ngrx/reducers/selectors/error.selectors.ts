@@ -7,7 +7,7 @@ import { selectPodcastDownloadsError } from './podcast-downloads.selectors';
 import { selectRoutedPodcastRanksError, selectNestedPodcastRanksError } from './podcast-ranks.selectors';
 import { selectRoutedPodcastTotalsError, selectNestedPodcastTotalsError } from './podcast-totals.selectors';
 import * as ACTIONS from '../../actions';
-import { PodcastDownloads } from "../models/podcast-downloads.model";
+import { PodcastDownloads } from '../models/podcast-downloads.model';
 import { EpisodeMetricsModel } from '../episode-metrics.reducer';
 import { RouterParams, METRICSTYPE_DOWNLOADS, GROUPTYPE_GEOSUBDIV } from '../models';
 

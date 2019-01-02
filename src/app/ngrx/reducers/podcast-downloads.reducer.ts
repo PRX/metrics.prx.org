@@ -1,12 +1,12 @@
 import { EntityState, EntityAdapter, createEntityAdapter } from '@ngrx/entity';
-import { ActionTypes, AllActions } from '../actions'
+import { ActionTypes, AllActions } from '../actions';
 import { PodcastDownloads } from './models/podcast-downloads.model';
 import { UpdateStr } from '@ngrx/entity/src/models';
 import * as includes from 'array-includes';
 
-export interface PodcastDownloadsState extends EntityState<PodcastDownloads>{};
+export type PodcastDownloadsState = EntityState<PodcastDownloads>;
 
-export const adapter: EntityAdapter<PodcastDownloads> = createEntityAdapter<PodcastDownloads>(); 
+export const adapter: EntityAdapter<PodcastDownloads> = createEntityAdapter<PodcastDownloads>();
 
 export const initialState: EntityState<PodcastDownloads> = adapter.getInitialState();
 
@@ -24,7 +24,7 @@ export function PodcastDownloadsReducer(state: PodcastDownloadsState = initialSt
           loaded: false,
           ...(charted && { charted }) // Conditionally add charted as object member
         }
-      }
+      };
       return adapter.upsertOne(podcastUpdate, state);
     }
     case ActionTypes.CASTLE_PODCAST_DOWNLOADS_SUCCESS: {
@@ -39,7 +39,7 @@ export function PodcastDownloadsReducer(state: PodcastDownloadsState = initialSt
           loaded: true,
           ...(charted && { charted }) // Conditionally add charted as object member
         }
-      }
+      };
       return adapter.upsertOne(podcastUpdate, state);
     }
     case ActionTypes.CASTLE_PODCAST_DOWNLOADS_FAILURE: {
@@ -51,7 +51,7 @@ export function PodcastDownloadsReducer(state: PodcastDownloadsState = initialSt
           loading: false,
           loaded: true
         }
-      }
+      };
       return adapter.upsertOne(podcastUpdate, state);
     }
     case ActionTypes.CHART_TOGGLE_PODCAST: {
@@ -61,7 +61,7 @@ export function PodcastDownloadsReducer(state: PodcastDownloadsState = initialSt
         changes: {
           charted
         }
-      }
+      };
       return adapter.updateOne(podcastUpdate, state);
     }
     default:

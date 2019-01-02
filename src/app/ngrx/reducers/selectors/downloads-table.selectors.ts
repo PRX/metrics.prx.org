@@ -3,7 +3,7 @@ import { Episode, RouterParams, PodcastAllTimeDownloads, EpisodeAllTimeDownloads
   CHARTTYPE_PODCAST, CHARTTYPE_EPISODES } from '../models';
 import { selectRouter } from './router.selectors';
 import { selectRoutedPageEpisodes } from './episode.selectors';
-import { PodcastDownloads } from "../models/podcast-downloads.model";
+import { PodcastDownloads } from '../models/podcast-downloads.model';
 import { selectRoutedPodcastDownloads } from './podcast-downloads.selectors';
 import { selectRoutedPodcastAllTimeDownloads } from './podcast-alltime-downloads.selectors';
 import { EpisodeMetricsModel } from '../episode-metrics.reducer';

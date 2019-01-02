@@ -35,7 +35,7 @@ describe('ErrorRetryComponent', () => {
 
   function setRetryActions() {
     comp.retryActions = [
-      new ACTIONS.CastlePodcastMetricsLoadAction({
+      new ACTIONS.CastlePodcastDownloadsLoadAction({
         id: routerParams.podcastId,
         metricsType: routerParams.metricsType,
         interval: routerParams.interval,

@@ -51,7 +51,7 @@ describe('DownloadsChartContainerComponent', () => {
       store.dispatch(new ACTIONS.CastleEpisodeMetricsSuccessAction({
         podcastId: episodes[1].podcastId, page: episodes[1].page, guid: episodes[1].guid,
         metricsPropertyName, metrics: ep1Downloads}));
-      store.dispatch(new ACTIONS.CastlePodcastMetricsSuccessAction({
+      store.dispatch(new ACTIONS.CastlePodcastDownloadsSuccessAction({
         id: podcast.id, metricsPropertyName, metrics: podDownloads}));
       store.dispatch(new ACTIONS.ChartTogglePodcastAction({
         id: podcast.id, charted: true}));

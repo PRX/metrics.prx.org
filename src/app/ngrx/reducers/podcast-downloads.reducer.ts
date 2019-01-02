@@ -1,21 +1,21 @@
 import { EntityState, EntityAdapter, createEntityAdapter } from '@ngrx/entity';
 import { ActionTypes, AllActions } from '../actions'
-import { PodcastMetrics } from './models/podcast-metrics.model';
+import { PodcastDownloads } from './models/podcast-downloads.model';
 import { UpdateStr } from '@ngrx/entity/src/models';
 
-export interface PodcastMetricsState extends EntityState<PodcastMetrics>{};
+export interface PodcastDownloadsState extends EntityState<PodcastDownloads>{};
 
-export const adapter: EntityAdapter<PodcastMetrics> = createEntityAdapter<PodcastMetrics>(); 
+export const adapter: EntityAdapter<PodcastDownloads> = createEntityAdapter<PodcastDownloads>(); 
 
-export const initialState: EntityState<PodcastMetrics> = adapter.getInitialState();
+export const initialState: EntityState<PodcastDownloads> = adapter.getInitialState();
 
-export function PodcastMetricsReducer(state: PodcastMetricsState = initialState, action: AllActions) {
+export function PodcastDownloadsReducer(state: PodcastDownloadsState = initialState, action: AllActions) {
   switch (action.type) {
-    case ActionTypes.CASTLE_PODCAST_METRICS_LOAD: {
+    case ActionTypes.CASTLE_PODCAST_DOWNLOADS_LOAD: {
       const { id } = action.payload;
-      const currentIds = <string[]>selectPodcastMetricsIds(state);
+      const currentIds = <string[]>selectPodcastDownloadsIds(state);
       const charted = currentIds.includes(id);
-      const podcastUpdate: UpdateStr<PodcastMetrics> = {
+      const podcastUpdate: UpdateStr<PodcastDownloads> = {
         id,
         changes: {
           error: null,
@@ -26,11 +26,11 @@ export function PodcastMetricsReducer(state: PodcastMetricsState = initialState,
       }
       return adapter.upsertOne(podcastUpdate, state);
     }
-    case ActionTypes.CASTLE_PODCAST_METRICS_SUCCESS: {
+    case ActionTypes.CASTLE_PODCAST_DOWNLOADS_SUCCESS: {
       const { id, metricsPropertyName, metrics } = action.payload;
-      const currentIds = <string[]>selectPodcastMetricsIds(state);
+      const currentIds = <string[]>selectPodcastDownloadsIds(state);
       const charted = currentIds.includes(id);
-      const podcastUpdate: UpdateStr<PodcastMetrics> = {
+      const podcastUpdate: UpdateStr<PodcastDownloads> = {
         id,
         changes: {
           [metricsPropertyName]: metrics,
@@ -41,9 +41,9 @@ export function PodcastMetricsReducer(state: PodcastMetricsState = initialState,
       }
       return adapter.upsertOne(podcastUpdate, state);
     }
-    case ActionTypes.CASTLE_PODCAST_METRICS_FAILURE: {
+    case ActionTypes.CASTLE_PODCAST_DOWNLOADS_FAILURE: {
       const { id, error } = action.payload;
-      const podcastUpdate: UpdateStr<PodcastMetrics> = {
+      const podcastUpdate: UpdateStr<PodcastDownloads> = {
         id,
         changes: {
           error,
@@ -55,7 +55,7 @@ export function PodcastMetricsReducer(state: PodcastMetricsState = initialState,
     }
     case ActionTypes.CHART_TOGGLE_PODCAST: {
       const { id, charted } = action.payload;
-      const podcastUpdate: UpdateStr<PodcastMetrics> = {
+      const podcastUpdate: UpdateStr<PodcastDownloads> = {
         id,
         changes: {
           charted
@@ -69,8 +69,8 @@ export function PodcastMetricsReducer(state: PodcastMetricsState = initialState,
 }
 
 export const {
-  selectIds: selectPodcastMetricsIds,
-  selectEntities: selectPodcastMetricsEntities,
-  selectAll: selectAllPodcastMetrics,
-  selectTotal: selectTotalPodcastMetrics,
+  selectIds: selectPodcastDownloadsIds,
+  selectEntities: selectPodcastDownloadsEntities,
+  selectAll: selectAllPodcastDownloads,
+  selectTotal: selectTotalPodcastDownloads,
 } = adapter.getSelectors();

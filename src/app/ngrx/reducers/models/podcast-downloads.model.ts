@@ -1,4 +1,4 @@
-export interface PodcastMetrics {
+export interface PodcastDownloads {
   id: string;
   monthlyReach?: any[][];
   weeklyReach?: any[][];

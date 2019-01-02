@@ -191,7 +191,7 @@ describe('CastleEffects', () => {
 
   it('should load podcast metrics', () => {
     const action = {
-      type: ACTIONS.ActionTypes.CASTLE_PODCAST_METRICS_LOAD,
+      type: ACTIONS.ActionTypes.CASTLE_PODCAST_DOWNLOADS_LOAD,
       payload: {
         id: podcast.id,
         metricsType: METRICSTYPE_DOWNLOADS,
@@ -200,7 +200,7 @@ describe('CastleEffects', () => {
         endDate: new Date()
       }
     };
-    const success = new ACTIONS.CastlePodcastMetricsSuccessAction({
+    const success = new ACTIONS.CastlePodcastDownloadsSuccessAction({
       id: podcast.id,
       metricsPropertyName: getMetricsProperty(INTERVAL_DAILY, <MetricsType>METRICSTYPE_DOWNLOADS),
       metrics: podDownloads
@@ -208,7 +208,7 @@ describe('CastleEffects', () => {
 
     actions$.stream = hot('-a', { a: action });
     const expected = cold('-r', { r: success });
-    expect(effects.loadPodcastMetrics$).toBeObservable(expected);
+    expect(effects.loadPodcastDownloads$).toBeObservable(expected);
   });
 
   it('should load episode metrics', () => {
@@ -449,7 +449,7 @@ describe('CastleEffects', () => {
       expect(effects.loadRoutedMetrics$).toBeObservable(expected);
 
       expect(store.dispatch).toHaveBeenCalledWith(
-        new ACTIONS.CastlePodcastMetricsLoadAction({
+        new ACTIONS.CastlePodcastDownloadsLoadAction({
           id: episodes[0].podcastId,
           metricsType: routerParams.metricsType,
           interval: routerParams.interval,

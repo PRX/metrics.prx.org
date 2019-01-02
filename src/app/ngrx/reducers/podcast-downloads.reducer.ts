@@ -2,6 +2,7 @@ import { EntityState, EntityAdapter, createEntityAdapter } from '@ngrx/entity';
 import { ActionTypes, AllActions } from '../actions'
 import { PodcastDownloads } from './models/podcast-downloads.model';
 import { UpdateStr } from '@ngrx/entity/src/models';
+import * as includes from 'array-includes';
 
 export interface PodcastDownloadsState extends EntityState<PodcastDownloads>{};
 
@@ -14,7 +15,7 @@ export function PodcastDownloadsReducer(state: PodcastDownloadsState = initialSt
     case ActionTypes.CASTLE_PODCAST_DOWNLOADS_LOAD: {
       const { id } = action.payload;
       const currentIds = <string[]>selectPodcastDownloadsIds(state);
-      const charted = currentIds.includes(id);
+      const charted = includes(currentIds, id);
       const podcastUpdate: UpdateStr<PodcastDownloads> = {
         id,
         changes: {
@@ -29,7 +30,7 @@ export function PodcastDownloadsReducer(state: PodcastDownloadsState = initialSt
     case ActionTypes.CASTLE_PODCAST_DOWNLOADS_SUCCESS: {
       const { id, metricsPropertyName, metrics } = action.payload;
       const currentIds = <string[]>selectPodcastDownloadsIds(state);
-      const charted = currentIds.includes(id);
+      const charted = includes(currentIds, id);
       const podcastUpdate: UpdateStr<PodcastDownloads> = {
         id,
         changes: {

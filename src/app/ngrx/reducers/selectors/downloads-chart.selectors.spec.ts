@@ -3,7 +3,7 @@ import { StoreModule, Store, select } from '@ngrx/store';
 
 import { RootState, reducers } from '../';
 import { getMetricsProperty, ChartType,
-  CHARTTYPE_STACKED, CHARTTYPE_PODCAST, CHARTTYPE_EPISODES } from '../models';
+  CHARTTYPE_STACKED, CHARTTYPE_PODCAST, CHARTTYPE_EPISODES, EPISODE_PAGE_SIZE } from '../models';
 import { getTotal } from '../../../shared/util/chart.util';
 import { TimeseriesChartModel } from 'ngx-prx-styleguide';
 import { routerParams,  podcast, episodes,
@@ -32,6 +32,7 @@ describe('Downloads Chart Selectors', () => {
       store.dispatch(new ACTIONS.CastleEpisodePageSuccessAction({
         episodes,
         page: 1,
+        per: EPISODE_PAGE_SIZE,
         total: episodes.length
       }));
       store.dispatch(new ACTIONS.CastleEpisodeMetricsSuccessAction({
@@ -121,6 +122,7 @@ describe('Downloads Chart Selectors', () => {
       store.dispatch(new ACTIONS.CastleEpisodePageSuccessAction({
         episodes,
         page: 1,
+        per: EPISODE_PAGE_SIZE,
         total: episodes.length
       }));
       store.dispatch(new ACTIONS.CastleEpisodeMetricsSuccessAction({
@@ -159,6 +161,7 @@ describe('Downloads Chart Selectors', () => {
           {...episodes[1], title: episodes[0].title, guid: episodes[0].guid + '-' + episodes[0].guid}
         ],
         page: 1,
+        per: EPISODE_PAGE_SIZE,
         total: episodes.length
       }));
 

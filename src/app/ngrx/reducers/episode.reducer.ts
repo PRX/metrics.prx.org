@@ -59,13 +59,14 @@ export function reducer(
       return {...state, error: null, pagesLoading: addToArray(state.pagesLoading, action.payload.page)};
     }
     case ActionTypes.CASTLE_EPISODE_PAGE_SUCCESS: {
+      const { page, total, episodes } = action.payload;
       return {
-        ...adapter.upsertMany(action.payload.episodes.map(episode => {
+        ...adapter.upsertMany(episodes.map(episode => {
           return {id: episode.guid, changes: episode};
         }), state),
-        pagesLoaded: addToArray(state.pagesLoaded, action.payload.page),
-        pagesLoading: removeFromArray(state.pagesLoading, action.payload.page),
-        total: action.payload.page === 1 || !state.total ? action.payload.total : state.total
+        pagesLoaded: addToArray(state.pagesLoaded, page),
+        pagesLoading: removeFromArray(state.pagesLoading, page),
+        total: page === 1 || !state.total ? total : state.total
       };
     }
     case ActionTypes.CASTLE_EPISODE_PAGE_FAILURE: {

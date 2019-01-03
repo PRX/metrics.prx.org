@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { StoreModule, Store, select } from '@ngrx/store';
 
 import { RootState, reducers } from '../';
-import { DownloadsTableModel, getMetricsProperty } from '../models';
+import { DownloadsTableModel, getMetricsProperty, EPISODE_PAGE_SIZE } from '../models';
 import { routerParams,  podcast, episodes,
   podDownloads, podAllTimeDownloads, podAllTimeDownloadsOff,
   ep0Downloads, ep1Downloads,
@@ -31,6 +31,7 @@ describe('Downloads Table Selectors', () => {
     store.dispatch(new ACTIONS.CastleEpisodePageSuccessAction({
       episodes,
       page: 1,
+      per: EPISODE_PAGE_SIZE,
       total: episodes.length
     }));
     store.dispatch(new ACTIONS.CastleEpisodeMetricsSuccessAction({

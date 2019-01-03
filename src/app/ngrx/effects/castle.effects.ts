@@ -15,7 +15,7 @@ import { HalDoc } from '../../core';
 import { CastleService } from '../../core';
 import {
   Episode, RouterParams, getMetricsProperty, METRICSTYPE_DOWNLOADS,
-  PODCAST_PAGE_SIZE, EPISODE_PAGE_SIZE, GROUPTYPE_GEOSUBDIV
+  PODCAST_PAGE_SIZE, GROUPTYPE_GEOSUBDIV
 } from '../';
 import * as localStorageUtil from '../../shared/util/local-storage.util';
 
@@ -118,18 +118,20 @@ export class CastleEffects {
   // basic - load > success/failure episode page
   @Effect()
   loadEpisodePage$: Observable<Action> = this.actions$.pipe(
-    ofType(ACTIONS.ActionTypes.CASTLE_EPISODE_PAGE_LOAD),
-    map((action: ACTIONS.CastleEpisodePageLoadAction) => action.payload),
-    concatMap((payload: ACTIONS.CastleEpisodePageLoadPayload) => {
-      const { podcastId, page, all } = payload;
-      return this.castle.follow('prx:podcast', {id: podcastId}).followItems('prx:episodes', {page, per: EPISODE_PAGE_SIZE})
+    ofType(ACTIONS.ActionTypes.CASTLE_EPISODE_PAGE_LOAD, ACTIONS.ActionTypes.CASTLE_EPISODE_SEARCH_PAGE_LOAD),
+    // map((action: ACTIONS.CastleEpisodePageLoadAction) => action.payload),
+    concatMap((action: ACTIONS.CastleEpisodePageLoadAction) => {
+      const { podcastId, page, per } = action.payload;
+      return this.castle.follow('prx:podcast', {id: podcastId}).followItems('prx:episodes', { page, per })
         .pipe(
           map((results: HalDoc[]) => {
-            return new ACTIONS.CastleEpisodePageSuccessAction({
+            const successAction = action.type === ACTIONS.ActionTypes.CASTLE_EPISODE_PAGE_LOAD ?
+            'CastleEpisodePageSuccessAction' : 'CastleEpisodeSearchPageSuccessAction';
+            return new ACTIONS[successAction]({
               page,
-              all,
+              per,
               total: results[0].total(),
-              episodes: results.map(doc => {
+              episodes: results.map((doc): Episode => {
                 return {
                   guid: '' + doc['id'],
                   podcastId,
@@ -140,28 +142,30 @@ export class CastleEffects {
               })
             });
           }),
-          catchError(error => Observable.of(new ACTIONS.CastleEpisodePageFailureAction({error})))
+          catchError(error => {
+            const failAction = action.type === ACTIONS.ActionTypes.CASTLE_EPISODE_PAGE_LOAD ?
+            'CastleEpisodePageFailureAction' : 'CastleEpisodeSearchPageFailureAction';
+            return Observable.of(new ACTIONS[failAction]({error}));
+          })
         );
     })
   );
 
   // on episode page success if loading all episode pages and not yet finished, load next page
-  /* Episode loading TBD but this isn't needed for now
-  @Effect()
-  loadNextEpisodePage$: Observable<Action> = this.actions$.pipe(
-    ofType(ACTIONS.ActionTypes.CASTLE_EPISODE_PAGE_SUCCESS),
-    filter((action: ACTIONS.CastleEpisodePageSuccessAction) => {
-      const { page, all, total, episodes } = action.payload;
-      return all && page * EPISODE_PAGE_SIZE < total && episodes && episodes.length > 0;
-    }),
-    map((action: ACTIONS.CastleEpisodePageSuccessAction) => action.payload),
-    concatMap((payload: ACTIONS.CastleEpisodePageSuccessPayload) => {
-      const { page, all, episodes } = payload;
-      return Observable.of(new ACTIONS.CastleEpisodePageLoadAction(
-        {podcastId: episodes[0].podcastId, page: page + 1, all}));
-    })
-  );
-  */
+  // @Effect()
+  // loadNextEpisodePage$: Observable<Action> = this.actions$.pipe(
+  //   ofType(ACTIONS.ActionTypes.CASTLE_EPISODE_PAGE_SUCCESS),
+  //   filter((action: ACTIONS.CastleEpisodePageSuccessAction) => {
+  //     const { page, per, scrolling, total, episodes } = action.payload;
+  //     return scrolling && page * per < total && episodes && episodes.length > 0;
+  //   }),
+  //   map((action: ACTIONS.CastleEpisodePageSuccessAction) => action.payload),
+  //   concatMap((payload: ACTIONS.CastleEpisodePageSuccessPayload) => {
+  //     const { page, per, scrolling, episodes } = payload;
+  //     return Observable.of(new ACTIONS.CastleEpisodePageLoadAction(
+  //       {podcastId: episodes[0].podcastId, page: page + 1, per, scrolling}));
+  //   })
+  // );
 
   // whenever an episode page is loaded that is the currently routed page,
   // call the load actions for podcast and episode metrics

@@ -35,7 +35,7 @@ export class CastlePodcastPageFailureAction {
 export interface CastleEpisodePageLoadPayload {
   podcastId: string;
   page: number;
-  all?: boolean;
+  per: number;
 }
 
 export class CastleEpisodePageLoadAction implements Action {
@@ -44,8 +44,15 @@ export class CastleEpisodePageLoadAction implements Action {
   constructor(public payload: CastleEpisodePageLoadPayload) {}
 }
 
+export class CastleEpisodeSearchPageLoadAction implements Action {
+  readonly type = ActionTypes.CASTLE_EPISODE_SEARCH_PAGE_LOAD;
+
+  constructor(public payload: CastleEpisodePageLoadPayload) {}
+}
+
 export interface CastleEpisodePageSuccessPayload {
   page: number;
+  per: number;
   total: number;
   all?: boolean;
   episodes: Episode[];
@@ -57,8 +64,20 @@ export class CastleEpisodePageSuccessAction implements Action {
   constructor(public payload: CastleEpisodePageSuccessPayload) {}
 }
 
+export class CastleEpisodeSearchPageSuccessAction implements Action {
+  readonly type = ActionTypes.CASTLE_EPISODE_SEARCH_PAGE_SUCCESS;
+
+  constructor(public payload: CastleEpisodePageSuccessPayload) {}
+}
+
 export class CastleEpisodePageFailureAction implements Action {
   readonly type = ActionTypes.CASTLE_EPISODE_PAGE_FAILURE;
+
+  constructor(public payload: {error: any}) {}
+}
+
+export class CastleEpisodeSearchPageFailureAction implements Action {
+  readonly type = ActionTypes.CASTLE_EPISODE_SEARCH_PAGE_FAILURE;
 
   constructor(public payload: {error: any}) {}
 }

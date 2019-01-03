@@ -26,7 +26,8 @@ import {
   CHARTTYPE_PODCAST,
   CHARTTYPE_EPISODES,
   CHARTTYPE_LINE,
-  CHARTTYPE_GEOCHART
+  CHARTTYPE_GEOCHART,
+  EPISODE_PAGE_SIZE
 } from '../../ngrx/';
 import * as dateUtil from '../../shared/util/date/date.util';
 import * as localStorageUtil from '../../shared/util/local-storage.util';
@@ -92,6 +93,7 @@ describe('RoutingService', () => {
         podcastId: episodes[1].podcastId
       }],
       page: 2,
+      per: EPISODE_PAGE_SIZE,
       total: episodes.length
     }));
     store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerParams: {
@@ -341,19 +343,19 @@ describe('RoutingService', () => {
 
   it ('should check if episodes changed', () => {
     routingService.routerParams = undefined;
-    expect(routingService.isEpisodesChanged({episodePage: 1})).toBeTruthy();
+    expect(routingService.isEpisodePageChanged({episodePage: 1})).toBeTruthy();
     routingService.routerParams = undefined;
-    expect(routingService.isEpisodesChanged(undefined)).toBeFalsy();
+    expect(routingService.isEpisodePageChanged(undefined)).toBeFalsy();
 
     routingService.routerParams = {};
-    expect(routingService.isEpisodesChanged({episodePage: 1})).toBeTruthy();
+    expect(routingService.isEpisodePageChanged({episodePage: 1})).toBeTruthy();
 
     routingService.routerParams = {episodePage: 2};
-    expect(routingService.isEpisodesChanged({episodePage: 1})).toBeTruthy();
+    expect(routingService.isEpisodePageChanged({episodePage: 1})).toBeTruthy();
 
     routingService.routerParams = {episodePage: 1};
-    expect(routingService.isEpisodesChanged(undefined)).toBeFalsy();
-    expect(routingService.isEpisodesChanged({episodePage: 1})).toBeFalsy();
+    expect(routingService.isEpisodePageChanged(undefined)).toBeFalsy();
+    expect(routingService.isEpisodePageChanged({episodePage: 1})).toBeFalsy();
   });
 
   it('should check if group changed', () => {

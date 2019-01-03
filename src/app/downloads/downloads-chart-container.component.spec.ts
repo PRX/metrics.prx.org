@@ -5,7 +5,7 @@ import { StoreModule, Store } from '@ngrx/store';
 import { reducers } from '../ngrx/reducers';
 
 import * as ACTIONS from '../ngrx/actions';
-import { getMetricsProperty } from '../ngrx';
+import { getMetricsProperty, EPISODE_PAGE_SIZE } from '../ngrx';
 
 import { SharedModule } from '../shared';
 import { DownloadsChartContainerComponent } from './downloads-chart-container.component';
@@ -43,6 +43,7 @@ describe('DownloadsChartContainerComponent', () => {
       store.dispatch(new ACTIONS.CastleEpisodePageSuccessAction({
         episodes,
         page: 1,
+        per: EPISODE_PAGE_SIZE,
         total: episodes.length
       }));
       store.dispatch(new ACTIONS.CastleEpisodeMetricsSuccessAction({

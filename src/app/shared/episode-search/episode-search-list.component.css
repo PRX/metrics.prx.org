@@ -1,0 +1,8 @@
+prx-spinner {
+  position: relative;
+  display: block;
+  min-height: 48px;
+}
+.pub-date {
+  color: #bebebe;
+}

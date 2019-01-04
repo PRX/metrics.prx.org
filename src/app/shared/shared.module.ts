@@ -5,6 +5,9 @@ import { CommonModule } from '@angular/common';
 import { AuthGuard, DeactivateGuard, UnauthGuard,
   ChartsModule, DatepickerModule, FancyFormModule, ImageModule, SpinnerModule } from 'ngx-prx-styleguide';
 
+import { EpisodeSearchComponent } from './episode-search/episode-search.component';
+import { EpisodeSearchDropdownComponent } from './episode-search/episode-search-dropdown.component';
+import { EpisodeSearchListComponent } from './episode-search/episode-search-list.component';
 import { ErrorRetryComponent } from './error/error-retry.component';
 import { MetricsTypeHeadingComponent } from './menu/metrics-type-heading.component';
 import { ChartTypeComponent } from './menu/chart-type.component';
@@ -34,6 +37,9 @@ import { TotalsTableComponent } from './table/totals-table.component';
     DateRangeSummaryComponent,
     DownloadsSummaryComponent,
     EpisodePageComponent,
+    EpisodeSearchComponent,
+    EpisodeSearchDropdownComponent,
+    EpisodeSearchListComponent,
     ErrorRetryComponent,
     IntervalDropdownComponent,
     LargeNumberPipe,
@@ -60,6 +66,7 @@ import { TotalsTableComponent } from './table/totals-table.component';
     SpinnerModule,
     LargeNumberPipe,
     EpisodePageComponent,
+    EpisodeSearchComponent,
     NavMenuContainerComponent,
     NestedTotalsTableComponent,
     PodcastNavComponent,

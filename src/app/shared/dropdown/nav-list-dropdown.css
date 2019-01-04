@@ -1,3 +1,6 @@
+ul {
+  max-width: 400px;
+}
 li .btn-link {
   color: #ffffff;
 }

@@ -26,7 +26,7 @@ import * as dateUtil from '../util/date';
       </div>
     </div>
   `,
-  styleUrls: ['./dropdown.css', './interval-dropdown.component.css']
+  styleUrls: ['../dropdown/dropdown.css', './interval-dropdown.component.css']
 })
 export class IntervalDropdownComponent implements OnChanges {
   @Input() routerParams: RouterParams;

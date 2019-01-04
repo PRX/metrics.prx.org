@@ -45,7 +45,7 @@ import { GoogleAnalyticsEventAction, RouteAdvancedRangeAction } from '../../../n
       </div>
     </div>
   `,
-  styleUrls: ['../dropdown.css', './custom-date-range-dropdown.component.css']
+  styleUrls: ['../../dropdown/dropdown.css', './custom-date-range-dropdown.component.css']
 })
 
 export class CustomDateRangeDropdownComponent implements OnChanges {

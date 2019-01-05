@@ -41,6 +41,7 @@ import {
   ChartTogglePodcastAction,
   ChartTogglePodcastGroupAction
 } from './chart-toggle.action.creator';
+import { EpisodeSearchSelectEpisodesAction } from './episode-search.action.creator';
 
 export type AllActions
   = CmsAccountAction
@@ -87,7 +88,8 @@ export type AllActions
   | ChartSingleEpisodeAction
   | ChartToggleEpisodeAction
   | ChartTogglePodcastAction
-  | ChartTogglePodcastGroupAction;
+  | ChartTogglePodcastGroupAction
+  | EpisodeSearchSelectEpisodesAction;
 
 export { ActionTypes } from './action.types';
 export { CmsAccountSuccessPayload, CmsAccountSuccessAction,
@@ -130,3 +132,4 @@ export { ChartSingleEpisodePayload, ChartSingleEpisodeAction,
   ChartToggleEpisodePayload, ChartToggleEpisodeAction,
   ChartTogglePodcastPayload, ChartTogglePodcastAction,
   ChartTogglePodcastGroupPayload, ChartTogglePodcastGroupAction } from './chart-toggle.action.creator';
+export { EpisodeSearchSelectEpisodesPayload, EpisodeSearchSelectEpisodesAction } from './episode-search.action.creator';

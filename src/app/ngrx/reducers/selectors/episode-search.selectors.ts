@@ -23,6 +23,11 @@ export const selectEpisodeSearchLoading = createSelector(
   fromEpisodeSearch.getLoading
 );
 
+export const selectEpisodeSearchSelectedEpisodeGuids = createSelector(
+  selectEpisodeSearchState,
+  fromEpisodeSearch.getSelected
+);
+
 export const selectEpisodeSearchGuids = createSelector(
   selectEpisodeSearchState,
   fromEpisodeSearch.selectEpisodeGuids

@@ -3,6 +3,7 @@ import { Episode } from './models/episode.model';
 import { ActionTypes, AllActions } from '../actions';
 
 export interface State extends EntityState<Episode> {
+  selected?: string[];
   total: number;
   page: number;
   loading: boolean;
@@ -45,6 +46,20 @@ export function reducer(
         loading: false
       };
     }
+    case ActionTypes.EPISODE_SEARCH_SELECT_EPISODES: {
+      return {
+        ...state,
+        selected: action.payload.episodeGuids
+      };
+    }
+    case ActionTypes.ROUTE_PODCAST: {
+      return {
+        ...state,
+        total: 0,
+        page: 0,
+        selected: null
+      };
+    }
     default: {
       return state;
     }
@@ -65,3 +80,4 @@ export const getTotal = (state: State) => state.total;
 export const getPage = (state: State) => state.page;
 export const getError = (state: State) => state.error;
 export const getLoading = (state: State) => state.loading;
+export const getSelected = (state: State) => state.selected;

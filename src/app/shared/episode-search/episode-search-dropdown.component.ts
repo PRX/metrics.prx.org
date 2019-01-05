@@ -1,20 +1,25 @@
 import { Component, ElementRef, Input, Renderer2, OnInit, ViewChild } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Episode, EPISODE_SEARCH_PAGE_SIZE } from '../../ngrx';
-import { CastleEpisodeSearchPageLoadAction } from '../../ngrx/actions';
+import { CastleEpisodeSearchPageLoadAction, EpisodeSearchSelectEpisodesAction } from '../../ngrx/actions';
 
 @Component({
   selector: 'metrics-episode-search-dropdown',
   template: `
     <div class="dropdown" [class.open]="open">
       <div class="overlay" (click)="toggleOpen()"></div>
-      <div class="dropdown-button">
-        <button (click)="toggleOpen()"><span class="button-text">episodes</span><span class="down-arrow"></span></button>
+      <div class="dropdown-button" *ngIf="totalEpisodes">
+        <button (click)="toggleOpen()">
+          <span class="button-text">{{ selectedEpisode?.title || "All " + totalEpisodes + " episodes" }}</span>
+          <span class="down-arrow"></span>
+        </button>
       </div>
       <div class="dropdown-content rollout" #dropdownContent>
         <metrics-episode-search-list
           [episodes]="episodes"
-          [episodesLoading]="episodesLoading">
+          [episodesLoading]="episodesLoading"
+          [selectedEpisodes]="selectedEpisodes"
+          (selectEpisode)="onToggleSelectEpisode($event)">
         </metrics-episode-search-list>
       </div>
     </div>
@@ -24,6 +29,8 @@ import { CastleEpisodeSearchPageLoadAction } from '../../ngrx/actions';
 export class EpisodeSearchDropdownComponent implements OnInit {
   @Input() episodes: Episode[];
   @Input() episodesLoading: boolean;
+  @Input() selectedEpisodes: string[];
+  @Input() totalEpisodes: number;
   @Input() lastPage: number;
   @Input() maxPages: number;
   @Input() podcastId: string;
@@ -52,6 +59,18 @@ export class EpisodeSearchDropdownComponent implements OnInit {
         }));
       }
     });
+  }
+
+  onToggleSelectEpisode(episode) {
+    let episodeGuids;
+    if (!this.selectedEpisodes) {
+      episodeGuids = [episode.guid];
+    } else if (this.selectedEpisodes.indexOf(episode.guid) === -1) {
+      episodeGuids = this.selectedEpisodes.concat([episode.guid]);
+    } else {
+      episodeGuids = this.selectedEpisodes.filter(e => e !== episode.guid);
+    }
+    this.store.dispatch(new EpisodeSearchSelectEpisodesAction({episodeGuids}));
   }
 
   toggleOpen() {

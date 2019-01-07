@@ -119,10 +119,9 @@ export class CastleEffects {
   @Effect()
   loadEpisodePage$: Observable<Action> = this.actions$.pipe(
     ofType(ACTIONS.ActionTypes.CASTLE_EPISODE_PAGE_LOAD, ACTIONS.ActionTypes.CASTLE_EPISODE_SEARCH_PAGE_LOAD),
-    // map((action: ACTIONS.CastleEpisodePageLoadAction) => action.payload),
     concatMap((action: ACTIONS.CastleEpisodePageLoadAction) => {
-      const { podcastId, page, per } = action.payload;
-      return this.castle.follow('prx:podcast', {id: podcastId}).followItems('prx:episodes', { page, per })
+      const { podcastId, page, per, search } = action.payload;
+      return this.castle.follow('prx:podcast', {id: podcastId}).followItems('prx:episodes', { page, per, ...(search && {search}) })
         .pipe(
           map((results: HalDoc[]) => {
             const successAction = action.type === ACTIONS.ActionTypes.CASTLE_EPISODE_PAGE_LOAD ?
@@ -130,7 +129,7 @@ export class CastleEffects {
             return new ACTIONS[successAction]({
               page,
               per,
-              total: results[0].total(),
+              total: results && results.length ? results[0].total() : 0,
               episodes: results.map((doc): Episode => {
                 return {
                   guid: '' + doc['id'],

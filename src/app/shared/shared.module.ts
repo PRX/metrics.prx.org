@@ -7,6 +7,7 @@ import { AuthGuard, DeactivateGuard, UnauthGuard,
 
 import { EpisodeSearchComponent } from './episode-search/episode-search.component';
 import { EpisodeSearchDropdownComponent } from './episode-search/episode-search-dropdown.component';
+import { EpisodeSearchInputComponent } from './episode-search/episode-search-input.component';
 import { EpisodeSearchListComponent } from './episode-search/episode-search-list.component';
 import { ErrorRetryComponent } from './error/error-retry.component';
 import { MetricsTypeHeadingComponent } from './menu/metrics-type-heading.component';
@@ -39,6 +40,7 @@ import { TotalsTableComponent } from './table/totals-table.component';
     EpisodePageComponent,
     EpisodeSearchComponent,
     EpisodeSearchDropdownComponent,
+    EpisodeSearchInputComponent,
     EpisodeSearchListComponent,
     ErrorRetryComponent,
     IntervalDropdownComponent,

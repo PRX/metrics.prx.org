@@ -36,6 +36,7 @@ export interface CastleEpisodePageLoadPayload {
   podcastId: string;
   page: number;
   per: number;
+  search?: string;
 }
 
 export class CastleEpisodePageLoadAction implements Action {

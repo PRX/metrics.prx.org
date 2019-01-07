@@ -10,3 +10,7 @@ export class EpisodeSearchSelectEpisodesAction implements Action {
 
   constructor(public payload: EpisodeSearchSelectEpisodesPayload) {}
 }
+
+export interface EpisodeSearchPayload {
+  search: string;
+}

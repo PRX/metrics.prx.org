@@ -13,6 +13,14 @@ export const selectLastEpisodeSearchPage = createSelector(
   selectEpisodeSearchState,
   fromEpisodeSearch.getPage
 );
+export const selectEpisodeSearchSelectedEpisodeGuids = createSelector(
+  selectEpisodeSearchState,
+  fromEpisodeSearch.getSelected
+);
+export const selectEpisodeSearchTerm = createSelector(
+  selectEpisodeSearchState,
+  fromEpisodeSearch.getSearch
+);
 export const selectEpisodeSearchError = createSelector(
   selectEpisodeSearchState,
   fromEpisodeSearch.getError
@@ -21,11 +29,6 @@ export const selectEpisodeSearchError = createSelector(
 export const selectEpisodeSearchLoading = createSelector(
   selectEpisodeSearchState,
   fromEpisodeSearch.getLoading
-);
-
-export const selectEpisodeSearchSelectedEpisodeGuids = createSelector(
-  selectEpisodeSearchState,
-  fromEpisodeSearch.getSelected
 );
 
 export const selectEpisodeSearchGuids = createSelector(

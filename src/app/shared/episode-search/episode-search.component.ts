@@ -5,13 +5,14 @@ import { Episode } from '../../ngrx';
 import { selectRoutedPodcastSearchEpisodes, selectEpisodeSearchLoading,
   selectEpisodeSearchSelectedEpisodeGuids, selectEpisodeSearchTotal,
   selectLastEpisodeSearchPage, selectNumEpisodeSearchPages,
-  selectPodcastRoute } from '../../ngrx/reducers/selectors';
+  selectEpisodeSearchTerm, selectPodcastRoute } from '../../ngrx/reducers/selectors';
 
 @Component({
   selector: 'metrics-episode-search',
   template: `
     <metrics-episode-search-dropdown
       [episodes]="episodes$ | async"
+      [searchTerm]="searchTerm$ | async"
       [episodesLoading]="episodesLoading$ | async"
       [selectedEpisodes]="selectedEpisodeGuids$ | async"
       [totalEpisodes]="totalEpisodes$| async"
@@ -23,6 +24,7 @@ import { selectRoutedPodcastSearchEpisodes, selectEpisodeSearchLoading,
 })
 export class EpisodeSearchComponent {
   episodes$: Observable<Episode[]>;
+  searchTerm$: Observable<string>;
   episodesLoading$: Observable<boolean>;
   selectedEpisodeGuids$: Observable<string[]>;
   totalEpisodes$: Observable<number>;
@@ -32,6 +34,7 @@ export class EpisodeSearchComponent {
 
   constructor(private store: Store<any>) {
     this.episodes$ = this.store.pipe(select(selectRoutedPodcastSearchEpisodes));
+    this.searchTerm$ = this.store.pipe(select(selectEpisodeSearchTerm));
     this.episodesLoading$ = this.store.pipe(select(selectEpisodeSearchLoading));
     this.selectedEpisodeGuids$ = this.store.pipe(select(selectEpisodeSearchSelectedEpisodeGuids));
     this.totalEpisodes$ = this.store.pipe(select(selectEpisodeSearchTotal));

@@ -6,6 +6,7 @@ export interface State extends EntityState<Episode> {
   selected?: string[];
   total: number;
   page: number;
+  search?: string;
   loading: boolean;
   error?: any;
 }
@@ -15,8 +16,8 @@ export const adapter: EntityAdapter<Episode> = createEntityAdapter<Episode>({
 });
 
 export const initialState: State = adapter.getInitialState({
-  total: 0,
-  page: 0,
+  total: null,
+  page: null,
   loading: false
 });
 
@@ -26,7 +27,27 @@ export function reducer(
 ): State {
   switch (action.type) {
     case ActionTypes.CASTLE_EPISODE_SEARCH_PAGE_LOAD: {
-      return {...state, error: null, loading: true};
+      const { page, search } = action.payload;
+      // if the search term has changed, clear episodes, total, and selected
+      if (search !== state.search) {
+        return {
+          ...adapter.removeAll(state),
+          page,
+          search,
+          total: null,
+          selected: null,
+          error: null,
+          loading: true
+        };
+      } else {
+        return {
+          ...state,
+          page,
+          search,
+          error: null,
+          loading: true
+        };
+      }
     }
     case ActionTypes.CASTLE_EPISODE_SEARCH_PAGE_SUCCESS: {
       const { page, total, episodes } = action.payload;
@@ -55,8 +76,8 @@ export function reducer(
     case ActionTypes.ROUTE_PODCAST: {
       return {
         ...state,
-        total: 0,
-        page: 0,
+        total: null,
+        page: null,
         selected: null
       };
     }
@@ -78,6 +99,7 @@ export const selectAllEpisodes = selectAll;
 
 export const getTotal = (state: State) => state.total;
 export const getPage = (state: State) => state.page;
+export const getSelected = (state: State) => state.selected;
+export const getSearch = (state: State) => state.search;
 export const getError = (state: State) => state.error;
 export const getLoading = (state: State) => state.loading;
-export const getSelected = (state: State) => state.selected;

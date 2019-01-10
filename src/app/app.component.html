@@ -2,7 +2,7 @@
 <prx-header>
   <div class="podcast-nav">
     <metrics-podcast-nav *ngIf="loggedIn"></metrics-podcast-nav>
-    <metrics-episode-search></metrics-episode-search>
+    <metrics-episode-select></metrics-episode-select>
   </div>
   <prx-navuser *ngIf="loggedIn" [userinfo]="userinfo">
     <prx-spinner class="user-loading"></prx-spinner>

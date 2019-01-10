@@ -2,7 +2,7 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { Episode } from '../../ngrx';
 
 @Component({
-  selector: 'metrics-episode-search-list',
+  selector: 'metrics-episode-select-list',
   template: `
     <ul>
       <li *ngFor="let episode of episodes">
@@ -16,9 +16,9 @@ import { Episode } from '../../ngrx';
     </ul>
     <prx-spinner *ngIf="episodesLoading"></prx-spinner>
   `,
-  styleUrls: ['episode-search-list.component.css', '../dropdown/nav-list-dropdown.css']
+  styleUrls: ['episode-select-list.component.css', '../dropdown/nav-list-dropdown.css']
 })
-export class EpisodeSearchListComponent {
+export class EpisodeSelectListComponent {
   @Input() episodes: Episode[];
   @Input() episodesLoading: boolean;
   @Input() selectedEpisodes: string[];

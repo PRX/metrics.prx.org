@@ -5,10 +5,10 @@ import { CommonModule } from '@angular/common';
 import { AuthGuard, DeactivateGuard, UnauthGuard,
   ChartsModule, DatepickerModule, FancyFormModule, ImageModule, SpinnerModule } from 'ngx-prx-styleguide';
 
-import { EpisodeSearchComponent } from './episode-search/episode-search.component';
-import { EpisodeSearchDropdownComponent } from './episode-search/episode-search-dropdown.component';
-import { EpisodeSearchInputComponent } from './episode-search/episode-search-input.component';
-import { EpisodeSearchListComponent } from './episode-search/episode-search-list.component';
+import { EpisodeSearchInputComponent } from './episode-select/episode-search-input.component';
+import { EpisodeSelectComponent } from './episode-select/episode-select.component';
+import { EpisodeSelectDropdownComponent } from './episode-select/episode-select-dropdown.component';
+import { EpisodeSelectListComponent } from './episode-select/episode-select-list.component';
 import { ErrorRetryComponent } from './error/error-retry.component';
 import { MetricsTypeHeadingComponent } from './menu/metrics-type-heading.component';
 import { ChartTypeComponent } from './menu/chart-type.component';
@@ -38,10 +38,10 @@ import { TotalsTableComponent } from './table/totals-table.component';
     DateRangeSummaryComponent,
     DownloadsSummaryComponent,
     EpisodePageComponent,
-    EpisodeSearchComponent,
-    EpisodeSearchDropdownComponent,
     EpisodeSearchInputComponent,
-    EpisodeSearchListComponent,
+    EpisodeSelectComponent,
+    EpisodeSelectDropdownComponent,
+    EpisodeSelectListComponent,
     ErrorRetryComponent,
     IntervalDropdownComponent,
     LargeNumberPipe,
@@ -68,7 +68,7 @@ import { TotalsTableComponent } from './table/totals-table.component';
     SpinnerModule,
     LargeNumberPipe,
     EpisodePageComponent,
-    EpisodeSearchComponent,
+    EpisodeSelectComponent,
     NavMenuContainerComponent,
     NestedTotalsTableComponent,
     PodcastNavComponent,

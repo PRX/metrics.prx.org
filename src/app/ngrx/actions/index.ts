@@ -7,9 +7,9 @@ import {
   CastleEpisodePageLoadAction,
   CastleEpisodePageSuccessAction,
   CastleEpisodePageFailureAction,
-  CastleEpisodeSearchPageLoadAction,
-  CastleEpisodeSearchPageSuccessAction,
-  CastleEpisodeSearchPageFailureAction,
+  CastleEpisodeSelectPageLoadAction,
+  CastleEpisodeSelectPageSuccessAction,
+  CastleEpisodeSelectPageFailureAction,
   CastlePodcastAllTimeDownloadsLoadAction,
   CastlePodcastAllTimeDownloadsSuccessAction,
   CastlePodcastAllTimeDownloadsFailureAction,
@@ -41,7 +41,7 @@ import {
   ChartTogglePodcastAction,
   ChartTogglePodcastGroupAction
 } from './chart-toggle.action.creator';
-import { EpisodeSearchSelectEpisodesAction } from './episode-search.action.creator';
+import { EpisodeSelectEpisodesAction } from './episode-select.action.creator';
 
 export type AllActions
   = CmsAccountAction
@@ -53,9 +53,9 @@ export type AllActions
   | CastleEpisodePageLoadAction
   | CastleEpisodePageSuccessAction
   | CastleEpisodePageFailureAction
-  | CastleEpisodeSearchPageLoadAction
-  | CastleEpisodeSearchPageSuccessAction
-  | CastleEpisodeSearchPageFailureAction
+  | CastleEpisodeSelectPageLoadAction
+  | CastleEpisodeSelectPageSuccessAction
+  | CastleEpisodeSelectPageFailureAction
   | CastlePodcastMetricsLoadAction
   | CastlePodcastMetricsSuccessAction
   | CastlePodcastMetricsFailureAction
@@ -89,7 +89,7 @@ export type AllActions
   | ChartToggleEpisodeAction
   | ChartTogglePodcastAction
   | ChartTogglePodcastGroupAction
-  | EpisodeSearchSelectEpisodesAction;
+  | EpisodeSelectEpisodesAction;
 
 export { ActionTypes } from './action.types';
 export { CmsAccountSuccessPayload, CmsAccountSuccessAction,
@@ -99,7 +99,7 @@ export {
   CastlePodcastPageSuccessPayload, CastlePodcastPageSuccessAction, CastlePodcastPageFailureAction,
   CastleEpisodePageLoadPayload, CastleEpisodePageLoadAction,
   CastleEpisodePageSuccessPayload, CastleEpisodePageSuccessAction, CastleEpisodePageFailureAction,
-  CastleEpisodeSearchPageLoadAction, CastleEpisodeSearchPageSuccessAction, CastleEpisodeSearchPageFailureAction,
+  CastleEpisodeSelectPageLoadAction, CastleEpisodeSelectPageSuccessAction, CastleEpisodeSelectPageFailureAction,
   CastlePodcastMetricsLoadPayload, CastlePodcastMetricsLoadAction,
   CastlePodcastMetricsSuccessPayload, CastlePodcastMetricsSuccessAction,
   CastlePodcastMetricsFailurePayload, CastlePodcastMetricsFailureAction,
@@ -132,4 +132,4 @@ export { ChartSingleEpisodePayload, ChartSingleEpisodeAction,
   ChartToggleEpisodePayload, ChartToggleEpisodeAction,
   ChartTogglePodcastPayload, ChartTogglePodcastAction,
   ChartTogglePodcastGroupPayload, ChartTogglePodcastGroupAction } from './chart-toggle.action.creator';
-export { EpisodeSearchSelectEpisodesPayload, EpisodeSearchSelectEpisodesAction } from './episode-search.action.creator';
+export { EpisodeSelectEpisodesPayload, EpisodeSelectEpisodesAction } from './episode-select.action.creator';

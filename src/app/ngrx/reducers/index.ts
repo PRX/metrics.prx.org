@@ -8,7 +8,7 @@ import * as fromPodcastRanks from './podcast-ranks.reducer';
 import * as fromPodcastTotals from './podcast-totals.reducer';
 import * as fromPodcastGroupCharted from './podcast-group-charted.reducer';
 import * as fromEpisode from './episode.reducer';
-import * as fromEpisodeSearch from './episode-search.reducer';
+import * as fromEpisodeSelect from './episode-select.reducer';
 import * as fromEpisodeAllTimeDownloads from './episode-alltime-downloads.reducer';
 import { EpisodeMetricsReducer, EpisodeMetricsModel } from './episode-metrics.reducer';
 import { CustomRouterReducer } from './router.reducer';
@@ -20,7 +20,7 @@ export interface RootState {
   account: AccountState;
   podcast: fromPodcast.State;
   episode: fromEpisode.State;
-  episodeSearch: fromEpisodeSearch.State;
+  episodeSelect: fromEpisodeSelect.State;
   podcastAllTimeDownloads: fromPodcastAllTimeDownloads.State;
   episodeAllTimeDownloads: fromEpisodeAllTimeDownloads.State;
   podcastMetrics: PodcastMetricsModel[];
@@ -37,7 +37,7 @@ export const reducers: ActionReducerMap<RootState> = {
   account: AccountReducer,
   podcast: fromPodcast.reducer,
   episode: fromEpisode.reducer,
-  episodeSearch: fromEpisodeSearch.reducer,
+  episodeSelect: fromEpisodeSelect.reducer,
   podcastAllTimeDownloads: fromPodcastAllTimeDownloads.reducer,
   episodeAllTimeDownloads: fromEpisodeAllTimeDownloads.reducer,
   podcastMetrics: PodcastMetricsReducer,

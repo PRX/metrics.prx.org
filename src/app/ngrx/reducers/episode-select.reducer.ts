@@ -26,7 +26,7 @@ export function reducer(
   action: AllActions
 ): State {
   switch (action.type) {
-    case ActionTypes.CASTLE_EPISODE_SEARCH_PAGE_LOAD: {
+    case ActionTypes.CASTLE_EPISODE_SELECT_PAGE_LOAD: {
       const { page, search } = action.payload;
       // if the search term has changed, clear episodes, total, and selected
       if (search !== state.search) {
@@ -49,7 +49,7 @@ export function reducer(
         };
       }
     }
-    case ActionTypes.CASTLE_EPISODE_SEARCH_PAGE_SUCCESS: {
+    case ActionTypes.CASTLE_EPISODE_SELECT_PAGE_SUCCESS: {
       const { page, total, episodes } = action.payload;
       return {
         ...adapter.upsertMany(episodes.map(episode => {
@@ -60,14 +60,14 @@ export function reducer(
         loading: false
       };
     }
-    case ActionTypes.CASTLE_EPISODE_SEARCH_PAGE_FAILURE: {
+    case ActionTypes.CASTLE_EPISODE_SELECT_PAGE_FAILURE: {
       return {
         ...state,
         error: action.payload.error,
         loading: false
       };
     }
-    case ActionTypes.EPISODE_SEARCH_SELECT_EPISODES: {
+    case ActionTypes.EPISODE_SELECT_EPISODES: {
       return {
         ...state,
         selected: action.payload.episodeGuids

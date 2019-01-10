@@ -45,8 +45,8 @@ export class CastleEpisodePageLoadAction implements Action {
   constructor(public payload: CastleEpisodePageLoadPayload) {}
 }
 
-export class CastleEpisodeSearchPageLoadAction implements Action {
-  readonly type = ActionTypes.CASTLE_EPISODE_SEARCH_PAGE_LOAD;
+export class CastleEpisodeSelectPageLoadAction implements Action {
+  readonly type = ActionTypes.CASTLE_EPISODE_SELECT_PAGE_LOAD;
 
   constructor(public payload: CastleEpisodePageLoadPayload) {}
 }
@@ -65,8 +65,8 @@ export class CastleEpisodePageSuccessAction implements Action {
   constructor(public payload: CastleEpisodePageSuccessPayload) {}
 }
 
-export class CastleEpisodeSearchPageSuccessAction implements Action {
-  readonly type = ActionTypes.CASTLE_EPISODE_SEARCH_PAGE_SUCCESS;
+export class CastleEpisodeSelectPageSuccessAction implements Action {
+  readonly type = ActionTypes.CASTLE_EPISODE_SELECT_PAGE_SUCCESS;
 
   constructor(public payload: CastleEpisodePageSuccessPayload) {}
 }
@@ -77,8 +77,8 @@ export class CastleEpisodePageFailureAction implements Action {
   constructor(public payload: {error: any}) {}
 }
 
-export class CastleEpisodeSearchPageFailureAction implements Action {
-  readonly type = ActionTypes.CASTLE_EPISODE_SEARCH_PAGE_FAILURE;
+export class CastleEpisodeSelectPageFailureAction implements Action {
+  readonly type = ActionTypes.CASTLE_EPISODE_SELECT_PAGE_FAILURE;
 
   constructor(public payload: {error: any}) {}
 }

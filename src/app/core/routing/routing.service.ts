@@ -24,7 +24,7 @@ import {
   GROUPTYPE_AGENTNAME,
   GROUPTYPE_AGENTTYPE,
   EPISODE_PAGE_SIZE,
-  EPISODE_SEARCH_PAGE_SIZE
+  EPISODE_SELECT_PAGE_SIZE
 } from '../../ngrx/';
 import * as localStorageUtil from '../../shared/util/local-storage.util';
 import * as dateUtil from '../../shared/util/date/';
@@ -75,7 +75,7 @@ export class RoutingService {
 
   checkChangesToParamsAndLoadData(newRouterParams: RouterParams) {
     if (this.isPodcastChanged(newRouterParams)) {
-      this.loadSearchEpisodes(newRouterParams);
+      this.loadSelectEpisodes(newRouterParams);
     }
     switch (newRouterParams.metricsType) {
       case METRICSTYPE_DOWNLOADS:
@@ -278,11 +278,11 @@ export class RoutingService {
     }));
   }
 
-  loadSearchEpisodes(newRouterParams: RouterParams) {
-    this.store.dispatch(new ACTIONS.CastleEpisodeSearchPageLoadAction({
+  loadSelectEpisodes(newRouterParams: RouterParams) {
+    this.store.dispatch(new ACTIONS.CastleEpisodeSelectPageLoadAction({
       podcastId: newRouterParams.podcastId,
       page: 1,
-      per: EPISODE_SEARCH_PAGE_SIZE
+      per: EPISODE_SELECT_PAGE_SIZE
     }));
   }
 

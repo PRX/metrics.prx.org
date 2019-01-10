@@ -118,14 +118,14 @@ export class CastleEffects {
   // basic - load > success/failure episode page
   @Effect()
   loadEpisodePage$: Observable<Action> = this.actions$.pipe(
-    ofType(ACTIONS.ActionTypes.CASTLE_EPISODE_PAGE_LOAD, ACTIONS.ActionTypes.CASTLE_EPISODE_SEARCH_PAGE_LOAD),
+    ofType(ACTIONS.ActionTypes.CASTLE_EPISODE_PAGE_LOAD, ACTIONS.ActionTypes.CASTLE_EPISODE_SELECT_PAGE_LOAD),
     concatMap((action: ACTIONS.CastleEpisodePageLoadAction) => {
       const { podcastId, page, per, search } = action.payload;
       return this.castle.follow('prx:podcast', {id: podcastId}).followItems('prx:episodes', { page, per, ...(search && {search}) })
         .pipe(
           map((results: HalDoc[]) => {
             const successAction = action.type === ACTIONS.ActionTypes.CASTLE_EPISODE_PAGE_LOAD ?
-            'CastleEpisodePageSuccessAction' : 'CastleEpisodeSearchPageSuccessAction';
+            'CastleEpisodePageSuccessAction' : 'CastleEpisodeSelectPageSuccessAction';
             return new ACTIONS[successAction]({
               page,
               per,
@@ -143,7 +143,7 @@ export class CastleEffects {
           }),
           catchError(error => {
             const failAction = action.type === ACTIONS.ActionTypes.CASTLE_EPISODE_PAGE_LOAD ?
-            'CastleEpisodePageFailureAction' : 'CastleEpisodeSearchPageFailureAction';
+            'CastleEpisodePageFailureAction' : 'CastleEpisodeSelectPageFailureAction';
             return Observable.of(new ACTIONS[failAction]({error}));
           })
         );

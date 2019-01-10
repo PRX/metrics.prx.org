@@ -1,10 +1,10 @@
 import { Component, ElementRef, Input, Renderer2, OnInit, ViewChild } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { Episode, EPISODE_SEARCH_PAGE_SIZE } from '../../ngrx';
-import { CastleEpisodeSearchPageLoadAction, EpisodeSearchSelectEpisodesAction } from '../../ngrx/actions';
+import { Episode, EPISODE_SELECT_PAGE_SIZE } from '../../ngrx';
+import { CastleEpisodeSelectPageLoadAction, EpisodeSelectEpisodesAction } from '../../ngrx/actions';
 
 @Component({
-  selector: 'metrics-episode-search-dropdown',
+  selector: 'metrics-episode-select-dropdown',
   template: `
     <div class="dropdown" [class.open]="open">
       <div class="overlay" (click)="toggleOpen()"></div>
@@ -16,18 +16,18 @@ import { CastleEpisodeSearchPageLoadAction, EpisodeSearchSelectEpisodesAction } 
       </div>
       <div class="dropdown-content rollout" #dropdownContent>
         <metrics-episode-search-input [searchTerm]="searchTerm" (search)="loadEpisodesOnSearch($event)"></metrics-episode-search-input>
-        <metrics-episode-search-list
+        <metrics-episode-select-list
           [episodes]="episodes"
           [episodesLoading]="episodesLoading"
           [selectedEpisodes]="selectedEpisodes"
           (selectEpisode)="onToggleSelectEpisode($event)">
-        </metrics-episode-search-list>
+        </metrics-episode-select-list>
       </div>
     </div>
   `,
   styleUrls: ['../dropdown/dropdown.css', '../dropdown/nav-dropdown.css']
 })
-export class EpisodeSearchDropdownComponent implements OnInit {
+export class EpisodeSelectDropdownComponent implements OnInit {
   @Input() episodes: Episode[];
   @Input() searchTerm: string;
   @Input() episodesLoading: boolean;
@@ -64,10 +64,10 @@ export class EpisodeSearchDropdownComponent implements OnInit {
   }
 
   loadEpisodes(page: number, search: string) {
-    this.store.dispatch(new CastleEpisodeSearchPageLoadAction({
+    this.store.dispatch(new CastleEpisodeSelectPageLoadAction({
       podcastId: this.podcastId,
       page,
-      per: EPISODE_SEARCH_PAGE_SIZE,
+      per: EPISODE_SELECT_PAGE_SIZE,
       search
     }));
   }
@@ -81,7 +81,7 @@ export class EpisodeSearchDropdownComponent implements OnInit {
     } else {
       episodeGuids = this.selectedEpisodes.filter(e => e !== episode.guid);
     }
-    this.store.dispatch(new EpisodeSearchSelectEpisodesAction({episodeGuids}));
+    this.store.dispatch(new EpisodeSelectEpisodesAction({episodeGuids}));
   }
 
   toggleOpen() {

@@ -28,14 +28,13 @@ export function reducer(
   switch (action.type) {
     case ActionTypes.CASTLE_EPISODE_SELECT_PAGE_LOAD: {
       const { page, search } = action.payload;
-      // if the search term has changed, clear episodes, total, and selected
+      // if the search term has changed, clear episodes and total
       if (search !== state.search) {
         return {
           ...adapter.removeAll(state),
           page,
           search,
           total: null,
-          selected: null,
           error: null,
           loading: true
         };
@@ -78,7 +77,8 @@ export function reducer(
         ...state,
         total: null,
         page: null,
-        selected: null
+        selected: null,
+        search: null
       };
     }
     default: {

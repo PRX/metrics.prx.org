@@ -98,28 +98,11 @@ export class CastleEffects {
     })
   );
 
-  /*
-  // on podcast page 1 success, if loading all podcasts start loading all episodes page by page as well
-  // ugh, makes app loading too slow
-  @Effect()
-  loadPodcastEpisodes$: Observable<Action> = this.actions$.pipe(
-    ofType(ACTIONS.ActionTypes.CASTLE_PODCAST_PAGE_SUCCESS),
-    filter((action: ACTIONS.CastlePodcastPageSuccessAction) => {
-      const { all, page, podcasts } = action.payload;
-      return all && page === 1 && podcasts && podcasts.length > 0;
-    }),
-    map((action: ACTIONS.CastlePodcastPageSuccessAction) => action.payload.podcasts),
-    mergeMap((podcasts: Podcast[]) => {
-      return podcasts.map(podcast => new ACTIONS.CastleEpisodePageLoadAction(
-        {podcastId: podcast.id, page: 1, all: true}));
-    })
-  );*/
-
   // basic - load > success/failure episode page
   @Effect()
   loadEpisodePage$: Observable<Action> = this.actions$.pipe(
     ofType(ACTIONS.ActionTypes.CASTLE_EPISODE_PAGE_LOAD, ACTIONS.ActionTypes.CASTLE_EPISODE_SELECT_PAGE_LOAD),
-    concatMap((action: ACTIONS.CastleEpisodePageLoadAction) => {
+    switchMap((action: ACTIONS.CastleEpisodePageLoadAction) => {
       const { podcastId, page, per, search } = action.payload;
       return this.castle.follow('prx:podcast', {id: podcastId}).followItems('prx:episodes', { page, per, ...(search && {search}) })
         .pipe(
@@ -149,22 +132,6 @@ export class CastleEffects {
         );
     })
   );
-
-  // on episode page success if loading all episode pages and not yet finished, load next page
-  // @Effect()
-  // loadNextEpisodePage$: Observable<Action> = this.actions$.pipe(
-  //   ofType(ACTIONS.ActionTypes.CASTLE_EPISODE_PAGE_SUCCESS),
-  //   filter((action: ACTIONS.CastleEpisodePageSuccessAction) => {
-  //     const { page, per, scrolling, total, episodes } = action.payload;
-  //     return scrolling && page * per < total && episodes && episodes.length > 0;
-  //   }),
-  //   map((action: ACTIONS.CastleEpisodePageSuccessAction) => action.payload),
-  //   concatMap((payload: ACTIONS.CastleEpisodePageSuccessPayload) => {
-  //     const { page, per, scrolling, episodes } = payload;
-  //     return Observable.of(new ACTIONS.CastleEpisodePageLoadAction(
-  //       {podcastId: episodes[0].podcastId, page: page + 1, per, scrolling}));
-  //   })
-  // );
 
   // whenever an episode page is loaded that is the currently routed page,
   // call the load actions for podcast and episode metrics

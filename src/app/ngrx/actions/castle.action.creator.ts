@@ -55,7 +55,7 @@ export interface CastleEpisodePageSuccessPayload {
   page: number;
   per: number;
   total: number;
-  all?: boolean;
+  search?: string;
   episodes: Episode[];
 }
 

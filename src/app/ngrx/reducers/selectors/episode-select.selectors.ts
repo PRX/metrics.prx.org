@@ -21,6 +21,10 @@ export const selectEpisodeSelectSearchTerm = createSelector(
   selectEpisodeSelectState,
   fromEpisodeSelect.getSearch
 );
+export const selectEpisodeSelectSearchTotal = createSelector(
+  selectEpisodeSelectState,
+  fromEpisodeSelect.getSearchTotal
+);
 export const selectEpisodeSelectError = createSelector(
   selectEpisodeSelectState,
   fromEpisodeSelect.getError

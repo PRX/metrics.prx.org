@@ -102,7 +102,7 @@ export class CastleEffects {
   @Effect()
   loadEpisodePage$: Observable<Action> = this.actions$.pipe(
     ofType(ACTIONS.ActionTypes.CASTLE_EPISODE_PAGE_LOAD, ACTIONS.ActionTypes.CASTLE_EPISODE_SELECT_PAGE_LOAD),
-    switchMap((action: ACTIONS.CastleEpisodePageLoadAction) => {
+    concatMap((action: ACTIONS.CastleEpisodePageLoadAction | ACTIONS.CastleEpisodeSelectPageLoadAction) => {
       const { podcastId, page, per, search } = action.payload;
       return this.castle.follow('prx:podcast', {id: podcastId}).followItems('prx:episodes', { page, per, ...(search && {search}) })
         .pipe(
@@ -113,6 +113,7 @@ export class CastleEffects {
               page,
               per,
               total: results && results.length ? results[0].total() : 0,
+              ...(search && {search}), // conditionally adds search property if defined
               episodes: results.map((doc): Episode => {
                 return {
                   guid: '' + doc['id'],

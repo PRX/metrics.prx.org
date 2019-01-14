@@ -8,18 +8,25 @@ import { CastleEpisodeSelectPageLoadAction, EpisodeSelectEpisodesAction } from '
   template: `
     <div class="dropdown" [class.open]="open">
       <div class="overlay" (click)="toggleOpen()"></div>
-      <div class="dropdown-button">
+      <div class="dropdown-button" *ngIf="totalEpisodes !== null">
         <button (click)="toggleOpen()">
-          <span class="button-text">{{ buttonText }}</span>
+          <span class="button-text">
+            {{ totalEpisodes | i18nPlural: {'=0': 'No episodes', '=1' : '1 episode', 'other' : '# episodes'} }}
+          </span>
           <span class="down-arrow"></span>
         </button>
       </div>
       <div class="dropdown-content rollout" #dropdownContent>
-        <metrics-episode-search-input [searchTerm]="searchTerm" (search)="loadEpisodesOnSearch($event)"></metrics-episode-search-input>
+        <metrics-episode-search
+          [searchTerm]="searchTerm"
+          [searchTotal]="searchTotal"
+          (search)="loadEpisodesOnSearch($event)">
+        </metrics-episode-search>
         <metrics-episode-select-list
           [episodes]="episodes"
           [episodesLoading]="episodesLoading"
           [selectedEpisodes]="selectedEpisodes"
+          [totalEpisodes]="totalEpisodes"
           (selectEpisode)="onToggleSelectEpisode($event)">
         </metrics-episode-select-list>
       </div>
@@ -33,6 +40,7 @@ export class EpisodeSelectDropdownComponent implements OnInit {
   @Input() episodesLoading: boolean;
   @Input() selectedEpisodes: string[];
   @Input() totalEpisodes: number;
+  @Input() searchTotal: number;
   @Input() lastPage: number;
   @Input() maxPages: number;
   @Input() podcastId: string;
@@ -73,8 +81,10 @@ export class EpisodeSelectDropdownComponent implements OnInit {
   }
 
   onToggleSelectEpisode(episode: Episode) {
-    let episodeGuids;
-    if (!this.selectedEpisodes) {
+    let episodeGuids: string[];
+    if (!episode) {
+      episodeGuids = [];
+    } else if (!this.selectedEpisodes) {
       episodeGuids = [episode.guid];
     } else if (this.selectedEpisodes.indexOf(episode.guid) === -1) {
       episodeGuids = this.selectedEpisodes.concat([episode.guid]);
@@ -89,14 +99,6 @@ export class EpisodeSelectDropdownComponent implements OnInit {
   }
 
   get buttonText(): string {
-    if (this.totalEpisodes === null) {
-      return 'episodes';
-    } else if (this.totalEpisodes === 0) {
-      return 'No results';
-    } else if (this.selectedEpisodes && this.selectedEpisodes.length) {
-      return `${this.selectedEpisodes.length} of ${this.totalEpisodes} episodes`;
-    } else {
-      return `${this.totalEpisodes} episodes`;
-    }
+    return this.totalEpisodes ? `${this.totalEpisodes} episodes` : 'episodes';
   }
 }

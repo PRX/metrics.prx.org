@@ -5,7 +5,8 @@ import { CommonModule } from '@angular/common';
 import { AuthGuard, DeactivateGuard, UnauthGuard,
   ChartsModule, DatepickerModule, FancyFormModule, ImageModule, SpinnerModule } from 'ngx-prx-styleguide';
 
-import { EpisodeSearchInputComponent } from './episode-select/episode-search-input.component';
+import { EpisodeSearchComponent } from './episode-select/episode-search.component';
+import { EpisodeSearchSummaryComponent } from './episode-select/episode-search-summary.component';
 import { EpisodeSelectComponent } from './episode-select/episode-select.component';
 import { EpisodeSelectDropdownComponent } from './episode-select/episode-select-dropdown.component';
 import { EpisodeSelectListComponent } from './episode-select/episode-select-list.component';
@@ -38,7 +39,8 @@ import { TotalsTableComponent } from './table/totals-table.component';
     DateRangeSummaryComponent,
     DownloadsSummaryComponent,
     EpisodePageComponent,
-    EpisodeSearchInputComponent,
+    EpisodeSearchComponent,
+    EpisodeSearchSummaryComponent,
     EpisodeSelectComponent,
     EpisodeSelectDropdownComponent,
     EpisodeSelectListComponent,

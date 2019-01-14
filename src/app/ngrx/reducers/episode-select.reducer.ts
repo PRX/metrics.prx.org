@@ -7,6 +7,7 @@ export interface State extends EntityState<Episode> {
   total: number;
   page: number;
   search?: string;
+  searchTotal?: number;
   loading: boolean;
   error?: any;
 }
@@ -28,13 +29,12 @@ export function reducer(
   switch (action.type) {
     case ActionTypes.CASTLE_EPISODE_SELECT_PAGE_LOAD: {
       const { page, search } = action.payload;
-      // if the search term has changed, clear episodes and total
+      // if the search term has changed, clear episodes
       if (search !== state.search) {
         return {
           ...adapter.removeAll(state),
           page,
           search,
-          total: null,
           error: null,
           loading: true
         };
@@ -49,12 +49,15 @@ export function reducer(
       }
     }
     case ActionTypes.CASTLE_EPISODE_SELECT_PAGE_SUCCESS: {
-      const { page, total, episodes } = action.payload;
+      const { page, total, search, episodes } = action.payload;
       return {
         ...adapter.upsertMany(episodes.map(episode => {
           return {id: episode.guid, changes: episode};
         }), state),
-        total,
+        // this here assumes that a CASTLE_EPISODE_SELECT_PAGE_SUCCESS will occur without search on application load
+        // so that we can retain the unfiltered total amount of episodes
+        ...(!search && {total}), // updates total property if search is not defined
+        searchTotal: total, // search total is the total amount of filtered or unfiltered episodes, whereas total is only unfiltered
         page,
         loading: false
       };
@@ -101,5 +104,6 @@ export const getTotal = (state: State) => state.total;
 export const getPage = (state: State) => state.page;
 export const getSelected = (state: State) => state.selected;
 export const getSearch = (state: State) => state.search;
+export const getSearchTotal = (state: State) => state.searchTotal;
 export const getError = (state: State) => state.error;
 export const getLoading = (state: State) => state.loading;

@@ -5,6 +5,21 @@ import { Episode } from '../../ngrx';
   selector: 'metrics-episode-select-list',
   template: `
     <ul>
+      <li *ngIf="selectedEpisodes && selectedEpisodes.length" class="accumulator">
+        <button class="btn-link">
+          {{ selectedEpisodes.length | i18nPlural: {'=1' : '1 episode', 'other' : '# episodes'} }} selected
+        </button>
+      </li>
+      <li *ngIf="totalEpisodes" class="showall">
+        <button class="btn-link"
+                [class.active]="!selectedEpisodes || !selectedEpisodes.length"
+                (click)="onEpisodeSelect(null)">
+          <span *ngIf="selectedEpisodes && selectedEpisodes.length; else showing">Show all</span>
+          <ng-template #showing>Showing</ng-template>
+          {{totalEpisodes}} episodes
+        </button>
+      </li>
+      <li class="divider" *ngIf="totalEpisodes"></li>
       <li *ngFor="let episode of episodes">
         <button class="btn-link"
                 [class.active]="selectedEpisodes && selectedEpisodes.indexOf(episode.guid) > -1"
@@ -22,6 +37,7 @@ export class EpisodeSelectListComponent {
   @Input() episodes: Episode[];
   @Input() episodesLoading: boolean;
   @Input() selectedEpisodes: string[];
+  @Input() totalEpisodes: number;
   @Output() selectEpisode = new EventEmitter<Episode>();
 
   onEpisodeSelect(episode: Episode) {

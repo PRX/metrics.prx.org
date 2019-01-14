@@ -4,17 +4,19 @@ import { debounceTime } from 'rxjs/operators/debounceTime';
 import { distinctUntilChanged } from 'rxjs/operators/distinctUntilChanged';
 
 @Component({
-  selector: 'metrics-episode-search-input',
+  selector: 'metrics-episode-search',
   template: `
     <input type="text"
            placeholder="search by episode title"
            [value]="searchTerm || ''"
            (keyup)="onEpisodeSearch($event.target.value)">
+    <metrics-episode-search-summary *ngIf="searchTerm" [searchTotal]="searchTotal"></metrics-episode-search-summary>
   `,
-  styleUrls: ['episode-search-input.component.css']
+  styleUrls: ['episode-search.component.css']
 })
-export class EpisodeSearchInputComponent implements OnInit {
+export class EpisodeSearchComponent implements OnInit {
   @Input() searchTerm: string;
+  @Input() searchTotal: number;
   @Output() search = new EventEmitter<string>();
 
   searchTextStream = new Subject<string>();

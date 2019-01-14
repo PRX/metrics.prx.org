@@ -62,5 +62,6 @@ export const selectNumEpisodeSelectPages = createSelector(
 export const selectRoutedPodcastEpisodeSelectEpisodes = createSelector(
   selectPodcastRoute,
   selectAllEpisodeSelectEpisodes,
-  (podcastId, episodes: Episode[]) => episodes.filter(e => e.podcastId === podcastId)
+  (podcastId, episodes: Episode[]) =>
+    episodes.filter(e => e.podcastId === podcastId).sort((a, b) => b.publishedAt.valueOf() - a.publishedAt.valueOf())
 );

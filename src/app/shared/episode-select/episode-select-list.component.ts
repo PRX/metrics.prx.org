@@ -5,28 +5,26 @@ import { Episode } from '../../ngrx';
   selector: 'metrics-episode-select-list',
   template: `
     <ul>
-      <li *ngIf="selectedEpisodes && selectedEpisodes.length" class="accumulator">
-        <button class="btn-link">
-          {{ selectedEpisodes.length | i18nPlural: {'=1' : '1 episode', 'other' : '# episodes'} }} selected
-        </button>
+      <li *ngIf="selectedEpisodes && selectedEpisodes.length">
+        <span class="accumulator">{{ selectedEpisodes.length | i18nPlural: {'=1' : '1 episode', 'other' : '# episodes'} }} selected</span>
       </li>
-      <li *ngIf="totalEpisodes" class="showall">
-        <button class="btn-link"
-                [class.active]="!selectedEpisodes || !selectedEpisodes.length"
-                (click)="onEpisodeSelect(null)">
-          <span *ngIf="selectedEpisodes && selectedEpisodes.length; else showing">Show all</span>
-          <ng-template #showing>Showing</ng-template>
-          {{totalEpisodes}} episodes
-        </button>
+      <li *ngIf="totalEpisodes">
+        <prx-checkbox
+          small [checked]="!selectedEpisodes || !selectedEpisodes.length" color="#0089bd"
+          (change)="onEpisodeSelect(null)">
+          <span *ngIf="selectedEpisodes && selectedEpisodes.length; else showing">Show</span>
+          <ng-template #showing><span>Showing</span></ng-template>
+          <span>all {{totalEpisodes}} episodes</span>
+        </prx-checkbox>
       </li>
       <li class="divider" *ngIf="totalEpisodes"></li>
       <li *ngFor="let episode of episodes">
-        <button class="btn-link"
-                [class.active]="selectedEpisodes && selectedEpisodes.indexOf(episode.guid) > -1"
-                (click)="onEpisodeSelect(episode)">
-          <div>{{episode.title}}</div>
+        <prx-checkbox
+          small [checked]="selectedEpisodes && selectedEpisodes.indexOf(episode.guid) > -1" color="#0089bd"
+          (change)="onEpisodeSelect(episode)">
+          <div class="title">{{episode.title}}</div>
           <div class="pub-date">{{episode.publishedAt | date:'EEE d MMM yyyy'}}</div>
-        </button>
+        </prx-checkbox>
       </li>
     </ul>
     <prx-spinner *ngIf="episodesLoading"></prx-spinner>

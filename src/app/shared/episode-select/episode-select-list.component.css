@@ -7,6 +7,10 @@ prx-checkbox {
   width: 100%;
   padding: 5px 20px;
 }
+/* text-overflow ellipsis needs contrained width */
+prx-checkbox >>> label {
+  width: 100%;
+}
 prx-checkbox:hover, prx-checkbox:focus {
   background-color: #0089bd;
 }

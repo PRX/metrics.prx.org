@@ -39,7 +39,7 @@ describe('PodcastNavComponent', () => {
       comp.selectedPodcast = podcasts[0];
       fix.detectChanges();
 
-      spyOn(comp.podcastChange, 'emit').and.callThrough();
+      jest.spyOn(comp.podcastChange, 'emit');
     });
   }));
 

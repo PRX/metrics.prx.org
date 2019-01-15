@@ -34,7 +34,7 @@ describe('GoogleAnalyticsEffects', () => {
   }));
 
   it('should create Google Analytics event from action and track through angulartics2', () => {
-    spyOn(effects.angulartics2.eventTrack, 'next');
+    jest.spyOn(effects.angulartics2.eventTrack, 'next').mockImplementation(() => {});
     const action = new GoogleAnalyticsEventAction({gaAction: 'itsafake', value: 42});
     effects.store.dispatch(action);
     actions$.stream = hot('-a', { a: action });

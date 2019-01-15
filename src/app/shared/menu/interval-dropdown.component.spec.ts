@@ -51,7 +51,7 @@ describe('IntervalDropdownComponent', () => {
   });
 
   it('should dispatch routing action when interval is changed', () => {
-    spyOn(store, 'dispatch');
+    jest.spyOn(store, 'dispatch').mockImplementation(() => {});
     comp.onIntervalChange(INTERVAL_WEEKLY);
     expect(store.dispatch).toHaveBeenCalledWith(new RouteIntervalAction({interval: INTERVAL_WEEKLY}));
   });

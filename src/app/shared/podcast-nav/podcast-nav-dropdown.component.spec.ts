@@ -51,11 +51,12 @@ describe('PodcastNavComponent', () => {
     comp.selectedPodcast = podcasts[0];
     fix.detectChanges();
     expect(de.query(By.css('.dropdown'))).toBeDefined();
+    debugger;
     expect(de.query(By.css('span.button-text')).nativeElement.innerText).toContain(podcasts[0].title.toUpperCase());
   });
 
   it('should handle selection of podcast if list is available but none is currently selected', () => {
-    spyOn(comp.podcastChange, 'emit').and.callThrough();
+    jest.spyOn(comp.podcastChange, 'emit');
     comp.podcasts = podcasts;
     comp.selectedPodcast = undefined;
     expect(() => comp.onPodcastChange(podcasts[0])).not.toThrow();

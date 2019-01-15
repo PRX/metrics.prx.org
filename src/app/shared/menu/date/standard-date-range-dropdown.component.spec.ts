@@ -39,7 +39,7 @@ describe('StandardDateRangeDropdownComponent', () => {
       comp.interval = INTERVAL_DAILY;
       fix.detectChanges();
 
-      spyOn(store, 'dispatch');
+      jest.spyOn(store, 'dispatch').mockImplementation(() => {});
     });
   }));
 

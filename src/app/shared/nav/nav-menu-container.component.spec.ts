@@ -37,7 +37,7 @@ describe('NavMenuContainerComponent', () => {
 
       store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerParams}));
 
-      spyOn(store, 'dispatch').and.callThrough();
+      jest.spyOn(store, 'dispatch');
     });
   }));
 

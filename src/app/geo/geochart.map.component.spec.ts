@@ -23,7 +23,7 @@ describe('GeochartMapComponent', () => {
   }));
 
   it('should redraw map on window resize', () => {
-    spyOn(comp, 'drawMap');
+    jest.spyOn(comp, 'drawMap').mockImplementation(() => {});
     window.dispatchEvent(new Event('resize'));
     expect(comp.drawMap).toHaveBeenCalled();
   });

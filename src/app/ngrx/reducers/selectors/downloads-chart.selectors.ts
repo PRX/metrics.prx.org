@@ -3,8 +3,8 @@ import { TimeseriesChartModel } from 'ngx-prx-styleguide';
 import { Episode, RouterParams, CHARTTYPE_EPISODES, CHARTTYPE_PODCAST, CHARTTYPE_STACKED } from '../models';
 import { selectRouter } from './router.selectors';
 import { selectRoutedPageEpisodes } from './episode.selectors';
-import { PodcastMetricsModel } from '../podcast-metrics.reducer';
-import { selectRoutedPodcastMetrics } from './podcast-metrics.selectors';
+import { PodcastDownloads } from '../models/podcast-downloads.model';
+import { selectRoutedPodcastDownloads } from './podcast-downloads.selectors';
 import { EpisodeMetricsModel } from '../episode-metrics.reducer';
 import { selectRoutedEpisodePageMetrics } from './episode-metrics.selectors';
 import { metricsData } from '../../../shared/util/metrics.util';
@@ -14,21 +14,21 @@ import { mapMetricsToTimeseriesData, subtractTimeseriesDatasets, getTotal,
 export const selectDownloadChartMetrics = createSelector(
   selectRouter,
   selectRoutedPageEpisodes,
-  selectRoutedPodcastMetrics,
+  selectRoutedPodcastDownloads,
   selectRoutedEpisodePageMetrics,
   (routerParams: RouterParams,
    episodes: Episode[],
-   podcastMetrics: PodcastMetricsModel,
+   PodcastDownloads: PodcastDownloads,
    episodeMetrics: EpisodeMetricsModel[]): TimeseriesChartModel[] => {
-    let chartedPodcastMetrics: TimeseriesChartModel,
+    let chartedPodcastDownloads: TimeseriesChartModel,
       chartedEpisodeMetrics: TimeseriesChartModel[];
 
-    if (podcastMetrics &&
+    if (PodcastDownloads &&
       routerParams.chartType === CHARTTYPE_PODCAST ||
-      (podcastMetrics && podcastMetrics.charted && routerParams.chartType === CHARTTYPE_STACKED)) {
-      const data = metricsData(routerParams, podcastMetrics);
+      (PodcastDownloads && PodcastDownloads.charted && routerParams.chartType === CHARTTYPE_STACKED)) {
+      const data = metricsData(routerParams, PodcastDownloads);
       if (data) {
-        chartedPodcastMetrics = {
+        chartedPodcastDownloads = {
           data: mapMetricsToTimeseriesData(data),
           label: 'All Episodes',
           color: routerParams.chartType === CHARTTYPE_PODCAST ? standardColor : neutralColor
@@ -68,25 +68,25 @@ export const selectDownloadChartMetrics = createSelector(
     let chartData: TimeseriesChartModel[];
     switch (routerParams.chartType) {
       case CHARTTYPE_STACKED:
-        if (chartedPodcastMetrics && podcastMetrics.charted &&
+        if (chartedPodcastDownloads && PodcastDownloads.charted &&
           chartedEpisodeMetrics && chartedEpisodeMetrics.length) {
           // if we have episodes to combine with podcast total
           const allOtherEpisodesData: TimeseriesChartModel = {
-            data: subtractTimeseriesDatasets(chartedPodcastMetrics.data, chartedEpisodeMetrics.map(m => m.data)),
+            data: subtractTimeseriesDatasets(chartedPodcastDownloads.data, chartedEpisodeMetrics.map(m => m.data)),
             label: 'All Other Episodes',
             color: neutralColor
           };
           chartData = [...chartedEpisodeMetrics, allOtherEpisodesData];
-        } else if (chartedPodcastMetrics && podcastMetrics.charted &&
-          chartedPodcastMetrics.data.length && !(chartedEpisodeMetrics && chartedEpisodeMetrics.length)) {
-          chartData = [chartedPodcastMetrics];
+        } else if (chartedPodcastDownloads && PodcastDownloads.charted &&
+          chartedPodcastDownloads.data.length && !(chartedEpisodeMetrics && chartedEpisodeMetrics.length)) {
+          chartData = [chartedPodcastDownloads];
         } else if (chartedEpisodeMetrics && chartedEpisodeMetrics.length) {
           chartData = chartedEpisodeMetrics;
         }
         break;
       case CHARTTYPE_PODCAST:
-        if (chartedPodcastMetrics && chartedPodcastMetrics.data.length) {
-          chartData = [chartedPodcastMetrics];
+        if (chartedPodcastDownloads && chartedPodcastDownloads.data.length) {
+          chartData = [chartedPodcastDownloads];
         }
         break;
       case CHARTTYPE_EPISODES:

@@ -41,7 +41,7 @@ describe('Downloads Chart Selectors', () => {
       store.dispatch(new ACTIONS.CastleEpisodeMetricsSuccessAction({
         podcastId: episodes[1].podcastId, page: episodes[1].page, guid: episodes[1].guid,
         metricsPropertyName, metrics: ep1Downloads}));
-      store.dispatch(new ACTIONS.CastlePodcastMetricsSuccessAction({
+      store.dispatch(new ACTIONS.CastlePodcastDownloadsSuccessAction({
         id: podcast.id, metricsPropertyName, metrics: podDownloads}));
 
       store.pipe(select(selectDownloadChartMetrics)).subscribe((data) => {
@@ -90,7 +90,7 @@ describe('Downloads Chart Selectors', () => {
 
     beforeEach(() => {
       store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerParams: {...routerParams, chartType: <ChartType>CHARTTYPE_PODCAST}}));
-      store.dispatch(new ACTIONS.CastlePodcastMetricsSuccessAction({id: podcast.id, metricsPropertyName, metrics: podDownloads}));
+      store.dispatch(new ACTIONS.CastlePodcastDownloadsSuccessAction({id: podcast.id, metricsPropertyName, metrics: podDownloads}));
 
       store.pipe(select(selectDownloadChartMetrics)).subscribe((data) => {
         result = data;

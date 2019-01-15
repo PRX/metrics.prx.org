@@ -10,7 +10,7 @@ import { routerParams,  podcast, episodes,
 import * as ACTIONS from '../../actions';
 import * as chartUtil from '../../../shared/util/chart.util';
 import * as metricsUtil from '../../../shared/util/metrics.util';
-import { selectDownloadTablePodcastMetrics, selectDownloadTableEpisodeMetrics } from './downloads-table.selectors';
+import { selectDownloadTablePodcastDownloads, selectDownloadTableEpisodeMetrics } from './downloads-table.selectors';
 
 describe('Downloads Table Selectors', () => {
   let store: Store<RootState>;
@@ -40,7 +40,7 @@ describe('Downloads Table Selectors', () => {
     store.dispatch(new ACTIONS.CastleEpisodeMetricsSuccessAction({
       podcastId: episodes[1].podcastId, page: episodes[1].page, guid: episodes[1].guid,
       metricsPropertyName, metrics: ep1Downloads}));
-    store.dispatch(new ACTIONS.CastlePodcastMetricsSuccessAction({id: podcast.id, metricsPropertyName, metrics: podDownloads}));
+    store.dispatch(new ACTIONS.CastlePodcastDownloadsSuccessAction({id: podcast.id, metricsPropertyName, metrics: podDownloads}));
     store.dispatch(new ACTIONS.CastlePodcastAllTimeDownloadsSuccessAction({id: podcast.id, ...podAllTimeDownloads}));
     store.dispatch(new ACTIONS.CastleEpisodeAllTimeDownloadsSuccessAction({
       podcastId: episodes[0].podcastId, guid: episodes[0].guid, ...ep0AllTimeDownloads}));
@@ -50,7 +50,7 @@ describe('Downloads Table Selectors', () => {
 
   describe('podcast download table metrics', () => {
     beforeEach(() => {
-      store.pipe(select(selectDownloadTablePodcastMetrics)).subscribe((tableMetrics: DownloadsTableModel) => {
+      store.pipe(select(selectDownloadTablePodcastDownloads)).subscribe((tableMetrics: DownloadsTableModel) => {
         result = tableMetrics;
       });
     });

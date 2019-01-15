@@ -83,7 +83,7 @@ export class CastleEpisodeSelectPageFailureAction implements Action {
   constructor(public payload: {error: any}) {}
 }
 
-export interface CastlePodcastMetricsLoadPayload {
+export interface CastlePodcastDownloadsLoadPayload {
   id: string;
   metricsType: MetricsType;
   interval: IntervalModel;
@@ -91,33 +91,33 @@ export interface CastlePodcastMetricsLoadPayload {
   endDate: Date;
 }
 
-export class CastlePodcastMetricsLoadAction implements Action {
-  readonly type = ActionTypes.CASTLE_PODCAST_METRICS_LOAD;
+export class CastlePodcastDownloadsLoadAction implements Action {
+  readonly type = ActionTypes.CASTLE_PODCAST_DOWNLOADS_LOAD;
 
-  constructor(public payload: CastlePodcastMetricsLoadPayload) {}
+  constructor(public payload: CastlePodcastDownloadsLoadPayload) {}
 }
 
-export interface CastlePodcastMetricsSuccessPayload {
+export interface CastlePodcastDownloadsSuccessPayload {
   id: string;
   metricsPropertyName: string;
   metrics: any[][];
 }
 
-export class CastlePodcastMetricsSuccessAction implements Action {
-  readonly type = ActionTypes.CASTLE_PODCAST_METRICS_SUCCESS;
+export class CastlePodcastDownloadsSuccessAction implements Action {
+  readonly type = ActionTypes.CASTLE_PODCAST_DOWNLOADS_SUCCESS;
 
-  constructor(public payload: CastlePodcastMetricsSuccessPayload) {}
+  constructor(public payload: CastlePodcastDownloadsSuccessPayload) {}
 }
 
-export interface CastlePodcastMetricsFailurePayload {
+export interface CastlePodcastDownloadsFailurePayload {
   id: string;
   error: any;
 }
 
-export class CastlePodcastMetricsFailureAction implements Action {
-  readonly type = ActionTypes.CASTLE_PODCAST_METRICS_FAILURE;
+export class CastlePodcastDownloadsFailureAction implements Action {
+  readonly type = ActionTypes.CASTLE_PODCAST_DOWNLOADS_FAILURE;
 
-  constructor(public payload: CastlePodcastMetricsFailurePayload) {}
+  constructor(public payload: CastlePodcastDownloadsFailurePayload) {}
 }
 
 export interface CastleEpisodeMetricsLoadPayload {

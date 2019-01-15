@@ -3,7 +3,7 @@ import { selectRoutedPageLoading } from './episode.selectors';
 import { selectRoutedPodcast } from './podcast.selectors';
 import { selectPodcastError } from './podcast.selectors';
 import { selectEpisodeMetricsLoading } from './episode-metrics.selectors';
-import { selectPodcastMetricsLoading } from './podcast-metrics.selectors';
+import { selectPodcastDownloadsLoading } from './podcast-downloads.selectors';
 import { selectRoutedPodcastRanksLoading } from './podcast-ranks.selectors';
 import { selectRoutedPodcastTotalsLoading } from './podcast-totals.selectors';
 
@@ -12,9 +12,9 @@ export const selectCastleLoading = createSelector(
   selectRoutedPodcast,
   selectPodcastError,
   selectEpisodeMetricsLoading,
-  selectPodcastMetricsLoading,
-  (routedPageLoading, routedPodcast, podcastError, episodesMetricsLoading, podcastMetricsLoading) => {
-    return routedPageLoading || (!routedPodcast && !podcastError) || episodesMetricsLoading || podcastMetricsLoading;
+  selectPodcastDownloadsLoading,
+  (routedPageLoading, routedPodcast, podcastError, episodesMetricsLoading, PodcastDownloadsLoading) => {
+    return routedPageLoading || (!routedPodcast && !podcastError) || episodesMetricsLoading || PodcastDownloadsLoading;
   });
 export const selectLoading = selectCastleLoading;
 

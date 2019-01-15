@@ -67,8 +67,8 @@ describe('DownloadsComponent', () => {
     }));
   }
 
-  function dispatchPodcastMetrics() {
-    store.dispatch(new ACTIONS.CastlePodcastMetricsSuccessAction({
+  function dispatchPodcastDownloads() {
+    store.dispatch(new ACTIONS.CastlePodcastDownloadsSuccessAction({
       id: podcast.id,
       metricsPropertyName,
       metrics: podDownloads
@@ -101,7 +101,7 @@ describe('DownloadsComponent', () => {
     dispatchPodcasts();
     dispatchRouterNavigation();
     dispatchEpisodePage();
-    dispatchPodcastMetrics();
+    dispatchPodcastDownloads();
     dispatchEpisodeMetrics();
     fix.detectChanges();
     expect(de.query(By.css('prx-spinner'))).toBeNull();

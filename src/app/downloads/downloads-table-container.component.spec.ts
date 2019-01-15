@@ -57,7 +57,7 @@ describe('DownloadsTableContainerComponent', () => {
         per: EPISODE_PAGE_SIZE,
         total: episodes.length
       }));
-      store.dispatch(new ACTIONS.CastlePodcastMetricsSuccessAction({
+      store.dispatch(new ACTIONS.CastlePodcastDownloadsSuccessAction({
         id: podcast.id, metricsPropertyName, metrics: podDownloads}));
 
       spyOn(store, 'dispatch').and.callThrough();

@@ -3,7 +3,7 @@ import { Store, select } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
 import { DownloadsTableModel, RouterParams, CHARTTYPE_EPISODES } from '../ngrx';
 import { selectRouter, selectNumEpisodePages,
-  selectDownloadTablePodcastMetrics, selectDownloadTableEpisodeMetrics } from '../ngrx/reducers/selectors';
+  selectDownloadTablePodcastDownloads, selectDownloadTableEpisodeMetrics } from '../ngrx/reducers/selectors';
 import * as ACTIONS from '../ngrx/actions';
 
 @Component({
@@ -34,7 +34,7 @@ export class DownloadsTableContainerComponent implements OnInit {
   constructor(private store: Store<any>) {}
 
   ngOnInit() {
-    this.podcastTableData$ = this.store.pipe(select(selectDownloadTablePodcastMetrics));
+    this.podcastTableData$ = this.store.pipe(select(selectDownloadTablePodcastDownloads));
     this.episodeTableData$ = this.store.pipe(select(selectDownloadTableEpisodeMetrics));
     this.numEpisodePages$ = this.store.pipe(select(selectNumEpisodePages));
     this.routerParams$ = this.store.pipe(select(selectRouter));

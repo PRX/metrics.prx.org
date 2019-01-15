@@ -147,7 +147,7 @@ export class CastleEffects {
     map((action: ACTIONS.CastleEpisodePageSuccessAction) => action.payload),
     mergeMap((payload: ACTIONS.CastleEpisodePageSuccessPayload) => {
       const { episodes } = payload;
-      this.store.dispatch(new ACTIONS.CastlePodcastMetricsLoadAction({
+      this.store.dispatch(new ACTIONS.CastlePodcastDownloadsLoadAction({
         id: episodes[0].podcastId,
         metricsType: this.routerParams.metricsType,
         interval: this.routerParams.interval,
@@ -176,10 +176,10 @@ export class CastleEffects {
   // basic - load > success/failure podcasrt metrics
   // also dispatches google analytics action for loading metrics with how many metrics datapoints
   @Effect()
-  loadPodcastMetrics$: Observable<Action> = this.actions$.pipe(
-    ofType(ACTIONS.ActionTypes.CASTLE_PODCAST_METRICS_LOAD),
-    map((action: ACTIONS.CastlePodcastMetricsLoadAction) => action.payload),
-    switchMap((payload: ACTIONS.CastlePodcastMetricsLoadPayload) => {
+  loadPodcastDownloads$: Observable<Action> = this.actions$.pipe(
+    ofType(ACTIONS.ActionTypes.CASTLE_PODCAST_DOWNLOADS_LOAD),
+    map((action: ACTIONS.CastlePodcastDownloadsLoadAction) => action.payload),
+    switchMap((payload: ACTIONS.CastlePodcastDownloadsLoadPayload) => {
       const { id, metricsType, interval, beginDate, endDate } = payload;
       return this.castle.followList('prx:podcast-downloads', {
         id,
@@ -189,13 +189,13 @@ export class CastleEffects {
       }).pipe(
         map(metrics => {
           this.store.dispatch(new ACTIONS.GoogleAnalyticsEventAction({gaAction: 'load', value: metrics[0]['downloads'].length}));
-          return new ACTIONS.CastlePodcastMetricsSuccessAction({
+          return new ACTIONS.CastlePodcastDownloadsSuccessAction({
             id,
             metricsPropertyName: getMetricsProperty(interval, metricsType),
             metrics: metrics[0]['downloads']
           });
         }),
-        catchError(error => Observable.of(new ACTIONS.CastlePodcastMetricsFailureAction({id, error})))
+        catchError(error => Observable.of(new ACTIONS.CastlePodcastDownloadsFailureAction({id, error})))
       );
     })
   );

@@ -3,11 +3,11 @@ import { selectRouter } from './router.selectors';
 import { selectEpisodeError } from './episode.selectors';
 import { selectPodcastError } from './podcast.selectors';
 import { selectEpisodeMetricsError } from './episode-metrics.selectors';
-import { selectPodcastMetricsError } from './podcast-metrics.selectors';
+import { selectPodcastDownloadsError } from './podcast-downloads.selectors';
 import { selectRoutedPodcastRanksError, selectNestedPodcastRanksError } from './podcast-ranks.selectors';
 import { selectRoutedPodcastTotalsError, selectNestedPodcastTotalsError } from './podcast-totals.selectors';
 import * as ACTIONS from '../../actions';
-import { PodcastMetricsModel } from '../podcast-metrics.reducer';
+import { PodcastDownloads } from '../models/podcast-downloads.model';
 import { EpisodeMetricsModel } from '../episode-metrics.reducer';
 import { RouterParams, METRICSTYPE_DOWNLOADS, GROUPTYPE_GEOSUBDIV, EPISODE_PAGE_SIZE } from '../models';
 
@@ -22,14 +22,14 @@ export const select500ErrorReloadActions =
   createSelector(selectRouter,
     selectPodcastError,
     selectEpisodeError,
-    selectPodcastMetricsError,
+    selectPodcastDownloadsError,
     selectEpisodeMetricsError,
     selectRoutedPodcastRanksError,
     selectRoutedPodcastTotalsError,
   (routerParams: RouterParams,
    podcastError: any,
    episodeError: any,
-   podcastMetricsErrors: PodcastMetricsModel[],
+   PodcastDownloadsErrors: PodcastDownloads[],
    episodeMetricsErrors: EpisodeMetricsModel[],
    podcastRanksError: any,
    podcastTotalsError: any) => {
@@ -42,10 +42,10 @@ export const select500ErrorReloadActions =
         actions.push(new ACTIONS.CastleEpisodePageLoadAction({
           podcastId: routerParams.podcastId, page: 1, per: EPISODE_PAGE_SIZE}));
       }
-      if (podcastMetricsErrors && podcastMetricsErrors.length) {
-        actions = actions.concat(podcastMetricsErrors
+      if (PodcastDownloadsErrors && PodcastDownloadsErrors.length) {
+        actions = actions.concat(PodcastDownloadsErrors
           .filter(m => m.error && m.error.status === 500)
-          .map(m => new ACTIONS.CastlePodcastMetricsLoadAction({
+          .map(m => new ACTIONS.CastlePodcastDownloadsLoadAction({
             id: m.id,
             metricsType: routerParams.metricsType,
             interval: routerParams.interval,

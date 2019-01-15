@@ -17,7 +17,6 @@ ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini-stati
 RUN chmod +x /tini
 
 ENV APP_HOME /app
-ENV PHANTOM true
 ENV PORT 4202
 RUN mkdir -p $APP_HOME
 WORKDIR $APP_HOME
@@ -29,9 +28,6 @@ CMD [ "serve" ]
 ADD ./package.json ./
 ADD ./yarn.lock ./
 RUN apk --no-cache add curl fontconfig && \
-  echo "downloading phantomized..." && \
-  curl -Ls "https://github.com/dustinblackman/phantomized/releases/download/2.1.1a/dockerized-phantomjs.tar.gz" | tar xz -C / && \
-  echo "downloaded success!" && \
   yarn install
 
 ADD . ./

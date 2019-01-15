@@ -4,5 +4,6 @@ module.exports = {
   moduleNameMapper: {
     c3: "<rootDir>/__mocks__/c3.js"
   },
-  testEnvironment: "jest-environment-jsdom-thirteen"
+  testEnvironment: "jest-environment-jsdom-thirteen",
+  coverageDirectory: "./coverage/"
 }

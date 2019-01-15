@@ -75,10 +75,13 @@ describe('NavMenuPresentationComponent', () => {
     expect(de.query(By.css('.dropdown.open'))).not.toBeNull();
   });
 
-  it('should close the dropdown on window scroll', () => {
+  it('should close the dropdown on window scroll', done => {
     comp.open = true;
+    window.addEventListener('scroll', (e) => {
+      expect(comp.open).toBeFalsy();
+      done();
+    });
     window.dispatchEvent(new Event('scroll'));
-    expect(comp.open).toBeFalsy();
   });
 
   it('should accordion nav sections', () => {

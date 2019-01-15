@@ -54,6 +54,7 @@
     "jasmine-core": "~2.6.2",
     "jasmine-spec-reporter": "~4.1.0",
     "jest": "^23.6.0",
+    "jest-environment-jsdom-thirteen": "^0.0.2",
     "jest-preset-angular": "^6.0.2",
     "protractor": "~5.1.2",
     "ts-node": "^3.3.0",

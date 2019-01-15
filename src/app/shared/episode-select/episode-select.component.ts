@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Store, select } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
 import { Episode } from '../../ngrx';
@@ -23,7 +23,7 @@ import { selectRoutedPodcastEpisodeSelectEpisodes, selectEpisodeSelectLoading,
     </metrics-episode-select-dropdown>
   `
 })
-export class EpisodeSelectComponent {
+export class EpisodeSelectComponent implements OnInit {
   episodes$: Observable<Episode[]>;
   searchTerm$: Observable<string>;
   episodesLoading$: Observable<boolean>;
@@ -34,7 +34,9 @@ export class EpisodeSelectComponent {
   maxPages$: Observable<number>;
   podcastId$: Observable<string>;
 
-  constructor(private store: Store<any>) {
+  constructor(private store: Store<any>) {}
+
+  ngOnInit() {
     this.episodes$ = this.store.pipe(select(selectRoutedPodcastEpisodeSelectEpisodes));
     this.searchTerm$ = this.store.pipe(select(selectEpisodeSelectSearchTerm));
     this.episodesLoading$ = this.store.pipe(select(selectEpisodeSelectLoading));

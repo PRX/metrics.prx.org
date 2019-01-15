@@ -39,7 +39,7 @@ describe('Episode Reducer', () => {
       new ACTIONS.CastleEpisodePageSuccessAction({page: 1, per: EPISODE_PAGE_SIZE, total: episodes.length, episodes}));
     // @ts-ignore using upsert adds 'id' property to entity, seems like ngrx/entity v6 gets rid of this
     expect(newState.entities[episodes[1].guid]).toEqual({...episodes[1], id: episodes[1].guid});
-    newState = reducer(initialState,
+    newState = reducer(newState,
       new ACTIONS.CastleEpisodePageSuccessAction({page: 1, per: EPISODE_PAGE_SIZE, total: episodes.length,
         episodes: [episodes[0], {...episodes[1], title: 'an updated title'}]}));
     expect(newState.entities[episodes[1].guid].title).toEqual('an updated title');

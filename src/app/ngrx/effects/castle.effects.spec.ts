@@ -11,7 +11,7 @@ import { CastleService } from '../../core';
 import {
   MetricsType, getMetricsProperty,
   METRICSTYPE_DOWNLOADS, INTERVAL_DAILY, PODCAST_PAGE_SIZE,
-  GROUPTYPE_AGENTNAME, EPISODE_PAGE_SIZE
+  GROUPTYPE_AGENTNAME, EPISODE_PAGE_SIZE, EPISODE_SELECT_PAGE_SIZE
 } from '../';
 import { reducers } from '../../ngrx/reducers';
 import * as ACTIONS from '../actions';
@@ -385,33 +385,44 @@ describe('CastleEffects', () => {
       expect(effects.loadEpisodePage$).toBeObservable(expected);
     });
 
-    // Episode loading TBD
-    /*xit('should load next page of episodes', () => {
-      const pageOfEpisodes = new Array(EPISODE_PAGE_SIZE).fill(episodes[0]);
-      const firstPageAction = new ACTIONS.CastleEpisodePageSuccessAction({
-        episodes: pageOfEpisodes,
-        page: 1,
-        total: pageOfEpisodes.length * 2,
-        all: true
-      });
-      const nextPageLoadAction = new ACTIONS.CastleEpisodePageLoadAction({
+    it('should load first page of episodes for episode selection', () => {
+      const action = new ACTIONS.CastleEpisodeSelectPageLoadAction({
         podcastId: episodes[0].podcastId,
-        page: 2,
-        all: true
+        page: 1,
+        per: EPISODE_SELECT_PAGE_SIZE,
+        search: 'title'
       });
-      actions$.stream = hot('-a', { a: firstPageAction });
-      const expected = cold('-r', { r: nextPageLoadAction });
-      expect(effects.loadNextEpisodePage$).toBeObservable(expected);
-    });*/
-
-    it('fails to load a page of episodes', () => {
-      const error = new Error('Whaaaa?');
-      castle.root.mock('prx:podcast', { id: podcast.id }).mockError('prx:episodes', error);
-      const action = new ACTIONS.CastleEpisodePageLoadAction({ podcastId: podcast.id, page: 1, per: EPISODE_PAGE_SIZE });
-      const completion = new ACTIONS.CastleEpisodePageFailureAction({ error });
+      const success = new ACTIONS.CastleEpisodeSelectPageSuccessAction({
+        episodes,
+        page: 1,
+        per: EPISODE_SELECT_PAGE_SIZE,
+        total: episodes.length,
+        search: 'title'
+      });
       actions$.stream = hot('-a', { a: action });
-      const expected = cold('-r', { r: completion });
+      const expected = cold('-r', { r: success });
       expect(effects.loadEpisodePage$).toBeObservable(expected);
+    });
+
+    describe('error loading episodes', () => {
+      const error = new Error('Whaaaa?');
+      beforeEach(() => {
+        castle.root.mock('prx:podcast', { id: podcast.id }).mockError('prx:episodes', error);
+      });
+      it('fails to load a page of episodes', () => {
+        const action = new ACTIONS.CastleEpisodePageLoadAction({ podcastId: podcast.id, page: 1, per: EPISODE_PAGE_SIZE });
+        const completion = new ACTIONS.CastleEpisodePageFailureAction({ error });
+        actions$.stream = hot('-a', { a: action });
+        const expected = cold('-r', { r: completion });
+        expect(effects.loadEpisodePage$).toBeObservable(expected);
+      });
+      it('fails to load a page of episodes for episode selection', () => {
+        const action = new ACTIONS.CastleEpisodeSelectPageLoadAction({ podcastId: podcast.id, page: 1, per: EPISODE_SELECT_PAGE_SIZE });
+        const completion = new ACTIONS.CastleEpisodeSelectPageFailureAction({ error });
+        actions$.stream = hot('-a', { a: action });
+        const expected = cold('-r', { r: completion });
+        expect(effects.loadEpisodePage$).toBeObservable(expected);
+      });
     });
 
     it('should load downloads on episode page success', () => {

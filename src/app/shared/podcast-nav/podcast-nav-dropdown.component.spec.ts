@@ -43,7 +43,7 @@ describe('PodcastNavComponent', () => {
     comp.podcasts = [podcasts[0]];
     comp.selectedPodcast = podcasts[0];
     fix.detectChanges();
-    expect(de.query(By.css('span')).nativeElement.innerText).toEqual(podcasts[0].title.toUpperCase());
+    expect(de.query(By.css('span')).nativeElement.textContent).toEqual(podcasts[0].title);
   });
 
   it('should show a drop down of podcasts if there are multiple to choose from', () => {
@@ -51,8 +51,7 @@ describe('PodcastNavComponent', () => {
     comp.selectedPodcast = podcasts[0];
     fix.detectChanges();
     expect(de.query(By.css('.dropdown'))).toBeDefined();
-    debugger;
-    expect(de.query(By.css('span.button-text')).nativeElement.innerText).toContain(podcasts[0].title.toUpperCase());
+    expect(de.query(By.css('span.button-text')).nativeElement.textContent).toContain(podcasts[0].title);
   });
 
   it('should handle selection of podcast if list is available but none is currently selected', () => {

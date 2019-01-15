@@ -51,19 +51,19 @@ describe('NavMenuPresentationComponent', () => {
   }));
 
   it('should have navigation to Downloads', () => {
-    expect(navLinks.find(link => link.nativeElement.innerText === 'Downloads'.toUpperCase())).not.toBeNull();
+    expect(navLinks.find(link => link.nativeElement.textContent === 'Downloads'.toUpperCase())).not.toBeNull();
     comp.routeMetricsGroupType(METRICSTYPE_DOWNLOADS, <GroupType>'');
     expect(comp.navigate.emit).toHaveBeenCalledWith({metricsType: METRICSTYPE_DOWNLOADS, group: ''});
   });
 
   it('should have navigation to Demographics', () => {
-    expect(navLinks.find(link => link.nativeElement.innerText === 'Demographics'.toUpperCase())).not.toBeNull();
+    expect(navLinks.find(link => link.nativeElement.textContent === 'Demographics'.toUpperCase())).not.toBeNull();
     comp.routeMetricsGroupType(METRICSTYPE_DEMOGRAPHICS, GROUPTYPE_GEOCOUNTRY);
     expect(comp.navigate.emit).toHaveBeenCalledWith({metricsType: METRICSTYPE_DEMOGRAPHICS, group: GROUPTYPE_GEOCOUNTRY});
   });
 
   it('should have navigation to Operating System', () => {
-    expect(navLinks.find(link => link.nativeElement.innerText === 'Operating System'.toUpperCase())).not.toBeNull();
+    expect(navLinks.find(link => link.nativeElement.textContent === 'Operating System'.toUpperCase())).not.toBeNull();
     comp.routeMetricsGroupType(METRICSTYPE_TRAFFICSOURCES, GROUPTYPE_AGENTOS);
     expect(comp.navigate.emit).toHaveBeenCalledWith({metricsType: METRICSTYPE_TRAFFICSOURCES, group: GROUPTYPE_AGENTOS});
   });

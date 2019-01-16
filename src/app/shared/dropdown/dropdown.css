@@ -51,10 +51,6 @@
 .dropdown-content >>> li {
   white-space: nowrap;
 }
-.dropdown-content >>> li * {
-  overflow-x: hidden;
-  text-overflow: ellipsis;
-}
 
 .dropdown-content >>> li .btn-link {
   width: 100%;

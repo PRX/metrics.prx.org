@@ -80,7 +80,7 @@ describe('PodcastNavComponent', () => {
   });
 
   it('should dispatch routing action when podcast is changed', () => {
-    spyOn(store, 'dispatch');
+    jest.spyOn(store, 'dispatch').mockImplementation(() => {});
     comp.onPodcastChange(podcasts[1]);
     expect(store.dispatch).toHaveBeenCalledWith(
       new RoutePodcastAction({podcastId: podcasts[1].id}));

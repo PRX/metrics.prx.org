@@ -5,11 +5,11 @@
   "scripts": {
     "start": "prx-ng-serve dev",
     "build": "ng build --prod --aot --vc=true",
-    "test": "ng test",
+    "test": "jest --watch",
     "lint": "ng lint --type-check",
     "e2e": "ng e2e",
-    "testonce": "ng test --watch=false --browsers=PhantomJS",
-    "ci": "ng test --watch=false --browsers=PhantomJS --code-coverage && codecov",
+    "testonce": "jest",
+    "ci": "jest --coverage && codecov",
     "serve": "prx-ng-serve dist"
   },
   "private": true,
@@ -32,7 +32,7 @@
     "intl": "^1.2.5",
     "jasmine-marbles": "^0.2.0",
     "moment": "^2.18.1",
-    "ngx-prx-styleguide": "1.4.0",
+    "ngx-prx-styleguide": "1.4.1",
     "prx-ng-serve": "^0.0.3",
     "rxjs": "^5.5.2",
     "tinycolor2": "^1.4.1",
@@ -45,25 +45,20 @@
     "@ngrx/schematics": "^5.2.0",
     "@types/jasmine": "~2.5.53",
     "@types/jasminewd2": "~2.0.2",
+    "@types/jest": "^23.3.12",
     "@types/node": "~6.0.60",
     "@types/pikaday": "^0.0.33",
     "codecov": "PRX/codecov-node",
     "codelyzer": "~3.0.1",
     "jasmine-core": "~2.6.2",
     "jasmine-spec-reporter": "~4.1.0",
-    "karma": "~1.7.0",
-    "karma-chrome-launcher": "~2.1.1",
-    "karma-cli": "~1.0.1",
-    "karma-coverage-istanbul-reporter": "^1.2.1",
-    "karma-jasmine": "~1.1.0",
-    "karma-jasmine-html-reporter": "^0.2.2",
-    "karma-spec-reporter": "^0.0.31",
+    "jest": "^23.6.0",
+    "jest-environment-jsdom-thirteen": "^0.0.2",
+    "jest-preset-angular": "^6.0.2",
     "protractor": "~5.1.2",
     "ts-node": "^3.3.0",
     "tslint": "~5.3.2",
     "typescript": "^2.4.2"
   },
-  "optionalDependencies": {
-    "karma-phantomjs-launcher": "^1.0.4"
-  }
+  "optionalDependencies": {}
 }

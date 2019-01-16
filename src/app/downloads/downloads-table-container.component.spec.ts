@@ -60,7 +60,7 @@ describe('DownloadsTableContainerComponent', () => {
       store.dispatch(new ACTIONS.CastlePodcastDownloadsSuccessAction({
         id: podcast.id, metricsPropertyName, metrics: podDownloads}));
 
-      spyOn(store, 'dispatch').and.callThrough();
+      jest.spyOn(store, 'dispatch');
     });
   }));
 

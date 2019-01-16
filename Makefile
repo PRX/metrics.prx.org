@@ -5,7 +5,7 @@ build:
 	npm run build
 
 test:
-	PHANTOM=1 npm run testonce
+	npm run testonce
 
 clean:
 	rm -rf node_modules

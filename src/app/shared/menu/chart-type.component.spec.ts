@@ -33,7 +33,7 @@ describe('ChartTypeComponent', () => {
       comp.metricsType = METRICSTYPE_DOWNLOADS;
       fix.detectChanges();
 
-      spyOn(store, 'dispatch').and.callThrough();
+      jest.spyOn(store, 'dispatch');
     });
   }));
 

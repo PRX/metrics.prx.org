@@ -51,14 +51,17 @@ describe('IntervalDropdownComponent', () => {
   });
 
   it('should dispatch routing action when interval is changed', () => {
-    spyOn(store, 'dispatch');
+    jest.spyOn(store, 'dispatch').mockImplementation(() => {});
     comp.onIntervalChange(INTERVAL_WEEKLY);
     expect(store.dispatch).toHaveBeenCalledWith(new RouteIntervalAction({interval: INTERVAL_WEEKLY}));
   });
 
-  it('should close the dropdown on window scroll', () => {
+  it('should close the dropdown on window scroll', done => {
     comp.open = true;
+    window.addEventListener('scroll', (e) => {
+      expect(comp.open).toBeFalsy();
+      done();
+    });
     window.dispatchEvent(new Event('scroll'));
-    expect(comp.open).toBeFalsy();
   });
 });

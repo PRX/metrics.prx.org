@@ -22,10 +22,13 @@ describe('GeochartMapComponent', () => {
     });
   }));
 
-  it('should redraw map on window resize', () => {
-    spyOn(comp, 'drawMap');
+  it('should redraw map on window resize', done => {
+    jest.spyOn(comp, 'drawMap').mockImplementation(() => {});
+    window.addEventListener('resize', (e) => {
+      expect(comp.drawMap).toHaveBeenCalled();
+      done();
+    });
     window.dispatchEvent(new Event('resize'));
-    expect(comp.drawMap).toHaveBeenCalled();
   });
 
   it('should use a map width or height dependent on window size', () => {

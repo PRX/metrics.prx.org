@@ -39,20 +39,20 @@ describe('PodcastNavComponent', () => {
       comp.selectedPodcast = podcasts[0];
       fix.detectChanges();
 
-      spyOn(comp.podcastChange, 'emit').and.callThrough();
+      jest.spyOn(comp.podcastChange, 'emit');
     });
   }));
 
   it('should show list of podcast buttons', () => {
     const buttons = de.queryAll(By.css('button'));
     expect(buttons.length).toEqual(podcasts.length);
-    expect(buttons[0].nativeElement.innerText).toEqual(podcasts[0].title);
+    expect(buttons[0].nativeElement.textContent.trim()).toEqual(podcasts[0].title);
   });
 
   it('should show active podcast in list', () => {
     const activeButton = de.query(By.css('button.active'));
     expect(activeButton).toBeDefined();
-    expect(activeButton.nativeElement.innerText).toEqual(comp.selectedPodcast.title);
+    expect(activeButton.nativeElement.textContent.trim()).toEqual(comp.selectedPodcast.title);
   });
 
   it('should emit podcastChange event when a podcast other than the selectedPodcast is chosen', () => {

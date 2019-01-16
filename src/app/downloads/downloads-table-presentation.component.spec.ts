@@ -64,7 +64,7 @@ describe('DownloadsTablePresentationComponent', () => {
   });
 
   it('toggles episode display when checkbox is clicked', () => {
-    spyOn(comp.toggleChartEpisode, 'emit').and.callThrough();
+    jest.spyOn(comp.toggleChartEpisode, 'emit');
     const checks = de.queryAll(By.css('input[type="checkbox"]'));
     expect(checks.length).toEqual(3); // podcast + episodes
     checks[2].nativeElement.click();
@@ -72,7 +72,7 @@ describe('DownloadsTablePresentationComponent', () => {
   });
 
   it('toggles podcast display when checkbox is clicked', () => {
-    spyOn(comp.toggleChartPodcast, 'emit').and.callThrough();
+    jest.spyOn(comp.toggleChartPodcast, 'emit');
     const checks = de.queryAll(By.css('input[type="checkbox"]'));
     checks[0].nativeElement.click();
     expect(comp.toggleChartPodcast.emit).toHaveBeenCalledWith({id: podcast.id, charted: false});

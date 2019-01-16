@@ -39,7 +39,7 @@ describe('StandardDateRangeDropdownComponent', () => {
       comp.interval = INTERVAL_DAILY;
       fix.detectChanges();
 
-      spyOn(store, 'dispatch');
+      jest.spyOn(store, 'dispatch').mockImplementation(() => {});
     });
   }));
 
@@ -60,9 +60,12 @@ describe('StandardDateRangeDropdownComponent', () => {
     expect(store.dispatch).toHaveBeenCalledWith(jasmine.any(GoogleAnalyticsEventAction));
   });
 
-  it('should close the dropdown on window scroll', () => {
+  it('should close the dropdown on window scroll', done => {
     comp.open = true;
+    window.addEventListener('scroll', (e) => {
+      expect(comp.open).toBeFalsy();
+      done();
+    });
     window.dispatchEvent(new Event('scroll'));
-    expect(comp.open).toBeFalsy();
   });
 });

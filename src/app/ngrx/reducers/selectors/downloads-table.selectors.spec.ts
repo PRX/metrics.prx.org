@@ -25,7 +25,7 @@ describe('Downloads Table Selectors', () => {
     });
     store = TestBed.get(Store);
 
-    spyOn(store, 'dispatch').and.callThrough();
+    jest.spyOn(store, 'dispatch');
 
     store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerParams}));
     store.dispatch(new ACTIONS.CastleEpisodePageSuccessAction({

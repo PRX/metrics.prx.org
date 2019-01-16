@@ -45,6 +45,6 @@ describe('DownloadsSummaryComponent', () => {
 
   it('should show total value', () => {
     const pipe = new LargeNumberPipe();
-    expect(de.query(By.css('.value')).nativeElement.innerText).toEqual(pipe.transform(metricsUtil.getTotal(podDownloads)));
+    expect(de.query(By.css('.value')).nativeElement.textContent).toEqual(pipe.transform(metricsUtil.getTotal(podDownloads)));
   });
 });

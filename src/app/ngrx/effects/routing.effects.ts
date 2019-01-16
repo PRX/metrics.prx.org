@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { map } from 'rxjs/operators/map';
 import { switchMap } from 'rxjs/operators/switchMap';
-import { Observable } from 'rxjs/Observable';
+import { of } from 'rxjs/observable/of';
+import { Observable } from 'rxjs/Observable'; 
 import { Action } from '@ngrx/store';
 import { ROUTER_NAVIGATION, RouterNavigationAction, RouterNavigationPayload } from '@ngrx/router-store';
 import { Actions, Effect, ofType } from '@ngrx/effects';
@@ -28,7 +29,7 @@ export class RoutingEffects {
     switchMap((payload: RouterNavigationPayload<any>) => {
       const routerParams: RouterParams = {...payload.routerState};
       // map to an action with our CUSTOM_ROUTER_NAVIGATION type
-      return Observable.of(new ACTIONS.CustomRouterNavigationAction({routerParams}));
+      return of(new ACTIONS.CustomRouterNavigationAction({routerParams}));
     })
   );
 
@@ -39,7 +40,7 @@ export class RoutingEffects {
     switchMap((payload: ACTIONS.RoutePodcastPayload) => {
       const { podcastId } = payload;
       this.routingService.normalizeAndRoute({podcastId, episodePage: 1});
-      return Observable.of(null);
+      return of(null);
     })
   );
 
@@ -50,7 +51,7 @@ export class RoutingEffects {
     switchMap((payload: ACTIONS.RouteEpisodePagePayload) => {
       const { episodePage } = payload;
       this.routingService.normalizeAndRoute({episodePage});
-      return Observable.of(null);
+      return of(null);
     })
   );
 
@@ -61,7 +62,7 @@ export class RoutingEffects {
     switchMap((payload: ACTIONS.RouteChartTypePayload) => {
       const { chartType } = payload;
       this.routingService.normalizeAndRoute({chartType});
-      return Observable.of(null);
+      return of(null);
     })
   );
 
@@ -72,7 +73,7 @@ export class RoutingEffects {
     switchMap((payload: ACTIONS.RouteIntervalPayload) => {
       const { interval } = payload;
       this.routingService.normalizeAndRoute({interval});
-      return Observable.of(null);
+      return of(null);
     })
   );
 
@@ -84,7 +85,7 @@ export class RoutingEffects {
       const { standardRange } = payload;
       const range = dateUtil.getBeginEndDateFromStandardRange(standardRange);
       this.routingService.normalizeAndRoute({standardRange, ...range});
-      return Observable.of(null);
+      return of(null);
     })
   );
 
@@ -95,7 +96,7 @@ export class RoutingEffects {
     switchMap((payload: ACTIONS.RouteAdvancedRangePayload) => {
       const { interval, beginDate, endDate, standardRange } = payload;
       this.routingService.normalizeAndRoute({beginDate, endDate, interval, standardRange});
-      return Observable.of(null);
+      return of(null);
     })
   );
 
@@ -106,7 +107,7 @@ export class RoutingEffects {
    switchMap((payload: ACTIONS.RouteMetricsGroupTypePayload) => {
      const { metricsType, group } = payload;
      this.routingService.normalizeAndRoute(({metricsType, group}));
-     return Observable.of(null);
+     return of(null);
    })
  );
 
@@ -117,7 +118,7 @@ export class RoutingEffects {
     switchMap((payload: ACTIONS.RouteGroupFilterPayload) => {
       const { filter } = payload;
       this.routingService.normalizeAndRoute(({filter}));
-      return Observable.of(null);
+      return of(null);
     })
   );
 

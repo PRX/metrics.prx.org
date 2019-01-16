@@ -54,7 +54,7 @@ describe('ErrorRetryComponent', () => {
 
   it('should dispatch retry action when Retry button is clicked', () => {
     setRetryActions();
-    spyOn(store, 'dispatch').and.callThrough();
+    jest.spyOn(store, 'dispatch');
     de.query(By.css('button')).nativeElement.click();
     expect(store.dispatch).toHaveBeenCalledWith(comp.retryActions[0]);
   });

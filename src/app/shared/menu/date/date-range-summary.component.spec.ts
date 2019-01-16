@@ -37,6 +37,6 @@ describe('DateRangeSummaryComponent', () => {
   });
 
   it('should show standard range', () => {
-    expect(de.query(By.css('.desc')).nativeElement.innerText).toEqual(comp.routerParams.standardRange);
+    expect(de.query(By.css('.desc')).nativeElement.textContent).toEqual(comp.routerParams.standardRange);
   });
 });

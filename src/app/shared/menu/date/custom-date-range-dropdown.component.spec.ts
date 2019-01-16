@@ -47,7 +47,7 @@ describe('CustomDateRangeDropdownComponent', () => {
       comp.tempRange = comp.routerParams = routerParams;
       fix.detectChanges();
 
-      spyOn(comp, 'googleAnalyticsEvent').and.callThrough();
+      jest.spyOn(comp, 'googleAnalyticsEvent');
     });
   }));
 
@@ -101,7 +101,7 @@ describe('CustomDateRangeDropdownComponent', () => {
   });
 
   it('should dispatch routing and google analytics actions onApply', () => {
-    spyOn(store, 'dispatch');
+    jest.spyOn(store, 'dispatch').mockImplementation(() => {});
     comp.onIntervalChange(INTERVAL_MONTHLY);
     comp.onStandardRangeChange(dateUtil.LAST_MONTH);
     comp.onApply();
@@ -118,9 +118,12 @@ describe('CustomDateRangeDropdownComponent', () => {
     expect(comp.googleAnalyticsEvent).toHaveBeenCalledWith(comp.CUSTOM_DATE, comp.tempRange);
   });
 
-  it('should not close the dropdown on window scroll', () => {
+  it('should not close the dropdown on window scroll', done => {
     comp.open = true;
+    window.addEventListener('scroll', (e) => {
+      expect(comp.open).toBeTruthy();
+      done();
+    });
     window.dispatchEvent(new Event('scroll'));
-    expect(comp.open).toBeTruthy();
   });
 });

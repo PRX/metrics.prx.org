@@ -7,7 +7,7 @@ import { FancyFormModule, SpinnerModule } from 'ngx-prx-styleguide';
 
 import { episodes } from '../../../testing/downloads.fixtures';
 
-describe('EpisodeSelectDropdownComponent', () => {
+describe('EpisodeSelectListComponent', () => {
   let comp: EpisodeSelectListComponent;
   let fix: ComponentFixture<EpisodeSelectListComponent>;
   let de: DebugElement;
@@ -38,7 +38,7 @@ describe('EpisodeSelectDropdownComponent', () => {
     it('should show selected episodes', () => {
       comp.selectedEpisodes = ['some-guid-just-one-episode-selected'];
       fix.detectChanges();
-      expect(de.query(By.css('.accumulator')).nativeElement.innerText).toEqual('1 episode selected');
+      expect(de.query(By.css('.accumulator')).nativeElement.textContent.trim()).toEqual('1 episode selected');
     });
   });
 
@@ -46,10 +46,10 @@ describe('EpisodeSelectDropdownComponent', () => {
     it('should say "Showing" when no episodes are selected and "Show" to return to select all/none', () => {
       comp.selectedEpisodes = [];
       fix.detectChanges();
-      expect(de.query(By.css('prx-checkbox span:first-child')).nativeElement.innerText).toEqual('Showing');
+      expect(de.query(By.css('prx-checkbox span:first-child')).nativeElement.textContent).toEqual('Showing');
       comp.selectedEpisodes = ['some-guid-just-one-episode-selected'];
       fix.detectChanges();
-      expect(de.query(By.css('prx-checkbox span:first-child')).nativeElement.innerText).toEqual('Show');
+      expect(de.query(By.css('prx-checkbox span:first-child')).nativeElement.textContent).toEqual('Show');
     });
 
     it('should be checked when no episodes are selected', () => {

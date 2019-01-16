@@ -46,7 +46,7 @@ describe('NavMenuPresentationComponent', () => {
       fix.detectChanges();
       navLinks = de.queryAll(By.css('button.nav'));
 
-      spyOn(comp.navigate, 'emit').and.stub();
+      jest.spyOn(comp.navigate, 'emit').mockImplementation(() => {});
     });
   }));
 

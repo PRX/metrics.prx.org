@@ -27,7 +27,7 @@ describe('EpisodeSelectDropdownComponent', () => {
   }));
 
   it('should debounce search input', fakeAsync(() => {
-    spyOn(comp.search, 'emit').and.callThrough();
+    jest.spyOn(comp.search, 'emit');
     comp.onEpisodeSearch('articles');
     tick(501);
     expect(comp.search.emit).toHaveBeenCalledTimes(1);

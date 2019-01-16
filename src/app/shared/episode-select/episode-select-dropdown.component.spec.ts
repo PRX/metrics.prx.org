@@ -47,17 +47,20 @@ describe('EpisodeSelectDropdownComponent', () => {
       comp.maxPages = 2;
       fix.detectChanges();
 
-      spyOn(comp, 'loadEpisodes').and.callThrough();
-      spyOn(store, 'dispatch');
+      jest.spyOn(comp, 'loadEpisodes');
+      jest.spyOn(store, 'dispatch');
     });
   }));
 
-  it('should load episodes on dropdown scroll', () => {
+  it('should load episodes on dropdown scroll', done => {
     comp.dropdownContent.nativeElement.scrollTop = comp.dropdownContent.nativeElement.scrollHeight;
+    comp.dropdownContent.nativeElement.addEventListener('scroll', (e) => {
+      expect(comp.loadEpisodes).toHaveBeenCalledWith(comp.lastPage + 1, comp.searchTerm);
+      expect(store.dispatch).toHaveBeenCalledWith(
+        new ACTIONS.GoogleAnalyticsEventAction({gaAction: 'episode-select-page-load', value: comp.lastPage + 1}));
+      done();
+    });
     comp.dropdownContent.nativeElement.dispatchEvent(new Event('scroll'));
-    expect(comp.loadEpisodes).toHaveBeenCalledWith(comp.lastPage + 1, comp.searchTerm);
-    expect(store.dispatch).toHaveBeenCalledWith(
-      new ACTIONS.GoogleAnalyticsEventAction({gaAction: 'episode-select-page-load', value: comp.lastPage + 1}));
   });
 
   it('should load episodes on search', () => {

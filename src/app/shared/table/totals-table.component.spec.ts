@@ -58,7 +58,7 @@ describe('TotalsTableComponent', () => {
   });
 
   it('should emit toggleEntry event when checkbox is clicked', () => {
-    spyOn(comp.toggleEntry, 'emit').and.callThrough();
+    jest.spyOn(comp.toggleEntry, 'emit');
     const checkboxes = de.queryAll(By.css('input[type="checkbox"]'));
     checkboxes[0].nativeElement.click();
     expect(comp.toggleEntry.emit).toHaveBeenCalledWith(

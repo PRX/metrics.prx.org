@@ -3,7 +3,7 @@ import { DebugElement } from '@angular/core';
 
 import { EpisodeSearchSummaryComponent } from './episode-search-summary.component';
 
-describe('EpisodeSelectDropdownComponent', () => {
+describe('EpisodeSearchSummaryComponent', () => {
   let comp: EpisodeSearchSummaryComponent;
   let fix: ComponentFixture<EpisodeSearchSummaryComponent>;
   let de: DebugElement;
@@ -25,12 +25,12 @@ describe('EpisodeSelectDropdownComponent', () => {
   it('should show number of episodes matching search term', () => {
     comp.searchTotal = 14;
     fix.detectChanges();
-    expect(el.innerText).toEqual('(14 episodes)');
+    expect(el.textContent.trim()).toEqual('(14 episodes)');
   });
 
   it('should indicate no results', () => {
     comp.searchTotal = 0;
     fix.detectChanges();
-    expect(el.innerText).toEqual('(no results)');
+    expect(el.textContent.trim()).toEqual('(no results)');
   });
 });

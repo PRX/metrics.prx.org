@@ -426,7 +426,7 @@ describe('CastleEffects', () => {
     });
 
     it('should load downloads on episode page success', () => {
-      spyOn(store, 'dispatch').and.callThrough();
+      jest.spyOn(store, 'dispatch');
       const action = new ACTIONS.CastleEpisodePageSuccessAction({
         episodes,
         page: routerParams.episodePage,

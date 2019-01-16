@@ -68,7 +68,7 @@ describe('NestedTotalsTableComponent', () => {
   }));
 
   it('should emit discloseNestedData event when disclosure triangle or label is clicked', () => {
-    spyOn(comp.discloseNestedData, 'emit').and.callThrough();
+    jest.spyOn(comp.discloseNestedData, 'emit');
     const checkboxes = de.queryAll(By.css('input[type="checkbox"]'));
     checkboxes[0].nativeElement.click();
     expect(comp.discloseNestedData.emit).toHaveBeenCalledWith(comp.tableData[0].code);

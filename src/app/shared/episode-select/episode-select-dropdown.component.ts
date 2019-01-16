@@ -1,7 +1,7 @@
 import { Component, ElementRef, Input, Renderer2, OnInit, ViewChild } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Episode, EPISODE_SELECT_PAGE_SIZE } from '../../ngrx';
-import { CastleEpisodeSelectPageLoadAction, EpisodeSelectEpisodesAction } from '../../ngrx/actions';
+import * as ACTIONS from '../../ngrx/actions';
 
 @Component({
   selector: 'metrics-episode-select-dropdown',
@@ -63,16 +63,18 @@ export class EpisodeSelectDropdownComponent implements OnInit {
           scrollTop + clientHeight >= (scrollHeight - 100) &&
           this.lastPage + 1 <= this.maxPages) {
         this.loadEpisodes(this.lastPage + 1, this.searchTerm);
+        this.store.dispatch(new ACTIONS.GoogleAnalyticsEventAction({gaAction: 'episode-select-page-load', value: this.lastPage + 1}));
       }
     });
   }
 
   loadEpisodesOnSearch(search: string) {
     this.loadEpisodes(1, search);
+    this.store.dispatch(new ACTIONS.GoogleAnalyticsEventAction({gaAction: 'episode-select-search'}));
   }
 
   loadEpisodes(page: number, search: string) {
-    this.store.dispatch(new CastleEpisodeSelectPageLoadAction({
+    this.store.dispatch(new ACTIONS.CastleEpisodeSelectPageLoadAction({
       podcastId: this.podcastId,
       page,
       per: EPISODE_SELECT_PAGE_SIZE,
@@ -91,7 +93,10 @@ export class EpisodeSelectDropdownComponent implements OnInit {
     } else {
       episodeGuids = this.selectedEpisodes.filter(e => e !== episode.guid);
     }
-    this.store.dispatch(new EpisodeSelectEpisodesAction({episodeGuids}));
+    this.store.dispatch(new ACTIONS.EpisodeSelectEpisodesAction({episodeGuids}));
+    if (episodeGuids.length) {
+      this.store.dispatch(new ACTIONS.GoogleAnalyticsEventAction({gaAction: 'episode-select', value: episodeGuids.length}));
+    }
   }
 
   toggleOpen() {

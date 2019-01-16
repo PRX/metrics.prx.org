@@ -56,11 +56,26 @@ describe('EpisodeSelectDropdownComponent', () => {
     comp.dropdownContent.nativeElement.scrollTop = comp.dropdownContent.nativeElement.scrollHeight;
     comp.dropdownContent.nativeElement.dispatchEvent(new Event('scroll'));
     expect(comp.loadEpisodes).toHaveBeenCalledWith(comp.lastPage + 1, comp.searchTerm);
+    expect(store.dispatch).toHaveBeenCalledWith(
+      new ACTIONS.GoogleAnalyticsEventAction({gaAction: 'episode-select-page-load', value: comp.lastPage + 1}));
+  });
+
+  it('should load episodes on search', () => {
+    comp.loadEpisodesOnSearch('search term');
+    expect(store.dispatch).toHaveBeenCalledWith(new ACTIONS.CastleEpisodeSelectPageLoadAction({
+      podcastId: comp.podcastId,
+      page: 1,
+      per: EPISODE_SELECT_PAGE_SIZE,
+      search: 'search term'
+    }));
+    expect(store.dispatch).toHaveBeenCalledWith(
+      new ACTIONS.GoogleAnalyticsEventAction({gaAction: 'episode-select-search'}));
   });
 
   it('dispatches selected episodes', () => {
     comp.onToggleSelectEpisode(episodes[0]);
     expect(store.dispatch).toHaveBeenCalledWith(new ACTIONS.EpisodeSelectEpisodesAction({episodeGuids: [episodes[0].guid]}));
+    expect(store.dispatch).toHaveBeenCalledWith(new ACTIONS.GoogleAnalyticsEventAction({gaAction: 'episode-select', value: 1}));
     comp.onToggleSelectEpisode(null);
     expect(store.dispatch).toHaveBeenCalledWith(new ACTIONS.EpisodeSelectEpisodesAction({episodeGuids: []}));
   });

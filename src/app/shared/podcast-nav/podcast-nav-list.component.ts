@@ -12,7 +12,7 @@ import { Podcast } from '../../ngrx';
       </li>
     </ul>
   `,
-  styleUrls: ['./podcast-nav-list.component.css']
+  styleUrls: ['../dropdown/nav-list-dropdown.css']
 })
 export class PodcastNavListComponent {
   @Input() selectedPodcast: Podcast;

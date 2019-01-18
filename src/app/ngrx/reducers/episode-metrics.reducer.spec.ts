@@ -2,6 +2,7 @@ import { CastleEpisodeMetricsSuccessAction, CastleEpisodePageSuccessAction } fro
 import { INTERVAL_DAILY, MetricsType, METRICSTYPE_DOWNLOADS, RouterParams, getMetricsProperty } from '../';
 import { EpisodeMetricsReducer } from './episode-metrics.reducer';
 import { episodes, ep0Downloads, ep1Downloads } from '../../../testing/downloads.fixtures';
+import { EPISODE_PAGE_SIZE } from './models';
 
 describe('EpisodeMetricsReducer', () => {
   let newState;
@@ -61,6 +62,7 @@ describe('EpisodeMetricsReducer', () => {
     newState = EpisodeMetricsReducer(newState,
       new CastleEpisodePageSuccessAction({
         page: 2,
+        per: EPISODE_PAGE_SIZE,
         episodes: episodes,
         total: episodes.length
       })

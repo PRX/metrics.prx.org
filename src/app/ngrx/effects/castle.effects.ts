@@ -15,7 +15,7 @@ import { HalDoc } from '../../core';
 import { CastleService } from '../../core';
 import {
   Episode, RouterParams, getMetricsProperty, METRICSTYPE_DOWNLOADS,
-  PODCAST_PAGE_SIZE, EPISODE_PAGE_SIZE, GROUPTYPE_GEOSUBDIV
+  PODCAST_PAGE_SIZE, GROUPTYPE_GEOSUBDIV
 } from '../';
 import * as localStorageUtil from '../../shared/util/local-storage.util';
 
@@ -98,38 +98,23 @@ export class CastleEffects {
     })
   );
 
-  /*
-  // on podcast page 1 success, if loading all podcasts start loading all episodes page by page as well
-  // ugh, makes app loading too slow
-  @Effect()
-  loadPodcastEpisodes$: Observable<Action> = this.actions$.pipe(
-    ofType(ACTIONS.ActionTypes.CASTLE_PODCAST_PAGE_SUCCESS),
-    filter((action: ACTIONS.CastlePodcastPageSuccessAction) => {
-      const { all, page, podcasts } = action.payload;
-      return all && page === 1 && podcasts && podcasts.length > 0;
-    }),
-    map((action: ACTIONS.CastlePodcastPageSuccessAction) => action.payload.podcasts),
-    mergeMap((podcasts: Podcast[]) => {
-      return podcasts.map(podcast => new ACTIONS.CastleEpisodePageLoadAction(
-        {podcastId: podcast.id, page: 1, all: true}));
-    })
-  );*/
-
   // basic - load > success/failure episode page
   @Effect()
   loadEpisodePage$: Observable<Action> = this.actions$.pipe(
-    ofType(ACTIONS.ActionTypes.CASTLE_EPISODE_PAGE_LOAD),
-    map((action: ACTIONS.CastleEpisodePageLoadAction) => action.payload),
-    concatMap((payload: ACTIONS.CastleEpisodePageLoadPayload) => {
-      const { podcastId, page, all } = payload;
-      return this.castle.follow('prx:podcast', {id: podcastId}).followItems('prx:episodes', {page, per: EPISODE_PAGE_SIZE})
+    ofType(ACTIONS.ActionTypes.CASTLE_EPISODE_PAGE_LOAD, ACTIONS.ActionTypes.CASTLE_EPISODE_SELECT_PAGE_LOAD),
+    concatMap((action: ACTIONS.CastleEpisodePageLoadAction | ACTIONS.CastleEpisodeSelectPageLoadAction) => {
+      const { podcastId, page, per, search } = action.payload;
+      return this.castle.follow('prx:podcast', {id: podcastId}).followItems('prx:episodes', { page, per, ...(search && {search}) })
         .pipe(
           map((results: HalDoc[]) => {
-            return new ACTIONS.CastleEpisodePageSuccessAction({
+            const successAction = action.type === ACTIONS.ActionTypes.CASTLE_EPISODE_PAGE_LOAD ?
+            'CastleEpisodePageSuccessAction' : 'CastleEpisodeSelectPageSuccessAction';
+            return new ACTIONS[successAction]({
               page,
-              all,
-              total: results[0].total(),
-              episodes: results.map(doc => {
+              per,
+              total: results && results.length ? results[0].total() : 0,
+              ...(search && {search}), // conditionally adds search property if defined
+              episodes: results.map((doc): Episode => {
                 return {
                   guid: '' + doc['id'],
                   podcastId,
@@ -140,28 +125,14 @@ export class CastleEffects {
               })
             });
           }),
-          catchError(error => Observable.of(new ACTIONS.CastleEpisodePageFailureAction({error})))
+          catchError(error => {
+            const failAction = action.type === ACTIONS.ActionTypes.CASTLE_EPISODE_PAGE_LOAD ?
+            'CastleEpisodePageFailureAction' : 'CastleEpisodeSelectPageFailureAction';
+            return Observable.of(new ACTIONS[failAction]({error}));
+          })
         );
     })
   );
-
-  // on episode page success if loading all episode pages and not yet finished, load next page
-  /* Episode loading TBD but this isn't needed for now
-  @Effect()
-  loadNextEpisodePage$: Observable<Action> = this.actions$.pipe(
-    ofType(ACTIONS.ActionTypes.CASTLE_EPISODE_PAGE_SUCCESS),
-    filter((action: ACTIONS.CastleEpisodePageSuccessAction) => {
-      const { page, all, total, episodes } = action.payload;
-      return all && page * EPISODE_PAGE_SIZE < total && episodes && episodes.length > 0;
-    }),
-    map((action: ACTIONS.CastleEpisodePageSuccessAction) => action.payload),
-    concatMap((payload: ACTIONS.CastleEpisodePageSuccessPayload) => {
-      const { page, all, episodes } = payload;
-      return Observable.of(new ACTIONS.CastleEpisodePageLoadAction(
-        {podcastId: episodes[0].podcastId, page: page + 1, all}));
-    })
-  );
-  */
 
   // whenever an episode page is loaded that is the currently routed page,
   // call the load actions for podcast and episode metrics

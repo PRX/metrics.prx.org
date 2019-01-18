@@ -11,7 +11,7 @@ import { DownloadsChartPresentationComponent } from './downloads-chart-presentat
 import { DownloadsTableContainerComponent } from './downloads-table-container.component';
 import { DownloadsTablePresentationComponent } from './downloads-table-presentation.component';
 
-import { getMetricsProperty } from '../ngrx';
+import { getMetricsProperty, EPISODE_PAGE_SIZE } from '../ngrx';
 import { reducers } from '../ngrx/reducers';
 import * as ACTIONS from '../ngrx/actions';
 
@@ -62,6 +62,7 @@ describe('DownloadsComponent', () => {
     store.dispatch(new ACTIONS.CastleEpisodePageSuccessAction({
       episodes,
       page: 1,
+      per: EPISODE_PAGE_SIZE,
       total: episodes.length
     }));
   }

@@ -22,7 +22,9 @@ import {
   GROUPTYPE_GEOSUBDIV,
   GROUPTYPE_AGENTOS,
   GROUPTYPE_AGENTNAME,
-  GROUPTYPE_AGENTTYPE
+  GROUPTYPE_AGENTTYPE,
+  EPISODE_PAGE_SIZE,
+  EPISODE_SELECT_PAGE_SIZE
 } from '../../ngrx/';
 import * as localStorageUtil from '../../shared/util/local-storage.util';
 import * as dateUtil from '../../shared/util/date/';
@@ -72,10 +74,13 @@ export class RoutingService {
   }
 
   checkChangesToParamsAndLoadData(newRouterParams: RouterParams) {
+    if (this.isPodcastChanged(newRouterParams)) {
+      this.loadSelectEpisodes(newRouterParams);
+    }
     switch (newRouterParams.metricsType) {
       case METRICSTYPE_DOWNLOADS:
         if (this.isPodcastChanged(newRouterParams) ||
-          this.isEpisodesChanged(newRouterParams) || this.isMetricsTypeChanged(newRouterParams)) {
+          this.isEpisodePageChanged(newRouterParams) || this.isMetricsTypeChanged(newRouterParams)) {
           this.loadEpisodes(newRouterParams);
         } else if (this.isBeginDateChanged(newRouterParams) ||
           this.isEndDateChanged(newRouterParams) || this.isIntervalChanged(newRouterParams)) {
@@ -119,7 +124,7 @@ export class RoutingService {
   }
 
   normalizeAndRoute(newRouterParams: RouterParams): RouterParams {
-    const routerParams: RouterParams = this.checkAndGetDefaults({ ...this.routerParams, ...newRouterParams});
+    const routerParams: RouterParams = this.checkAndGetDefaults({ ...this.routerParams, ...newRouterParams });
 
     const params = {};
     if (routerParams.episodePage) {
@@ -245,7 +250,7 @@ export class RoutingService {
       (!this.routerParams || this.routerParams.podcastId !== newRouterParams.podcastId);
   }
 
-  isEpisodesChanged(newRouterParams: RouterParams): boolean {
+  isEpisodePageChanged(newRouterParams: RouterParams): boolean {
     return newRouterParams &&
       (!newRouterParams.episodePage || !this.routerParams || this.routerParams.episodePage !== newRouterParams.episodePage);
   }
@@ -269,7 +274,16 @@ export class RoutingService {
     this.store.dispatch(new ACTIONS.CastleEpisodePageLoadAction({
       podcastId: newRouterParams.podcastId,
       page: newRouterParams.episodePage || 1,
-      all: !this.routerParams || this.routerParams.podcastId !== newRouterParams.podcastId}));
+      per: EPISODE_PAGE_SIZE
+    }));
+  }
+
+  loadSelectEpisodes(newRouterParams: RouterParams) {
+    this.store.dispatch(new ACTIONS.CastleEpisodeSelectPageLoadAction({
+      podcastId: newRouterParams.podcastId,
+      page: 1,
+      per: EPISODE_SELECT_PAGE_SIZE
+    }));
   }
 
   loadDownloads(newRouterParams) {

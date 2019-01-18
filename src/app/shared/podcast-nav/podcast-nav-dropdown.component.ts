@@ -19,7 +19,7 @@ import { Podcast } from '../../ngrx';
     </div>
     <span class="single button-text" *ngIf="podcasts?.length === 1 && selectedPodcast">{{selectedPodcast?.title}}</span>
   `,
-  styleUrls: ['../menu/dropdown.css', './podcast-nav-dropdown.component.css']
+  styleUrls: ['../dropdown/dropdown.css', '../dropdown/nav-dropdown.css']
 })
 export class PodcastNavDropdownComponent {
   @Input() selectedPodcast: Podcast;

@@ -20,7 +20,7 @@ import * as dateUtil from '../../util/date';
       </div>
     </div>
   `,
-  styleUrls: ['../dropdown.css', './standard-date-range-dropdown.component.css']
+  styleUrls: ['../../dropdown/dropdown.css', './standard-date-range-dropdown.component.css']
 })
 export class StandardDateRangeDropdownComponent {
   @Input() standardRange: string;

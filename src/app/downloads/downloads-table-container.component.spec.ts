@@ -9,7 +9,7 @@ import { DownloadsTableContainerComponent } from './downloads-table-container.co
 import { DownloadsTablePresentationComponent } from './downloads-table-presentation.component';
 
 import { reducers } from '../ngrx/reducers';
-import { CHARTTYPE_EPISODES, getMetricsProperty } from '../ngrx';
+import { CHARTTYPE_EPISODES, getMetricsProperty, EPISODE_PAGE_SIZE } from '../ngrx';
 import * as ACTIONS from '../ngrx/actions';
 import { routerParams, episodes, podcast, ep0Downloads, ep1Downloads, podDownloads } from '../../testing/downloads.fixtures';
 
@@ -54,6 +54,7 @@ describe('DownloadsTableContainerComponent', () => {
           return {guid: e.guid, title: e.title, publishedAt: e.publishedAt, page: e.page, podcastId: e.podcastId};
         }),
         page: 1,
+        per: EPISODE_PAGE_SIZE,
         total: episodes.length
       }));
       store.dispatch(new ACTIONS.CastlePodcastDownloadsSuccessAction({

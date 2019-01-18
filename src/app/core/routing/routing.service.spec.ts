@@ -26,7 +26,8 @@ import {
   CHARTTYPE_PODCAST,
   CHARTTYPE_EPISODES,
   CHARTTYPE_LINE,
-  CHARTTYPE_GEOCHART
+  CHARTTYPE_GEOCHART,
+  EPISODE_PAGE_SIZE
 } from '../../ngrx/';
 import * as dateUtil from '../../shared/util/date/date.util';
 import * as localStorageUtil from '../../shared/util/local-storage.util';
@@ -64,7 +65,7 @@ describe('RoutingService', () => {
 
   it('should redirect users away from / and back to existing or default route params', () => {
     store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerParams}));
-    spyOn(routingService, 'normalizeAndRoute').and.callThrough();
+    jest.spyOn(routingService, 'normalizeAndRoute');
     router.navigate([]);
     router.events.pipe(
       filter(event => event instanceof RoutesRecognized)
@@ -74,14 +75,14 @@ describe('RoutingService', () => {
   });
 
   it('should load episodes if podcast or episodePage changes', () => {
-    spyOn(routingService, 'loadEpisodes').and.callThrough();
+    jest.spyOn(routingService, 'loadEpisodes');
     store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerParams: {podcastId: routerParams.podcastId, episodePage: 2}}));
     expect(routingService.loadEpisodes).toHaveBeenCalled();
   });
 
   it('should reload downloads(metrics) data if podcast or episodes has not changed but begin/end dates or interval changes', () => {
-    spyOn(routingService, 'loadEpisodes').and.callThrough();
-    spyOn(routingService, 'loadDownloads').and.callThrough();
+    jest.spyOn(routingService, 'loadEpisodes');
+    jest.spyOn(routingService, 'loadDownloads');
     const beginDate = new Date();
     store.dispatch(new ACTIONS.CastleEpisodePageSuccessAction({
       episodes: [{
@@ -92,6 +93,7 @@ describe('RoutingService', () => {
         podcastId: episodes[1].podcastId
       }],
       page: 2,
+      per: EPISODE_PAGE_SIZE,
       total: episodes.length
     }));
     store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerParams: {
@@ -102,7 +104,7 @@ describe('RoutingService', () => {
   });
 
   it('should reload episodes if metrics type changes to reach/downloads', () => {
-    spyOn(routingService, 'loadEpisodes').and.callThrough();
+    jest.spyOn(routingService, 'loadEpisodes');
     store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerParams:
         {...routerParams, metricsType: METRICSTYPE_DEMOGRAPHICS, group: GROUPTYPE_GEOCOUNTRY}}));
     expect(routingService.loadEpisodes).not.toHaveBeenCalled();
@@ -115,7 +117,7 @@ describe('RoutingService', () => {
       metricsType: <MetricsType>METRICSTYPE_DEMOGRAPHICS, group: <GroupType>GROUPTYPE_GEOCOUNTRY, filter: 'US'};
     store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerParams: newRouterParams}));
 
-    spyOn(routingService, 'loadPodcastTotals').and.callThrough();
+    jest.spyOn(routingService, 'loadPodcastTotals');
 
     newRouterParams = {...newRouterParams, interval: INTERVAL_MONTHLY};
     store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerParams: newRouterParams}));
@@ -124,8 +126,8 @@ describe('RoutingService', () => {
 
   it('should reload grouped (geo/agent) podcast ranks and totals if podcast, metrics type, group, or begin/end dates change', () => {
     let newRouterParams = routerParams;
-    spyOn(routingService, 'loadPodcastTotals').and.callThrough();
-    spyOn(routingService, 'loadPodcastRanks').and.callThrough();
+    jest.spyOn(routingService, 'loadPodcastTotals');
+    jest.spyOn(routingService, 'loadPodcastRanks');
 
     store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerParams: newRouterParams}));
     expect(routingService.loadPodcastTotals).not.toHaveBeenCalledWith(newRouterParams);
@@ -160,8 +162,8 @@ describe('RoutingService', () => {
 
   it('should reload nested geo podcast ranks and totals if podcast, filter, or begin/end dates change', () => {
     let newRouterParams = routerParams;
-    spyOn(routingService, 'loadPodcastRanks').and.callThrough();
-    spyOn(routingService, 'loadPodcastTotals').and.callThrough();
+    jest.spyOn(routingService, 'loadPodcastRanks');
+    jest.spyOn(routingService, 'loadPodcastTotals');
 
     store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerParams: newRouterParams}));
     expect(routingService.loadPodcastRanks).not.toHaveBeenCalledWith(newRouterParams);
@@ -198,7 +200,7 @@ describe('RoutingService', () => {
   it('should normalize router params and navigate using defaults if params not present', () => {
     const newParams = {podcastId: '82'};
     const { podcastId, metricsType, chartType, interval, beginDate, endDate, ...params } = routingService.checkAndGetDefaults(newParams);
-    spyOn(router, 'navigate').and.callThrough();
+    jest.spyOn(router, 'navigate');
     // other route params are not yet defined
     expect(routingService.routerParams).toBeUndefined();
     // update router params state via routing action using only the podcastId
@@ -214,7 +216,7 @@ describe('RoutingService', () => {
   });
 
   it('should not include filter param for non geo routes', () => {
-    spyOn(router, 'navigate').and.callThrough();
+    jest.spyOn(router, 'navigate');
 
     const { podcastId, metricsType, chartType, group, filter, interval, beginDate, endDate, ...params }
       = routingService.checkAndGetDefaults({podcastId: '82', metricsType: METRICSTYPE_DOWNLOADS});
@@ -341,19 +343,19 @@ describe('RoutingService', () => {
 
   it ('should check if episodes changed', () => {
     routingService.routerParams = undefined;
-    expect(routingService.isEpisodesChanged({episodePage: 1})).toBeTruthy();
+    expect(routingService.isEpisodePageChanged({episodePage: 1})).toBeTruthy();
     routingService.routerParams = undefined;
-    expect(routingService.isEpisodesChanged(undefined)).toBeFalsy();
+    expect(routingService.isEpisodePageChanged(undefined)).toBeFalsy();
 
     routingService.routerParams = {};
-    expect(routingService.isEpisodesChanged({episodePage: 1})).toBeTruthy();
+    expect(routingService.isEpisodePageChanged({episodePage: 1})).toBeTruthy();
 
     routingService.routerParams = {episodePage: 2};
-    expect(routingService.isEpisodesChanged({episodePage: 1})).toBeTruthy();
+    expect(routingService.isEpisodePageChanged({episodePage: 1})).toBeTruthy();
 
     routingService.routerParams = {episodePage: 1};
-    expect(routingService.isEpisodesChanged(undefined)).toBeFalsy();
-    expect(routingService.isEpisodesChanged({episodePage: 1})).toBeFalsy();
+    expect(routingService.isEpisodePageChanged(undefined)).toBeFalsy();
+    expect(routingService.isEpisodePageChanged({episodePage: 1})).toBeFalsy();
   });
 
   it('should check if group changed', () => {

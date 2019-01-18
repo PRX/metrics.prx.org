@@ -8,7 +8,7 @@ export { CHARTTYPE_PODCAST, CHARTTYPE_EPISODES, CHARTTYPE_STACKED,
 export { RouterParams } from './router-params.model';
 export { DownloadsTableModel } from './downloads-table.model';
 export { PODCAST_PAGE_SIZE, Podcast } from './podcast.model';
-export { EPISODE_PAGE_SIZE, Episode } from './episode.model';
+export { EPISODE_PAGE_SIZE, EPISODE_SELECT_PAGE_SIZE, Episode } from './episode.model';
 export { PodcastAllTimeDownloads } from './podcast-alltime-downloads.model';
 export { EpisodeAllTimeDownloads } from './episode-alltime-downloads.model';
 export { Rank } from './rank.model';

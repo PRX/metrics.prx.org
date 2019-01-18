@@ -80,10 +80,10 @@ describe('RoutingEffects', () => {
     actions$ = TestBed.get(Actions);
     store = TestBed.get(Store);
 
-    spyOn(store, 'dispatch').and.callThrough();
+    jest.spyOn(store, 'dispatch');
     store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerParams}));
 
-    spyOn(effects.routingService, 'normalizeAndRoute').and.callThrough();
+    jest.spyOn(effects.routingService, 'normalizeAndRoute');
   }));
 
   it('should map ROUTER_NAVIGATION to CustomRouterNavigationAction', () => {

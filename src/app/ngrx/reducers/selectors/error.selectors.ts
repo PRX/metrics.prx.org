@@ -9,7 +9,7 @@ import { selectRoutedPodcastTotalsError, selectNestedPodcastTotalsError } from '
 import * as ACTIONS from '../../actions';
 import { PodcastDownloads } from '../models/podcast-downloads.model';
 import { EpisodeMetricsModel } from '../episode-metrics.reducer';
-import { RouterParams, METRICSTYPE_DOWNLOADS, GROUPTYPE_GEOSUBDIV } from '../models';
+import { RouterParams, METRICSTYPE_DOWNLOADS, GROUPTYPE_GEOSUBDIV, EPISODE_PAGE_SIZE } from '../models';
 
 // this feels like it's starting to cross a boundary of responsibility here, so it seems important to note that
 // these actions are not being dispatched by the reducers/selectors
@@ -39,7 +39,8 @@ export const select500ErrorReloadActions =
     }
     if (routerParams.metricsType === METRICSTYPE_DOWNLOADS) {
       if (episodeError && episodeError.status === 500) {
-        actions.push(new ACTIONS.CastleEpisodePageLoadAction({podcastId: routerParams.podcastId, page: 1, all: true}));
+        actions.push(new ACTIONS.CastleEpisodePageLoadAction({
+          podcastId: routerParams.podcastId, page: 1, per: EPISODE_PAGE_SIZE}));
       }
       if (PodcastDownloadsErrors && PodcastDownloadsErrors.length) {
         actions = actions.concat(PodcastDownloadsErrors
@@ -91,7 +92,7 @@ export const select500ErrorReloadActions =
 
 export const selectNested500ErrorReloadActions = createSelector(selectRouter, selectNestedPodcastRanksError, selectNestedPodcastTotalsError,
   (routerParams: RouterParams, ranksError: any, totalsError: any) => {
-  const actions = [];
+    const actions = [];
     if (ranksError && ranksError.status === 500) {
       actions.push(new ACTIONS.CastlePodcastRanksLoadAction({
         id: routerParams.podcastId,

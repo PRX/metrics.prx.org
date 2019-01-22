@@ -1,6 +1,6 @@
 import { Component, ElementRef, Input, Renderer2, OnInit, ViewChild } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { Episode, EPISODE_SELECT_PAGE_SIZE } from '../../ngrx';
+import { Episode, EPISODE_SELECT_PAGE_SIZE, RouterParams } from '../../ngrx';
 import * as ACTIONS from '../../ngrx/actions';
 
 @Component({
@@ -35,6 +35,7 @@ import * as ACTIONS from '../../ngrx/actions';
   styleUrls: ['../dropdown/dropdown.css', '../dropdown/nav-dropdown.css']
 })
 export class EpisodeSelectDropdownComponent implements OnInit {
+  @Input() routerParams: RouterParams;
   @Input() episodes: Episode[];
   @Input() searchTerm: string;
   @Input() episodesLoading: boolean;
@@ -43,7 +44,6 @@ export class EpisodeSelectDropdownComponent implements OnInit {
   @Input() searchTotal: number;
   @Input() lastPage: number;
   @Input() maxPages: number;
-  @Input() podcastId: string;
   @ViewChild('dropdownContent') dropdownContent: ElementRef;
   open = false;
 
@@ -75,7 +75,7 @@ export class EpisodeSelectDropdownComponent implements OnInit {
 
   loadEpisodes(page: number, search: string) {
     this.store.dispatch(new ACTIONS.CastleEpisodeSelectPageLoadAction({
-      podcastId: this.podcastId,
+      podcastId: this.routerParams.podcastId,
       page,
       per: EPISODE_SELECT_PAGE_SIZE,
       search
@@ -86,10 +86,24 @@ export class EpisodeSelectDropdownComponent implements OnInit {
     let episodeGuids: string[];
     if (!episode) {
       episodeGuids = [];
-    } else if (!this.selectedEpisodes) {
-      episodeGuids = [episode.guid];
-    } else if (this.selectedEpisodes.indexOf(episode.guid) === -1) {
-      episodeGuids = this.selectedEpisodes.concat([episode.guid]);
+    } else if (!this.selectedEpisodes || this.selectedEpisodes.indexOf(episode.guid) === -1) {
+      episodeGuids = this.selectedEpisodes ? this.selectedEpisodes.concat([episode.guid]) : [episode.guid];
+
+      this.store.dispatch(new ACTIONS.CastleEpisodeRanksLoadAction({
+        guid: episode.guid,
+        group: this.routerParams.group,
+        filter: this.routerParams.filter,
+        interval: this.routerParams.interval,
+        beginDate: this.routerParams.beginDate,
+        endDate: this.routerParams.endDate
+      }));
+      this.store.dispatch(new ACTIONS.CastleEpisodeTotalsLoadAction({
+        guid: episode.guid,
+        group: this.routerParams.group,
+        filter: this.routerParams.filter,
+        beginDate: this.routerParams.beginDate,
+        endDate: this.routerParams.endDate
+      }));
     } else {
       episodeGuids = this.selectedEpisodes.filter(e => e !== episode.guid);
     }

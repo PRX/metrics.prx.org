@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Router, RoutesRecognized } from '@angular/router';
 import { filter } from 'rxjs/operators/filter';
 import { Store, select } from '@ngrx/store';
-import { selectRoutedPageEpisodes, selectRouter } from '../../ngrx/reducers/selectors/';
+import { selectRoutedPageEpisodes, selectRouter, selectEpisodeSelectedEpisodeGuids } from '../../ngrx/reducers/selectors/';
 import {
   RouterParams,
   Episode,
@@ -34,11 +34,13 @@ import * as ACTIONS from '../../ngrx/actions/';
 export class RoutingService {
   routerParams: RouterParams;
   episodes: Episode[];
+  selectedEpisodes: string[];
 
   constructor (public store: Store<any>,
                private router: Router) {
     this.dontAllowRoot();
     this.subRoutedPageEpisodes();
+    this.subSelectedEpisodes();
     this.subRouterParams();
   }
 
@@ -56,6 +58,12 @@ export class RoutingService {
   subRoutedPageEpisodes() {
     this.store.pipe(select(selectRoutedPageEpisodes)).subscribe((episodes: Episode[]) => {
       this.episodes = episodes;
+    });
+  }
+
+  subSelectedEpisodes() {
+    this.store.pipe(select(selectEpisodeSelectedEpisodeGuids)).subscribe((guids: string[]) => {
+      this.selectedEpisodes = guids;
     });
   }
 
@@ -90,36 +98,77 @@ export class RoutingService {
         }
         break;
       case METRICSTYPE_DEMOGRAPHICS:
-        if (this.isPodcastChanged(newRouterParams) || this.isMetricsTypeChanged(newRouterParams) || this.isGroupChanged(newRouterParams) ||
-          this.isBeginDateChanged(newRouterParams) || this.isEndDateChanged(newRouterParams)) {
-          this.loadPodcastTotals(newRouterParams);
-        }
-        if (this.isPodcastChanged(newRouterParams) || this.isMetricsTypeChanged(newRouterParams) || this.isGroupChanged(newRouterParams) ||
-          this.isBeginDateChanged(newRouterParams) || this.isEndDateChanged(newRouterParams) || this.isIntervalChanged(newRouterParams)) {
-          this.loadPodcastRanks(newRouterParams);
-        }
-        if (newRouterParams.group === GROUPTYPE_GEOCOUNTRY && newRouterParams.filter &&
-          (this.isFilterChanged(newRouterParams) || this.isPodcastChanged(newRouterParams) ||
-            this.isBeginDateChanged(newRouterParams) || this.isEndDateChanged(newRouterParams))) {
-          this.loadPodcastTotals({...newRouterParams, group: GROUPTYPE_GEOSUBDIV, filter: newRouterParams.filter});
-        }
-        if (newRouterParams.group === GROUPTYPE_GEOCOUNTRY && newRouterParams.filter &&
-          (this.isFilterChanged(newRouterParams) || this.isPodcastChanged(newRouterParams) ||
-            this.isBeginDateChanged(newRouterParams) || this.isEndDateChanged(newRouterParams) ||
-            this.isIntervalChanged(newRouterParams))) {
-          this.loadPodcastRanks({...newRouterParams, group: GROUPTYPE_GEOSUBDIV, filter: newRouterParams.filter});
+        if (this.selectedEpisodes && this.selectedEpisodes.length > 0) {
+          if (this.isMetricsTypeChanged(newRouterParams) || this.isGroupChanged(newRouterParams) ||
+              this.isBeginDateChanged(newRouterParams) || this.isEndDateChanged(newRouterParams)) {
+            this.loadEpisodeTotals(newRouterParams);
+          }
+          if (this.isMetricsTypeChanged(newRouterParams) || this.isGroupChanged(newRouterParams) ||
+              this.isBeginDateChanged(newRouterParams) || this.isEndDateChanged(newRouterParams) ||
+              this.isIntervalChanged(newRouterParams)) {
+            this.loadEpisodeRanks(newRouterParams);
+          }
+          if (newRouterParams.group === GROUPTYPE_GEOCOUNTRY && newRouterParams.filter &&
+            (this.isFilterChanged(newRouterParams) || this.isPodcastChanged(newRouterParams) ||
+              this.isBeginDateChanged(newRouterParams) || this.isEndDateChanged(newRouterParams))) {
+            this.loadEpisodeTotals({...newRouterParams, group: GROUPTYPE_GEOSUBDIV, filter: newRouterParams.filter});
+          }
+          if (newRouterParams.group === GROUPTYPE_GEOCOUNTRY && newRouterParams.filter &&
+            (this.isFilterChanged(newRouterParams) || this.isPodcastChanged(newRouterParams) ||
+              this.isBeginDateChanged(newRouterParams) || this.isEndDateChanged(newRouterParams) ||
+              this.isIntervalChanged(newRouterParams))) {
+            this.loadEpisodeRanks({...newRouterParams, group: GROUPTYPE_GEOSUBDIV, filter: newRouterParams.filter});
+          }
+        } else {
+          if (this.isPodcastChanged(newRouterParams) ||
+              this.isMetricsTypeChanged(newRouterParams) || this.isGroupChanged(newRouterParams) ||
+              this.isBeginDateChanged(newRouterParams) || this.isEndDateChanged(newRouterParams)) {
+            this.loadPodcastTotals(newRouterParams);
+          }
+          if (this.isPodcastChanged(newRouterParams) ||
+              this.isMetricsTypeChanged(newRouterParams) || this.isGroupChanged(newRouterParams) ||
+              this.isBeginDateChanged(newRouterParams) || this.isEndDateChanged(newRouterParams) ||
+              this.isIntervalChanged(newRouterParams)) {
+            this.loadPodcastRanks(newRouterParams);
+          }
+          if (newRouterParams.group === GROUPTYPE_GEOCOUNTRY && newRouterParams.filter &&
+            (this.isFilterChanged(newRouterParams) || this.isPodcastChanged(newRouterParams) ||
+              this.isBeginDateChanged(newRouterParams) || this.isEndDateChanged(newRouterParams))) {
+            this.loadPodcastTotals({...newRouterParams, group: GROUPTYPE_GEOSUBDIV, filter: newRouterParams.filter});
+          }
+          if (newRouterParams.group === GROUPTYPE_GEOCOUNTRY && newRouterParams.filter &&
+            (this.isFilterChanged(newRouterParams) || this.isPodcastChanged(newRouterParams) ||
+              this.isBeginDateChanged(newRouterParams) || this.isEndDateChanged(newRouterParams) ||
+              this.isIntervalChanged(newRouterParams))) {
+            this.loadPodcastRanks({...newRouterParams, group: GROUPTYPE_GEOSUBDIV, filter: newRouterParams.filter});
+          }
         }
         break;
       case METRICSTYPE_TRAFFICSOURCES:
-        if (this.isPodcastChanged(newRouterParams) || this.isMetricsTypeChanged(newRouterParams) || this.isGroupChanged(newRouterParams) ||
-          this.isBeginDateChanged(newRouterParams) || this.isEndDateChanged(newRouterParams)) {
-          this.loadPodcastTotals(newRouterParams);
+        if (this.selectedEpisodes && this.selectedEpisodes.length) {
+          if (this.isMetricsTypeChanged(newRouterParams) || this.isGroupChanged(newRouterParams) ||
+              this.isBeginDateChanged(newRouterParams) || this.isEndDateChanged(newRouterParams)) {
+            this.loadEpisodeTotals(newRouterParams);
+          }
+          if (this.isMetricsTypeChanged(newRouterParams) || this.isGroupChanged(newRouterParams) ||
+              this.isBeginDateChanged(newRouterParams) || this.isEndDateChanged(newRouterParams) ||
+              this.isIntervalChanged(newRouterParams)) {
+            this.loadEpisodeRanks(newRouterParams);
+          }
+        } else {
+          if (this.isPodcastChanged(newRouterParams) ||
+              this.isMetricsTypeChanged(newRouterParams) || this.isGroupChanged(newRouterParams) ||
+              this.isBeginDateChanged(newRouterParams) || this.isEndDateChanged(newRouterParams)) {
+            this.loadPodcastTotals(newRouterParams);
+          }
+          if (this.isPodcastChanged(newRouterParams) ||
+              this.isMetricsTypeChanged(newRouterParams) || this.isGroupChanged(newRouterParams) ||
+              this.isBeginDateChanged(newRouterParams) || this.isEndDateChanged(newRouterParams) ||
+              this.isIntervalChanged(newRouterParams)) {
+            this.loadPodcastRanks(newRouterParams);
+          }
+          break;
         }
-        if (this.isPodcastChanged(newRouterParams) || this.isMetricsTypeChanged(newRouterParams) || this.isGroupChanged(newRouterParams) ||
-          this.isBeginDateChanged(newRouterParams) || this.isEndDateChanged(newRouterParams) || this.isIntervalChanged(newRouterParams)) {
-          this.loadPodcastRanks(newRouterParams);
-        }
-        break;
     }
   }
 
@@ -331,5 +380,30 @@ export class RoutingService {
       beginDate: newRouterParams.beginDate,
       endDate: newRouterParams.endDate
     }));
+  }
+
+  loadEpisodeTotals(newRouterParams: RouterParams) {
+    this.selectedEpisodes.forEach(guid => {
+      this.store.dispatch(new ACTIONS.CastleEpisodeTotalsLoadAction({
+        guid,
+        group: newRouterParams.group,
+        filter: newRouterParams.filter,
+        beginDate: newRouterParams.beginDate,
+        endDate: newRouterParams.endDate
+      }));
+    });
+  }
+
+  loadEpisodeRanks(newRouterParams: RouterParams) {
+    this.selectedEpisodes.forEach(guid => {
+      this.store.dispatch(new ACTIONS.CastleEpisodeRanksLoadAction({
+        guid,
+        group: newRouterParams.group,
+        filter: newRouterParams.filter,
+        interval: newRouterParams.interval,
+        beginDate: newRouterParams.beginDate,
+        endDate: newRouterParams.endDate
+      }));
+    });
   }
 }

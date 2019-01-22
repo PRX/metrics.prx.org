@@ -20,7 +20,6 @@ import {
   TotalsTableRow
 } from '../../ngrx';
 import * as dateFormat from './date/date.format';
-import { DateRangeSummaryComponent } from '../menu/date/date-range-summary.component';
 
 // metrics data is an array of arrays of [datetime string, numeric value]
 export const mapMetricsToTimeseriesData = (data: any[][]): TimeseriesDatumModel[] => {
@@ -166,8 +165,9 @@ export const aggregateTotals =
   if (episodeTotals && episodeTotals.length && episodeTotals[0].ranks) {
     const accumulator = {};
     episodeTotals[0].ranks.forEach((rank: Rank) => {
-      accumulator[rank.code || '0'] = {
-        code: rank.code,
+      const code = String(rank.code);
+      accumulator[code] = {
+        code,
         label: rank.label,
         value: rank.total,
         charted: groupsCharted.filter(group => group.charted).map(group => group.groupName).indexOf(rank.label) > -1
@@ -178,11 +178,12 @@ export const aggregateTotals =
       episodeTotals.slice(1).reduce((acc, et: EpisodeTotals) => {
         if (et.ranks) {
           et.ranks.forEach((rank: Rank) => {
-            if (acc[rank.code]) {
-              acc[rank.code].value += rank.total;
+            const code = String(rank.code);
+            if (acc[code]) {
+              acc[code].value += rank.total;
             } else {
-              acc[rank.code] = {
-                code: rank.code,
+              acc[code] = {
+                code,
                 label: rank.label,
                 value: rank.total,
                 charted: groupsCharted.filter(group => group.charted).map(group => group.groupName).indexOf(rank.label) > -1
@@ -218,7 +219,7 @@ export const aggregateIntervals =
   if (episodeRanks && episodeRanks.length && episodeRanks[0].downloads) {
     const accumulator = {};
     episodeRanks[0].ranks.forEach((rank: Rank, i) => {
-      const code = rank.code || '0';
+      const code = String(rank.code);
       accumulator[code] = {
         code,
         label: rank.label,
@@ -230,7 +231,7 @@ export const aggregateIntervals =
       episodeRanks.slice(1).reduce((acc, epRanks: EpisodeRanks) => {
         if (epRanks.ranks) {
           epRanks.ranks.forEach((rank: Rank, i) => {
-            const code = rank.code || '0';
+            const code = String(rank.code);
             if (acc[code]) {
               acc[code].data = acc[code].data.map((datum, j) => {
                 datum[1] += epRanks.downloads[j][1][i];

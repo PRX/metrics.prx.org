@@ -27,7 +27,13 @@ import {
   CastlePodcastRanksFailureAction,
   CastlePodcastTotalsLoadAction,
   CastlePodcastTotalsSuccessAction,
-  CastlePodcastTotalsFailureAction
+  CastlePodcastTotalsFailureAction,
+  CastleEpisodeRanksLoadAction,
+  CastleEpisodeRanksSuccessAction,
+  CastleEpisodeRanksFailureAction,
+  CastleEpisodeTotalsLoadAction,
+  CastleEpisodeTotalsSuccessAction,
+  CastleEpisodeTotalsFailureAction
 } from './castle.action.creator';
 import { GoogleAnalyticsEventAction } from './google-analytics.action.creator';
 import { CustomRouterNavigationAction,
@@ -74,6 +80,12 @@ export type AllActions
   | CastlePodcastTotalsLoadAction
   | CastlePodcastTotalsSuccessAction
   | CastlePodcastTotalsFailureAction
+  | CastleEpisodeRanksLoadAction
+  | CastleEpisodeRanksSuccessAction
+  | CastleEpisodeRanksFailureAction
+  | CastleEpisodeTotalsLoadAction
+  | CastleEpisodeTotalsSuccessAction
+  | CastleEpisodeTotalsFailureAction
   | RouterNavigationAction
   | GoogleAnalyticsEventAction
   | CustomRouterNavigationAction
@@ -117,7 +129,13 @@ export {
   CastlePodcastRanksFailurePayload, CastlePodcastRanksFailureAction,
   CastlePodcastTotalsLoadPayload, CastlePodcastTotalsLoadAction,
   CastlePodcastTotalsSuccessPayload, CastlePodcastTotalsSuccessAction,
-  CastlePodcastTotalsFailurePayload, CastlePodcastTotalsFailureAction } from './castle.action.creator';
+  CastlePodcastTotalsFailurePayload, CastlePodcastTotalsFailureAction,
+  CastleEpisodeRanksLoadPayload, CastleEpisodeRanksLoadAction,
+  CastleEpisodeRanksSuccessPayload, CastleEpisodeRanksSuccessAction,
+  CastleEpisodeRanksFailurePayload, CastleEpisodeRanksFailureAction,
+  CastleEpisodeTotalsLoadPayload, CastleEpisodeTotalsLoadAction,
+  CastleEpisodeTotalsSuccessPayload, CastleEpisodeTotalsSuccessAction,
+  CastleEpisodeTotalsFailurePayload, CastleEpisodeTotalsFailureAction } from './castle.action.creator';
 export { GoogleAnalyticsEventPayload, GoogleAnalyticsEventAction } from './google-analytics.action.creator';
 export { CustomRouterNavigationPayload, CustomRouterNavigationAction,
   RoutePodcastPayload, RoutePodcastAction,

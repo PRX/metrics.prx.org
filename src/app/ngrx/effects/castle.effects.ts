@@ -284,7 +284,7 @@ export class CastleEffects {
     })
   );
 
-  // basic - load > success/failure podcast totals
+  // basic - load > success/failure podcast ranks
   @Effect()
   loadPodcastRanks$: Observable<Action> = this.actions$.pipe(
     ofType(ACTIONS.ActionTypes.CASTLE_PODCAST_RANKS_LOAD),
@@ -355,6 +355,81 @@ export class CastleEffects {
           });
         }),
         catchError(error => Observable.of(new ACTIONS.CastlePodcastTotalsFailureAction({id, group, filter, beginDate, endDate, error})))
+      );
+    })
+  );
+
+  // basic - load > success/failure episode ranks
+  @Effect()
+  loadEpisodeRanks$: Observable<Action> = this.actions$.pipe(
+    ofType(ACTIONS.ActionTypes.CASTLE_EPISODE_RANKS_LOAD),
+    map((action: ACTIONS.CastleEpisodeRanksLoadAction) => action.payload),
+    mergeMap((payload: ACTIONS.CastleEpisodeRanksLoadPayload) => {
+      const { guid, interval, group, filter, beginDate, endDate } = payload;
+      const params = {
+        guid,
+        group,
+        interval: interval.value,
+        from: beginDate.toISOString(),
+        to: endDate.toISOString()
+      };
+      if (group === GROUPTYPE_GEOSUBDIV && filter) {
+        params['filters'] = `geocountry:${filter}`;
+      }
+
+      return this.castle.followList('prx:episode-ranks', {...params}).pipe(
+        map(metrics => {
+          return new ACTIONS.CastleEpisodeRanksSuccessAction({
+            guid,
+            group,
+            filter,
+            interval,
+            beginDate,
+            endDate,
+            downloads: metrics[0]['downloads'],
+            ranks: metrics[0]['ranks'].map(r => {
+              return { ...r, code: r.code && String(r.code) };
+            })
+          });
+        }),
+        catchError(error => Observable.of(
+          new ACTIONS.CastleEpisodeRanksFailureAction({guid, group, filter, interval, beginDate, endDate, error})))
+      );
+    })
+  );
+
+  // basic - load > success/failure episode totals
+  @Effect()
+  loadEpisodeTotals$: Observable<Action> = this.actions$.pipe(
+    ofType(ACTIONS.ActionTypes.CASTLE_EPISODE_TOTALS_LOAD),
+    map((action: ACTIONS.CastleEpisodeTotalsLoadAction) => action.payload),
+    mergeMap((payload: ACTIONS.CastleEpisodeTotalsLoadPayload) => {
+      const { guid, group, filter, beginDate, endDate } = payload;
+      const params = {
+        id: guid,
+        group,
+        from: beginDate.toISOString(),
+        to: endDate.toISOString()
+      };
+      if (group === GROUPTYPE_GEOSUBDIV && filter) {
+        params['filters'] = `geocountry:${filter}`;
+      }
+
+      return this.castle.followList('prx:episode-totals', {...params}).pipe(
+        map(metrics => {
+          return new ACTIONS.CastleEpisodeTotalsSuccessAction({
+            guid,
+            group,
+            filter,
+            beginDate,
+            endDate,
+            ranks: metrics[0]['ranks'].map(rank => {
+              const { count, label, code }  = rank;
+              return { total: count, label, code: code && String(code) };
+            })
+          });
+        }),
+        catchError(error => Observable.of(new ACTIONS.CastleEpisodeTotalsFailureAction({guid, group, filter, beginDate, endDate, error})))
       );
     })
   );

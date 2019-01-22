@@ -14,5 +14,7 @@ export { EpisodeAllTimeDownloads } from './episode-alltime-downloads.model';
 export { Rank } from './rank.model';
 export { PodcastRanks, podcastRanksKey } from './podcast-ranks.model';
 export { PodcastTotals, podcastTotalsKey } from './podcast-totals.model';
+export { EpisodeRanks, episodeRanksKey } from './episode-ranks.model';
+export { EpisodeTotals, episodeTotalsKey } from './episode-totals.model';
 export { TotalsTableRow } from './totals-table-row.model';
 export { PodcastGroupCharted } from './podcast-group-charted.model';

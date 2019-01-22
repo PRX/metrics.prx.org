@@ -234,7 +234,6 @@ export const aggregateIntervals =
             if (acc[code]) {
               acc[code].data = acc[code].data.map((datum, j) => {
                 datum[1] += epRanks.downloads[j][1][i];
-                console.log(code, j, i, datum);
                 return datum;
               });
             } else {

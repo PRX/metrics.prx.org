@@ -84,25 +84,42 @@ export class EpisodeSelectDropdownComponent implements OnInit {
 
   onToggleSelectEpisode(episode: Episode) {
     let episodeGuids: string[];
+    const { podcastId, group, filter, interval, beginDate, endDate } = this.routerParams;
     if (!episode) {
       episodeGuids = [];
+
+      this.store.dispatch(new ACTIONS.CastlePodcastRanksLoadAction({
+        id: podcastId,
+        group,
+        filter,
+        interval,
+        beginDate,
+        endDate
+      }));
+      this.store.dispatch(new ACTIONS.CastlePodcastTotalsLoadAction({
+        id: podcastId,
+        group,
+        filter,
+        beginDate,
+        endDate
+      }));
     } else if (!this.selectedEpisodes || this.selectedEpisodes.indexOf(episode.guid) === -1) {
       episodeGuids = this.selectedEpisodes ? this.selectedEpisodes.concat([episode.guid]) : [episode.guid];
 
       this.store.dispatch(new ACTIONS.CastleEpisodeRanksLoadAction({
         guid: episode.guid,
-        group: this.routerParams.group,
-        filter: this.routerParams.filter,
-        interval: this.routerParams.interval,
-        beginDate: this.routerParams.beginDate,
-        endDate: this.routerParams.endDate
+        group,
+        filter,
+        interval,
+        beginDate,
+        endDate
       }));
       this.store.dispatch(new ACTIONS.CastleEpisodeTotalsLoadAction({
         guid: episode.guid,
-        group: this.routerParams.group,
-        filter: this.routerParams.filter,
-        beginDate: this.routerParams.beginDate,
-        endDate: this.routerParams.endDate
+        group,
+        filter,
+        beginDate,
+        endDate
       }));
     } else {
       episodeGuids = this.selectedEpisodes.filter(e => e !== episode.guid);

@@ -16,7 +16,7 @@ import {
   EpisodeRanks,
   EpisodeTotals,
   Rank,
-  PodcastGroupCharted,
+  GroupCharted,
   TotalsTableRow
 } from '../../ngrx';
 import * as dateFormat from './date/date.format';
@@ -162,7 +162,7 @@ export const aggregateTotalDownloads = (episodeTotals: EpisodeTotals[]) => {
 };
 
 export const aggregateTotals =
-(episodeTotals: EpisodeTotals[] | EpisodeRanks[], totalDownloads: number, groupsCharted: PodcastGroupCharted[]): TotalsTableRow[] => {
+(episodeTotals: EpisodeTotals[] | EpisodeRanks[], totalDownloads: number, groupsCharted: GroupCharted[]): TotalsTableRow[] => {
   if (episodeTotals && episodeTotals.length && episodeTotals[0].ranks) {
     const accumulator = {};
     episodeTotals[0].ranks.forEach((rank: Rank) => {
@@ -214,7 +214,7 @@ export const aggregateTotals =
 };
 
 export const aggregateIntervals =
-(episodeRanks: EpisodeRanks[], groupsCharted?: PodcastGroupCharted[]) => {
+(episodeRanks: EpisodeRanks[], groupsCharted?: GroupCharted[]) => {
   if (episodeRanks && episodeRanks.length && episodeRanks[0].downloads) {
     const accumulator = {};
     episodeRanks[0].ranks.forEach((rank: Rank, i) => {

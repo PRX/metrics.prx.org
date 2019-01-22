@@ -62,6 +62,6 @@ describe('TotalsTableComponent', () => {
     const checkboxes = de.queryAll(By.css('input[type="checkbox"]'));
     checkboxes[0].nativeElement.click();
     expect(comp.toggleEntry.emit).toHaveBeenCalledWith(
-      {podcastId: routerParams.podcastId, groupName: podcastAgentNameRanks[0].label, charted: false});
+      {group: routerParams.group, groupName: podcastAgentNameRanks[0].label, charted: false});
   });
 });

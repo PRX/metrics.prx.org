@@ -33,14 +33,14 @@ export class ChartTogglePodcastAction implements Action {
   constructor(public payload: ChartTogglePodcastPayload) {}
 }
 
-export interface ChartTogglePodcastGroupPayload {
-  podcastId: string;
+export interface ChartToggleGroupPayload {
+  group: string;
   groupName: string;
   charted: boolean;
 }
 
-export class ChartTogglePodcastGroupAction implements Action {
+export class ChartToggleGroupAction implements Action {
   readonly type = ActionTypes.CHART_TOGGLE_GROUP;
 
-  constructor(public payload: ChartTogglePodcastGroupPayload) {}
+  constructor(public payload: ChartToggleGroupPayload) {}
 }

@@ -1,11 +1,11 @@
 import { EntityState, EntityAdapter, createEntityAdapter } from '@ngrx/entity';
-import { PodcastGroupCharted, Rank } from './models';
+import { GroupCharted, Rank } from './models';
 import { ActionTypes, AllActions } from '../actions';
 
-export type State = EntityState<PodcastGroupCharted>;
+export type State = EntityState<GroupCharted>;
 
-export const adapter: EntityAdapter<PodcastGroupCharted> = createEntityAdapter<PodcastGroupCharted>({
-  selectId: ((p: PodcastGroupCharted) => p.key)
+export const adapter: EntityAdapter<GroupCharted> = createEntityAdapter<GroupCharted>({
+  selectId: ((p: GroupCharted) => p.key)
 });
 
 export const initialState: State = adapter.getInitialState({});
@@ -16,25 +16,26 @@ export function reducer(
 ): State {
   switch (action.type) {
     case ActionTypes.CHART_TOGGLE_GROUP: {
-      const { podcastId, groupName, charted } = action.payload;
+      const { group, groupName, charted } = action.payload;
       // Note that there will be a breaking change with upsert in Ngrx/entity v6, no longer users Update interface
       // https://github.com/ngrx/platform/commit/a0f45ff035726f106f3f34ddf9b5025c54fc63e0
       return adapter.upsertOne({
-        id: `${podcastId}-${groupName}`,
+        id: `${group}-${groupName}`,
         changes: {
-          key: `${podcastId}-${groupName}`, podcastId, groupName, charted
+          key: `${group}-${groupName}`, group, groupName, charted
         }
       }, state);
     }
 
-    // when podcast ranks are loaded, add them to state
+    // when ranks are loaded, add them to state
     // addMany does not overwrite, so this will just initialize the entries
-    case ActionTypes.CASTLE_PODCAST_RANKS_SUCCESS: {
-      const { id, ranks } = action.payload;
+    case ActionTypes.CASTLE_PODCAST_RANKS_SUCCESS:
+    case ActionTypes.CASTLE_EPISODE_RANKS_SUCCESS: {
+      const { group, ranks } = action.payload;
       const groupsCharted = ranks.map((rank: Rank) => {
         return {
-          key: `${id}-${rank.label}`,
-          podcastId: id,
+          key: `${group}-${rank.label}`,
+          group: group,
           groupName: rank.label,
           charted: true
         };
@@ -54,6 +55,6 @@ export const {
   selectAll,
 } = adapter.getSelectors();
 
-export const selectPodcastGroupKeys = selectIds;
-export const selectPodcastGroupChartedEntities = selectEntities;
-export const selectAllPodcastGroupCharted = selectAll;
+export const selectGroupKeys = selectIds;
+export const selectGroupChartedEntities = selectEntities;
+export const selectAllGroupCharted = selectAll;

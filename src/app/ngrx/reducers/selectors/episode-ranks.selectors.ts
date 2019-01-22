@@ -6,7 +6,7 @@ import {
   episodeRanksKey,
   GroupType,
   IntervalModel,
-  PodcastGroupCharted, // is this the same for episodes???
+  GroupCharted,
   ChartType,
   CHARTTYPE_HORIZBAR,
   GROUPTYPE_GEOSUBDIV,
@@ -23,7 +23,7 @@ import {
 import { CategoryChartModel, TimeseriesChartModel } from 'ngx-prx-styleguide';
 import { aggregateTotals, aggregateIntervals, aggregateTotalDownloads } from '../../../shared/util/chart.util';
 import { selectEpisodeSelectedEpisodeGuids } from './episode-select.selectors';
-import { selectRoutedPodcastGroupCharted } from './podcast-group-charted.selectors'; // hmmm
+import { selectRoutedGroupCharted } from './group-charted.selectors';
 
 export const selectEpisodeRanksState = createFeatureSelector<fromEpisodeRanks.State>('episodeRanks');
 
@@ -122,11 +122,11 @@ export const selectNestedEpisodesRanksError = createSelector(
 
 export const selectSelectedEpisodeRanksChartMetrics = createSelector(
   selectSelectedEpisodesRanks,
-  selectRoutedPodcastGroupCharted,
+  selectRoutedGroupCharted,
   selectGroupRoute,
   selectChartTypeRoute,
   (episodeRanks: EpisodeRanks[],
-   groupsCharted: PodcastGroupCharted[],
+   groupsCharted: GroupCharted[],
    groupRoute: GroupType,
    chartType: ChartType): CategoryChartModel[] | TimeseriesChartModel[] => {
     // if (podcastRanks && podcastRanks.ranks && podcastRanks.downloads) {

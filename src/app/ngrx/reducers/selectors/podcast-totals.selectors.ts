@@ -1,12 +1,12 @@
 import { createSelector, createFeatureSelector } from '@ngrx/store';
 import * as fromPodcastTotals from '../podcast-totals.reducer';
 import { PodcastTotals, Rank, podcastTotalsKey,
-  TotalsTableRow, PodcastGroupCharted,
+  TotalsTableRow, GroupCharted,
   GroupType, GROUPTYPE_GEOSUBDIV } from '../models';
 import { selectPodcastRoute, selectGroupRoute,
   selectFilterRoute, selectBeginDateRoute, selectEndDateRoute } from './router.selectors';
 import { getColor } from '../../../shared/util/chart.util';
-import { selectRoutedPodcastGroupCharted } from './podcast-group-charted.selectors';
+import { selectRoutedGroupCharted } from './group-charted.selectors';
 
 export const selectPodcastTotalsState = createFeatureSelector<fromPodcastTotals.State>('podcastTotals');
 
@@ -99,8 +99,8 @@ export const selectRoutedPodcastTotalsTotalDownloads = createSelector(
 export const selectRoutedPodcastTotalsTableMetrics = createSelector(
   selectRoutedPodcastTotals,
   selectRoutedPodcastTotalsTotalDownloads,
-  selectRoutedPodcastGroupCharted,
-  (podcastTotals: PodcastTotals, totalDownloads: number, groupsCharted: PodcastGroupCharted[]): TotalsTableRow[] => {
+  selectRoutedGroupCharted,
+  (podcastTotals: PodcastTotals, totalDownloads: number, groupsCharted: GroupCharted[]): TotalsTableRow[] => {
     if (podcastTotals && podcastTotals.ranks) {
       return podcastTotals.ranks.map((rank: Rank, i) => {
         // show just one decimal place? maybe instead do just 2 significant digits?

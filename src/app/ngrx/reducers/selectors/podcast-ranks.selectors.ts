@@ -6,7 +6,7 @@ import {
   podcastRanksKey,
   GroupType,
   IntervalModel,
-  PodcastGroupCharted,
+  GroupCharted,
   ChartType,
   CHARTTYPE_HORIZBAR,
   GROUPTYPE_GEOSUBDIV,
@@ -22,7 +22,7 @@ import { selectPodcastRoute,
   selectEndDateRoute } from './router.selectors';
 import { CategoryChartModel, TimeseriesChartModel } from 'ngx-prx-styleguide';
 import { getColor, neutralColor, mapMetricsToTimeseriesData } from '../../../shared/util/chart.util';
-import { selectRoutedPodcastGroupCharted } from './podcast-group-charted.selectors';
+import { selectRoutedGroupCharted } from './group-charted.selectors';
 
 export const selectPodcastRanksState = createFeatureSelector<fromPodcastRanks.State>('podcastRanks');
 
@@ -117,11 +117,11 @@ export const selectNestedPodcastRanksError = createSelector(
 
 export const selectRoutedPodcastRanksChartMetrics = createSelector(
   selectRoutedPodcastRanks,
-  selectRoutedPodcastGroupCharted,
+  selectRoutedGroupCharted,
   selectGroupRoute,
   selectChartTypeRoute,
   (podcastRanks: PodcastRanks,
-   groupsCharted: PodcastGroupCharted[],
+   groupsCharted: GroupCharted[],
    groupRoute: GroupType,
    chartType: ChartType): CategoryChartModel[] | TimeseriesChartModel[] => {
     if (podcastRanks && podcastRanks.ranks && podcastRanks.downloads) {

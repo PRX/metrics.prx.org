@@ -45,7 +45,7 @@ import {
   ChartSingleEpisodeAction,
   ChartToggleEpisodeAction,
   ChartTogglePodcastAction,
-  ChartTogglePodcastGroupAction
+  ChartToggleGroupAction
 } from './chart-toggle.action.creator';
 import { EpisodeSelectEpisodesAction } from './episode-select.action.creator';
 
@@ -100,7 +100,7 @@ export type AllActions
   | ChartSingleEpisodeAction
   | ChartToggleEpisodeAction
   | ChartTogglePodcastAction
-  | ChartTogglePodcastGroupAction
+  | ChartToggleGroupAction
   | EpisodeSelectEpisodesAction;
 
 export { ActionTypes } from './action.types';
@@ -149,5 +149,5 @@ export { CustomRouterNavigationPayload, CustomRouterNavigationAction,
 export { ChartSingleEpisodePayload, ChartSingleEpisodeAction,
   ChartToggleEpisodePayload, ChartToggleEpisodeAction,
   ChartTogglePodcastPayload, ChartTogglePodcastAction,
-  ChartTogglePodcastGroupPayload, ChartTogglePodcastGroupAction } from './chart-toggle.action.creator';
+  ChartToggleGroupPayload, ChartToggleGroupAction } from './chart-toggle.action.creator';
 export { EpisodeSelectEpisodesPayload, EpisodeSelectEpisodesAction } from './episode-select.action.creator';

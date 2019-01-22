@@ -8,7 +8,7 @@ import { EpisodeSearchSummaryComponent } from './episode-search-summary.componen
 import { EpisodeSelectListComponent } from './episode-select-list.component';
 import { FancyFormModule, SpinnerModule } from 'ngx-prx-styleguide';
 
-import { episodes } from '../../../testing/downloads.fixtures';
+import { episodes, routerParams } from '../../../testing/downloads.fixtures';
 import { EPISODE_SELECT_PAGE_SIZE } from '../../ngrx';
 import * as ACTIONS from '../../ngrx/actions';
 import { reducers } from '../../ngrx/reducers';
@@ -40,6 +40,7 @@ describe('EpisodeSelectDropdownComponent', () => {
       el = de.nativeElement;
       store = TestBed.get(Store);
 
+      comp.routerParams = routerParams;
       comp.episodes = new Array(EPISODE_SELECT_PAGE_SIZE).fill(episodes[0]);
       comp.totalEpisodes = comp.episodes.length + 10;
       comp.searchTotal = comp.episodes.length;
@@ -66,7 +67,7 @@ describe('EpisodeSelectDropdownComponent', () => {
   it('should load episodes on search', () => {
     comp.loadEpisodesOnSearch('search term');
     expect(store.dispatch).toHaveBeenCalledWith(new ACTIONS.CastleEpisodeSelectPageLoadAction({
-      podcastId: comp.podcastId,
+      podcastId: routerParams.podcastId,
       page: 1,
       per: EPISODE_SELECT_PAGE_SIZE,
       search: 'search term'

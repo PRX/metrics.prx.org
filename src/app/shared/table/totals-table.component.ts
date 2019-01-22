@@ -15,7 +15,7 @@ import { neutralColor, standardColor } from '../util/chart.util';
       <div class="row" *ngFor="let data of tableData?.slice(0, numRowsWithToggle)">
         <div>
           <prx-checkbox small [checked]="data.charted" [color]="getDataLegendColor(data)"
-                        (change)="toggleEntry.emit({podcastId: routerParams.podcastId, groupName: data.label, charted: $event})">
+                        (change)="toggleEntry.emit({group: routerParams.group, groupName: data.label, charted: $event})">
             {{data.label}}
           </prx-checkbox>
         </div>
@@ -29,7 +29,7 @@ import { neutralColor, standardColor } from '../util/chart.util';
       <div *ngIf="tableData?.length > numRowsWithToggle && numRowsWithToggle > 0" class="other header row">
         <div>
           <prx-checkbox small [checked]="otherCharted" [color]="getOtherLegendColor()"
-                        (change)="toggleEntry.emit({podcastId: routerParams.podcastId, groupName: 'Other', charted: $event})">
+                        (change)="toggleEntry.emit({group: routerParams.group, groupName: 'Other', charted: $event})">
             Others:
           </prx-checkbox>
         </div>
@@ -50,7 +50,7 @@ export class TotalsTableComponent {
   @Input() tableData: TotalsTableRow[];
   @Input() numRowsWithToggle = 10;
   @Input() routerParams: RouterParams;
-  @Output() toggleEntry = new EventEmitter<{podcastId: string, groupName: string, charted: boolean}>();
+  @Output() toggleEntry = new EventEmitter<{group: string, groupName: string, charted: boolean}>();
   getGroupName = getGroupName;
 
   get otherCharted() {

@@ -1,12 +1,12 @@
 import { createSelector, createFeatureSelector } from '@ngrx/store';
 import * as fromEpisodeTotals from '../episode-totals.reducer';
-import { EpisodeTotals, Rank, episodeTotalsKey,
-  TotalsTableRow, PodcastGroupCharted,
+import { EpisodeTotals, episodeTotalsKey,
+  TotalsTableRow, GroupCharted,
   GroupType, GROUPTYPE_GEOSUBDIV } from '../models';
 import { selectGroupRoute, selectFilterRoute, selectBeginDateRoute, selectEndDateRoute } from './router.selectors';
 import { selectEpisodeSelectedEpisodeGuids } from './episode-select.selectors';
 import { aggregateTotals, aggregateTotalDownloads, aggregateIntervals } from '../../../shared/util/chart.util';
-import { selectRoutedPodcastGroupCharted } from './podcast-group-charted.selectors';
+import { selectRoutedGroupCharted } from './group-charted.selectors';
 
 export const selectEpisodeTotalsState = createFeatureSelector<fromEpisodeTotals.State>('episodeTotals');
 
@@ -101,8 +101,8 @@ export const selectSelectedEpisodesTotalsTotalDownloads = createSelector(
 export const selectSelectedEpisodesTotalsTableMetrics = createSelector(
   selectSelectedEpisodesTotals,
   selectSelectedEpisodesTotalsTotalDownloads,
-  selectRoutedPodcastGroupCharted,
-  (episodeTotals: EpisodeTotals[], totalDownloads: number, groupsCharted: PodcastGroupCharted[]): TotalsTableRow[] => {
+  selectRoutedGroupCharted,
+  (episodeTotals: EpisodeTotals[], totalDownloads: number, groupsCharted: GroupCharted[]): TotalsTableRow[] => {
     return aggregateTotals(episodeTotals, totalDownloads, groupsCharted);
   });
 

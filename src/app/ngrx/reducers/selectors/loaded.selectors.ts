@@ -5,6 +5,9 @@ import { selectRoutedEpisodePageMetricsLoaded } from './episode-metrics.selector
 import { selectPodcastDownloadsLoaded } from './podcast-downloads.selectors';
 import { selectRoutedPodcastRanksLoaded } from './podcast-ranks.selectors';
 import { selectRoutedPodcastTotalsLoaded } from './podcast-totals.selectors';
+import { selectSelectedEpisodesRanksLoaded } from './episode-ranks.selectors';
+import { selectSelectedEpisodesTotalsLoaded } from './episode-totals.selectors';
+import { selectEpisodeSelectedEpisodeGuids } from './episode-select.selectors';
 
 export const selectCatalogLoaded = createSelector(
   selectRoutedPageLoaded,
@@ -33,4 +36,17 @@ export const selectGroupedPodcastDataLoaded = createSelector(
   (podcast, podcastError, ranksLoaded, totalsLoaded) => {
     return podcast && !podcastError && ranksLoaded && totalsLoaded;
   });
+
+export const selectGroupedEpisodeDataLoaded = createSelector(
+  selectSelectedEpisodesRanksLoaded,
+  selectSelectedEpisodesTotalsLoaded,
+  (ranksLoaded, totalsLoaded) => ranksLoaded && totalsLoaded
+);
+
+export const selectGroupedDataLoaded = createSelector(
+  selectEpisodeSelectedEpisodeGuids,
+  selectGroupedEpisodeDataLoaded,
+  selectGroupedPodcastDataLoaded,
+  (guids, episode, podcast) => guids && guids.length ? episode : podcast
+);
 

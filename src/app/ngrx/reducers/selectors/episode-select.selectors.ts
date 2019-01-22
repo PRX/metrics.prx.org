@@ -14,6 +14,8 @@ export const selectLatestEpisodeSelectPage = createSelector(
   fromEpisodeSelect.getPage
 );
 export const selectEpisodeSelectedEpisodeGuids = createSelector(
+  // TODO: careful I'm not using this in a context where I only want the routed podcast selected episodes, like routing.service FIX!
+  // well it does get cleared everytime the podcast changes, right? so it's not broken yet, but it does seem wrong.
   selectEpisodeSelectState,
   fromEpisodeSelect.getSelected
 );

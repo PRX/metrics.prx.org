@@ -10,6 +10,8 @@ import * as fromPodcastGroupCharted from './podcast-group-charted.reducer';
 import * as fromEpisode from './episode.reducer';
 import * as fromEpisodeSelect from './episode-select.reducer';
 import * as fromEpisodeAllTimeDownloads from './episode-alltime-downloads.reducer';
+import * as fromEpisodeRanks from './episode-ranks.reducer';
+import * as fromEpisodeTotals from './episode-totals.reducer';
 import { EpisodeMetricsReducer, EpisodeMetricsModel } from './episode-metrics.reducer';
 import { CustomRouterReducer } from './router.reducer';
 import { RouterParams } from './models';
@@ -28,6 +30,8 @@ export interface RootState {
   podcastTotals: fromPodcastTotals.State;
   podcastGroupCharted: fromPodcastGroupCharted.State;
   episodeMetrics: EpisodeMetricsModel[];
+  episodeRanks: fromEpisodeRanks.State;
+  episodeTotals: fromEpisodeTotals.State;
 }
 
 // TypeScript is complaining about this ActionReducerMap again, not sure why ugh
@@ -45,6 +49,8 @@ export const reducers: ActionReducerMap<RootState> = {
   podcastTotals: fromPodcastTotals.reducer,
   podcastGroupCharted: fromPodcastGroupCharted.reducer,
   episodeMetrics: EpisodeMetricsReducer,
+  episodeRanks: fromEpisodeRanks.reducer,
+  episodeTotals: fromEpisodeTotals.reducer,
 };
 
 export { CustomSerializer } from './router.serializer';

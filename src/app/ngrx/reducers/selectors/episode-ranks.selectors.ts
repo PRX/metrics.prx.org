@@ -81,7 +81,7 @@ export const selectSelectedEpisodesRanksLoaded = createSelector(
   (ranks: EpisodeRanks[]) => ranks && ranks.every((r: EpisodeRanks) => r.loaded)
 );
 
-export const selectSelectedEpisodesRanksError = createSelector(
+export const selectSelectedEpisodesRanksErrors = createSelector(
   selectSelectedEpisodesRanks,
   (ranks: EpisodeRanks[]) => ranks && ranks.filter((r: EpisodeRanks) => r.error)
 );
@@ -115,7 +115,7 @@ export const selectNestedEpisodesRanksLoaded = createSelector(
   (ranks: EpisodeRanks[]) => ranks && ranks.every((r: EpisodeRanks) => r.loaded)
 );
 
-export const selectNestedEpisodesRanksError = createSelector(
+export const selectNestedEpisodesRanksErrors = createSelector(
   selectNestedEpisodesRanks,
   (ranks: EpisodeRanks[]) => ranks && ranks.filter((r: EpisodeRanks) => r.error)
 );

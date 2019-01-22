@@ -1,14 +1,6 @@
 import { createSelector } from '@ngrx/store';
-import {
-  selectRoutedPodcastTotalsLoading, selectRoutedPodcastTotalsLoaded, selectRoutedPodcastTotalsError,
-  selectRoutedPodcastTotalsTotalDownloads, selectRoutedPodcastTotalsTableMetrics,
-  selectNestedPodcastTotalsLoading, selectNestedPodcastTotalsLoaded, selectNestedPodcastTotalsError,
-  selectNestedPodcastTotalsTableMetrics } from './podcast-totals.selectors';
-import {
-  selectSelectedEpisodesTotalsLoading, selectSelectedEpisodesTotalsLoaded, selectSelectedEpisodesTotalsError,
-  selectSelectedEpisodesTotalsTotalDownloads, selectSelectedEpisodesTotalsTableMetrics,
-  selectNestedEpisodesTotalsLoading, selectNestedEpisodesTotalsLoaded, selectNestedEpisodesTotalsError,
-  selectNestedEpisodesTotalsTableMetrics } from './episode-totals.selectors';
+import { selectRoutedPodcastTotalsTableMetrics, selectNestedPodcastTotalsTableMetrics } from './podcast-totals.selectors';
+import { selectSelectedEpisodesTotalsTableMetrics, selectNestedEpisodesTotalsTableMetrics } from './episode-totals.selectors';
 import { selectEpisodeSelectedEpisodeGuids } from './episode-select.selectors';
 import { TotalsTableRow } from '../models';
 

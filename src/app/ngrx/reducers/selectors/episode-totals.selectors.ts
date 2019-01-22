@@ -60,7 +60,7 @@ export const selectSelectedEpisodesTotalsLoaded = createSelector(
   (totals: EpisodeTotals[]) => totals && totals.every((t: EpisodeTotals) => t.loaded)
 );
 
-export const selectSelectedEpisodesTotalsError = createSelector(
+export const selectSelectedEpisodesTotalsErrors = createSelector(
   selectSelectedEpisodesTotals,
   (totals: EpisodeTotals[]) => totals && totals.filter((t: EpisodeTotals) => t.error)
 );
@@ -88,7 +88,7 @@ export const selectNestedEpisodesTotalsLoaded = createSelector(
   (totals: EpisodeTotals[]) => totals && totals.every((t: EpisodeTotals) => t.loaded)
 );
 
-export const selectNestedEpisodesTotalsError = createSelector(
+export const selectNestedEpisodesTotalsErrors = createSelector(
   selectNestedEpisodesTotals,
   (totals: EpisodeTotals[]) => totals && totals.filter((t: EpisodeTotals) => t.error)
 );

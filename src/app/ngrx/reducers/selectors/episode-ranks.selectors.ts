@@ -21,7 +21,7 @@ import {
   selectBeginDateRoute,
   selectEndDateRoute } from './router.selectors';
 import { CategoryChartModel, TimeseriesChartModel } from 'ngx-prx-styleguide';
-import { aggregateTotals, aggregateIntervals, aggregateTotalDownloads } from '../../../shared/util/chart.util';
+import { aggregateTotalsBarChart, aggregateIntervals, aggregateTotalDownloads } from '../../../shared/util/chart.util';
 import { selectEpisodeSelectedEpisodeGuids } from './episode-select.selectors';
 import { selectRoutedGroupCharted } from './group-charted.selectors';
 
@@ -131,8 +131,7 @@ export const selectSelectedEpisodeRanksChartMetrics = createSelector(
    chartType: ChartType): CategoryChartModel[] | TimeseriesChartModel[] => {
     // if (podcastRanks && podcastRanks.ranks && podcastRanks.downloads) {
       if (chartType === CHARTTYPE_HORIZBAR) {
-        const totals = aggregateTotals(episodeRanks, 0, groupsCharted);
-        return totals && totals.filter(row => row.charted).map(t => ({label: t.label, value: t.value}));
+        return aggregateTotalsBarChart(episodeRanks, groupsCharted);
       } else {
         // TODO: filter out Other when === 0
         return aggregateIntervals(episodeRanks, groupsCharted);

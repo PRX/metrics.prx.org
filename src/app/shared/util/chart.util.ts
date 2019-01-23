@@ -1,5 +1,5 @@
 import * as moment from 'moment';
-import { TimeseriesDatumModel } from 'ngx-prx-styleguide';
+import { TimeseriesDatumModel, CategoryChartModel } from 'ngx-prx-styleguide';
 import * as tinycolor2 from 'tinycolor2';
 import {
   CHARTTYPE_EPISODES,
@@ -160,17 +160,16 @@ export const aggregateTotalDownloads = (episodeTotals: EpisodeTotals[]) => {
   }, 0);
 };
 
-export const aggregateTotals =
-(episodeTotals: EpisodeTotals[] | EpisodeRanks[], totalDownloads: number, groupsCharted: GroupCharted[]): TotalsTableRow[] => {
+export const aggregateTotalsAccumulator =
+(episodeTotals: EpisodeTotals[] | EpisodeRanks[]): {[code: string]: {code: string, label: string, value: number}} => {
+  const accumulator = {};
   if (episodeTotals && episodeTotals.length && episodeTotals[0].ranks) {
-    const accumulator = {};
     episodeTotals[0].ranks.forEach((rank: Rank) => {
       const code = String(rank.code);
       accumulator[code] = {
         code,
         label: rank.label,
         value: rank.total,
-        charted: groupsCharted.filter(group => group.charted).map(group => group.groupName).indexOf(rank.label) > -1
       };
     });
 
@@ -186,7 +185,6 @@ export const aggregateTotals =
                 code,
                 label: rank.label,
                 value: rank.total,
-                charted: groupsCharted.filter(group => group.charted).map(group => group.groupName).indexOf(rank.label) > -1
               };
             }
           });
@@ -194,15 +192,22 @@ export const aggregateTotals =
         return acc;
       }, accumulator);
     }
+  }
+  return accumulator;
+};
 
-    const rows = Object.keys(accumulator).map(code => {
+export const aggregateTotalsTable =
+(episodeTotals: EpisodeTotals[], totalDownloads?: number, groupsCharted?: GroupCharted[]): TotalsTableRow[] => {
+  const accumulator = aggregateTotalsAccumulator(episodeTotals);
+  const rows = Object.keys(accumulator).map(code => {
       return {
         color: '',
         code,
         label: accumulator[code].label,
         value: accumulator[code].value,
-        percent: accumulator[code].value * 100 / totalDownloads,
-        charted: accumulator[code].charted
+        percent: totalDownloads ? accumulator[code].value * 100 / totalDownloads : null,
+        charted: !groupsCharted ||
+          groupsCharted.filter(group => group.charted).map(group => group.groupName).indexOf(accumulator[code].label) > -1
       };
     }).sort((a, b) => {
       return b.value - a.value;
@@ -210,8 +215,34 @@ export const aggregateTotals =
       r.color = getColor(i);
       return r;
     });
-    return rows;
-  }
+  return rows;
+};
+
+export const aggregateTotalsBarChart = (episodeRanks: EpisodeRanks[], groupsCharted: GroupCharted[]): CategoryChartModel[] => {
+  const accumulator = aggregateTotalsAccumulator(episodeRanks);
+  const rows = Object.keys(accumulator).filter(code => {
+      return groupsCharted.filter(group => group.charted).map(group => group.groupName).indexOf(accumulator[code].label) > -1;
+    }).map(code => {
+      return {
+        label: accumulator[code].label,
+        value: accumulator[code].value
+      };
+    }).sort((a, b) => {
+      return b.value - a.value;
+    });
+  return rows;
+};
+
+export const aggregateTotalsMap = (episodeTotals: EpisodeTotals[]): Rank[] => {
+  const accumulator = aggregateTotalsAccumulator(episodeTotals);
+  const ranks = Object.keys(accumulator).map(code => {
+    return {
+      code,
+      label: accumulator[code].label,
+      total: accumulator[code].value
+    };
+  });
+  return ranks;
 };
 
 export const aggregateIntervals =
@@ -265,4 +296,13 @@ export const aggregateIntervals =
     }).filter(r => !groupsCharted || groupsCharted.filter(group => group.charted).map(group => group.groupName).indexOf(r.label) > -1);
     return rows;
   }
+};
+
+declare const google: any;
+export const toGoogleDataTable = (ranks: Rank[], heading: string) => {
+  const data = new google.visualization.DataTable();
+  data.addColumn('string', heading);
+  data.addColumn('number', 'Downloads');
+  data.addRows(ranks.map(d => [{v: d.code, f: d.label}, d.total]));
+  return data;
 };

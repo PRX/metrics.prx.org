@@ -10,3 +10,11 @@ export const selectChartMetrics =
     podcast: CategoryChartModel[] | TimeseriesChartModel[]): CategoryChartModel[] | TimeseriesChartModel[] => {
     return guids && guids.length ? episode : podcast;
   });
+
+export const selectNestedChartMetrics =
+  createSelector(selectEpisodeSelectedEpisodeGuids, selectNestedEpisodesRanksChartMetrics, selectNestedPodcastRanksChartMetrics,
+  (guids: string[],
+    episode: TimeseriesChartModel[],
+    podcast: TimeseriesChartModel[]): TimeseriesChartModel[] => {
+    return guids && guids.length ? episode : podcast;
+  });

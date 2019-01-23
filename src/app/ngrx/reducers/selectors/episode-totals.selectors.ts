@@ -5,7 +5,7 @@ import { EpisodeTotals, episodeTotalsKey,
   GroupType, GROUPTYPE_GEOSUBDIV } from '../models';
 import { selectGroupRoute, selectFilterRoute, selectBeginDateRoute, selectEndDateRoute } from './router.selectors';
 import { selectEpisodeSelectedEpisodeGuids } from './episode-select.selectors';
-import { aggregateTotals, aggregateTotalDownloads, aggregateIntervals } from '../../../shared/util/chart.util';
+import { aggregateTotalsTable, aggregateTotalDownloads, aggregateIntervals } from '../../../shared/util/chart.util';
 import { selectRoutedGroupCharted } from './group-charted.selectors';
 
 export const selectEpisodeTotalsState = createFeatureSelector<fromEpisodeTotals.State>('episodeTotals');
@@ -103,12 +103,11 @@ export const selectSelectedEpisodesTotalsTableMetrics = createSelector(
   selectSelectedEpisodesTotalsTotalDownloads,
   selectRoutedGroupCharted,
   (episodeTotals: EpisodeTotals[], totalDownloads: number, groupsCharted: GroupCharted[]): TotalsTableRow[] => {
-    return aggregateTotals(episodeTotals, totalDownloads, groupsCharted);
+    return aggregateTotalsTable(episodeTotals, totalDownloads, groupsCharted);
   });
 
 export const selectNestedEpisodesTotalsTableMetrics = createSelector(
   selectNestedEpisodesTotals,
   (episodeTotals: EpisodeTotals[]): TotalsTableRow[] => {
-    return aggregateTotals(episodeTotals, 0, []);
+    return aggregateTotalsTable(episodeTotals);
   });
-

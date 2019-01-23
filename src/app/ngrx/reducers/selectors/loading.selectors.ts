@@ -4,10 +4,10 @@ import { selectRoutedPodcast } from './podcast.selectors';
 import { selectPodcastError } from './podcast.selectors';
 import { selectEpisodeMetricsLoading } from './episode-metrics.selectors';
 import { selectPodcastDownloadsLoading } from './podcast-downloads.selectors';
-import { selectRoutedPodcastRanksLoading } from './podcast-ranks.selectors';
-import { selectRoutedPodcastTotalsLoading } from './podcast-totals.selectors';
-import { selectSelectedEpisodesRanksLoading } from './episode-ranks.selectors';
-import { selectSelectedEpisodesTotalsLoading } from './episode-totals.selectors';
+import { selectRoutedPodcastRanksLoading, selectNestedPodcastRanksLoading } from './podcast-ranks.selectors';
+import { selectRoutedPodcastTotalsLoading, selectNestedPodcastTotalsLoading } from './podcast-totals.selectors';
+import { selectSelectedEpisodesRanksLoading, selectNestedEpisodesRanksLoading } from './episode-ranks.selectors';
+import { selectSelectedEpisodesTotalsLoading, selectNestedEpisodesTotalsLoading } from './episode-totals.selectors';
 import { selectEpisodeSelectedEpisodeGuids } from './episode-select.selectors';
 
 export const selectCastleLoading = createSelector(
@@ -26,7 +26,7 @@ export const selectGroupedPodcastDataLoading = createSelector(
   selectPodcastError,
   selectRoutedPodcastRanksLoading,
   selectRoutedPodcastTotalsLoading,
-  (podcastError, routedPodcast, ranksLoading, totalsLoading) => {
+  (routedPodcast, podcastError, ranksLoading, totalsLoading) => {
     return (!podcastError && !routedPodcast) || ranksLoading || totalsLoading;
   });
 
@@ -42,3 +42,31 @@ export const selectGroupedDataLoading = createSelector(
   selectGroupedPodcastDataLoading,
   (guids, episode, podcast) => guids && guids.length ? episode : podcast
 );
+
+export const selectNestedTotalsLoading = createSelector(
+  selectRoutedPodcast,
+  selectPodcastError,
+  selectNestedPodcastTotalsLoading,
+  selectEpisodeSelectedEpisodeGuids,
+  selectNestedEpisodesTotalsLoading,
+  (routedPodcast, podcastError, podcastTotalsLoading, guids, episodesTotalsLoading) => {
+    if (!guids || guids.length === 0) {
+      return (!podcastError && !routedPodcast) || podcastTotalsLoading;
+    } else {
+      return episodesTotalsLoading;
+    }
+  });
+
+  export const selectNestedRanksLoading = createSelector(
+    selectRoutedPodcast,
+    selectPodcastError,
+    selectNestedPodcastRanksLoading,
+    selectEpisodeSelectedEpisodeGuids,
+    selectNestedEpisodesRanksLoading,
+    (routedPodcast, podcastError, podcastRanksLoading, guids, episodesRanksLoading) => {
+      if (!guids || guids.length === 0) {
+        return (!podcastError && !routedPodcast) || podcastRanksLoading;
+      } else {
+        return episodesRanksLoading;
+      }
+    });

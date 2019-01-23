@@ -1,6 +1,6 @@
 import { Component, ElementRef, Input, Renderer2, OnInit, ViewChild } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { Episode, EPISODE_SELECT_PAGE_SIZE, RouterParams } from '../../ngrx';
+import { Episode, EPISODE_SELECT_PAGE_SIZE, RouterParams, GROUPTYPE_GEOSUBDIV } from '../../ngrx';
 import * as ACTIONS from '../../ngrx/actions';
 
 @Component({
@@ -109,7 +109,6 @@ export class EpisodeSelectDropdownComponent implements OnInit {
       this.store.dispatch(new ACTIONS.CastleEpisodeRanksLoadAction({
         guid: episode.guid,
         group,
-        filter,
         interval,
         beginDate,
         endDate
@@ -117,10 +116,26 @@ export class EpisodeSelectDropdownComponent implements OnInit {
       this.store.dispatch(new ACTIONS.CastleEpisodeTotalsLoadAction({
         guid: episode.guid,
         group,
-        filter,
         beginDate,
         endDate
       }));
+      if (filter) {
+        this.store.dispatch(new ACTIONS.CastleEpisodeRanksLoadAction({
+          guid: episode.guid,
+          group: GROUPTYPE_GEOSUBDIV,
+          filter,
+          interval,
+          beginDate,
+          endDate
+        }));
+        this.store.dispatch(new ACTIONS.CastleEpisodeTotalsLoadAction({
+          guid: episode.guid,
+          group: GROUPTYPE_GEOSUBDIV,
+          filter,
+          beginDate,
+          endDate
+        }));
+      }
     } else {
       episodeGuids = this.selectedEpisodes.filter(e => e !== episode.guid);
     }

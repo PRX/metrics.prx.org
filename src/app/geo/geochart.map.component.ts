@@ -1,9 +1,10 @@
 import { Component, Input, OnInit, OnChanges, SimpleChanges, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 import { Env } from '../core/core.env';
-import { GROUPTYPE_GEOCOUNTRY, GROUPTYPE_GEOMETRO, getGroupName, RouterParams, PodcastTotals, Rank } from '../ngrx/index';
+import { GROUPTYPE_GEOCOUNTRY, GROUPTYPE_GEOMETRO, getGroupName, RouterParams, Rank } from '../ngrx/index';
 import { fromEvent } from 'rxjs/observable/fromEvent';
 import { map } from 'rxjs/operators/map';
 import { distinctUntilChanged } from 'rxjs/operators';
+import { toGoogleDataTable } from '../shared/util/chart.util';
 
 declare const google: any;
 
@@ -16,8 +17,8 @@ export class GeochartMapComponent implements OnInit, OnChanges, AfterViewInit {
   private static googleLoaded: boolean;
   @ViewChild('geo') el: ElementRef;
   @Input() routerParams: RouterParams;
-  @Input() data: PodcastTotals;
-  @Input() nestedData: PodcastTotals;
+  @Input() data: Rank[];
+  @Input() nestedData: Rank[];
   windowSize: {width: number, height: number};
   colors = ['#e5f5fb', '#a6cee3', '#01a0dc', '#008fc5', '#0089bd', '#1f78b4'];
 
@@ -55,14 +56,6 @@ export class GeochartMapComponent implements OnInit, OnChanges, AfterViewInit {
     }
   }
 
-  toGoogleDataTable(ranks: Rank[]) {
-    const data = new google.visualization.DataTable();
-    data.addColumn('string', getGroupName(this.routerParams.metricsType, this.routerParams.group));
-    data.addColumn('number', 'Downloads');
-    data.addRows(ranks.map(d => [{v: d.code, f: d.label}, d.total]));
-    return data;
-  }
-
   drawMap() {
     if (GeochartMapComponent.googleLoaded && google.visualization) {
       const options = {
@@ -73,17 +66,17 @@ export class GeochartMapComponent implements OnInit, OnChanges, AfterViewInit {
       };
 
       let data;
-      if (this.routerParams.group === GROUPTYPE_GEOCOUNTRY && this.routerParams.filter && this.nestedData && this.nestedData.ranks) {
+      if (this.routerParams.group === GROUPTYPE_GEOCOUNTRY && this.routerParams.filter && this.nestedData) {
         options['region'] = this.routerParams.filter;
         options['resolution'] = 'provinces';
-        data = this.toGoogleDataTable(this.nestedData.ranks);
-      } else if (this.routerParams.group === GROUPTYPE_GEOCOUNTRY && this.data && this.data.ranks) {
+        data = toGoogleDataTable(this.nestedData, getGroupName(this.routerParams.metricsType, this.routerParams.group));
+      } else if (this.routerParams.group === GROUPTYPE_GEOCOUNTRY && this.data) {
         options['region'] = 'world';
-        data = this.toGoogleDataTable(this.data.ranks);
-      } else if (this.routerParams.group === GROUPTYPE_GEOMETRO && this.data && this.data.ranks) {
+        data = toGoogleDataTable(this.data, getGroupName(this.routerParams.metricsType, this.routerParams.group));
+      } else if (this.routerParams.group === GROUPTYPE_GEOMETRO && this.data) {
         options['region'] = 'US';
         options['resolution'] = 'metros';
-        data = this.toGoogleDataTable(this.data.ranks);
+        data = toGoogleDataTable(this.data, getGroupName(this.routerParams.metricsType, this.routerParams.group));
       }
 
       if (data) {

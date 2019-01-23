@@ -1,22 +1,22 @@
 import { Component, OnInit } from '@angular/core';
 import { select, Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
-import { RouterParams, TotalsTableRow, PodcastTotals,
+import { RouterParams, TotalsTableRow, Rank,
   GroupType, GROUPTYPE_GEOCOUNTRY, GROUPTYPE_GEOMETRO, ChartType, CHARTTYPE_GEOCHART } from '../ngrx';
 import { CategoryChartModel, TimeseriesChartModel } from 'ngx-prx-styleguide';
 import * as ACTIONS from '../ngrx/actions';
 import {
   select500ErrorReloadActions,
-  selectGroupedPodcastDataLoaded, selectGroupedPodcastDataLoading,
-  selectNestedPodcastTotalsLoaded, selectNestedPodcastTotalsLoading,
-  selectNestedPodcastRanksLoaded, selectNestedPodcastRanksLoading,
+  selectGroupedDataLoaded, selectGroupedDataLoading,
+  selectNestedTotalsLoaded, selectNestedTotalsLoading,
+  selectNestedRanksLoaded, selectNestedRanksLoading,
   selectNested500ErrorReloadActions,
-  selectRoutedPodcastRanksChartMetrics,
-  selectNestedPodcastRanksChartMetrics,
-  selectRoutedPodcastTotals,
-  selectNestedPodcastTotals,
-  selectRoutedPodcastTotalsTableMetrics,
-  selectNestedPodcastTotalsTableMetrics,
+  selectChartMetrics,
+  selectNestedChartMetrics,
+  selectTotalsRanks,
+  selectNestedTotalsRanks,
+  selectTableMetrics,
+  selectNestedTableMetrics,
   selectRouter,
   selectGroupRoute,
   selectFilterRoute,
@@ -76,8 +76,8 @@ export class GeoComponent implements OnInit {
   nestedChartData$: Observable<TimeseriesChartModel[]>;
   nestedRanksLoading$: Observable<boolean>;
   nestedRanksLoaded$: Observable<boolean>;
-  geochartData$: Observable<PodcastTotals>;
-  nestedGeochartData$: Observable<PodcastTotals>;
+  geochartData$: Observable<Rank[]>;
+  nestedGeochartData$: Observable<Rank[]>;
   tableData$: Observable<TotalsTableRow[]>;
   nestedTableData$: Observable<TotalsTableRow[]>;
   loading$: Observable<boolean>;
@@ -97,18 +97,18 @@ export class GeoComponent implements OnInit {
     this.groupRoute$ = this.store.pipe(select(selectGroupRoute));
     this.filterRoute$ = this.store.pipe(select(selectFilterRoute));
     this.chartTypeRoute$ = this.store.pipe(select(selectChartTypeRoute));
-    this.chartData$ = this.store.pipe(select(selectRoutedPodcastRanksChartMetrics));
-    this.nestedChartData$ = this.store.pipe(select(selectNestedPodcastRanksChartMetrics));
-    this.geochartData$ = this.store.pipe(select(selectRoutedPodcastTotals));
-    this.nestedGeochartData$ = this.store.pipe(select(selectNestedPodcastTotals));
-    this.tableData$ = this.store.pipe(select(selectRoutedPodcastTotalsTableMetrics));
-    this.nestedTableData$ = this.store.pipe(select(selectNestedPodcastTotalsTableMetrics));
-    this.loaded$ = this.store.pipe(select(selectGroupedPodcastDataLoaded));
-    this.loading$ = this.store.pipe(select(selectGroupedPodcastDataLoading));
-    this.nestedTotalsLoading$ = this.store.pipe(select(selectNestedPodcastTotalsLoading));
-    this.nestedTotalsLoaded$ = this.store.pipe(select(selectNestedPodcastTotalsLoaded));
-    this.nestedRanksLoading$ = this.store.pipe(select(selectNestedPodcastRanksLoading));
-    this.nestedRanksLoaded$ = this.store.pipe(select(selectNestedPodcastRanksLoaded));
+    this.chartData$ = this.store.pipe(select(selectChartMetrics));
+    this.nestedChartData$ = this.store.pipe(select(selectNestedChartMetrics));
+    this.geochartData$ = this.store.pipe(select(selectTotalsRanks));
+    this.nestedGeochartData$ = this.store.pipe(select(selectNestedTotalsRanks));
+    this.tableData$ = this.store.pipe(select(selectTableMetrics));
+    this.nestedTableData$ = this.store.pipe(select(selectNestedTableMetrics));
+    this.loaded$ = this.store.pipe(select(selectGroupedDataLoaded));
+    this.loading$ = this.store.pipe(select(selectGroupedDataLoading));
+    this.nestedTotalsLoading$ = this.store.pipe(select(selectNestedTotalsLoading));
+    this.nestedTotalsLoaded$ = this.store.pipe(select(selectNestedTotalsLoaded));
+    this.nestedRanksLoading$ = this.store.pipe(select(selectNestedRanksLoading));
+    this.nestedRanksLoaded$ = this.store.pipe(select(selectNestedRanksLoaded));
     this.nestedDataErrorActions$ = this.store.pipe(select(selectNested500ErrorReloadActions));
     this.errors$ = this.store.pipe(select(select500ErrorReloadActions));
   }

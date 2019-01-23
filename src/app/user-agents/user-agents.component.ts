@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { select, Store } from '@ngrx/store';
-import { selectRoutedPodcastRanksChartMetrics, selectRoutedPodcastTotalsTableMetrics, selectRouter,
-  selectGroupedPodcastDataLoaded, selectGroupedPodcastDataLoading, select500ErrorReloadActions } from '../ngrx/reducers/selectors';
+import { selectChartMetrics, selectTableMetrics, selectRouter,
+  selectGroupedDataLoaded, selectGroupedDataLoading, select500ErrorReloadActions } from '../ngrx/reducers/selectors';
 import { RouterParams, TotalsTableRow } from '../ngrx';
 import { CategoryChartModel, TimeseriesChartModel } from 'ngx-prx-styleguide';
 import * as ACTIONS from '../ngrx/actions';
@@ -35,14 +35,14 @@ export class UserAgentsComponent implements OnInit {
 
   ngOnInit() {
     this.routerParams$ = this.store.pipe(select(selectRouter));
-    this.chartData$ = this.store.pipe(select(selectRoutedPodcastRanksChartMetrics));
-    this.tableData$ = this.store.pipe(select(selectRoutedPodcastTotalsTableMetrics));
-    this.loaded$ = this.store.pipe(select(selectGroupedPodcastDataLoaded));
-    this.loading$ = this.store.pipe(select(selectGroupedPodcastDataLoading));
+    this.chartData$ = this.store.pipe(select(selectChartMetrics));
+    this.tableData$ = this.store.pipe(select(selectTableMetrics));
+    this.loaded$ = this.store.pipe(select(selectGroupedDataLoaded));
+    this.loading$ = this.store.pipe(select(selectGroupedDataLoading));
     this.errors$ = this.store.pipe(select(select500ErrorReloadActions));
   }
 
-  toggleGroupCharted(params: {podcastId: string, groupName: string, charted: boolean}) {
-    this.store.dispatch(new ACTIONS.ChartTogglePodcastGroupAction({...params}));
+  toggleGroupCharted(params: {group: string, groupName: string, charted: boolean}) {
+    this.store.dispatch(new ACTIONS.ChartToggleGroupAction({...params}));
   }
 }

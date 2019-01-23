@@ -21,7 +21,7 @@ import {
   selectBeginDateRoute,
   selectEndDateRoute } from './router.selectors';
 import { CategoryChartModel, TimeseriesChartModel } from 'ngx-prx-styleguide';
-import { aggregateTotalsBarChart, aggregateIntervals, aggregateTotalDownloads } from '../../../shared/util/chart.util';
+import { aggregateTotalsBarChart, aggregateIntervals, aggregateTotalDownloads, getTotal } from '../../../shared/util/chart.util';
 import { selectEpisodeSelectedEpisodeGuids } from './episode-select.selectors';
 import { selectRoutedGroupCharted } from './group-charted.selectors';
 
@@ -129,30 +129,14 @@ export const selectSelectedEpisodeRanksChartMetrics = createSelector(
    groupsCharted: GroupCharted[],
    groupRoute: GroupType,
    chartType: ChartType): CategoryChartModel[] | TimeseriesChartModel[] => {
-    // if (podcastRanks && podcastRanks.ranks && podcastRanks.downloads) {
-      if (chartType === CHARTTYPE_HORIZBAR) {
-        return aggregateTotalsBarChart(episodeRanks, groupsCharted);
-      } else {
-        // TODO: filter out Other when === 0
-        return aggregateIntervals(episodeRanks, groupsCharted);
-        // return podcastRanks.ranks
-        //   .filter((rank: Rank) => rank.label !== 'Other' || rank.total !== 0)
-        //   .map((rank: Rank, i: number) => {
-        //     const downloads = podcastRanks.downloads.map(data => [data[0], data[1][i]]);
-        //     return {
-        //       data: mapMetricsToTimeseriesData(downloads),
-        //       label: rank.label,
-        //       color: rank.label === 'Other' ? neutralColor : getColor(i)
-        //     };
-        //   })
-        //   .filter((entry: TimeseriesChartModel) => {
-        //     return groupsCharted.find(g => g.charted && g.groupName === entry.label &&
-        //       ((groupRoute !== GROUPTYPE_GEOCOUNTRY &&
-        //         groupRoute !== GROUPTYPE_GEOMETRO) || entry.label !== 'Other'));
-        //   });
-      }
+    if (chartType === CHARTTYPE_HORIZBAR) {
+      const rows = aggregateTotalsBarChart(episodeRanks, groupsCharted);
+      return rows && rows.filter((row: CategoryChartModel) => row.label !== 'Other' || row.value !== 0);
+    } else {
+      const rows = aggregateIntervals(episodeRanks, groupsCharted);
+      return rows && rows.filter((row: TimeseriesChartModel) => row.label !== 'Other' || getTotal(row.data) !== 0);
     }
-  // }
+  }
 );
 
 export const selectNestedEpisodesRanksChartMetrics = createSelector(

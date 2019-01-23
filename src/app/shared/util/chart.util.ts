@@ -1,5 +1,5 @@
 import * as moment from 'moment';
-import { TimeseriesDatumModel, CategoryChartModel } from 'ngx-prx-styleguide';
+import { TimeseriesDatumModel, CategoryChartModel, TimeseriesChartModel } from 'ngx-prx-styleguide';
 import * as tinycolor2 from 'tinycolor2';
 import {
   CHARTTYPE_EPISODES,
@@ -246,7 +246,7 @@ export const aggregateTotalsMap = (episodeTotals: EpisodeTotals[]): Rank[] => {
 };
 
 export const aggregateIntervals =
-(episodeRanks: EpisodeRanks[], groupsCharted?: GroupCharted[]) => {
+(episodeRanks: EpisodeRanks[], groupsCharted?: GroupCharted[]): TimeseriesChartModel[] => {
   if (episodeRanks && episodeRanks.length && episodeRanks[0].downloads) {
     const accumulator = {};
     episodeRanks[0].ranks.forEach((rank: Rank, i) => {

@@ -91,7 +91,6 @@ export class EpisodeSelectDropdownComponent implements OnInit {
       this.store.dispatch(new ACTIONS.CastlePodcastRanksLoadAction({
         id: podcastId,
         group,
-        filter,
         interval,
         beginDate,
         endDate
@@ -99,10 +98,26 @@ export class EpisodeSelectDropdownComponent implements OnInit {
       this.store.dispatch(new ACTIONS.CastlePodcastTotalsLoadAction({
         id: podcastId,
         group,
-        filter,
         beginDate,
         endDate
       }));
+      if (filter) {
+        this.store.dispatch(new ACTIONS.CastlePodcastRanksLoadAction({
+          id: podcastId,
+          group: GROUPTYPE_GEOSUBDIV,
+          filter,
+          interval,
+          beginDate,
+          endDate
+        }));
+        this.store.dispatch(new ACTIONS.CastlePodcastTotalsLoadAction({
+          id: podcastId,
+          group: GROUPTYPE_GEOSUBDIV,
+          filter,
+          beginDate,
+          endDate
+        }));
+      }
     } else if (!this.selectedEpisodes || this.selectedEpisodes.indexOf(episode.guid) === -1) {
       episodeGuids = this.selectedEpisodes ? this.selectedEpisodes.concat([episode.guid]) : [episode.guid];
 

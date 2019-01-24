@@ -6,7 +6,7 @@ import { neutralColor, standardColor } from '../util/chart.util';
   selector: 'metrics-totals-table',
   template: `
     <div>
-      <div class="header row">
+      <div class="header row" *ngIf="tableData?.length">
         <div>{{getGroupName(routerParams.metricsType, routerParams.group)}}</div>
         <div class="number charted">Downloads</div>
         <div class="number percent">%</div>

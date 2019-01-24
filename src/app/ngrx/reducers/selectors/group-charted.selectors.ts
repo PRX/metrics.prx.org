@@ -22,6 +22,6 @@ export const selectRoutedGroupCharted = createSelector(
   selectGroupRoute,
   selectAllGroupCharted,
   (group: string, groupsCharted: GroupCharted[]) => {
-    return groupsCharted.filter(g => g.group === group);
+    return groupsCharted && groupsCharted.filter(g => g.group === group);
   }
 );

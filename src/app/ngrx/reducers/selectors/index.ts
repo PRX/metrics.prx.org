@@ -19,3 +19,4 @@ export * from './loaded.selectors';
 export * from './error.selectors';
 export * from './ranks.selectors';
 export * from './totals.selectors';
+export * from './group-charted.selectors';

@@ -35,7 +35,7 @@ export function reducer(
       const groupsCharted = ranks.map((rank: Rank) => {
         return {
           key: `${group}-${rank.label}`,
-          group: group,
+          group,
           groupName: rank.label,
           charted: true
         };

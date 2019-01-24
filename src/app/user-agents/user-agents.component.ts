@@ -3,7 +3,7 @@ import { Observable } from 'rxjs/Observable';
 import { select, Store } from '@ngrx/store';
 import { selectChartMetrics, selectTableMetrics, selectRouter, selectRoutedGroupCharted,
   selectGroupedDataLoaded, selectGroupedDataLoading, select500ErrorReloadActions } from '../ngrx/reducers/selectors';
-import { RouterParams, TotalsTableRow, GroupCharted } from '../ngrx';
+import { RouterParams, TotalsTableRow, GroupCharted, GroupType } from '../ngrx';
 import { CategoryChartModel, TimeseriesChartModel } from 'ngx-prx-styleguide';
 import * as ACTIONS from '../ngrx/actions';
 
@@ -50,7 +50,7 @@ export class UserAgentsComponent implements OnInit {
     this.errors$ = this.store.pipe(select(select500ErrorReloadActions));
   }
 
-  toggleGroupCharted(params: {group: string, groupName: string, charted: boolean}) {
+  toggleGroupCharted(params: {group: GroupType, groupName: string, charted: boolean}) {
     this.store.dispatch(new ACTIONS.ChartToggleGroupAction({...params}));
   }
 }

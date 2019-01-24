@@ -1,5 +1,5 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { TotalsTableRow, RouterParams, getGroupName, CHARTTYPE_HORIZBAR } from '../../ngrx/';
+import { TotalsTableRow, RouterParams, getGroupName, CHARTTYPE_HORIZBAR, GroupType } from '../../ngrx/';
 import { neutralColor, standardColor } from '../util/chart.util';
 
 @Component({
@@ -50,7 +50,7 @@ export class TotalsTableComponent {
   @Input() tableData: TotalsTableRow[];
   @Input() numRowsWithToggle = 10;
   @Input() routerParams: RouterParams;
-  @Output() toggleEntry = new EventEmitter<{group: string, groupName: string, charted: boolean}>();
+  @Output() toggleEntry = new EventEmitter<{group: GroupType, groupName: string, charted: boolean}>();
   getGroupName = getGroupName;
 
   get otherCharted() {

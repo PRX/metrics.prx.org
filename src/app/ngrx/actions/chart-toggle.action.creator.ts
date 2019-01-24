@@ -1,5 +1,6 @@
 import { Action } from '@ngrx/store';
 import { ActionTypes } from './action.types';
+import { GroupType } from '../reducers/models';
 
 export interface ChartSingleEpisodePayload {
   guid: string;
@@ -34,7 +35,7 @@ export class ChartTogglePodcastAction implements Action {
 }
 
 export interface ChartToggleGroupPayload {
-  group: string;
+  group: GroupType;
   groupName: string;
   charted: boolean;
 }

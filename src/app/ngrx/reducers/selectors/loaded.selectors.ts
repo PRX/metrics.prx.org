@@ -7,7 +7,7 @@ import { selectRoutedPodcastRanksLoaded, selectNestedPodcastRanksLoaded } from '
 import { selectRoutedPodcastTotalsLoaded, selectNestedPodcastTotalsLoaded } from './podcast-totals.selectors';
 import { selectSelectedEpisodesRanksLoaded, selectNestedEpisodesRanksLoaded } from './episode-ranks.selectors';
 import { selectSelectedEpisodesTotalsLoaded, selectNestedEpisodesTotalsLoaded } from './episode-totals.selectors';
-import { selectEpisodeSelectedEpisodeGuids } from './episode-select.selectors';
+import { selectSelectedEpisodeGuids } from './episode-select.selectors';
 
 export const selectCatalogLoaded = createSelector(
   selectRoutedPageLoaded,
@@ -44,7 +44,7 @@ export const selectGroupedEpisodeDataLoaded = createSelector(
 );
 
 export const selectGroupedDataLoaded = createSelector(
-  selectEpisodeSelectedEpisodeGuids,
+  selectSelectedEpisodeGuids,
   selectGroupedEpisodeDataLoaded,
   selectGroupedPodcastDataLoaded,
   (guids, episode, podcast) => guids && guids.length ? episode : podcast
@@ -54,7 +54,7 @@ export const selectNestedTotalsLoaded = createSelector(
   selectRoutedPodcast,
   selectPodcastError,
   selectNestedPodcastTotalsLoaded,
-  selectEpisodeSelectedEpisodeGuids,
+  selectSelectedEpisodeGuids,
   selectNestedEpisodesTotalsLoaded,
   (podcast, podcastError, podcastTotalsLoaded, guids, episodesTotalsLoaded) => {
     if (!guids || guids.length === 0) {
@@ -68,7 +68,7 @@ export const selectNestedTotalsLoaded = createSelector(
     selectRoutedPodcast,
     selectPodcastError,
     selectNestedPodcastRanksLoaded,
-    selectEpisodeSelectedEpisodeGuids,
+    selectSelectedEpisodeGuids,
     selectNestedEpisodesRanksLoaded,
     (podcast, podcastError, podcastRanksLoading, guids, episodesRanksLoaded) => {
       if (!guids || guids.length === 0) {

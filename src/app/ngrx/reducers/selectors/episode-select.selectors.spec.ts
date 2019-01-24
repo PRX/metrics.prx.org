@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { StoreModule, Store, select } from '@ngrx/store';
 
-import { selectNumEpisodeSelectPages, selectRoutedPodcastEpisodeSelectEpisodes } from './episode-select.selectors';
+import { selectNumEpisodeSelectPages, selectRoutedPodcastEpisodesSelectList } from './episode-select.selectors';
 import { RootState, reducers } from '../';
 import { EPISODE_SELECT_PAGE_SIZE, Episode } from '../models';
 import * as ACTIONS from '../../actions';
@@ -30,7 +30,7 @@ describe('Downloads Table Selectors', () => {
   });
 
   it('sorts routed podcast episodes by publish date', () => {
-    store.pipe(select(selectRoutedPodcastEpisodeSelectEpisodes)).subscribe((eps: Episode[]) => {
+    store.pipe(select(selectRoutedPodcastEpisodesSelectList)).subscribe((eps: Episode[]) => {
       expect(eps.length).toEqual(episodes.filter(e => e.podcastId === '70').length);
       expect(eps[0].publishedAt.valueOf()).toBeGreaterThan(eps[1].publishedAt.valueOf());
     });

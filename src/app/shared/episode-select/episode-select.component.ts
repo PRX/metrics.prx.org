@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { Store, select } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
 import { Episode, RouterParams } from '../../ngrx';
-import { selectRoutedPodcastEpisodeSelectEpisodes, selectEpisodeSelectLoading,
-  selectEpisodeSelectedEpisodeGuids, selectEpisodeSelectTotal,
+import { selectRoutedPodcastEpisodesSelectList, selectEpisodeSelectLoading,
+  selectSelectedEpisodeGuids, selectEpisodeSelectTotal,
   selectLatestEpisodeSelectPage, selectNumEpisodeSelectPages,
   selectEpisodeSelectSearchTerm, selectEpisodeSelectSearchTotal, selectRouter } from '../../ngrx/reducers/selectors';
 
@@ -38,10 +38,10 @@ export class EpisodeSelectComponent implements OnInit {
 
   ngOnInit() {
     this.routerParams$ = this.store.pipe(select(selectRouter));
-    this.episodes$ = this.store.pipe(select(selectRoutedPodcastEpisodeSelectEpisodes));
+    this.episodes$ = this.store.pipe(select(selectRoutedPodcastEpisodesSelectList));
     this.searchTerm$ = this.store.pipe(select(selectEpisodeSelectSearchTerm));
     this.episodesLoading$ = this.store.pipe(select(selectEpisodeSelectLoading));
-    this.selectedEpisodeGuids$ = this.store.pipe(select(selectEpisodeSelectedEpisodeGuids));
+    this.selectedEpisodeGuids$ = this.store.pipe(select(selectSelectedEpisodeGuids));
     this.totalEpisodes$ = this.store.pipe(select(selectEpisodeSelectTotal));
     this.searchTotal$ = this.store.pipe(select(selectEpisodeSelectSearchTotal));
     this.lastPage$ = this.store.pipe(select(selectLatestEpisodeSelectPage));

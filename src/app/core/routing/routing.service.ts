@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Router, RoutesRecognized } from '@angular/router';
 import { filter } from 'rxjs/operators/filter';
 import { Store, select } from '@ngrx/store';
-import { selectRoutedPageEpisodes, selectRouter, selectEpisodeSelectedEpisodeGuids } from '../../ngrx/reducers/selectors/';
+import { selectRoutedPageEpisodes, selectRouter, selectSelectedEpisodeGuids } from '../../ngrx/reducers/selectors/';
 import {
   RouterParams,
   Episode,
@@ -62,7 +62,7 @@ export class RoutingService {
   }
 
   subSelectedEpisodes() {
-    this.store.pipe(select(selectEpisodeSelectedEpisodeGuids)).subscribe((guids: string[]) => {
+    this.store.pipe(select(selectSelectedEpisodeGuids)).subscribe((guids: string[]) => {
       this.selectedEpisodes = guids;
     });
   }

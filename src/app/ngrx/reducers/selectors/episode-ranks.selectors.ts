@@ -2,16 +2,13 @@ import { createSelector, createFeatureSelector } from '@ngrx/store';
 import * as fromEpisodeRanks from '../episode-ranks.reducer';
 import {
   EpisodeRanks,
-  Rank,
   episodeRanksKey,
   GroupType,
   IntervalModel,
   GroupCharted,
   ChartType,
   CHARTTYPE_HORIZBAR,
-  GROUPTYPE_GEOSUBDIV,
-  GROUPTYPE_GEOCOUNTRY,
-  GROUPTYPE_GEOMETRO
+  GROUPTYPE_GEOSUBDIV
 } from '../models';
 import {
   selectChartTypeRoute,
@@ -22,7 +19,7 @@ import {
   selectEndDateRoute } from './router.selectors';
 import { CategoryChartModel, TimeseriesChartModel } from 'ngx-prx-styleguide';
 import { aggregateTotalsBarChart, aggregateIntervals, aggregateTotalDownloads, getTotal } from '../../../shared/util/chart.util';
-import { selectEpisodeSelectedEpisodeGuids } from './episode-select.selectors';
+import { selectSelectedEpisodeGuids } from './episode-select.selectors';
 import { selectRoutedGroupCharted } from './group-charted.selectors';
 
 export const selectEpisodeRanksState = createFeatureSelector<fromEpisodeRanks.State>('episodeRanks');
@@ -51,7 +48,7 @@ export const selectAllEpisodeRanksErrors = createSelector(selectAllEpisodeRanks,
 });
 
 export const selectSelectedEpisodesRanks = createSelector(
-  selectEpisodeSelectedEpisodeGuids,
+  selectSelectedEpisodeGuids,
   selectGroupRoute,
   selectFilterRoute,
   selectIntervalRoute,
@@ -87,7 +84,7 @@ export const selectSelectedEpisodesRanksErrors = createSelector(
 );
 
 export const selectNestedEpisodesRanks = createSelector(
-  selectEpisodeSelectedEpisodeGuids,
+  selectSelectedEpisodeGuids,
   selectFilterRoute,
   selectIntervalRoute,
   selectBeginDateRoute,

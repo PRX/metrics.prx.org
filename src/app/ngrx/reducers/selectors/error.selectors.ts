@@ -6,7 +6,7 @@ import { selectEpisodeMetricsError } from './episode-metrics.selectors';
 import { selectPodcastDownloadsError } from './podcast-downloads.selectors';
 import { selectRoutedPodcastRanksError, selectNestedPodcastRanksError } from './podcast-ranks.selectors';
 import { selectRoutedPodcastTotalsError, selectNestedPodcastTotalsError } from './podcast-totals.selectors';
-import { selectEpisodeSelectedEpisodeGuids } from './episode-select.selectors';
+import { selectSelectedEpisodeGuids } from './episode-select.selectors';
 import { selectSelectedEpisodesRanksErrors, selectNestedEpisodesRanksErrors } from './episode-ranks.selectors';
 import { selectSelectedEpisodesTotalsErrors, selectNestedEpisodesTotalsErrors } from './episode-totals.selectors';
 import * as ACTIONS from '../../actions';
@@ -57,7 +57,7 @@ export const selectDownload500ErrorReloadActions = createSelector(
 
 export const selectRankTotal500ErrorReloadActions = createSelector(
   selectRouter,
-  selectEpisodeSelectedEpisodeGuids,
+  selectSelectedEpisodeGuids,
   selectRoutedPodcastRanksError,
   selectRoutedPodcastTotalsError,
   selectSelectedEpisodesRanksErrors,
@@ -139,7 +139,7 @@ export const select500ErrorReloadActions =
 
 export const selectNested500ErrorReloadActions = createSelector(
   selectRouter,
-  selectEpisodeSelectedEpisodeGuids,
+  selectSelectedEpisodeGuids,
   selectNestedPodcastRanksError,
   selectNestedPodcastTotalsError,
   selectNestedEpisodesRanksErrors,

@@ -25,7 +25,9 @@ import {
   podDownloads,
   ep0Downloads,
   podcastAgentNameRanks,
-  podcastAgentNameDownloads
+  podcastAgentNameDownloads,
+  ep0AgentNameRanks,
+  ep0AgentNameDownloads
 } from '../../../testing/downloads.fixtures';
 
 describe('CastleEffects', () => {
@@ -75,6 +77,16 @@ describe('CastleEffects', () => {
         return { count: total, label, code };
       })
     });
+    castle.root.mockList('prx:episode-ranks', [{
+      downloads: ep0AgentNameDownloads,
+      ranks: ep0AgentNameRanks
+    }]);
+    castle.root.mockList('prx:episode-totals', [{
+      ranks: ep0AgentNameRanks.map(rank => {
+        const { total, label, code } = rank;
+        return { count: total, label, code };
+      })
+    }]);
 
     TestBed.configureTestingModule({
       imports: [
@@ -528,5 +540,59 @@ describe('CastleEffects', () => {
     actions$.stream = hot('-ab', { a: action, b: action });
     const expected = cold('-ab', { a: success, b: success });
     expect(effects.loadPodcastTotals$).toBeObservable(expected);
+  });
+
+  it('should load more than one grouped episode ranks at a time', () => {
+    const action = {
+      type: ACTIONS.ActionTypes.CASTLE_EPISODE_RANKS_LOAD,
+      payload: {
+        guid: episodes[0].guid,
+        group: GROUPTYPE_AGENTNAME,
+        interval: INTERVAL_DAILY,
+        beginDate: routerParams.beginDate,
+        endDate: routerParams.endDate,
+      }
+    };
+    const success = new ACTIONS.CastleEpisodeRanksSuccessAction({
+      guid: episodes[0].guid,
+      group: GROUPTYPE_AGENTNAME,
+      filter: undefined,
+      interval: INTERVAL_DAILY,
+      beginDate: routerParams.beginDate,
+      endDate: routerParams.endDate,
+      ranks: ep0AgentNameRanks,
+      downloads: ep0AgentNameDownloads
+    });
+
+    actions$.stream = hot('-ab', { a: action, b: action });
+    const expected = cold('-ab', { a: success, b: success });
+    expect(effects.loadEpisodeRanks$).toBeObservable(expected);
+  });
+
+  it('should load more than one grouped episode totals at a time', () => {
+    const action = {
+      type: ACTIONS.ActionTypes.CASTLE_EPISODE_TOTALS_LOAD,
+      payload: {
+        guid: episodes[0].guid,
+        group: GROUPTYPE_AGENTNAME,
+        beginDate: routerParams.beginDate,
+        endDate: routerParams.endDate
+      }
+    };
+    const success = new ACTIONS.CastleEpisodeTotalsSuccessAction({
+      guid: episodes[0].guid,
+      group: GROUPTYPE_AGENTNAME,
+      filter: undefined,
+      beginDate: routerParams.beginDate,
+      endDate: routerParams.endDate,
+      ranks: ep0AgentNameRanks.map(rank => {
+        const { label, total, code } = rank;
+        return { label, total, code };
+      })
+    });
+
+    actions$.stream = hot('-ab', { a: action, b: action });
+    const expected = cold('-ab', { a: success, b: success });
+    expect(effects.loadEpisodeTotals$).toBeObservable(expected);
   });
 });

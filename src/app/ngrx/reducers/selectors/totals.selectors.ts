@@ -5,13 +5,13 @@ import { selectSelectedEpisodesTotals, selectNestedEpisodesTotals,
   selectSelectedEpisodesTotalsTableMetrics, selectNestedEpisodesTotalsTableMetrics } from './episode-totals.selectors';
 import { selectSelectedEpisodeGuids } from './episode-select.selectors';
 import { TotalsTableRow, EpisodeTotals, PodcastTotals, Rank } from '../models';
-import { aggregateTotalsMap } from '../../../shared/util/chart.util';
+import { aggregateTotalsRanks } from '../../../shared/util/chart.util';
 
 export const selectTotalsRanks =
   createSelector(selectSelectedEpisodeGuids, selectSelectedEpisodesTotals, selectRoutedPodcastTotals,
   (guids: string[], episode: EpisodeTotals[], podcast: PodcastTotals): Rank[] => {
     if (guids && guids.length) {
-      return aggregateTotalsMap(episode);
+      return aggregateTotalsRanks(episode);
     } else if (podcast) {
       return podcast.ranks;
     }
@@ -21,7 +21,7 @@ export const selectNestedTotalsRanks =
 createSelector(selectSelectedEpisodeGuids, selectNestedEpisodesTotals, selectNestedPodcastTotals,
   (guids: string[], episode: EpisodeTotals[], podcast: PodcastTotals): Rank[] => {
     if (guids && guids.length) {
-      return aggregateTotalsMap(episode);
+      return aggregateTotalsRanks(episode);
     } else if (podcast) {
       return podcast.ranks;
     }

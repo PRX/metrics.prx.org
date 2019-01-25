@@ -233,7 +233,7 @@ export const aggregateTotalsBarChart = (episodeRanks: EpisodeRanks[], groupsChar
   return rows;
 };
 
-export const aggregateTotalsMap = (episodeTotals: EpisodeTotals[]): Rank[] => {
+export const aggregateTotalsRanks = (episodeTotals: EpisodeTotals[]): Rank[] => {
   const accumulator = aggregateTotalsAccumulator(episodeTotals);
   const ranks = Object.keys(accumulator).map(code => {
     return {

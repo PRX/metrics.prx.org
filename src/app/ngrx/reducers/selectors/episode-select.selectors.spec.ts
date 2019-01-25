@@ -7,7 +7,7 @@ import { EPISODE_SELECT_PAGE_SIZE, Episode } from '../models';
 import * as ACTIONS from '../../actions';
 import { routerParams, episodes } from '../../../../testing/downloads.fixtures';
 
-describe('Downloads Table Selectors', () => {
+describe('Episode Select List Selectors', () => {
   let store: Store<RootState>;
 
   beforeEach(() => {

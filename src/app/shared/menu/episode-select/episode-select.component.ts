@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { Store, select } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
-import { Episode, RouterParams } from '../../ngrx';
+import { Episode, RouterParams } from '../../../ngrx';
 import { selectRoutedPodcastEpisodesSelectList, selectEpisodeSelectLoading,
   selectSelectedEpisodeGuids, selectEpisodeSelectTotal,
   selectLatestEpisodeSelectPage, selectNumEpisodeSelectPages,
-  selectEpisodeSelectSearchTerm, selectEpisodeSelectSearchTotal, selectRouter } from '../../ngrx/reducers/selectors';
+  selectEpisodeSelectSearchTerm, selectEpisodeSelectSearchTotal, selectRouter } from '../../../ngrx/reducers/selectors';
 
 @Component({
   selector: 'metrics-episode-select',

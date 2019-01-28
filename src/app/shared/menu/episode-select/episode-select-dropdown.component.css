@@ -1,0 +1,28 @@
+/* could go in modal-dropdown */
+.dropdown {
+  position: static;
+}
+.open .dropdown-content {
+  margin-top: -38px;
+  box-shadow: 0 0 15px -5px rgba(0,0,0,.5);
+  padding: 20px;
+  overflow-y: hidden;
+  right: 20px;
+}
+/*********/
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  white-space: nowrap;
+  padding-bottom: 10px;
+}
+.footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  white-space: nowrap;
+}
+.footer button.button {
+  flex: 0;
+}

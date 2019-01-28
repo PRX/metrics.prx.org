@@ -2,9 +2,8 @@ import { async, ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core
 import { DebugElement } from '@angular/core';
 
 import { EpisodeSearchComponent } from './episode-search.component';
-import { EpisodeSearchSummaryComponent } from './episode-search-summary.component';
 
-describe('EpisodeSelectDropdownComponent', () => {
+describe('EpisodeSearchComponent', () => {
   let comp: EpisodeSearchComponent;
   let fix: ComponentFixture<EpisodeSearchComponent>;
   let de: DebugElement;
@@ -13,8 +12,7 @@ describe('EpisodeSelectDropdownComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [
-        EpisodeSearchComponent,
-        EpisodeSearchSummaryComponent
+        EpisodeSearchComponent
       ]
     }).compileComponents().then(() => {
       fix = TestBed.createComponent(EpisodeSearchComponent);

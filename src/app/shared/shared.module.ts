@@ -5,23 +5,24 @@ import { CommonModule } from '@angular/common';
 import { AuthGuard, DeactivateGuard, UnauthGuard,
   ChartsModule, DatepickerModule, FancyFormModule, ImageModule, SpinnerModule } from 'ngx-prx-styleguide';
 
-import { EpisodeSearchComponent } from './episode-select/episode-search.component';
-import { EpisodeSearchSummaryComponent } from './episode-select/episode-search-summary.component';
-import { EpisodeSelectComponent } from './episode-select/episode-select.component';
-import { EpisodeSelectDropdownComponent } from './episode-select/episode-select-dropdown.component';
-import { EpisodeSelectListComponent } from './episode-select/episode-select-list.component';
 import { ErrorRetryComponent } from './error/error-retry.component';
-import { MetricsTypeHeadingComponent } from './menu/metrics-type-heading.component';
-import { ChartTypeComponent } from './menu/chart-type.component';
-import { IntervalDropdownComponent } from './menu/interval-dropdown.component';
-import { MenuBarComponent } from './menu/menu-bar.component';
-import { PodcastNavComponent } from './podcast-nav/podcast-nav.component';
-import { PodcastNavDropdownComponent } from './podcast-nav/podcast-nav-dropdown.component';
-import { PodcastNavListComponent } from './podcast-nav/podcast-nav-list.component';
 import { CustomDateRangeDropdownComponent } from './menu/date/custom-date-range-dropdown.component';
 import { DateRangeSummaryComponent } from './menu/date/date-range-summary.component';
 import { StandardDateRangeComponent } from './menu/date/standard-date-range.component';
 import { StandardDateRangeDropdownComponent } from './menu/date/standard-date-range-dropdown.component';
+import { EpisodeSearchComponent } from './menu/episode-select/episode-search.component';
+import { EpisodeSelectAccumulatorComponent } from './menu/episode-select/episode-select-accumulator.component';
+import { EpisodeSelectComponent } from './menu/episode-select/episode-select.component';
+import { EpisodeSelectDropdownComponent } from './menu/episode-select/episode-select-dropdown.component';
+import { EpisodeSelectListComponent } from './menu/episode-select/episode-select-list.component';
+import { EpisodeSelectListVisibilityComponent } from './menu/episode-select/episode-select-list-visibility.component';
+import { ChartTypeComponent } from './menu/chart-type.component';
+import { IntervalDropdownComponent } from './menu/interval-dropdown.component';
+import { MetricsTypeHeadingComponent } from './menu/metrics-type-heading.component';
+import { MenuBarComponent } from './menu/menu-bar.component';
+import { PodcastNavComponent } from './podcast-nav/podcast-nav.component';
+import { PodcastNavDropdownComponent } from './podcast-nav/podcast-nav-dropdown.component';
+import { PodcastNavListComponent } from './podcast-nav/podcast-nav-list.component';
 import { NavMenuContainerComponent } from './nav/nav-menu-container.component';
 import { NavMenuPresentationComponent } from './nav/nav-menu-presentation.component';
 import { EpisodePageComponent } from './paging/episode-page.component';
@@ -40,10 +41,11 @@ import { TotalsTableComponent } from './table/totals-table.component';
     DownloadsSummaryComponent,
     EpisodePageComponent,
     EpisodeSearchComponent,
-    EpisodeSearchSummaryComponent,
+    EpisodeSelectAccumulatorComponent,
     EpisodeSelectComponent,
     EpisodeSelectDropdownComponent,
     EpisodeSelectListComponent,
+    EpisodeSelectListVisibilityComponent,
     ErrorRetryComponent,
     IntervalDropdownComponent,
     LargeNumberPipe,

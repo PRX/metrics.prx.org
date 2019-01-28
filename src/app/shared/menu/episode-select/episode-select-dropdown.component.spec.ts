@@ -1,17 +1,19 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { DebugElement } from '@angular/core';
 import { Store, StoreModule } from '@ngrx/store';
+import { By } from '@angular/platform-browser';
 
 import { EpisodeSelectDropdownComponent } from './episode-select-dropdown.component';
 import { EpisodeSearchComponent } from './episode-search.component';
-import { EpisodeSearchSummaryComponent } from './episode-search-summary.component';
+import { EpisodeSelectAccumulatorComponent } from './episode-select-accumulator.component';
 import { EpisodeSelectListComponent } from './episode-select-list.component';
+import { EpisodeSelectListVisibilityComponent } from './episode-select-list-visibility.component';
 import { FancyFormModule, SpinnerModule } from 'ngx-prx-styleguide';
 
-import { episodes, routerParams } from '../../../testing/downloads.fixtures';
-import { EPISODE_SELECT_PAGE_SIZE } from '../../ngrx';
-import * as ACTIONS from '../../ngrx/actions';
-import { reducers } from '../../ngrx/reducers';
+import { episodes, routerParams } from '../../../../testing/downloads.fixtures';
+import { EPISODE_SELECT_PAGE_SIZE } from '../../../ngrx';
+import * as ACTIONS from '../../../ngrx/actions';
+import { reducers } from '../../../ngrx/reducers';
 
 describe('EpisodeSelectDropdownComponent', () => {
   let comp: EpisodeSelectDropdownComponent;
@@ -25,7 +27,8 @@ describe('EpisodeSelectDropdownComponent', () => {
       declarations: [
         EpisodeSelectDropdownComponent,
         EpisodeSearchComponent,
-        EpisodeSearchSummaryComponent,
+        EpisodeSelectAccumulatorComponent,
+        EpisodeSelectListVisibilityComponent,
         EpisodeSelectListComponent
       ],
       imports: [
@@ -53,15 +56,16 @@ describe('EpisodeSelectDropdownComponent', () => {
     });
   }));
 
-  it('should load episodes on dropdown scroll', done => {
-    comp.dropdownContent.nativeElement.scrollTop = comp.dropdownContent.nativeElement.scrollHeight;
-    comp.dropdownContent.nativeElement.addEventListener('scroll', (e) => {
-      expect(comp.loadEpisodes).toHaveBeenCalledWith(comp.lastPage + 1, comp.searchTerm);
-      expect(store.dispatch).toHaveBeenCalledWith(
-        new ACTIONS.GoogleAnalyticsEventAction({gaAction: 'episode-select-page-load', value: comp.lastPage + 1}));
-      done();
-    });
-    comp.dropdownContent.nativeElement.dispatchEvent(new Event('scroll'));
+  it('should load episodes on scroll if not reached max pages', () => {
+    comp.loadEpisodesOnScroll();
+    expect(comp.loadEpisodes).toHaveBeenCalledWith(comp.lastPage + 1, comp.searchTerm);
+    expect(store.dispatch).toHaveBeenCalledWith(
+      new ACTIONS.GoogleAnalyticsEventAction({gaAction: 'episode-select-page-load', value: comp.lastPage + 1}));
+    comp.lastPage = 2;
+    comp.maxPages = 2;
+    fix.detectChanges();
+    comp.loadEpisodesOnScroll();
+    expect(comp.loadEpisodes).toHaveBeenCalledTimes(1);
   });
 
   it('should load episodes on search', () => {
@@ -76,11 +80,39 @@ describe('EpisodeSelectDropdownComponent', () => {
       new ACTIONS.GoogleAnalyticsEventAction({gaAction: 'episode-select-search'}));
   });
 
-  it('dispatches selected episodes', () => {
+  it('should dispatch selected episodes', () => {
     comp.onToggleSelectEpisode(episodes[0]);
     expect(store.dispatch).toHaveBeenCalledWith(new ACTIONS.EpisodeSelectEpisodesAction({episodeGuids: [episodes[0].guid]}));
     expect(store.dispatch).toHaveBeenCalledWith(new ACTIONS.GoogleAnalyticsEventAction({gaAction: 'episode-select', value: 1}));
-    comp.onToggleSelectEpisode(null);
+    comp.selectedEpisodes = [episodes[0].guid];
+    comp.onToggleSelectEpisode(episodes[0]);
     expect(store.dispatch).toHaveBeenCalledWith(new ACTIONS.EpisodeSelectEpisodesAction({episodeGuids: []}));
+  });
+
+  it('should show no results if finished searching and there are no episodes', () => {
+    comp.episodesLoading = false;
+    comp.searchTerm = 'no match';
+    comp.searchTotal = 0;
+    fix.detectChanges();
+    expect(de.query(By.css('.dropdown-content')).nativeElement.textContent.trim()).toContain('(no results)');
+  });
+
+  it('should dispatch to reset selection and load podcast data', () => {
+    comp.resetSelection();
+    expect(store.dispatch).toHaveBeenCalledWith(new ACTIONS.CastlePodcastRanksLoadAction({
+      id: routerParams.podcastId,
+      group: routerParams.group,
+      interval: routerParams.interval,
+      beginDate: routerParams.beginDate,
+      endDate: routerParams.endDate
+    }));
+    expect(store.dispatch).toHaveBeenCalledWith(new ACTIONS.CastlePodcastTotalsLoadAction({
+      id: routerParams.podcastId,
+      group: routerParams.group,
+      beginDate: routerParams.beginDate,
+      endDate: routerParams.endDate
+    }));
+    expect(store.dispatch).toHaveBeenCalledWith(new ACTIONS.EpisodeSelectEpisodesAction({episodeGuids: null}));
+    expect(store.dispatch).toHaveBeenCalledWith(new ACTIONS.GoogleAnalyticsEventAction({gaAction: 'episode-select-reset'}));
   });
 });

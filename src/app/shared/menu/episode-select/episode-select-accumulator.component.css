@@ -1,0 +1,21 @@
+:host {
+  display: flex;
+  align-items: center;
+}
+.muted {
+  color: #a3a3a3;
+}
+.accumulator {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.accumulator > * {
+  padding: 0 2px;
+}
+.separator {
+  border-left: 2px solid #ff9600;
+  width: 0px;
+  height: 2em;
+  margin: 0 1em;
+}

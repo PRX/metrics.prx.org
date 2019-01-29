@@ -21,10 +21,10 @@ import { EpisodeSelectDropdownService } from './episode-select-dropdown.service'
       [searchTotal]="searchTotal$ | async"
       [lastPage]="lastPage$ | async"
       [maxPages]="maxPages$ | async"
-      [open]="dropdown.open"
-      [showingSelected]="dropdown.showingSelected"
-      (toggleOpen)="dropdown.toggleOpen($event)"
-      (toggleShowingSelected)="dropdown.toggleShowingSelected($event)">
+      [open]="open"
+      [showingSelected]="showingSelected"
+      (toggleOpen)="toggleOpen($event)"
+      (toggleShowingSelected)="toggleShowingSelected($event)">
     </metrics-episode-select-dropdown-content>
   `
 })
@@ -52,5 +52,21 @@ export class EpisodeSelectDropdownComponent implements OnInit {
     this.searchTotal$ = this.store.pipe(select(selectEpisodeSelectSearchTotal));
     this.lastPage$ = this.store.pipe(select(selectLatestEpisodeSelectPage));
     this.maxPages$ = this.store.pipe(select(selectNumEpisodeSelectPages));
+  }
+
+  get open(): boolean {
+    return this.dropdown.open;
+  }
+
+  get showingSelected(): boolean {
+    return this.dropdown.showingSelected;
+  }
+
+  toggleOpen(open: boolean) {
+    this.dropdown.toggleOpen(open);
+  }
+
+  toggleShowingSelected(showingSelected: boolean) {
+    this.dropdown.toggleShowingSelected(showingSelected);
   }
 }

@@ -10,8 +10,8 @@ import { EpisodeSelectDropdownService } from './episode-select-dropdown.service'
     <metrics-episode-select-dropdown-button
       [totalEpisodes]="totalEpisodes$ | async"
       [selectedEpisodes]="selectedEpisodes$ | async"
-      [open]="dropdown.open"
-      (toggleOpen)="dropdown.toggleOpen($event)">
+      [open]="open"
+      (toggleOpen)="toggleOpen($event)">
     </metrics-episode-select-dropdown-button>
   `
 })
@@ -25,5 +25,13 @@ export class EpisodeSelectComponent implements OnInit {
   ngOnInit() {
     this.totalEpisodes$ = this.store.pipe(select(selectEpisodeSelectTotal));
     this.selectedEpisodes$ = this.store.pipe(select(selectSelectedEpisodeGuids));
+  }
+
+  get open(): boolean {
+    return this.dropdown.open;
+  }
+
+  toggleOpen(open: boolean) {
+    this.dropdown.toggleOpen(open);
   }
 }

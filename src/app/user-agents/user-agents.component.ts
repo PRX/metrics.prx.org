@@ -9,6 +9,7 @@ import * as ACTIONS from '../ngrx/actions';
 
 @Component ({
   template: `
+    <metrics-episode-select-dropdown></metrics-episode-select-dropdown>
     <prx-spinner *ngIf="loading$ | async" overlay="true"
                  loadingMessage="Please wait..."></prx-spinner>
     <section *ngIf="loaded$ | async">

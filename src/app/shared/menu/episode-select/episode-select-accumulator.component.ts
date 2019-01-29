@@ -3,8 +3,8 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 @Component({
   selector: 'metrics-episode-select-accumulator',
   template: `
-      <div *ngIf="totalEpisodes" [class.muted]="selectedEpisodes?.length">
-        {{totalEpisodes}} episodes
+      <div *ngIf="totalEpisodes !== null" [class.muted]="selectedEpisodes?.length">
+        {{ totalEpisodes | i18nPlural: {'=0': 'No episodes', '=1' : '1 episode', 'other' : '# episodes'} }}
       </div>
       <div *ngIf="selectedEpisodes?.length" class="separator"></div>
       <div *ngIf="selectedEpisodes?.length" class="accumulator">

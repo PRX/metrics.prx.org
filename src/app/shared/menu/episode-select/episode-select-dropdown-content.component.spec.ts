@@ -3,7 +3,7 @@ import { DebugElement } from '@angular/core';
 import { Store, StoreModule } from '@ngrx/store';
 import { By } from '@angular/platform-browser';
 
-import { EpisodeSelectDropdownComponent } from './episode-select-dropdown.component';
+import { EpisodeSelectDropdownContentComponent } from './episode-select-dropdown-content.component';
 import { EpisodeSearchComponent } from './episode-search.component';
 import { EpisodeSelectAccumulatorComponent } from './episode-select-accumulator.component';
 import { EpisodeSelectListComponent } from './episode-select-list.component';
@@ -15,9 +15,9 @@ import { EPISODE_SELECT_PAGE_SIZE } from '../../../ngrx';
 import * as ACTIONS from '../../../ngrx/actions';
 import { reducers } from '../../../ngrx/reducers';
 
-describe('EpisodeSelectDropdownComponent', () => {
-  let comp: EpisodeSelectDropdownComponent;
-  let fix: ComponentFixture<EpisodeSelectDropdownComponent>;
+describe('EpisodeSelectDropdownContentComponent', () => {
+  let comp: EpisodeSelectDropdownContentComponent;
+  let fix: ComponentFixture<EpisodeSelectDropdownContentComponent>;
   let de: DebugElement;
   let el: HTMLElement;
   let store: Store<any>;
@@ -25,7 +25,7 @@ describe('EpisodeSelectDropdownComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [
-        EpisodeSelectDropdownComponent,
+        EpisodeSelectDropdownContentComponent,
         EpisodeSearchComponent,
         EpisodeSelectAccumulatorComponent,
         EpisodeSelectListVisibilityComponent,
@@ -37,7 +37,7 @@ describe('EpisodeSelectDropdownComponent', () => {
         StoreModule.forRoot(reducers)
       ]
     }).compileComponents().then(() => {
-      fix = TestBed.createComponent(EpisodeSelectDropdownComponent);
+      fix = TestBed.createComponent(EpisodeSelectDropdownContentComponent);
       comp = fix.componentInstance;
       de = fix.debugElement;
       el = de.nativeElement;

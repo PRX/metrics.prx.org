@@ -16,12 +16,9 @@ import { DateRangeSummaryComponent } from './date/date-range-summary.component';
 import { IntervalDropdownComponent } from './interval-dropdown.component';
 import { StandardDateRangeDropdownComponent } from './date/standard-date-range-dropdown.component';
 import { StandardDateRangeComponent } from './date/standard-date-range.component';
-import { EpisodeSearchComponent } from './episode-select/episode-search.component';
-import { EpisodeSelectAccumulatorComponent } from './episode-select/episode-select-accumulator.component';
 import { EpisodeSelectComponent } from './episode-select/episode-select.component';
-import { EpisodeSelectDropdownComponent } from './episode-select/episode-select-dropdown.component';
-import { EpisodeSelectListComponent } from './episode-select/episode-select-list.component';
-import { EpisodeSelectListVisibilityComponent } from './episode-select/episode-select-list-visibility.component';
+import { EpisodeSelectDropdownButtonComponent } from './episode-select/episode-select-dropdown-button.component';
+import { EpisodeSelectDropdownService } from './episode-select/episode-select-dropdown.service';
 import { DownloadsSummaryComponent } from '../summary/downloads-summary.component';
 import { LargeNumberPipe } from '../pipes/large-number.pipe';
 import { DatepickerModule, FancyFormModule, SpinnerModule } from 'ngx-prx-styleguide';
@@ -50,11 +47,7 @@ describe('MenuBarComponent', () => {
         DateRangeSummaryComponent,
         DownloadsSummaryComponent,
         EpisodeSelectComponent,
-        EpisodeSearchComponent,
-        EpisodeSelectAccumulatorComponent,
-        EpisodeSelectDropdownComponent,
-        EpisodeSelectListComponent,
-        EpisodeSelectListVisibilityComponent,
+        EpisodeSelectDropdownButtonComponent,
         IntervalDropdownComponent,
         LargeNumberPipe,
         MetricsTypeHeadingComponent,
@@ -66,6 +59,9 @@ describe('MenuBarComponent', () => {
         FancyFormModule,
         SpinnerModule,
         StoreModule.forRoot(reducers)
+      ],
+      providers: [
+        EpisodeSelectDropdownService
       ]
     }).compileComponents().then(() => {
       fix = TestBed.createComponent(MenuBarComponent);

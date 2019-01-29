@@ -27,6 +27,9 @@
   border-bottom: 0;
   margin-left: 6px;
 }
+.filter {
+  margin-left: 6px;
+}
 
 .dropdown-content {
   max-height: 0px;

@@ -9,7 +9,7 @@ import { Episode } from '../../../ngrx';
         <prx-checkbox
           small [checked]="selectedEpisodes && selectedEpisodes.indexOf(episode.guid) > -1" color="#0089bd"
           (change)="onEpisodeSelect(episode)">
-          <div class="title">{{episode.title}}</div>
+          <div class="title" [title]="episode.title">{{episode.title}}</div>
           <div class="pub-date">{{episode.publishedAt | date: 'longDate'}}</div>
         </prx-checkbox>
       </li>

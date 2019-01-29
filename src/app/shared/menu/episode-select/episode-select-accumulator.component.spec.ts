@@ -29,11 +29,14 @@ describe('EpisodeSelectAccumulatorComponent', () => {
     expect(de.query(By.css('.accumulator')).nativeElement.textContent.trim()).toContain('1 episode selected');
   });
 
-  it('should total episodes', () => {
+  it('should total episodes or no episodes', () => {
     comp.totalEpisodes = 14;
     comp.selectedEpisodes = ['some-guid-just-one-episode-selected'];
     fix.detectChanges();
     expect(de.query(By.css('div:first-child')).nativeElement.textContent.trim()).toEqual('14 episodes');
     expect(de.query(By.css('div:first-child')).nativeElement.classList).toContain('muted');
+    comp.totalEpisodes = 0;
+    fix.detectChanges();
+    expect(de.query(By.css('div:first-child')).nativeElement.textContent.trim()).toEqual('No episodes');
   });
 });

@@ -14,6 +14,9 @@ import { EpisodeSearchComponent } from './menu/episode-select/episode-search.com
 import { EpisodeSelectAccumulatorComponent } from './menu/episode-select/episode-select-accumulator.component';
 import { EpisodeSelectComponent } from './menu/episode-select/episode-select.component';
 import { EpisodeSelectDropdownComponent } from './menu/episode-select/episode-select-dropdown.component';
+import { EpisodeSelectDropdownButtonComponent } from './menu/episode-select/episode-select-dropdown-button.component';
+import { EpisodeSelectDropdownContentComponent } from './menu/episode-select/episode-select-dropdown-content.component';
+import { EpisodeSelectDropdownService } from './menu/episode-select/episode-select-dropdown.service';
 import { EpisodeSelectListComponent } from './menu/episode-select/episode-select-list.component';
 import { EpisodeSelectListVisibilityComponent } from './menu/episode-select/episode-select-list-visibility.component';
 import { ChartTypeComponent } from './menu/chart-type.component';
@@ -44,6 +47,8 @@ import { TotalsTableComponent } from './table/totals-table.component';
     EpisodeSelectAccumulatorComponent,
     EpisodeSelectComponent,
     EpisodeSelectDropdownComponent,
+    EpisodeSelectDropdownButtonComponent,
+    EpisodeSelectDropdownContentComponent,
     EpisodeSelectListComponent,
     EpisodeSelectListVisibilityComponent,
     ErrorRetryComponent,
@@ -73,6 +78,7 @@ import { TotalsTableComponent } from './table/totals-table.component';
     LargeNumberPipe,
     EpisodePageComponent,
     EpisodeSelectComponent,
+    EpisodeSelectDropdownComponent,
     NavMenuContainerComponent,
     NestedTotalsTableComponent,
     PodcastNavComponent,
@@ -90,7 +96,8 @@ import { TotalsTableComponent } from './table/totals-table.component';
   providers: [
     AuthGuard,
     DeactivateGuard,
-    UnauthGuard
+    UnauthGuard,
+    EpisodeSelectDropdownService
   ]
 })
 

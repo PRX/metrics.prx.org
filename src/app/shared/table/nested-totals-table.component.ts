@@ -6,7 +6,7 @@ import * as ACTIONS from '../../ngrx/actions';
   selector: 'metrics-nested-totals-table',
   template: `
     <div>
-      <div class="header primary-row">
+      <div class="header primary-row" *ngIf="tableData?.length">
         <div>{{getGroupName(routerParams.metricsType, routerParams.group)}}</div>
         <div class="number charted">Downloads</div>
         <div class="number percent">%</div>

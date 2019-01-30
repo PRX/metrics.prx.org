@@ -13,7 +13,9 @@ export const selectLatestEpisodeSelectPage = createSelector(
   selectEpisodeSelectState,
   fromEpisodeSelect.getPage
 );
-export const selectEpisodeSelectedEpisodeGuids = createSelector(
+export const selectSelectedEpisodeGuids = createSelector(
+  // Note this is all guids, but the reducer clears the list whenever the podcast changes
+  // Can't be filtered by podcastId because some of the selected guids may not have full episodes on the state if the list has been filtered
   selectEpisodeSelectState,
   fromEpisodeSelect.getSelected
 );
@@ -59,7 +61,7 @@ export const selectNumEpisodeSelectPages = createSelector(
   }
 );
 
-export const selectRoutedPodcastEpisodeSelectEpisodes = createSelector(
+export const selectRoutedPodcastEpisodesSelectList = createSelector(
   selectPodcastRoute,
   selectAllEpisodeSelectEpisodes,
   (podcastId, episodes: Episode[]) =>

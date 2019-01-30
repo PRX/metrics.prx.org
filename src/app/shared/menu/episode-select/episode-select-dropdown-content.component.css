@@ -1,0 +1,29 @@
+.dropdown {
+  position: static;
+}
+.open .dropdown-content {
+  box-shadow: 0 0 15px -5px rgba(0,0,0,.5);
+  padding: 20px;
+  overflow-y: hidden;
+  right: 20px;
+}
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  white-space: nowrap;
+  padding-bottom: 10px;
+}
+.footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  white-space: nowrap;
+}
+.footer button.button {
+  flex: 0;
+}
+.open .dropdown-content .no-results {
+  /* fixed to not add to vertical space in dropdown, sitting on top of a min-height, placeholder empty list */
+  position: fixed;
+}

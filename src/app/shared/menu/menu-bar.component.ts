@@ -8,7 +8,7 @@ import {
   selectIntervalRoute,
   selectStandardRangeRoute
 } from '../../ngrx/reducers/selectors';
-import { RouterParams, IntervalModel, MetricsType, ChartType } from '../../ngrx';
+import { RouterParams, IntervalModel, MetricsType, ChartType, METRICSTYPE_DOWNLOADS } from '../../ngrx';
 
 @Component({
   selector: 'metrics-menu-bar',
@@ -16,6 +16,8 @@ import { RouterParams, IntervalModel, MetricsType, ChartType } from '../../ngrx'
     <div class="menu-bar">
       <metrics-type-heading [routerParams]="routerParams$ | async"></metrics-type-heading>
       <div class="menu-dropdowns">
+        <metrics-episode-select *ngIf="(metricsType$ | async) !== downloads"></metrics-episode-select>
+        <div class="separator" *ngIf="(metricsType$ | async) !== downloads"></div>
         <metrics-interval-dropdown [routerParams]="routerParams$ | async"></metrics-interval-dropdown>
         <div class="separator"></div>
         <metrics-standard-date-range-dropdown [interval]="interval$ | async" [standardRange]="standardRange$ | async">
@@ -38,6 +40,7 @@ export class MenuBarComponent {
   chartType$: Observable<ChartType>;
   interval$: Observable<IntervalModel>;
   standardRange$: Observable<string>;
+  downloads = METRICSTYPE_DOWNLOADS;
 
   constructor(private store: Store<any>) {
     this.routerParams$ = this.store.pipe(select(selectRouter));

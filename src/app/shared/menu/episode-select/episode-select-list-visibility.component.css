@@ -1,0 +1,18 @@
+:host {
+  display: flex;
+}
+button {
+  padding: 10px;
+  border: 1px solid transparent;
+}
+button:hover, button:focus {
+  background-color: #f0f0f0;
+}
+button.active {
+  background-color: #ddd;
+  color: #1a1a1a;
+}
+button[disabled] {
+  background-color: transparent;
+  cursor: not-allowed;
+}

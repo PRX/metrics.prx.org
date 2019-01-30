@@ -16,9 +16,12 @@ import { DateRangeSummaryComponent } from './date/date-range-summary.component';
 import { IntervalDropdownComponent } from './interval-dropdown.component';
 import { StandardDateRangeDropdownComponent } from './date/standard-date-range-dropdown.component';
 import { StandardDateRangeComponent } from './date/standard-date-range.component';
+import { EpisodeSelectComponent } from './episode-select/episode-select.component';
+import { EpisodeSelectDropdownButtonComponent } from './episode-select/episode-select-dropdown-button.component';
+import { EpisodeSelectDropdownService } from './episode-select/episode-select-dropdown.service';
 import { DownloadsSummaryComponent } from '../summary/downloads-summary.component';
 import { LargeNumberPipe } from '../pipes/large-number.pipe';
-import { DatepickerModule } from 'ngx-prx-styleguide';
+import { DatepickerModule, FancyFormModule, SpinnerModule } from 'ngx-prx-styleguide';
 
 describe('MenuBarComponent', () => {
   let comp: MenuBarComponent;
@@ -43,6 +46,8 @@ describe('MenuBarComponent', () => {
         CustomDateRangeDropdownComponent,
         DateRangeSummaryComponent,
         DownloadsSummaryComponent,
+        EpisodeSelectComponent,
+        EpisodeSelectDropdownButtonComponent,
         IntervalDropdownComponent,
         LargeNumberPipe,
         MetricsTypeHeadingComponent,
@@ -51,7 +56,12 @@ describe('MenuBarComponent', () => {
       ],
       imports: [
         DatepickerModule,
+        FancyFormModule,
+        SpinnerModule,
         StoreModule.forRoot(reducers)
+      ],
+      providers: [
+        EpisodeSelectDropdownService
       ]
     }).compileComponents().then(() => {
       fix = TestBed.createComponent(MenuBarComponent);

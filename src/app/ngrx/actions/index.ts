@@ -27,7 +27,13 @@ import {
   CastlePodcastRanksFailureAction,
   CastlePodcastTotalsLoadAction,
   CastlePodcastTotalsSuccessAction,
-  CastlePodcastTotalsFailureAction
+  CastlePodcastTotalsFailureAction,
+  CastleEpisodeRanksLoadAction,
+  CastleEpisodeRanksSuccessAction,
+  CastleEpisodeRanksFailureAction,
+  CastleEpisodeTotalsLoadAction,
+  CastleEpisodeTotalsSuccessAction,
+  CastleEpisodeTotalsFailureAction
 } from './castle.action.creator';
 import { GoogleAnalyticsEventAction } from './google-analytics.action.creator';
 import { CustomRouterNavigationAction,
@@ -39,7 +45,7 @@ import {
   ChartSingleEpisodeAction,
   ChartToggleEpisodeAction,
   ChartTogglePodcastAction,
-  ChartTogglePodcastGroupAction
+  ChartToggleGroupAction
 } from './chart-toggle.action.creator';
 import { EpisodeSelectEpisodesAction } from './episode-select.action.creator';
 
@@ -74,6 +80,12 @@ export type AllActions
   | CastlePodcastTotalsLoadAction
   | CastlePodcastTotalsSuccessAction
   | CastlePodcastTotalsFailureAction
+  | CastleEpisodeRanksLoadAction
+  | CastleEpisodeRanksSuccessAction
+  | CastleEpisodeRanksFailureAction
+  | CastleEpisodeTotalsLoadAction
+  | CastleEpisodeTotalsSuccessAction
+  | CastleEpisodeTotalsFailureAction
   | RouterNavigationAction
   | GoogleAnalyticsEventAction
   | CustomRouterNavigationAction
@@ -88,7 +100,7 @@ export type AllActions
   | ChartSingleEpisodeAction
   | ChartToggleEpisodeAction
   | ChartTogglePodcastAction
-  | ChartTogglePodcastGroupAction
+  | ChartToggleGroupAction
   | EpisodeSelectEpisodesAction;
 
 export { ActionTypes } from './action.types';
@@ -117,7 +129,13 @@ export {
   CastlePodcastRanksFailurePayload, CastlePodcastRanksFailureAction,
   CastlePodcastTotalsLoadPayload, CastlePodcastTotalsLoadAction,
   CastlePodcastTotalsSuccessPayload, CastlePodcastTotalsSuccessAction,
-  CastlePodcastTotalsFailurePayload, CastlePodcastTotalsFailureAction } from './castle.action.creator';
+  CastlePodcastTotalsFailurePayload, CastlePodcastTotalsFailureAction,
+  CastleEpisodeRanksLoadPayload, CastleEpisodeRanksLoadAction,
+  CastleEpisodeRanksSuccessPayload, CastleEpisodeRanksSuccessAction,
+  CastleEpisodeRanksFailurePayload, CastleEpisodeRanksFailureAction,
+  CastleEpisodeTotalsLoadPayload, CastleEpisodeTotalsLoadAction,
+  CastleEpisodeTotalsSuccessPayload, CastleEpisodeTotalsSuccessAction,
+  CastleEpisodeTotalsFailurePayload, CastleEpisodeTotalsFailureAction } from './castle.action.creator';
 export { GoogleAnalyticsEventPayload, GoogleAnalyticsEventAction } from './google-analytics.action.creator';
 export { CustomRouterNavigationPayload, CustomRouterNavigationAction,
   RoutePodcastPayload, RoutePodcastAction,
@@ -131,5 +149,5 @@ export { CustomRouterNavigationPayload, CustomRouterNavigationAction,
 export { ChartSingleEpisodePayload, ChartSingleEpisodeAction,
   ChartToggleEpisodePayload, ChartToggleEpisodeAction,
   ChartTogglePodcastPayload, ChartTogglePodcastAction,
-  ChartTogglePodcastGroupPayload, ChartTogglePodcastGroupAction } from './chart-toggle.action.creator';
+  ChartToggleGroupPayload, ChartToggleGroupAction } from './chart-toggle.action.creator';
 export { EpisodeSelectEpisodesPayload, EpisodeSelectEpisodesAction } from './episode-select.action.creator';

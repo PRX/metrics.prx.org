@@ -1,5 +1,8 @@
 import * as chartUtil from './chart.util';
 import { TimeseriesDatumModel } from 'ngx-prx-styleguide';
+import { EpisodeTotals, episodeTotalsKey, EpisodeRanks, episodeRanksKey, GROUPTYPE_AGENTNAME } from '../../ngrx/reducers/models';
+import { routerParams, episodes,
+  ep0AgentNameRanks, ep1AgentNameRanks, ep0AgentNameDownloads, ep1AgentNameDownloads } from '../../../testing/downloads.fixtures';
 
 describe('chart.util', () => {
   const metrics = [
@@ -29,4 +32,113 @@ describe('chart.util', () => {
     // if we subtract two of the timeseries datasets from each other, should have negative values
     expect(subtracted[0].value).toEqual(timeseries[0].value * -1);
   });
+
+  describe('aggregated data', () => {
+    const { filter, interval, beginDate, endDate } = routerParams,
+      group = GROUPTYPE_AGENTNAME;
+    const episodeTotals: EpisodeTotals[] = [
+      {
+        key: episodeTotalsKey(episodes[0].guid, group, filter, beginDate, endDate),
+        guid: episodes[0].guid,
+        group,
+        filter,
+        beginDate,
+        endDate,
+        ranks: ep0AgentNameRanks,
+        loaded: true,
+        loading: false,
+        error: null
+      },
+      {
+        key: episodeTotalsKey(episodes[1].guid, group, filter, beginDate, endDate),
+        guid: episodes[1].guid,
+        group,
+        filter,
+        beginDate,
+        endDate,
+        ranks: ep1AgentNameRanks,
+        loaded: true,
+        loading: false,
+        error: null
+      }
+    ];
+    const episodeRanks: EpisodeRanks[] = [
+      {
+        key: episodeRanksKey(episodes[0].guid, group, filter, interval, beginDate, endDate),
+        guid: episodes[0].guid,
+        group,
+        filter,
+        interval,
+        beginDate,
+        endDate,
+        ranks: ep0AgentNameRanks,
+        downloads: ep0AgentNameDownloads,
+        loaded: true,
+        loading: false,
+        error: null
+      },
+      {
+        key: episodeRanksKey(episodes[1].guid, group, filter, interval, beginDate, endDate),
+        guid: episodes[1].guid,
+        group,
+        filter,
+        interval,
+        beginDate,
+        endDate,
+        ranks: ep1AgentNameRanks,
+        downloads: ep1AgentNameDownloads,
+        loaded: true,
+        loading: false,
+        error: null
+      }
+    ];
+
+    it('should aggregate episode total downlaods', () => {
+      const getOneTotal = (et): number => {
+        return et.reduce((acc, row) => acc + row.total, 0);
+      };
+      const ep0TotalDownloads = getOneTotal(ep0AgentNameRanks);
+      const ep1TotalDownloads = getOneTotal(ep1AgentNameRanks);
+
+      expect(chartUtil.aggregateTotalDownloads(episodeTotals)).toEqual(ep0TotalDownloads + ep1TotalDownloads);
+    });
+
+    it('should accumulate total downloads by group', () => {
+      const expected = ep0AgentNameRanks.map((row, i) => row.total + ep1AgentNameRanks[i].total);
+      const accumulator = chartUtil.aggregateTotalsAccumulator(episodeTotals);
+      expected.forEach((total, i) =>
+        expect(accumulator[ep0AgentNameRanks[i].code].value).toEqual(total)
+      );
+    });
+
+    it('should sort aggregated total downloads by total values', () => {
+      const results = chartUtil.aggregateTotalsTable(episodeTotals);
+      expect(results[0].value).toBeGreaterThanOrEqual(results[1].value);
+    });
+
+    it('should filter bar chart totals by charted status', () => {
+      const results = chartUtil.aggregateTotalsBarChart(episodeRanks, [
+        {
+          key: `${GROUPTYPE_AGENTNAME}-Apple Podcasts`,
+          group: GROUPTYPE_AGENTNAME,
+          groupName: 'Apple Podcasts',
+          charted: true
+        }
+      ]);
+      expect(results.length).toEqual(1);
+    });
+
+    it('should aggregate totals ranks', () => {
+      const results = chartUtil.aggregateTotalsRanks(episodeTotals);
+      expect(results.find(r => r.label === 'Apple Podcasts').total).toEqual(ep0AgentNameRanks[0].total + ep1AgentNameRanks[0].total);
+    });
+
+    it('should aggregate interval data', () => {
+      const results = chartUtil.aggregateIntervals(episodeRanks);
+      const ep0Value = Number(ep0AgentNameDownloads[0][1][0]);
+      const ep1Value = Number(ep1AgentNameDownloads[0][1][0]);
+      expect(results[0].data[0].value).toEqual(ep0Value + ep1Value);
+    });
+  });
+
 });

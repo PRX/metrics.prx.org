@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { CHARTTYPE_HORIZBAR, RouterParams } from '../ngrx';
+import { CHARTTYPE_HORIZBAR, RouterParams, GroupCharted } from '../ngrx';
 import { largeNumberFormat } from '../shared/pipes/large-number.pipe';
 import { CategoryChartModel, TimeseriesChartModel } from 'ngx-prx-styleguide';
 import * as chartUtil from '../shared/util/chart.util';
@@ -15,7 +15,7 @@ import * as chartUtil from '../shared/util/chart.util';
                           [pointRadius]="pointRadius" [pointRadiusOnHover]="pointRadiusOnHover">
     </prx-timeseries-chart>
     <div class="placeholder" *ngIf="!chartData || chartData.length === 0">
-      You have no data selected.
+      <span *ngIf="noDataSelected">You have no data selected.</span>
     </div>
   `,
   styleUrls: ['./user-agents-chart.component.css']
@@ -23,6 +23,7 @@ import * as chartUtil from '../shared/util/chart.util';
 export class UserAgentsChartComponent {
   @Input() chartData: CategoryChartModel[] | TimeseriesChartModel[];
   @Input() routerParams: RouterParams;
+  @Input() groupsCharted: GroupCharted[];
   largeNumberFormat = largeNumberFormat;
 
   get isBarChart() {
@@ -60,5 +61,9 @@ export class UserAgentsChartComponent {
 
   get minY(): number {
     return this.routerParams && chartUtil.minY(this.routerParams.chartType);
+  }
+
+  get noDataSelected(): boolean {
+    return this.groupsCharted && this.groupsCharted.filter(g => g.charted && g.groupName !== 'Other').length === 0;
   }
 }

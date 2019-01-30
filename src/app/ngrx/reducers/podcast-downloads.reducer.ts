@@ -10,6 +10,13 @@ export const adapter: EntityAdapter<PodcastDownloads> = createEntityAdapter<Podc
 
 export const initialState: EntityState<PodcastDownloads> = adapter.getInitialState();
 
+export const {
+  selectIds: selectPodcastDownloadsIds,
+  selectEntities: selectPodcastDownloadsEntities,
+  selectAll: selectAllPodcastDownloads,
+  selectTotal: selectTotalPodcastDownloads,
+} = adapter.getSelectors();
+
 export function PodcastDownloadsReducer(state: PodcastDownloadsState = initialState, action: AllActions) {
   switch (action.type) {
     case ActionTypes.CASTLE_PODCAST_DOWNLOADS_LOAD: {
@@ -68,10 +75,3 @@ export function PodcastDownloadsReducer(state: PodcastDownloadsState = initialSt
       return state;
   }
 }
-
-export const {
-  selectIds: selectPodcastDownloadsIds,
-  selectEntities: selectPodcastDownloadsEntities,
-  selectAll: selectAllPodcastDownloads,
-  selectTotal: selectTotalPodcastDownloads,
-} = adapter.getSelectors();

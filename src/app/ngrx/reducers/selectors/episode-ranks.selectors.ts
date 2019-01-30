@@ -139,7 +139,6 @@ export const selectSelectedEpisodeRanksChartMetrics = createSelector(
 export const selectNestedEpisodesRanksChartMetrics = createSelector(
   selectNestedEpisodesRanks,
   (episodeRanks: EpisodeRanks[]): TimeseriesChartModel[] => {
-    // TODO: filter Other
     return aggregateIntervals(episodeRanks);
   }
 );

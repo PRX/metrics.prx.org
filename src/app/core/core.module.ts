@@ -2,7 +2,7 @@ import { NgModule, Optional, SkipSelf } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FooterModule, HalModule, HeaderModule, ModalModule, ModalService } from 'ngx-prx-styleguide';
 
-import { CastleService, CmsService } from './hal';
+import { CastleService } from './hal';
 import { RoutingService } from './routing/routing.service';
 
 @NgModule({
@@ -18,7 +18,6 @@ import { RoutingService } from './routing/routing.service';
   ],
   providers: [
     CastleService,
-    CmsService,
     ModalService,
     RoutingService
   ]

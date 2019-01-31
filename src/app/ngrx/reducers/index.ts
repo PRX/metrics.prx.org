@@ -1,6 +1,6 @@
 import { ActionReducerMap } from '@ngrx/store';
 import { RouterReducerState, routerReducer } from '@ngrx/router-store';
-import { AccountReducer, AccountState } from './account.reducer';
+import * as fromUser from './user.reducer';
 import * as fromPodcast from './podcast.reducer';
 import * as fromPodcastAllTimeDownloads from './podcast-alltime-downloads.reducer';
 import { PodcastDownloadsReducer, PodcastDownloadsState } from './podcast-downloads.reducer';
@@ -19,7 +19,7 @@ import { RouterParams } from './models';
 export interface RootState {
   routerSerializer: RouterReducerState<RouterParams>;
   router: RouterParams;
-  account: AccountState;
+  user: fromUser.State;
   podcast: fromPodcast.State;
   episode: fromEpisode.State;
   episodeSelect: fromEpisodeSelect.State;
@@ -38,7 +38,7 @@ export interface RootState {
 export const reducers: ActionReducerMap<RootState> = {
   routerSerializer: routerReducer,
   router: CustomRouterReducer,
-  account: AccountReducer,
+  user: fromUser.reducer,
   podcast: fromPodcast.reducer,
   episode: fromEpisode.reducer,
   episodeSelect: fromEpisodeSelect.reducer,

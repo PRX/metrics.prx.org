@@ -1,5 +1,4 @@
 import { RouterNavigationAction } from '@ngrx/router-store';
-import { CmsAccountAction, CmsAccountSuccessAction, CmsAccountFailureAction } from './cms.action.creator';
 import {
   CastlePodcastPageLoadAction,
   CastlePodcastPageSuccessAction,
@@ -48,12 +47,10 @@ import {
   ChartToggleGroupAction
 } from './chart-toggle.action.creator';
 import { EpisodeSelectEpisodesAction } from './episode-select.action.creator';
+import { IdUserinfoLoadAction, IdUserinfoSuccessAction, IdUserinfoFailureAction } from './id.action.creator';
 
 export type AllActions
-  = CmsAccountAction
-  | CmsAccountSuccessAction
-  | CmsAccountFailureAction
-  | CastlePodcastPageLoadAction
+  = CastlePodcastPageLoadAction
   | CastlePodcastPageSuccessAction
   | CastlePodcastPageFailureAction
   | CastleEpisodePageLoadAction
@@ -101,11 +98,12 @@ export type AllActions
   | ChartToggleEpisodeAction
   | ChartTogglePodcastAction
   | ChartToggleGroupAction
-  | EpisodeSelectEpisodesAction;
+  | EpisodeSelectEpisodesAction
+  | IdUserinfoLoadAction
+  | IdUserinfoSuccessAction
+  | IdUserinfoFailureAction;
 
 export { ActionTypes } from './action.types';
-export { CmsAccountSuccessPayload, CmsAccountSuccessAction,
-  CmsAccountAction, CmsAccountFailureAction } from './cms.action.creator';
 export {
   CastlePodcastPageLoadPayload, CastlePodcastPageLoadAction,
   CastlePodcastPageSuccessPayload, CastlePodcastPageSuccessAction, CastlePodcastPageFailureAction,
@@ -151,3 +149,4 @@ export { ChartSingleEpisodePayload, ChartSingleEpisodeAction,
   ChartTogglePodcastPayload, ChartTogglePodcastAction,
   ChartToggleGroupPayload, ChartToggleGroupAction } from './chart-toggle.action.creator';
 export { EpisodeSelectEpisodesPayload, EpisodeSelectEpisodesAction } from './episode-select.action.creator';
+export { IdUserinfoLoadAction, IdUserinfoSuccessPayload, IdUserinfoSuccessAction, IdUserinfoFailureAction } from './id.action.creator';

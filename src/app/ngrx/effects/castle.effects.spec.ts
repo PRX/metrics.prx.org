@@ -19,6 +19,7 @@ import { CastleEffects } from './castle.effects';
 import * as localStorageUtil from '../../shared/util/local-storage.util';
 
 import {
+  userinfo,
   routerParams,
   podcast,
   episodes,
@@ -249,10 +250,12 @@ describe('CastleEffects', () => {
   });
 
   it('should load podcasts on account success', () => {
-    const action = new ACTIONS.CmsAccountSuccessAction({
-      account: {
-        id: 111,
-        name: 'TheAccountName'
+    const action = new ACTIONS.IdUserinfoSuccessAction({
+      user: {
+        doc: null,
+        loggedIn: true,
+        authorized: true,
+        userinfo
       }
     });
     const success = new ACTIONS.CastlePodcastPageLoadAction({
@@ -262,7 +265,7 @@ describe('CastleEffects', () => {
 
     actions$.stream = hot('-a', { a: action });
     const expected = cold('-r', { r: success });
-    expect(effects.loadAccountSuccess$).toBeObservable(expected);
+    expect(effects.loadUserinfoSuccess$).toBeObservable(expected);
   });
 
   it('should load page 1 of podcasts', () => {

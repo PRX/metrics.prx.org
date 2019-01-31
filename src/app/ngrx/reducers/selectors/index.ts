@@ -1,5 +1,4 @@
 export * from './router.selectors';
-export * from './account.selectors';
 export * from './podcast.selectors';
 export * from './podcast-downloads.selectors';
 export * from './podcast-alltime-downloads.selectors';
@@ -20,3 +19,4 @@ export * from './error.selectors';
 export * from './ranks.selectors';
 export * from './totals.selectors';
 export * from './group-charted.selectors';
+export * from './user.selectors';

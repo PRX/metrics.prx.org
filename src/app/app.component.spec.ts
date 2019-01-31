@@ -11,11 +11,10 @@ import { SharedModule } from './shared';
 import { AppComponent } from './app.component';
 
 import { reducers } from './ngrx/reducers';
-import { AccountModel } from './ngrx';
+import { User } from './ngrx';
 import * as ACTIONS from './ngrx/actions';
-import { Userinfo, UserinfoService } from 'ngx-prx-styleguide';
-import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
+import { userinfo } from '../testing/downloads.fixtures';
 
 /* tslint:disable-next-line:component-selector */
 @Component({selector: 'prx-auth', template: 'mock-prx-auth'})
@@ -27,10 +26,9 @@ describe('AppComponent', () => {
   let de: DebugElement;
   let el: HTMLElement;
   let store: Store<any>;
-  const userinfo = new Userinfo();
   userinfo.name = 'Joey JoJo Jr Shabadoo';
 
-  const account: AccountModel = {id: 1234, name: 'Joey JoJo Jr Shabadoo'};
+  const user: User = {doc: null, loggedIn: true, authorized: true, userinfo};
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -45,13 +43,6 @@ describe('AppComponent', () => {
         StoreModule.forRoot(reducers)
       ],
       providers: [
-        {
-          provide: UserinfoService,
-          useValue: {
-            config: () => {},
-            getUserinfo: () => Observable.of(userinfo)
-          }
-        },
         {
           provide: Angulartics2GoogleAnalytics,
           useValue: {
@@ -75,7 +66,7 @@ describe('AppComponent', () => {
       de = fix.debugElement;
       el = de.nativeElement;
       store = TestBed.get(Store);
-      store.dispatch(new ACTIONS.CmsAccountSuccessAction({account}));
+      store.dispatch(new ACTIONS.IdUserinfoSuccessAction({user}));
       fix.detectChanges();
     });
   }));
@@ -86,7 +77,7 @@ describe('AppComponent', () => {
 
   it(`should show podcasts when logged in`, async(() => {
     expect(de.query(By.css('metrics-podcast-nav'))).toBeTruthy();
-    store.dispatch(new ACTIONS.CmsAccountFailureAction({error: 'whatevs'}));
+    store.dispatch(new ACTIONS.IdUserinfoFailureAction({error: 'whatevs'}));
     fix.detectChanges();
     expect(de.query(By.css('metrics-podcast-nav'))).toBeNull();
   }));
@@ -94,7 +85,7 @@ describe('AppComponent', () => {
   it('should show user info when logged in', async(() => {
     expect(de.query(By.css('prx-navuser'))).toBeTruthy();
     expect(el.textContent).toContain('Joey JoJo Jr Shabadoo');
-    store.dispatch(new ACTIONS.CmsAccountFailureAction({error: 'whatevs'}));
+    store.dispatch(new ACTIONS.IdUserinfoLoadAction());
     fix.detectChanges();
     expect(de.query(By.css('prx-navuser'))).toBeNull();
     expect(el.textContent).not.toContain('Joey JoJo Jr Shabadoo');

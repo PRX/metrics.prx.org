@@ -1,6 +1,19 @@
 import { RouterParams, Episode, Podcast, ChartType, MetricsType,
   CHARTTYPE_STACKED, INTERVAL_DAILY, METRICSTYPE_DOWNLOADS } from '../app/ngrx';
 import * as dateUtil from '../app/shared/util/date';
+import { Userinfo } from 'ngx-prx-styleguide';
+
+export const userinfo: Userinfo = {
+  apps: {
+    ['Fake application']: 'https://notreal.prx.org'
+  },
+  family_name: 'User',
+  given_name: 'Mx.',
+  href: 'https://cms.prx.org/api/v1/users/2345678',
+  name: 'Mx. User',
+  preferred_username: 'mxuser',
+  sub: 2345678
+};
 
 export const podcast: Podcast = {
   id: '70',

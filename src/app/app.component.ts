@@ -1,71 +1,40 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Store, select } from '@ngrx/store';
-import { Subscription } from 'rxjs/Subscription';
+import { Observable } from 'rxjs/Observable';
 import { Angulartics2GoogleAnalytics } from 'angulartics2/ga';
 import { HalDoc } from './core';
 import { Env } from './core/core.env';
-import { AccountModel } from './ngrx';
-import { selectAccount, selectAccountError } from './ngrx/reducers/selectors';
+import { selectUserLoggedIn, selectUserAuthorized, selectUserinfo, selectUserdoc, selectUserError } from './ngrx/reducers/selectors';
 import * as ACTIONS from './ngrx/actions';
-import { Userinfo, UserinfoService } from 'ngx-prx-styleguide';
+import { Userinfo } from 'ngx-prx-styleguide';
 
 @Component({
   selector: 'metrics-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent implements OnInit, OnDestroy {
+export class AppComponent implements OnInit {
 
   authHost = Env.AUTH_HOST;
   authClient = Env.AUTH_CLIENT_ID;
 
-  accountStoreSub: Subscription;
-  accountStoreErrorSub: Subscription;
-  loggedIn = true; // until proven otherwise
-  authorized = false; // until proven otherwise
-  userinfo: Userinfo;
-  userImageDoc: HalDoc;
+  loggedIn$: Observable<boolean>;
+  authorized$: Observable<boolean>;
+  userinfo$: Observable<Userinfo>;
+  userDoc$: Observable<HalDoc>;
+  userError$: Observable<any>;
 
   constructor(
     public store: Store<any>,
-    private angulartics2GoogleAnalytics: Angulartics2GoogleAnalytics,
-    private user: UserinfoService
-  ) {
-    this.store.dispatch(new ACTIONS.CmsAccountAction());
-    this.user.config(this.authHost);
-  }
+    private angulartics2GoogleAnalytics: Angulartics2GoogleAnalytics
+  ) {}
 
   ngOnInit() {
-    this.accountStoreSub = this.store.pipe(select(selectAccount)).subscribe((state: AccountModel) => {
-      if (state) {
-        this.loggedIn = true;
-        this.userImageDoc = state.doc;
-        this.authorized = true;
-        this.user.getUserinfo().subscribe(userinfo => { this.userinfo = userinfo; });
-      }
-    });
-
-    this.accountStoreErrorSub = this.store.pipe(select(selectAccountError)).subscribe((error: any) => {
-      if (error) {
-        this.loggedIn = false;
-        this.authorized = false;
-        this.userImageDoc = null;
-        this.userinfo = null;
-
-        if (error === 'Permission denied') {
-          this.loggedIn = true;
-          this.authorized = false;
-          this.user.getUserinfo().subscribe(userinfo => {
-            this.userinfo = userinfo;
-            this.user.getUserDoc(userinfo).subscribe(userDoc => { this.userImageDoc = userDoc; });
-          });
-        }
-      }
-    });
-  }
-
-  ngOnDestroy() {
-    if (this.accountStoreSub) { this.accountStoreSub.unsubscribe(); }
-    if (this.accountStoreErrorSub) { this.accountStoreErrorSub.unsubscribe(); }
+    this.store.dispatch(new ACTIONS.IdUserinfoLoadAction());
+    this.loggedIn$ = this.store.pipe(select(selectUserLoggedIn));
+    this.authorized$ = this.store.pipe(select(selectUserAuthorized));
+    this.userinfo$ = this.store.pipe(select(selectUserinfo));
+    this.userDoc$ = this.store.pipe(select(selectUserdoc));
+    this.userError$ = this.store.pipe(select(selectUserError));
   }
 }

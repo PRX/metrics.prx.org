@@ -10,18 +10,17 @@ import { routerReducer } from '@ngrx/router-store';
 import { ROUTER_NAVIGATION } from '@ngrx/router-store';
 import { getActions, TestActions } from './test.actions';
 import {
-  ChartType,
-  MetricsType,
-  CHARTTYPE_PODCAST,
   CHARTTYPE_EPISODES,
   INTERVAL_HOURLY,
-  METRICSTYPE_DOWNLOADS
+  METRICSTYPE_DOWNLOADS,
+  User
 } from '../';
 import { reducers } from '../reducers';
 import * as ACTIONS from '../actions';
 import { RoutingEffects } from './routing.effects';
 import { RoutingService } from '../../core/routing/routing.service';
 import * as dateUtil from '../../shared/util/date';
+import { routerParams, userinfo } from '../../../testing/downloads.fixtures';
 
 @Component({
   selector: 'metrics-test-component',
@@ -34,16 +33,7 @@ describe('RoutingEffects', () => {
   let actions$: TestActions;
   let store: Store<any>;
 
-  const routerParams = {
-    podcastId: '70',
-    podcastSeriesId: 37800,
-    metricsType: <MetricsType>METRICSTYPE_DOWNLOADS,
-    chartType: <ChartType>CHARTTYPE_PODCAST,
-    episodePage: 1,
-    interval: INTERVAL_HOURLY,
-    beginDate: new Date('2017-11-01T00:00:00.000Z'),
-    endDate: new Date('2017-11-01T22:00:00.000')
-  };
+  const user: User = {doc: null, loggedIn: true, authorized: true, userinfo};
 
   const routes: Route[] = [
     {
@@ -82,6 +72,7 @@ describe('RoutingEffects', () => {
 
     jest.spyOn(store, 'dispatch');
     store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerParams}));
+    store.dispatch(new ACTIONS.IdUserinfoSuccessAction({user}));
 
     jest.spyOn(effects.routingService, 'normalizeAndRoute');
   }));

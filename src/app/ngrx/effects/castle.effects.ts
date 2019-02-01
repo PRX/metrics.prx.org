@@ -5,6 +5,7 @@ import { filter } from 'rxjs/operators/filter';
 import { map } from 'rxjs/operators/map';
 import { mergeMap } from 'rxjs/operators/mergeMap';
 import { switchMap } from 'rxjs/operators/switchMap';
+import { of } from 'rxjs/observable/of';
 import { Observable } from 'rxjs/Observable';
 import { Actions, Effect, ofType } from '@ngrx/effects';
 import { Action, Store, select } from '@ngrx/store';
@@ -24,10 +25,10 @@ export class CastleEffects {
   routerParams: RouterParams;
 
   @Effect()
-  loadAccountSuccess$: Observable<Action> = this.actions$.pipe(
-    ofType(ACTIONS.ActionTypes.CMS_ACCOUNT_SUCCESS),
+  loadUserinfoSuccess$: Observable<Action> = this.actions$.pipe(
+    ofType(ACTIONS.ActionTypes.ID_USERINFO_SUCCESS),
     switchMap(() => {
-      return Observable.of(new ACTIONS.CastlePodcastPageLoadAction({page: 1, all: true}));
+      return of(new ACTIONS.CastlePodcastPageLoadAction({page: 1, all: true}));
     })
   );
 
@@ -58,7 +59,7 @@ export class CastleEffects {
             });
           }
         }),
-        catchError(error => Observable.of(new ACTIONS.CastlePodcastPageFailureAction({error})))
+        catchError(error => of(new ACTIONS.CastlePodcastPageFailureAction({error})))
       );
     })
   );
@@ -76,7 +77,7 @@ export class CastleEffects {
       const localStorageRouterParams: RouterParams = localStorageUtil.getItem(localStorageUtil.KEY_ROUTER_PARAMS);
       const localStoragePodcastInList = localStorageRouterParams && localStorageRouterParams.podcastId &&
         podcasts.find(podcast => podcast.id === localStorageRouterParams.podcastId);
-      return Observable.of(new ACTIONS.RoutePodcastAction( {
+      return of(new ACTIONS.RoutePodcastAction( {
         // navigate to either the podcastStorageId in localStorage or the first one in the result from CMS (which is the last one changed)
         podcastId: (localStoragePodcastInList && localStorageRouterParams.podcastId) || podcasts[0].id
       }));
@@ -94,7 +95,7 @@ export class CastleEffects {
     map((action: ACTIONS.CastlePodcastPageSuccessAction) => action.payload),
     concatMap((payload: ACTIONS.CastlePodcastPageSuccessPayload) => {
       const { page, all } = payload;
-      return Observable.of(new ACTIONS.CastlePodcastPageLoadAction({page: page + 1, all}));
+      return of(new ACTIONS.CastlePodcastPageLoadAction({page: page + 1, all}));
     })
   );
 
@@ -128,7 +129,7 @@ export class CastleEffects {
           catchError(error => {
             const failAction = action.type === ACTIONS.ActionTypes.CASTLE_EPISODE_PAGE_LOAD ?
             'CastleEpisodePageFailureAction' : 'CastleEpisodeSelectPageFailureAction';
-            return Observable.of(new ACTIONS[failAction]({error}));
+            return of(new ACTIONS[failAction]({error}));
           })
         );
     })
@@ -195,7 +196,7 @@ export class CastleEffects {
             metrics: metrics[0]['downloads']
           });
         }),
-        catchError(error => Observable.of(new ACTIONS.CastlePodcastDownloadsFailureAction({id, error})))
+        catchError(error => of(new ACTIONS.CastlePodcastDownloadsFailureAction({id, error})))
       );
     })
   );
@@ -223,7 +224,7 @@ export class CastleEffects {
           });
         }),
         catchError(error => {
-          return Observable.of(new ACTIONS.CastleEpisodeMetricsFailureAction({
+          return of(new ACTIONS.CastleEpisodeMetricsFailureAction({
             podcastId,
             page,
             guid,
@@ -250,9 +251,9 @@ export class CastleEffects {
           }),
           catchError((error): Observable<Action> => {
             if (error.status === 404) {
-              return Observable.of(new ACTIONS.CastlePodcastAllTimeDownloadsSuccessAction({id, total: 0}));
+              return of(new ACTIONS.CastlePodcastAllTimeDownloadsSuccessAction({id, total: 0}));
             } else {
-              return Observable.of(new ACTIONS.CastlePodcastAllTimeDownloadsFailureAction({id, error}));
+              return of(new ACTIONS.CastlePodcastAllTimeDownloadsFailureAction({id, error}));
             }
           })
         );
@@ -275,9 +276,9 @@ export class CastleEffects {
           }),
           catchError((error): Observable<Action> => {
             if (error.status === 404) {
-              return Observable.of(new ACTIONS.CastleEpisodeAllTimeDownloadsSuccessAction({podcastId, guid, total: 0}));
+              return of(new ACTIONS.CastleEpisodeAllTimeDownloadsSuccessAction({podcastId, guid, total: 0}));
             } else {
-              return Observable.of(new ACTIONS.CastleEpisodeAllTimeDownloadsFailureAction({podcastId, guid, error}));
+              return of(new ACTIONS.CastleEpisodeAllTimeDownloadsFailureAction({podcastId, guid, error}));
             }
           })
         );
@@ -317,7 +318,7 @@ export class CastleEffects {
             })
           });
         }),
-        catchError(error => Observable.of(
+        catchError(error => of(
           new ACTIONS.CastlePodcastRanksFailureAction({id, group, filter, interval, beginDate, endDate, error})))
       );
     })
@@ -354,7 +355,7 @@ export class CastleEffects {
             })
           });
         }),
-        catchError(error => Observable.of(new ACTIONS.CastlePodcastTotalsFailureAction({id, group, filter, beginDate, endDate, error})))
+        catchError(error => of(new ACTIONS.CastlePodcastTotalsFailureAction({id, group, filter, beginDate, endDate, error})))
       );
     })
   );
@@ -392,7 +393,7 @@ export class CastleEffects {
             })
           });
         }),
-        catchError(error => Observable.of(
+        catchError(error => of(
           new ACTIONS.CastleEpisodeRanksFailureAction({guid, group, filter, interval, beginDate, endDate, error})))
       );
     })
@@ -429,7 +430,7 @@ export class CastleEffects {
             })
           });
         }),
-        catchError(error => Observable.of(new ACTIONS.CastleEpisodeTotalsFailureAction({guid, group, filter, beginDate, endDate, error})))
+        catchError(error => of(new ACTIONS.CastleEpisodeTotalsFailureAction({guid, group, filter, beginDate, endDate, error})))
       );
     })
   );

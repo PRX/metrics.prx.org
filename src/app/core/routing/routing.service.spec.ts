@@ -31,7 +31,7 @@ import {
 } from '../../ngrx/';
 import * as dateUtil from '../../shared/util/date/date.util';
 import * as localStorageUtil from '../../shared/util/local-storage.util';
-import { routerParams, episodes } from '../../../testing/downloads.fixtures';
+import { userinfo, routerParams, episodes } from '../../../testing/downloads.fixtures';
 
 @Component({
   selector: 'metrics-test-component',
@@ -60,6 +60,8 @@ describe('RoutingService', () => {
       routingService = TestBed.get(RoutingService);
       store = TestBed.get(Store);
       router = TestBed.get(Router);
+
+      store.dispatch(new ACTIONS.IdUserinfoSuccessAction({user: {doc: null, loggedIn: true, authorized: true, userinfo}}));
     });
   }));
 

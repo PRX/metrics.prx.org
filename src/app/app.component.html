@@ -1,15 +1,15 @@
 <prx-auth [host]="authHost" [client]="authClient"></prx-auth>
 <prx-header>
-  <metrics-podcast-nav *ngIf="loggedIn"></metrics-podcast-nav>
-  <prx-navuser *ngIf="loggedIn" [userinfo]="userinfo">
+  <metrics-podcast-nav *ngIf="loggedIn$ | async"></metrics-podcast-nav>
+  <prx-navuser *ngIf="loggedIn$ | async" [userinfo]="userinfo$ | async">
     <prx-spinner class="user-loading"></prx-spinner>
-    <prx-image *ngIf="userImageDoc" class="user-loaded" [imageDoc]="userImageDoc"></prx-image>
+    <prx-image *ngIf="userDoc$ | async" class="user-loaded" [imageDoc]="userDoc$ | async"></prx-image>
   </prx-navuser>
 </prx-header>
 <main>
   <article>
-    <metrics-nav-menu *ngIf="authorized"></metrics-nav-menu>
-    <div class="content" [class.full-width]="!authorized">
+    <metrics-nav-menu *ngIf="authorized$ | async"></metrics-nav-menu>
+    <div class="content" [class.full-width]="!(authorized$ | async)">
       <router-outlet></router-outlet>
     </div>
   </article>

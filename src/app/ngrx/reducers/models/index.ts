@@ -18,3 +18,4 @@ export { EpisodeRanks, episodeRanksKey } from './episode-ranks.model';
 export { EpisodeTotals, episodeTotalsKey } from './episode-totals.model';
 export { TotalsTableRow } from './totals-table-row.model';
 export { GroupCharted } from './group-charted.model';
+export { User } from './user.model';

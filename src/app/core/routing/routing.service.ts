@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Router, RoutesRecognized } from '@angular/router';
 import { filter } from 'rxjs/operators/filter';
 import { Store, select } from '@ngrx/store';
-import { selectRoutedPageEpisodes, selectRouter, selectSelectedEpisodeGuids } from '../../ngrx/reducers/selectors/';
+import { selectRoutedPageEpisodes, selectRouter, selectSelectedEpisodeGuids, selectUserAuthorized } from '../../ngrx/reducers/selectors/';
 import {
   RouterParams,
   Episode,
@@ -38,10 +38,17 @@ export class RoutingService {
 
   constructor (public store: Store<any>,
                private router: Router) {
-    this.dontAllowRoot();
-    this.subRoutedPageEpisodes();
-    this.subSelectedEpisodes();
-    this.subRouterParams();
+    // don't start watching anything until user is authorized
+    let subscribed = false;
+    this.store.pipe(select(selectUserAuthorized)).subscribe(authorized => {
+      if (!subscribed && authorized) {
+        this.dontAllowRoot();
+        this.subRoutedPageEpisodes();
+        this.subSelectedEpisodes();
+        this.subRouterParams();
+        subscribed = true;
+      }
+    });
   }
 
   dontAllowRoot() {

@@ -6,7 +6,6 @@ import { selectRoutedPageEpisodes } from './episode.selectors';
 import { PodcastDownloads } from '../models/podcast-downloads.model';
 import { selectRoutedPodcastDownloads } from './podcast-downloads.selectors';
 import { selectRoutedEpisodePageDownloads } from './episode-downloads.selectors';
-import { metricsData } from '../../../shared/util/metrics.util';
 import { mapMetricsToTimeseriesData, subtractTimeseriesDatasets, getTotal,
   neutralColor, standardColor, getColor } from '../../../shared/util/chart.util';
 
@@ -23,16 +22,14 @@ export const selectDownloadChartMetrics = createSelector(
       chartedEpisodeDownloads: TimeseriesChartModel[];
 
     if (PodcastDownloads &&
+      PodcastDownloads.downloads &&
       routerParams.chartType === CHARTTYPE_PODCAST ||
       (PodcastDownloads && PodcastDownloads.charted && routerParams.chartType === CHARTTYPE_STACKED)) {
-      const data = metricsData(routerParams, PodcastDownloads);
-      if (data) {
-        chartedPodcastDownloads = {
-          data: mapMetricsToTimeseriesData(data),
-          label: 'All Episodes',
-          color: routerParams.chartType === CHARTTYPE_PODCAST ? standardColor : neutralColor
-        };
-      }
+      chartedPodcastDownloads = {
+        data: mapMetricsToTimeseriesData(PodcastDownloads.downloads),
+        label: 'All Episodes',
+        color: routerParams.chartType === CHARTTYPE_PODCAST ? standardColor : neutralColor
+      };
     }
 
     if (routerParams.chartType === CHARTTYPE_EPISODES || routerParams.chartType === CHARTTYPE_STACKED) {

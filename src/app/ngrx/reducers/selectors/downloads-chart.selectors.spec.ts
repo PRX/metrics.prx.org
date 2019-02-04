@@ -2,8 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { StoreModule, Store, select } from '@ngrx/store';
 
 import { RootState, reducers } from '../';
-import { getMetricsProperty, ChartType,
-  CHARTTYPE_STACKED, CHARTTYPE_PODCAST, CHARTTYPE_EPISODES, EPISODE_PAGE_SIZE } from '../models';
+import { ChartType, CHARTTYPE_STACKED, CHARTTYPE_PODCAST, CHARTTYPE_EPISODES, EPISODE_PAGE_SIZE } from '../models';
 import { getTotal } from '../../../shared/util/chart.util';
 import { TimeseriesChartModel } from 'ngx-prx-styleguide';
 import { routerParams,  podcast, episodes,
@@ -13,7 +12,6 @@ import { selectDownloadChartMetrics } from './downloads-chart.selectors';
 
 describe('Downloads Chart Selectors', () => {
   let store: Store<RootState>;
-  const metricsPropertyName = getMetricsProperty(routerParams.interval, routerParams.metricsType);
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -39,8 +37,7 @@ describe('Downloads Chart Selectors', () => {
         podcastId: episodes[0].podcastId, page: episodes[0].page, guid: episodes[0].guid, downloads: ep0Downloads}));
       store.dispatch(new ACTIONS.CastleEpisodeDownloadsSuccessAction({
         podcastId: episodes[1].podcastId, page: episodes[1].page, guid: episodes[1].guid, downloads: ep1Downloads}));
-      store.dispatch(new ACTIONS.CastlePodcastDownloadsSuccessAction({
-        id: podcast.id, metricsPropertyName, metrics: podDownloads}));
+      store.dispatch(new ACTIONS.CastlePodcastDownloadsSuccessAction({id: podcast.id, downloads: podDownloads}));
 
       store.pipe(select(selectDownloadChartMetrics)).subscribe((data) => {
         result = data;
@@ -88,7 +85,7 @@ describe('Downloads Chart Selectors', () => {
 
     beforeEach(() => {
       store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerParams: {...routerParams, chartType: <ChartType>CHARTTYPE_PODCAST}}));
-      store.dispatch(new ACTIONS.CastlePodcastDownloadsSuccessAction({id: podcast.id, metricsPropertyName, metrics: podDownloads}));
+      store.dispatch(new ACTIONS.CastlePodcastDownloadsSuccessAction({id: podcast.id, downloads: podDownloads}));
 
       store.pipe(select(selectDownloadChartMetrics)).subscribe((data) => {
         result = data;

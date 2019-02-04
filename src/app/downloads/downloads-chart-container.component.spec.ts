@@ -5,7 +5,7 @@ import { StoreModule, Store } from '@ngrx/store';
 import { reducers } from '../ngrx/reducers';
 
 import * as ACTIONS from '../ngrx/actions';
-import { getMetricsProperty, EPISODE_PAGE_SIZE } from '../ngrx';
+import { EPISODE_PAGE_SIZE } from '../ngrx';
 
 import { SharedModule } from '../shared';
 import { DownloadsChartContainerComponent } from './downloads-chart-container.component';
@@ -37,8 +37,6 @@ describe('DownloadsChartContainerComponent', () => {
       el = de.nativeElement;
       store = TestBed.get(Store);
 
-      const metricsPropertyName = getMetricsProperty(routerParams.interval, routerParams.metricsType);
-
       store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerParams}));
       store.dispatch(new ACTIONS.CastleEpisodePageSuccessAction({
         episodes,
@@ -50,8 +48,7 @@ describe('DownloadsChartContainerComponent', () => {
         podcastId: episodes[0].podcastId, page: episodes[0].page, guid: episodes[0].guid, downloads: ep0Downloads}));
       store.dispatch(new ACTIONS.CastleEpisodeDownloadsSuccessAction({
         podcastId: episodes[1].podcastId, page: episodes[1].page, guid: episodes[1].guid, downloads: ep1Downloads}));
-      store.dispatch(new ACTIONS.CastlePodcastDownloadsSuccessAction({
-        id: podcast.id, metricsPropertyName, metrics: podDownloads}));
+      store.dispatch(new ACTIONS.CastlePodcastDownloadsSuccessAction({id: podcast.id, downloads: podDownloads}));
     });
   }));
 

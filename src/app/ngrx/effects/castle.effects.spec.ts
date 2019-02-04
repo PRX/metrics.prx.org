@@ -9,8 +9,7 @@ import { HalService, MockHalService } from 'ngx-prx-styleguide';
 import { CastleService } from '../../core';
 
 import {
-  MetricsType, getMetricsProperty,
-  METRICSTYPE_DOWNLOADS, INTERVAL_DAILY, PODCAST_PAGE_SIZE,
+  INTERVAL_DAILY, PODCAST_PAGE_SIZE,
   GROUPTYPE_AGENTNAME, EPISODE_PAGE_SIZE, EPISODE_SELECT_PAGE_SIZE
 } from '../';
 import { reducers } from '../../ngrx/reducers';
@@ -206,7 +205,6 @@ describe('CastleEffects', () => {
       type: ACTIONS.ActionTypes.CASTLE_PODCAST_DOWNLOADS_LOAD,
       payload: {
         id: podcast.id,
-        metricsType: METRICSTYPE_DOWNLOADS,
         interval: INTERVAL_DAILY,
         beginDate: new Date(),
         endDate: new Date()
@@ -214,8 +212,7 @@ describe('CastleEffects', () => {
     };
     const success = new ACTIONS.CastlePodcastDownloadsSuccessAction({
       id: podcast.id,
-      metricsPropertyName: getMetricsProperty(INTERVAL_DAILY, <MetricsType>METRICSTYPE_DOWNLOADS),
-      metrics: podDownloads
+      downloads: podDownloads
     });
 
     actions$.stream = hot('-a', { a: action });
@@ -473,7 +470,6 @@ describe('CastleEffects', () => {
       expect(store.dispatch).toHaveBeenCalledWith(
         new ACTIONS.CastlePodcastDownloadsLoadAction({
           id: episodes[0].podcastId,
-          metricsType: routerParams.metricsType,
           interval: routerParams.interval,
           beginDate: routerParams.beginDate,
           endDate: routerParams.endDate

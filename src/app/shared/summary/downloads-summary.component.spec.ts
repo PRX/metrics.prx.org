@@ -5,7 +5,6 @@ import { StoreModule, Store } from '@ngrx/store';
 
 import { reducers, RootState } from '../../ngrx/reducers';
 import { CustomRouterNavigationAction, CastlePodcastDownloadsSuccessAction } from '../../ngrx/actions';
-import { getMetricsProperty } from '../../ngrx';
 import * as metricsUtil from '../util/metrics.util';
 import { routerParams, podcast, podDownloads } from '../../../testing/downloads.fixtures';
 
@@ -35,10 +34,8 @@ describe('DownloadsSummaryComponent', () => {
       el = de.nativeElement;
       store = TestBed.get(Store);
 
-      const metricsPropertyName = getMetricsProperty(routerParams.interval, routerParams.metricsType);
       store.dispatch(new CustomRouterNavigationAction({routerParams}));
-      store.dispatch(new CastlePodcastDownloadsSuccessAction({
-        id: podcast.id, metricsPropertyName, metrics: podDownloads}));
+      store.dispatch(new CastlePodcastDownloadsSuccessAction({id: podcast.id, downloads: podDownloads}));
       fix.detectChanges();
     });
   }));

@@ -25,13 +25,12 @@ export const selectDownload500ErrorReloadActions = createSelector(
   selectEpisodeDownloadsError,
   (routerParams: RouterParams, podcastDownloadsErrors: PodcastDownloads[], episodeDownloadsErrors: EpisodeDownloads[]) => {
     let actions = [];
-    const { metricsType, interval, beginDate, endDate } = routerParams;
+    const { interval, beginDate, endDate } = routerParams;
     if (podcastDownloadsErrors && podcastDownloadsErrors.length) {
       actions = actions.concat(podcastDownloadsErrors
         .filter(m => m.error && m.error.status === 500)
         .map(m => new ACTIONS.CastlePodcastDownloadsLoadAction({
           id: m.id,
-          metricsType,
           interval,
           beginDate,
           endDate

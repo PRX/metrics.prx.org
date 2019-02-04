@@ -1,7 +1,6 @@
 import { CastleEpisodeDownloadsSuccessAction, CastleEpisodePageSuccessAction } from '../actions';
-import { INTERVAL_DAILY, MetricsType, METRICSTYPE_DOWNLOADS, RouterParams, getMetricsProperty } from '..';
 import * as fromEpisodeDownloads from './episode-downloads.reducer';
-import { routerParams, episodes, ep0Downloads, ep1Downloads } from '../../../testing/downloads.fixtures';
+import { episodes, ep0Downloads, ep1Downloads } from '../../../testing/downloads.fixtures';
 import { EPISODE_PAGE_SIZE } from './models';
 
 describe('EpisodeMetricsReducer', () => {

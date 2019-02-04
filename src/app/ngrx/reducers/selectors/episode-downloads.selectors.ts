@@ -1,5 +1,4 @@
 import { createSelector, createFeatureSelector } from '@ngrx/store';
-import { RootState, selectAppState } from '..';
 import * as fromEpisodeDownloads from '../episode-downloads.reducer';
 import { selectPageRoute, selectPodcastRoute } from './router.selectors';
 import { EpisodeDownloads } from '../models';

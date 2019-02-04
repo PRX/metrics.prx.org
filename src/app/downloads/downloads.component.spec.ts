@@ -11,7 +11,7 @@ import { DownloadsChartPresentationComponent } from './downloads-chart-presentat
 import { DownloadsTableContainerComponent } from './downloads-table-container.component';
 import { DownloadsTablePresentationComponent } from './downloads-table-presentation.component';
 
-import { getMetricsProperty, EPISODE_PAGE_SIZE } from '../ngrx';
+import { EPISODE_PAGE_SIZE } from '../ngrx';
 import { reducers } from '../ngrx/reducers';
 import * as ACTIONS from '../ngrx/actions';
 
@@ -23,7 +23,6 @@ describe('DownloadsComponent', () => {
   let de: DebugElement;
   let el: HTMLElement;
   let store: Store<any>;
-  const metricsPropertyName = getMetricsProperty(routerParams.interval, routerParams.metricsType);
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -70,8 +69,7 @@ describe('DownloadsComponent', () => {
   function dispatchPodcastDownloads() {
     store.dispatch(new ACTIONS.CastlePodcastDownloadsSuccessAction({
       id: podcast.id,
-      metricsPropertyName,
-      metrics: podDownloads
+      downloads: podDownloads
     }));
   }
 

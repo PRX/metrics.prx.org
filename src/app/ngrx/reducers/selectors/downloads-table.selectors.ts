@@ -8,7 +8,7 @@ import { selectRoutedPodcastDownloads } from './podcast-downloads.selectors';
 import { selectRoutedPodcastAllTimeDownloads } from './podcast-alltime-downloads.selectors';
 import { selectRoutedEpisodePageDownloads } from './episode-downloads.selectors';
 import { selectRoutedPageEpisodeAllTimeDownloads } from './episode-alltime-downloads.selectors';
-import { metricsData, getTotal } from '../../../shared/util/metrics.util';
+import { getTotal } from '../../../shared/util/metrics.util';
 import { mapMetricsToTimeseriesData, neutralColor, standardColor, getColor } from '../../../shared/util/chart.util';
 
 export const selectDownloadTablePodcastDownloads = createSelector(
@@ -21,7 +21,7 @@ export const selectDownloadTablePodcastDownloads = createSelector(
     let podcastData: DownloadsTableModel;
 
     if (PodcastDownloads && routerParams.chartType !== CHARTTYPE_EPISODES) {
-      const data = metricsData(routerParams, PodcastDownloads);
+      const data = PodcastDownloads.downloads;
       if (data) {
         const totalForPeriod = getTotal(data);
         podcastData = {

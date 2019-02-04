@@ -345,7 +345,6 @@ export class RoutingService {
   loadDownloads(newRouterParams) {
     this.store.dispatch(new ACTIONS.CastlePodcastDownloadsLoadAction({
       id: newRouterParams.podcastId,
-      metricsType: newRouterParams.metricsType,
       interval: newRouterParams.interval,
       beginDate: newRouterParams.beginDate,
       endDate: newRouterParams.endDate

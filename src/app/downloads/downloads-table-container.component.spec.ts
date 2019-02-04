@@ -9,7 +9,7 @@ import { DownloadsTableContainerComponent } from './downloads-table-container.co
 import { DownloadsTablePresentationComponent } from './downloads-table-presentation.component';
 
 import { reducers } from '../ngrx/reducers';
-import { CHARTTYPE_EPISODES, getMetricsProperty, EPISODE_PAGE_SIZE } from '../ngrx';
+import { CHARTTYPE_EPISODES, EPISODE_PAGE_SIZE } from '../ngrx';
 import * as ACTIONS from '../ngrx/actions';
 import { routerParams, episodes, podcast, ep0Downloads, ep1Downloads, podDownloads } from '../../testing/downloads.fixtures';
 
@@ -19,8 +19,6 @@ describe('DownloadsTableContainerComponent', () => {
   let de: DebugElement;
   let el: HTMLElement;
   let store: Store<any>;
-
-  const metricsPropertyName = getMetricsProperty(routerParams.interval, routerParams.metricsType);
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -55,8 +53,7 @@ describe('DownloadsTableContainerComponent', () => {
         per: EPISODE_PAGE_SIZE,
         total: episodes.length
       }));
-      store.dispatch(new ACTIONS.CastlePodcastDownloadsSuccessAction({
-        id: podcast.id, metricsPropertyName, metrics: podDownloads}));
+      store.dispatch(new ACTIONS.CastlePodcastDownloadsSuccessAction({id: podcast.id, downloads: podDownloads}));
 
       jest.spyOn(store, 'dispatch');
     });

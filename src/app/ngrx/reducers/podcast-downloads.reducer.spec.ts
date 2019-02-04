@@ -3,7 +3,7 @@ import {
   CastlePodcastDownloadsFailureAction,
   CastlePodcastDownloadsLoadAction
 } from '../actions/castle.action.creator';
-import { RouterParams, INTERVAL_DAILY, MetricsType, METRICSTYPE_DOWNLOADS, getMetricsProperty } from './models';
+import { RouterParams, INTERVAL_DAILY, MetricsType, METRICSTYPE_DOWNLOADS } from './models';
 import {
   PodcastDownloadsReducer,
   selectAllPodcastDownloads,
@@ -22,14 +22,12 @@ describe('PodcastDownloadsReducer', () => {
     endDate: new Date('2017-09-07T00:00:00Z'),
     interval: INTERVAL_DAILY
   };
-  const metricsPropertyName = getMetricsProperty(routerParams.interval, routerParams.metricsType);
 
   beforeEach(() => {
     initialState = PodcastDownloadsReducer(PodcastDownloadsInitialState,
       new CastlePodcastDownloadsSuccessAction({
         id: podcast.id,
-        metricsPropertyName,
-        metrics: []
+        downloads: []
       })
     );
   });
@@ -38,7 +36,6 @@ describe('PodcastDownloadsReducer', () => {
     const id = '1337';
     const loadActionPayload = {
       id,
-      metricsType: routerParams.metricsType,
       interval: routerParams.interval,
       beginDate: routerParams.beginDate,
       endDate: routerParams.endDate
@@ -60,7 +57,6 @@ describe('PodcastDownloadsReducer', () => {
     const id = <string>selectPodcastDownloadsIds(initialState)[0];
     const loadActionPayload = {
       id,
-      metricsType: routerParams.metricsType,
       interval: routerParams.interval,
       beginDate: routerParams.beginDate,
       endDate: routerParams.endDate
@@ -103,8 +99,7 @@ describe('PodcastDownloadsReducer', () => {
     const newState = PodcastDownloadsReducer(initialState,
       new CastlePodcastDownloadsSuccessAction({
         id,
-        metricsPropertyName,
-        metrics: [
+        downloads: [
           ['2017-08-27T00:00:00Z', 52522],
           ['2017-08-28T00:00:00Z', 162900],
           ['2017-08-29T00:00:00Z', 46858],
@@ -125,16 +120,15 @@ describe('PodcastDownloadsReducer', () => {
     expect(allPodcastDownloads[0].loading).toEqual(false);
     expect(allPodcastDownloads[0].loaded).toEqual(true);
     expect(allPodcastDownloads[0].id).toEqual(id);
-    expect(allPodcastDownloads[0][metricsPropertyName].length).toEqual(12);
-    expect(allPodcastDownloads[0][metricsPropertyName][0][1]).toEqual(52522);
+    expect(allPodcastDownloads[0].downloads.length).toEqual(12);
+    expect(allPodcastDownloads[0].downloads[0][1]).toEqual(52522);
   });
 
   it ('should add new podcast metrics', () => {
     const newState = PodcastDownloadsReducer(initialState,
       new CastlePodcastDownloadsSuccessAction({
         id: '71',
-        metricsPropertyName,
-        metrics: []
+        downloads: []
       })
     );
     expect(selectAllPodcastDownloads(newState).length).toEqual(2);

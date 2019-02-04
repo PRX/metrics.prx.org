@@ -1,6 +1,6 @@
 import { Action } from '@ngrx/store';
 import { ActionTypes } from './action.types';
-import { Podcast, Episode, MetricsType, IntervalModel, Rank } from '../';
+import { Podcast, Episode, IntervalModel, Rank } from '../';
 
 export interface CastlePodcastPageLoadPayload {
   page: number;
@@ -85,7 +85,6 @@ export class CastleEpisodeSelectPageFailureAction implements Action {
 
 export interface CastlePodcastDownloadsLoadPayload {
   id: string;
-  metricsType: MetricsType;
   interval: IntervalModel;
   beginDate: Date;
   endDate: Date;
@@ -99,8 +98,7 @@ export class CastlePodcastDownloadsLoadAction implements Action {
 
 export interface CastlePodcastDownloadsSuccessPayload {
   id: string;
-  metricsPropertyName: string;
-  metrics: any[][];
+  downloads: any[][];
 }
 
 export class CastlePodcastDownloadsSuccessAction implements Action {

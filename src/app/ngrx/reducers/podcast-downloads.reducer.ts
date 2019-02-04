@@ -35,13 +35,13 @@ export function PodcastDownloadsReducer(state: PodcastDownloadsState = initialSt
       return adapter.upsertOne(podcastUpdate, state);
     }
     case ActionTypes.CASTLE_PODCAST_DOWNLOADS_SUCCESS: {
-      const { id, metricsPropertyName, metrics } = action.payload;
+      const { id, downloads } = action.payload;
       const currentIds = <string[]>selectPodcastDownloadsIds(state);
       const charted = !includes(currentIds, id);
       const podcastUpdate: UpdateStr<PodcastDownloads> = {
         id,
         changes: {
-          [metricsPropertyName]: metrics,
+          downloads,
           loading: false,
           loaded: true,
           ...(charted && { charted }) // Conditionally add charted as object member

@@ -1,24 +1,5 @@
-import { RouterParams, PodcastDownloads, EpisodeDownloads, getMetricsProperty,
-  IntervalModel, INTERVAL_HOURLY, INTERVAL_DAILY, INTERVAL_WEEKLY, INTERVAL_MONTHLY } from '../../ngrx';
+import { IntervalModel, INTERVAL_HOURLY, INTERVAL_DAILY, INTERVAL_WEEKLY, INTERVAL_MONTHLY } from '../../ngrx';
 import * as dateUtil from './date/date.util';
-
-export const findPodcastDownloads =
-  (params: RouterParams, PodcastDownloads: PodcastDownloads[]): PodcastDownloads => {
-  if (params && params.podcastId && params.interval && params.beginDate && params.endDate && PodcastDownloads) {
-    const metricsProperty = getMetricsProperty(params.interval, params.metricsType);
-    const metrics = PodcastDownloads
-      .filter((metric: PodcastDownloads) => metric.id === params.podcastId &&
-        metric[metricsProperty]);
-    if (metrics && metrics.length) {
-      return metrics[0]; // only one entry should match the series id
-    }
-  }
-};
-
-export const metricsData = (params: RouterParams, metrics: PodcastDownloads | EpisodeDownloads) => {
-  const metricsProperty = getMetricsProperty(params.interval, params.metricsType);
-  return metrics && metrics[metricsProperty];
-};
 
 export const getTotal = (metrics: any[][]): number => {
   if (metrics && metrics.length) {

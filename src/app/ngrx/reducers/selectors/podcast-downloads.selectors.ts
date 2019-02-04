@@ -27,7 +27,7 @@ export const selectRoutedPodcastDownloads = createSelector(selectPodcastRoute, s
     return metricsEntities.find((metric: PodcastDownloads) => metric.id === podcastId);
 });
 
-export const selectPodcastDownloadsFilteredTotal = createSelector(selectRoutedPodcastDownloads,
+export const selectRoutedPodcastDownloadsTotal = createSelector(selectRoutedPodcastDownloads,
   (podcastDownloads: PodcastDownloads) => {
     if (podcastDownloads && podcastDownloads.downloads) {
       return metricsUtil.getTotal(podcastDownloads.downloads);

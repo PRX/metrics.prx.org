@@ -1,5 +1,6 @@
 export { RouterParams, DownloadsTableModel,
   Podcast, Episode, PODCAST_PAGE_SIZE, EPISODE_PAGE_SIZE, EPISODE_SELECT_PAGE_SIZE,
+  PodcastDownloads, EpisodeDownloads,
   PodcastAllTimeDownloads, EpisodeAllTimeDownloads,
   INTERVAL_MONTHLY, INTERVAL_WEEKLY, INTERVAL_DAILY, INTERVAL_HOURLY, IntervalModel, IntervalList,
   CHARTTYPE_PODCAST, CHARTTYPE_EPISODES, CHARTTYPE_STACKED,
@@ -8,5 +9,4 @@ export { RouterParams, DownloadsTableModel,
   GROUPTYPE_AGENTNAME, GROUPTYPE_AGENTOS, GROUPTYPE_AGENTTYPE,
   GROUPTYPE_GEOCOUNTRY, GROUPTYPE_GEOMETRO, GROUPTYPE_GEOSUBDIV, GroupType, getGroupName,
   Rank, PodcastRanks, PodcastTotals, TotalsTableRow, GroupCharted, EpisodeRanks, EpisodeTotals, User } from './reducers/models';
-export { PodcastDownloads } from './reducers/models/podcast-downloads.model';
-export { EpisodeMetricsModel } from './reducers/episode-metrics.reducer';
+  

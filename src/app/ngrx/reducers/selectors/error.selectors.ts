@@ -2,7 +2,7 @@ import { createSelector } from '@ngrx/store';
 import { selectRouter } from './router.selectors';
 import { selectEpisodeError } from './episode.selectors';
 import { selectPodcastError } from './podcast.selectors';
-import { selectEpisodeMetricsError } from './episode-metrics.selectors';
+import { selectEpisodeDownloadsError } from './episode-downloads.selectors';
 import { selectPodcastDownloadsError } from './podcast-downloads.selectors';
 import { selectRoutedPodcastRanksError, selectNestedPodcastRanksError } from './podcast-ranks.selectors';
 import { selectRoutedPodcastTotalsError, selectNestedPodcastTotalsError } from './podcast-totals.selectors';
@@ -10,9 +10,7 @@ import { selectSelectedEpisodeGuids } from './episode-select.selectors';
 import { selectSelectedEpisodesRanksErrors, selectNestedEpisodesRanksErrors } from './episode-ranks.selectors';
 import { selectSelectedEpisodesTotalsErrors, selectNestedEpisodesTotalsErrors } from './episode-totals.selectors';
 import * as ACTIONS from '../../actions';
-import { PodcastDownloads } from '../models/podcast-downloads.model';
-import { EpisodeMetricsModel } from '../episode-metrics.reducer';
-import { RouterParams, METRICSTYPE_DOWNLOADS, GROUPTYPE_GEOSUBDIV, EPISODE_PAGE_SIZE } from '../models';
+import { RouterParams, EpisodeDownloads, PodcastDownloads, METRICSTYPE_DOWNLOADS, GROUPTYPE_GEOSUBDIV, EPISODE_PAGE_SIZE } from '../models';
 
 // this feels like it's starting to cross a boundary of responsibility here, so it seems important to note that
 // these actions are not being dispatched by the reducers/selectors
@@ -24,8 +22,8 @@ import { RouterParams, METRICSTYPE_DOWNLOADS, GROUPTYPE_GEOSUBDIV, EPISODE_PAGE_
 export const selectDownload500ErrorReloadActions = createSelector(
   selectRouter,
   selectPodcastDownloadsError,
-  selectEpisodeMetricsError,
-  (routerParams: RouterParams, podcastDownloadsErrors: PodcastDownloads[], episodeMetricsErrors: EpisodeMetricsModel[]) => {
+  selectEpisodeDownloadsError,
+  (routerParams: RouterParams, podcastDownloadsErrors: PodcastDownloads[], episodeDownloadsErrors: EpisodeDownloads[]) => {
     let actions = [];
     const { metricsType, interval, beginDate, endDate } = routerParams;
     if (podcastDownloadsErrors && podcastDownloadsErrors.length) {
@@ -39,14 +37,13 @@ export const selectDownload500ErrorReloadActions = createSelector(
           endDate
         })));
     }
-    if (episodeMetricsErrors && episodeMetricsErrors.length) {
-      actions = actions.concat(episodeMetricsErrors
+    if (episodeDownloadsErrors && episodeDownloadsErrors.length) {
+      actions = actions.concat(episodeDownloadsErrors
         .filter(m => m.error && m.error.status === 500)
-        .map(m => new ACTIONS.CastleEpisodeMetricsLoadAction({
+        .map(m => new ACTIONS.CastleEpisodeDownloadsLoadAction({
           podcastId: m.podcastId,
           guid: m.guid,
           page: m.page,
-          metricsType,
           interval,
           beginDate,
           endDate

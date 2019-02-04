@@ -6,7 +6,7 @@ export * from './podcast-ranks.selectors';
 export * from './podcast-totals.selectors';
 export * from './episode.selectors';
 export * from './episode-select.selectors';
-export * from './episode-metrics.selectors';
+export * from './episode-downloads.selectors';
 export * from './episode-alltime-downloads.selectors';
 export * from './episode-ranks.selectors';
 export * from './episode-totals.selectors';

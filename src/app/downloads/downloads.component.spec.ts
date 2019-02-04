@@ -76,19 +76,17 @@ describe('DownloadsComponent', () => {
   }
 
   function dispatchEpisodeMetrics() {
-    store.dispatch(new ACTIONS.CastleEpisodeMetricsSuccessAction({
+    store.dispatch(new ACTIONS.CastleEpisodeDownloadsSuccessAction({
       podcastId: episodes[0].podcastId,
       page: episodes[0].page,
       guid: episodes[0].guid,
-      metricsPropertyName,
-      metrics: ep0Downloads
+      downloads: ep0Downloads
     }));
-    store.dispatch(new ACTIONS.CastleEpisodeMetricsSuccessAction({
+    store.dispatch(new ACTIONS.CastleEpisodeDownloadsSuccessAction({
       podcastId: episodes[1].podcastId,
       page: episodes[1].page,
       guid: episodes[1].guid,
-      metricsPropertyName,
-      metrics: ep1Downloads
+      downloads: ep1Downloads
     }));
   }
 

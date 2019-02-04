@@ -43,12 +43,10 @@ describe('DownloadsTableContainerComponent', () => {
       store = TestBed.get(Store);
 
       store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerParams}));
-      store.dispatch(new ACTIONS.CastleEpisodeMetricsSuccessAction({
-        page: episodes[0].page, podcastId: episodes[0].podcastId, guid: episodes[0].guid,
-        metricsPropertyName, metrics: ep0Downloads}));
-      store.dispatch(new ACTIONS.CastleEpisodeMetricsSuccessAction({
-        page: episodes[1].page, podcastId: episodes[1].podcastId, guid: episodes[1].guid,
-        metricsPropertyName, metrics: ep1Downloads}));
+      store.dispatch(new ACTIONS.CastleEpisodeDownloadsSuccessAction({
+        page: episodes[0].page, podcastId: episodes[0].podcastId, guid: episodes[0].guid, downloads: ep0Downloads}));
+      store.dispatch(new ACTIONS.CastleEpisodeDownloadsSuccessAction({
+        page: episodes[1].page, podcastId: episodes[1].podcastId, guid: episodes[1].guid, downloads: ep1Downloads}));
       store.dispatch(new ACTIONS.CastleEpisodePageSuccessAction({
         episodes: episodes.map(e => {
           return {guid: e.guid, title: e.title, publishedAt: e.publishedAt, page: e.page, podcastId: e.podcastId};

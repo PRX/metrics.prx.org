@@ -46,12 +46,10 @@ describe('DownloadsChartContainerComponent', () => {
         per: EPISODE_PAGE_SIZE,
         total: episodes.length
       }));
-      store.dispatch(new ACTIONS.CastleEpisodeMetricsSuccessAction({
-        podcastId: episodes[0].podcastId, page: episodes[0].page, guid: episodes[0].guid,
-        metricsPropertyName, metrics: ep0Downloads}));
-      store.dispatch(new ACTIONS.CastleEpisodeMetricsSuccessAction({
-        podcastId: episodes[1].podcastId, page: episodes[1].page, guid: episodes[1].guid,
-        metricsPropertyName, metrics: ep1Downloads}));
+      store.dispatch(new ACTIONS.CastleEpisodeDownloadsSuccessAction({
+        podcastId: episodes[0].podcastId, page: episodes[0].page, guid: episodes[0].guid, downloads: ep0Downloads}));
+      store.dispatch(new ACTIONS.CastleEpisodeDownloadsSuccessAction({
+        podcastId: episodes[1].podcastId, page: episodes[1].page, guid: episodes[1].guid, downloads: ep1Downloads}));
       store.dispatch(new ACTIONS.CastlePodcastDownloadsSuccessAction({
         id: podcast.id, metricsPropertyName, metrics: podDownloads}));
     });

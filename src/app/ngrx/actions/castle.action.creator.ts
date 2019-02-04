@@ -120,47 +120,45 @@ export class CastlePodcastDownloadsFailureAction implements Action {
   constructor(public payload: CastlePodcastDownloadsFailurePayload) {}
 }
 
-export interface CastleEpisodeMetricsLoadPayload {
+export interface CastleEpisodeDownloadsLoadPayload {
   podcastId: string;
   page: number;
   guid: string;
-  metricsType: MetricsType;
   interval: IntervalModel;
   beginDate: Date;
   endDate: Date;
 }
 
-export class CastleEpisodeMetricsLoadAction implements Action {
-  readonly type = ActionTypes.CASTLE_EPISODE_METRICS_LOAD;
+export class CastleEpisodeDownloadsLoadAction implements Action {
+  readonly type = ActionTypes.CASTLE_EPISODE_DOWNLOADS_LOAD;
 
-  constructor(public payload: CastleEpisodeMetricsLoadPayload) {}
+  constructor(public payload: CastleEpisodeDownloadsLoadPayload) {}
 }
 
-export interface CastleEpisodeMetricsSuccessPayload {
+export interface CastleEpisodeDownloadsSuccessPayload {
   podcastId: string;
   page: number;
   guid: string;
-  metricsPropertyName: string;
-  metrics: any[][];
+  downloads: any[][];
 }
 
-export class CastleEpisodeMetricsSuccessAction implements Action {
-  readonly type = ActionTypes.CASTLE_EPISODE_METRICS_SUCCESS;
+export class CastleEpisodeDownloadsSuccessAction implements Action {
+  readonly type = ActionTypes.CASTLE_EPISODE_DOWNLOADS_SUCCESS;
 
-  constructor(public payload: CastleEpisodeMetricsSuccessPayload) {}
+  constructor(public payload: CastleEpisodeDownloadsSuccessPayload) {}
 }
 
-export interface CastleEpisodeMetricsFailurePayload {
+export interface CastleEpisodeDownloadsFailurePayload {
   podcastId: string;
   page: number;
   guid: string;
   error: any;
 }
 
-export class CastleEpisodeMetricsFailureAction implements Action {
-  readonly type = ActionTypes.CASTLE_EPISODE_METRICS_FAILURE;
+export class CastleEpisodeDownloadsFailureAction implements Action {
+  readonly type = ActionTypes.CASTLE_EPISODE_DOWNLOADS_FAILURE;
 
-  constructor(public payload: CastleEpisodeMetricsFailurePayload) {}
+  constructor(public payload: CastleEpisodeDownloadsFailurePayload) {}
 }
 
 export interface CastlePodcastAllTimeDownloadsLoadPayload {

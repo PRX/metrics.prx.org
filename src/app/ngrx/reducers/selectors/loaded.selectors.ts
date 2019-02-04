@@ -1,7 +1,7 @@
 import { createSelector } from '@ngrx/store';
 import { selectRoutedPageLoaded } from './episode.selectors';
 import { selectRoutedPodcast, selectPodcastError } from './podcast.selectors';
-import { selectRoutedEpisodePageMetricsLoaded } from './episode-metrics.selectors';
+import { selectRoutedEpisodePageDownloadsLoaded } from './episode-downloads.selectors';
 import { selectPodcastDownloadsLoaded } from './podcast-downloads.selectors';
 import { selectRoutedPodcastRanksLoaded, selectNestedPodcastRanksLoaded } from './podcast-ranks.selectors';
 import { selectRoutedPodcastTotalsLoaded, selectNestedPodcastTotalsLoaded } from './podcast-totals.selectors';
@@ -16,17 +16,17 @@ export const selectCatalogLoaded = createSelector(
   (episodesLoaded, podcast, podcastError) => {
     return episodesLoaded && podcast && !podcastError;
   });
-export const selectMetricsLoaded = createSelector(
-  selectRoutedEpisodePageMetricsLoaded,
+export const selectDownloadsLoaded = createSelector(
+  selectRoutedEpisodePageDownloadsLoaded,
   selectPodcastDownloadsLoaded,
-  (episodeMetrics, PodcastDownloads) => {
-    return episodeMetrics && PodcastDownloads;
+  (episodeDownloads, PodcastDownloads) => {
+    return episodeDownloads && PodcastDownloads;
   });
 export const selectLoaded = createSelector(
   selectCatalogLoaded,
-  selectMetricsLoaded,
-  (catalog, metrics) => {
-    return catalog && metrics;
+  selectDownloadsLoaded,
+  (catalog, downloads) => {
+    return catalog && downloads;
   });
 export const selectGroupedPodcastDataLoaded = createSelector(
   selectRoutedPodcast,

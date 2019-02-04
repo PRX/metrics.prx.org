@@ -201,7 +201,7 @@ describe('CastleEffects', () => {
     expect(effects.loadEpisodeAllTimeDownloads$).toBeObservable(expected);
   });
 
-  it('should load podcast metrics', () => {
+  it('should load podcast downloads', () => {
     const action = {
       type: ACTIONS.ActionTypes.CASTLE_PODCAST_DOWNLOADS_LOAD,
       payload: {
@@ -225,28 +225,26 @@ describe('CastleEffects', () => {
 
   it('should load episode metrics', () => {
     const action = {
-      type: ACTIONS.ActionTypes.CASTLE_EPISODE_METRICS_LOAD,
+      type: ACTIONS.ActionTypes.CASTLE_EPISODE_DOWNLOADS_LOAD,
       payload: {
         podcastId: episodes[0].podcastId,
         page: episodes[0].page,
         guid: episodes[0].guid,
-        metricsType: METRICSTYPE_DOWNLOADS,
         interval: INTERVAL_DAILY,
         beginDate: new Date(),
         endDate: new Date()
       }
     };
-    const success = new ACTIONS.CastleEpisodeMetricsSuccessAction({
+    const success = new ACTIONS.CastleEpisodeDownloadsSuccessAction({
       podcastId: episodes[0].podcastId,
       page: episodes[0].page,
       guid: episodes[0].guid,
-      metricsPropertyName: getMetricsProperty(INTERVAL_DAILY, <MetricsType>METRICSTYPE_DOWNLOADS),
-      metrics: ep0Downloads
+      downloads: ep0Downloads
     });
 
     actions$.stream = hot('-a', { a: action });
     const expected = cold('-r', { r: success });
-    expect(effects.loadEpisodeMetrics$).toBeObservable(expected);
+    expect(effects.loadEpisodeDownloads$).toBeObservable(expected);
   });
 
   it('should load podcasts on account success', () => {
@@ -449,11 +447,10 @@ describe('CastleEffects', () => {
         total: episodes.length
       });
       const episodeMetricsActions = episodes.map(e => {
-        return new ACTIONS.CastleEpisodeMetricsLoadAction({
+        return new ACTIONS.CastleEpisodeDownloadsLoadAction({
           podcastId: e.podcastId,
           page: e.page,
           guid: e.guid,
-          metricsType: routerParams.metricsType,
           interval: routerParams.interval,
           beginDate: routerParams.beginDate,
           endDate: routerParams.endDate

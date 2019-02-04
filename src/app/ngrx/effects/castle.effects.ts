@@ -161,11 +161,10 @@ export class CastleEffects {
           podcastId: episode.podcastId,
           guid: episode.guid
         }));
-        return new ACTIONS.CastleEpisodeMetricsLoadAction({
+        return new ACTIONS.CastleEpisodeDownloadsLoadAction({
           podcastId: episode.podcastId,
           page: episode.page,
           guid: episode.guid,
-          metricsType: this.routerParams.metricsType,
           interval: this.routerParams.interval,
           beginDate: this.routerParams.beginDate,
           endDate: this.routerParams.endDate
@@ -174,8 +173,8 @@ export class CastleEffects {
     })
   );
 
-  // basic - load > success/failure podcasrt metrics
-  // also dispatches google analytics action for loading metrics with how many metrics datapoints
+  // basic - load > success/failure podcasrt downloads
+  // also dispatches google analytics action for loading downloads with how many datapoints
   @Effect()
   loadPodcastDownloads$: Observable<Action> = this.actions$.pipe(
     ofType(ACTIONS.ActionTypes.CASTLE_PODCAST_DOWNLOADS_LOAD),
@@ -201,30 +200,29 @@ export class CastleEffects {
     })
   );
 
-  // basic - load > success/failure episode metrics
+  // basic - load > success/failure episode downloads
   @Effect()
-  loadEpisodeMetrics$ = this.actions$.pipe(
-    ofType(ACTIONS.ActionTypes.CASTLE_EPISODE_METRICS_LOAD),
-    map((action: ACTIONS.CastleEpisodeMetricsLoadAction) => action.payload),
-    mergeMap((payload: ACTIONS.CastleEpisodeMetricsLoadPayload) => {
-      const { podcastId, page, guid, metricsType, interval, beginDate, endDate } = payload;
+  loadEpisodeDownloads$ = this.actions$.pipe(
+    ofType(ACTIONS.ActionTypes.CASTLE_EPISODE_DOWNLOADS_LOAD),
+    map((action: ACTIONS.CastleEpisodeDownloadsLoadAction) => action.payload),
+    mergeMap((payload: ACTIONS.CastleEpisodeDownloadsLoadPayload) => {
+      const { podcastId, page, guid, interval, beginDate, endDate } = payload;
       return this.castle.followList('prx:episode-downloads', {
         guid,
         from: beginDate.toISOString(),
         to: endDate.toISOString(),
         interval: interval.value
       }).pipe(
-        map(metrics => {
-          return new ACTIONS.CastleEpisodeMetricsSuccessAction({
+        map(results => {
+          return new ACTIONS.CastleEpisodeDownloadsSuccessAction({
             podcastId,
             page,
             guid,
-            metricsPropertyName: getMetricsProperty(interval, metricsType),
-            metrics: metrics[0]['downloads']
+            downloads: results[0]['downloads']
           });
         }),
         catchError(error => {
-          return of(new ACTIONS.CastleEpisodeMetricsFailureAction({
+          return of(new ACTIONS.CastleEpisodeDownloadsFailureAction({
             podcastId,
             page,
             guid,

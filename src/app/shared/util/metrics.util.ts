@@ -1,4 +1,4 @@
-import { RouterParams, PodcastDownloads, EpisodeMetricsModel, getMetricsProperty,
+import { RouterParams, PodcastDownloads, EpisodeDownloads, getMetricsProperty,
   IntervalModel, INTERVAL_HOURLY, INTERVAL_DAILY, INTERVAL_WEEKLY, INTERVAL_MONTHLY } from '../../ngrx';
 import * as dateUtil from './date/date.util';
 
@@ -15,7 +15,7 @@ export const findPodcastDownloads =
   }
 };
 
-export const metricsData = (params: RouterParams, metrics: PodcastDownloads | EpisodeMetricsModel) => {
+export const metricsData = (params: RouterParams, metrics: PodcastDownloads | EpisodeDownloads) => {
   const metricsProperty = getMetricsProperty(params.interval, params.metricsType);
   return metrics && metrics[metricsProperty];
 };

@@ -356,11 +356,10 @@ export class RoutingService {
         podcastId: episode.podcastId,
         guid: episode.guid
       }));
-      this.store.dispatch(new ACTIONS.CastleEpisodeMetricsLoadAction({
+      this.store.dispatch(new ACTIONS.CastleEpisodeDownloadsLoadAction({
         podcastId: episode.podcastId,
         page: episode.page,
         guid: episode.guid,
-        metricsType: newRouterParams.metricsType,
         interval: newRouterParams.interval,
         beginDate: newRouterParams.beginDate,
         endDate: newRouterParams.endDate

@@ -2,7 +2,7 @@ import { createSelector } from '@ngrx/store';
 import { selectRoutedPageLoading } from './episode.selectors';
 import { selectRoutedPodcast } from './podcast.selectors';
 import { selectPodcastError } from './podcast.selectors';
-import { selectEpisodeMetricsLoading } from './episode-metrics.selectors';
+import { selectEpisodeDownloadsLoading } from './episode-downloads.selectors';
 import { selectPodcastDownloadsLoading } from './podcast-downloads.selectors';
 import { selectRoutedPodcastRanksLoading, selectNestedPodcastRanksLoading } from './podcast-ranks.selectors';
 import { selectRoutedPodcastTotalsLoading, selectNestedPodcastTotalsLoading } from './podcast-totals.selectors';
@@ -14,10 +14,10 @@ export const selectCastleLoading = createSelector(
   selectRoutedPageLoading,
   selectRoutedPodcast,
   selectPodcastError,
-  selectEpisodeMetricsLoading,
+  selectEpisodeDownloadsLoading,
   selectPodcastDownloadsLoading,
-  (routedPageLoading, routedPodcast, podcastError, episodesMetricsLoading, PodcastDownloadsLoading) => {
-    return routedPageLoading || (!routedPodcast && !podcastError) || episodesMetricsLoading || PodcastDownloadsLoading;
+  (routedPageLoading, routedPodcast, podcastError, episodesDownloadsLoading, PodcastDownloadsLoading) => {
+    return routedPageLoading || (!routedPodcast && !podcastError) || episodesDownloadsLoading || PodcastDownloadsLoading;
   });
 export const selectLoading = selectCastleLoading;
 

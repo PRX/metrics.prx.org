@@ -1,6 +1,6 @@
 import { createSelector } from '@ngrx/store';
 import { selectMetricsTypeRoute } from './router.selectors';
-import { selectPodcastDownloadsFilteredTotal } from './podcast-downloads.selectors';
+import { selectRoutedPodcastDownloadsTotal } from './podcast-downloads.selectors';
 import { selectRoutedPodcastRanksTotalDownloads } from './podcast-ranks.selectors';
 import { MetricsType, METRICSTYPE_DOWNLOADS } from '../models';
 import { selectSelectedEpisodeGuids } from './episode-select.selectors';
@@ -8,7 +8,7 @@ import { selectSelectedEpisodesRanksTotalDownloads } from './episode-ranks.selec
 
 export const selectDownloadsSummaryTotal = createSelector(
   selectMetricsTypeRoute,
-  selectPodcastDownloadsFilteredTotal,
+  selectRoutedPodcastDownloadsTotal,
   selectRoutedPodcastRanksTotalDownloads,
   selectSelectedEpisodeGuids,
   selectSelectedEpisodesRanksTotalDownloads,

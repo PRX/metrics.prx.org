@@ -1,51 +1,9 @@
 import * as moment from 'moment';
-import { Podcast, Episode, RouterParams, PodcastDownloads, EpisodeMetricsModel,
-  INTERVAL_HOURLY, INTERVAL_DAILY, INTERVAL_WEEKLY, INTERVAL_MONTHLY, MetricsType, METRICSTYPE_DOWNLOADS } from '../../ngrx';
+import { INTERVAL_HOURLY, INTERVAL_DAILY, INTERVAL_WEEKLY, INTERVAL_MONTHLY } from '../../ngrx';
 import * as dateUtil from './date/date.util';
-import { findPodcastDownloads, metricsData, getTotal, getWeightedAverage } from './metrics.util';
+import { getTotal, getWeightedAverage } from './metrics.util';
 
 describe('metrics util', () => {
-  const podcasts: Podcast[] = [
-    {
-      id: '70',
-      title: 'Pet Talks Daily'
-    },
-    {
-      id: '72',
-      title: 'Totally Not Pet Talks Daily'
-    }
-  ];
-  const episodes: Episode[] = [
-    {
-      podcastId: '70',
-      guid: 'abcdefg',
-      page: 1,
-      publishedAt: new Date(),
-      title: 'A Pet Talk Episode'
-    },
-    {
-      podcastId: '70',
-      guid: 'gfedcba',
-      page: 1,
-      publishedAt: new Date(),
-      title: 'Another Pet Talk Episode'
-    },
-    {
-      podcastId: '72',
-      guid: 'hijklmn',
-      page: 1,
-      publishedAt: new Date(),
-      title: 'Totally Not a Pet Talk Episode'
-    }
-  ];
-  const routerParams: RouterParams = {
-    podcastId: podcasts[0].id,
-    metricsType: <MetricsType>METRICSTYPE_DOWNLOADS,
-    episodePage: 1,
-    beginDate: new Date('2017-09-01T00:00:00Z'),
-    endDate: new Date('2017-09-07T00:00:00Z'),
-    interval: INTERVAL_DAILY
-  };
   const metrics = [
     ['2017-08-27T00:00:00Z', 52522],
     ['2017-08-28T00:00:00Z', 162900],
@@ -60,46 +18,6 @@ describe('metrics util', () => {
     ['2017-09-06T00:00:00Z', 162900],
     ['2017-09-07T00:00:00Z', 46858]
   ];
-  const PodcastDownloads: PodcastDownloads[] = [
-    {
-      id: '70',
-      dailyReach: [...metrics]
-    },
-    {
-      id: '70',
-      dailyReach: [...metrics]
-    }
-  ];
-  const episodeMetrics: EpisodeMetricsModel[] = [
-    {
-      podcastId: '70',
-      guid: 'abcdefg',
-      page: 1,
-      dailyReach: [...metrics]
-    },
-    {
-      podcastId: '70',
-      guid: 'gfedcba',
-      page: 2,
-      dailyReach: [...metrics]
-    },
-    {
-      podcastId: '72',
-      guid: 'hijklmn',
-      page: 1,
-      dailyReach: [...metrics]
-    }
-  ];
-
-  it('should find podcast metrics matching routerParams', () => {
-    expect(findPodcastDownloads(routerParams, PodcastDownloads).id).toEqual('70');
-  });
-
-  it('should get metrics array according to interval and metrics type', () => {
-    expect(metricsData(routerParams, PodcastDownloads[0]).length).toEqual(12);
-    // no hourly
-    expect(metricsData({interval: INTERVAL_HOURLY, metricsType: <MetricsType>METRICSTYPE_DOWNLOADS}, episodeMetrics[0])).toBeUndefined();
-  });
 
   it('should get total of metrics datapoints', () => {
     expect(getTotal(metrics)).toEqual(52522 + 162900 + 46858 + 52522 + 162900 + 46858 + 52522 + 162900 + 46858 + 52522 + 162900 + 46858);

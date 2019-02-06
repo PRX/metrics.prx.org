@@ -3,7 +3,7 @@ import * as fromEpisodeDownloads from './episode-downloads.reducer';
 import { episodes, ep0Downloads, ep1Downloads } from '../../../testing/downloads.fixtures';
 import { EPISODE_PAGE_SIZE } from './models';
 
-describe('EpisodeMetricsReducer', () => {
+describe('EpisodeDownloadsReducer', () => {
   let newState: fromEpisodeDownloads.State;
   const episode = episodes[0];
   beforeEach(() => {

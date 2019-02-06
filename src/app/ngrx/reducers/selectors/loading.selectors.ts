@@ -16,8 +16,8 @@ export const selectCastleLoading = createSelector(
   selectPodcastError,
   selectEpisodeDownloadsLoading,
   selectPodcastDownloadsLoading,
-  (routedPageLoading, routedPodcast, podcastError, episodesDwonloadsLoading, PodcastDownloadsLoading) => {
-    return routedPageLoading || (!routedPodcast && !podcastError) || episodesDwonloadsLoading || PodcastDownloadsLoading;
+  (routedPageLoading, routedPodcast, podcastError, episodesDownloadsLoading, PodcastDownloadsLoading) => {
+    return routedPageLoading || (!routedPodcast && !podcastError) || episodesDownloadsLoading || PodcastDownloadsLoading;
   });
 export const selectLoading = selectCastleLoading;
 

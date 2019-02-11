@@ -31,7 +31,7 @@ export const episodeDownloadMetrics =
       })
       .filter(episode => {
         const data = episodeDownloads.find(e => e.guid === episode.guid);
-        return data && data.downloads;
+        return data && data.downloads && data.downloads.length;
       })
       .map((episode) => {
         return {
@@ -91,16 +91,16 @@ export const selectDownloadChartMetrics = createSelector(
     switch (routerParams.chartType) {
       case CHARTTYPE_STACKED:
         if (chartedPodcastDownloads && PodcastDownloads.charted &&
-          chartedEpisodeDownloads && chartedEpisodeDownloads.length) {
-          // if we have episodes to combine with podcast total
+          chartedEpisodeDownloads && chartedEpisodeDownloads.length &&
+          chartedEpisodeDownloads.every(d => chartedPodcastDownloads.data.length === d.data.length)) {
+          // if we have all the episode data to combine with podcast total
           const allOtherEpisodesData: TimeseriesChartModel = {
             data: subtractTimeseriesDatasets(chartedPodcastDownloads.data, chartedEpisodeDownloads.map(m => m.data)),
             label: 'All Other Episodes',
             color: neutralColor
           };
           chartData = [...chartedEpisodeDownloads, allOtherEpisodesData];
-        } else if (chartedPodcastDownloads && PodcastDownloads.charted &&
-          chartedPodcastDownloads.data.length && !(chartedEpisodeDownloads && chartedEpisodeDownloads.length)) {
+        } else if (chartedPodcastDownloads && PodcastDownloads.charted && chartedPodcastDownloads.data.length) {
           chartData = [chartedPodcastDownloads];
         } else if (chartedEpisodeDownloads && chartedEpisodeDownloads.length) {
           chartData = chartedEpisodeDownloads;

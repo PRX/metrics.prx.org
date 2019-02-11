@@ -80,7 +80,6 @@ describe('Downloads Chart Selectors', () => {
     });
 
     it('should only show podcast data if not the same number of episode downloads datapoints', () => {
-      debugger;
       store.dispatch(new ACTIONS.CastleEpisodeDownloadsSuccessAction({
         podcastId: episodes[1].podcastId, page: episodes[1].page, guid: episodes[1].guid, downloads: ep1Downloads.slice(1)}));
       expect(result.length).toEqual(1);

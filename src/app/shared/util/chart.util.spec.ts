@@ -1,6 +1,6 @@
 import * as chartUtil from './chart.util';
 import { TimeseriesDatumModel } from 'ngx-prx-styleguide';
-import { EpisodeTotals, episodeTotalsKey, EpisodeRanks, episodeRanksKey, GROUPTYPE_AGENTNAME } from '../../ngrx/reducers/models';
+import { EpisodeTotals, episodeTotalsKey, EpisodeRanks, episodeRanksKey, GroupType, GROUPTYPE_AGENTNAME } from '../../ngrx/reducers/models';
 import { routerParams, episodes,
   ep0AgentNameRanks, ep1AgentNameRanks, ep0AgentNameDownloads, ep1AgentNameDownloads } from '../../../testing/downloads.fixtures';
 
@@ -122,10 +122,21 @@ describe('chart.util', () => {
           key: `${GROUPTYPE_AGENTNAME}-Apple Podcasts`,
           group: GROUPTYPE_AGENTNAME,
           groupName: 'Apple Podcasts',
-          charted: true
+          charted: false
         }
       ]);
-      expect(results.length).toEqual(1);
+      expect(results.length).toEqual(ep0AgentNameRanks.length - 1);
+    });
+
+    it('should assume groups are charted implicity', () => {
+      expect(chartUtil.isGroupCharted(undefined, 'Unknown')).toBeTruthy();
+      expect(chartUtil.isGroupCharted([], 'Unknown')).toBeTruthy();
+      expect(chartUtil.isGroupCharted([{key: 'agentname-Unknown', group: <GroupType>'agentname', groupName: 'Unknown', charted: false}],
+        'Unknown')).toBeFalsy();
+      let results = chartUtil.aggregateTotalsBarChart(episodeRanks);
+      expect(results.length).toEqual(ep0AgentNameRanks.length);
+      results = chartUtil.aggregateTotalsBarChart(episodeRanks, []);
+      expect(results.length).toEqual(ep0AgentNameRanks.length);
     });
 
     it('should aggregate totals ranks', () => {

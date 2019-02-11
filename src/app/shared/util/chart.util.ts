@@ -198,7 +198,8 @@ export const aggregateTotalsAccumulator =
 };
 
 export const isGroupCharted = (groupsCharted: GroupCharted[], groupName: string): boolean => {
-  return !groupsCharted || groupsCharted.filter(group => group.charted).map(group => group.groupName).indexOf(groupName) > -1;
+  const group = groupsCharted && groupsCharted.find(g => g.groupName === groupName);
+  return !group || group.charted;
 };
 
 export const aggregateTotalsTable =
@@ -211,7 +212,7 @@ export const aggregateTotalsTable =
         label: accumulator[code].label,
         value: accumulator[code].value,
         percent: totalDownloads ? accumulator[code].value * 100 / totalDownloads : null,
-        charted: !groupsCharted || isGroupCharted(groupsCharted, accumulator[code].label)
+        charted: isGroupCharted(groupsCharted, accumulator[code].label)
       };
     }).sort((a, b) => {
       return b.value - a.value;
@@ -222,7 +223,7 @@ export const aggregateTotalsTable =
   return rows;
 };
 
-export const aggregateTotalsBarChart = (episodeRanks: EpisodeRanks[], groupsCharted: GroupCharted[]): CategoryChartModel[] => {
+export const aggregateTotalsBarChart = (episodeRanks: EpisodeRanks[], groupsCharted?: GroupCharted[]): CategoryChartModel[] => {
   const accumulator = aggregateTotalsAccumulator(episodeRanks);
   const rows = Object.keys(accumulator)
     .filter(code => isGroupCharted(groupsCharted, accumulator[code].label) &&

@@ -9,7 +9,7 @@ import { selectRoutedPageEpisodes } from './episode.selectors';
 import { selectRoutedPodcastDownloads } from './podcast-downloads.selectors';
 import { selectRoutedEpisodePageDownloads } from './episode-downloads.selectors';
 import { podcastDownloadMetrics, episodeDownloadMetrics } from './downloads-chart.selectors';
-import { aggregateIntervalsExport, aggregateTotalsExport } from '../../../shared/util/chart.util';
+import { aggregateIntervalsExport, aggregateTotalsExport, isGroupCharted } from '../../../shared/util/chart.util';
 import { getTotal } from '../../../shared/util/metrics.util';
 import { ISODate } from '../../../shared/util/date';
 import { selectSelectedEpisodeGuids } from './episode-select.selectors';
@@ -111,8 +111,8 @@ export const podcastExportRanks =
           label: rank.label,
           total: rank.total
         };
-      });
-      // TODO: not being filtered by groupsCharted
+      })
+      .filter(entry => isGroupCharted(groupsCharted, entry.label) && (entry.label !== 'Other' || entry.total !== 0));
     }
   } else {
     return podcastRanks && podcastRanks.ranks && podcastRanks.ranks
@@ -124,10 +124,7 @@ export const podcastExportRanks =
           label: rank.label
         };
       })
-      .filter((entry) => {
-        return (!groupsCharted || groupsCharted.find(g => g.charted && g.groupName === entry.label)) &&
-                (entry.label !== 'Other' || getTotal(entry.data) !== 0);
-      });
+      .filter((entry) => isGroupCharted(groupsCharted, entry.label) && (entry.label !== 'Other' || getTotal(entry.data) !== 0));
   }
 };
 

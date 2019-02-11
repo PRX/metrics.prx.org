@@ -4,7 +4,7 @@ import { reducers, RootState } from '../';
 import {
   ChartType, CHARTTYPE_STACKED, CHARTTYPE_HORIZBAR,
   GroupType, GROUPTYPE_GEOCOUNTRY, GROUPTYPE_GEOSUBDIV, GROUPTYPE_AGENTNAME,
-  MetricsType, METRICSTYPE_DEMOGRAPHICS, METRICSTYPE_TRAFFICSOURCES, GROUPTYPE_AGENTTYPE
+  MetricsType, METRICSTYPE_DEMOGRAPHICS, METRICSTYPE_TRAFFICSOURCES, GROUPTYPE_AGENTTYPE, CHARTTYPE_LINE
 } from '../models';
 import * as ACTIONS from '../../actions';
 import {
@@ -48,21 +48,21 @@ describe('Podcast Ranks Selectors', () => {
     store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerParams: {...routerParams, filter: 'US'}}));
   }
 
-  function dispatchRouteAgentName() {
+  function dispatchRouteAgentName(chartType) {
     store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerParams: {
       ...routerParams,
         metricsType: <MetricsType>METRICSTYPE_TRAFFICSOURCES,
         group: <GroupType>GROUPTYPE_AGENTNAME,
-        chartType: <ChartType>CHARTTYPE_HORIZBAR
+        chartType
     }}));
   }
 
-  function dispatchRouteAgentType() {
+  function dispatchRouteAgentType(chartType) {
     store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerParams: {
         ...routerParams,
         metricsType: <MetricsType>METRICSTYPE_TRAFFICSOURCES,
         group: <GroupType>GROUPTYPE_AGENTTYPE,
-        chartType: <ChartType>CHARTTYPE_HORIZBAR
+        chartType
       }}));
   }
 
@@ -115,6 +115,14 @@ describe('Podcast Ranks Selectors', () => {
     }));
   }
 
+  function dispatchPodcastToggleGroupCharted(groupName: string) {
+    store.dispatch(new ACTIONS.ChartToggleGroupAction({
+      group: GROUPTYPE_AGENTTYPE,
+      groupName,
+      charted: false
+    }));
+  }
+
   describe('geo podcast ranks', () => {
     let result: TimeseriesChartModel[];
 
@@ -143,14 +151,16 @@ describe('Podcast Ranks Selectors', () => {
 
   describe('totals (horizontal bar) podcast ranks', () => {
     let result: CategoryChartModel[];
-
-    it('should transform podcast ranks to category chart model', () => {
-      dispatchRouteAgentName();
+    beforeEach(() => {
       dispatchPodcastAgentNameRanks();
-
+      dispatchPodcastAgentTypeRanks();
       store.pipe(select(podcastRanks.selectRoutedPodcastRanksChartMetrics)).subscribe((data) => {
         result = <CategoryChartModel[]>data;
       });
+    });
+
+    it('should transform podcast ranks to category chart model', () => {
+      dispatchRouteAgentName(CHARTTYPE_HORIZBAR);
 
       expect(result.length).toEqual(podcastAgentNameRanks.length);
       expect(result[0].label).toEqual(podcastAgentNameRanks[0].label);
@@ -160,8 +170,7 @@ describe('Podcast Ranks Selectors', () => {
     });
 
     it('should not include "Other" data if total value is zero', () => {
-      dispatchRouteAgentType();
-      dispatchPodcastAgentTypeRanks();
+      dispatchRouteAgentType(CHARTTYPE_HORIZBAR);
 
       store.pipe(select(podcastRanks.selectRoutedPodcastRanksChartMetrics)).subscribe((data) => {
         result = <CategoryChartModel[]>data;
@@ -169,6 +178,53 @@ describe('Podcast Ranks Selectors', () => {
 
       expect(result.length).toEqual(podcastAgentTypeRanks.length - 1);
       expect(result.find(r => r.label === 'Other')).toBeUndefined();
+    });
+
+    it('should filter by groups charted and assume groups are charted implicitly', () => {
+      dispatchRouteAgentType(CHARTTYPE_HORIZBAR);
+
+      store.pipe(select(podcastRanks.selectRoutedPodcastRanksChartMetrics)).subscribe((data) => {
+        result = <CategoryChartModel[]>data;
+      });
+
+      expect(result.length).toEqual(podcastAgentTypeRanks.length - 1);
+      dispatchPodcastToggleGroupCharted('Unknown');
+      expect(result.length).toEqual(podcastAgentTypeRanks.length - 2);
+      expect(result.find(r => r.label === 'Unknown')).toBeUndefined();
+    });
+  });
+
+  describe('intervals (multiline/stacked) podcast ranks', () => {
+    let result: TimeseriesChartModel[];
+    beforeEach(() => {
+      dispatchPodcastAgentTypeRanks();
+      store.pipe(select(podcastRanks.selectRoutedPodcastRanksChartMetrics)).subscribe((data) => {
+        result = <TimeseriesChartModel[]>data;
+      });
+    });
+
+    it('should not include "Other" data if total value is zero', () => {
+      dispatchRouteAgentType(CHARTTYPE_STACKED);
+
+      store.pipe(select(podcastRanks.selectRoutedPodcastRanksChartMetrics)).subscribe((data) => {
+        result = <TimeseriesChartModel[]>data;
+      });
+
+      expect(result.length).toEqual(podcastAgentTypeRanks.length - 1);
+      expect(result.find(r => r.label === 'Other')).toBeUndefined();
+    });
+
+    it('should filter by groups charted and assume groups are charted implicitly', () => {
+      dispatchRouteAgentType(CHARTTYPE_LINE);
+
+      store.pipe(select(podcastRanks.selectRoutedPodcastRanksChartMetrics)).subscribe((data) => {
+        result = <TimeseriesChartModel[]>data;
+      });
+
+      expect(result.length).toEqual(podcastAgentTypeRanks.length - 1);
+      dispatchPodcastToggleGroupCharted('Unknown');
+      expect(result.length).toEqual(podcastAgentTypeRanks.length - 2);
+      expect(result.find(r => r.label === 'Unknown')).toBeUndefined();
     });
   });
 

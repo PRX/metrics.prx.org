@@ -19,14 +19,15 @@ export const podcastDownloadMetrics = (podcastDownloads: PodcastDownloads): {lab
 };
 
 export const episodeDownloadMetrics =
-  (episodes: Episode[], episodeDownloads: EpisodeDownloads[]): {guid: string, label: string, data: any[][]}[] => {
+  (episodes: Episode[], episodeDownloads: EpisodeDownloads[]): {guid: string, label: string, publishedAt: Date, data: any[][]}[] => {
   if (episodes.length && episodeDownloads && episodeDownloads.length) {
     return episodes
       .sort((a: Episode, b: Episode) => b.publishedAt.valueOf() - a.publishedAt.valueOf())
       .map((episode: Episode) => {
         return {
           guid: episode.guid,
-          label: episode.title
+          label: episode.title,
+          publishedAt: episode.publishedAt
         };
       })
       .filter(episode => {

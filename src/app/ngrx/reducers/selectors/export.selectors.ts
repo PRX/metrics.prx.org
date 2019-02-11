@@ -68,21 +68,24 @@ export const selectExportDownloads = createSelector(
   return exportData;
 });
 
-export const toCsvArray = (downloads: {label: string, guid?: string, total?: number, data?: any[][]}[]): string[][] => {
+export const toCsvArray = (downloads: {label: string, guid?: string, publishedAt?: Date, total?: number, data?: any[][]}[]): string[][] => {
   if (downloads && downloads.length) {
     const hasGuidCol = downloads.length > 1 && downloads[1].guid;
+    const hasPubDateCol = downloads.length > 1 && downloads[1].publishedAt;
     const hasTotalCol = downloads.length > 1 && downloads[1].total;
     const hasDataCols = !!downloads[0].data;
     const csvRows = [
       'data:text/csv;charset=utf-8',
       hasGuidCol ? 'Title' : '""',
       ...(hasGuidCol ? ['GUID'] : []),
+      ...(hasPubDateCol ? ['Release Date'] : []),
       ...(hasTotalCol ? ['Total'] : []),
       ...(hasDataCols ? downloads[0].data.map(col => ISODate(col[0])) : [])
     ];
     return [csvRows].concat(downloads.map(d => [
       `"${d.label}"`,
       ...(hasGuidCol ? [d.guid] : []),
+      ...(hasPubDateCol ? [d.publishedAt && ISODate(d.publishedAt) || ''] : []),
       ...(hasTotalCol ? [d.total] : []),
       ...(hasDataCols ? d.data.map(col => col[1].toString()) : [])
     ]));

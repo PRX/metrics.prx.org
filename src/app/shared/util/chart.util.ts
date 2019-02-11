@@ -20,6 +20,7 @@ import {
   TotalsTableRow
 } from '../../ngrx';
 import * as dateFormat from './date/date.format';
+import * as metricsUtil from './metrics.util';
 
 // metrics data is an array of arrays of [datetime string, numeric value]
 export const mapMetricsToTimeseriesData = (data: any[][]): TimeseriesDatumModel[] => {
@@ -196,6 +197,10 @@ export const aggregateTotalsAccumulator =
   return accumulator;
 };
 
+export const isGroupCharted = (groupsCharted: GroupCharted[], groupName: string): boolean => {
+  return !groupsCharted || groupsCharted.filter(group => group.charted).map(group => group.groupName).indexOf(groupName) > -1;
+};
+
 export const aggregateTotalsTable =
 (episodeTotals: EpisodeTotals[], totalDownloads?: number, groupsCharted?: GroupCharted[]): TotalsTableRow[] => {
   const accumulator = aggregateTotalsAccumulator(episodeTotals);
@@ -206,8 +211,7 @@ export const aggregateTotalsTable =
         label: accumulator[code].label,
         value: accumulator[code].value,
         percent: totalDownloads ? accumulator[code].value * 100 / totalDownloads : null,
-        charted: !groupsCharted ||
-          groupsCharted.filter(group => group.charted).map(group => group.groupName).indexOf(accumulator[code].label) > -1
+        charted: !groupsCharted || isGroupCharted(groupsCharted, accumulator[code].label)
       };
     }).sort((a, b) => {
       return b.value - a.value;
@@ -220,9 +224,10 @@ export const aggregateTotalsTable =
 
 export const aggregateTotalsBarChart = (episodeRanks: EpisodeRanks[], groupsCharted: GroupCharted[]): CategoryChartModel[] => {
   const accumulator = aggregateTotalsAccumulator(episodeRanks);
-  const rows = Object.keys(accumulator).filter(code => {
-      return groupsCharted.filter(group => group.charted).map(group => group.groupName).indexOf(accumulator[code].label) > -1;
-    }).map(code => {
+  const rows = Object.keys(accumulator)
+    .filter(code => isGroupCharted(groupsCharted, accumulator[code].label) &&
+      (accumulator[code].label !== 'Other' || accumulator[code].value !== 0))
+    .map(code => {
       return {
         label: accumulator[code].label,
         value: accumulator[code].value
@@ -245,10 +250,25 @@ export const aggregateTotalsRanks = (episodeTotals: EpisodeTotals[]): Rank[] => 
   return ranks;
 };
 
-export const aggregateIntervals =
-(episodeRanks: EpisodeRanks[], groupsCharted?: GroupCharted[]): TimeseriesChartModel[] => {
+export const aggregateTotalsExport = (episodeTotals: EpisodeTotals[], groupsCharted: GroupCharted[]): {label: string, total: number}[] => {
+  const accumulator = aggregateTotalsAccumulator(episodeTotals);
+  const exportData = Object.keys(accumulator)
+    .filter(code => isGroupCharted(groupsCharted, accumulator[code].label) &&
+      (accumulator[code].label !== 'Other' || accumulator[code].value !== 0))
+    .map(code => {
+      return {
+        label: accumulator[code].label,
+        total: accumulator[code].value
+      };
+    })
+    .sort((a, b) => b.total - a.total);
+  return exportData;
+};
+
+export const aggregateIntervalsAccumulator =
+  (episodeRanks: EpisodeRanks[]): {[code: string]: {code: string, label: string, data: any[][]}} => {
+  const accumulator = {};
   if (episodeRanks && episodeRanks.length && episodeRanks[0].downloads) {
-    const accumulator = {};
     episodeRanks[0].ranks.forEach((rank: Rank, i) => {
       const code = String(rank.code);
       accumulator[code] = {
@@ -280,22 +300,43 @@ export const aggregateIntervals =
         return acc;
       }, accumulator);
     }
-
-    const rows = Object.keys(accumulator).map(code => {
-      return {
-        color: '',
-        code,
-        label: accumulator[code].label,
-        data: mapMetricsToTimeseriesData(accumulator[code].data)
-      };
-    }).sort((a, b) => {
-      return getTotal(b.data) - getTotal(a.data);
-    }).map((r, i) => {
-      r.color = getColor(i);
-      return r;
-    }).filter(r => !groupsCharted || groupsCharted.filter(group => group.charted).map(group => group.groupName).indexOf(r.label) > -1);
-    return rows;
   }
+  return accumulator;
+};
+
+export const aggregateIntervals =
+(episodeRanks: EpisodeRanks[], groupsCharted?: GroupCharted[]): TimeseriesChartModel[] => {
+  const accumulator = aggregateIntervalsAccumulator(episodeRanks);
+
+  const rows = Object.keys(accumulator).map(code => {
+    return {
+      color: '',
+      code,
+      label: accumulator[code].label,
+      data: mapMetricsToTimeseriesData(accumulator[code].data)
+    };
+  }).sort((a, b) => {
+    return getTotal(b.data) - getTotal(a.data);
+  }).map((r, i) => {
+    r.color = getColor(i);
+    return r;
+  }).filter(r => isGroupCharted(groupsCharted, r.label) && (r.label !== 'Other' || getTotal(r.data) !== 0));
+  return rows;
+};
+
+export const aggregateIntervalsExport =
+  (episodeRanks: EpisodeRanks[], groupsCharted?: GroupCharted[]): {label: string, data: any[][]}[] => {
+  const accumulator = aggregateIntervalsAccumulator(episodeRanks);
+
+  const rows = Object.keys(accumulator).map(code => {
+    return {
+      label: accumulator[code].label,
+      data: accumulator[code].data
+    };
+  }).sort((a, b) => {
+    return metricsUtil.getTotal(b.data) - metricsUtil.getTotal(a.data);
+  }).filter(r => isGroupCharted(groupsCharted, r.label) && (r.label !== 'Other' || metricsUtil.getTotal(r.data) !== 0));
+  return rows;
 };
 
 declare const google: any;

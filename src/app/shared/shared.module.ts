@@ -19,6 +19,7 @@ import { EpisodeSelectDropdownContentComponent } from './menu/episode-select/epi
 import { EpisodeSelectDropdownService } from './menu/episode-select/episode-select-dropdown.service';
 import { EpisodeSelectListComponent } from './menu/episode-select/episode-select-list.component';
 import { EpisodeSelectListVisibilityComponent } from './menu/episode-select/episode-select-list-visibility.component';
+import { ExportDropdownComponent } from './menu/export/export-dropdown.component';
 import { ChartTypeComponent } from './menu/chart-type.component';
 import { IntervalDropdownComponent } from './menu/interval-dropdown.component';
 import { MetricsTypeHeadingComponent } from './menu/metrics-type-heading.component';
@@ -52,6 +53,7 @@ import { TotalsTableComponent } from './table/totals-table.component';
     EpisodeSelectListComponent,
     EpisodeSelectListVisibilityComponent,
     ErrorRetryComponent,
+    ExportDropdownComponent,
     IntervalDropdownComponent,
     LargeNumberPipe,
     MenuBarComponent,

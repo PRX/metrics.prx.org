@@ -19,6 +19,7 @@ import { StandardDateRangeComponent } from './date/standard-date-range.component
 import { EpisodeSelectComponent } from './episode-select/episode-select.component';
 import { EpisodeSelectDropdownButtonComponent } from './episode-select/episode-select-dropdown-button.component';
 import { EpisodeSelectDropdownService } from './episode-select/episode-select-dropdown.service';
+import { ExportDropdownComponent } from './export/export-dropdown.component';
 import { DownloadsSummaryComponent } from '../summary/downloads-summary.component';
 import { LargeNumberPipe } from '../pipes/large-number.pipe';
 import { DatepickerModule, FancyFormModule, SpinnerModule } from 'ngx-prx-styleguide';
@@ -48,6 +49,7 @@ describe('MenuBarComponent', () => {
         DownloadsSummaryComponent,
         EpisodeSelectComponent,
         EpisodeSelectDropdownButtonComponent,
+        ExportDropdownComponent,
         IntervalDropdownComponent,
         LargeNumberPipe,
         MetricsTypeHeadingComponent,

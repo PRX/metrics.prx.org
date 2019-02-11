@@ -50,18 +50,29 @@
   max-height: calc(100vh - 200px);
   transition: max-height 0.2s;
 }
+.open .dropdown-content.short {
+  padding: 10px 0;
+}
+.open .dropdown-content.left {
+  right: auto;
+  left: 0;
+}
 
 .dropdown-content >>> li {
   white-space: nowrap;
 }
 
-.dropdown-content >>> li .btn-link {
+.dropdown-content >>> li .btn-link, .dropdown-content >>> li a {
   width: 100%;
   text-align: left;
   padding: 5px 20px;
 }
+.dropdown-content >>> li a {
+  display: inline-block;
+}
 
-.dropdown-content >>> li .btn-link:hover, .dropdown-content >>> li .btn-link:focus {
+.dropdown-content >>> li .btn-link:hover, .dropdown-content >>> li .btn-link:focus,
+.dropdown-content >>> li a:hover, .dropdown-content >>> li a:focus, .dropdown-content >>> li a:active {
   background-color: #f0f0f0;
 }
 .dropdown-content >>> li .btn-link.active {

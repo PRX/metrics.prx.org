@@ -120,18 +120,14 @@ export const selectNestedEpisodesRanksErrors = createSelector(
 export const selectSelectedEpisodeRanksChartMetrics = createSelector(
   selectSelectedEpisodesRanks,
   selectRoutedGroupCharted,
-  selectGroupRoute,
   selectChartTypeRoute,
   (episodeRanks: EpisodeRanks[],
    groupsCharted: GroupCharted[],
-   groupRoute: GroupType,
    chartType: ChartType): CategoryChartModel[] | TimeseriesChartModel[] => {
     if (chartType === CHARTTYPE_HORIZBAR) {
-      const rows = aggregateTotalsBarChart(episodeRanks, groupsCharted);
-      return rows && rows.filter((row: CategoryChartModel) => row.label !== 'Other' || row.value !== 0);
+      return aggregateTotalsBarChart(episodeRanks, groupsCharted);
     } else {
-      const rows = aggregateIntervals(episodeRanks, groupsCharted);
-      return rows && rows.filter((row: TimeseriesChartModel) => row.label !== 'Other' || getTotal(row.data) !== 0);
+      return aggregateIntervals(episodeRanks, groupsCharted);
     }
   }
 );

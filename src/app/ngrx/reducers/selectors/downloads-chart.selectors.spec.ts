@@ -151,7 +151,7 @@ describe('Downloads Chart Selectors', () => {
       store.dispatch(new ACTIONS.CastleEpisodePageSuccessAction({
         episodes: [
           episodes[0],
-          {...episodes[1], title: episodes[0].title, guid: episodes[0].guid + '-' + episodes[0].guid}
+          {...episodes[1], title: episodes[0].title}
         ],
         page: 1,
         per: EPISODE_PAGE_SIZE,

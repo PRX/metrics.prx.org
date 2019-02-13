@@ -7,11 +7,11 @@ import { reducers } from '../../../ngrx/reducers';
 import { METRICSTYPE_DEMOGRAPHICS,  METRICSTYPE_TRAFFICSOURCES,
   GROUPTYPE_GEOCOUNTRY, GROUPTYPE_AGENTTYPE,
   CHARTTYPE_GEOCHART, CHARTTYPE_STACKED } from '../../../ngrx';
+import { GoogleAnalyticsEventAction } from '../../../ngrx/actions';
 import { ExportDropdownComponent } from './export-dropdown.component';
 
 import * as dispatchHelper from '../../../../testing/dispatch.helpers';
 import { podcastAgentTypeRanks, podcastAgentTypeDownloads } from '../../../../testing/downloads.fixtures';
-import { selectRoutedPodcastExportRanks } from '../../../ngrx/reducers/selectors';
 
 describe('ExportDropdownComponent', () => {
   let comp: ExportDropdownComponent;
@@ -101,5 +101,11 @@ describe('ExportDropdownComponent', () => {
       done();
     });
     window.dispatchEvent(new Event('scroll'));
+  });
+
+  it('should dispatch google analytics actions onExportCsv', () => {
+    jest.spyOn(store, 'dispatch');
+    comp.onExportCsv();
+    expect(store.dispatch).toHaveBeenCalledWith(new GoogleAnalyticsEventAction({gaAction: 'exportCSV'}));
   });
 });

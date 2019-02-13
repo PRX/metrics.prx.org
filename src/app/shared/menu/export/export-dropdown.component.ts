@@ -3,7 +3,8 @@ import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { Store, select } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
 import { map } from 'rxjs/operators/map';
-import { selectExportData2DArray, toCsvArray, joinCsvArray } from '../../../ngrx/reducers/selectors';
+import { GoogleAnalyticsEventAction } from '../../../ngrx/actions';
+import { selectExportData2DArray, joinCsvArray } from '../../../ngrx/reducers/selectors';
 
 @Component({
   selector: 'metrics-export-dropdown',
@@ -45,7 +46,7 @@ export class ExportDropdownComponent implements OnInit {
   }
 
   onExportCsv() {
-    // google analytics
+    this.store.dispatch(new GoogleAnalyticsEventAction({gaAction: 'exportCSV'}));
 
     this.toggleOpen();
   }

@@ -33,3 +33,7 @@ export const hourly = (date: Date): string => {
 export const ISODate = (date: Date): string => {
   return moment(date).utc().format('YYYY-MM-DD');
 };
+
+export const defaultTZ = (date: Date): string => {
+  return moment(date).format();
+};

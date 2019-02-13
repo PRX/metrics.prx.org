@@ -3,8 +3,7 @@ import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { Store, select } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
 import { map } from 'rxjs/operators/map';
-import { selectExportData, toCsvArray, joinCsvArray } from '../../../ngrx/reducers/selectors';
-import { ExportData } from '../../../ngrx';
+import { selectExportData2DArray, toCsvArray, joinCsvArray } from '../../../ngrx/reducers/selectors';
 
 @Component({
   selector: 'metrics-export-dropdown',
@@ -24,7 +23,7 @@ import { ExportData } from '../../../ngrx';
   styleUrls: ['../../dropdown/dropdown.css']
 })
 export class ExportDropdownComponent implements OnInit {
-  exportData$ = new Observable<ExportData[]>();
+  exportData$ = new Observable<any[][]>();
   exportDataCsv$ = new Observable<SafeUrl>();
   open = false;
   @HostListener('window: scroll', [])
@@ -33,9 +32,9 @@ export class ExportDropdownComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.exportData$ = this.store.pipe(select(selectExportData));
+    this.exportData$ = this.store.pipe(select(selectExportData2DArray));
     this.exportDataCsv$ =
-      this.exportData$.pipe(map(data => this.sanitizer.bypassSecurityTrustUrl(joinCsvArray(toCsvArray(data)))));
+      this.exportData$.pipe(map(data => this.sanitizer.bypassSecurityTrustUrl(joinCsvArray(data))));
   }
 
   constructor(private store: Store<any>,

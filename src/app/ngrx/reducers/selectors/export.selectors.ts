@@ -3,15 +3,15 @@ import { Episode, EpisodeDownloads, PodcastDownloads, RouterParams,
   PodcastRanks, EpisodeRanks, PodcastTotals, EpisodeTotals, Rank, ExportData,
   GROUPTYPE_GEOCOUNTRY, GroupCharted,
   CHARTTYPE_EPISODES, CHARTTYPE_PODCAST, CHARTTYPE_STACKED, CHARTTYPE_GEOCHART, CHARTTYPE_HORIZBAR,
-  METRICSTYPE_DOWNLOADS } from '../models';
-import { selectRouter } from './router.selectors';
+  METRICSTYPE_DOWNLOADS, INTERVAL_HOURLY, IntervalModel } from '../models';
+import { selectRouter, selectIntervalRoute } from './router.selectors';
 import { selectRoutedPageEpisodes } from './episode.selectors';
 import { selectRoutedPodcastDownloads } from './podcast-downloads.selectors';
 import { selectRoutedEpisodePageDownloads } from './episode-downloads.selectors';
 import { podcastDownloadMetrics, episodeDownloadMetrics } from './downloads-chart.selectors';
 import { aggregateIntervalsExport, aggregateTotalsExport, isGroupCharted } from '../../../shared/util/chart.util';
 import { getTotal } from '../../../shared/util/metrics.util';
-import { ISODate } from '../../../shared/util/date';
+import * as dateUtil from '../../../shared/util/date';
 import { selectSelectedEpisodeGuids } from './episode-select.selectors';
 import { selectRoutedPodcastRanks, selectNestedPodcastRanks } from './podcast-ranks.selectors';
 import { selectRoutedPodcastTotals, selectNestedPodcastTotals } from './podcast-totals.selectors';
@@ -68,7 +68,7 @@ export const selectExportDownloads = createSelector(
   return exportData;
 });
 
-export const toCsvArray = (downloads: ExportData[]): string[][] => {
+export const toCsvArray = (downloads: ExportData[], dateFormat: Function): string[][] => {
   if (downloads && downloads.length) {
     const hasGuidCol = downloads.length > 1 && downloads[1].guid;
     const hasPubDateCol = downloads.length > 1 && downloads[1].publishedAt;
@@ -79,12 +79,12 @@ export const toCsvArray = (downloads: ExportData[]): string[][] => {
       ...(hasGuidCol ? ['GUID'] : []),
       ...(hasPubDateCol ? ['Release Date'] : []),
       ...(hasTotalCol ? ['Total'] : []),
-      ...(hasDataCols ? downloads[0].data.map(col => ISODate(col[0])) : []) // TODO: WHAT ABOUT HOURLY FORMAT THOUGH?
+      ...(hasDataCols ? downloads[0].data.map(col => dateFormat(new Date(col[0]))) : [])
     ];
     return [csvRows].concat(downloads.map(d => [
       `"${d.label}"`,
       ...(hasGuidCol ? [d.guid] : []),
-      ...(hasPubDateCol ? [d.publishedAt && ISODate(d.publishedAt) || ''] : []),
+      ...(hasPubDateCol ? [d.publishedAt && dateUtil.ISODate(d.publishedAt) || ''] : []),
       ...(hasTotalCol ? [d.total] : []),
       ...(hasDataCols ? d.data.map(col => col[1].toString()) : [])
     ]));
@@ -186,7 +186,7 @@ export const selectExportData = createSelector(
   nestedPodcastRanks,
   guids,
   selectedEpisodeRanks,
-  nestedEpisodeRanks) => {
+  nestedEpisodeRanks): ExportData[] => {
     if (routerParams.metricsType === METRICSTYPE_DOWNLOADS) {
         return exportDownloads;
     } else {
@@ -203,6 +203,18 @@ export const selectExportData = createSelector(
           return routedPodcastRanks;
         }
       }
+    }
+  }
+);
+
+export const selectExportData2DArray = createSelector(
+  selectIntervalRoute,
+  selectExportData,
+  (interval: IntervalModel, exportData: ExportData[]) => {
+    if (interval === INTERVAL_HOURLY) {
+      return toCsvArray(exportData, dateUtil.defaultTZ);
+    } else {
+      return toCsvArray(exportData, dateUtil.ISODate);
     }
   }
 );

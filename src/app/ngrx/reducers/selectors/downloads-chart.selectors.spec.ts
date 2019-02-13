@@ -2,13 +2,14 @@ import { TestBed } from '@angular/core/testing';
 import { StoreModule, Store, select } from '@ngrx/store';
 
 import { RootState, reducers } from '../';
-import { ChartType, CHARTTYPE_STACKED, CHARTTYPE_PODCAST, CHARTTYPE_EPISODES, EPISODE_PAGE_SIZE } from '../models';
+import { ChartType, CHARTTYPE_STACKED, CHARTTYPE_PODCAST, CHARTTYPE_EPISODES } from '../models';
 import { getTotal } from '../../../shared/util/chart.util';
 import { TimeseriesChartModel } from 'ngx-prx-styleguide';
-import { routerParams,  podcast, episodes,
+import * as dispatchHelper from '../../../../testing/dispatch.helpers';
+import { routerParams, episodes,
   podDownloads, ep0Downloads, ep1Downloads } from '../../../../testing/downloads.fixtures';
 import * as ACTIONS from '../../actions';
-import { selectDownloadChartMetrics } from './downloads-chart.selectors';
+import { episodeDownloadMetrics, selectDownloadChartMetrics } from './downloads-chart.selectors';
 
 describe('Downloads Chart Selectors', () => {
   let store: Store<RootState>;
@@ -22,22 +23,35 @@ describe('Downloads Chart Selectors', () => {
     store = TestBed.get(Store);
   });
 
+  it('should combine episodes with downloads and sort by published dates descending', () => {
+    const downloadMetrics = episodeDownloadMetrics(episodes, [
+      {
+        podcastId: episodes[0].podcastId,
+        guid: episodes[0].guid,
+        page: episodes[0].page,
+        downloads: ep0Downloads,
+        charted: true
+      },
+      {
+        podcastId: episodes[1].podcastId,
+        guid: episodes[1].guid,
+        page: episodes[1].page,
+        downloads: ep1Downloads,
+        charted: true
+      }
+    ]);
+    expect(downloadMetrics.length).toEqual(2);
+    expect(downloadMetrics[0].publishedAt.valueOf()).toBeGreaterThanOrEqual(downloadMetrics[1].publishedAt.valueOf());
+  });
+
   describe('stacked podcast and episode chart', () => {
     let result: TimeseriesChartModel[];
 
     beforeEach(() => {
-      store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerParams: {...routerParams, chartType: <ChartType>CHARTTYPE_STACKED}}));
-      store.dispatch(new ACTIONS.CastleEpisodePageSuccessAction({
-        episodes,
-        page: 1,
-        per: EPISODE_PAGE_SIZE,
-        total: episodes.length
-      }));
-      store.dispatch(new ACTIONS.CastleEpisodeDownloadsSuccessAction({
-        podcastId: episodes[0].podcastId, page: episodes[0].page, guid: episodes[0].guid, downloads: ep0Downloads}));
-      store.dispatch(new ACTIONS.CastleEpisodeDownloadsSuccessAction({
-        podcastId: episodes[1].podcastId, page: episodes[1].page, guid: episodes[1].guid, downloads: ep1Downloads}));
-      store.dispatch(new ACTIONS.CastlePodcastDownloadsSuccessAction({id: podcast.id, downloads: podDownloads}));
+      dispatchHelper.dispatchRouterNavigation(store, {...routerParams, chartType: <ChartType>CHARTTYPE_STACKED});
+      dispatchHelper.dispatchEpisodePage(store);
+      dispatchHelper.dispatchEpisodeDownloads(store);
+      dispatchHelper.dispatchPodcastDownloads(store);
 
       store.pipe(select(selectDownloadChartMetrics)).subscribe((data) => {
         result = data;
@@ -59,19 +73,19 @@ describe('Downloads Chart Selectors', () => {
     });
 
     it('should only include episode metrics matching router state', () => {
-      store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerParams: {podcastId: '75', episodePage: 2}}));
+      dispatchHelper.dispatchRouterNavigation(store, {...routerParams, podcastId: '75', episodePage: 2});
       expect(result).toBeUndefined();
     });
 
     it('should only include charted episodes', () => {
       expect(result.length).toEqual(3);
-      store.dispatch(new ACTIONS.ChartToggleEpisodeAction({guid: episodes[0].guid, charted: false}));
+      dispatchHelper.dispatchEpisodeDownloadsChartToggle(store, episodes[0].guid);
       expect(result.length).toEqual(2);
     });
 
     it('should only include podcast if charted', () => {
       expect(result.length).toEqual(3);
-      store.dispatch(new ACTIONS.ChartTogglePodcastAction({id: podcast.id, charted: false}));
+      dispatchHelper.dispatchPodcastDownloadsChartToggle(store);
       expect(result.length).toEqual(2);
     });
 
@@ -80,8 +94,7 @@ describe('Downloads Chart Selectors', () => {
     });
 
     it('should only show podcast data if not the same number of episode downloads datapoints', () => {
-      store.dispatch(new ACTIONS.CastleEpisodeDownloadsSuccessAction({
-        podcastId: episodes[1].podcastId, page: episodes[1].page, guid: episodes[1].guid, downloads: ep1Downloads.slice(1)}));
+      dispatchHelper.dispatchEpisodeDownloads(store, episodes[1].podcastId, episodes[1].page, episodes[1].guid, ep1Downloads.slice(1));
       expect(result.length).toEqual(1);
       expect(result[0].label).toEqual('All Episodes');
     });
@@ -91,8 +104,8 @@ describe('Downloads Chart Selectors', () => {
     let result: TimeseriesChartModel[];
 
     beforeEach(() => {
-      store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerParams: {...routerParams, chartType: <ChartType>CHARTTYPE_PODCAST}}));
-      store.dispatch(new ACTIONS.CastlePodcastDownloadsSuccessAction({id: podcast.id, downloads: podDownloads}));
+      dispatchHelper.dispatchRouterNavigation(store, {...routerParams, chartType: <ChartType>CHARTTYPE_PODCAST});
+      dispatchHelper.dispatchPodcastDownloads(store);
 
       store.pipe(select(selectDownloadChartMetrics)).subscribe((data) => {
         result = data;
@@ -110,7 +123,7 @@ describe('Downloads Chart Selectors', () => {
     });
 
     it('should include podcast regardless of whether or not it is set to charted', () => {
-      store.dispatch(new ACTIONS.ChartTogglePodcastAction({id: podcast.id, charted: false}));
+      dispatchHelper.dispatchPodcastDownloadsChartToggle(store);
       expect(result).not.toBeUndefined();
       expect(result[0].label).toContain('All Episodes');
     });
@@ -120,17 +133,9 @@ describe('Downloads Chart Selectors', () => {
     let result: TimeseriesChartModel[];
 
     beforeEach(() => {
-      store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerParams: {...routerParams, chartType: <ChartType>CHARTTYPE_EPISODES}}));
-      store.dispatch(new ACTIONS.CastleEpisodePageSuccessAction({
-        episodes,
-        page: 1,
-        per: EPISODE_PAGE_SIZE,
-        total: episodes.length
-      }));
-      store.dispatch(new ACTIONS.CastleEpisodeDownloadsSuccessAction({
-        podcastId: episodes[0].podcastId, page: episodes[0].page, guid: episodes[0].guid, downloads: ep0Downloads}));
-      store.dispatch(new ACTIONS.CastleEpisodeDownloadsSuccessAction({
-        podcastId: episodes[1].podcastId, page: episodes[1].page, guid: episodes[1].guid, downloads: ep1Downloads}));
+      dispatchHelper.dispatchRouterNavigation(store, {...routerParams, chartType: <ChartType>CHARTTYPE_EPISODES});
+      dispatchHelper.dispatchEpisodePage(store);
+      dispatchHelper.dispatchEpisodeDownloads(store);
 
       store.pipe(select(selectDownloadChartMetrics)).subscribe((data) => {
         result = data;
@@ -155,15 +160,11 @@ describe('Downloads Chart Selectors', () => {
     });
 
     it('should add first part of guid string to non unique episode titles', () => {
-      store.dispatch(new ACTIONS.CastleEpisodePageSuccessAction({
-        episodes: [
+      dispatchHelper.dispatchEpisodePage(store,
+        [
           episodes[0],
           {...episodes[1], title: episodes[0].title}
-        ],
-        page: 1,
-        per: EPISODE_PAGE_SIZE,
-        total: episodes.length
-      }));
+        ]);
 
       expect(result[0].label.indexOf(episodes[0].guid.split('-')[0].substr(0, 10))).toBeGreaterThan(-1);
     });

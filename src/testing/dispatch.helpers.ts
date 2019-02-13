@@ -25,10 +25,10 @@ export const dispatchPodcasts = (store: Store<any>, podcast?: Podcast) => {
     {podcasts: [podcast || fixtures.podcast], page: 1, total: 1}));
 };
 
-export const dispatchEpisodePage = (store: Store<any>, episodes?: Episode[]) => {
+export const dispatchEpisodePage = (store: Store<any>, episodes?: Episode[], page?: number) => {
   store.dispatch(new ACTIONS.CastleEpisodePageSuccessAction({
     episodes: episodes || fixtures.episodes,
-    page: 1,
+    page: page || 1,
     per: EPISODE_PAGE_SIZE,
     total: episodes && episodes.length || fixtures.episodes.length
   }));

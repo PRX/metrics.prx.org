@@ -23,20 +23,15 @@ export const episodeDownloadMetrics =
   if (episodes.length && episodeDownloads && episodeDownloads.length) {
     return episodes
       .sort((a: Episode, b: Episode) => b.publishedAt.valueOf() - a.publishedAt.valueOf())
-      .map((episode: Episode) => {
-        return {
-          guid: episode.guid,
-          label: episode.title,
-          publishedAt: episode.publishedAt
-        };
-      })
       .filter(episode => {
         const data = episodeDownloads.find(e => e.guid === episode.guid);
         return data && data.downloads && data.downloads.length;
       })
-      .map((episode) => {
+      .map((episode: Episode) => {
         return {
-          ...episode,
+          guid: episode.guid,
+          label: episode.title,
+          publishedAt: episode.publishedAt,
           data: episodeDownloads.find(e => e.guid === episode.guid).downloads
         };
       });

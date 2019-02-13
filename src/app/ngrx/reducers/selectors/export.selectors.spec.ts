@@ -203,7 +203,6 @@ describe('Export Selectors', () => {
       });
     });
 
-
     it('chart toggle should filter data from export', () => {
       dispatchHelper.dispatchRouterNavigation(store,
         {metricsType: METRICSTYPE_TRAFFICSOURCES, group: GROUPTYPE_AGENTNAME, chartType: CHARTTYPE_STACKED});
@@ -212,6 +211,48 @@ describe('Export Selectors', () => {
       store.pipe(select(fromExport.selectRoutedPodcastExportRanks)).subscribe(exportData => {
         expect(exportData.length).toEqual(fixtures.podcastAgentNameRanks.length - 1);
         expect(exportData[0].data.length).toEqual(fixtures.podcastAgentNameDownloads.length);
+      });
+    });
+  });
+
+  describe('Routed Export Data', () => {
+    beforeEach(() => {
+      dispatchHelper.dispatchPodcasts(store);
+      dispatchHelper.dispatchEpisodePage(store);
+      dispatchHelper.dispatchPodcastDownloads(store);
+      dispatchHelper.dispatchEpisodeDownloads(store);
+      dispatchHelper.dispatchEpisodeSelectList(store);
+      dispatchHelper.dispatchPodcastRanks(store);
+      dispatchHelper.dispatchPodcastTotals(store);
+      dispatchHelper.dispatchEpisodeRanks(store,
+        {group: GROUPTYPE_GEOMETRO, interval: INTERVAL_DAILY},
+        fixtures.episodes[0].guid, fixtures.ep0GeoMetroRanks, fixtures.ep0GeoMetroDownloads);
+      dispatchHelper.dispatchEpisodeTotals(store,
+        {group: GROUPTYPE_GEOMETRO},
+        fixtures.episodes[0].guid, fixtures.ep0GeoMetroRanks);
+    });
+
+    it('should get export data according to router and selected episode state', () => {
+      dispatchHelper.dispatchRouterNavigation(store, {chartType: CHARTTYPE_STACKED, metricsType: METRICSTYPE_DOWNLOADS});
+      store.pipe(select(fromExport.selectExportData), first()).subscribe(exportData => {
+        expect(exportData.length).toEqual(fixtures.episodes.length + 1);
+        expect(exportData[1].label).toEqual(fixtures.episodes[0].title);
+        expect(exportData[0].label).toEqual('All Episodes');
+      });
+
+      dispatchHelper.dispatchRouterNavigation(store,
+        {metricsType: METRICSTYPE_DEMOGRAPHICS, group: GROUPTYPE_GEOCOUNTRY, chartType: CHARTTYPE_GEOCHART});
+      store.pipe(select(fromExport.selectExportData), first()).subscribe(exportData => {
+        expect(exportData.length).toEqual(fixtures.podcastGeoCountryRanks.length);
+        expect(exportData[0].total).toBeGreaterThan(0);
+      });
+
+      dispatchHelper.dispatchRouterNavigation(store,
+        {metricsType: METRICSTYPE_DEMOGRAPHICS, group: GROUPTYPE_GEOMETRO, chartType: CHARTTYPE_STACKED});
+      dispatchHelper.dispatchSelectEpisodes(store, [fixtures.episodes[0].guid]);
+      store.pipe(select(fromExport.selectExportData)).subscribe(exportData => {
+        expect(exportData.length).toEqual(fixtures.ep0GeoMetroRanks.length);
+        expect(exportData[0].data.length).toEqual(fixtures.ep0GeoMetroDownloads.length);
       });
     });
   });

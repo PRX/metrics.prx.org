@@ -8,4 +8,4 @@ export { RouterParams, DownloadsTableModel,
   METRICSTYPE_DOWNLOADS, METRICSTYPE_DEMOGRAPHICS, METRICSTYPE_TRAFFICSOURCES, MetricsType,
   GROUPTYPE_AGENTNAME, GROUPTYPE_AGENTOS, GROUPTYPE_AGENTTYPE,
   GROUPTYPE_GEOCOUNTRY, GROUPTYPE_GEOMETRO, GROUPTYPE_GEOSUBDIV, GroupType, getGroupName,
-  Rank, PodcastRanks, PodcastTotals, TotalsTableRow, GroupCharted, EpisodeRanks, EpisodeTotals, User } from './reducers/models';
+  Rank, PodcastRanks, PodcastTotals, TotalsTableRow, GroupCharted, EpisodeRanks, EpisodeTotals, User, ExportData } from './reducers/models';

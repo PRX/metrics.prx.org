@@ -4,6 +4,7 @@ import { Store, select } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
 import { map } from 'rxjs/operators/map';
 import { selectExportData, toCsvArray, joinCsvArray } from '../../../ngrx/reducers/selectors';
+import { ExportData } from '../../../ngrx';
 
 @Component({
   selector: 'metrics-export-dropdown',
@@ -23,7 +24,7 @@ import { selectExportData, toCsvArray, joinCsvArray } from '../../../ngrx/reduce
   styleUrls: ['../../dropdown/dropdown.css', './export-dropdown.component.css']
 })
 export class ExportDropdownComponent implements OnInit {
-  exportData$ = new Observable<{label: string, guid?: string, total?: number, data?: any[][]}[]>();
+  exportData$ = new Observable<ExportData[]>();
   exportDataCsv$ = new Observable<SafeUrl>();
   open = false;
   @HostListener('window: scroll', [])

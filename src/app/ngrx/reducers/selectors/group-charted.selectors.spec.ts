@@ -1,18 +1,15 @@
 import { TestBed } from '@angular/core/testing';
 import { StoreModule, Store, select } from '@ngrx/store';
+import { first } from 'rxjs/operators/first';
 
 import * as fromGroupCharted from './group-charted.selectors';
 import { RootState, reducers } from '..';
-import { EpisodeTotals, GROUPTYPE_AGENTNAME, METRICSTYPE_TRAFFICSOURCES, TotalsTableRow, GroupCharted } from '../models';
+import { GROUPTYPE_AGENTNAME, METRICSTYPE_TRAFFICSOURCES, GroupCharted } from '../models';
 import * as ACTIONS from '../../actions';
-import { routerParams, episodes, ep0AgentNameRanks, ep0AgentNameDownloads } from '../../../../testing/downloads.fixtures';
+import * as dispatchHelpers from '../../../../testing/dispatch.helpers';
 
 describe('Group Charted Selectors', () => {
   let store: Store<RootState>;
-  const { interval, beginDate, endDate } = routerParams,
-    metricsType = METRICSTYPE_TRAFFICSOURCES,
-    group = GROUPTYPE_AGENTNAME,
-    filter = 'US';
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -22,15 +19,20 @@ describe('Group Charted Selectors', () => {
     });
     store = TestBed.get(Store);
 
-    store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerParams: {...routerParams, metricsType, group, filter}}));
-    store.dispatch(new ACTIONS.CastleEpisodeRanksSuccessAction({
-      guid: episodes[0].guid, group, interval, beginDate, endDate,
-      ranks: ep0AgentNameRanks, downloads: ep0AgentNameDownloads}));
+    dispatchHelpers.dispatchRouterNavigation(store, {metricsType: METRICSTYPE_TRAFFICSOURCES, group: GROUPTYPE_AGENTNAME});
   });
 
-  it('should groups charted on initial load', () => {
-    store.pipe(select(fromGroupCharted.selectRoutedGroupCharted)).subscribe((groups: GroupCharted[]) => {
-      expect(groups.every(g => g.charted)).toBeTruthy();
+  it('should have just the toggled groups charted status', () => {
+    store.dispatch(new ACTIONS.ChartToggleGroupAction({group: GROUPTYPE_AGENTNAME, groupName: 'Unknown', charted: false}));
+    store.pipe(select(fromGroupCharted.selectRoutedGroupCharted), first()).subscribe((groups: GroupCharted[]) => {
+      expect(groups.length).toEqual(1);
+      expect(groups.find(g => g.groupName === 'Unknown').charted).toBeFalsy();
+    });
+
+    store.dispatch(new ACTIONS.ChartToggleGroupAction({group: GROUPTYPE_AGENTNAME, groupName: 'Overcast', charted: true}));
+    store.pipe(select(fromGroupCharted.selectRoutedGroupCharted), first()).subscribe((groups: GroupCharted[]) => {
+      expect(groups.length).toEqual(2);
+      expect(groups.find(g => g.groupName === 'Overcast').charted).toBeTruthy();
     });
   });
 

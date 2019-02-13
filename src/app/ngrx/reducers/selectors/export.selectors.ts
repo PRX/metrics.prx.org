@@ -1,9 +1,9 @@
 import { createSelector } from '@ngrx/store';
-import { Episode, EpisodeDownloads, PodcastDownloads, RouterParams, PodcastRanks, EpisodeRanks, PodcastTotals, EpisodeTotals, Rank,
-  GROUPTYPE_GEOCOUNTRY, GROUPTYPE_GEOMETRO, GroupCharted,
+import { Episode, EpisodeDownloads, PodcastDownloads, RouterParams,
+  PodcastRanks, EpisodeRanks, PodcastTotals, EpisodeTotals, Rank, ExportData,
+  GROUPTYPE_GEOCOUNTRY, GroupCharted,
   CHARTTYPE_EPISODES, CHARTTYPE_PODCAST, CHARTTYPE_STACKED, CHARTTYPE_GEOCHART, CHARTTYPE_HORIZBAR,
-  METRICSTYPE_DOWNLOADS, 
-  METRICSTYPE_TRAFFICSOURCES} from '../models';
+  METRICSTYPE_DOWNLOADS } from '../models';
 import { selectRouter } from './router.selectors';
 import { selectRoutedPageEpisodes } from './episode.selectors';
 import { selectRoutedPodcastDownloads } from './podcast-downloads.selectors';
@@ -27,8 +27,8 @@ export const selectExportDownloads = createSelector(
   (routerParams: RouterParams,
   episodes: Episode[],
   PodcastDownloads: PodcastDownloads,
-  episodeDownloads: EpisodeDownloads[]): {label: string, guid?: string, data: any[][]}[] => {
-  let chartedPodcastDownloads, chartedEpisodeDownloads;
+  episodeDownloads: EpisodeDownloads[]): ExportData[] => {
+  let chartedPodcastDownloads: ExportData, chartedEpisodeDownloads: ExportData[];
 
   if (routerParams.chartType === CHARTTYPE_PODCAST || routerParams.chartType === CHARTTYPE_STACKED) {
     chartedPodcastDownloads = podcastDownloadMetrics(PodcastDownloads);
@@ -41,7 +41,7 @@ export const selectExportDownloads = createSelector(
     }
   }
 
-  let exportData;
+  let exportData: ExportData[];
   switch (routerParams.chartType) {
     case CHARTTYPE_STACKED:
       if (chartedPodcastDownloads && PodcastDownloads.charted &&
@@ -68,19 +68,18 @@ export const selectExportDownloads = createSelector(
   return exportData;
 });
 
-export const toCsvArray = (downloads: {label: string, guid?: string, publishedAt?: Date, total?: number, data?: any[][]}[]): string[][] => {
+export const toCsvArray = (downloads: ExportData[]): string[][] => {
   if (downloads && downloads.length) {
     const hasGuidCol = downloads.length > 1 && downloads[1].guid;
     const hasPubDateCol = downloads.length > 1 && downloads[1].publishedAt;
     const hasTotalCol = downloads.length > 1 && downloads[1].total;
     const hasDataCols = !!downloads[0].data;
     const csvRows = [
-      'data:text/csv;charset=utf-8',
       hasGuidCol ? 'Title' : '""',
       ...(hasGuidCol ? ['GUID'] : []),
       ...(hasPubDateCol ? ['Release Date'] : []),
       ...(hasTotalCol ? ['Total'] : []),
-      ...(hasDataCols ? downloads[0].data.map(col => ISODate(col[0])) : [])
+      ...(hasDataCols ? downloads[0].data.map(col => ISODate(col[0])) : []) // TODO: WHAT ABOUT HOURLY FORMAT THOUGH?
     ];
     return [csvRows].concat(downloads.map(d => [
       `"${d.label}"`,
@@ -98,14 +97,14 @@ export const joinCsvArray = (data: string[][]): string => {
       acc += row.join(',') + '\r\n';
     }
     return acc;
-  }, '');
+  }, 'data:text/csv;charset=utf-8,');
 };
 
 export const podcastExportRanks =
   (routerParams: RouterParams,
   podcastRanks: PodcastRanks,
   podcastTotals: PodcastTotals,
-  groupsCharted?: GroupCharted[]): {label: string, total?: number, data?: any[][]}[] => {
+  groupsCharted?: GroupCharted[]): ExportData[] => {
   if (routerParams.chartType === CHARTTYPE_GEOCHART || routerParams.chartType === CHARTTYPE_HORIZBAR) {
     // export totals because it has all
     if (podcastTotals && podcastTotals.ranks) {

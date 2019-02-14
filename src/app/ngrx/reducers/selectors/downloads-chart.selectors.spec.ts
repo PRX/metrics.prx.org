@@ -6,7 +6,7 @@ import { ChartType, CHARTTYPE_STACKED, CHARTTYPE_PODCAST, CHARTTYPE_EPISODES } f
 import { getTotal } from '../../../shared/util/chart.util';
 import { TimeseriesChartModel } from 'ngx-prx-styleguide';
 import * as dispatchHelper from '../../../../testing/dispatch.helpers';
-import { routerParams, episodes, podcast,
+import { routerParams, episodes,
   podDownloads, ep0Downloads, ep1Downloads } from '../../../../testing/downloads.fixtures';
 import * as ACTIONS from '../../actions';
 import { episodeDownloadMetrics, selectDownloadChartMetrics } from './downloads-chart.selectors';

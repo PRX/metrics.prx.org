@@ -100,7 +100,7 @@ describe('Downloads Chart Selectors', () => {
     });
   });
 
-  describe('single line podcast chart', () => {
+  describe('bar podcast chart', () => {
     let result: TimeseriesChartModel[];
 
     beforeEach(() => {
@@ -126,6 +126,11 @@ describe('Downloads Chart Selectors', () => {
       dispatchHelper.dispatchPodcastDownloadsChartToggle(store);
       expect(result).not.toBeUndefined();
       expect(result[0].label).toContain('All Episodes');
+    });
+
+    it('should not have data if podcast downloads not loaded', () => {
+      dispatchHelper.dispatchRouterNavigation(store, {...routerParams, podcastId: '12345'});
+      expect(result).toBeUndefined();
     });
   });
 

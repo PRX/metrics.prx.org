@@ -53,11 +53,13 @@ export const selectDownloadChartMetrics = createSelector(
     if (routerParams.chartType === CHARTTYPE_PODCAST ||
       (PodcastDownloads && PodcastDownloads.charted && routerParams.chartType === CHARTTYPE_STACKED)) {
       const downloads = podcastDownloadMetrics(PodcastDownloads);
-      chartedPodcastDownloads = {
-        ...downloads,
-        data: mapMetricsToTimeseriesData(downloads.data),
-        color: routerParams.chartType === CHARTTYPE_PODCAST ? standardColor : neutralColor
-      };
+      if (downloads) {
+        chartedPodcastDownloads = {
+          ...downloads,
+          data: mapMetricsToTimeseriesData(downloads.data),
+          color: routerParams.chartType === CHARTTYPE_PODCAST ? standardColor : neutralColor
+        };
+      }
     }
 
     if (routerParams.chartType === CHARTTYPE_EPISODES || routerParams.chartType === CHARTTYPE_STACKED) {

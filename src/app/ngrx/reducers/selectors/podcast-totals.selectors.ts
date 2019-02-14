@@ -5,7 +5,7 @@ import { PodcastTotals, Rank, podcastTotalsKey,
   GroupType, GROUPTYPE_GEOSUBDIV } from '../models';
 import { selectPodcastRoute, selectGroupRoute,
   selectFilterRoute, selectBeginDateRoute, selectEndDateRoute } from './router.selectors';
-import { getColor } from '../../../shared/util/chart.util';
+import { getColor, isGroupCharted } from '../../../shared/util/chart.util';
 import { selectRoutedGroupCharted } from './group-charted.selectors';
 
 export const selectPodcastTotalsState = createFeatureSelector<fromPodcastTotals.State>('podcastTotals');
@@ -112,7 +112,7 @@ export const selectRoutedPodcastTotalsTableMetrics = createSelector(
           label: rank.label,
           value: rank.total,
           percent,
-          charted: groupsCharted.filter(group => group.charted).map(group => group.groupName).indexOf(rank.label) > -1
+          charted: isGroupCharted(groupsCharted, rank.label)
         };
       });
     }

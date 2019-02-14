@@ -1,7 +1,6 @@
 import { EntityState, EntityAdapter, createEntityAdapter } from '@ngrx/entity';
 import { ActionTypes, AllActions } from '../actions';
 import { Episode, EpisodeDownloads } from './models';
-import { UpdateStr } from '@ngrx/entity/src/models';
 
 export type State = EntityState<EpisodeDownloads>;
 

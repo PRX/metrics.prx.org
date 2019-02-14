@@ -22,10 +22,10 @@ export const selectEpisodeDownloadsLoading = createSelector(selectAllEpisodeDown
   return downloads.some((d: EpisodeDownloads) => d.loading);
 });
 export const selectEpisodeDownloadsLoaded = createSelector(selectAllEpisodeDownloads, (downloads: EpisodeDownloads[]) => {
-  return downloads.every((m: EpisodeDownloads) => m.loaded || m.loaded === undefined);
+  return downloads.every((d: EpisodeDownloads) => d.loaded || d.loaded === undefined);
 });
 export const selectEpisodeDownloadsError = createSelector(selectAllEpisodeDownloads, (downloads: EpisodeDownloads[]) => {
-  return downloads.filter(m => m.error);
+  return downloads.filter(d => d.error);
 });
 export const selectRoutedEpisodePageDownloads = createSelector(selectPodcastRoute, selectPageRoute, selectAllEpisodeDownloads,
   (podcastId: string, page: number, downloads: EpisodeDownloads[]) => {
@@ -35,5 +35,5 @@ export const selectRoutedEpisodePageDownloadsLoaded = createSelector(selectPodca
   (podcastId: string, page: number, downloads: EpisodeDownloads[]) => {
     return downloads
       .filter((d: EpisodeDownloads) => d.podcastId === podcastId && page === d.page)
-      .every((m: EpisodeDownloads) => m.loaded || m.loaded === undefined);
+      .every((d: EpisodeDownloads) => d.loaded || d.loaded === undefined);
   });

@@ -13,6 +13,7 @@ export * from './episode-totals.selectors';
 export * from './downloads-chart.selectors';
 export * from './downloads-table.selectors';
 export * from './downloads-summary.selectors';
+export * from './export.selectors';
 export * from './loading.selectors';
 export * from './loaded.selectors';
 export * from './error.selectors';

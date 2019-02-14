@@ -21,7 +21,7 @@ import { selectPodcastRoute,
   selectBeginDateRoute,
   selectEndDateRoute } from './router.selectors';
 import { CategoryChartModel, TimeseriesChartModel } from 'ngx-prx-styleguide';
-import { getColor, neutralColor, mapMetricsToTimeseriesData } from '../../../shared/util/chart.util';
+import { getColor, neutralColor, mapMetricsToTimeseriesData, isGroupCharted } from '../../../shared/util/chart.util';
 import { selectRoutedGroupCharted } from './group-charted.selectors';
 
 export const selectPodcastRanksState = createFeatureSelector<fromPodcastRanks.State>('podcastRanks');
@@ -132,8 +132,7 @@ export const selectRoutedPodcastRanksChartMetrics = createSelector(
             label: rank.label
           };
         }).filter((entry: CategoryChartModel) => {
-          return (entry.label !== 'Other' || entry.value !== 0) &&
-            groupsCharted.filter(group => group.charted).map(group => group.groupName).indexOf(entry.label) > -1;
+          return (entry.label !== 'Other' || entry.value !== 0) && isGroupCharted(groupsCharted, entry.label);
         });
       } else {
         return podcastRanks.ranks
@@ -147,9 +146,8 @@ export const selectRoutedPodcastRanksChartMetrics = createSelector(
             };
           })
           .filter((entry: TimeseriesChartModel) => {
-            return groupsCharted.find(g => g.charted && g.groupName === entry.label &&
-              ((groupRoute !== GROUPTYPE_GEOCOUNTRY &&
-                groupRoute !== GROUPTYPE_GEOMETRO) || entry.label !== 'Other'));
+            return isGroupCharted(groupsCharted, entry.label) &&
+              !((groupRoute === GROUPTYPE_GEOCOUNTRY || groupRoute === GROUPTYPE_GEOMETRO) && entry.label === 'Other');
           });
       }
     }

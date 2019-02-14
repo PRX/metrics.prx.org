@@ -27,22 +27,6 @@ export function reducer(
       }, state);
     }
 
-    // when ranks are loaded, add them to state
-    // addMany does not overwrite, so this will just initialize the entries
-    case ActionTypes.CASTLE_PODCAST_RANKS_SUCCESS:
-    case ActionTypes.CASTLE_EPISODE_RANKS_SUCCESS: {
-      const { group, ranks } = action.payload;
-      const groupsCharted = ranks.map((rank: Rank) => {
-        return {
-          key: `${group}-${rank.label}`,
-          group,
-          groupName: rank.label,
-          charted: true
-        };
-      });
-      return adapter.addMany(groupsCharted, state);
-    }
-
     default: {
       return state;
     }

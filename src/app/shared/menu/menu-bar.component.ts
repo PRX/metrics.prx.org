@@ -16,6 +16,8 @@ import { RouterParams, IntervalModel, MetricsType, ChartType, METRICSTYPE_DOWNLO
     <div class="menu-bar">
       <metrics-type-heading [routerParams]="routerParams$ | async"></metrics-type-heading>
       <div class="menu-dropdowns">
+        <metrics-export-dropdown></metrics-export-dropdown>
+        <div class="separator"></div>
         <metrics-episode-select *ngIf="(metricsType$ | async) !== downloads"></metrics-episode-select>
         <div class="separator" *ngIf="(metricsType$ | async) !== downloads"></div>
         <metrics-interval-dropdown [routerParams]="routerParams$ | async"></metrics-interval-dropdown>

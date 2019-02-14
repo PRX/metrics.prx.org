@@ -50,6 +50,9 @@ metrics-standard-date-range-dropdown {
   metrics-type-heading {
     display: none;
   }
+  metrics-export-dropdown {
+    display: none;
+  }
   .separator {
     display: none;
   }

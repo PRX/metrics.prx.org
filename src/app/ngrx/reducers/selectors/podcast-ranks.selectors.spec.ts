@@ -3,10 +3,9 @@ import { select, Store, StoreModule } from '@ngrx/store';
 import { reducers, RootState } from '../';
 import {
   ChartType, CHARTTYPE_STACKED, CHARTTYPE_HORIZBAR,
-  GroupType, GROUPTYPE_GEOCOUNTRY, GROUPTYPE_GEOSUBDIV, GROUPTYPE_AGENTNAME,
-  MetricsType, METRICSTYPE_DEMOGRAPHICS, METRICSTYPE_TRAFFICSOURCES, GROUPTYPE_AGENTTYPE
+  GROUPTYPE_GEOCOUNTRY, GROUPTYPE_GEOSUBDIV, GROUPTYPE_AGENTNAME,
+  MetricsType, METRICSTYPE_DEMOGRAPHICS, METRICSTYPE_TRAFFICSOURCES, GROUPTYPE_AGENTTYPE, CHARTTYPE_LINE
 } from '../models';
-import * as ACTIONS from '../../actions';
 import {
   podcastGeoCountryDownloads,
   podcastGeoCountryRanks,
@@ -16,8 +15,9 @@ import {
   podcastAgentNameRanks,
   podcastAgentTypeDownloads,
   podcastAgentTypeRanks,
-  routerParams as downloadParams
+  routerParams
 } from '../../../../testing/downloads.fixtures';
+import * as dispatchHelper from '../../../../testing/dispatch.helpers';
 import { CategoryChartModel, TimeseriesChartModel } from 'ngx-prx-styleguide';
 import * as podcastRanks from './podcast-ranks.selectors';
 
@@ -33,86 +33,73 @@ describe('Podcast Ranks Selectors', () => {
     store = TestBed.get(Store);
   });
 
-  const routerParams = {
-    ...downloadParams,
-    metricsType: <MetricsType>METRICSTYPE_DEMOGRAPHICS,
-    group: <GroupType>GROUPTYPE_GEOCOUNTRY,
-    chartType: <ChartType>CHARTTYPE_STACKED
-  };
-
   function dispatchRouteGeoCountry() {
-    store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerParams}));
+    dispatchHelper.dispatchRouterNavigation(store, {
+      ...routerParams,
+      metricsType: METRICSTYPE_DEMOGRAPHICS,
+      group: GROUPTYPE_GEOCOUNTRY,
+      chartType: CHARTTYPE_STACKED
+    });
   }
 
   function dispatchRouteGeoSubdiv() {
-    store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerParams: {...routerParams, filter: 'US'}}));
-  }
-
-  function dispatchRouteAgentName() {
-    store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerParams: {
+    dispatchHelper.dispatchRouterNavigation(store, {
       ...routerParams,
-        metricsType: <MetricsType>METRICSTYPE_TRAFFICSOURCES,
-        group: <GroupType>GROUPTYPE_AGENTNAME,
-        chartType: <ChartType>CHARTTYPE_HORIZBAR
-    }}));
+      metricsType: <MetricsType>METRICSTYPE_DEMOGRAPHICS,
+      group: GROUPTYPE_GEOCOUNTRY,
+      filter: 'US',
+      chartType: CHARTTYPE_STACKED
+    });
   }
 
-  function dispatchRouteAgentType() {
-    store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerParams: {
-        ...routerParams,
-        metricsType: <MetricsType>METRICSTYPE_TRAFFICSOURCES,
-        group: <GroupType>GROUPTYPE_AGENTTYPE,
-        chartType: <ChartType>CHARTTYPE_HORIZBAR
-      }}));
+  function dispatchRouteAgentName(chartType: ChartType) {
+    dispatchHelper.dispatchRouterNavigation(store, {
+      ...routerParams,
+        metricsType: METRICSTYPE_TRAFFICSOURCES,
+        group: GROUPTYPE_AGENTNAME,
+        chartType
+    });
+  }
+
+  function dispatchRouteAgentType(chartType: ChartType) {
+    dispatchHelper.dispatchRouterNavigation(store, {
+      ...routerParams,
+        metricsType: METRICSTYPE_TRAFFICSOURCES,
+        group: GROUPTYPE_AGENTTYPE,
+        chartType
+    });
   }
 
   function dispatchPodcastGeoCountryRanks() {
-    store.dispatch(new ACTIONS.CastlePodcastRanksSuccessAction({
-      id: routerParams.podcastId,
-      group: GROUPTYPE_GEOCOUNTRY,
-      interval: routerParams.interval,
-      beginDate: routerParams.beginDate,
-      endDate: routerParams.endDate,
-      ranks: podcastGeoCountryRanks,
-      downloads: podcastGeoCountryDownloads
-    }));
+    dispatchHelper.dispatchPodcastRanks(store,
+      {group: GROUPTYPE_GEOCOUNTRY},
+      podcastGeoCountryRanks,
+      podcastGeoCountryDownloads);
   }
 
   function dispatchPodcastNestedRanks() {
-    store.dispatch(new ACTIONS.CastlePodcastRanksSuccessAction({
-      id: routerParams.podcastId,
-      group: GROUPTYPE_GEOSUBDIV,
-      interval: routerParams.interval,
-      filter: 'US',
-      beginDate: routerParams.beginDate,
-      endDate: routerParams.endDate,
-      ranks: podcastGeoSubdivRanks,
-      downloads: podcastGeoSubdivDownloads
-    }));
+    dispatchHelper.dispatchPodcastRanks(store,
+      {group: GROUPTYPE_GEOSUBDIV, filter: 'US'},
+      podcastGeoSubdivRanks,
+      podcastGeoSubdivDownloads);
   }
 
   function dispatchPodcastAgentNameRanks() {
-    store.dispatch(new ACTIONS.CastlePodcastRanksSuccessAction({
-      id: routerParams.podcastId,
-      group: GROUPTYPE_AGENTNAME,
-      interval: routerParams.interval,
-      beginDate: routerParams.beginDate,
-      endDate: routerParams.endDate,
-      ranks: podcastAgentNameRanks,
-      downloads: podcastAgentNameDownloads
-    }));
+    dispatchHelper.dispatchPodcastRanks(store,
+      {group: GROUPTYPE_AGENTNAME},
+      podcastAgentNameRanks,
+      podcastAgentNameDownloads);
   }
 
   function dispatchPodcastAgentTypeRanks() {
-    store.dispatch(new ACTIONS.CastlePodcastRanksSuccessAction({
-      id: routerParams.podcastId,
-      group: GROUPTYPE_AGENTTYPE,
-      interval: routerParams.interval,
-      beginDate: routerParams.beginDate,
-      endDate: routerParams.endDate,
-      ranks: podcastAgentTypeRanks,
-      downloads: podcastAgentTypeDownloads
-    }));
+    dispatchHelper.dispatchPodcastRanks(store,
+      {group: GROUPTYPE_AGENTTYPE},
+      podcastAgentTypeRanks,
+      podcastAgentTypeDownloads);
+  }
+
+  function dispatchPodcastToggleGroupCharted(groupName: string) {
+    dispatchHelper.dispatchGroupChartToggle(store, GROUPTYPE_AGENTTYPE, groupName);
   }
 
   describe('geo podcast ranks', () => {
@@ -143,14 +130,16 @@ describe('Podcast Ranks Selectors', () => {
 
   describe('totals (horizontal bar) podcast ranks', () => {
     let result: CategoryChartModel[];
-
-    it('should transform podcast ranks to category chart model', () => {
-      dispatchRouteAgentName();
+    beforeEach(() => {
       dispatchPodcastAgentNameRanks();
-
+      dispatchPodcastAgentTypeRanks();
       store.pipe(select(podcastRanks.selectRoutedPodcastRanksChartMetrics)).subscribe((data) => {
         result = <CategoryChartModel[]>data;
       });
+    });
+
+    it('should transform podcast ranks to category chart model', () => {
+      dispatchRouteAgentName(CHARTTYPE_HORIZBAR);
 
       expect(result.length).toEqual(podcastAgentNameRanks.length);
       expect(result[0].label).toEqual(podcastAgentNameRanks[0].label);
@@ -160,8 +149,7 @@ describe('Podcast Ranks Selectors', () => {
     });
 
     it('should not include "Other" data if total value is zero', () => {
-      dispatchRouteAgentType();
-      dispatchPodcastAgentTypeRanks();
+      dispatchRouteAgentType(CHARTTYPE_HORIZBAR);
 
       store.pipe(select(podcastRanks.selectRoutedPodcastRanksChartMetrics)).subscribe((data) => {
         result = <CategoryChartModel[]>data;
@@ -169,6 +157,53 @@ describe('Podcast Ranks Selectors', () => {
 
       expect(result.length).toEqual(podcastAgentTypeRanks.length - 1);
       expect(result.find(r => r.label === 'Other')).toBeUndefined();
+    });
+
+    it('should filter by groups charted and assume groups are charted implicitly', () => {
+      dispatchRouteAgentType(CHARTTYPE_HORIZBAR);
+
+      store.pipe(select(podcastRanks.selectRoutedPodcastRanksChartMetrics)).subscribe((data) => {
+        result = <CategoryChartModel[]>data;
+      });
+
+      expect(result.length).toEqual(podcastAgentTypeRanks.length - 1);
+      dispatchPodcastToggleGroupCharted('Unknown');
+      expect(result.length).toEqual(podcastAgentTypeRanks.length - 2);
+      expect(result.find(r => r.label === 'Unknown')).toBeUndefined();
+    });
+  });
+
+  describe('intervals (multiline/stacked) podcast ranks', () => {
+    let result: TimeseriesChartModel[];
+    beforeEach(() => {
+      dispatchPodcastAgentTypeRanks();
+      store.pipe(select(podcastRanks.selectRoutedPodcastRanksChartMetrics)).subscribe((data) => {
+        result = <TimeseriesChartModel[]>data;
+      });
+    });
+
+    it('should not include "Other" data if total value is zero', () => {
+      dispatchRouteAgentType(CHARTTYPE_STACKED);
+
+      store.pipe(select(podcastRanks.selectRoutedPodcastRanksChartMetrics)).subscribe((data) => {
+        result = <TimeseriesChartModel[]>data;
+      });
+
+      expect(result.length).toEqual(podcastAgentTypeRanks.length - 1);
+      expect(result.find(r => r.label === 'Other')).toBeUndefined();
+    });
+
+    it('should filter by groups charted and assume groups are charted implicitly', () => {
+      dispatchRouteAgentType(CHARTTYPE_LINE);
+
+      store.pipe(select(podcastRanks.selectRoutedPodcastRanksChartMetrics)).subscribe((data) => {
+        result = <TimeseriesChartModel[]>data;
+      });
+
+      expect(result.length).toEqual(podcastAgentTypeRanks.length - 1);
+      dispatchPodcastToggleGroupCharted('Unknown');
+      expect(result.length).toEqual(podcastAgentTypeRanks.length - 2);
+      expect(result.find(r => r.label === 'Unknown')).toBeUndefined();
     });
   });
 

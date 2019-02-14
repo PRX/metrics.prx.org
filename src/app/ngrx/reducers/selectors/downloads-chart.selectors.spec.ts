@@ -6,7 +6,7 @@ import { ChartType, CHARTTYPE_STACKED, CHARTTYPE_PODCAST, CHARTTYPE_EPISODES } f
 import { getTotal } from '../../../shared/util/chart.util';
 import { TimeseriesChartModel } from 'ngx-prx-styleguide';
 import * as dispatchHelper from '../../../../testing/dispatch.helpers';
-import { routerParams, episodes,
+import { routerParams, episodes, podcast,
   podDownloads, ep0Downloads, ep1Downloads } from '../../../../testing/downloads.fixtures';
 import * as ACTIONS from '../../actions';
 import { episodeDownloadMetrics, selectDownloadChartMetrics } from './downloads-chart.selectors';
@@ -100,7 +100,7 @@ describe('Downloads Chart Selectors', () => {
     });
   });
 
-  describe('single line podcast chart', () => {
+  describe('bar podcast chart', () => {
     let result: TimeseriesChartModel[];
 
     beforeEach(() => {
@@ -126,6 +126,11 @@ describe('Downloads Chart Selectors', () => {
       dispatchHelper.dispatchPodcastDownloadsChartToggle(store);
       expect(result).not.toBeUndefined();
       expect(result[0].label).toContain('All Episodes');
+    });
+
+    it('should not have data if podcast downloads not loaded', () => {
+      dispatchHelper.dispatchRouterNavigation(store, {...routerParams, podcastId: '12345'});
+      expect(result).toBeUndefined();
     });
   });
 

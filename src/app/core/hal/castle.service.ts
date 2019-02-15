@@ -14,7 +14,7 @@ export class CastleService extends HalBaseService {
   }
 
   get ttl(): number {
-    return Env.CMS_TTL;
+    return Env.CASTLE_TTL;
   }
 
 }

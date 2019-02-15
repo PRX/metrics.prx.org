@@ -25,3 +25,4 @@ CASTLE_TTL=
 
 # Google Geochart API Key
 GOOGLE_API_KEY=
+GOOGLE_CLIENT_ID=

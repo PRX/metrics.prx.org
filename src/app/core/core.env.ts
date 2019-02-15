@@ -8,7 +8,8 @@ const DEFAULTS = {
   CASTLE_HOST: 'castle.prx.org',
   CASTLE_TTL: 1, // 1 second
   GA_KEY: '',
-  GOOGLE_API_KEY: ''
+  GOOGLE_API_KEY: '',
+  GOOGLE_CLIENT_ID: ''
 };
 
 const addScheme = (name: string, value: any): any => {
@@ -35,4 +36,5 @@ export class Env {
   public static get CASTLE_TTL():            number { return getVar('CASTLE_TTL'); }
   public static get GA_KEY():                string { return getVar('GA_KEY'); }
   public static get GOOGLE_API_KEY():        string { return getVar('GOOGLE_API_KEY'); }
+  public static get GOOGLE_CLIENT_ID():      string { return getVar('GOOGLE_CLIENT_ID'); }
 }

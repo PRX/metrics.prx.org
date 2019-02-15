@@ -85,7 +85,7 @@ export const toCsvArray = (downloads: ExportData[], dateFormat: Function): strin
       d.label,
       ...(hasGuidCol ? [d.guid] : []),
       ...(hasPubDateCol ? [d.publishedAt && dateUtil.ISODate(d.publishedAt) || ''] : []),
-      ...(hasTotalCol ? [d.total] : []),
+      ...(hasTotalCol ? [d.total.toString()] : []),
       ...(hasDataCols ? d.data.map(col => col[1].toString()) : [])
     ]));
   }
@@ -93,7 +93,10 @@ export const toCsvArray = (downloads: ExportData[], dateFormat: Function): strin
 
 export const joinCsvArray = (data: string[][]): string => {
   return data &&
-    'data:text/csv;charset=utf-8,' + data.map(row => row && row.map(v => v.indexOf(',') > -1 ? `"${v}"` : v).join(',')).join('\r\n');
+    'data:text/csv;charset=utf-8,' +
+    data.map(row => row && row.map(v => {
+      return v && v.indexOf(',') > -1 ? `"${v}"` : v;
+    }).join(',')).join('\r\n');
 };
 
 export const podcastExportRanks =

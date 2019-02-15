@@ -1,5 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { StoreModule, Store, select } from '@ngrx/store';
+import { StoreModule, Store } from '@ngrx/store';
 import { DebugElement } from '@angular/core';
 import { By } from '@angular/platform-browser';
 

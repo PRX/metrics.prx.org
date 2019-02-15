@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { from } from 'rxjs/observable/from';
-import { finalize } from 'rxjs/operators/finalize';
 import { Env } from '../../../core/core.env';
 
 declare const gapi: any;
@@ -62,11 +61,16 @@ export class ExportGoogleSheetsService {
         }).then((response) => {
           googleSheet.spreadsheetUrl = response.result.spreadsheetUrl;
           googleSheet.spreadsheetId = response.result.spreadsheetId;
-          return gapi.client.sheets.spreadsheets.values.update({
+
+          return gapi.client.sheets.spreadsheets.values.batchUpdate({
             spreadsheetId: googleSheet.spreadsheetId,
-            range: googleSheet.sheets[0].title,
             valueInputOption: 'RAW',
-            resource: {values: googleSheet.sheets[0].data}
+            data: googleSheet.sheets.map(sheet => {
+              return {
+                range: sheet.title,
+                values: sheet.data
+              };
+            })
           });
         })
         .then(() => {

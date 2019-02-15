@@ -17,6 +17,12 @@ import { selectExportData2DArray, joinCsvArray } from '../../../ngrx/reducers/se
       <div class="dropdown-content rollout left short" *ngIf="(exportData$ | async)?.length">
         <ul>
           <li><a [href]="exportDataCsv$ | async" (click)="onExportCsv()" download="downloads.csv">CSV</a></li>
+          <li>
+            <metrics-export-google-sheets
+              [exportData]="exportData$ | async"
+              (created)="onExportGoogleSheet($event)">
+              </metrics-export-google-sheets>
+          </li>
         </ul>
       </div>
     </div>
@@ -24,7 +30,7 @@ import { selectExportData2DArray, joinCsvArray } from '../../../ngrx/reducers/se
   styleUrls: ['../../dropdown/dropdown.css']
 })
 export class ExportDropdownComponent implements OnInit {
-  exportData$ = new Observable<any[][]>();
+  exportData$ = new Observable<string[][]>();
   exportDataCsv$ = new Observable<SafeUrl>();
   open = false;
   @HostListener('window: scroll', [])
@@ -47,6 +53,12 @@ export class ExportDropdownComponent implements OnInit {
 
   onExportCsv() {
     this.store.dispatch(new GoogleAnalyticsEventAction({gaAction: 'exportCSV'}));
+
+    this.toggleOpen();
+  }
+
+  onExportGoogleSheet(created: boolean) {
+    this.store.dispatch(new GoogleAnalyticsEventAction({gaAction: 'exportGoogleSheet'}));
 
     this.toggleOpen();
   }

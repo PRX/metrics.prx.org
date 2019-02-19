@@ -33,4 +33,5 @@
   right: auto;
   left: 0;
   background-color: #1a1a1a;
+  z-index: 999999;/* zendesk widget + 1 */
 }

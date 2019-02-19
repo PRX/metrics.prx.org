@@ -1,5 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { StoreModule, Store } from '@ngrx/store';
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { DebugElement } from '@angular/core';
 import { By } from '@angular/platform-browser';
 
@@ -9,7 +10,10 @@ import { METRICSTYPE_DEMOGRAPHICS,  METRICSTYPE_TRAFFICSOURCES,
   CHARTTYPE_GEOCHART, CHARTTYPE_STACKED } from '../../../ngrx';
 import { GoogleAnalyticsEventAction } from '../../../ngrx/actions';
 import { ExportDropdownComponent } from './export-dropdown.component';
+import { ExportGoogleSheetsComponent } from './export-google-sheets.component';
+import { ExportGoogleSheetsService } from './export-google-sheets.service';
 
+import { ModalService, SpinnerModule } from 'ngx-prx-styleguide';
 import * as dispatchHelper from '../../../../testing/dispatch.helpers';
 import { podcastAgentTypeRanks, podcastAgentTypeDownloads } from '../../../../testing/downloads.fixtures';
 
@@ -19,14 +23,29 @@ describe('ExportDropdownComponent', () => {
   let de: DebugElement;
   let el: HTMLElement;
   let store: Store<any>;
+  const googleSheetBusy$ = new BehaviorSubject(false);
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [
-        ExportDropdownComponent
+        ExportDropdownComponent,
+        ExportGoogleSheetsComponent
       ],
       imports: [
+        SpinnerModule,
         StoreModule.forRoot(reducers)
+      ],
+      providers: [
+        {
+          provide: ExportGoogleSheetsService,
+          useValue: {
+            state: new BehaviorSubject({}),
+            busy: googleSheetBusy$,
+            signIn: () => {},
+            createSpreadsheet: () => {}
+          }
+        },
+        ModalService
       ]
     }).compileComponents().then(() => {
       fix = TestBed.createComponent(ExportDropdownComponent);
@@ -103,9 +122,22 @@ describe('ExportDropdownComponent', () => {
     window.dispatchEvent(new Event('scroll'));
   });
 
-  it('should dispatch google analytics actions onExportCsv', () => {
+  it('should dispatch google analytics action onExportCsv', () => {
     jest.spyOn(store, 'dispatch');
     comp.onExportCsv();
     expect(store.dispatch).toHaveBeenCalledWith(new GoogleAnalyticsEventAction({gaAction: 'exportCSV'}));
+  });
+
+  it('should dispatch google analytics action when finished creating Google Sheet', () => {
+    jest.spyOn(store, 'dispatch');
+    expect(store.dispatch).not.toHaveBeenCalled();
+    comp.onExportGoogleSheet();
+    expect(store.dispatch).toHaveBeenCalledWith(new GoogleAnalyticsEventAction({gaAction: 'exportGoogleSheet'}));
+  });
+
+  it('should show spinner when GoogleSheets service is busy creating a sheet', () => {
+    googleSheetBusy$.next(true);
+    fix.detectChanges();
+    expect(de.query(By.css('prx-spinner')).nativeElement).not.toBeNull();
   });
 });

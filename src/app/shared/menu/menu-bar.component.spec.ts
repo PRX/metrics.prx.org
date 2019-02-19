@@ -20,6 +20,8 @@ import { EpisodeSelectComponent } from './episode-select/episode-select.componen
 import { EpisodeSelectDropdownButtonComponent } from './episode-select/episode-select-dropdown-button.component';
 import { EpisodeSelectDropdownService } from './episode-select/episode-select-dropdown.service';
 import { ExportDropdownComponent } from './export/export-dropdown.component';
+import { ExportGoogleSheetsComponent } from './export/export-google-sheets.component';
+import { ExportGoogleSheetsService } from './export/export-google-sheets.service';
 import { DownloadsSummaryComponent } from '../summary/downloads-summary.component';
 import { LargeNumberPipe } from '../pipes/large-number.pipe';
 import { DatepickerModule, FancyFormModule, SpinnerModule } from 'ngx-prx-styleguide';
@@ -50,6 +52,7 @@ describe('MenuBarComponent', () => {
         EpisodeSelectComponent,
         EpisodeSelectDropdownButtonComponent,
         ExportDropdownComponent,
+        ExportGoogleSheetsComponent,
         IntervalDropdownComponent,
         LargeNumberPipe,
         MetricsTypeHeadingComponent,
@@ -63,7 +66,8 @@ describe('MenuBarComponent', () => {
         StoreModule.forRoot(reducers)
       ],
       providers: [
-        EpisodeSelectDropdownService
+        EpisodeSelectDropdownService,
+        ExportGoogleSheetsService
       ]
     }).compileComponents().then(() => {
       fix = TestBed.createComponent(MenuBarComponent);

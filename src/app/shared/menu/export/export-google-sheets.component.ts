@@ -1,6 +1,6 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 import { ModalService } from 'ngx-prx-styleguide';
-import { ExportGoogleSheetsService, GoogleSheet } from './export-google-sheets.service';
+import { ExportGoogleSheetsService, GoogleSheetState } from './export-google-sheets.service';
 
 @Component({
   selector: 'metrics-export-google-sheets',
@@ -13,44 +13,56 @@ import { ExportGoogleSheetsService, GoogleSheet } from './export-google-sheets.s
   `
 })
 
-export class ExportGoogleSheetsComponent {
+export class ExportGoogleSheetsComponent implements OnInit {
   @Input() exportData: string[][];
-  @Output() created = new EventEmitter<boolean>();
+  // this event emitter is just to let the parent component know export was clicked (to close dropdown and do Google analytics)
+  @Output() export = new EventEmitter();
 
   constructor(private googleSheets: ExportGoogleSheetsService,
               private modal: ModalService) {}
+
+  ngOnInit() {
+    this.waitForResult();
+  }
 
   get isSignedIn(): boolean { return this.googleSheets.isSignedIn; }
 
   signIn() { this.googleSheets.signIn(); }
 
   createSpreadsheet() {
+    this.export.emit();
     this.googleSheets.createSpreadsheet({
       title: 'Downloads',
       sheets: [{title: 'Downloads', data: this.exportData}]
-    }).subscribe((result: GoogleSheet) => {
-      this.created.emit(!!result.spreadsheetId);
+    });
+  }
+
+  waitForResult() {
+    this.googleSheets.state.subscribe((state: GoogleSheetState) => {
       let modalContent;
-      if (result.error) {
+      if (state.error) {
         modalContent = {
           title: 'Google Sheet Error',
           body: `
             Error creating Google Sheet:
-            <pre>${result.error}</pre>
+            <pre>${state.error}</pre>
           `,
           primaryButton: 'Okay'
         };
-      } else {
+      } else if (state.sheet && state.sheet.spreadsheetUrl && !state.busy) {
         modalContent = {
           title: 'Google Sheet Created',
           body: `
             Your Google Sheet was created and is available at
-            <a target="_blank" rel="noopener noreferrer" href="${result.spreadsheetUrl}">${result.spreadsheetUrl}</a>.
+            <a target="_blank" rel="noopener noreferrer" href="${state.sheet.spreadsheetUrl}">${state.sheet.spreadsheetUrl}</a>.
           `,
           primaryButton: 'Okay'
         };
       }
-      this.modal.show(modalContent);
+
+      if (modalContent) {
+        this.modal.show(modalContent);
+      }
     });
   }
 }

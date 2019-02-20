@@ -49,7 +49,7 @@ export class ExportGoogleSheetsService {
           'discoveryDocs': ['https://sheets.googleapis.com/$discovery/rest?version=v4'],
         }).then(() => {
           // Listen for sign-in state changes.
-          gapi.auth2.getAuthInstance().isSignedIn.listen(this.updateSignedInStatus);
+          gapi.auth2.getAuthInstance().isSignedIn.listen(this.updateSignedInStatus.bind(this));
 
           // Handle the initial sign-in state.
           this.updateSignedInStatus(gapi.auth2.getAuthInstance().isSignedIn.get());

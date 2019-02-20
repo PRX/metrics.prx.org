@@ -9,6 +9,6 @@ button {
   color: #1A1A1A;
 }
 
-button:hover, button:focus {
+button:hover, button:not(.button):focus {
   background-color: transparent;
 }

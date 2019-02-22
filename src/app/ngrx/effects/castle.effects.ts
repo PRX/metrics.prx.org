@@ -1,12 +1,6 @@
 import { Injectable } from '@angular/core';
-import { catchError } from 'rxjs/operators/catchError';
-import { concatMap } from 'rxjs/operators/concatMap';
-import { filter } from 'rxjs/operators/filter';
-import { map } from 'rxjs/operators/map';
-import { mergeMap } from 'rxjs/operators/mergeMap';
-import { switchMap } from 'rxjs/operators/switchMap';
-import { of } from 'rxjs/observable/of';
-import { Observable } from 'rxjs/Observable';
+import { catchError, concatMap, filter, map, mergeMap, switchMap } from 'rxjs/operators';
+import { of, Observable } from 'rxjs';
 import { Actions, Effect, ofType } from '@ngrx/effects';
 import { Action, Store, select } from '@ngrx/store';
 

@@ -1,9 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { provideMockActions } from '@ngrx/effects/testing';
 import { StoreModule, Store } from '@ngrx/store';
-import { of } from 'rxjs/observable/of';
-import { Observable } from 'rxjs/Observable';
-import { ReplaySubject } from 'rxjs/ReplaySubject';
+import { Observable, of, ReplaySubject } from 'rxjs';
 
 import { hot, cold } from 'jasmine-marbles';
 import { AuthService, MockHalDoc, HalService, MockHalService, UserinfoService } from 'ngx-prx-styleguide';

@@ -1,8 +1,6 @@
 import { Injectable } from '@angular/core';
-import { map } from 'rxjs/operators/map';
-import { switchMap } from 'rxjs/operators/switchMap';
-import { of } from 'rxjs/observable/of';
-import { Observable } from 'rxjs/Observable';
+import { map, switchMap } from 'rxjs/operators';
+import { of, Observable } from 'rxjs';
 import { Action } from '@ngrx/store';
 import { ROUTER_NAVIGATION, RouterNavigationAction, RouterNavigationPayload } from '@ngrx/router-store';
 import { Actions, Effect, ofType } from '@ngrx/effects';

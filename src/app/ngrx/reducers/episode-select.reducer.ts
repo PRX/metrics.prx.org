@@ -52,7 +52,7 @@ export function reducer(
       const { page, total, search, episodes } = action.payload;
       return {
         ...adapter.upsertMany(episodes.map(episode => {
-          return {id: episode.guid, changes: episode};
+          return {id: episode.guid, ...episode};
         }), state),
         // this here assumes that a CASTLE_EPISODE_SELECT_PAGE_SUCCESS will occur without search on application load
         // so that we can retain the unfiltered total amount of episodes

@@ -29,32 +29,53 @@ export function reducer(state: State = initialState, action: AllActions) {
     case ActionTypes.CASTLE_EPISODE_DOWNLOADS_LOAD: {
       const { guid, podcastId, page } = action.payload;
       return adapter.upsertOne(
-        {id: guid, changes: { guid, podcastId, page, error: null, loading: true, loaded: false}},
+        {
+          id: guid,
+          ...selectEpisodeDownloadsEntities(state)[guid],
+          guid, podcastId, page, error: null, loading: true, loaded: false
+        },
         state);
     }
     case ActionTypes.CASTLE_EPISODE_DOWNLOADS_SUCCESS: {
       const { guid, podcastId, page, downloads } = action.payload;
       return adapter.upsertOne(
-        {id: guid, changes: { guid, podcastId, page, downloads, charted: true, loading: false, loaded: true}},
+        {
+          id: guid,
+          ...selectEpisodeDownloadsEntities(state)[guid],
+          guid, podcastId, page, downloads, charted: true, loading: false, loaded: true
+        },
         state);
     }
     case ActionTypes.CASTLE_EPISODE_DOWNLOADS_FAILURE: {
       const { guid, podcastId, page, error } = action.payload;
       return adapter.upsertOne(
-        {id: guid, changes: { guid, podcastId, page, error, loading: false, loaded: false}},
+        {
+          id: guid,
+          ...selectEpisodeDownloadsEntities(state)[guid],
+          guid, podcastId, page, error, loading: false, loaded: false
+        },
         state);
     }
 
     case ActionTypes.CHART_SINGLE_EPISODE: {
       const allGuids = <string[]>selectEpisodeDownloadsGuids(state);
       return adapter.upsertMany(allGuids.map(guid =>
-          ({id: guid, changes: { guid, charted: guid === action.payload.guid }})),
+          ({
+            id: guid,
+            guid,
+            ...selectEpisodeDownloadsEntities(state)[guid],
+            charted: guid === action.payload.guid})),
           state);
     }
     case ActionTypes.CHART_TOGGLE_EPISODE: {
       const { guid, charted } = action.payload;
       return adapter.upsertOne(
-        {id: guid, changes: { guid, charted}},
+        {
+          id: guid,
+          guid,
+          ...selectEpisodeDownloadsEntities(state)[guid],
+          charted
+        },
         state);
     }
     default:

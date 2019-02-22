@@ -31,12 +31,7 @@ export function reducer(
       };
     }
     case ActionTypes.CASTLE_PODCAST_PAGE_SUCCESS: {
-      return adapter.upsertMany(action.payload.podcasts.map(podcast => {
-        return {
-          id: podcast.id,
-          changes: podcast
-        };
-      }), state);
+      return adapter.upsertMany(action.payload.podcasts, state);
     }
     case ActionTypes.CASTLE_PODCAST_PAGE_FAILURE: {
       return { ...state, error: action.payload.error};

@@ -6,7 +6,7 @@ import {
   ep0AgentNameRanks,
   ep0AgentNameDownloads
 } from '../../../testing/downloads.fixtures';
-import { GroupType, GROUPTYPE_AGENTNAME, METRICSTYPE_TRAFFICSOURCES, episodeRanksKey } from './models';
+import { GroupType, GROUPTYPE_AGENTNAME, METRICSTYPE_TRAFFICSOURCES, episodeRanksId } from './models';
 
 describe('Episode Ranks Reducer', () => {
   const routerParams = {...downloadParams, metricsType: METRICSTYPE_TRAFFICSOURCES, group: <GroupType>GROUPTYPE_AGENTNAME};
@@ -23,22 +23,21 @@ describe('Episode Ranks Reducer', () => {
     const { group, filter, interval, beginDate, endDate } = routerParams;
     const newState = reducer(initialState,
       new ACTIONS.CastleEpisodeRanksLoadAction({guid: episodes[0].guid, group, interval, beginDate, endDate}));
-    const key = episodeRanksKey(episodes[0].guid, group, filter, interval, beginDate, endDate);
-    expect(newState.entities[key].loading).toBeTruthy();
-    expect(newState.entities[key].loaded).toBeFalsy();
-    expect(newState.entities[key].error).toBeNull();
+    const id = episodeRanksId(episodes[0].guid, group, filter, interval, beginDate, endDate);
+    expect(newState.entities[id].loading).toBeTruthy();
+    expect(newState.entities[id].loaded).toBeFalsy();
+    expect(newState.entities[id].error).toBeNull();
   });
 
   it('should set episode ranks entities and loaded on episode ranks success', () => {
     const { group, filter, interval, beginDate, endDate } = routerParams;
-    const key = episodeRanksKey(episodes[0].guid, group, filter, interval, beginDate, endDate);
+    const id = episodeRanksId(episodes[0].guid, group, filter, interval, beginDate, endDate);
     const newState = reducer(initialState,
       new ACTIONS.CastleEpisodeRanksSuccessAction({
         guid: episodes[0].guid, group, interval, beginDate, endDate,
         ranks: ep0AgentNameRanks, downloads: ep0AgentNameDownloads}));
-    expect(newState.entities[key]).toEqual({
-      id: key,
-      key,
+    expect(newState.entities[id]).toEqual({
+      id,
       guid: episodes[0].guid,
       group,
       filter,
@@ -58,7 +57,7 @@ describe('Episode Ranks Reducer', () => {
       new ACTIONS.CastleEpisodeRanksSuccessAction({
         guid: episodes[0].guid, group, interval, beginDate, endDate,
         ranks: ep0AgentNameRanks, downloads: ep0AgentNameDownloads}));
-    expect(newState.entities[episodeRanksKey(episodes[0].guid, group, filter, interval, beginDate, endDate)]).not.toBeNull();
+    expect(newState.entities[episodeRanksId(episodes[0].guid, group, filter, interval, beginDate, endDate)]).not.toBeNull();
   });
 
   it('should set error on failure', () => {
@@ -67,6 +66,6 @@ describe('Episode Ranks Reducer', () => {
       new ACTIONS.CastleEpisodeRanksFailureAction({
         guid: episodes[0].guid, group, interval, beginDate, endDate,
         error: 'something went wrong'}));
-    expect(newState.entities[episodeRanksKey(episodes[0].guid, group, filter, interval, beginDate, endDate)].error).not.toBeUndefined();
+    expect(newState.entities[episodeRanksId(episodes[0].guid, group, filter, interval, beginDate, endDate)].error).not.toBeUndefined();
   });
 });

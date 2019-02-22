@@ -4,7 +4,7 @@ import { GroupType, GROUPTYPE_GEOSUBDIV } from './group.type';
 import * as dateFormat from '../../../shared/util/date/date.format';
 
 export interface PodcastRanks {
-  key: string;
+  id: string;
   podcastId: string;
   group: GroupType;
   filter: string;
@@ -15,17 +15,17 @@ export interface PodcastRanks {
   ranks: Rank[];
   loaded: boolean;
   loading: boolean;
-  error: any;
+  error?: any;
 }
 
-export function podcastRanksKey(podcastId: string,
+export function podcastRanksId(podcastId: string,
                                 group: GroupType,
                                 filter: string,
                                 interval: IntervalModel,
                                 beginDate: Date,
                                 endDate: Date): string {
-  let key = group === GROUPTYPE_GEOSUBDIV ?
+  let id = group === GROUPTYPE_GEOSUBDIV ?
     `${podcastId}-${group}-${filter}-${interval && interval.key}` : `${podcastId}-${group}-${interval && interval.key}`;
-  key += `-${dateFormat.monthDateYear(beginDate, false)}-${dateFormat.monthDateYear(endDate, false)}`;
-  return key;
+  id += `-${dateFormat.monthDateYear(beginDate, false)}-${dateFormat.monthDateYear(endDate, false)}`;
+  return id;
 }

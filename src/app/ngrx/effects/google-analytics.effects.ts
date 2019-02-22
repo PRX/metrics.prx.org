@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { map } from 'rxjs/operators/map';
-import { Observable } from 'rxjs/Observable';
+import { map } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 import { Actions, Effect, ofType } from '@ngrx/effects';
 import { Store, select } from '@ngrx/store';
 import { Angulartics2 } from 'angulartics2';

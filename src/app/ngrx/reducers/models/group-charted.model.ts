@@ -1,6 +1,6 @@
 import { GroupType } from './group.type';
 export interface GroupCharted {
-  key: string;
+  id: string;
   group: GroupType;
   groupName: string;
   charted: boolean;

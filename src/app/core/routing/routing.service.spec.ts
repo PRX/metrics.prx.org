@@ -2,7 +2,7 @@ import { async, TestBed } from '@angular/core/testing';
 import { Component } from '@angular/core';
 import { Router, RoutesRecognized } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { filter } from 'rxjs/operators/filter';
+import { filter } from 'rxjs/operators';
 import { RoutingService } from './routing.service';
 import { StoreModule, Store } from '@ngrx/store';
 import { reducers } from '../../ngrx/reducers';

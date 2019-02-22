@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { StoreModule, Store, select } from '@ngrx/store';
-import { first } from 'rxjs/operators/first';
+import { first } from 'rxjs/operators';
 
 import * as fromExport from './export.selectors';
 import { RootState, reducers } from '..';

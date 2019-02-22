@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Router, RoutesRecognized } from '@angular/router';
-import { filter } from 'rxjs/operators/filter';
+import { filter } from 'rxjs/operators';
 import { Store, select } from '@ngrx/store';
 import { selectRoutedPageEpisodes, selectRouter, selectSelectedEpisodeGuids, selectUserAuthorized } from '../../ngrx/reducers/selectors/';
 import {

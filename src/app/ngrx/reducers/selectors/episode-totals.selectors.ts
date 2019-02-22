@@ -1,6 +1,6 @@
 import { createSelector, createFeatureSelector } from '@ngrx/store';
 import * as fromEpisodeTotals from '../episode-totals.reducer';
-import { EpisodeTotals, episodeTotalsKey,
+import { EpisodeTotals, episodeTotalsId,
   TotalsTableRow, GroupCharted,
   GroupType, GROUPTYPE_GEOSUBDIV } from '../models';
 import { selectGroupRoute, selectFilterRoute, selectBeginDateRoute, selectEndDateRoute } from './router.selectors';
@@ -10,9 +10,9 @@ import { selectRoutedGroupCharted } from './group-charted.selectors';
 
 export const selectEpisodeTotalsState = createFeatureSelector<fromEpisodeTotals.State>('episodeTotals');
 
-export const selectEpisodeTotalsKeys = createSelector(
+export const selectEpisodeTotalsIds = createSelector(
   selectEpisodeTotalsState,
-  fromEpisodeTotals.selectEpisodeTotalsKeys
+  fromEpisodeTotals.selectEpisodeTotalsIds
 );
 export const selectEpisodeTotalsEntities = createSelector(
   selectEpisodeTotalsState,
@@ -45,8 +45,8 @@ export const selectSelectedEpisodesTotals = createSelector(
   selectEpisodeTotalsEntities,
   (guids, group: GroupType, filter: string, beginDate: Date, endDate: Date, episodeTotalsEntities): EpisodeTotals[] => {
     return guids &&
-      guids.filter(guid => episodeTotalsEntities[episodeTotalsKey(guid, group, filter, beginDate, endDate)])
-        .map(guid => episodeTotalsEntities[episodeTotalsKey(guid, group, filter, beginDate, endDate)]);
+      guids.filter(guid => episodeTotalsEntities[episodeTotalsId(guid, group, filter, beginDate, endDate)])
+        .map(guid => episodeTotalsEntities[episodeTotalsId(guid, group, filter, beginDate, endDate)]);
   }
 );
 
@@ -73,8 +73,8 @@ export const selectNestedEpisodesTotals = createSelector(
   selectEpisodeTotalsEntities,
   (guids: string[], filter: string, beginDate: Date, endDate: Date, episodeTotalsEntities): EpisodeTotals[] => {
     return guids &&
-      guids.filter(guid => episodeTotalsEntities[episodeTotalsKey(guid, GROUPTYPE_GEOSUBDIV, filter, beginDate, endDate)])
-        .map(guid => episodeTotalsEntities[episodeTotalsKey(guid, GROUPTYPE_GEOSUBDIV, filter, beginDate, endDate)]);
+      guids.filter(guid => episodeTotalsEntities[episodeTotalsId(guid, GROUPTYPE_GEOSUBDIV, filter, beginDate, endDate)])
+        .map(guid => episodeTotalsEntities[episodeTotalsId(guid, GROUPTYPE_GEOSUBDIV, filter, beginDate, endDate)]);
   }
 );
 

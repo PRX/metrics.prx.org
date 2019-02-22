@@ -1,6 +1,6 @@
 import * as chartUtil from './chart.util';
 import { TimeseriesDatumModel } from 'ngx-prx-styleguide';
-import { EpisodeTotals, episodeTotalsKey, EpisodeRanks, episodeRanksKey, GroupType, GROUPTYPE_AGENTNAME } from '../../ngrx/reducers/models';
+import { EpisodeTotals, episodeTotalsId, EpisodeRanks, episodeRanksId, GroupType, GROUPTYPE_AGENTNAME } from '../../ngrx/reducers/models';
 import { routerParams, episodes,
   ep0AgentNameRanks, ep1AgentNameRanks, ep0AgentNameDownloads, ep1AgentNameDownloads } from '../../../testing/downloads.fixtures';
 
@@ -38,7 +38,7 @@ describe('chart.util', () => {
       group = GROUPTYPE_AGENTNAME;
     const episodeTotals: EpisodeTotals[] = [
       {
-        key: episodeTotalsKey(episodes[0].guid, group, filter, beginDate, endDate),
+        id: episodeTotalsId(episodes[0].guid, group, filter, beginDate, endDate),
         guid: episodes[0].guid,
         group,
         filter,
@@ -50,7 +50,7 @@ describe('chart.util', () => {
         error: null
       },
       {
-        key: episodeTotalsKey(episodes[1].guid, group, filter, beginDate, endDate),
+        id: episodeTotalsId(episodes[1].guid, group, filter, beginDate, endDate),
         guid: episodes[1].guid,
         group,
         filter,
@@ -64,7 +64,7 @@ describe('chart.util', () => {
     ];
     const episodeRanks: EpisodeRanks[] = [
       {
-        key: episodeRanksKey(episodes[0].guid, group, filter, interval, beginDate, endDate),
+        id: episodeRanksId(episodes[0].guid, group, filter, interval, beginDate, endDate),
         guid: episodes[0].guid,
         group,
         filter,
@@ -78,7 +78,7 @@ describe('chart.util', () => {
         error: null
       },
       {
-        key: episodeRanksKey(episodes[1].guid, group, filter, interval, beginDate, endDate),
+        id: episodeRanksId(episodes[1].guid, group, filter, interval, beginDate, endDate),
         guid: episodes[1].guid,
         group,
         filter,
@@ -131,7 +131,7 @@ describe('chart.util', () => {
     it('should assume groups are charted implicity', () => {
       expect(chartUtil.isGroupCharted(undefined, 'Unknown')).toBeTruthy();
       expect(chartUtil.isGroupCharted([], 'Unknown')).toBeTruthy();
-      expect(chartUtil.isGroupCharted([{key: 'agentname-Unknown', group: <GroupType>'agentname', groupName: 'Unknown', charted: false}],
+      expect(chartUtil.isGroupCharted([{id: 'agentname-Unknown', group: <GroupType>'agentname', groupName: 'Unknown', charted: false}],
         'Unknown')).toBeFalsy();
       let results = chartUtil.aggregateTotalsBarChart(episodeRanks);
       expect(results.length).toEqual(ep0AgentNameRanks.length);

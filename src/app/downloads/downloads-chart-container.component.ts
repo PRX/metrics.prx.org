@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Store, select } from '@ngrx/store';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { TimeseriesChartModel } from 'ngx-prx-styleguide';
 import { RouterParams, CHARTTYPE_PODCAST } from '../ngrx';
 import { RouteChartTypeAction } from '../ngrx/actions';

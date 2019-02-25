@@ -19,7 +19,7 @@ import { ExportGoogleSheetsService } from './export-google-sheets.service';
       <div class="dropdown-content rollout left short" *ngIf="(exportData$ | async)?.length">
         <ul>
           <li><a [href]="exportDataCsv$ | async" (click)="onExportCsv()" download="downloads.csv">CSV</a></li>
-          <li>
+          <li class="hide">
             <metrics-export-google-sheets
               [exportData]="exportData$ | async"
               (export)="onExportGoogleSheet()">
@@ -29,7 +29,7 @@ import { ExportGoogleSheetsService } from './export-google-sheets.service';
       </div>
     </div>
   `,
-  styleUrls: ['../../dropdown/dropdown.css']
+  styleUrls: ['../../dropdown/dropdown.css', 'export-dropdown.component.css']
 })
 export class ExportDropdownComponent implements OnInit {
   exportData$ = new Observable<string[][]>();

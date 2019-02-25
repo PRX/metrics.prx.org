@@ -4,6 +4,7 @@ import { Observable } from 'rxjs/Observable';
 import { map } from 'rxjs/operators/map';
 import { distinctUntilChanged } from 'rxjs/operators/distinctUntilChanged';
 import { Env } from '../../../core/core.env';
+import { ModalService } from 'ngx-prx-styleguide';
 
 declare const gapi: any;
 
@@ -32,8 +33,13 @@ export class ExportGoogleSheetsService {
   private _state = new BehaviorSubject<GoogleSheetState>(initialState);
   public readonly state: Observable<GoogleSheetState> = this._state.asObservable();
   public readonly busy: Observable<boolean> = this.state.pipe(map(state => state.busy), distinctUntilChanged());
+  public readonly error: Observable<string> = this.state.pipe(map(state => state.error), distinctUntilChanged());
+  public readonly spreadsheetUrl: Observable<string> = this.state.pipe(
+    map(state => !state.busy && state.sheet && state.sheet.spreadsheetUrl),
+    distinctUntilChanged()
+  );
 
-  constructor() {
+  constructor(private modal?: ModalService) {
     this.initGoogleAPI();
   }
 
@@ -99,12 +105,35 @@ export class ExportGoogleSheetsService {
       })
       .then(() => {
         this._state.next({...this._state.getValue(), sheet: googleSheet, busy: false});
+        this.modal.show({
+          title: 'Google Sheet Created',
+          body: `
+            Your Google Sheet was created and is available at
+            <a target="_blank" rel="noopener noreferrer" href="${googleSheet.spreadsheetUrl}">${googleSheet.spreadsheetUrl}</a>.
+          `,
+          primaryButton: 'Okay',
+          buttonCallback: this.dismissModal.bind(this)
+        });
         return googleSheet;
       })
       .catch(reason => { // update error || create error
+        const error = reason.message || reason.result.error.message;
         this._state.next({...this._state.getValue(),
-          sheet: googleSheet, busy: false, error: reason.message || reason.result.error.message});
+          sheet: googleSheet, busy: false, error});
+        this.modal.show({
+          title: 'Google Sheet Error',
+          body: `
+            Error creating Google Sheet:
+            <pre>${error}</pre>
+          `,
+          primaryButton: 'Okay',
+          buttonCallback: this.dismissModal.bind(this)
+        });
       });
     }
+  }
+
+  dismissModal() {
+    this.modal.hide();
   }
 }

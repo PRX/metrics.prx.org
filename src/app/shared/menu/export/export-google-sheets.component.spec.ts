@@ -63,11 +63,4 @@ describe('ExportGoogleSheetsComponent', () => {
     expect(comp.export.emit).toHaveBeenCalled();
     expect(googleSheets.createSpreadsheet).toHaveBeenCalled();
   });
-
-  it('should wait for result or error and show in modal', () => {
-    jest.spyOn(modalService, 'show');
-    exportState.next({signedIn: true, busy: false,
-      sheet: {title: 'ABCDEF', sheets: [{title: 'ABC', data: []}], spreadsheetId: '12345', spreadsheetUrl: 'http://fake.news'}});
-    expect(modalService.show).toHaveBeenCalled();
-  });
 });

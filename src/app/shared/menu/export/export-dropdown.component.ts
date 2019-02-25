@@ -23,7 +23,7 @@ import { ExportGoogleSheetsService } from './export-google-sheets.service';
             <metrics-export-google-sheets
               [exportData]="exportData$ | async"
               (export)="onExportGoogleSheet()">
-              </metrics-export-google-sheets>
+            </metrics-export-google-sheets>
           </li>
         </ul>
       </div>

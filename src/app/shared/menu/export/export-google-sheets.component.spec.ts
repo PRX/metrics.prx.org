@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { DebugElement } from '@angular/core';
-import { By, DomSanitizer } from '@angular/platform-browser';
+import { By } from '@angular/platform-browser';
 import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { ModalService } from 'ngx-prx-styleguide';
@@ -20,7 +20,6 @@ describe('ExportGoogleSheetsComponent', () => {
   let de: DebugElement;
   let el: HTMLElement;
   let googleSheets: ExportGoogleSheetsService;
-  let modalService: ModalService;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -38,7 +37,6 @@ describe('ExportGoogleSheetsComponent', () => {
       de = fix.debugElement;
       el = de.nativeElement;
       googleSheets = TestBed.get(ExportGoogleSheetsService);
-      modalService = TestBed.get(ModalService);
     });
   }));
 

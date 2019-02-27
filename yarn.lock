@@ -5503,19 +5503,10 @@ newrelic@^2.4.2:
   optionalDependencies:
     "@newrelic/native-metrics" "^2.1.0"
 
-ngx-prx-styleguide@../styleguide.prx.org/dist/ngx-prx-styleguide/ngx-prx-styleguide-2.0.0.tgz:
-  version "2.0.0"
-  resolved "../styleguide.prx.org/dist/ngx-prx-styleguide/ngx-prx-styleguide-2.0.0.tgz#05b8fc5cee18117579080bc3f637a09eb8928fc6"
-  dependencies:
-    angular-2-dropdown-multiselect "~1.8.1"
-    c3 "^0.4.11"
-    pikaday "^1.5.1"
-    tslib "^1.9.0"
-
-ngx-prx-styleguide@2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/ngx-prx-styleguide/-/ngx-prx-styleguide-2.0.0.tgz#2f0d46f6bafd833a62a240d6e09ef4aa222e8baa"
-  integrity sha512-Brn0jKGyOtCiAC1Uyh59GdXmCGRsCNMn0CX8hmcsOoSa54SI/Xpr5DSVsnyacO6EfU8FuR4rVwNNDEtLj8ci9w==
+ngx-prx-styleguide@2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/ngx-prx-styleguide/-/ngx-prx-styleguide-2.0.1.tgz#c073afa93efbc4163e0b9ebb56098ae5dbfedb6d"
+  integrity sha512-ctYuFWLNgNpSqb9yX+304wm9mu2HVZBIK3W/XKSSKNEx5alRB9leVkeQ/yAC8QY/7++deqcf9n7/2ncDEIG8EA==
   dependencies:
     angular-2-dropdown-multiselect "~1.8.1"
     c3 "^0.4.11"

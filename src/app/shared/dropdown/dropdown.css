@@ -36,7 +36,7 @@
   overflow-y: hidden;
   position: absolute;
   right: 0;
-  z-index: 999999;/* zendesk widget + 1 */
+  z-index: 997;
   background-color: white;
   box-shadow: 0 5px 15px -5px rgba(0,0,0,.5);
 }

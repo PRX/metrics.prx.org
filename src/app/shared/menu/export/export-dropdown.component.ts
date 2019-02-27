@@ -5,10 +5,12 @@ import { Observable } from 'rxjs/Observable';
 import { map } from 'rxjs/operators/map';
 import { GoogleAnalyticsEventAction } from '../../../ngrx/actions';
 import { selectExportData2DArray, joinCsvArray } from '../../../ngrx/reducers/selectors';
+import { ExportGoogleSheetsService } from './export-google-sheets.service';
 
 @Component({
   selector: 'metrics-export-dropdown',
   template: `
+    <prx-spinner *ngIf="googleSheetsBusy$ | async" overlay="true"></prx-spinner>
     <div class="dropdown" [class.open]="open">
       <div class="overlay" (click)="toggleOpen()"></div>
       <div class="dropdown-button">
@@ -17,29 +19,39 @@ import { selectExportData2DArray, joinCsvArray } from '../../../ngrx/reducers/se
       <div class="dropdown-content rollout left short" *ngIf="(exportData$ | async)?.length">
         <ul>
           <li><a [href]="exportDataCsv$ | async" (click)="onExportCsv()" download="downloads.csv">CSV</a></li>
+          <li class="hide">
+            <metrics-export-google-sheets
+              [exportData]="exportData$ | async"
+              (export)="onExportGoogleSheet()">
+            </metrics-export-google-sheets>
+          </li>
         </ul>
       </div>
     </div>
   `,
-  styleUrls: ['../../dropdown/dropdown.css']
+  styleUrls: ['../../dropdown/dropdown.css', 'export-dropdown.component.css']
 })
 export class ExportDropdownComponent implements OnInit {
-  exportData$ = new Observable<any[][]>();
+  exportData$ = new Observable<string[][]>();
   exportDataCsv$ = new Observable<SafeUrl>();
   open = false;
+  // because of relative/absolute positioning, the spinner needs to be outside the dropdown DOM, so we listen for busy here
+  googleSheetsBusy$ = new Observable<boolean>();
   @HostListener('window: scroll', [])
   onWindowScroll() {
     this.open = false;
   }
 
+  constructor(private store: Store<any>,
+              private sanitizer: DomSanitizer,
+              private googleSheets: ExportGoogleSheetsService) {}
+
   ngOnInit() {
     this.exportData$ = this.store.pipe(select(selectExportData2DArray));
     this.exportDataCsv$ =
       this.exportData$.pipe(map(data => this.sanitizer.bypassSecurityTrustUrl(joinCsvArray(data))));
+    this.googleSheetsBusy$ = this.googleSheets.busy;
   }
-
-  constructor(private store: Store<any>,
-              private sanitizer: DomSanitizer) {}
 
   toggleOpen() {
     this.open = !this.open;
@@ -47,6 +59,12 @@ export class ExportDropdownComponent implements OnInit {
 
   onExportCsv() {
     this.store.dispatch(new GoogleAnalyticsEventAction({gaAction: 'exportCSV'}));
+
+    this.toggleOpen();
+  }
+
+  onExportGoogleSheet() {
+    this.store.dispatch(new GoogleAnalyticsEventAction({gaAction: 'exportGoogleSheet'}));
 
     this.toggleOpen();
   }

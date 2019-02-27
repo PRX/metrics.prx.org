@@ -75,29 +75,28 @@ export const toCsvArray = (downloads: ExportData[], dateFormat: Function): strin
     const hasTotalCol = downloads.length > 1 && downloads[1].total;
     const hasDataCols = !!downloads[0].data;
     const csvRows = [
-      hasGuidCol ? 'Title' : '""',
+      hasGuidCol ? 'Title' : '',
       ...(hasGuidCol ? ['GUID'] : []),
       ...(hasPubDateCol ? ['Release Date'] : []),
       ...(hasTotalCol ? ['Total'] : []),
       ...(hasDataCols ? downloads[0].data.map(col => dateFormat(new Date(col[0]))) : [])
     ];
     return [csvRows].concat(downloads.map(d => [
-      `"${d.label}"`,
+      d.label,
       ...(hasGuidCol ? [d.guid] : []),
       ...(hasPubDateCol ? [d.publishedAt && dateUtil.ISODate(d.publishedAt) || ''] : []),
-      ...(hasTotalCol ? [d.total] : []),
+      ...(hasTotalCol ? [d.total.toString()] : []),
       ...(hasDataCols ? d.data.map(col => col[1].toString()) : [])
     ]));
   }
 };
 
 export const joinCsvArray = (data: string[][]): string => {
-  return data && data.reduce((acc, row) => {
-    if (row) {
-      acc += row.join(',') + '\r\n';
-    }
-    return acc;
-  }, 'data:text/csv;charset=utf-8,');
+  return data &&
+    'data:text/csv;charset=utf-8,' +
+    data.map(row => row && row.map(v => {
+      return v && v.indexOf(',') > -1 ? `"${v}"` : v;
+    }).join(',')).join('\r\n');
 };
 
 export const podcastExportRanks =
@@ -210,7 +209,7 @@ export const selectExportData = createSelector(
 export const selectExportData2DArray = createSelector(
   selectIntervalRoute,
   selectExportData,
-  (interval: IntervalModel, exportData: ExportData[]) => {
+  (interval: IntervalModel, exportData: ExportData[]): string[][] => {
     if (interval === INTERVAL_HOURLY) {
       return toCsvArray(exportData, dateUtil.defaultTZ);
     } else {

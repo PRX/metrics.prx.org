@@ -20,6 +20,8 @@ import { EpisodeSelectDropdownService } from './menu/episode-select/episode-sele
 import { EpisodeSelectListComponent } from './menu/episode-select/episode-select-list.component';
 import { EpisodeSelectListVisibilityComponent } from './menu/episode-select/episode-select-list-visibility.component';
 import { ExportDropdownComponent } from './menu/export/export-dropdown.component';
+import { ExportGoogleSheetsComponent } from './menu/export/export-google-sheets.component';
+import { ExportGoogleSheetsService } from './menu/export/export-google-sheets.service';
 import { ChartTypeComponent } from './menu/chart-type.component';
 import { IntervalDropdownComponent } from './menu/interval-dropdown.component';
 import { MetricsTypeHeadingComponent } from './menu/metrics-type-heading.component';
@@ -54,6 +56,7 @@ import { TotalsTableComponent } from './table/totals-table.component';
     EpisodeSelectListVisibilityComponent,
     ErrorRetryComponent,
     ExportDropdownComponent,
+    ExportGoogleSheetsComponent,
     IntervalDropdownComponent,
     LargeNumberPipe,
     MenuBarComponent,
@@ -99,7 +102,8 @@ import { TotalsTableComponent } from './table/totals-table.component';
     AuthGuard,
     DeactivateGuard,
     UnauthGuard,
-    EpisodeSelectDropdownService
+    EpisodeSelectDropdownService,
+    ExportGoogleSheetsService
   ]
 })
 

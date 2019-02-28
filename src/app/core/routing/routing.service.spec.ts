@@ -220,7 +220,7 @@ describe('RoutingService', () => {
   it('should not include filter param for non geo routes', () => {
     jest.spyOn(router, 'navigate');
 
-    const { podcastId, metricsType, chartType, group, filter, interval, beginDate, endDate, ...params }
+    const { podcastId, metricsType, chartType, group, interval, beginDate, endDate, ...params }
       = routingService.checkAndGetDefaults({podcastId: '82', metricsType: METRICSTYPE_DOWNLOADS});
 
     store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerParams:

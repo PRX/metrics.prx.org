@@ -281,7 +281,7 @@ export class CastleEffects {
     ofType(ACTIONS.ActionTypes.CASTLE_PODCAST_RANKS_LOAD),
     map((action: ACTIONS.CastlePodcastRanksLoadAction) => action.payload),
     mergeMap((payload: ACTIONS.CastlePodcastRanksLoadPayload) => {
-      const { podcastId, interval, group, filter, beginDate, endDate } = payload;
+      const { podcastId, interval, group, filter: groupFilter, beginDate, endDate } = payload;
       const params = {
         id: podcastId,
         group,
@@ -289,8 +289,8 @@ export class CastleEffects {
         from: beginDate.toISOString(),
         to: endDate.toISOString()
       };
-      if (group === GROUPTYPE_GEOSUBDIV && filter) {
-        params['filters'] = `geocountry:${filter}`;
+      if (group === GROUPTYPE_GEOSUBDIV && groupFilter) {
+        params['filters'] = `geocountry:${groupFilter}`;
       }
 
       return this.castle.follow('prx:podcast-ranks', {...params}).pipe(
@@ -298,7 +298,7 @@ export class CastleEffects {
           return new ACTIONS.CastlePodcastRanksSuccessAction({
             podcastId,
             group,
-            filter,
+            filter: groupFilter,
             interval,
             beginDate,
             endDate,
@@ -308,8 +308,8 @@ export class CastleEffects {
             })
           });
         }),
-        catchError(error => of(
-          new ACTIONS.CastlePodcastRanksFailureAction({podcastId, group, filter, interval, beginDate, endDate, error})))
+        catchError(error =>
+          of(new ACTIONS.CastlePodcastRanksFailureAction({podcastId, group, filter: groupFilter, interval, beginDate, endDate, error})))
       );
     })
   );
@@ -320,15 +320,15 @@ export class CastleEffects {
     ofType(ACTIONS.ActionTypes.CASTLE_PODCAST_TOTALS_LOAD),
     map((action: ACTIONS.CastlePodcastTotalsLoadAction) => action.payload),
     mergeMap((payload: ACTIONS.CastlePodcastTotalsLoadPayload) => {
-      const { podcastId, group, filter, beginDate, endDate } = payload;
+      const { podcastId, group, filter: groupFilter, beginDate, endDate } = payload;
       const params = {
         id: podcastId,
         group,
         from: beginDate.toISOString(),
         to: endDate.toISOString()
       };
-      if (group === GROUPTYPE_GEOSUBDIV && filter) {
-        params['filters'] = `geocountry:${filter}`;
+      if (group === GROUPTYPE_GEOSUBDIV && groupFilter) {
+        params['filters'] = `geocountry:${groupFilter}`;
       }
 
       return this.castle.follow('prx:podcast-totals', {...params}).pipe(
@@ -336,7 +336,7 @@ export class CastleEffects {
           return new ACTIONS.CastlePodcastTotalsSuccessAction({
             podcastId,
             group,
-            filter,
+            filter: groupFilter,
             beginDate,
             endDate,
             ranks: metrics['ranks'].map(rank => {
@@ -345,7 +345,8 @@ export class CastleEffects {
             })
           });
         }),
-        catchError(error => of(new ACTIONS.CastlePodcastTotalsFailureAction({podcastId, group, filter, beginDate, endDate, error})))
+        catchError(error =>
+          of(new ACTIONS.CastlePodcastTotalsFailureAction({podcastId, group, filter: groupFilter, beginDate, endDate, error})))
       );
     })
   );
@@ -356,7 +357,7 @@ export class CastleEffects {
     ofType(ACTIONS.ActionTypes.CASTLE_EPISODE_RANKS_LOAD),
     map((action: ACTIONS.CastleEpisodeRanksLoadAction) => action.payload),
     mergeMap((payload: ACTIONS.CastleEpisodeRanksLoadPayload) => {
-      const { guid, interval, group, filter, beginDate, endDate } = payload;
+      const { guid, interval, group, filter: groupFilter, beginDate, endDate } = payload;
       const params = {
         guid,
         group,
@@ -364,8 +365,8 @@ export class CastleEffects {
         from: beginDate.toISOString(),
         to: endDate.toISOString()
       };
-      if (group === GROUPTYPE_GEOSUBDIV && filter) {
-        params['filters'] = `geocountry:${filter}`;
+      if (group === GROUPTYPE_GEOSUBDIV && groupFilter) {
+        params['filters'] = `geocountry:${groupFilter}`;
       }
 
       return this.castle.followList('prx:episode-ranks', {...params}).pipe(
@@ -373,7 +374,7 @@ export class CastleEffects {
           return new ACTIONS.CastleEpisodeRanksSuccessAction({
             guid,
             group,
-            filter,
+            filter: groupFilter,
             interval,
             beginDate,
             endDate,
@@ -384,7 +385,7 @@ export class CastleEffects {
           });
         }),
         catchError(error => of(
-          new ACTIONS.CastleEpisodeRanksFailureAction({guid, group, filter, interval, beginDate, endDate, error})))
+          new ACTIONS.CastleEpisodeRanksFailureAction({guid, group, filter: groupFilter, interval, beginDate, endDate, error})))
       );
     })
   );
@@ -395,15 +396,15 @@ export class CastleEffects {
     ofType(ACTIONS.ActionTypes.CASTLE_EPISODE_TOTALS_LOAD),
     map((action: ACTIONS.CastleEpisodeTotalsLoadAction) => action.payload),
     mergeMap((payload: ACTIONS.CastleEpisodeTotalsLoadPayload) => {
-      const { guid, group, filter, beginDate, endDate } = payload;
+      const { guid, group, filter: groupFilter, beginDate, endDate } = payload;
       const params = {
         id: guid,
         group,
         from: beginDate.toISOString(),
         to: endDate.toISOString()
       };
-      if (group === GROUPTYPE_GEOSUBDIV && filter) {
-        params['filters'] = `geocountry:${filter}`;
+      if (group === GROUPTYPE_GEOSUBDIV && groupFilter) {
+        params['filters'] = `geocountry:${groupFilter}`;
       }
 
       return this.castle.followList('prx:episode-totals', {...params}).pipe(
@@ -411,7 +412,7 @@ export class CastleEffects {
           return new ACTIONS.CastleEpisodeTotalsSuccessAction({
             guid,
             group,
-            filter,
+            filter: groupFilter,
             beginDate,
             endDate,
             ranks: metrics[0]['ranks'].map(rank => {
@@ -420,7 +421,7 @@ export class CastleEffects {
             })
           });
         }),
-        catchError(error => of(new ACTIONS.CastleEpisodeTotalsFailureAction({guid, group, filter, beginDate, endDate, error})))
+        catchError(error => of(new ACTIONS.CastleEpisodeTotalsFailureAction({guid, group, filter: groupFilter, beginDate, endDate, error})))
       );
     })
   );

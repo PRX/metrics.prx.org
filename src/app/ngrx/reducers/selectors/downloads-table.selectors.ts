@@ -16,12 +16,12 @@ export const selectDownloadTablePodcastDownloads = createSelector(
   selectRoutedPodcastDownloads,
   selectRoutedPodcastAllTimeDownloads,
   (routerParams: RouterParams,
-   PodcastDownloads: PodcastDownloads,
-   podcastDownloads: PodcastAllTimeDownloads): DownloadsTableModel => {
+   podcastDownloads: PodcastDownloads,
+   podcastAllTimeDownloads: PodcastAllTimeDownloads): DownloadsTableModel => {
     let podcastData: DownloadsTableModel;
 
-    if (PodcastDownloads && routerParams.chartType !== CHARTTYPE_EPISODES) {
-      const data = PodcastDownloads.downloads;
+    if (podcastDownloads && routerParams.chartType !== CHARTTYPE_EPISODES) {
+      const data = podcastDownloads.downloads;
       if (data) {
         const totalForPeriod = getTotal(data);
         podcastData = {
@@ -30,13 +30,13 @@ export const selectDownloadTablePodcastDownloads = createSelector(
           downloads: mapMetricsToTimeseriesData(data),
           color: routerParams.chartType === CHARTTYPE_PODCAST ? standardColor : neutralColor,
           totalForPeriod,
-          charted: PodcastDownloads.charted
+          charted: podcastDownloads.charted
         };
-        if (podcastDownloads) {
-          if (totalForPeriod > podcastDownloads.allTimeDownloads) {
+        if (podcastAllTimeDownloads) {
+          if (totalForPeriod > podcastAllTimeDownloads.allTimeDownloads) {
             podcastData.allTimeDownloads = totalForPeriod;
           } else {
-            podcastData.allTimeDownloads = podcastDownloads.allTimeDownloads;
+            podcastData.allTimeDownloads = podcastAllTimeDownloads.allTimeDownloads;
           }
         }
       }

@@ -1,5 +1,5 @@
 import { EntityState, EntityAdapter, createEntityAdapter } from '@ngrx/entity';
-import { GroupCharted, Rank } from './models';
+import { GroupCharted } from './models';
 import { ActionTypes, AllActions } from '../actions';
 
 export type State = EntityState<GroupCharted>;

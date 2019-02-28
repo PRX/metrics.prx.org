@@ -7,7 +7,7 @@ export const selectGroupChartedState = createFeatureSelector<fromGroupCharted.St
 
 export const selectGroupChartedIds = createSelector(
   selectGroupChartedState,
-  fromGroupCharted.selectGroupKeys
+  fromGroupCharted.selectGroupIds
 );
 export const selectGroupChartedEntities = createSelector(
   selectGroupChartedState,

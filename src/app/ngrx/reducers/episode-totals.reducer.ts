@@ -11,14 +11,10 @@ export const initialState: State = adapter.getInitialState({
 });
 
 export const {
-  selectIds,
-  selectEntities,
-  selectAll,
+  selectIds: selectEpisodeTotalsIds,
+  selectEntities: selectEpisodeTotalsEntities,
+  selectAll: selectAllEpisodeTotals,
 } = adapter.getSelectors();
-
-export const selectEpisodeTotalsIds = selectIds;
-export const selectEpisodeTotalsEntities = selectEntities;
-export const selectAllEpisodeTotals = selectAll;
 
 export function reducer(
   state = initialState,

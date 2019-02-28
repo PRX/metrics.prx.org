@@ -9,14 +9,10 @@ export const adapter: EntityAdapter<PodcastAllTimeDownloads> = createEntityAdapt
 export const initialState: State = adapter.getInitialState({});
 
 export const {
-  selectIds,
-  selectEntities,
-  selectAll,
+  selectIds: selectPodcastAllTimeDownloadsIds,
+  selectEntities: selectPodcastAllTimeDownloadsEntities,
+  selectAll: selectAllPodcastAllTimeDownloads,
 } = adapter.getSelectors();
-
-export const selectPodcastAllTimeDownloadsIds = selectIds;
-export const selectPodcastAllTimeDownloadsEntities = selectEntities;
-export const selectAllPodcastAllTimeDownloads = selectAll;
 
 export function reducer(
   state = initialState,

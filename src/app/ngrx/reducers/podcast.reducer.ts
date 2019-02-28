@@ -43,13 +43,9 @@ export function reducer(
 }
 
 export const {
-  selectIds,
-  selectEntities,
-  selectAll,
+  selectIds: selectPodcastIds,
+  selectEntities: selectPodcastEntities,
+  selectAll: selectAllPodcasts,
 } = adapter.getSelectors();
-
-export const selectPodcastIds = selectIds;
-export const selectPodcastEntities = selectEntities;
-export const selectAllPodcasts = selectAll;
 
 export const getError = (state: State) => state.error;

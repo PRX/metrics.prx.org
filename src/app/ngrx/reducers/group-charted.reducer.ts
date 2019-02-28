@@ -25,11 +25,7 @@ export function reducer(
 }
 
 export const {
-  selectIds,
-  selectEntities,
-  selectAll,
+  selectIds: selectGroupIds,
+  selectEntities: selectGroupChartedEntities,
+  selectAll: selectAllGroupCharted,
 } = adapter.getSelectors();
-
-export const selectGroupKeys = selectIds;
-export const selectGroupChartedEntities = selectEntities;
-export const selectAllGroupCharted = selectAll;

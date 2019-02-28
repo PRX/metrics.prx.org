@@ -91,14 +91,10 @@ export function reducer(
 }
 
 export const {
-  selectIds,
-  selectEntities,
-  selectAll,
+  selectIds: selectEpisodeGuids,
+  selectEntities: selectEpisodeEntities,
+  selectAll: selectAllEpisodes,
 } = adapter.getSelectors();
-
-export const selectEpisodeGuids = selectIds;
-export const selectEpisodeEntities = selectEntities;
-export const selectAllEpisodes = selectAll;
 
 export const getTotal = (state: State) => state.total;
 export const getPage = (state: State) => state.page;

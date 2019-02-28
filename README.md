@@ -15,9 +15,6 @@ vim .env
 ```
 Metrics will connect to id-staging.prx.org, cms-staging.prx.tech, and your local Castle server.
 
-### Use local `cms`
-To run cms locally, change the `CMS_HOST` in `.env` to `CMS_HOST=cms.prx.dev`.
-
 ###  Use local `id`
 To run id locally, change the `AUTH_HOST` in `.env` to `AUTH_HOST=id.prx.dev`.
 
@@ -57,18 +54,13 @@ Enter in the client id in `.env`, setting `AUTH_CLIENT_ID` to the value from abo
 You will need to get a Google API key for your .env for use with Google Geochart.
 You can add one for your development environment under the project in the Google Cloud Platform API -> Credentials.
 
+### GOOGLE_CLIENT_ID
+You will need a Google Client Id for your .env for use with Google Sheets.
+You can access this client id from the project in the Google Cloud Platform API -> Credentials.
+
 ## Local Install
 
 Make sure you're running the node version in `.nvmrc`, and you're off!!
-
-Note: you may need to install puma-dev proxy (see https://github.com/puma/puma-dev). Note that you can use the
-`-install-port` option to run on a port other than 80 if you have other services using that port (eg. Apache).
-``` sh
-brew install puma/puma/puma-dev
-sudo puma-dev -setup
-puma-dev -install
-
-```
 
 ``` sh
 # install dependencies (https://yarnpkg.com/en/docs/install)
@@ -84,11 +76,7 @@ open https://metrics.prx.dev
 yarn test
 ```
 
-puma-dev is used for ssl support, and on MacOS you will also need to accept the certificate.
-* Open https://metrics.prx.dev in Safari
-* The certificate gets incorrectly saved in Keychain Access under login -> Certificates. Move the certificate to System -> Certificates.
-
-Warning: puma-dev may not be compatible with your docker proxy
+The [prxproxy](https://github.com/PRX/internal/tree/master/guides/docker-for-mac#proxy-for-non-docker-development) nginx proxy is used for local development with ssl support. If using Firefox, you will need to add the certificate authority for the self signed certificates.
 
 ## Docker Install
 

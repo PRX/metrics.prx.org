@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Store, select } from '@ngrx/store';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { DownloadsTableModel, RouterParams, CHARTTYPE_EPISODES } from '../ngrx';
 import { selectRouter, selectNumEpisodePages,
   selectDownloadTablePodcastDownloads, selectDownloadTableEpisodeMetrics } from '../ngrx/reducers/selectors';

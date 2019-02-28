@@ -3,7 +3,7 @@ import * as fromPodcastRanks from '../podcast-ranks.reducer';
 import {
   PodcastRanks,
   Rank,
-  podcastRanksKey,
+  podcastRanksId,
   GroupType,
   IntervalModel,
   GroupCharted,
@@ -26,9 +26,9 @@ import { selectRoutedGroupCharted } from './group-charted.selectors';
 
 export const selectPodcastRanksState = createFeatureSelector<fromPodcastRanks.State>('podcastRanks');
 
-export const selectPodcastRanksKeys = createSelector(
+export const selectPodcastRanksIds = createSelector(
   selectPodcastRanksState,
-  fromPodcastRanks.selectPodcastRanksKeys
+  fromPodcastRanks.selectPodcastRanksIds
 );
 export const selectPodcastRanksEntities = createSelector(
   selectPodcastRanksState,
@@ -64,7 +64,7 @@ export const selectRoutedPodcastRanks = createSelector(
    beginDate: Date,
    endDate: Date,
    podcastRanksEntities): PodcastRanks => {
-    return podcastRanksEntities[podcastRanksKey(podcastId, group, filter, interval, beginDate, endDate)];
+    return podcastRanksEntities[podcastRanksId(podcastId, group, filter, interval, beginDate, endDate)];
   }
 );
 
@@ -96,7 +96,7 @@ export const selectNestedPodcastRanks = createSelector(
    beginDate: Date,
    endDate: Date,
    podcastRanksEntities): PodcastRanks => {
-    return podcastRanksEntities[podcastRanksKey(podcastId, GROUPTYPE_GEOSUBDIV, filter, interval, beginDate, endDate)];
+    return podcastRanksEntities[podcastRanksId(podcastId, GROUPTYPE_GEOSUBDIV, filter, interval, beginDate, endDate)];
   }
 );
 

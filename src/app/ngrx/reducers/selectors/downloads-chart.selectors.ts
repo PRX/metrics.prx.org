@@ -45,14 +45,14 @@ export const selectDownloadChartMetrics = createSelector(
   selectRoutedEpisodePageDownloads,
   (routerParams: RouterParams,
    episodes: Episode[],
-   PodcastDownloads: PodcastDownloads,
+   podcastDownloads: PodcastDownloads,
    episodeDownloads: EpisodeDownloads[]): TimeseriesChartModel[] => {
     let chartedPodcastDownloads: TimeseriesChartModel,
       chartedEpisodeDownloads: TimeseriesChartModel[];
 
     if (routerParams.chartType === CHARTTYPE_PODCAST ||
-      (PodcastDownloads && PodcastDownloads.charted && routerParams.chartType === CHARTTYPE_STACKED)) {
-      const downloads = podcastDownloadMetrics(PodcastDownloads);
+      (podcastDownloads && podcastDownloads.charted && routerParams.chartType === CHARTTYPE_STACKED)) {
+      const downloads = podcastDownloadMetrics(podcastDownloads);
       if (downloads) {
         chartedPodcastDownloads = {
           ...downloads,
@@ -88,7 +88,7 @@ export const selectDownloadChartMetrics = createSelector(
     let chartData: TimeseriesChartModel[];
     switch (routerParams.chartType) {
       case CHARTTYPE_STACKED:
-        if (chartedPodcastDownloads && PodcastDownloads.charted &&
+        if (chartedPodcastDownloads && podcastDownloads.charted &&
           chartedEpisodeDownloads && chartedEpisodeDownloads.length &&
           chartedEpisodeDownloads.every(d => chartedPodcastDownloads.data.length === d.data.length)) {
           // if we have all the episode data to combine with podcast total
@@ -98,7 +98,7 @@ export const selectDownloadChartMetrics = createSelector(
             color: neutralColor
           };
           chartData = [...chartedEpisodeDownloads, allOtherEpisodesData];
-        } else if (chartedPodcastDownloads && PodcastDownloads.charted && chartedPodcastDownloads.data.length) {
+        } else if (chartedPodcastDownloads && podcastDownloads.charted && chartedPodcastDownloads.data.length) {
           chartData = [chartedPodcastDownloads];
         } else if (chartedEpisodeDownloads && chartedEpisodeDownloads.length) {
           chartData = chartedEpisodeDownloads;

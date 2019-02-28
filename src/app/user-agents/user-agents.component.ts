@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { select, Store } from '@ngrx/store';
 import { selectChartMetrics, selectTableMetrics, selectRouter, selectRoutedGroupCharted,
   selectGroupedDataLoaded, selectGroupedDataLoading, select500ErrorReloadActions } from '../ngrx/reducers/selectors';

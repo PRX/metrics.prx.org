@@ -2,7 +2,7 @@ import { async, TestBed } from '@angular/core/testing';
 import { Component } from '@angular/core';
 import { Router, RoutesRecognized } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { filter } from 'rxjs/operators/filter';
+import { filter } from 'rxjs/operators';
 import { RoutingService } from './routing.service';
 import { StoreModule, Store } from '@ngrx/store';
 import { reducers } from '../../ngrx/reducers';
@@ -220,7 +220,7 @@ describe('RoutingService', () => {
   it('should not include filter param for non geo routes', () => {
     jest.spyOn(router, 'navigate');
 
-    const { podcastId, metricsType, chartType, group, filter, interval, beginDate, endDate, ...params }
+    const { podcastId, metricsType, chartType, group, interval, beginDate, endDate, ...params }
       = routingService.checkAndGetDefaults({podcastId: '82', metricsType: METRICSTYPE_DOWNLOADS});
 
     store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerParams:

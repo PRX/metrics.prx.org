@@ -2,7 +2,6 @@ import { EntityState, EntityAdapter, createEntityAdapter } from '@ngrx/entity';
 import { ActionTypes, AllActions } from '../actions';
 import { PodcastDownloads } from './models/podcast-downloads.model';
 import { UpdateStr } from '@ngrx/entity/src/models';
-import * as includes from 'array-includes';
 
 export type PodcastDownloadsState = EntityState<PodcastDownloads>;
 
@@ -21,45 +20,32 @@ export function PodcastDownloadsReducer(state: PodcastDownloadsState = initialSt
   switch (action.type) {
     case ActionTypes.CASTLE_PODCAST_DOWNLOADS_LOAD: {
       const { id } = action.payload;
-      const currentIds = <string[]>selectPodcastDownloadsIds(state);
-      const charted = !includes(currentIds, id);
-      const podcastUpdate: UpdateStr<PodcastDownloads> = {
-        id,
-        changes: {
-          error: null,
-          loading: true,
-          loaded: false,
-          ...(charted && { charted }) // Conditionally add charted as object member
-        }
-      };
-      return adapter.upsertOne(podcastUpdate, state);
+      const entity = selectPodcastDownloadsEntities(state)[id];
+      return adapter.upsertOne(
+        {
+          id,
+          ...selectPodcastDownloadsEntities(state)[id],
+          error: null, loading: true, loaded: false, charted: !entity || entity.charted
+        }, state);
     }
     case ActionTypes.CASTLE_PODCAST_DOWNLOADS_SUCCESS: {
       const { id, downloads } = action.payload;
-      const currentIds = <string[]>selectPodcastDownloadsIds(state);
-      const charted = !includes(currentIds, id);
-      const podcastUpdate: UpdateStr<PodcastDownloads> = {
-        id,
-        changes: {
-          downloads,
-          loading: false,
-          loaded: true,
-          ...(charted && { charted }) // Conditionally add charted as object member
-        }
-      };
-      return adapter.upsertOne(podcastUpdate, state);
+      const entity = selectPodcastDownloadsEntities(state)[id];
+      return adapter.upsertOne(
+        {
+          id,
+          ...selectPodcastDownloadsEntities(state)[id],
+          downloads, loading: false, loaded: true, charted: !entity || entity.charted
+        }, state);
     }
     case ActionTypes.CASTLE_PODCAST_DOWNLOADS_FAILURE: {
       const { id, error } = action.payload;
-      const podcastUpdate: UpdateStr<PodcastDownloads> = {
-        id,
-        changes: {
-          error,
-          loading: false,
-          loaded: true
-        }
-      };
-      return adapter.upsertOne(podcastUpdate, state);
+      return adapter.upsertOne(
+        {
+          id,
+          ...selectPodcastDownloadsEntities(state)[id],
+          error, loading: false, loaded: true
+        }, state);
     }
     case ActionTypes.CHART_TOGGLE_PODCAST: {
       const { id, charted } = action.payload;

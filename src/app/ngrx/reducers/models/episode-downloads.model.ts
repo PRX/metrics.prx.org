@@ -1,4 +1,5 @@
 export interface EpisodeDownloads {
+  id: string;
   guid: string;
   podcastId: string;
   page: number;

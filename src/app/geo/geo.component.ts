@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { select, Store } from '@ngrx/store';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { RouterParams, TotalsTableRow, Rank,
   GroupType, GROUPTYPE_GEOCOUNTRY, GROUPTYPE_GEOMETRO, ChartType, CHARTTYPE_GEOCHART } from '../ngrx';
 import { CategoryChartModel, TimeseriesChartModel } from 'ngx-prx-styleguide';

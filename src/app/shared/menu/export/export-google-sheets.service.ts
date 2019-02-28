@@ -1,8 +1,6 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { Observable } from 'rxjs/Observable';
-import { map } from 'rxjs/operators/map';
-import { distinctUntilChanged } from 'rxjs/operators/distinctUntilChanged';
+import { BehaviorSubject,  Observable } from 'rxjs';
+import { map, distinctUntilChanged } from 'rxjs/operators';
 import { Env } from '../../../core/core.env';
 import { ModalService } from 'ngx-prx-styleguide';
 

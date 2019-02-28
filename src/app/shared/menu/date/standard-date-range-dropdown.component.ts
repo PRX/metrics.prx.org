@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, HostListener } from '@angular/core';
+import { Component, Input, HostListener } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { IntervalModel } from '../../../ngrx';
 import { GoogleAnalyticsEventAction, RouteStandardRangeAction } from '../../../ngrx/actions';

@@ -100,14 +100,14 @@ describe('EpisodeSelectDropdownContentComponent', () => {
   it('should dispatch to reset selection and load podcast data', () => {
     comp.resetSelection();
     expect(store.dispatch).toHaveBeenCalledWith(new ACTIONS.CastlePodcastRanksLoadAction({
-      id: routerParams.podcastId,
+      podcastId: routerParams.podcastId,
       group: routerParams.group,
       interval: routerParams.interval,
       beginDate: routerParams.beginDate,
       endDate: routerParams.endDate
     }));
     expect(store.dispatch).toHaveBeenCalledWith(new ACTIONS.CastlePodcastTotalsLoadAction({
-      id: routerParams.podcastId,
+      podcastId: routerParams.podcastId,
       group: routerParams.group,
       beginDate: routerParams.beginDate,
       endDate: routerParams.endDate

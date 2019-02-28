@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Store, select } from '@ngrx/store';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { selectLoading, selectLoaded, select500ErrorReloadActions } from '../ngrx/reducers/selectors';
 import { AllActions } from '../ngrx/actions';
 

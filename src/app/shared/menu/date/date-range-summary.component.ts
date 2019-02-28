@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { RouterParams, INTERVAL_DAILY } from '../../../ngrx';
+import { RouterParams } from '../../../ngrx';
 import * as dateUtil from '../../util/date';
 
 @Component({

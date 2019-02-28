@@ -52,7 +52,7 @@ export const reducerProvider = { provide: reducerToken, useFactory: getReducers 
       maxAge: 150, // Retains last 150 states
       logOnly: environment.production, // Restrict extension to log-only mode
     }),
-    Angulartics2Module.forRoot([ Angulartics2GoogleAnalytics ]),
+    Angulartics2Module.forRoot(),
     StoreRouterConnectingModule,
     EffectsModule.forRoot([CastleEffects, IdEffects, RoutingEffects, GoogleAnalyticsEffects]),
     routing,

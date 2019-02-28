@@ -2,7 +2,7 @@ import { createSelector, createFeatureSelector } from '@ngrx/store';
 import * as fromEpisodeRanks from '../episode-ranks.reducer';
 import {
   EpisodeRanks,
-  episodeRanksKey,
+  episodeRanksId,
   GroupType,
   IntervalModel,
   GroupCharted,
@@ -24,9 +24,9 @@ import { selectRoutedGroupCharted } from './group-charted.selectors';
 
 export const selectEpisodeRanksState = createFeatureSelector<fromEpisodeRanks.State>('episodeRanks');
 
-export const selectEpisodeRanksKeys = createSelector(
+export const selectEpisodeRanksIds = createSelector(
   selectEpisodeRanksState,
-  fromEpisodeRanks.selectEpisodeRanksKeys
+  fromEpisodeRanks.selectEpisodeRanksIds
 );
 export const selectEpisodeRanksEntities = createSelector(
   selectEpisodeRanksState,
@@ -63,8 +63,8 @@ export const selectSelectedEpisodesRanks = createSelector(
    endDate: Date,
    episodeRanksEntities): EpisodeRanks[] => {
     return guids &&
-      guids.filter(guid => episodeRanksEntities[episodeRanksKey(guid, group, filter, interval, beginDate, endDate)])
-        .map(guid => episodeRanksEntities[episodeRanksKey(guid, group, filter, interval, beginDate, endDate)]);
+      guids.filter(guid => episodeRanksEntities[episodeRanksId(guid, group, filter, interval, beginDate, endDate)])
+        .map(guid => episodeRanksEntities[episodeRanksId(guid, group, filter, interval, beginDate, endDate)]);
   }
 );
 
@@ -97,8 +97,8 @@ export const selectNestedEpisodesRanks = createSelector(
    endDate: Date,
    episodeRanksEntities): EpisodeRanks[] => {
     return guids &&
-      guids.filter(guid => episodeRanksEntities[episodeRanksKey(guid, GROUPTYPE_GEOSUBDIV, filter, interval, beginDate, endDate)])
-        .map(guid => episodeRanksEntities[episodeRanksKey(guid, GROUPTYPE_GEOSUBDIV, filter, interval, beginDate, endDate)]);
+      guids.filter(guid => episodeRanksEntities[episodeRanksId(guid, GROUPTYPE_GEOSUBDIV, filter, interval, beginDate, endDate)])
+        .map(guid => episodeRanksEntities[episodeRanksId(guid, GROUPTYPE_GEOSUBDIV, filter, interval, beginDate, endDate)]);
   }
 );
 

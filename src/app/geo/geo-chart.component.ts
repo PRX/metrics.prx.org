@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import {GROUPTYPE_GEOCOUNTRY, GROUPTYPE_GEOMETRO, RouterParams} from '../ngrx';
+import {GROUPTYPE_GEOCOUNTRY, RouterParams} from '../ngrx';
 import { TimeseriesChartModel } from 'ngx-prx-styleguide';
 import { largeNumberFormat } from '../shared/pipes/large-number.pipe';
 import * as chartUtil from '../shared/util/chart.util';

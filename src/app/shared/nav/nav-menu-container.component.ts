@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { select, Store } from '@ngrx/store';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { selectRouter } from '../../ngrx/reducers/selectors';
 import {GroupType, MetricsType, RouterParams} from '../../ngrx';
 import * as ACTIONS from '../../ngrx/actions';

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Store, select } from '@ngrx/store';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { Angulartics2GoogleAnalytics } from 'angulartics2/ga';
 import { HalDoc } from './core';
 import { Env } from './core/core.env';

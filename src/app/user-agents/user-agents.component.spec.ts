@@ -56,7 +56,7 @@ describe('UserAgentsComponent', () => {
 
   function dispatchPodcastAgentNameTotals() {
     store.dispatch(new ACTIONS.CastlePodcastTotalsSuccessAction({
-      id: routerParams.podcastId,
+      podcastId: routerParams.podcastId,
       group: GROUPTYPE_AGENTNAME,
       beginDate: routerParams.beginDate,
       endDate: routerParams.endDate,
@@ -66,7 +66,7 @@ describe('UserAgentsComponent', () => {
 
   function dispatchPodcastAgentNameRanks() {
     store.dispatch(new ACTIONS.CastlePodcastRanksSuccessAction({
-      id: routerParams.podcastId,
+      podcastId: routerParams.podcastId,
       group: GROUPTYPE_AGENTNAME,
       interval: routerParams.interval,
       beginDate: routerParams.beginDate,

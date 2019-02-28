@@ -26,12 +26,12 @@ export const selectExportDownloads = createSelector(
   selectRoutedEpisodePageDownloads,
   (routerParams: RouterParams,
   episodes: Episode[],
-  PodcastDownloads: PodcastDownloads,
+  podcastDownloads: PodcastDownloads,
   episodeDownloads: EpisodeDownloads[]): ExportData[] => {
   let chartedPodcastDownloads: ExportData, chartedEpisodeDownloads: ExportData[];
 
   if (routerParams.chartType === CHARTTYPE_PODCAST || routerParams.chartType === CHARTTYPE_STACKED) {
-    chartedPodcastDownloads = podcastDownloadMetrics(PodcastDownloads);
+    chartedPodcastDownloads = podcastDownloadMetrics(podcastDownloads);
   }
 
   if (routerParams.chartType === CHARTTYPE_EPISODES || routerParams.chartType === CHARTTYPE_STACKED) {
@@ -44,10 +44,10 @@ export const selectExportDownloads = createSelector(
   let exportData: ExportData[];
   switch (routerParams.chartType) {
     case CHARTTYPE_STACKED:
-      if (chartedPodcastDownloads && PodcastDownloads.charted &&
+      if (chartedPodcastDownloads && podcastDownloads.charted &&
         chartedEpisodeDownloads && chartedEpisodeDownloads.length) {
         exportData = [chartedPodcastDownloads, ...chartedEpisodeDownloads];
-      } else if (chartedPodcastDownloads && PodcastDownloads.charted &&
+      } else if (chartedPodcastDownloads && podcastDownloads.charted &&
         chartedPodcastDownloads.data.length && !(chartedEpisodeDownloads && chartedEpisodeDownloads.length)) {
         exportData = [chartedPodcastDownloads];
       } else if (chartedEpisodeDownloads && chartedEpisodeDownloads.length) {

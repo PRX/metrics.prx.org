@@ -1,6 +1,6 @@
 import { createSelector, createFeatureSelector } from '@ngrx/store';
 import * as fromPodcastTotals from '../podcast-totals.reducer';
-import { PodcastTotals, Rank, podcastTotalsKey,
+import { PodcastTotals, Rank, podcastTotalsId,
   TotalsTableRow, GroupCharted,
   GroupType, GROUPTYPE_GEOSUBDIV } from '../models';
 import { selectPodcastRoute, selectGroupRoute,
@@ -10,9 +10,9 @@ import { selectRoutedGroupCharted } from './group-charted.selectors';
 
 export const selectPodcastTotalsState = createFeatureSelector<fromPodcastTotals.State>('podcastTotals');
 
-export const selectPodcastTotalsKeys = createSelector(
+export const selectPodcastTotalsIds = createSelector(
   selectPodcastTotalsState,
-  fromPodcastTotals.selectPodcastTotalsKeys
+  fromPodcastTotals.selectPodcastTotalsIds
 );
 export const selectPodcastTotalsEntities = createSelector(
   selectPodcastTotalsState,
@@ -44,7 +44,7 @@ export const selectRoutedPodcastTotals = createSelector(
   selectEndDateRoute,
   selectPodcastTotalsEntities,
   (podcastId: string, group: GroupType, filter: string, beginDate: Date, endDate: Date, podcastTotalsEntities): PodcastTotals => {
-    return podcastTotalsEntities[podcastTotalsKey(podcastId, group, filter, beginDate, endDate)];
+    return podcastTotalsEntities[podcastTotalsId(podcastId, group, filter, beginDate, endDate)];
   }
 );
 
@@ -70,7 +70,7 @@ export const selectNestedPodcastTotals = createSelector(
   selectEndDateRoute,
   selectPodcastTotalsEntities,
   (podcastId: string, filter: string, beginDate: Date, endDate: Date, podcastTotalsEntities): PodcastTotals => {
-    return podcastTotalsEntities[podcastTotalsKey(podcastId, GROUPTYPE_GEOSUBDIV, filter, beginDate, endDate)];
+    return podcastTotalsEntities[podcastTotalsId(podcastId, GROUPTYPE_GEOSUBDIV, filter, beginDate, endDate)];
   }
 );
 

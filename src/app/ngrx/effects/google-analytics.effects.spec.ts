@@ -4,7 +4,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
 import { cold, hot } from 'jasmine-marbles';
-import { Subject } from 'rxjs/Subject';
+import { Subject } from 'rxjs';
 import { Angulartics2 } from 'angulartics2';
 import { getActions, TestActions } from './test.actions';
 import { reducers } from '../../ngrx/reducers';

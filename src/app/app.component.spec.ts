@@ -13,7 +13,7 @@ import { AppComponent } from './app.component';
 import { reducers } from './ngrx/reducers';
 import { User } from './ngrx';
 import * as ACTIONS from './ngrx/actions';
-import { Subject } from 'rxjs/Subject';
+import { Subject } from 'rxjs';
 import { userinfo } from '../testing/downloads.fixtures';
 
 /* tslint:disable-next-line:component-selector */

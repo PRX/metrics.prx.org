@@ -108,7 +108,7 @@ describe('CastleEffects', () => {
   }));
 
   it('should request podcast all time downloads from castle', () => {
-    const action = {
+    const action: ACTIONS.CastlePodcastAllTimeDownloadsLoadAction = {
       type: ACTIONS.ActionTypes.CASTLE_PODCAST_ALLTIME_DOWNLOADS_LOAD,
       payload: {
         id: podcast.id
@@ -127,7 +127,7 @@ describe('CastleEffects', () => {
   it('should return a failure action on non 404 errors for all time podcast downloads', () => {
     const error: any = { status: 500, message: 'this is an error' };
     castle.root.mockError('prx:podcast', error);
-    const action = {
+    const action: ACTIONS.CastlePodcastAllTimeDownloadsLoadAction = {
       type: ACTIONS.ActionTypes.CASTLE_PODCAST_ALLTIME_DOWNLOADS_LOAD,
       payload: {
         id: podcast.id
@@ -144,7 +144,7 @@ describe('CastleEffects', () => {
   });
 
   it('should request episode all time downloads from castle', () => {
-    const action = {
+    const action: ACTIONS.CastleEpisodeAllTimeDownloadsLoadAction = {
       type: ACTIONS.ActionTypes.CASTLE_EPISODE_ALLTIME_DOWNLOADS_LOAD,
       payload: { podcastId: episodes[0].podcastId, guid: episodes[0].guid }
     };
@@ -161,7 +161,7 @@ describe('CastleEffects', () => {
 
   it('should return 0 downloads on 404s for all time episode downloads', () => {
     castle.root.mockError('prx:episode', <any>{ status: 404, message: 'this is an error' });
-    const action = {
+    const action: ACTIONS.CastleEpisodeAllTimeDownloadsLoadAction = {
       type: ACTIONS.ActionTypes.CASTLE_EPISODE_ALLTIME_DOWNLOADS_LOAD,
       payload: {
         podcastId: episodes[0].podcastId,
@@ -182,7 +182,7 @@ describe('CastleEffects', () => {
   it('should return a failure action on non 404 errors for all time episode downloads', () => {
     const error: any = { status: 500, message: 'this is an error' };
     castle.root.mockError('prx:episode', error);
-    const action = {
+    const action: ACTIONS.CastleEpisodeAllTimeDownloadsLoadAction = {
       type: ACTIONS.ActionTypes.CASTLE_EPISODE_ALLTIME_DOWNLOADS_LOAD,
       payload: {
         podcastId: episodes[0].podcastId,
@@ -201,7 +201,7 @@ describe('CastleEffects', () => {
   });
 
   it('should load podcast downloads', () => {
-    const action = {
+    const action: ACTIONS.CastlePodcastDownloadsLoadAction = {
       type: ACTIONS.ActionTypes.CASTLE_PODCAST_DOWNLOADS_LOAD,
       payload: {
         id: podcast.id,
@@ -221,7 +221,7 @@ describe('CastleEffects', () => {
   });
 
   it('should load episode metrics', () => {
-    const action = {
+    const action: ACTIONS.CastleEpisodeDownloadsLoadAction = {
       type: ACTIONS.ActionTypes.CASTLE_EPISODE_DOWNLOADS_LOAD,
       payload: {
         podcastId: episodes[0].podcastId,
@@ -485,10 +485,10 @@ describe('CastleEffects', () => {
   });
 
   it('should load more than one grouped podcast ranks at a time', () => {
-    const action = {
+    const action: ACTIONS.CastlePodcastRanksLoadAction = {
       type: ACTIONS.ActionTypes.CASTLE_PODCAST_RANKS_LOAD,
       payload: {
-        id: podcast.id,
+        podcastId: podcast.id,
         group: GROUPTYPE_AGENTNAME,
         interval: INTERVAL_DAILY,
         beginDate: routerParams.beginDate,
@@ -496,7 +496,7 @@ describe('CastleEffects', () => {
       }
     };
     const success = new ACTIONS.CastlePodcastRanksSuccessAction({
-      id: podcast.id,
+      podcastId: podcast.id,
       group: GROUPTYPE_AGENTNAME,
       filter: undefined,
       interval: INTERVAL_DAILY,
@@ -512,17 +512,17 @@ describe('CastleEffects', () => {
   });
 
   it('should load more than one grouped podcast totals at a time', () => {
-    const action = {
+    const action: ACTIONS.CastlePodcastTotalsLoadAction = {
       type: ACTIONS.ActionTypes.CASTLE_PODCAST_TOTALS_LOAD,
       payload: {
-        id: podcast.id,
+        podcastId: podcast.id,
         group: GROUPTYPE_AGENTNAME,
         beginDate: routerParams.beginDate,
         endDate: routerParams.endDate
       }
     };
     const success = new ACTIONS.CastlePodcastTotalsSuccessAction({
-      id: podcast.id,
+      podcastId: podcast.id,
       group: GROUPTYPE_AGENTNAME,
       filter: undefined,
       beginDate: routerParams.beginDate,
@@ -539,7 +539,7 @@ describe('CastleEffects', () => {
   });
 
   it('should load more than one grouped episode ranks at a time', () => {
-    const action = {
+    const action: ACTIONS.CastleEpisodeRanksLoadAction = {
       type: ACTIONS.ActionTypes.CASTLE_EPISODE_RANKS_LOAD,
       payload: {
         guid: episodes[0].guid,
@@ -566,7 +566,7 @@ describe('CastleEffects', () => {
   });
 
   it('should load more than one grouped episode totals at a time', () => {
-    const action = {
+    const action: ACTIONS.CastleEpisodeTotalsLoadAction = {
       type: ACTIONS.ActionTypes.CASTLE_EPISODE_TOTALS_LOAD,
       payload: {
         guid: episodes[0].guid,

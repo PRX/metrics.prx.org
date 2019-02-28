@@ -227,7 +227,7 @@ export class CastleEpisodeAllTimeDownloadsFailureAction implements Action {
 }
 
 export interface CastlePodcastRanksLoadPayload {
-  id: string;
+  podcastId: string;
   group: string;
   filter?: string;
   interval: IntervalModel;
@@ -242,7 +242,7 @@ export class CastlePodcastRanksLoadAction implements Action {
 }
 
 export interface CastlePodcastRanksSuccessPayload {
-  id: string;
+  podcastId: string;
   group: string;
   filter?: string;
   interval: IntervalModel;
@@ -259,7 +259,7 @@ export class CastlePodcastRanksSuccessAction implements Action {
 }
 
 export interface CastlePodcastRanksFailurePayload {
-  id: string;
+  podcastId: string;
   group: string;
   filter?: string;
   interval: IntervalModel;
@@ -275,7 +275,7 @@ export class CastlePodcastRanksFailureAction implements Action {
 }
 
 export interface CastlePodcastTotalsLoadPayload {
-  id: string;
+  podcastId: string;
   group: string;
   filter?: string;
   beginDate: Date;
@@ -289,7 +289,7 @@ export class CastlePodcastTotalsLoadAction implements Action {
 }
 
 export interface CastlePodcastTotalsSuccessPayload {
-  id: string;
+  podcastId: string;
   group: string;
   filter?: string;
   beginDate: Date;
@@ -304,7 +304,7 @@ export class CastlePodcastTotalsSuccessAction implements Action {
 }
 
 export interface CastlePodcastTotalsFailurePayload {
-  id: string;
+  podcastId: string;
   group: string;
   filter?: string;
   beginDate: Date;

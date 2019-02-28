@@ -1,8 +1,8 @@
 import { Component, HostListener, OnInit } from '@angular/core';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { Store, select } from '@ngrx/store';
-import { Observable } from 'rxjs/Observable';
-import { map } from 'rxjs/operators/map';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { GoogleAnalyticsEventAction } from '../../../ngrx/actions';
 import { selectExportData2DArray, joinCsvArray } from '../../../ngrx/reducers/selectors';
 import { ExportGoogleSheetsService } from './export-google-sheets.service';

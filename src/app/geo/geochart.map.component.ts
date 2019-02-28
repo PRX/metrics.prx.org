@@ -1,9 +1,8 @@
 import { Component, Input, OnInit, OnChanges, SimpleChanges, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 import { Env } from '../core/core.env';
 import { GROUPTYPE_GEOCOUNTRY, GROUPTYPE_GEOMETRO, getGroupName, RouterParams, Rank } from '../ngrx/index';
-import { fromEvent } from 'rxjs/observable/fromEvent';
-import { map } from 'rxjs/operators/map';
-import { distinctUntilChanged } from 'rxjs/operators';
+import { fromEvent } from 'rxjs';
+import { map, distinctUntilChanged } from 'rxjs/operators';
 import { toGoogleDataTable } from '../shared/util/chart.util';
 
 declare const google: any;

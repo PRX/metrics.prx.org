@@ -1,6 +1,9 @@
 prx-header {
   max-width: 100%;
 }
+prx-header >>> nav {
+  flex-basis: calc(100% - 125px);
+}
 metrics-podcast-nav {
   margin-right: auto;
 }

@@ -21,7 +21,6 @@ export const adapter: EntityAdapter<Episode> = createEntityAdapter<Episode>({
 });
 
 export const initialState: State = adapter.getInitialState({
-  // additional entity state properties
   pagesLoaded: [],
   pagesLoading: [],
   total: 0
@@ -62,7 +61,7 @@ export function reducer(
       const { page, total, episodes } = action.payload;
       return {
         ...adapter.upsertMany(episodes.map(episode => {
-          return {id: episode.guid, changes: episode};
+          return {id: episode.guid, ...episode};
         }), state),
         pagesLoaded: addToArray(state.pagesLoaded, page),
         pagesLoading: removeFromArray(state.pagesLoading, page),
@@ -83,14 +82,10 @@ export function reducer(
 }
 
 export const {
-  selectIds,
-  selectEntities,
-  selectAll,
+  selectIds: selectEpisodeGuids,
+  selectEntities: selectEpisodeEntities,
+  selectAll: selectAllEpisodes,
 } = adapter.getSelectors();
-
-export const selectEpisodeGuids = selectIds;
-export const selectEpisodeEntities = selectEntities;
-export const selectAllEpisodes = selectAll;
 
 export const getPagesLoaded = (state: State) => state.pagesLoaded;
 export const getPagesLoading = (state: State) => state.pagesLoading;

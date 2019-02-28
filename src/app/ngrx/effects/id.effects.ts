@@ -1,10 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
-import { of } from 'rxjs/observable/of';
-import { catchError } from 'rxjs/operators/catchError';
-import { first } from 'rxjs/operators/first';
-import { mergeMap } from 'rxjs/operators/mergeMap';
-import { switchMap } from 'rxjs/operators/switchMap';
+import { Observable, of } from 'rxjs';
+import { catchError, first, mergeMap, switchMap, map } from 'rxjs/operators';
 import { Action, Store } from '@ngrx/store';
 import { Actions, Effect, ofType } from '@ngrx/effects';
 
@@ -32,12 +28,16 @@ export class IdEffects {
               authorized = false;
               this.store.dispatch(new ACTIONS.IdUserinfoFailureAction({error: 'Permission denied'}));
             }
-            return this.user.getUserinfo().mergeMap((userinfo: Userinfo) => {
-              return this.user.getUserDoc(userinfo).map(doc => {
-                const user: User = {loggedIn, authorized, doc, userinfo};
-                return new ACTIONS.IdUserinfoSuccessAction({user});
-              });
-            });
+            return this.user.getUserinfo().pipe(
+              mergeMap((userinfo: Userinfo) => {
+                return this.user.getUserDoc(userinfo).pipe(
+                  map(doc => {
+                    const user: User = {loggedIn, authorized, doc, userinfo};
+                    return new ACTIONS.IdUserinfoSuccessAction({user});
+                  })
+                );
+              })
+            );
           } else {
             return of(new ACTIONS.IdUserinfoFailureAction({error: 'You are not logged in'}));
           }

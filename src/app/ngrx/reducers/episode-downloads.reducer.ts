@@ -69,12 +69,12 @@ export function reducer(state: State = initialState, action: AllActions) {
     }
     case ActionTypes.CHART_TOGGLE_EPISODE: {
       const { guid, charted } = action.payload;
-      return adapter.upsertOne(
+      return adapter.updateOne(
         {
           id: guid,
-          guid,
-          ...selectEpisodeDownloadsEntities(state)[guid],
-          charted
+          changes: {
+            charted
+          }
         },
         state);
     }

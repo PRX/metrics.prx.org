@@ -21,7 +21,7 @@ describe('Podcast Ranks Reducer', () => {
   it('should set loading, loaded, and unset error on podcast ranks load', () => {
     const { podcastId, group, filter, interval, beginDate, endDate } = routerParams;
     const newState = reducer(initialState,
-      new ACTIONS.CastlePodcastRanksLoadAction({id: podcastId, group, interval, beginDate, endDate}));
+      new ACTIONS.CastlePodcastRanksLoadAction({podcastId, group, interval, beginDate, endDate}));
     const id = podcastRanksId(podcastId, group, filter, interval, beginDate, endDate);
     expect(newState.entities[id].loading).toBeTruthy();
     expect(newState.entities[id].loaded).toBeFalsy();
@@ -33,10 +33,9 @@ describe('Podcast Ranks Reducer', () => {
     const id = podcastRanksId(podcastId, group, filter, interval, beginDate, endDate);
     const newState = reducer(initialState,
       new ACTIONS.CastlePodcastRanksSuccessAction({
-        id: podcastId, group, interval, beginDate, endDate,
+        podcastId, group, interval, beginDate, endDate,
         ranks: podcastAgentNameRanks, downloads: podcastAgentNameDownloads}));
     expect(newState.entities[id]).toEqual({
-      // @ts-ignore using upsert adds 'id' property to entity, seems like ngrx/entity v6 gets rid of this
       id,
       podcastId,
       group,
@@ -55,7 +54,7 @@ describe('Podcast Ranks Reducer', () => {
     const { podcastId, group, filter, interval, beginDate, endDate } = routerParams;
     const newState = reducer(initialState,
       new ACTIONS.CastlePodcastRanksSuccessAction({
-        id: podcastId, group, interval, beginDate, endDate,
+        podcastId, group, interval, beginDate, endDate,
         ranks: podcastAgentNameRanks, downloads: podcastAgentNameDownloads}));
     expect(newState.entities[podcastRanksId(podcastId, group, filter, interval, beginDate, endDate)]).not.toBeNull();
   });
@@ -64,7 +63,7 @@ describe('Podcast Ranks Reducer', () => {
     const { podcastId, group, filter, interval, beginDate, endDate } = routerParams;
     const newState = reducer(initialState,
       new ACTIONS.CastlePodcastRanksFailureAction({
-        id: podcastId, group, interval, beginDate, endDate,
+        podcastId, group, interval, beginDate, endDate,
         error: 'something went wrong'}));
     expect(newState.entities[podcastRanksId(podcastId, group, filter, interval, beginDate, endDate)].error).not.toBeUndefined();
   });

@@ -89,21 +89,21 @@ export class EpisodeSelectDropdownContentComponent {
 
     const { podcastId, group, filter, interval, beginDate, endDate } = this.routerParams;
     this.store.dispatch(new ACTIONS.CastlePodcastRanksLoadAction({
-      id: podcastId,
+      podcastId,
       group,
       interval,
       beginDate,
       endDate
     }));
     this.store.dispatch(new ACTIONS.CastlePodcastTotalsLoadAction({
-      id: podcastId,
+      podcastId,
       group,
       beginDate,
       endDate
     }));
     if (filter) {
       this.store.dispatch(new ACTIONS.CastlePodcastRanksLoadAction({
-        id: podcastId,
+        podcastId,
         group: GROUPTYPE_GEOSUBDIV,
         filter,
         interval,
@@ -111,7 +111,7 @@ export class EpisodeSelectDropdownContentComponent {
         endDate
       }));
       this.store.dispatch(new ACTIONS.CastlePodcastTotalsLoadAction({
-        id: podcastId,
+        podcastId,
         group: GROUPTYPE_GEOSUBDIV,
         filter,
         beginDate,

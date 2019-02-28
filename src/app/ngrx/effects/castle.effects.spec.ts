@@ -485,10 +485,10 @@ describe('CastleEffects', () => {
   });
 
   it('should load more than one grouped podcast ranks at a time', () => {
-    const action = {
+    const action: ACTIONS.CastlePodcastRanksLoadAction = {
       type: ACTIONS.ActionTypes.CASTLE_PODCAST_RANKS_LOAD,
       payload: {
-        id: podcast.id,
+        podcastId: podcast.id,
         group: GROUPTYPE_AGENTNAME,
         interval: INTERVAL_DAILY,
         beginDate: routerParams.beginDate,
@@ -496,7 +496,7 @@ describe('CastleEffects', () => {
       }
     };
     const success = new ACTIONS.CastlePodcastRanksSuccessAction({
-      id: podcast.id,
+      podcastId: podcast.id,
       group: GROUPTYPE_AGENTNAME,
       filter: undefined,
       interval: INTERVAL_DAILY,
@@ -515,14 +515,14 @@ describe('CastleEffects', () => {
     const action = {
       type: ACTIONS.ActionTypes.CASTLE_PODCAST_TOTALS_LOAD,
       payload: {
-        id: podcast.id,
+        podcastId: podcast.id,
         group: GROUPTYPE_AGENTNAME,
         beginDate: routerParams.beginDate,
         endDate: routerParams.endDate
       }
     };
     const success = new ACTIONS.CastlePodcastTotalsSuccessAction({
-      id: podcast.id,
+      podcastId: podcast.id,
       group: GROUPTYPE_AGENTNAME,
       filter: undefined,
       beginDate: routerParams.beginDate,

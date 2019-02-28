@@ -71,7 +71,7 @@ describe('GeoComponent', () => {
 
   function dispatchPodcastGeoCountryTotals() {
     store.dispatch(new ACTIONS.CastlePodcastTotalsSuccessAction({
-      id: routerParams.podcastId,
+      podcastId: routerParams.podcastId,
       group: GROUPTYPE_GEOCOUNTRY,
       filter: routerParams.filter,
       beginDate: routerParams.beginDate,
@@ -82,7 +82,7 @@ describe('GeoComponent', () => {
 
   function dispatchPodcastGeoMetroTotals() {
     store.dispatch(new ACTIONS.CastlePodcastTotalsSuccessAction({
-      id: routerParams.podcastId,
+      podcastId: routerParams.podcastId,
       group: GROUPTYPE_GEOMETRO,
       filter: routerParams.filter,
       beginDate: routerParams.beginDate,
@@ -93,7 +93,7 @@ describe('GeoComponent', () => {
 
   function dispatchPodcastGeoCountryRanks() {
     store.dispatch(new ACTIONS.CastlePodcastRanksSuccessAction({
-      id: routerParams.podcastId,
+      podcastId: routerParams.podcastId,
       group: GROUPTYPE_GEOCOUNTRY,
       interval: routerParams.interval,
       filter: routerParams.filter,
@@ -106,7 +106,7 @@ describe('GeoComponent', () => {
 
   function dispatchPodcastGeoMetroRanks() {
     store.dispatch(new ACTIONS.CastlePodcastRanksSuccessAction({
-      id: routerParams.podcastId,
+      podcastId: routerParams.podcastId,
       group: GROUPTYPE_GEOMETRO,
       interval: routerParams.interval,
       filter: routerParams.filter,

@@ -24,34 +24,34 @@ export function reducer(
 ): State {
   switch (action.type) {
     case ActionTypes.CASTLE_PODCAST_RANKS_LOAD: {
-      const { id, group, filter, interval, beginDate, endDate } = action.payload;
-      const key = podcastRanksId(id, group, filter, interval, beginDate, endDate);
+      const { podcastId, group, filter, interval, beginDate, endDate } = action.payload;
+      const id = podcastRanksId(podcastId, group, filter, interval, beginDate, endDate);
       return adapter.upsertOne(
         {
-          id: key,
-          ...selectPodcastRanksEntities(state)[key],
-          podcastId: id, group, filter, interval, beginDate, endDate, error: null, loading: true, loaded: false
+          id,
+          ...selectPodcastRanksEntities(state)[id],
+          podcastId, group, filter, interval, beginDate, endDate, error: null, loading: true, loaded: false
         },
         state);
     }
     case ActionTypes.CASTLE_PODCAST_RANKS_SUCCESS: {
-      const { id, group, filter, interval, beginDate, endDate, downloads, ranks } = action.payload;
-      const key = podcastRanksId(id, group, filter, interval, beginDate, endDate);
+      const { podcastId, group, filter, interval, beginDate, endDate, downloads, ranks } = action.payload;
+      const id = podcastRanksId(podcastId, group, filter, interval, beginDate, endDate);
       return adapter.upsertOne(
         {
-          id: key,
-          ...selectPodcastRanksEntities(state)[key],
-          podcastId: id, group, filter, interval, beginDate, endDate, downloads, ranks, loading: false, loaded: true
+          id,
+          ...selectPodcastRanksEntities(state)[id],
+          podcastId, group, filter, interval, beginDate, endDate, downloads, ranks, loading: false, loaded: true
         }, state);
     }
     case ActionTypes.CASTLE_PODCAST_RANKS_FAILURE: {
-      const { id, group, filter, interval, beginDate, endDate, error } = action.payload;
-      const key = podcastRanksId(id, group, filter, interval, beginDate, endDate);
+      const { podcastId, group, filter, interval, beginDate, endDate, error } = action.payload;
+      const id = podcastRanksId(podcastId, group, filter, interval, beginDate, endDate);
       return adapter.upsertOne(
         {
-          id: key,
-          ...selectPodcastRanksEntities(state)[key],
-          podcastId: id, group, filter, interval, beginDate, endDate, error, loading: false, loaded: false
+          id,
+          ...selectPodcastRanksEntities(state)[id],
+          podcastId, group, filter, interval, beginDate, endDate, error, loading: false, loaded: false
         }, state);
     }
 

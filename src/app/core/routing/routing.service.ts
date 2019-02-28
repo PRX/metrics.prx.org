@@ -368,7 +368,7 @@ export class RoutingService {
 
   loadPodcastTotals(newRouterParams: RouterParams) {
     this.store.dispatch(new ACTIONS.CastlePodcastTotalsLoadAction({
-      id: newRouterParams.podcastId,
+      podcastId: newRouterParams.podcastId,
       group: newRouterParams.group,
       filter: newRouterParams.filter,
       beginDate: newRouterParams.beginDate,
@@ -378,7 +378,7 @@ export class RoutingService {
 
   loadPodcastRanks(newRouterParams: RouterParams) {
     this.store.dispatch(new ACTIONS.CastlePodcastRanksLoadAction({
-      id: newRouterParams.podcastId,
+      podcastId: newRouterParams.podcastId,
       group: newRouterParams.group,
       filter: newRouterParams.filter,
       interval: newRouterParams.interval,

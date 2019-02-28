@@ -20,7 +20,7 @@ describe('PodcastTotals Reducer', () => {
   it('should set loading, loaded, and unset error on podcast ranks load', () => {
     const { podcastId, group, filter, beginDate, endDate } = routerParams;
     const newState = reducer(initialState,
-      new ACTIONS.CastlePodcastTotalsLoadAction({id: podcastId, group, beginDate, endDate}));
+      new ACTIONS.CastlePodcastTotalsLoadAction({podcastId, group, beginDate, endDate}));
     const id = podcastTotalsId(podcastId, group, filter, beginDate, endDate);
     expect(newState.entities[id].loading).toBeTruthy();
     expect(newState.entities[id].loaded).toBeFalsy();
@@ -32,7 +32,7 @@ describe('PodcastTotals Reducer', () => {
     const id = podcastTotalsId(podcastId, group, filter, beginDate, endDate);
     const newState = reducer(initialState,
       new ACTIONS.CastlePodcastTotalsSuccessAction({
-        id: podcastId, group, beginDate, endDate,
+        podcastId, group, beginDate, endDate,
         ranks: podcastAgentNameRanks}));
     expect(newState.entities[id]).toEqual({
       id,
@@ -52,7 +52,7 @@ describe('PodcastTotals Reducer', () => {
     const id = podcastTotalsId(podcastId, group, filter, beginDate, endDate);
     const newState = reducer(initialState,
       new ACTIONS.CastlePodcastTotalsSuccessAction({
-        id: podcastId, group, filter, beginDate, endDate,
+        podcastId, group, filter, beginDate, endDate,
         ranks: podcastAgentNameRanks}));
     expect(newState.entities[id])
       .not.toBeNull();
@@ -61,7 +61,7 @@ describe('PodcastTotals Reducer', () => {
   it('should set error on failure', () => {
     const { podcastId, group, filter, beginDate, endDate } = routerParams;
     const newState = reducer(initialState, new ACTIONS.CastlePodcastTotalsFailureAction({
-      id: podcastId, group, filter, beginDate, endDate, error: 'something went wrong'}));
+      podcastId, group, filter, beginDate, endDate, error: 'something went wrong'}));
     expect(newState.entities[podcastTotalsId(podcastId, group, filter, beginDate, endDate)].error).not.toBeUndefined();
   });
 });

@@ -69,7 +69,7 @@ export const selectRankTotal500ErrorReloadActions = createSelector(
     if (!selectedGuids || selectedGuids.length === 0) {
       if (podcastRanksError && podcastRanksError.status === 500) {
         actions.push(new ACTIONS.CastlePodcastRanksLoadAction({
-          id: podcastId,
+          podcastId,
           group,
           interval,
           beginDate,
@@ -78,7 +78,7 @@ export const selectRankTotal500ErrorReloadActions = createSelector(
       }
       if (podcastTotalsError && podcastTotalsError.status === 500) {
         actions.push(new ACTIONS.CastlePodcastTotalsLoadAction({
-          id: podcastId,
+          podcastId,
           group,
           beginDate,
           endDate
@@ -151,7 +151,7 @@ export const selectNested500ErrorReloadActions = createSelector(
     if (!selectedGuids || selectedGuids.length === 0) {
       if (podcastRanksError && podcastRanksError.status === 500) {
         actions.push(new ACTIONS.CastlePodcastRanksLoadAction({
-          id: podcastId,
+          podcastId,
           group: GROUPTYPE_GEOSUBDIV,
           filter,
           interval,
@@ -161,7 +161,7 @@ export const selectNested500ErrorReloadActions = createSelector(
       }
       if (podcastTotalsError && podcastTotalsError.status === 500) {
         actions.push(new ACTIONS.CastlePodcastTotalsLoadAction({
-          id: podcastId,
+          podcastId,
           group: GROUPTYPE_GEOSUBDIV,
           filter,
           beginDate,

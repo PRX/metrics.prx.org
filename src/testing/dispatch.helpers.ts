@@ -73,7 +73,7 @@ export const dispatchEpisodeDownloads = (store: Store<any>, podcastId?: string, 
 
 export const dispatchPodcastRanks = (store: Store<any>, routerParams?: RouterParams, ranks?: any[], downloads?: any[][]) => {
   store.dispatch(new ACTIONS.CastlePodcastRanksSuccessAction({
-    id: routerParams && routerParams.podcastId || fixtures.podcast.id,
+    podcastId: routerParams && routerParams.podcastId || fixtures.podcast.id,
     group: routerParams && routerParams.group || GROUPTYPE_GEOCOUNTRY,
     ...(routerParams && routerParams.filter && {filter: routerParams.filter}),
     interval: routerParams && routerParams.interval || fixtures.routerParams.interval,
@@ -86,7 +86,7 @@ export const dispatchPodcastRanks = (store: Store<any>, routerParams?: RouterPar
 
 export const dispatchPodcastTotals = (store: Store<any>, routerParams?: RouterParams, ranks?: any[]) => {
   store.dispatch(new ACTIONS.CastlePodcastTotalsSuccessAction({
-    id: routerParams && routerParams.podcastId || fixtures.podcast.id,
+    podcastId: routerParams && routerParams.podcastId || fixtures.podcast.id,
     group: routerParams && routerParams.group || GROUPTYPE_GEOCOUNTRY,
     ...(routerParams && routerParams.filter && {filter: routerParams.filter}),
     beginDate: routerParams && routerParams.beginDate || fixtures.routerParams.beginDate,

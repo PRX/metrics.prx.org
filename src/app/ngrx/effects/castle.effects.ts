@@ -281,9 +281,9 @@ export class CastleEffects {
     ofType(ACTIONS.ActionTypes.CASTLE_PODCAST_RANKS_LOAD),
     map((action: ACTIONS.CastlePodcastRanksLoadAction) => action.payload),
     mergeMap((payload: ACTIONS.CastlePodcastRanksLoadPayload) => {
-      const { id, interval, group, filter, beginDate, endDate } = payload;
+      const { podcastId, interval, group, filter, beginDate, endDate } = payload;
       const params = {
-        id,
+        id: podcastId,
         group,
         interval: interval.value,
         from: beginDate.toISOString(),
@@ -296,7 +296,7 @@ export class CastleEffects {
       return this.castle.follow('prx:podcast-ranks', {...params}).pipe(
         map(metrics => {
           return new ACTIONS.CastlePodcastRanksSuccessAction({
-            id,
+            podcastId,
             group,
             filter,
             interval,
@@ -309,7 +309,7 @@ export class CastleEffects {
           });
         }),
         catchError(error => of(
-          new ACTIONS.CastlePodcastRanksFailureAction({id, group, filter, interval, beginDate, endDate, error})))
+          new ACTIONS.CastlePodcastRanksFailureAction({podcastId, group, filter, interval, beginDate, endDate, error})))
       );
     })
   );
@@ -320,9 +320,9 @@ export class CastleEffects {
     ofType(ACTIONS.ActionTypes.CASTLE_PODCAST_TOTALS_LOAD),
     map((action: ACTIONS.CastlePodcastTotalsLoadAction) => action.payload),
     mergeMap((payload: ACTIONS.CastlePodcastTotalsLoadPayload) => {
-      const { id, group, filter, beginDate, endDate } = payload;
+      const { podcastId, group, filter, beginDate, endDate } = payload;
       const params = {
-        id,
+        id: podcastId,
         group,
         from: beginDate.toISOString(),
         to: endDate.toISOString()
@@ -334,7 +334,7 @@ export class CastleEffects {
       return this.castle.follow('prx:podcast-totals', {...params}).pipe(
         map(metrics => {
           return new ACTIONS.CastlePodcastTotalsSuccessAction({
-            id,
+            podcastId,
             group,
             filter,
             beginDate,
@@ -345,7 +345,7 @@ export class CastleEffects {
             })
           });
         }),
-        catchError(error => of(new ACTIONS.CastlePodcastTotalsFailureAction({id, group, filter, beginDate, endDate, error})))
+        catchError(error => of(new ACTIONS.CastlePodcastTotalsFailureAction({podcastId, group, filter, beginDate, endDate, error})))
       );
     })
   );

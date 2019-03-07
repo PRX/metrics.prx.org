@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { map, switchMap } from 'rxjs/operators';
 import { of, Observable } from 'rxjs';
-import { Action } from '@ngrx/store';
+import { Action, Store, select } from '@ngrx/store';
 import { ROUTER_NAVIGATION, RouterNavigationAction, RouterNavigationPayload } from '@ngrx/router-store';
 import { Actions, Effect, ofType } from '@ngrx/effects';
 import { RouterParams } from '../';
@@ -9,6 +9,7 @@ import { ActionTypes } from '../actions';
 import * as ACTIONS from '../actions';
 import * as dateUtil from '../../shared/util/date';
 import { RoutingService } from '../../core/routing/routing.service';
+import { selectSelectedEpisodeGuids } from '../reducers/selectors';
 
 @Injectable()
 export class RoutingEffects {
@@ -25,7 +26,12 @@ export class RoutingEffects {
     ofType(ROUTER_NAVIGATION),
     map((action: RouterNavigationAction) => action.payload),
     switchMap((payload: RouterNavigationPayload<any>) => {
-      const routerParams: RouterParams = {...payload.routerState};
+      // drop guids from router params
+      const { guids, ...routerParams } = payload.routerState;
+      // select any episode guids on the route
+      if (guids) {
+        this.store.dispatch(new ACTIONS.EpisodeSelectEpisodesAction({episodeGuids: guids}));
+      }
       // map to an action with our CUSTOM_ROUTER_NAVIGATION type
       return of(new ACTIONS.CustomRouterNavigationAction({routerParams}));
     })
@@ -37,7 +43,7 @@ export class RoutingEffects {
     map((action: ACTIONS.RoutePodcastAction) => action.payload),
     switchMap((payload: ACTIONS.RoutePodcastPayload) => {
       const { podcastId } = payload;
-      this.routingService.normalizeAndRoute({podcastId, episodePage: 1});
+      this.routingService.normalizeAndRoute({podcastId, episodePage: 1, guids: null});
       return of(null);
     })
   );
@@ -121,5 +127,6 @@ export class RoutingEffects {
   );
 
   constructor(private actions$: Actions,
-              public routingService: RoutingService) {}
+              public routingService: RoutingService,
+              private store: Store<any>) {}
 }

@@ -82,4 +82,21 @@ describe('Episode Select Reducer', () => {
       new ACTIONS.CastleEpisodeSelectPageSuccessAction({page: 1, per: EPISODE_SELECT_PAGE_SIZE, total: 25, episodes}));
     expect(newState.total).toEqual(25);
   });
+
+  it('should update with toggled episodes', () => {
+    // nothing currently selected
+    let newState = reducer(initialState, new ACTIONS.ChartToggleEpisodeAction({guid: episodes[0].guid, charted: true}));
+    expect(newState.selected).toEqual(initialState.selected);
+
+    // remove from selected
+    newState = reducer(newState,
+      new ACTIONS.CastleEpisodeSelectPageSuccessAction({page: 1, per: EPISODE_SELECT_PAGE_SIZE, total: episodes.length, episodes}));
+    newState = reducer(newState, new ACTIONS.EpisodeSelectEpisodesAction({episodeGuids: episodes.map(e => e.guid)}));
+    newState = reducer(newState, new ACTIONS.ChartToggleEpisodeAction({guid: episodes[0].guid, charted: false}));
+    expect(newState.selected).toEqual(episodes.slice(1).map(e => e.guid));
+
+    // add to selected
+    newState = reducer(newState, new ACTIONS.ChartToggleEpisodeAction({guid: 'jklmnop', charted: true}));
+    expect(newState.selected.indexOf('jklmnop')).toBeGreaterThan(-1);
+  });
 });

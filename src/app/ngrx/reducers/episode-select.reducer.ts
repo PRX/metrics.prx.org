@@ -84,6 +84,39 @@ export function reducer(
         search: null
       };
     }
+    // HONESTLY, these two CHART_ actions here and applying this to paged downloads feels like a bad idea
+    // Paged downloads was never meant to be combined with selected episodes
+    // Selected episodes were to apply to the drop date chart
+    // So these only affect selected episodes if there are already selected episodes
+    case ActionTypes.CHART_TOGGLE_EPISODE: {
+      if (state.selected) {
+        const { guid, charted } = action.payload;
+        let selected = state.selected;
+        if (charted && state.selected.indexOf(guid) === -1) {
+          selected = [...state.selected, guid];
+        } else if (!charted && state.selected.indexOf(guid) > -1) {
+          selected = state.selected.filter(g => g !== guid);
+        }
+        return {
+          ...state,
+          selected
+        };
+      } else {
+        return state;
+      }
+    }
+    case ActionTypes.CHART_SINGLE_EPISODE: {
+      // only selecting this episode if selected episodes is already set, BUT only selecting SINGLE_EPISODE
+      if (state.selected && state.selected.length) {
+        const { guid } = action.payload;
+        return {
+          ...state,
+          selected: [guid]
+        };
+      } else {
+        return state;
+      }
+    }
     default: {
       return state;
     }

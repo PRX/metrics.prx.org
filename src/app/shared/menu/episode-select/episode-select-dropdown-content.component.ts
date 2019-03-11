@@ -162,9 +162,11 @@ export class EpisodeSelectDropdownContentComponent {
     } else {
       episodeGuids = this.selectedEpisodes.filter(e => e !== episode.guid);
     }
-    this.store.dispatch(new ACTIONS.EpisodeSelectEpisodesAction({episodeGuids}));
     if (episodeGuids.length) {
+      this.store.dispatch(new ACTIONS.EpisodeSelectEpisodesAction({episodeGuids}));
       this.store.dispatch(new ACTIONS.GoogleAnalyticsEventAction({gaAction: 'episode-select', value: episodeGuids.length}));
+    } else {
+      this.resetSelection();
     }
   }
 }

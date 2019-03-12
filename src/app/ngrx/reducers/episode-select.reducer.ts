@@ -72,7 +72,7 @@ export function reducer(
     case ActionTypes.EPISODE_SELECT_EPISODES: {
       return {
         ...state,
-        selected: action.payload.episodeGuids
+        selected: action.payload.episodeGuids && action.payload.episodeGuids.length ? action.payload.episodeGuids : null
       };
     }
     case ActionTypes.ROUTE_PODCAST: {

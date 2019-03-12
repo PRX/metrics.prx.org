@@ -35,6 +35,13 @@ describe('Episode Select Reducer', () => {
     expect(newState.selected).toEqual(episodes.map(e => e.guid));
   });
 
+  it('should clear selected if action payload selected array is empty', () => {
+    let newState = reducer(initialState,
+      new ACTIONS.CastleEpisodeSelectPageLoadAction({podcastId: '70', page: 1, per: EPISODE_SELECT_PAGE_SIZE, search: 'cool'}));
+    newState = reducer(newState, new ACTIONS.EpisodeSelectEpisodesAction({episodeGuids: []}));
+    expect(newState.selected).toBeNull();
+  });
+
   it('should reset search term and selections when routing to a podcast', () => {
     const newState = reducer(initialState,
       new ACTIONS.RoutePodcastAction({podcastId: '70'}));

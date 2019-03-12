@@ -66,6 +66,14 @@ describe('Export Selectors', () => {
         expect(exportData[0].label).toEqual(fixtures.episodes[1].title);
       });
     });
+
+    it('selected episodes should filter episode data from export', () => {
+      dispatchHelper.dispatchSelectEpisodes(store, [fixtures.episodes[1].guid]);
+      store.pipe(select(fromExport.selectExportDownloads), first()).subscribe(exportData => {
+        expect(exportData.length).toEqual(1);
+        expect(exportData[0].label).toEqual(fixtures.episodes[1].title);
+      });
+    });
   });
 
   describe('Demographics exports', () => {

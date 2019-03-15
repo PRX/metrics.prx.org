@@ -43,7 +43,7 @@ export class RoutingEffects {
     map((action: ACTIONS.RoutePodcastAction) => action.payload),
     switchMap((payload: ACTIONS.RoutePodcastPayload) => {
       const { podcastId } = payload;
-      this.routingService.normalizeAndRoute({podcastId, episodePage: 1, guids: null});
+      this.routingService.normalizeAndRoute({podcastId, episodePage: 1});
       return of(null);
     })
   );

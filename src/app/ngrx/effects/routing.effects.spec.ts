@@ -110,7 +110,7 @@ describe('RoutingEffects', () => {
     actions$.stream = hot('-a', { a: action });
     const expected = cold('-r', { r: null });
     expect(effects.routePodcast$).toBeObservable(expected);
-    expect(effects.routingService.normalizeAndRoute).toHaveBeenCalledWith({podcastId: '70', episodePage: 1, guids: null});
+    expect(effects.routingService.normalizeAndRoute).toHaveBeenCalledWith({podcastId: '70', episodePage: 1});
   });
 
   it('should route to episode page', () => {

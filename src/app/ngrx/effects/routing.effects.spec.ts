@@ -88,6 +88,22 @@ describe('RoutingEffects', () => {
     expect(effects.customRouterNavigation$).toBeObservable(expected);
   });
 
+  it('should select episodes from incoming route but drop them from custom route', () => {
+    jest.spyOn(store, 'dispatch');
+    const selectedEpisodesRouterParams = {...routerParams, guids: ['abcdefg', 'hijklmn']};
+    const action = {
+      type: ROUTER_NAVIGATION,
+      payload: {routerState: selectedEpisodesRouterParams}
+    };
+    // result does not have selected episodes
+    const result = new ACTIONS.CustomRouterNavigationAction({routerParams});
+    actions$.stream = hot('-a', { a: action });
+    const expected = cold('-r', { r: result });
+    expect(effects.customRouterNavigation$).toBeObservable(expected);
+    // selected episodes dispatched to store
+    expect(store.dispatch).toHaveBeenCalledWith(new ACTIONS.EpisodeSelectEpisodesAction({episodeGuids: ['abcdefg', 'hijklmn']}));
+  });
+
   it('should route to podcast on episode page 1', () => {
     const action = new ACTIONS.RoutePodcastAction({podcastId: '70'});
     store.dispatch(action);

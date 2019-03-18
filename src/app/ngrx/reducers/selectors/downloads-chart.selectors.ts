@@ -4,6 +4,7 @@ import { Episode, EpisodeDownloads, PodcastDownloads, RouterParams,
   CHARTTYPE_EPISODES, CHARTTYPE_PODCAST, CHARTTYPE_STACKED } from '../models';
 import { selectRouter } from './router.selectors';
 import { selectRoutedPageEpisodes } from './episode.selectors';
+import { selectSelectedEpisodeGuids } from './episode-select.selectors';
 import { selectRoutedPodcastDownloads } from './podcast-downloads.selectors';
 import { selectRoutedEpisodePageDownloads } from './episode-downloads.selectors';
 import { mapMetricsToTimeseriesData, subtractTimeseriesDatasets, getTotal,
@@ -43,10 +44,12 @@ export const selectDownloadChartMetrics = createSelector(
   selectRoutedPageEpisodes,
   selectRoutedPodcastDownloads,
   selectRoutedEpisodePageDownloads,
+  selectSelectedEpisodeGuids,
   (routerParams: RouterParams,
    episodes: Episode[],
    podcastDownloads: PodcastDownloads,
-   episodeDownloads: EpisodeDownloads[]): TimeseriesChartModel[] => {
+   episodeDownloads: EpisodeDownloads[],
+   selectedEpisodeGuids: string[]): TimeseriesChartModel[] => {
     let chartedPodcastDownloads: TimeseriesChartModel,
       chartedEpisodeDownloads: TimeseriesChartModel[];
 
@@ -75,7 +78,9 @@ export const selectDownloadChartMetrics = createSelector(
               color: getColor(idx)
             };
           })
-          .filter(downloads => episodeDownloads.find(e => e.charted && e.guid === downloads.guid));
+          .filter(downloads =>
+            episodeDownloads.find(e => e.charted && e.guid === downloads.guid) &&
+              (!selectedEpisodeGuids || selectedEpisodeGuids.indexOf(downloads.guid) > -1));
       }
 
       if (chartedEpisodeDownloads && routerParams.chartType === CHARTTYPE_STACKED) {

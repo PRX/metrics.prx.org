@@ -84,9 +84,13 @@ describe('EpisodeSelectDropdownContentComponent', () => {
     comp.onToggleSelectEpisode(episodes[0]);
     expect(store.dispatch).toHaveBeenCalledWith(new ACTIONS.EpisodeSelectEpisodesAction({episodeGuids: [episodes[0].guid]}));
     expect(store.dispatch).toHaveBeenCalledWith(new ACTIONS.GoogleAnalyticsEventAction({gaAction: 'episode-select', value: 1}));
+  });
+
+  it('should reset selection if all episodes unselected', () => {
+    jest.spyOn(comp, 'resetSelection');
     comp.selectedEpisodes = [episodes[0].guid];
     comp.onToggleSelectEpisode(episodes[0]);
-    expect(store.dispatch).toHaveBeenCalledWith(new ACTIONS.EpisodeSelectEpisodesAction({episodeGuids: []}));
+    expect(comp.resetSelection).toHaveBeenCalled();
   });
 
   it('should show no results if finished searching and there are no episodes', () => {

@@ -56,6 +56,10 @@ export class CustomSerializer implements RouterStateSerializer<RouterParams> {
         routerParams.episodePage = +params['episodePage'];
       }
 
+      if (params['guids']) {
+        routerParams.guids = params['guids'].split(',');
+      }
+
       if (params['beginDate']) {
         routerParams.beginDate = new Date(params['beginDate']);
       }

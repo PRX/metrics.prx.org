@@ -110,6 +110,18 @@ describe('Downloads Table Selectors', () => {
       expect(result[1].allTimeDownloads).not.toEqual(ep1AllTimeDownloadsOff.total);
       expect(result[1].allTimeDownloads).toEqual(metricsUtil.getTotal(ep1Downloads));
     });
+
+    describe('selected episodes download table metrics', () => {
+      it('should not apply selected episodes filtering if none are selected', () => {
+        store.dispatch(new ACTIONS.EpisodeSelectEpisodesAction({episodeGuids: []}));
+        expect(result.every(r => r.charted)).toBeTruthy();
+      });
+
+      it('should show selected episodes as charted', () => {
+        store.dispatch(new ACTIONS.EpisodeSelectEpisodesAction({episodeGuids: [episodes[0].guid]}));
+        expect(result.filter(r => r.charted).length).toEqual(1);
+      });
+    });
   });
 
 });

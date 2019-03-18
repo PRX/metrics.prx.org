@@ -24,10 +24,12 @@ export const selectExportDownloads = createSelector(
   selectRoutedPageEpisodes,
   selectRoutedPodcastDownloads,
   selectRoutedEpisodePageDownloads,
+  selectSelectedEpisodeGuids,
   (routerParams: RouterParams,
   episodes: Episode[],
   podcastDownloads: PodcastDownloads,
-  episodeDownloads: EpisodeDownloads[]): ExportData[] => {
+  episodeDownloads: EpisodeDownloads[],
+  selectedEpisodeGuids: string[]): ExportData[] => {
   let chartedPodcastDownloads: ExportData, chartedEpisodeDownloads: ExportData[];
 
   if (routerParams.chartType === CHARTTYPE_PODCAST || routerParams.chartType === CHARTTYPE_STACKED) {
@@ -37,7 +39,8 @@ export const selectExportDownloads = createSelector(
   if (routerParams.chartType === CHARTTYPE_EPISODES || routerParams.chartType === CHARTTYPE_STACKED) {
     if (episodes.length && episodeDownloads.length) {
       chartedEpisodeDownloads = episodeDownloadMetrics(episodes, episodeDownloads)
-        .filter(downloads => episodeDownloads.find(e => e.charted && e.guid === downloads.guid));
+        .filter(downloads => episodeDownloads.find(e => e.charted && e.guid === downloads.guid) &&
+        (!selectedEpisodeGuids || selectedEpisodeGuids.indexOf(downloads.guid) > -1));
     }
   }
 

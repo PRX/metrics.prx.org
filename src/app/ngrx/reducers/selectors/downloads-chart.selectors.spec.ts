@@ -26,6 +26,7 @@ describe('Downloads Chart Selectors', () => {
   it('should combine episodes with downloads and sort by published dates descending', () => {
     const downloadMetrics = episodeDownloadMetrics(episodes, [
       {
+        id: episodes[0].guid,
         podcastId: episodes[0].podcastId,
         guid: episodes[0].guid,
         page: episodes[0].page,
@@ -33,6 +34,7 @@ describe('Downloads Chart Selectors', () => {
         charted: true
       },
       {
+        id: episodes[1].guid,
         podcastId: episodes[1].podcastId,
         guid: episodes[1].guid,
         page: episodes[1].page,
@@ -80,6 +82,12 @@ describe('Downloads Chart Selectors', () => {
     it('should only include charted episodes', () => {
       expect(result.length).toEqual(3);
       dispatchHelper.dispatchEpisodeDownloadsChartToggle(store, episodes[0].guid);
+      expect(result.length).toEqual(2);
+    });
+
+    it('should only include selected episodes if set', () => {
+      expect(result.length).toEqual(3);
+      dispatchHelper.dispatchSelectEpisodes(store, [episodes[0].guid]);
       expect(result.length).toEqual(2);
     });
 
@@ -162,6 +170,12 @@ describe('Downloads Chart Selectors', () => {
       expect(result.length).toEqual(episodes.length);
       store.dispatch(new ACTIONS.ChartToggleEpisodeAction({guid: episodes[0].guid, charted: false}));
       expect(result.length).toEqual(episodes.length - 1);
+    });
+
+    it('should only include selected episodes if set', () => {
+      expect(result.length).toEqual(episodes.length);
+      store.dispatch(new ACTIONS.EpisodeSelectEpisodesAction({episodeGuids: [episodes[0].guid]}));
+      expect(result.length).toEqual(1);
     });
 
     it('should add first part of guid string to non unique episode titles', () => {

@@ -17,6 +17,7 @@ describe('CustomSerializer', () => {
             chartType: CHARTTYPE_STACKED,
             interval: INTERVAL_HOURLY.key,
             episodePage: '1',
+            guids: 'abcdefg',
             beginDate: '2017-11-09T00:00:00.000Z',
             endDate: '2017-11-09T23:59:59.999Z'
           }
@@ -29,6 +30,7 @@ describe('CustomSerializer', () => {
       chartType: <ChartType>CHARTTYPE_STACKED,
       interval: INTERVAL_HOURLY,
       episodePage: 1,
+      guids: ['abcdefg'],
       beginDate: new Date('2017-11-09T00:00:00.000Z'),
       endDate: new Date('2017-11-09T23:59:59.999Z'),
       standardRange: dateUtil.OTHER

@@ -29,7 +29,7 @@ import { ExportGoogleSheetsService } from './export-google-sheets.service';
       </div>
     </div>
   `,
-  styleUrls: ['../../dropdown/dropdown.css', 'export-dropdown.component.css']
+  styleUrls: ['../../dropdown/dropdown.css']
 })
 export class ExportDropdownComponent implements OnInit {
   exportData$ = new Observable<string[][]>();

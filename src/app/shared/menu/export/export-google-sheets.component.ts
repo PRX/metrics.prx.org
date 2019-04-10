@@ -14,6 +14,7 @@ import { ExportGoogleSheetsService } from './export-google-sheets.service';
 
 export class ExportGoogleSheetsComponent {
   @Input() exportData: string[][];
+  @Input() exportFilename: string;
   // this event emitter is just to let the parent component know export was clicked (to close dropdown and do Google analytics)
   @Output() export = new EventEmitter();
 
@@ -26,7 +27,7 @@ export class ExportGoogleSheetsComponent {
   createSpreadsheet() {
     this.export.emit();
     this.googleSheets.createSpreadsheet({
-      title: 'Downloads',
+      title: this.exportFilename || 'Downloads',
       sheets: [{title: 'Downloads', data: this.exportData}]
     });
   }

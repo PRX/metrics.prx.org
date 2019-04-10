@@ -30,8 +30,8 @@ export const hourly = (date: Date): string => {
     moment(date).add(1, 'hours').format('MMM D, h:00 A');
 };
 
-export const ISODate = (date: Date): string => {
-  return moment(date).utc().format('YYYY-MM-DD');
+export const ISODate = (date: Date, separator = '-'): string => {
+  return moment(date).utc().format(`YYYY${separator}MM${separator}DD`);
 };
 
 export const defaultTZ = (date: Date): string => {

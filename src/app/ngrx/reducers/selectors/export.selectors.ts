@@ -1,5 +1,5 @@
 import { createSelector } from '@ngrx/store';
-import { Episode, EpisodeDownloads, PodcastDownloads, RouterParams,
+import { Episode, EpisodeDownloads, Podcast, PodcastDownloads, RouterParams,
   PodcastRanks, EpisodeRanks, PodcastTotals, EpisodeTotals, Rank, ExportData,
   GROUPTYPE_GEOCOUNTRY, GroupCharted,
   CHARTTYPE_EPISODES, CHARTTYPE_PODCAST, CHARTTYPE_STACKED, CHARTTYPE_GEOCHART, CHARTTYPE_HORIZBAR,
@@ -18,6 +18,7 @@ import { selectRoutedPodcastTotals, selectNestedPodcastTotals } from './podcast-
 import { selectSelectedEpisodesRanks, selectNestedEpisodesRanks } from './episode-ranks.selectors';
 import { selectRoutedGroupCharted } from './group-charted.selectors';
 import { selectSelectedEpisodesTotals, selectNestedEpisodesTotals } from './episode-totals.selectors';
+import { selectRoutedPodcast } from './podcast.selectors';
 
 export const selectExportDownloads = createSelector(
   selectRouter,
@@ -218,5 +219,31 @@ export const selectExportData2DArray = createSelector(
     } else {
       return toCsvArray(exportData, dateUtil.ISODate);
     }
+  }
+);
+
+export const selectExportFilename = createSelector(
+  selectRouter, selectRoutedPodcast,
+  (routerParams: RouterParams, podcast: Podcast): string => {
+    // strip special characters and spaces out of podcast title for filename
+    // https://en.wikipedia.org/wiki/Filename#Reserved_characters_and_words
+    const podcastTitle = podcast && podcast.title.replace(/[.,\/#?!$%\^&\*;:|"'{}=\-_`~()\s]/g, '');
+    const beginDate = dateUtil.ISODate(routerParams.beginDate, '');
+    const endDate = dateUtil.ISODate(routerParams.endDate, '');
+    let dataDesc: string;
+    if (routerParams.metricsType === METRICSTYPE_DOWNLOADS) {
+      dataDesc = 'downloads';
+    } else {
+      if (routerParams.group === GROUPTYPE_GEOCOUNTRY) {
+        if (routerParams.filter) {
+          dataDesc = routerParams.filter;
+        } else {
+          dataDesc = 'world';
+        }
+      } else {
+        dataDesc = routerParams.group;
+      }
+    }
+    return `${podcastTitle}_${beginDate}-${endDate}_${routerParams.interval.name}_${dataDesc}`;
   }
 );

@@ -4,7 +4,7 @@ import { Store, select } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { GoogleAnalyticsEventAction } from '../../../ngrx/actions';
-import { selectExportData2DArray, joinCsvArray } from '../../../ngrx/reducers/selectors';
+import { selectExportData2DArray, joinCsvArray, selectExportFilename } from '../../../ngrx/reducers/selectors';
 import { ExportGoogleSheetsService } from './export-google-sheets.service';
 
 @Component({
@@ -18,10 +18,11 @@ import { ExportGoogleSheetsService } from './export-google-sheets.service';
       </div>
       <div class="dropdown-content rollout left short" *ngIf="(exportData$ | async)?.length">
         <ul>
-          <li><a [href]="exportDataCsv$ | async" (click)="onExportCsv()" download="downloads.csv">CSV</a></li>
+          <li><a [href]="exportDataCsv$ | async" (click)="onExportCsv()" download="{{ exportFilename$ | async }}.csv">CSV</a></li>
           <li class="hide">
             <metrics-export-google-sheets
               [exportData]="exportData$ | async"
+              [exportFilename]="exportFilename$ | async"
               (export)="onExportGoogleSheet()">
             </metrics-export-google-sheets>
           </li>
@@ -29,11 +30,12 @@ import { ExportGoogleSheetsService } from './export-google-sheets.service';
       </div>
     </div>
   `,
-  styleUrls: ['../../dropdown/dropdown.css', 'export-dropdown.component.css']
+  styleUrls: ['../../dropdown/dropdown.css']
 })
 export class ExportDropdownComponent implements OnInit {
   exportData$ = new Observable<string[][]>();
   exportDataCsv$ = new Observable<SafeUrl>();
+  exportFilename$ = new Observable<string>();
   open = false;
   // because of relative/absolute positioning, the spinner needs to be outside the dropdown DOM, so we listen for busy here
   googleSheetsBusy$ = new Observable<boolean>();
@@ -50,6 +52,7 @@ export class ExportDropdownComponent implements OnInit {
     this.exportData$ = this.store.pipe(select(selectExportData2DArray));
     this.exportDataCsv$ =
       this.exportData$.pipe(map(data => this.sanitizer.bypassSecurityTrustUrl(joinCsvArray(data))));
+    this.exportFilename$ = this.store.pipe(select(selectExportFilename));
     this.googleSheetsBusy$ = this.googleSheets.busy;
   }
 

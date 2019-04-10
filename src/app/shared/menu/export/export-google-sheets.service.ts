@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, ApplicationRef } from '@angular/core';
 import { BehaviorSubject,  Observable } from 'rxjs';
 import { map, distinctUntilChanged } from 'rxjs/operators';
 import { Env } from '../../../core/core.env';
@@ -37,7 +37,8 @@ export class ExportGoogleSheetsService {
     distinctUntilChanged()
   );
 
-  constructor(private modal?: ModalService) {
+  constructor(private appRef?: ApplicationRef,
+              private modal?: ModalService) {
     this.initGoogleAPI();
   }
 
@@ -103,6 +104,9 @@ export class ExportGoogleSheetsService {
       })
       .then(() => {
         this._state.next({...this._state.getValue(), sheet: googleSheet, busy: false});
+        // explicitly call change detection (to hide spinner)
+        this.appRef.tick();
+
         this.modal.show({
           title: 'Google Sheet Created',
           body: `

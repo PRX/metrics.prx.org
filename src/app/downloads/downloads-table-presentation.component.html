@@ -8,52 +8,52 @@
     </button>
 
     <metrics-episode-page
-    [currentPage]="routerParams?.episodePage"
-    [totalPages]="totalPages"
-    (pageChange)="pageChange.emit($event)"></metrics-episode-page>
+      [currentPage]="routerParams?.episodePage"
+      [totalPages]="totalPages"
+      (pageChange)="pageChange.emit($event)">
+    </metrics-episode-page>
   </div>
 
   <div class="table-wrapper">
-    <table class="sticky">
-      <thead>
-        <tr>
-          <th>Episode</th>
-          <th>Release Date</th>
-          <th>Total for Range</th>
-          <th>All-Time Downloads</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngIf="podcastTableData">
-          <td>
-            <prx-checkbox *ngIf="showPodcastToggle; else podcastTitle"
-              small [checked]="podcastTableData.charted" [color]="podcastTableData.color"
-              (change)="toggleChartPodcast.emit({id: routerParams.podcastId, charted: $event})">
-              {{podcastTableData.title}}
-            </prx-checkbox>
-            <ng-template #podcastTitle><span class="title">{{podcastTableData.title}}</span></ng-template>
-          </td>
-          <td></td>
-          <td>{{podcastTableData.totalForPeriod | largeNumber}}</td>
-          <td *ngIf="podcastTableData.allTimeDownloads !== undefined">{{podcastTableData.allTimeDownloads | largeNumber}}</td>
-          <td *ngIf="podcastTableData.allTimeDownloads === undefined"></td>
-        </tr>
-        <tr *ngFor="let episode of episodeTableData">
-          <td>
-            <prx-checkbox *ngIf="showEpisodeToggles; else episodeTitle"
-              small [checked]="episode.charted" [color]="episode.color"
-                          (change)="toggleChartEpisode.emit({guid: episode.id, charted: $event})"><span [title]="episode.title">{{episode.title}}</span></prx-checkbox>
-            <ng-template #episodeTitle>
-              <button class="btn-link title" (click)="chartSingleEpisode.emit(episode.id)" [title]="episode.title">{{episode.title}}</button>
-            </ng-template>
-          </td>
-          <td>{{releaseDateFormat(episode.publishedAt)}}</td>
-          <td>{{episode.totalForPeriod | largeNumber}}</td>
-          <td *ngIf="episode.allTimeDownloads !== undefined">{{episode.allTimeDownloads | largeNumber}}</td>
-          <td *ngIf="episode.allTimeDownloads === undefined"></td>
-        </tr>
-      </tbody>
-    </table>
+    <div class="sticky">
+      <div class="header row">
+        <div>Episode</div>
+        <div>Release Date</div>
+        <div class="charted">Downloads</div>
+        <div>All-Time</div>
+      </div>
+
+      <div class="row" *ngIf="podcastTableData">
+        <div>
+          <prx-checkbox *ngIf="showPodcastToggle; else podcastTitle"
+            small [checked]="podcastTableData.charted" [color]="podcastTableData.color"
+            (change)="toggleChartPodcast.emit({id: routerParams.podcastId, charted: $event})">
+            {{podcastTableData.title}}
+          </prx-checkbox>
+          <ng-template #podcastTitle><span class="title">{{podcastTableData.title}}</span></ng-template>
+        </div>
+        <div></div>
+        <div class="charted">{{podcastTableData.totalForPeriod | largeNumber}}</div>
+        <div *ngIf="podcastTableData.allTimeDownloads !== undefined">{{podcastTableData.allTimeDownloads | largeNumber}}</div>
+        <div *ngIf="podcastTableData.allTimeDownloads === undefined"></div>
+      </div>
+
+      <div class="row" *ngFor="let episode of episodeTableData">
+        <div>
+          <prx-checkbox *ngIf="showEpisodeToggles; else episodeTitle"
+            small [checked]="episode.charted" [color]="episode.color"
+                        (change)="toggleChartEpisode.emit({guid: episode.id, charted: $event})"><span [title]="episode.title">{{episode.title}}</span></prx-checkbox>
+          <ng-template #episodeTitle>
+            <button class="btn-link title" (click)="chartSingleEpisode.emit(episode.id)" [title]="episode.title">{{episode.title}}</button>
+          </ng-template>
+        </div>
+        <div>{{releaseDateFormat(episode.publishedAt)}}</div>
+        <div class="charted">{{episode.totalForPeriod | largeNumber}}</div>
+        <div *ngIf="episode.allTimeDownloads !== undefined">{{episode.allTimeDownloads | largeNumber}}</div>
+        <div *ngIf="episode.allTimeDownloads === undefined"></div>
+      </div>
+    </div>
+    
     <div class="scroll-x-wrapper">
       <table class="scroll-x" *ngIf="expanded">
         <thead>
@@ -71,5 +71,18 @@
         </tbody>
       </table>
     </div>
+    <!--
+    <div class="scroll-x" *ngIf="expanded">
+      <div class="header row">
+        <div *ngFor="let date of dateRange">{{date}}</div>
+      </div>
+      <div class="row" *ngIf="podcastTableData">
+        <div *ngFor="let download of podcastTableData.downloads">{{download.value | largeNumber}}</div>
+      </div>
+      <div class="row" *ngFor="let episode of episodeTableData">
+        <div *ngFor="let download of episode.downloads">{{download.value | largeNumber}}</div>
+      </div>
+    </div>
+     -->
   </div>
 </div>

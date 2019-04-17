@@ -2,15 +2,15 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { DebugElement } from '@angular/core';
 import { StoreModule, Store } from '@ngrx/store';
 
-import { reducers } from '../ngrx/reducers';
+import { reducers } from '../../ngrx/reducers';
 
-import * as ACTIONS from '../ngrx/actions';
-import { EPISODE_PAGE_SIZE } from '../ngrx';
+import * as ACTIONS from '../../ngrx/actions';
+import { EPISODE_PAGE_SIZE } from '../../ngrx';
 
-import { SharedModule } from '../shared';
+import { SharedModule } from '../../shared';
 import { DownloadsChartContainerComponent } from './downloads-chart-container.component';
 import { DownloadsChartPresentationComponent } from './downloads-chart-presentation.component';
-import { routerParams, episodes, podcast, ep0Downloads, ep1Downloads, podDownloads } from '../../testing/downloads.fixtures';
+import { routerParams, episodes, podcast, ep0Downloads, ep1Downloads, podDownloads } from '../../../testing/downloads.fixtures';
 
 describe('DownloadsChartContainerComponent', () => {
   let comp: DownloadsChartContainerComponent;

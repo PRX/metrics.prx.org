@@ -3,10 +3,10 @@ import { By } from '@angular/platform-browser';
 import { DebugElement } from '@angular/core';
 import { RouterTestingModule } from '@angular/router/testing';
 
-import { SharedModule } from '../shared';
+import { SharedModule } from '../../shared';
 import { DownloadsChartPresentationComponent } from './downloads-chart-presentation.component';
 
-import { routerParams } from '../../testing/downloads.fixtures';
+import { routerParams } from '../../../testing/downloads.fixtures';
 
 describe('DownloadsChartPresentationComponent', () => {
   let comp: DownloadsChartPresentationComponent;

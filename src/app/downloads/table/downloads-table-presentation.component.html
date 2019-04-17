@@ -16,9 +16,10 @@
 
   <div class="table-wrapper">
     <metrics-downloads-summary-table
+      [chartType]="routerParams?.chartType"
       [podcastTableData]="podcastTableData"
       [episodeTableData]="episodeTableData"
-      (toggleChartPodcast)="toggleChartPodcast.emit($event)"
+      (toggleChartPodcast)="toggleChartPodcast.emit({id: routerParams?.podcastId, charted: $event})"
       (toggleChartEpisode)="toggleChartEpisode.emit($event)"
       (chartSingleEpisode)="chartSingleEpisode.emit($event)">
     </metrics-downloads-summary-table>

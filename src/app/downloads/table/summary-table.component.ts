@@ -1,5 +1,5 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { DownloadsTableModel } from '../../ngrx';
+import { DownloadsTableModel, ChartType, CHARTTYPE_STACKED, CHARTTYPE_PODCAST } from '../../ngrx';
 import * as dateFormat from '../../shared/util/date/date.format';
 
 @Component({
@@ -16,7 +16,7 @@ import * as dateFormat from '../../shared/util/date/date.format';
       <div>
         <prx-checkbox *ngIf="showPodcastToggle; else podcastTitle"
           small [checked]="podcastTableData.charted" [color]="podcastTableData.color"
-          (change)="toggleChartPodcast.emit({id: routerParams.podcastId, charted: $event})">
+          (change)="toggleChartPodcast.emit($event)">
           {{podcastTableData.title}}
         </prx-checkbox>
         <ng-template #podcastTitle><span class="title">{{podcastTableData.title}}</span></ng-template>
@@ -47,6 +47,7 @@ import * as dateFormat from '../../shared/util/date/date.format';
   styleUrls: ['summary-table.component.css']
 })
 export class SummaryTableComponent {
+  @Input() chartType: ChartType;
   @Input() podcastTableData: DownloadsTableModel;
   @Input() episodeTableData: DownloadsTableModel[];
   @Output() toggleChartPodcast = new EventEmitter<{id: string, charted: boolean}>();
@@ -55,5 +56,13 @@ export class SummaryTableComponent {
 
   releaseDateFormat(date: Date): string {
     return dateFormat.monthDateYear(date);
+  }
+
+  get showPodcastToggle(): boolean {
+    return this.chartType === CHARTTYPE_STACKED;
+  }
+
+  get showEpisodeToggles(): boolean {
+    return this.chartType !== CHARTTYPE_PODCAST;
   }
 }

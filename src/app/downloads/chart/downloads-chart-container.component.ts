@@ -2,9 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { Store, select } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { TimeseriesChartModel } from 'ngx-prx-styleguide';
-import { RouterParams, CHARTTYPE_PODCAST } from '../ngrx';
-import { RouteChartTypeAction } from '../ngrx/actions';
-import { selectRouter, selectDownloadChartMetrics } from '../ngrx/reducers/selectors';
+import { RouterParams, CHARTTYPE_PODCAST } from '../../ngrx';
+import { RouteChartTypeAction } from '../../ngrx/actions';
+import { selectRouter, selectDownloadChartMetrics } from '../../ngrx/reducers/selectors';
 
 @Component({
   selector: 'metrics-downloads-chart',

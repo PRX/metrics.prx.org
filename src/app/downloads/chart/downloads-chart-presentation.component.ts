@@ -1,8 +1,8 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { TimeseriesChartModel } from 'ngx-prx-styleguide';
-import { RouterParams, INTERVAL_HOURLY } from '../ngrx';
-import { largeNumberFormat } from '../shared/pipes/large-number.pipe';
-import * as chartUtil from '../shared/util/chart.util';
+import { RouterParams, INTERVAL_HOURLY } from '../../ngrx';
+import { largeNumberFormat } from '../../shared/pipes/large-number.pipe';
+import * as chartUtil from '../../shared/util/chart.util';
 
 @Component({
   selector: 'metrics-downloads-chart-presentation',

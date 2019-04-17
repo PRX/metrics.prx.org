@@ -1,6 +1,6 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { RouterParams, DownloadsTableModel, INTERVAL_HOURLY,
-  CHARTTYPE_PODCAST, CHARTTYPE_STACKED } from '../ngrx';
+  CHARTTYPE_PODCAST, CHARTTYPE_STACKED } from '../../ngrx';
 
 @Component({
   selector: 'metrics-downloads-table-presentation',
@@ -19,14 +19,6 @@ export class DownloadsTablePresentationComponent {
   @Output() chartSingleEpisode = new EventEmitter<string>();
   @Output() pageChange = new EventEmitter<number>();
   @Output() toggleExpandedReport = new EventEmitter();
-
-  get showPodcastToggle(): boolean {
-    return this.routerParams && this.routerParams.chartType === CHARTTYPE_STACKED;
-  }
-
-  get showEpisodeToggles(): boolean {
-    return this.routerParams && this.routerParams.chartType !== CHARTTYPE_PODCAST;
-  }
 
   get isHourly(): boolean {
     return this.routerParams && this.routerParams.interval === INTERVAL_HOURLY;

@@ -9,6 +9,7 @@ import { DownloadsChartPresentationComponent } from './downloads-chart-presentat
 import { DownloadsTableContainerComponent } from './downloads-table-container.component';
 import { DownloadsTablePresentationComponent } from './downloads-table-presentation.component';
 import { ScrollingTableComponent } from './table/scrolling-table.component';
+import { SummaryTableComponent } from './table/summary-table.component';
 
 import { downloadsRouting } from './downloads.routing';
 
@@ -19,7 +20,8 @@ import { downloadsRouting } from './downloads.routing';
     DownloadsChartPresentationComponent,
     DownloadsTableContainerComponent,
     DownloadsTablePresentationComponent,
-    ScrollingTableComponent
+    ScrollingTableComponent,
+    SummaryTableComponent
   ],
   imports: [
     CommonModule,

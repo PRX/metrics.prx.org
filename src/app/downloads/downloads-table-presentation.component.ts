@@ -1,7 +1,6 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { RouterParams, DownloadsTableModel, INTERVAL_HOURLY,
   CHARTTYPE_PODCAST, CHARTTYPE_STACKED } from '../ngrx';
-import * as dateFormat from '../shared/util/date/date.format';
 
 @Component({
   selector: 'metrics-downloads-table-presentation',
@@ -20,10 +19,6 @@ export class DownloadsTablePresentationComponent {
   @Output() chartSingleEpisode = new EventEmitter<string>();
   @Output() pageChange = new EventEmitter<number>();
   @Output() toggleExpandedReport = new EventEmitter();
-
-  releaseDateFormat(date: Date): string {
-    return dateFormat.monthDateYear(date);
-  }
 
   get showPodcastToggle(): boolean {
     return this.routerParams && this.routerParams.chartType === CHARTTYPE_STACKED;

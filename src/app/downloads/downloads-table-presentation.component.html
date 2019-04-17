@@ -15,50 +15,19 @@
   </div>
 
   <div class="table-wrapper">
-    <div class="sticky">
-      <div class="header row">
-        <div>Episode</div>
-        <div>Release Date</div>
-        <div class="charted">Downloads</div>
-        <div>All-Time</div>
-      </div>
-
-      <div class="row" *ngIf="podcastTableData">
-        <div>
-          <prx-checkbox *ngIf="showPodcastToggle; else podcastTitle"
-            small [checked]="podcastTableData.charted" [color]="podcastTableData.color"
-            (change)="toggleChartPodcast.emit({id: routerParams.podcastId, charted: $event})">
-            {{podcastTableData.title}}
-          </prx-checkbox>
-          <ng-template #podcastTitle><span class="title">{{podcastTableData.title}}</span></ng-template>
-        </div>
-        <div></div>
-        <div class="charted">{{podcastTableData.totalForPeriod | largeNumber}}</div>
-        <div *ngIf="podcastTableData.allTimeDownloads !== undefined">{{podcastTableData.allTimeDownloads | largeNumber}}</div>
-        <div *ngIf="podcastTableData.allTimeDownloads === undefined"></div>
-      </div>
-
-      <div class="row" *ngFor="let episode of episodeTableData">
-        <div>
-          <prx-checkbox *ngIf="showEpisodeToggles; else episodeTitle"
-            small [checked]="episode.charted" [color]="episode.color"
-                        (change)="toggleChartEpisode.emit({guid: episode.id, charted: $event})"><span [title]="episode.title">{{episode.title}}</span></prx-checkbox>
-          <ng-template #episodeTitle>
-            <button class="btn-link title" (click)="chartSingleEpisode.emit(episode.id)" [title]="episode.title">{{episode.title}}</button>
-          </ng-template>
-        </div>
-        <div>{{releaseDateFormat(episode.publishedAt)}}</div>
-        <div class="charted">{{episode.totalForPeriod | largeNumber}}</div>
-        <div *ngIf="episode.allTimeDownloads !== undefined">{{episode.allTimeDownloads | largeNumber}}</div>
-        <div *ngIf="episode.allTimeDownloads === undefined"></div>
-      </div>
-    </div>
+    <metrics-downloads-summary-table
+      [podcastTableData]="podcastTableData"
+      [episodeTableData]="episodeTableData"
+      (toggleChartPodcast)="toggleChartPodcast.emit($event)"
+      (toggleChartEpisode)="toggleChartEpisode.emit($event)"
+      (chartSingleEpisode)="chartSingleEpisode.emit($event)">
+    </metrics-downloads-summary-table>
     
-    <metrics-scrolling-table
+    <metrics-downloads-scrolling-table
       *ngIf="expanded"
       [headings]="dateRange"
       [tableData]="intervalData">
-    </metrics-scrolling-table>
+    </metrics-downloads-scrolling-table>
 
   </div>
 </div>

@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core';
 
 @Component({
-  selector: 'metrics-scrolling-table',
+  selector: 'metrics-downloads-scrolling-table',
   template: `
     <table class="scroll-x" *ngIf="tableData?.length">
       <thead>

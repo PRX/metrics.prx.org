@@ -5,8 +5,12 @@ export interface DownloadsTableModel {
   title: string;
   publishedAt?: Date;
   color: string;
-  downloads: TimeseriesDatumModel[];
   totalForPeriod: number;
   allTimeDownloads?: number;
   charted: boolean;
+}
+
+export interface DownloadsTableIntervalModel {
+  id: string;
+  downloads: TimeseriesDatumModel[];
 }

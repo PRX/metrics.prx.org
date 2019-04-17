@@ -3,8 +3,10 @@ import { Store, select } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { DownloadsTableModel, RouterParams, CHARTTYPE_EPISODES } from '../ngrx';
 import { selectRouter, selectNumEpisodePages,
-  selectDownloadTablePodcastDownloads, selectDownloadTableEpisodeMetrics } from '../ngrx/reducers/selectors';
+  selectDownloadTablePodcastDownloads, selectDownloadTableEpisodeMetrics,
+  selectDownloadTableIntervalData } from '../ngrx/reducers/selectors';
 import * as ACTIONS from '../ngrx/actions';
+import { TimeseriesDatumModel } from 'ngx-prx-styleguide';
 
 @Component({
   selector: 'metrics-downloads-table',
@@ -13,6 +15,7 @@ import * as ACTIONS from '../ngrx/actions';
       [totalPages]="numEpisodePages$ | async"
       [podcastTableData]="podcastTableData$ | async"
       [episodeTableData]="episodeTableData$ | async"
+      [intervalData]="intervalData$ | async"
       [routerParams]="routerParams$ | async"
       [expanded]="expanded"
       (toggleChartPodcast)="toggleChartPodcast($event)"
@@ -27,6 +30,7 @@ export class DownloadsTableContainerComponent implements OnInit {
   @Input() totalPages;
   podcastTableData$: Observable<DownloadsTableModel>;
   episodeTableData$: Observable<DownloadsTableModel[]>;
+  intervalData$: Observable<TimeseriesDatumModel[][]>;
   numEpisodePages$: Observable<number>;
   routerParams$: Observable<RouterParams>;
   expanded = false;
@@ -36,6 +40,7 @@ export class DownloadsTableContainerComponent implements OnInit {
   ngOnInit() {
     this.podcastTableData$ = this.store.pipe(select(selectDownloadTablePodcastDownloads));
     this.episodeTableData$ = this.store.pipe(select(selectDownloadTableEpisodeMetrics));
+    this.intervalData$ = this.store.pipe(select(selectDownloadTableIntervalData));
     this.numEpisodePages$ = this.store.pipe(select(selectNumEpisodePages));
     this.routerParams$ = this.store.pipe(select(selectRouter));
   }

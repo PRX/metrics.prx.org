@@ -1,5 +1,5 @@
 <div>
-  <p *ngIf="routerParams?.interval === bindToIntervalHourly"><em>Hourly data is shown in your local timezone</em></p>
+  <p *ngIf="isHourly"><em>Hourly data is shown in your local timezone</em></p>
 
   <div class="table-navigation">
     <button (click)="toggleExpandedReport.emit()" class="btn-link">
@@ -54,35 +54,11 @@
       </div>
     </div>
     
-    <div class="scroll-x-wrapper">
-      <table class="scroll-x" *ngIf="expanded">
-        <thead>
-          <tr>
-            <th *ngFor="let date of dateRange">{{date}}</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngIf="podcastTableData">
-            <td *ngFor="let download of podcastTableData.downloads">{{download.value | largeNumber}}</td>
-          </tr>
-          <tr *ngFor="let episode of episodeTableData">
-            <td *ngFor="let download of episode.downloads">{{download.value | largeNumber}}</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-    <!--
-    <div class="scroll-x" *ngIf="expanded">
-      <div class="header row">
-        <div *ngFor="let date of dateRange">{{date}}</div>
-      </div>
-      <div class="row" *ngIf="podcastTableData">
-        <div *ngFor="let download of podcastTableData.downloads">{{download.value | largeNumber}}</div>
-      </div>
-      <div class="row" *ngFor="let episode of episodeTableData">
-        <div *ngFor="let download of episode.downloads">{{download.value | largeNumber}}</div>
-      </div>
-    </div>
-     -->
+    <metrics-scrolling-table
+      *ngIf="expanded"
+      [headings]="dateRange"
+      [tableData]="intervalData">
+    </metrics-scrolling-table>
+
   </div>
 </div>

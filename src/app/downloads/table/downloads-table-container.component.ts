@@ -20,7 +20,7 @@ import * as ACTIONS from '../../ngrx/actions';
       (toggleChartEpisode)="toggleChartEpisode($event)"
       (chartSingleEpisode)="onChartSingleEpisode($event)"
       (pageChange)="onPageChange($event)"
-      (toggleExpandedReport)="toggleExpandedReport()">
+      (toggleExpandedReport)="toggleExpandedReport($event)">
     </metrics-downloads-table-presentation>
   `
 })

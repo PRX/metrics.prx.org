@@ -4,13 +4,13 @@ import { DebugElement } from '@angular/core';
 import { RouterTestingModule } from '@angular/router/testing';
 import { FancyFormModule } from 'ngx-prx-styleguide';
 
-import { SharedModule } from '../../shared';
+import { SharedModule } from '@app/shared';
 import { DownloadsTablePresentationComponent } from './downloads-table-presentation.component';
 import { ScrollingTableComponent } from './scrolling-table.component';
 import { SummaryTableComponent } from './summary-table.component';
 
-import { INTERVAL_HOURLY } from '../../ngrx/reducers/models';
-import { routerParams } from '../../../testing/downloads.fixtures';
+import { INTERVAL_HOURLY } from '@app/ngrx/reducers/models';
+import { routerParams } from '@testing/downloads.fixtures';
 
 describe('DownloadsTablePresentationComponent', () => {
   let comp: DownloadsTablePresentationComponent;

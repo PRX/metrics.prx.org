@@ -1,6 +1,6 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { DownloadsTableModel, ChartType, CHARTTYPE_STACKED, CHARTTYPE_PODCAST } from '../../ngrx';
-import * as dateFormat from '../../shared/util/date/date.format';
+import { DownloadsTableModel, ChartType, CHARTTYPE_STACKED, CHARTTYPE_PODCAST } from '@app/ngrx';
+import * as dateFormat from '@app/shared/util/date/date.format';
 
 @Component({
   selector: 'metrics-downloads-summary-table',

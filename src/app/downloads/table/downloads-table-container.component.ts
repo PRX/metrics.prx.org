@@ -1,11 +1,11 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Store, select } from '@ngrx/store';
 import { Observable } from 'rxjs';
-import { DownloadsTableModel, RouterParams, CHARTTYPE_EPISODES } from '../../ngrx';
+import { DownloadsTableModel, RouterParams, CHARTTYPE_EPISODES } from '@app/ngrx';
 import { selectRouter, selectNumEpisodePages,
   selectDownloadTablePodcastDownloads, selectDownloadTableEpisodeMetrics,
-  selectDownloadTableIntervalData } from '../../ngrx/reducers/selectors';
-import * as ACTIONS from '../../ngrx/actions';
+  selectDownloadTableIntervalData } from '@app/ngrx/reducers/selectors';
+import * as ACTIONS from '@app/ngrx/actions';
 
 @Component({
   selector: 'metrics-downloads-table',

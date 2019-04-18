@@ -2,12 +2,12 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { DebugElement } from '@angular/core';
 import { StoreModule, Store } from '@ngrx/store';
 
-import { reducers } from '../../ngrx/reducers';
+import { reducers } from '@app/ngrx/reducers';
 
-import * as ACTIONS from '../../ngrx/actions';
-import { EPISODE_PAGE_SIZE } from '../../ngrx';
+import * as ACTIONS from '@app/ngrx/actions';
+import { EPISODE_PAGE_SIZE } from '@app/ngrx';
 
-import { SharedModule } from '../../shared';
+import { SharedModule } from '@app/shared';
 import { DownloadsChartContainerComponent } from './downloads-chart-container.component';
 import { DownloadsChartPresentationComponent } from './downloads-chart-presentation.component';
 import { routerParams, episodes, podcast, ep0Downloads, ep1Downloads, podDownloads } from '../../../testing/downloads.fixtures';

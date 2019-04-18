@@ -6,10 +6,10 @@ import { DownloadsTableModel, EPISODE_PAGE_SIZE, CHARTTYPE_STACKED, CHARTTYPE_PO
 import { routerParams,  podcast, episodes,
   podDownloads, podAllTimeDownloads, podAllTimeDownloadsOff,
   ep0Downloads, ep1Downloads,
-  ep0AllTimeDownloads, ep0AllTimeDownloadsOff, ep1AllTimeDownloads, ep1AllTimeDownloadsOff } from '../../../../testing/downloads.fixtures';
+  ep0AllTimeDownloads, ep0AllTimeDownloadsOff, ep1AllTimeDownloads, ep1AllTimeDownloadsOff } from '@testing/downloads.fixtures';
 import * as ACTIONS from '../../actions';
-import * as metricsUtil from '../../../shared/util/metrics.util';
-import * as dateUtil from '../../../shared/util/date/date.util';
+import * as metricsUtil from '@app/shared/util/metrics.util';
+import * as dateUtil from '@app/shared/util/date/date.util';
 import { selectDownloadTablePodcastDownloads, selectDownloadTableEpisodeMetrics,
   selectDownloadTableIntervalData } from './downloads-table.selectors';
 

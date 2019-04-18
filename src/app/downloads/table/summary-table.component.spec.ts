@@ -4,12 +4,12 @@ import { DebugElement } from '@angular/core';
 import { RouterTestingModule } from '@angular/router/testing';
 import { FancyFormModule } from 'ngx-prx-styleguide';
 
-import { SharedModule } from '../../shared';
+import { SharedModule } from '@app/shared';
 import { SummaryTableComponent } from './summary-table.component';
 
-import { podcast, episodes } from '../../../testing/downloads.fixtures';
-import { neutralColor, getColor } from '../../shared/util/chart.util';
-import { CHARTTYPE_STACKED } from 'src/app/ngrx';
+import { podcast, episodes } from '@testing/downloads.fixtures';
+import { neutralColor, getColor } from '@app/shared/util/chart.util';
+import { CHARTTYPE_STACKED } from '@app/ngrx';
 
 describe('SummaryTableComponent', () => {
   let comp: SummaryTableComponent;

@@ -10,9 +10,9 @@ import { selectRoutedPodcastDownloads } from './podcast-downloads.selectors';
 import { selectRoutedPodcastAllTimeDownloads } from './podcast-alltime-downloads.selectors';
 import { selectRoutedEpisodePageDownloads } from './episode-downloads.selectors';
 import { selectRoutedPageEpisodeAllTimeDownloads } from './episode-alltime-downloads.selectors';
-import { getTotal } from '../../../shared/util/metrics.util';
-import { mapMetricsToTimeseriesData, neutralColor, standardColor, getColor } from '../../../shared/util/chart.util';
-import { formatDateForInterval } from '../../../shared/util/date/date.util';
+import { getTotal } from '@app/shared/util/metrics.util';
+import { mapMetricsToTimeseriesData, neutralColor, standardColor, getColor } from '@app/shared/util/chart.util';
+import { formatDateForInterval } from '@app/shared/util/date/date.util';
 
 export const selectDownloadTablePodcastDownloads = createSelector(
   selectRouter,

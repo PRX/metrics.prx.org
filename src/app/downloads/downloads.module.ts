@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FancyFormModule } from 'ngx-prx-styleguide';
 
-import { SharedModule } from '../shared';
+import { SharedModule } from '@app/shared';
 import { DownloadsComponent } from './downloads.component';
 import { DownloadsChartContainerComponent } from './chart/downloads-chart-container.component';
 import { DownloadsChartPresentationComponent } from './chart/downloads-chart-presentation.component';

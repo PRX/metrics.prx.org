@@ -1,6 +1,5 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { RouterParams, DownloadsTableModel, INTERVAL_HOURLY,
-  CHARTTYPE_PODCAST, CHARTTYPE_STACKED } from '../../ngrx';
+import { RouterParams, DownloadsTableModel, INTERVAL_HOURLY } from '@app/ngrx';
 
 @Component({
   selector: 'metrics-downloads-table-presentation',

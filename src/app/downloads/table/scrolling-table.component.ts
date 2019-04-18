@@ -20,6 +20,5 @@ import { Component, Input } from '@angular/core';
 })
 
 export class ScrollingTableComponent {
-  @Input() headings: string[];
   @Input() tableData: any[][];
 }

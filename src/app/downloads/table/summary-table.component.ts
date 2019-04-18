@@ -20,11 +20,13 @@ import * as dateFormat from '../../shared/util/date/date.format';
           {{podcastTableData.title}}
         </prx-checkbox>
         <ng-template #podcastTitle><span class="title">{{podcastTableData.title}}</span></ng-template>
+        <span class="mobile title">{{podcastTableData.title}}</span>
       </div>
       <div></div>
-      <div class="charted">{{podcastTableData.totalForPeriod | largeNumber}}</div>
-      <div *ngIf="podcastTableData.allTimeDownloads !== undefined">{{podcastTableData.allTimeDownloads | largeNumber}}</div>
-      <div *ngIf="podcastTableData.allTimeDownloads === undefined"></div>
+      <div class="charted"><span class="mobile">Downloads: </span>{{podcastTableData.totalForPeriod | largeNumber}}</div>
+      <div *ngIf="podcastTableData.allTimeDownloads !== undefined">
+        <span class="mobile">All-time downloads: </span>{{podcastTableData.allTimeDownloads | largeNumber}}
+      </div>
     </div>
 
     <div class="row" *ngFor="let episode of episodeTableData">
@@ -37,11 +39,13 @@ import * as dateFormat from '../../shared/util/date/date.format';
         <ng-template #episodeTitle>
           <button class="btn-link title" (click)="chartSingleEpisode.emit(episode.id)" [title]="episode.title">{{episode.title}}</button>
         </ng-template>
+        <span class="mobile title">{{episode.title}}</span>
       </div>
-      <div>{{releaseDateFormat(episode.publishedAt)}}</div>
-      <div class="charted">{{episode.totalForPeriod | largeNumber}}</div>
-      <div *ngIf="episode.allTimeDownloads !== undefined">{{episode.allTimeDownloads | largeNumber}}</div>
-      <div *ngIf="episode.allTimeDownloads === undefined"></div>
+      <div><span class="mobile">Release date: </span>{{releaseDateFormat(episode.publishedAt)}}</div>
+      <div class="charted"><span class="mobile">Downloads: </span>{{episode.totalForPeriod | largeNumber}}</div>
+      <div *ngIf="episode.allTimeDownloads !== undefined">
+        <span class="mobile">All-time downloads: </span>{{episode.allTimeDownloads | largeNumber}}
+      </div>
     </div>
   `,
   styleUrls: ['summary-table.component.css']

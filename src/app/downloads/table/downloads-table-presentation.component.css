@@ -13,7 +13,7 @@
 }
 
 @media (max-width: 768px) {
-  .table-navigation > button {
+  .table-navigation > button, metrics-downloads-scrolling-table {
     display: none;
   }
 }

@@ -2,7 +2,7 @@
   <p *ngIf="isHourly"><em>Hourly data is shown in your local timezone</em></p>
 
   <div class="table-navigation">
-    <button (click)="toggleExpandedReport.emit()" class="btn-link">
+    <button (click)="onToggleExpandedReport()" class="btn-link">
       <p *ngIf="!expanded">Show {{routerParams?.interval?.key}} numbers &#187;</p>
       <p *ngIf="expanded">Hide {{routerParams?.interval?.key}} numbers &#171;</p>
     </button>
@@ -26,7 +26,6 @@
     
     <metrics-downloads-scrolling-table
       *ngIf="expanded"
-      [headings]="dateRange"
       [tableData]="intervalData">
     </metrics-downloads-scrolling-table>
 

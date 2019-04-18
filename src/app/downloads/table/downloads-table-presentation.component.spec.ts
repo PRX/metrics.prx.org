@@ -43,4 +43,13 @@ describe('DownloadsTablePresentationComponent', () => {
     fix.detectChanges();
     expect(de.query(By.css('em')).nativeElement.textContent).toContain('local timezone');
   });
+
+  it('should show interval data when clicked', () => {
+    expect(de.query(By.css('metrics-downloads-scrolling-table'))).toBeNull();
+    jest.spyOn(comp.toggleExpandedReport, 'emit');
+    de.query(By.css('.btn-link')).nativeElement.click();
+    fix.detectChanges();
+    expect(comp.toggleExpandedReport.emit).toHaveBeenCalled();
+    expect(de.query(By.css('metrics-downloads-scrolling-table'))).not.toBeNull();
+  });
 });

@@ -16,7 +16,6 @@ import * as ACTIONS from '../../ngrx/actions';
       [episodeTableData]="episodeTableData$ | async"
       [intervalData]="intervalData$ | async"
       [routerParams]="routerParams$ | async"
-      [expanded]="expanded"
       (toggleChartPodcast)="toggleChartPodcast($event)"
       (toggleChartEpisode)="toggleChartEpisode($event)"
       (chartSingleEpisode)="onChartSingleEpisode($event)"
@@ -32,7 +31,6 @@ export class DownloadsTableContainerComponent implements OnInit {
   intervalData$: Observable<any[][]>;
   numEpisodePages$: Observable<number>;
   routerParams$: Observable<RouterParams>;
-  expanded = false;
 
   constructor(private store: Store<any>) {}
 
@@ -61,9 +59,8 @@ export class DownloadsTableContainerComponent implements OnInit {
     this.store.dispatch(new ACTIONS.RouteEpisodePageAction({episodePage}));
   }
 
-  toggleExpandedReport() {
-    this.expanded = !this.expanded;
-    if (this.expanded) {
+  toggleExpandedReport(expanded) {
+    if (expanded) {
       this.store.dispatch(new ACTIONS.GoogleAnalyticsEventAction({gaAction: 'table-expand'}));
     }
   }

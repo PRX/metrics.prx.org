@@ -13,14 +13,19 @@ export class DownloadsTablePresentationComponent {
   @Input() episodeTableData: DownloadsTableModel[];
   @Input() intervalData: any[][];
   @Input() routerParams: RouterParams;
-  @Input() expanded = false;
   @Output() toggleChartPodcast = new EventEmitter<{id: string, charted: boolean}>();
   @Output() toggleChartEpisode = new EventEmitter<{episodeId: string, charted: boolean}>();
   @Output() chartSingleEpisode = new EventEmitter<string>();
   @Output() pageChange = new EventEmitter<number>();
   @Output() toggleExpandedReport = new EventEmitter();
+  expanded = false;
 
   get isHourly(): boolean {
     return this.routerParams && this.routerParams.interval === INTERVAL_HOURLY;
+  }
+
+  onToggleExpandedReport() {
+    this.expanded = !this.expanded;
+    this.toggleExpandedReport.emit(this.expanded);
   }
 }

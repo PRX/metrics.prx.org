@@ -13,7 +13,7 @@ import { SummaryTableComponent } from './summary-table.component';
 import { reducers } from '@app/ngrx/reducers';
 import { CHARTTYPE_EPISODES, EPISODE_PAGE_SIZE } from '@app/ngrx';
 import * as ACTIONS from '@app/ngrx/actions';
-import { routerParams, episodes, podcast, ep0Downloads, ep1Downloads, podDownloads } from '../../../testing/downloads.fixtures';
+import { routerParams, episodes, podcast, ep0Downloads, ep1Downloads, podDownloads } from '@testing/downloads.fixtures';
 
 describe('DownloadsTableContainerComponent', () => {
   let comp: DownloadsTableContainerComponent;

@@ -19,6 +19,7 @@ prx-checkbox {
 
 .row {
   display: flex;
+  height: 24px; /* height constrained to match scrolling table, TBD (to be deleted? :) */
   border-top: 1px solid #ddd;
 }
 .row > * {
@@ -47,22 +48,20 @@ prx-checkbox {
   background-color: #f0f0f0;
 }
 
-.mobile {
+.mobile-label {
   display: none;
 }
 
 @media (max-width: 768px) {
-  .title:not(.mobile) {
-    display: none;
-  }
-  .mobile {
+  .mobile-label {
     display: initial;
     font-weight: bold;
   }
-  .row.header, prx-checkbox, .btn-link.title {
+  .row.header, prx-checkbox, .btn-link.title, .title:not(.mobile-label) {
     display: none;
   }
   .row {
+    height: initial;
     flex-direction: column;
     border: none;
     width: 100vw;

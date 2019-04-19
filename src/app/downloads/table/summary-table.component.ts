@@ -20,12 +20,13 @@ import * as dateFormat from '@app/shared/util/date/date.format';
           {{podcastTableData.title}}
         </prx-checkbox>
         <ng-template #podcastTitle><span class="title">{{podcastTableData.title}}</span></ng-template>
-        <span class="mobile title">{{podcastTableData.title}}</span>
+        <!-- responsive table only ever shows title -->
+        <span class="mobile-label title">{{podcastTableData.title}}</span>
       </div>
       <div></div>
-      <div class="charted"><span class="mobile">Downloads: </span>{{podcastTableData.totalForPeriod | largeNumber}}</div>
+      <div class="charted"><span class="mobile-label">Downloads: </span>{{podcastTableData.totalForPeriod | largeNumber}}</div>
       <div *ngIf="podcastTableData.allTimeDownloads !== undefined">
-        <span class="mobile">All-time downloads: </span>{{podcastTableData.allTimeDownloads | largeNumber}}
+        <span class="mobile-label">All-time downloads: </span>{{podcastTableData.allTimeDownloads | largeNumber}}
       </div>
     </div>
 
@@ -39,12 +40,13 @@ import * as dateFormat from '@app/shared/util/date/date.format';
         <ng-template #episodeTitle>
           <button class="btn-link title" (click)="chartSingleEpisode.emit(episode.id)" [title]="episode.title">{{episode.title}}</button>
         </ng-template>
-        <span class="mobile title">{{episode.title}}</span>
+        <!-- responsive table only ever shows title, no prx-checkbox or .btn-link -->
+        <span class="mobile-label title">{{episode.title}}</span>
       </div>
-      <div><span class="mobile">Release date: </span>{{releaseDateFormat(episode.publishedAt)}}</div>
-      <div class="charted"><span class="mobile">Downloads: </span>{{episode.totalForPeriod | largeNumber}}</div>
+      <div><span class="mobile-label">Release date: </span>{{releaseDateFormat(episode.publishedAt)}}</div>
+      <div class="charted"><span class="mobile-label">Downloads: </span>{{episode.totalForPeriod | largeNumber}}</div>
       <div *ngIf="episode.allTimeDownloads !== undefined">
-        <span class="mobile">All-time downloads: </span>{{episode.allTimeDownloads | largeNumber}}
+        <span class="mobile-label">All-time downloads: </span>{{episode.allTimeDownloads | largeNumber}}
       </div>
     </div>
   `,

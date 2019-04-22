@@ -5,7 +5,7 @@ export { INTERVAL_MONTHLY, INTERVAL_WEEKLY, INTERVAL_DAILY, INTERVAL_HOURLY, Int
 export { CHARTTYPE_PODCAST, CHARTTYPE_EPISODES, CHARTTYPE_STACKED,
   CHARTTYPE_LINE, CHARTTYPE_BAR, CHARTTYPE_HORIZBAR, CHARTTYPE_GEOCHART, ChartType } from './chart.type';
 export { RouterParams } from './router-params.model';
-export { DownloadsTableModel } from './downloads-table.model';
+export { DownloadsTableModel, DownloadsTableIntervalModel } from './downloads-table.model';
 export { PODCAST_PAGE_SIZE, Podcast } from './podcast.model';
 export { EPISODE_PAGE_SIZE, EPISODE_SELECT_PAGE_SIZE, Episode } from './episode.model';
 export { PodcastDownloads } from './podcast-downloads.model';

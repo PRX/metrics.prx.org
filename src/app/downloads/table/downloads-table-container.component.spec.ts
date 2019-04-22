@@ -4,14 +4,16 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { StoreModule, Store } from '@ngrx/store';
 import { FancyFormModule } from 'ngx-prx-styleguide';
 
-import { SharedModule } from '../shared';
+import { SharedModule } from '@app/shared';
 import { DownloadsTableContainerComponent } from './downloads-table-container.component';
 import { DownloadsTablePresentationComponent } from './downloads-table-presentation.component';
+import { ScrollingTableComponent } from './scrolling-table.component';
+import { SummaryTableComponent } from './summary-table.component';
 
-import { reducers } from '../ngrx/reducers';
-import { CHARTTYPE_EPISODES, EPISODE_PAGE_SIZE } from '../ngrx';
-import * as ACTIONS from '../ngrx/actions';
-import { routerParams, episodes, podcast, ep0Downloads, ep1Downloads, podDownloads } from '../../testing/downloads.fixtures';
+import { reducers } from '@app/ngrx/reducers';
+import { CHARTTYPE_EPISODES, EPISODE_PAGE_SIZE } from '@app/ngrx';
+import * as ACTIONS from '@app/ngrx/actions';
+import { routerParams, episodes, podcast, ep0Downloads, ep1Downloads, podDownloads } from '@testing/downloads.fixtures';
 
 describe('DownloadsTableContainerComponent', () => {
   let comp: DownloadsTableContainerComponent;
@@ -24,7 +26,9 @@ describe('DownloadsTableContainerComponent', () => {
     TestBed.configureTestingModule({
       declarations: [
         DownloadsTableContainerComponent,
-        DownloadsTablePresentationComponent
+        DownloadsTablePresentationComponent,
+        ScrollingTableComponent,
+        SummaryTableComponent
       ],
       imports: [
         RouterTestingModule,

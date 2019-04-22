@@ -2,15 +2,16 @@ import { TestBed } from '@angular/core/testing';
 import { StoreModule, Store, select } from '@ngrx/store';
 
 import { RootState, reducers } from '../';
-import { DownloadsTableModel, EPISODE_PAGE_SIZE } from '../models';
+import { DownloadsTableModel, EPISODE_PAGE_SIZE, CHARTTYPE_STACKED, CHARTTYPE_PODCAST, CHARTTYPE_EPISODES } from '../models';
 import { routerParams,  podcast, episodes,
   podDownloads, podAllTimeDownloads, podAllTimeDownloadsOff,
   ep0Downloads, ep1Downloads,
-  ep0AllTimeDownloads, ep0AllTimeDownloadsOff, ep1AllTimeDownloads, ep1AllTimeDownloadsOff } from '../../../../testing/downloads.fixtures';
+  ep0AllTimeDownloads, ep0AllTimeDownloadsOff, ep1AllTimeDownloads, ep1AllTimeDownloadsOff } from '@testing/downloads.fixtures';
 import * as ACTIONS from '../../actions';
-import * as chartUtil from '../../../shared/util/chart.util';
-import * as metricsUtil from '../../../shared/util/metrics.util';
-import { selectDownloadTablePodcastDownloads, selectDownloadTableEpisodeMetrics } from './downloads-table.selectors';
+import * as metricsUtil from '@app/shared/util/metrics.util';
+import * as dateUtil from '@app/shared/util/date/date.util';
+import { selectDownloadTablePodcastDownloads, selectDownloadTableEpisodeMetrics,
+  selectDownloadTableIntervalData } from './downloads-table.selectors';
 
 describe('Downloads Table Selectors', () => {
   let store: Store<RootState>;
@@ -90,9 +91,8 @@ describe('Downloads Table Selectors', () => {
     });
 
     it('should include episode total downloads for period', () => {
-      result.forEach(e => {
-        expect(e.totalForPeriod).toEqual(chartUtil.getTotal(e.downloads));
-      });
+      expect(result[0].totalForPeriod).toEqual(metricsUtil.getTotal(ep0Downloads));
+      expect(result[1].totalForPeriod).toEqual(metricsUtil.getTotal(ep1Downloads));
     });
 
     it('should include episode all time total downloads', () => {
@@ -121,6 +121,29 @@ describe('Downloads Table Selectors', () => {
         store.dispatch(new ACTIONS.EpisodeSelectEpisodesAction({episodeGuids: [episodes[0].guid]}));
         expect(result.filter(r => r.charted).length).toEqual(1);
       });
+    });
+  });
+
+  describe('interval data', () => {
+    beforeEach(() => {
+      store.pipe(select(selectDownloadTableIntervalData)).subscribe((intervalData: any[][]) => {
+        result = intervalData;
+      });
+    });
+
+    it('should have dates in header row', () => {
+      store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerParams: {...routerParams, chartType: CHARTTYPE_STACKED}}));
+      expect(result[0][0]).toEqual(dateUtil.formatDateForInterval(new Date(podDownloads[0][0]), routerParams.interval));
+    });
+
+    it('should have podcast data', () => {
+      store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerParams: {...routerParams, chartType: CHARTTYPE_PODCAST}}));
+      expect(result[1][0]).toEqual(podDownloads[0][1]);
+    });
+
+    it('should have episode data', () => {
+      store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerParams: {...routerParams, chartType: CHARTTYPE_EPISODES}}));
+      expect(result[1][0]).toEqual(ep0Downloads[0][1]);
     });
   });
 

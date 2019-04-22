@@ -4,23 +4,23 @@ import { DebugElement } from '@angular/core';
 import { RouterTestingModule } from '@angular/router/testing';
 import { FancyFormModule } from 'ngx-prx-styleguide';
 
-import { SharedModule } from '../shared';
-import { DownloadsTablePresentationComponent } from './downloads-table-presentation.component';
+import { SharedModule } from '@app/shared';
+import { SummaryTableComponent } from './summary-table.component';
 
-import { INTERVAL_HOURLY } from '../ngrx/reducers/models';
-import { routerParams, podcast, episodes } from '../../testing/downloads.fixtures';
-import { neutralColor, getColor } from '../shared/util/chart.util';
+import { podcast, episodes } from '@testing/downloads.fixtures';
+import { neutralColor, getColor } from '@app/shared/util/chart.util';
+import { CHARTTYPE_STACKED } from '@app/ngrx';
 
-describe('DownloadsTablePresentationComponent', () => {
-  let comp: DownloadsTablePresentationComponent;
-  let fix: ComponentFixture<DownloadsTablePresentationComponent>;
+describe('SummaryTableComponent', () => {
+  let comp: SummaryTableComponent;
+  let fix: ComponentFixture<SummaryTableComponent>;
   let de: DebugElement;
   let el: HTMLElement;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [
-        DownloadsTablePresentationComponent
+        SummaryTableComponent
       ],
       imports: [
         RouterTestingModule,
@@ -28,18 +28,16 @@ describe('DownloadsTablePresentationComponent', () => {
         SharedModule
       ]
     }).compileComponents().then(() => {
-      fix = TestBed.createComponent(DownloadsTablePresentationComponent);
+      fix = TestBed.createComponent(SummaryTableComponent);
       comp = fix.componentInstance;
-      fix.detectChanges();
       de = fix.debugElement;
       el = de.nativeElement;
 
-      comp.routerParams = routerParams;
+      comp.chartType = CHARTTYPE_STACKED;
       comp.podcastTableData = {
         title: 'All Episodes',
         color: neutralColor,
         id: podcast.id,
-        downloads: [],
         totalForPeriod: 0,
         charted: true
       };
@@ -48,7 +46,6 @@ describe('DownloadsTablePresentationComponent', () => {
           title: e.title,
           color: getColor(index),
           id: e.guid,
-          downloads: [],
           totalForPeriod: 0,
           charted: true
         };
@@ -56,12 +53,6 @@ describe('DownloadsTablePresentationComponent', () => {
       fix.detectChanges();
     });
   }));
-
-  it('should show message about local timezone translation for hourly data', () => {
-    comp.routerParams = {...comp.routerParams, interval: INTERVAL_HOURLY};
-    fix.detectChanges();
-    expect(de.query(By.css('em')).nativeElement.textContent).toContain('local timezone');
-  });
 
   it('toggles episode display when checkbox is clicked', () => {
     jest.spyOn(comp.toggleChartEpisode, 'emit');
@@ -75,6 +66,6 @@ describe('DownloadsTablePresentationComponent', () => {
     jest.spyOn(comp.toggleChartPodcast, 'emit');
     const checks = de.queryAll(By.css('input[type="checkbox"]'));
     checks[0].nativeElement.click();
-    expect(comp.toggleChartPodcast.emit).toHaveBeenCalledWith({id: podcast.id, charted: false});
+    expect(comp.toggleChartPodcast.emit).toHaveBeenCalledWith(false);
   });
 });

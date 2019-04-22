@@ -1,0 +1,19 @@
+.table-wrapper {
+  display: flex;
+}
+
+.table-navigation {
+  display: flex;
+  justify-content: space-between;
+  padding: 3px;
+  margin-top: 3px;
+}
+.table-navigation > button {
+  text-align: left;
+}
+
+@media (max-width: 768px) {
+  .table-navigation > button, metrics-downloads-scrolling-table {
+    display: none;
+  }
+}

@@ -1,0 +1,33 @@
+<div>
+  <p *ngIf="isHourly"><em>Hourly data is shown in your local timezone</em></p>
+
+  <div class="table-navigation">
+    <button (click)="onToggleExpandedReport()" class="btn-link">
+      <p *ngIf="!expanded">Show {{routerParams?.interval?.key}} numbers &#187;</p>
+      <p *ngIf="expanded">Hide {{routerParams?.interval?.key}} numbers &#171;</p>
+    </button>
+
+    <metrics-episode-page
+      [currentPage]="routerParams?.episodePage"
+      [totalPages]="totalPages"
+      (pageChange)="pageChange.emit($event)">
+    </metrics-episode-page>
+  </div>
+
+  <div class="table-wrapper">
+    <metrics-downloads-summary-table
+      [chartType]="routerParams?.chartType"
+      [podcastTableData]="podcastTableData"
+      [episodeTableData]="episodeTableData"
+      (toggleChartPodcast)="toggleChartPodcast.emit({id: routerParams?.podcastId, charted: $event})"
+      (toggleChartEpisode)="toggleChartEpisode.emit($event)"
+      (chartSingleEpisode)="chartSingleEpisode.emit($event)">
+    </metrics-downloads-summary-table>
+    
+    <metrics-downloads-scrolling-table
+      *ngIf="expanded"
+      [tableData]="intervalData">
+    </metrics-downloads-scrolling-table>
+
+  </div>
+</div>

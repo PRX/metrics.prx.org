@@ -1,4 +1,4 @@
-export { RouterParams, DownloadsTableModel,
+export { RouterParams, DownloadsTableModel, DownloadsTableIntervalModel,
   Podcast, Episode, PODCAST_PAGE_SIZE, EPISODE_PAGE_SIZE, EPISODE_SELECT_PAGE_SIZE,
   PodcastDownloads, EpisodeDownloads,
   PodcastAllTimeDownloads, EpisodeAllTimeDownloads,

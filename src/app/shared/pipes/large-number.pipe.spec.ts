@@ -12,9 +12,9 @@ describe('LargeNumberPipe', () => {
     expect(pipe.transform(value)).toEqual('1,000');
   });
 
-  it('returns zero for falsey values', () => {
-    expect(pipe.transform(undefined)).toEqual('0');
-    expect(pipe.transform(null)).toEqual('0');
-    expect(pipe.transform(Number(false))).toEqual('0');
+  it('returns zero only for zero values', () => {
+    expect(pipe.transform(undefined)).toEqual(undefined);
+    expect(pipe.transform(null)).toEqual(undefined);
+    expect(pipe.transform(0)).toEqual('0');
   });
 });

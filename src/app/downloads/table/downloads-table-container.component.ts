@@ -1,10 +1,11 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Store, select } from '@ngrx/store';
 import { Observable } from 'rxjs';
-import { DownloadsTableModel, RouterParams, CHARTTYPE_EPISODES } from '../ngrx';
+import { DownloadsTableModel, RouterParams, CHARTTYPE_EPISODES } from '@app/ngrx';
 import { selectRouter, selectNumEpisodePages,
-  selectDownloadTablePodcastDownloads, selectDownloadTableEpisodeMetrics } from '../ngrx/reducers/selectors';
-import * as ACTIONS from '../ngrx/actions';
+  selectDownloadTablePodcastDownloads, selectDownloadTableEpisodeMetrics,
+  selectDownloadTableIntervalData } from '@app/ngrx/reducers/selectors';
+import * as ACTIONS from '@app/ngrx/actions';
 
 @Component({
   selector: 'metrics-downloads-table',
@@ -13,13 +14,13 @@ import * as ACTIONS from '../ngrx/actions';
       [totalPages]="numEpisodePages$ | async"
       [podcastTableData]="podcastTableData$ | async"
       [episodeTableData]="episodeTableData$ | async"
+      [intervalData]="intervalData$ | async"
       [routerParams]="routerParams$ | async"
-      [expanded]="expanded"
       (toggleChartPodcast)="toggleChartPodcast($event)"
       (toggleChartEpisode)="toggleChartEpisode($event)"
       (chartSingleEpisode)="onChartSingleEpisode($event)"
       (pageChange)="onPageChange($event)"
-      (toggleExpandedReport)="toggleExpandedReport()">
+      (toggleExpandedReport)="toggleExpandedReport($event)">
     </metrics-downloads-table-presentation>
   `
 })
@@ -27,15 +28,16 @@ export class DownloadsTableContainerComponent implements OnInit {
   @Input() totalPages;
   podcastTableData$: Observable<DownloadsTableModel>;
   episodeTableData$: Observable<DownloadsTableModel[]>;
+  intervalData$: Observable<any[][]>;
   numEpisodePages$: Observable<number>;
   routerParams$: Observable<RouterParams>;
-  expanded = false;
 
   constructor(private store: Store<any>) {}
 
   ngOnInit() {
     this.podcastTableData$ = this.store.pipe(select(selectDownloadTablePodcastDownloads));
     this.episodeTableData$ = this.store.pipe(select(selectDownloadTableEpisodeMetrics));
+    this.intervalData$ = this.store.pipe(select(selectDownloadTableIntervalData));
     this.numEpisodePages$ = this.store.pipe(select(selectNumEpisodePages));
     this.routerParams$ = this.store.pipe(select(selectRouter));
   }
@@ -57,9 +59,8 @@ export class DownloadsTableContainerComponent implements OnInit {
     this.store.dispatch(new ACTIONS.RouteEpisodePageAction({episodePage}));
   }
 
-  toggleExpandedReport() {
-    this.expanded = !this.expanded;
-    if (this.expanded) {
+  toggleExpandedReport(expanded) {
+    if (expanded) {
       this.store.dispatch(new ACTIONS.GoogleAnalyticsEventAction({gaAction: 'table-expand'}));
     }
   }

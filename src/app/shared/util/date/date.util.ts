@@ -1,5 +1,6 @@
 import * as moment from 'moment';
 import * as dateConst from './date.constants';
+import * as dateFormat from './date.format';
 import { IntervalModel, INTERVAL_HOURLY, INTERVAL_DAILY, INTERVAL_WEEKLY, INTERVAL_MONTHLY } from '../../../ngrx';
 
 export const isMoreThanXDays = (x: number, beginDate, endDate): boolean => {
@@ -280,4 +281,18 @@ export const getDaysInMonth = (date: Date): number => {
   // The end of the month is the beginning of the following month minus 1 day
   const endOfMonth = moment(date.valueOf()).utc().add(1, 'months').date(1).subtract(1, 'days');
   return endOfMonth.date();
+};
+
+export const formatDateForInterval = (date: Date, interval: IntervalModel): string => {
+  switch (interval) {
+    case INTERVAL_MONTHLY:
+      return dateFormat.monthDateYear(date);
+    case INTERVAL_WEEKLY:
+    case INTERVAL_DAILY:
+      return dateFormat.monthDate(date);
+    case INTERVAL_HOURLY:
+      return dateFormat.hourly(date).split(', ').join(',\n');
+    default:
+      return dateFormat.monthDate(date);
+  }
 };

@@ -1,0 +1,84 @@
+.title {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+button {
+  text-align: left;
+  margin-top: -2px;
+  top: 2px;
+}
+prx-checkbox {
+  position: relative;
+  margin-top: -4px;
+  top: 4px;
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.row {
+  display: flex;
+  height: 24px; /* height constrained to match scrolling table, TBD (to be deleted? :) */
+  border-top: 1px solid #ddd;
+}
+.row > * {
+  flex-basis: 30%;
+  padding: 0 20px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.row > div:first-child {
+  flex-basis: 200px;
+  padding: 0 0 0 5px;
+  font-size: 0.8em;
+}
+.row.header {
+  border-top: none;
+  height: 45px; /* height accounts for 2 line hourly datetime */
+  align-items: flex-end;
+}
+.header > div {
+  color: #818181;
+  text-transform: uppercase;
+  font-size: 0.8em;
+}
+.row > div.charted  {
+  background-color: #f0f0f0;
+}
+
+.mobile-label {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .mobile-label {
+    display: initial;
+    font-weight: bold;
+  }
+  .row.header, prx-checkbox, .btn-link.title, .title:not(.mobile-label) {
+    display: none;
+  }
+  .row {
+    height: initial;
+    flex-direction: column;
+    border: none;
+    width: 100vw;
+    margin: 0 -10px;
+    padding: 10px 20px;
+  }
+  .row:nth-child(2n + 1) {
+    background-color: #f0f0f0;
+  }
+  .row > div:first-child {
+    font-size: 1.2em;
+  }
+  .row > *, .row > div:first-child {
+    flex-basis: auto;
+    padding: 0;
+  }
+  .row > div.charted  {
+    background-color: transparent;
+  }
+}

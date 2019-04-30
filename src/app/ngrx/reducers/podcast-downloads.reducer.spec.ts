@@ -2,7 +2,7 @@ import {
   CastlePodcastDownloadsSuccessAction,
   CastlePodcastDownloadsFailureAction,
   CastlePodcastDownloadsLoadAction
-} from '../actions/castle.action.creator';
+} from '../actions';
 import { RouterParams, INTERVAL_DAILY, MetricsType, METRICSTYPE_DOWNLOADS } from './models';
 import {
   PodcastDownloadsReducer,

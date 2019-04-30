@@ -23,6 +23,9 @@ import {
   CastleEpisodeDownloadsLoadAction,
   CastleEpisodeDownloadsSuccessAction,
   CastleEpisodeDownloadsFailureAction,
+  CastleEpisodeDropdayLoadAction,
+  CastleEpisodeDropdaySuccessAction,
+  CastleEpisodeDropdayFailureAction
 } from './castle-downloads.action.creator';
 import {
   CastlePodcastRanksLoadAction,
@@ -75,6 +78,9 @@ export type AllActions
   | CastleEpisodeAllTimeDownloadsLoadAction
   | CastleEpisodeAllTimeDownloadsSuccessAction
   | CastleEpisodeAllTimeDownloadsFailureAction
+  | CastleEpisodeDropdayLoadAction
+  | CastleEpisodeDropdaySuccessAction
+  | CastleEpisodeDropdayFailureAction
   | CastlePodcastRanksLoadAction
   | CastlePodcastRanksSuccessAction
   | CastlePodcastRanksFailureAction
@@ -128,6 +134,9 @@ export {
   CastleEpisodeDownloadsLoadPayload, CastleEpisodeDownloadsLoadAction,
   CastleEpisodeDownloadsSuccessPayload, CastleEpisodeDownloadsSuccessAction,
   CastleEpisodeDownloadsFailurePayload, CastleEpisodeDownloadsFailureAction,
+  CastleEpisodeDropdayLoadPayload, CastleEpisodeDropdayLoadAction,
+  CastleEpisodeDropdaySuccessPayload, CastleEpisodeDropdaySuccessAction,
+  CastleEpisodeDropdayFailurePayload, CastleEpisodeDropdayFailureAction
 } from './castle-downloads.action.creator';
 export {
   CastlePodcastRanksLoadPayload, CastlePodcastRanksLoadAction,

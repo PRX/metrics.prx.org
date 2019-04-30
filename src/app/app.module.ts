@@ -16,7 +16,7 @@ import { CoreModule } from './core';
 import { SharedModule } from './shared';
 
 import { reducers, RootState, CustomSerializer } from './ngrx/reducers';
-import { CastleEffects } from './ngrx/effects/castle.effects';
+import { CastleCatalogEffects } from './ngrx/effects/castle-catalog.effects';
 import { CastleDownloadsEffects } from './ngrx/effects/castle-downloads.effects';
 import { CastleRanksTotalsEffects } from './ngrx/effects/castle-ranks-totals.effects';
 import { GoogleAnalyticsEffects } from './ngrx/effects/google-analytics.effects';
@@ -56,7 +56,7 @@ export const reducerProvider = { provide: reducerToken, useFactory: getReducers 
     Angulartics2Module.forRoot(),
     StoreRouterConnectingModule,
     EffectsModule.forRoot([
-      CastleEffects,
+      CastleCatalogEffects,
       CastleDownloadsEffects,
       CastleRanksTotalsEffects,
       GoogleAnalyticsEffects,

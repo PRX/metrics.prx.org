@@ -214,6 +214,30 @@ describe('CastleDownloadsEffects', () => {
     expect(effects.loadEpisodeDownloads$).toBeObservable(expected);
   });
 
+  it('should load episode dropday', () => {
+    const action: ACTIONS.CastleEpisodeDropdayLoadAction = {
+      type: ACTIONS.ActionTypes.CASTLE_EPISODE_DROPDAY_LOAD,
+      payload: {
+        podcastId: episodes[0].podcastId,
+        guid: episodes[0].guid,
+        interval: INTERVAL_DAILY,
+        publishedAt: new Date(),
+        days: 28
+      }
+    };
+    const success = new ACTIONS.CastleEpisodeDropdaySuccessAction({
+      podcastId: episodes[0].podcastId,
+      guid: episodes[0].guid,
+      interval: INTERVAL_DAILY,
+      publishedAt: new Date(),
+      downloads: ep0Downloads
+    });
+
+    actions$.stream = hot('-a', { a: action });
+    const expected = cold('-r', { r: success });
+    expect(effects.loadEpisodeDropday$).toBeObservable(expected);
+  });
+
   describe('load routed metrics', () => {
     beforeEach(() => {
       castle.root.mock('prx:podcast', { id: podcast.id }).mockItems('prx:episodes',

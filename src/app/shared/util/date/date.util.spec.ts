@@ -131,4 +131,13 @@ describe('date util', () => {
       dateUtil.getAmountOfIntervals(dateUtil.beginningOfLastWeekUTC().toDate(), dateUtil.endOfLastWeekUTC().toDate(), INTERVAL_DAILY);
     expect(lastWeek).toEqual(7);
   });
+
+  it('should add days to date', () => {
+    // day0 + 27 = 28 days
+    const publishedAt28 = dateUtil.beginningOfLast28DaysUTC().toDate();
+    expect(dateUtil.addDays(publishedAt28, 27).valueOf()).toEqual(dateUtil.beginningOfTodayUTC().toDate().valueOf());
+    // day0 + 6 = 7 days
+    const publishedAt7 = dateUtil.beginningOfLast7DaysUTC().toDate();
+    expect(dateUtil.addDays(publishedAt7, 6).valueOf()).toEqual(dateUtil.beginningOfTodayUTC().toDate().valueOf());
+  });
 });

@@ -7,9 +7,8 @@ import { Action, Store, select } from '@ngrx/store';
 import * as ACTIONS from '../actions';
 import { selectRouter } from '../reducers/selectors';
 import { CastleService } from '../../core';
-import {
-  Episode, RouterParams, METRICSTYPE_DOWNLOADS
-} from '../';
+import { Episode, RouterParams, METRICSTYPE_DOWNLOADS } from '../';
+import * as dateUtil from '../../shared/util/date';
 
 @Injectable()
 export class CastleDownloadsEffects {
@@ -158,6 +157,40 @@ export class CastleDownloadsEffects {
             }
           })
         );
+    })
+  );
+
+  @Effect()
+  loadEpisodeDropday$ = this.actions$.pipe(
+    ofType(ACTIONS.ActionTypes.CASTLE_EPISODE_DROPDAY_LOAD),
+    map((action: ACTIONS.CastleEpisodeDropdayLoadAction) => action.payload),
+    mergeMap((payload: ACTIONS.CastleEpisodeDropdayLoadPayload) => {
+      const { podcastId, guid, interval, publishedAt: from, days } = payload;
+      const to = dateUtil.addDays(from, days - 1); // day0 + (days - 1) = days
+      return this.castle.followList('prx:episode-downloads', {
+        guid,
+        from: from.toISOString(),
+        to: to.toISOString(),
+        interval: interval.value
+      }).pipe(
+        map(results => {
+          return new ACTIONS.CastleEpisodeDropdaySuccessAction({
+            podcastId,
+            guid,
+            interval,
+            publishedAt: from,
+            downloads: results[0]['downloads']
+          });
+        }),
+        catchError(error => {
+          return of(new ACTIONS.CastleEpisodeDropdayFailureAction({
+            podcastId,
+            guid,
+            interval,
+            error
+          }));
+        })
+      );
     })
   );
 

@@ -144,3 +144,44 @@ export class CastleEpisodeAllTimeDownloadsFailureAction implements Action {
 
   constructor(public payload: CastleEpisodeAllTimeDownloadsFailurePayload) {}
 }
+
+export interface CastleEpisodeDropdayLoadPayload {
+  podcastId: string;
+  guid: string;
+  interval: IntervalModel;
+  publishedAt: Date;
+  days: number;
+}
+
+export class CastleEpisodeDropdayLoadAction implements Action {
+  readonly type = ActionTypes.CASTLE_EPISODE_DROPDAY_LOAD;
+
+  constructor(public payload: CastleEpisodeDropdayLoadPayload) {}
+}
+
+export interface CastleEpisodeDropdaySuccessPayload {
+  podcastId: string;
+  guid: string;
+  interval: IntervalModel;
+  publishedAt: Date;
+  downloads: any[][];
+}
+
+export class CastleEpisodeDropdaySuccessAction implements Action {
+  readonly type = ActionTypes.CASTLE_EPISODE_DROPDAY_SUCCESS;
+
+  constructor(public payload: CastleEpisodeDropdaySuccessPayload) {}
+}
+
+export interface CastleEpisodeDropdayFailurePayload {
+  podcastId: string;
+  guid: string;
+  interval: IntervalModel;
+  error: any;
+}
+
+export class CastleEpisodeDropdayFailureAction implements Action {
+  readonly type = ActionTypes.CASTLE_EPISODE_DROPDAY_FAILURE;
+
+  constructor(public payload: CastleEpisodeDropdayFailurePayload) {}
+}

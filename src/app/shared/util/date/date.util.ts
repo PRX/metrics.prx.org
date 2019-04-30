@@ -296,3 +296,8 @@ export const formatDateForInterval = (date: Date, interval: IntervalModel): stri
       return dateFormat.monthDate(date);
   }
 };
+
+export const addDays = (date: Date, days: number): Date => {
+  const daysPlus = moment(date.valueOf()).utc().add(days, 'days');
+  return daysPlus.toDate();
+};

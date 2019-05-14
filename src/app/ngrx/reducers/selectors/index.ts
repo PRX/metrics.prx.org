@@ -14,6 +14,8 @@ export * from './episode-totals.selectors';
 export * from './downloads-chart.selectors';
 export * from './downloads-table.selectors';
 export * from './downloads-summary.selectors';
+export * from './dropday-chart.selectors';
+export * from './dropday-table.selectors';
 export * from './export.selectors';
 export * from './loading.selectors';
 export * from './loaded.selectors';

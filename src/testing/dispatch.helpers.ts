@@ -1,6 +1,7 @@
 import { Store } from '@ngrx/store';
 import * as fixtures from './downloads.fixtures';
-import { RouterParams, Podcast, Episode, EPISODE_PAGE_SIZE, GROUPTYPE_GEOCOUNTRY, GroupType, GROUPTYPE_AGENTNAME } from '../app/ngrx';
+import { RouterParams, Podcast, Episode, EPISODE_PAGE_SIZE,
+  GroupType, GROUPTYPE_GEOCOUNTRY, GROUPTYPE_AGENTNAME, IntervalModel } from '../app/ngrx';
 import * as ACTIONS from '../app/ngrx/actions';
 
 
@@ -68,6 +69,36 @@ export const dispatchEpisodeDownloads = (store: Store<any>, podcastId?: string, 
     page: page || fixtures.episodes[1].page,
     guid: guid || fixtures.episodes[1].guid,
     downloads: downloads || fixtures.ep1Downloads
+  }));
+};
+
+export const dispatchEpisodeAllTimeDownloads = (store: Store<any>, podcastId?: string) => {
+  store.dispatch(new ACTIONS.CastleEpisodeAllTimeDownloadsSuccessAction({
+    podcastId: podcastId || fixtures.episodes[0].podcastId,
+    guid: fixtures.episodes[0].guid,
+    ...fixtures.ep0AllTimeDownloads
+  }));
+  store.dispatch(new ACTIONS.CastleEpisodeAllTimeDownloadsSuccessAction({
+    podcastId: fixtures.episodes[1].podcastId,
+    guid: fixtures.episodes[1].guid,
+    ...fixtures.ep1AllTimeDownloads
+  }));
+};
+
+export const dispatchEpisodeDropday = (store: Store<any>, podcastId?: string, interval?: IntervalModel) => {
+  store.dispatch(new ACTIONS.CastleEpisodeDropdaySuccessAction({
+    podcastId: podcastId || fixtures.episodes[0].podcastId,
+    guid: fixtures.episodes[0].guid,
+    publishedAt: fixtures.episodes[0].publishedAt,
+    interval: interval || fixtures.routerParams.interval,
+    downloads: fixtures.ep0Downloads
+  }));
+  store.dispatch(new ACTIONS.CastleEpisodeDropdaySuccessAction({
+    podcastId: podcastId || fixtures.episodes[1].podcastId,
+    guid: fixtures.episodes[1].guid,
+    publishedAt: fixtures.episodes[1].publishedAt,
+    interval: interval || fixtures.routerParams.interval,
+    downloads: fixtures.ep1Downloads
   }));
 };
 

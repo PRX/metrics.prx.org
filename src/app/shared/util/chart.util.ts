@@ -17,7 +17,8 @@ import {
   EpisodeTotals,
   Rank,
   GroupCharted,
-  TotalsTableRow
+  TotalsTableRow,
+  Episode
 } from '../../ngrx';
 import * as dateFormat from './date/date.format';
 import * as metricsUtil from './metrics.util';
@@ -347,4 +348,11 @@ export const toGoogleDataTable = (ranks: Rank[], heading: string) => {
   data.addColumn('number', 'Downloads');
   data.addRows(ranks.map(d => [{v: d.code, f: d.label}, d.total]));
   return data;
+};
+
+export const uniqueEpisodeLabel = (episode: Episode, episodes: Episode[]): string => {
+  const episodesWithTitle = episodes.filter(e => e.title === episode.title);
+  return episodesWithTitle.length > 1 ?
+    `(${episodesWithTitle.findIndex(e => e.guid === episode.guid) + 1}) ${episode.title}` :
+    episode.title;
 };

@@ -67,3 +67,11 @@ export const selectRoutedPodcastEpisodesSelectList = createSelector(
   (podcastId, episodes: Episode[]) =>
     episodes.filter(e => e.podcastId === podcastId).sort((a, b) => b.publishedAt.valueOf() - a.publishedAt.valueOf())
 );
+
+export const selectRoutedPodcastSelectedEpisodes = createSelector(
+  selectRoutedPodcastEpisodesSelectList,
+  selectSelectedEpisodeGuids,
+  (episodes: Episode[], selectedEpisodeGuids) => {
+    return episodes && episodes.filter(e => selectedEpisodeGuids && selectedEpisodeGuids.indexOf(e.guid) > -1);
+  }
+);

@@ -135,7 +135,8 @@ export const selectDownloadTableIntervalData = createSelector(
   selectDownloadTablePodcastIntervalData,
   selectDownloadTableEpisodeIntervalData,
   (routerParams, podcastIntervalData, episodeIntervalData): any[][] => {
-    if (episodeIntervalData && episodeIntervalData.every(episode => episode.downloads && episode.downloads.length > 0)) {
+    if (episodeIntervalData && episodeIntervalData.length &&
+        episodeIntervalData.every(episode => episode.downloads && episode.downloads.length > 0)) {
       if (routerParams.chartType !== CHARTTYPE_EPISODES && podcastIntervalData && podcastIntervalData.downloads) {
         return [
           podcastIntervalData.downloads.map(downloads => formatDateForInterval(new Date(downloads.date), routerParams.interval)),

@@ -178,14 +178,14 @@ describe('Downloads Chart Selectors', () => {
       expect(result.length).toEqual(1);
     });
 
-    it('should add first part of guid string to non unique episode titles', () => {
+    it('should number non unique episode titles', () => {
       dispatchHelper.dispatchEpisodePage(store,
         [
           episodes[0],
           {...episodes[1], title: episodes[0].title}
         ]);
 
-      expect(result[0].label.indexOf(episodes[0].guid.split('-')[0].substr(0, 10))).toBeGreaterThan(-1);
+      expect(result[0].label.indexOf('(1) ')).toBeGreaterThan(-1);
     });
   });
 

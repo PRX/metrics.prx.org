@@ -89,7 +89,7 @@ export const podHourlyDownloads = [
   ['2017-09-07T22:00:00Z', 162900],
   ['2017-09-07T23:00:00Z', 46858]
 ];
-export const ep0Downloads = [
+export const ep0Downloads: any[][] = [
   ['2017-08-27T00:00:00Z', 22],
   ['2017-08-28T00:00:00Z', 90],
   ['2017-08-29T00:00:00Z', 58],
@@ -103,7 +103,7 @@ export const ep0Downloads = [
   ['2017-09-06T00:00:00Z', 90],
   ['2017-09-07T00:00:00Z', 58]
 ];
-export const ep1Downloads = [
+export const ep1Downloads: any[][]  = [
   ['2017-08-27T00:00:00Z', 522],
   ['2017-08-28T00:00:00Z', 900],
   ['2017-08-29T00:00:00Z', 858],

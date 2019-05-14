@@ -1,6 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { TimeseriesChartModel } from 'ngx-prx-styleguide';
-import { RouterParams, CHARTTYPE_HORIZBAR, CHARTTYPE_EPISODES } from '@app/ngrx';
+import { RouterParams, CHARTTYPE_HORIZBAR, CHARTTYPE_EPISODES,
+  INTERVAL_HOURLY, INTERVAL_DAILY, INTERVAL_WEEKLY, INTERVAL_MONTHLY } from '@app/ngrx';
 import * as chartUtil from '@app/shared/util/chart.util';
 
 @Component({
@@ -11,7 +12,7 @@ import * as chartUtil from '@app/shared/util/chart.util';
     </prx-category-chart>
     <prx-indexed-chart *ngIf="chartData && chartData.length && isLineChart" type="line" [datasets]="chartData" [type]="chartType">
     </prx-indexed-chart>
-    <p *ngIf="chartData && chartData.length && isLineChart">Days since drop</p>
+    <p *ngIf="chartData && chartData.length && isLineChart">{{intervalLabel}} since drop</p>
   `,
   styleUrls: ['./dropday-chart-presentation.component.css']
 })
@@ -31,5 +32,18 @@ export class DropdayChartPresentationComponent {
   }
   get isLineChart() {
     return this.routerParams && this.routerParams.chartType === CHARTTYPE_EPISODES;
+  }
+
+  get intervalLabel(): string {
+    switch (this.routerParams.interval) {
+      case INTERVAL_HOURLY:
+        return 'Hours';
+      case INTERVAL_DAILY:
+        return 'Days';
+      case INTERVAL_WEEKLY:
+        return 'Weeks';
+      case INTERVAL_MONTHLY:
+        return 'Months';
+    }
   }
 }

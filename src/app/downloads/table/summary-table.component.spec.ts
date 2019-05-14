@@ -9,7 +9,7 @@ import { SummaryTableComponent } from './summary-table.component';
 
 import { podcast, episodes } from '@testing/downloads.fixtures';
 import { neutralColor, getColor } from '@app/shared/util/chart.util';
-import { CHARTTYPE_STACKED } from '@app/ngrx';
+import { CHARTTYPE_STACKED, METRICSTYPE_DOWNLOADS } from '@app/ngrx';
 
 describe('SummaryTableComponent', () => {
   let comp: SummaryTableComponent;
@@ -33,6 +33,7 @@ describe('SummaryTableComponent', () => {
       de = fix.debugElement;
       el = de.nativeElement;
 
+      comp.metricsType = METRICSTYPE_DOWNLOADS;
       comp.chartType = CHARTTYPE_STACKED;
       comp.podcastTableData = {
         title: 'All Episodes',

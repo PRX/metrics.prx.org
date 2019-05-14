@@ -16,6 +16,7 @@
 
   <div class="table-wrapper">
     <metrics-downloads-summary-table
+      [metricsType]="routerParams?.metricsType"
       [chartType]="routerParams?.chartType"
       [podcastTableData]="podcastTableData"
       [episodeTableData]="episodeTableData"

@@ -1,11 +1,13 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { DownloadsTableModel, ChartType, CHARTTYPE_STACKED, CHARTTYPE_PODCAST } from '@app/ngrx';
+import { DownloadsTableModel,
+  MetricsType, METRICSTYPE_DOWNLOADS,
+  ChartType, CHARTTYPE_STACKED, CHARTTYPE_PODCAST } from '@app/ngrx';
 import * as dateFormat from '@app/shared/util/date/date.format';
 
 @Component({
   selector: 'metrics-downloads-summary-table',
   template: `
-    <div class="header row">
+    <div class="header row" *ngIf="podcastTableData || (episodeTableData && episodeTableData.length)">
       <div>Episode</div>
       <div>Release Date</div>
       <div class="charted">Downloads</div>
@@ -38,7 +40,11 @@ import * as dateFormat from '@app/shared/util/date/date.format';
           <span [title]="episode.title">{{episode.title}}</span>
         </prx-checkbox>
         <ng-template #episodeTitle>
-          <button class="btn-link title" (click)="chartSingleEpisode.emit(episode.id)" [title]="episode.title">{{episode.title}}</button>
+          <button *ngIf="isDownloads; else plainTitle"
+            class="btn-link title" (click)="chartSingleEpisode.emit(episode.id)" [title]="episode.title">
+            {{episode.title}}
+          </button>
+          <ng-template #plainTitle><span class="title" [title]="episode.title">{{episode.title}}</span></ng-template>
         </ng-template>
         <!-- responsive table only ever shows title, no prx-checkbox or .btn-link -->
         <span class="mobile-label title">{{episode.title}}</span>
@@ -53,6 +59,7 @@ import * as dateFormat from '@app/shared/util/date/date.format';
   styleUrls: ['summary-table.component.css']
 })
 export class SummaryTableComponent {
+  @Input() metricsType: MetricsType;
   @Input() chartType: ChartType;
   @Input() podcastTableData: DownloadsTableModel;
   @Input() episodeTableData: DownloadsTableModel[];
@@ -64,11 +71,15 @@ export class SummaryTableComponent {
     return dateFormat.monthDateYear(date);
   }
 
+  get isDownloads(): boolean {
+    return this.metricsType === METRICSTYPE_DOWNLOADS;
+  }
+
   get showPodcastToggle(): boolean {
-    return this.chartType === CHARTTYPE_STACKED;
+    return this.isDownloads && this.chartType === CHARTTYPE_STACKED;
   }
 
   get showEpisodeToggles(): boolean {
-    return this.chartType !== CHARTTYPE_PODCAST;
+    return this.isDownloads && this.chartType !== CHARTTYPE_PODCAST;
   }
 }

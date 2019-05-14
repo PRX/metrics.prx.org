@@ -1,3 +1,6 @@
+:host {
+  flex-grow: 1;
+}
 .title {
   max-width: 100%;
   overflow: hidden;
@@ -23,14 +26,13 @@ prx-checkbox {
   border-top: 1px solid #ddd;
 }
 .row > * {
-  flex-basis: 30%;
-  padding: 0 20px;
+  flex-basis: 25%;
+  padding: 0 10px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 .row > div:first-child {
-  flex-basis: 200px;
   padding: 0 0 0 5px;
   font-size: 0.8em;
 }

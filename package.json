@@ -30,7 +30,7 @@
     "angulartics2": "^7.4.1",
     "core-js": "^2.4.1",
     "moment": "^2.18.1",
-    "ngx-prx-styleguide": "2.8.0",
+    "ngx-prx-styleguide": "2.11.3",
     "prx-ng-serve": "^1.0.0",
     "rxjs": "~6.4.0",
     "tinycolor2": "^1.4.1",

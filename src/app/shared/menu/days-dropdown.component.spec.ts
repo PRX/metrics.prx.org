@@ -8,7 +8,7 @@ import { METRICSTYPE_DROPDAY, INTERVAL_DAILY, INTERVAL_HOURLY } from '../../ngrx
 
 import { DaysDropdownComponent } from './days-dropdown.component';
 
-describe('IntervalDropdownComponent', () => {
+describe('DaysDropdownComponent', () => {
   let comp: DaysDropdownComponent;
   let fix: ComponentFixture<DaysDropdownComponent>;
   let de: DebugElement;

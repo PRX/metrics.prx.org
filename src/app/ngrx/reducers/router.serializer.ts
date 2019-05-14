@@ -28,20 +28,6 @@ export class CustomSerializer implements RouterStateSerializer<RouterParams> {
       if (urlParts.length >= 3 && urlParts[2]) {
         const metricsType = urlParts[2].split(';')[0];
         routerParams.metricsType = <MetricsType>metricsType;
-        // switch (metricsType) {
-        //   case METRICSTYPE_DOWNLOADS:
-        //     routerParams.metricsType = <MetricsType>METRICSTYPE_DOWNLOADS;
-        //     break;
-        //   case METRICSTYPE_DROPDAY:
-        //     routerParams.metricsType = <MetricsType>METRICSTYPE_DROPDAY;
-        //     break;
-        //   case METRICSTYPE_DEMOGRAPHICS:
-        //     routerParams.metricsType = <MetricsType>METRICSTYPE_DEMOGRAPHICS;
-        //     break;
-        //   case METRICSTYPE_TRAFFICSOURCES:
-        //     routerParams.metricsType = <MetricsType>METRICSTYPE_TRAFFICSOURCES;
-        //     break;
-        // }
       }
       if (params['group']) {
         routerParams.group = params['group'];

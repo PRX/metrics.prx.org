@@ -23,6 +23,7 @@ import { ExportDropdownComponent } from './menu/export/export-dropdown.component
 import { ExportGoogleSheetsComponent } from './menu/export/export-google-sheets.component';
 import { ExportGoogleSheetsService } from './menu/export/export-google-sheets.service';
 import { ChartTypeComponent } from './menu/chart-type.component';
+import { DaysDropdownComponent } from './menu/days-dropdown.component';
 import { IntervalDropdownComponent } from './menu/interval-dropdown.component';
 import { MetricsTypeHeadingComponent } from './menu/metrics-type-heading.component';
 import { MenuBarComponent } from './menu/menu-bar.component';
@@ -42,6 +43,7 @@ import { TotalsTableComponent } from './table/totals-table.component';
     ChartTypeComponent,
     CustomDateRangeDropdownComponent,
     DateRangeSummaryComponent,
+    DaysDropdownComponent,
     DownloadsSummaryComponent,
     EpisodePageComponent,
     EpisodeSearchComponent,

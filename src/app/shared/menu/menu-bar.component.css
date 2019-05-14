@@ -30,6 +30,7 @@
 
 metrics-chart-type {
   max-height: 38px;
+  margin-left: auto;
 }
 
 metrics-standard-date-range-dropdown {

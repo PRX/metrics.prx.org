@@ -13,6 +13,7 @@ import { MetricsTypeHeadingComponent } from './metrics-type-heading.component';
 import { ChartTypeComponent } from './chart-type.component';
 import { CustomDateRangeDropdownComponent } from './date/custom-date-range-dropdown.component';
 import { DateRangeSummaryComponent } from './date/date-range-summary.component';
+import { DaysDropdownComponent } from './days-dropdown.component';
 import { IntervalDropdownComponent } from './interval-dropdown.component';
 import { StandardDateRangeDropdownComponent } from './date/standard-date-range-dropdown.component';
 import { StandardDateRangeComponent } from './date/standard-date-range.component';
@@ -48,6 +49,7 @@ describe('MenuBarComponent', () => {
         ChartTypeComponent,
         CustomDateRangeDropdownComponent,
         DateRangeSummaryComponent,
+        DaysDropdownComponent,
         DownloadsSummaryComponent,
         EpisodeSelectComponent,
         EpisodeSelectDropdownButtonComponent,

@@ -1,4 +1,5 @@
-import { MetricsType, METRICSTYPE_DEMOGRAPHICS, METRICSTYPE_DOWNLOADS, METRICSTYPE_TRAFFICSOURCES } from './metrics.type';
+import { MetricsType,
+  METRICSTYPE_DEMOGRAPHICS, METRICSTYPE_DOWNLOADS, METRICSTYPE_DROPDAY, METRICSTYPE_TRAFFICSOURCES } from './metrics.type';
 
 export const GROUPTYPE_AGENTNAME = 'agentname';
 export const GROUPTYPE_AGENTOS = 'agentos';
@@ -12,6 +13,8 @@ export const getGroupName = (metricsType: MetricsType, group: GroupType) => {
   switch (metricsType) {
     case METRICSTYPE_DOWNLOADS:
       return 'Downloads';
+    case METRICSTYPE_DROPDAY:
+      return 'Drop Day';
     case METRICSTYPE_DEMOGRAPHICS:
       switch (group) {
         case GROUPTYPE_GEOCOUNTRY:

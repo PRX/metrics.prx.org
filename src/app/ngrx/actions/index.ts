@@ -46,7 +46,7 @@ import { CustomRouterNavigationAction,
   RoutePodcastAction, RouteEpisodePageAction,
   RouteChartTypeAction, RouteIntervalAction,
   RouteStandardRangeAction, RouteAdvancedRangeAction,
-  RouteMetricsGroupTypeAction, RouteGroupFilterAction } from './router.action.creator';
+  RouteMetricsGroupTypeAction, RouteGroupFilterAction, RouteDaysAction } from './router.action.creator';
 import {
   ChartSingleEpisodeAction,
   ChartToggleEpisodeAction,
@@ -104,6 +104,7 @@ export type AllActions
   | RouteAdvancedRangeAction
   | RouteMetricsGroupTypeAction
   | RouteGroupFilterAction
+  | RouteDaysAction
   | ChartSingleEpisodeAction
   | ChartToggleEpisodeAction
   | ChartTogglePodcastAction
@@ -161,7 +162,8 @@ export { CustomRouterNavigationPayload, CustomRouterNavigationAction,
   RouteAdvancedRangePayload, RouteAdvancedRangeAction,
   RouteStandardRangePayload, RouteStandardRangeAction,
   RouteMetricsGroupTypePayload, RouteMetricsGroupTypeAction,
-  RouteGroupFilterPayload, RouteGroupFilterAction } from './router.action.creator';
+  RouteGroupFilterPayload, RouteGroupFilterAction,
+  RouteDaysPayload, RouteDaysAction } from './router.action.creator';
 export { ChartSingleEpisodePayload, ChartSingleEpisodeAction,
   ChartToggleEpisodePayload, ChartToggleEpisodeAction,
   ChartTogglePodcastPayload, ChartTogglePodcastAction,

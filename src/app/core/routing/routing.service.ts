@@ -14,7 +14,9 @@ import {
   CHARTTYPE_LINE,
   CHARTTYPE_HORIZBAR,
   CHARTTYPE_GEOCHART,
+  CHARTTYPE_STACKED,
   INTERVAL_DAILY,
+  INTERVAL_HOURLY,
   METRICSTYPE_DEMOGRAPHICS,
   METRICSTYPE_DOWNLOADS,
   METRICSTYPE_TRAFFICSOURCES,
@@ -265,7 +267,7 @@ export class RoutingService {
       case METRICSTYPE_DROPDAY:
         if (!routerParams.chartType || routerParams.chartType === CHARTTYPE_PODCAST || routerParams.chartType === CHARTTYPE_GEOCHART) {
           routerParams.chartType = <ChartType>CHARTTYPE_HORIZBAR;
-        } else if (routerParams.chartType === <ChartType>CHARTTYPE_LINE) {
+        } else if (routerParams.chartType === <ChartType>CHARTTYPE_LINE || routerParams.chartType === <ChartType>CHARTTYPE_STACKED) {
           routerParams.chartType = CHARTTYPE_EPISODES;
         }
         break;
@@ -309,6 +311,9 @@ export class RoutingService {
     if (routerParams.metricsType === METRICSTYPE_DROPDAY) {
       if (!routerParams.days) {
         routerParams.days = 28;
+      }
+      if (routerParams.interval === INTERVAL_HOURLY && routerParams.days > 7) {
+        routerParams.days = 7;
       }
     } else {
       if (!routerParams.standardRange) {

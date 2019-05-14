@@ -13,6 +13,7 @@ import * as fromEpisodeAllTimeDownloads from './episode-alltime-downloads.reduce
 import * as fromEpisodeRanks from './episode-ranks.reducer';
 import * as fromEpisodeTotals from './episode-totals.reducer';
 import * as fromEpisodeDownloads from './episode-downloads.reducer';
+import * as fromEpisodeDropday from './episode-dropday.reducer';
 import { CustomRouterReducer } from './router.reducer';
 import { RouterParams } from './models';
 
@@ -32,6 +33,7 @@ export interface RootState {
   episodeDownloads: fromEpisodeDownloads.State;
   episodeRanks: fromEpisodeRanks.State;
   episodeTotals: fromEpisodeTotals.State;
+  episodeDropday: fromEpisodeDropday.State;
 }
 
 // TypeScript is complaining about this ActionReducerMap again, not sure why ugh
@@ -51,6 +53,7 @@ export const reducers: ActionReducerMap<RootState> = {
   episodeDownloads: fromEpisodeDownloads.reducer,
   episodeRanks: fromEpisodeRanks.reducer,
   episodeTotals: fromEpisodeTotals.reducer,
+  episodeDropday: fromEpisodeDropday.reducer,
 };
 
 export { CustomSerializer } from './router.serializer';

@@ -1,0 +1,13 @@
+:host {
+  display: block;
+  background-color: white;
+}
+
+/* don't display more than two lines of text on category chart labels (episode names) */
+prx-category-chart >>> .tick text tspan:nth-child(n + 3) {
+  display: none;
+}
+
+p {
+  text-align: right;
+}

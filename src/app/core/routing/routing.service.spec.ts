@@ -49,6 +49,7 @@ describe('RoutingService', () => {
       imports: [
         RouterTestingModule.withRoutes([
           { path: ':podcastId/reach/:chartType/:interval', component: TestComponent },
+          { path: ':podcastId/dropday/:chartType/:interval', component: TestComponent },
           { path: ':podcastId/demographics/:group/:chartType/:interval', component: TestComponent }
         ]),
         StoreModule.forRoot(reducers)

@@ -44,6 +44,9 @@ export function CustomRouterReducer(state: RouterParams = initialState, action: 
       if (action.payload.routerParams.endDate) {
         newState.endDate = action.payload.routerParams.endDate;
       }
+      if (action.payload.routerParams.days) {
+        newState.days = action.payload.routerParams.days;
+      }
       return newState;
     default:
       return state;

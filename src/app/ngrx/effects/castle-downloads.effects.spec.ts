@@ -8,7 +8,7 @@ import { getActions, TestActions } from './test.actions';
 import { HalService, MockHalService } from 'ngx-prx-styleguide';
 import { CastleService } from '../../core';
 
-import { INTERVAL_DAILY, EPISODE_PAGE_SIZE } from '../';
+import { INTERVAL_DAILY, EPISODE_PAGE_SIZE, METRICSTYPE_DROPDAY } from '../';
 import { reducers } from '../../ngrx/reducers';
 import * as ACTIONS from '../actions';
 import { CastleDownloadsEffects } from './castle-downloads.effects';
@@ -20,6 +20,7 @@ import {
   podDownloads,
   ep0Downloads
 } from '../../../testing/downloads.fixtures';
+import * as dateUtil from '../../shared/util/date';
 
 describe('CastleDownloadsEffects', () => {
   let effects: CastleDownloadsEffects;
@@ -279,7 +280,7 @@ describe('CastleDownloadsEffects', () => {
       // When multiple events need to be in the same frame synchronously, parentheses are used to group those events.
       // eg '-(-0-1)' events '0' and '1' will both be in frame 10
       const expected = cold(`-(${completionString.join('')})`, completion);
-      expect(effects.loadRoutedMetrics$).toBeObservable(expected);
+      expect(effects.loadRoutedDownloads$).toBeObservable(expected);
 
       expect(store.dispatch).toHaveBeenCalledWith(
         new ACTIONS.CastlePodcastDownloadsLoadAction({
@@ -294,6 +295,58 @@ describe('CastleDownloadsEffects', () => {
           new ACTIONS.CastleEpisodeAllTimeDownloadsLoadAction({ podcastId: e.podcastId, guid: e.guid })
         );
       });
+    });
+
+    it('should load dropday downloads on episode page success', () => {
+      store.dispatch(new ACTIONS.CustomRouterNavigationAction({
+        routerParams: {...routerParams, metricsType: METRICSTYPE_DROPDAY, days: 28}
+      }));
+      jest.spyOn(store, 'dispatch');
+      const action = new ACTIONS.CastleEpisodePageSuccessAction({
+        episodes,
+        page: routerParams.episodePage,
+        per: EPISODE_PAGE_SIZE,
+        total: episodes.length
+      });
+      const episodeMetricsActions = episodes.map(e => {
+        return new ACTIONS.CastleEpisodeDropdayLoadAction({
+          podcastId: e.podcastId,
+          guid: e.guid,
+          interval: routerParams.interval,
+          publishedAt: e.publishedAt,
+          days: 28
+        });
+      });
+      const completionString = new Array(1 + (episodes.length * 2)).fill('').map((e, i) => `-${i}`).join('');
+      const completion = {};
+      // create an object with indices (toString) as keys to each action for marble mapping
+      [
+        new ACTIONS.EpisodeSelectEpisodesAction({episodeGuids: episodes.map(e => e.guid)}),
+        ...episodes.map(e => {
+          return new ACTIONS.CastleEpisodeAllTimeDownloadsLoadAction({
+            podcastId: e.podcastId,
+            guid: e.guid
+          });
+        }),
+        ...episodes.map(e => {
+          return new ACTIONS.CastleEpisodeDropdayLoadAction({
+            podcastId: e.podcastId,
+            guid: e.guid,
+            interval: routerParams.interval,
+            publishedAt: e.publishedAt,
+            days: 28
+          });
+        })
+      ].forEach((a, i) => {
+        completion[i.toString()] = a;
+      });
+
+      actions$.stream = hot('-a--', { a: action });
+      // Marble syntax: '()' to sync groupings
+      // When multiple events need to be in the same frame synchronously, parentheses are used to group those events.
+      // eg '-(-0-1)' events '0' and '1' will both be in frame 10
+      const expected = cold(`-(${completionString})`, completion);
+      expect(effects.loadRoutedDropday$).toBeObservable(expected);
     });
 
   });

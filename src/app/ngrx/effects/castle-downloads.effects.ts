@@ -6,18 +6,18 @@ import { Action, Store, select } from '@ngrx/store';
 
 import * as ACTIONS from '../actions';
 import { selectRouter } from '../reducers/selectors';
-import { CastleService } from '../../core';
-import { Episode, RouterParams, METRICSTYPE_DOWNLOADS } from '../';
-import * as dateUtil from '../../shared/util/date';
+import { CastleService } from '@app/core';
+import { Episode, RouterParams, METRICSTYPE_DOWNLOADS, METRICSTYPE_DROPDAY } from '../';
+import * as dateUtil from '@app/shared/util/date';
 
 @Injectable()
 export class CastleDownloadsEffects {
   routerParams: RouterParams;
 
-  // whenever an episode page is loaded that is the currently routed page,
-  // call the load actions for podcast and episode metrics
+  // DOWNLOADS: whenever an episode page is loaded that is the currently routed page,
+  // call the load actions for podcast and episode downloads
   @Effect()
-  loadRoutedMetrics$ = this.actions$.pipe(
+  loadRoutedDownloads$ = this.actions$.pipe(
     ofType(ACTIONS.ActionTypes.CASTLE_EPISODE_PAGE_SUCCESS),
     filter((action: ACTIONS.CastleEpisodePageSuccessAction) => {
       const { page, episodes } = action.payload;
@@ -48,6 +48,42 @@ export class CastleDownloadsEffects {
           endDate: this.routerParams.endDate
         });
       });
+    })
+  );
+
+  // DROPDAY: when a page 1 of episodes is loaded
+  // call the load actions for episode dropday
+  // and dispatch action to select the episodes
+  // (pairs with routing.service loadEpisodes on route change)
+  @Effect()
+  loadRoutedDropday$ = this.actions$.pipe(
+    ofType(ACTIONS.ActionTypes.CASTLE_EPISODE_PAGE_SUCCESS),
+    filter((action: ACTIONS.CastleEpisodePageSuccessAction) => {
+      const { page, episodes } = action.payload;
+      return this.routerParams.metricsType === METRICSTYPE_DROPDAY &&
+        episodes && episodes.length && page === 1;
+    }),
+    map((action: ACTIONS.CastleEpisodePageSuccessAction) => action.payload),
+    mergeMap((payload: ACTIONS.CastleEpisodePageSuccessPayload) => {
+      const { episodes } = payload;
+      return [
+        new ACTIONS.EpisodeSelectEpisodesAction({episodeGuids: episodes.map(e => e.guid)}),
+        ...episodes.map((episode: Episode) => {
+          return new ACTIONS.CastleEpisodeAllTimeDownloadsLoadAction({
+            podcastId: episode.podcastId,
+            guid: episode.guid
+          });
+        }),
+        ...episodes.map((episode: Episode) => {
+          return new ACTIONS.CastleEpisodeDropdayLoadAction({
+            podcastId: episode.podcastId,
+            guid: episode.guid,
+            interval: this.routerParams.interval,
+            publishedAt: episode.publishedAt,
+            days: this.routerParams.days
+          });
+        })
+      ];
     })
   );
 
@@ -166,11 +202,12 @@ export class CastleDownloadsEffects {
     map((action: ACTIONS.CastleEpisodeDropdayLoadAction) => action.payload),
     mergeMap((payload: ACTIONS.CastleEpisodeDropdayLoadPayload) => {
       const { podcastId, guid, interval, publishedAt: from, days } = payload;
-      const to = dateUtil.addDays(from, days - 1); // day0 + (days - 1) = days
+      const daysPublished = Math.ceil((new Date().valueOf() - from.valueOf()) / (1000 * 60 * 60 * 24));
+      const to = dateUtil.addDays(from, Math.min(days, daysPublished) - 1); // day0 + (days - 1) = days
       return this.castle.followList('prx:episode-downloads', {
         guid,
-        from: from.toISOString(),
-        to: to.toISOString(),
+        from: dateUtil.ISODateBeginHour(from),
+        to: dateUtil.ISODateEndDay(to),
         interval: interval.value
       }).pipe(
         map(results => {

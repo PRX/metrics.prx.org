@@ -3,10 +3,10 @@ import { StoreModule, Store, select } from '@ngrx/store';
 
 import { RootState, reducers } from '..';
 import { METRICSTYPE_DROPDAY, CHARTTYPE_HORIZBAR, DownloadsTableModel } from '../models';
-import { getTotal } from '../../../shared/util/metrics.util';
-import * as dispatchHelper from '../../../../testing/dispatch.helpers';
+import { getTotal } from '@app/shared/util/metrics.util';
+import * as dispatchHelper from '@testing/dispatch.helpers';
 import { routerParams, episodes,
-  ep0Downloads, ep1Downloads, ep0AllTimeDownloads, ep1AllTimeDownloads } from '../../../../testing/downloads.fixtures';
+  ep0Downloads, ep1Downloads, ep0AllTimeDownloads, ep1AllTimeDownloads } from '@testing/downloads.fixtures';
 import { selectDropdayTableMetrics } from './dropday-table.selectors';
 
 describe('Dropday Table Selectors', () => {

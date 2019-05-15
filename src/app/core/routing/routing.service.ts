@@ -3,11 +3,10 @@ import { Router, RoutesRecognized } from '@angular/router';
 import { filter } from 'rxjs/operators';
 import { Store, select } from '@ngrx/store';
 import { selectRoutedPageEpisodes, selectRouter,
-  selectRoutedPodcastSelectedEpisodes, selectUserAuthorized } from '../../ngrx/reducers/selectors/';
+  selectRoutedPodcastSelectedEpisodes, selectUserAuthorized } from '@app/ngrx/reducers/selectors/';
 import {
   RouterParams,
   Episode,
-  MetricsType,
   CHARTTYPE_PODCAST,
   CHARTTYPE_EPISODES,
   CHARTTYPE_LINE,
@@ -28,10 +27,10 @@ import {
   EPISODE_PAGE_SIZE,
   EPISODE_SELECT_PAGE_SIZE,
   METRICSTYPE_DROPDAY
-} from '../../ngrx/';
-import * as localStorageUtil from '../../shared/util/local-storage.util';
-import * as dateUtil from '../../shared/util/date/';
-import * as ACTIONS from '../../ngrx/actions/';
+} from '@app/ngrx/';
+import * as localStorageUtil from '@app/shared/util/local-storage.util';
+import * as dateUtil from '@app/shared/util/date/';
+import * as ACTIONS from '@app/ngrx/actions/';
 
 @Injectable()
 export class RoutingService {

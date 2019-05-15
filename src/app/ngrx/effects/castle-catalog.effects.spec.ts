@@ -12,14 +12,14 @@ import { PODCAST_PAGE_SIZE, EPISODE_PAGE_SIZE, EPISODE_SELECT_PAGE_SIZE } from '
 import { reducers } from '../reducers';
 import * as ACTIONS from '../actions';
 import { CastleCatalogEffects } from './castle-catalog.effects';
-import * as localStorageUtil from '../../shared/util/local-storage.util';
+import * as localStorageUtil from '@app/shared/util/local-storage.util';
 
 import {
   userinfo,
   routerParams,
   podcast,
   episodes
-} from '../../../testing/downloads.fixtures';
+} from '@testing/downloads.fixtures';
 
 describe('CastleCatalogEffects', () => {
   let effects: CastleCatalogEffects;

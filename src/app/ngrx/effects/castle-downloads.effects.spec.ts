@@ -6,10 +6,10 @@ import { EffectsModule } from '@ngrx/effects';
 import { getActions, TestActions } from './test.actions';
 
 import { HalService, MockHalService } from 'ngx-prx-styleguide';
-import { CastleService } from '../../core';
+import { CastleService } from '@app/core';
 
 import { INTERVAL_DAILY, EPISODE_PAGE_SIZE, METRICSTYPE_DROPDAY } from '../';
-import { reducers } from '../../ngrx/reducers';
+import { reducers } from '../reducers';
 import * as ACTIONS from '../actions';
 import { CastleDownloadsEffects } from './castle-downloads.effects';
 
@@ -20,7 +20,6 @@ import {
   podDownloads,
   ep0Downloads
 } from '../../../testing/downloads.fixtures';
-import * as dateUtil from '../../shared/util/date';
 
 describe('CastleDownloadsEffects', () => {
   let effects: CastleDownloadsEffects;

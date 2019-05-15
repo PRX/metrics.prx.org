@@ -1,15 +1,15 @@
 import { Actions } from '@ngrx/effects';
 import { TestBed, async } from '@angular/core/testing';
 import { cold, hot } from 'jasmine-marbles';
-import { StoreModule, Store } from '@ngrx/store';
+import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
 import { getActions, TestActions } from './test.actions';
 
 import { HalService, MockHalService } from 'ngx-prx-styleguide';
-import { CastleService } from '../../core';
+import { CastleService } from '@app/core';
 
 import { INTERVAL_DAILY, GROUPTYPE_AGENTNAME } from '../';
-import { reducers } from '../../ngrx/reducers';
+import { reducers } from '../reducers';
 import * as ACTIONS from '../actions';
 import { CastleRanksTotalsEffects } from './castle-ranks-totals.effects';
 
@@ -21,7 +21,7 @@ import {
   podcastAgentNameDownloads,
   ep0AgentNameRanks,
   ep0AgentNameDownloads
-} from '../../../testing/downloads.fixtures';
+} from '@testing/downloads.fixtures';
 
 describe('CastleRanksTotalsEffects', () => {
   let effects: CastleRanksTotalsEffects;

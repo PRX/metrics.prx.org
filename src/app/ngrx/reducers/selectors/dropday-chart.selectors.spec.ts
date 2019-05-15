@@ -3,10 +3,10 @@ import { StoreModule, Store, select } from '@ngrx/store';
 
 import { RootState, reducers } from '../';
 import { CHARTTYPE_EPISODES, METRICSTYPE_DROPDAY, CHARTTYPE_HORIZBAR } from '../models';
-import { getTotal } from '../../../shared/util/metrics.util';
+import { getTotal } from '@app/shared/util/metrics.util';
 import { CategoryChartModel, IndexedChartModel } from 'ngx-prx-styleguide';
-import * as dispatchHelper from '../../../../testing/dispatch.helpers';
-import { routerParams, episodes, ep0Downloads, ep1Downloads } from '../../../../testing/downloads.fixtures';
+import * as dispatchHelper from '@testing/dispatch.helpers';
+import { routerParams, episodes, ep0Downloads, ep1Downloads } from '@testing/downloads.fixtures';
 import { selectDropdayChartMetrics } from './dropday-chart.selectors';
 
 describe('Dropday Chart Selectors', () => {

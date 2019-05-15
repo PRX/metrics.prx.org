@@ -7,7 +7,7 @@ import { selectChartTypeRoute } from './router.selectors';
 import { selectRoutedPodcastSelectedEpisodes } from './episode-select.selectors';
 import { selectEpisodeDropdayEntities } from './episode-dropday.selectors';
 import { getTotal } from '@app/shared/util/metrics.util';
-import { getColor, uniqueEpisodeLabel } from '../../../shared/util/chart.util';
+import { getColor, uniqueEpisodeLabel } from '@app/shared/util/chart.util';
 
 export const selectDropdayChartMetrics = createSelector(
   selectRoutedPodcastSelectedEpisodes,

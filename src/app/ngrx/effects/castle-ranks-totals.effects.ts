@@ -5,7 +5,7 @@ import { Actions, Effect, ofType } from '@ngrx/effects';
 import { Action } from '@ngrx/store';
 
 import * as ACTIONS from '../actions';
-import { CastleService } from '../../core';
+import { CastleService } from '@app/core';
 import { GROUPTYPE_GEOSUBDIV } from '../';
 
 @Injectable()

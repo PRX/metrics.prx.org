@@ -13,15 +13,15 @@ import {
   CHARTTYPE_EPISODES,
   INTERVAL_HOURLY,
   METRICSTYPE_DOWNLOADS,
+  METRICSTYPE_DROPDAY,
   User
 } from '../';
 import { reducers } from '../reducers';
 import * as ACTIONS from '../actions';
 import { RoutingEffects } from './routing.effects';
-import { RoutingService } from '../../core/routing/routing.service';
-import * as dateUtil from '../../shared/util/date';
-import { routerParams, userinfo } from '../../../testing/downloads.fixtures';
-import { METRICSTYPE_DROPDAY } from '../reducers/models';
+import { RoutingService } from '@app/core/routing/routing.service';
+import * as dateUtil from '@app/shared/util/date';
+import { routerParams, userinfo } from '@testing/downloads.fixtures';
 
 @Component({
   selector: 'metrics-test-component',

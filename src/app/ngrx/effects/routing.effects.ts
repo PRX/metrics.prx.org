@@ -6,8 +6,8 @@ import { ROUTER_NAVIGATION, RouterNavigationAction, RouterNavigationPayload } fr
 import { Actions, Effect, ofType } from '@ngrx/effects';
 import { ActionTypes } from '../actions';
 import * as ACTIONS from '../actions';
-import * as dateUtil from '../../shared/util/date';
-import { RoutingService } from '../../core/routing/routing.service';
+import * as dateUtil from '@app/shared/util/date';
+import { RoutingService } from '@app/core/routing/routing.service';
 
 @Injectable()
 export class RoutingEffects {

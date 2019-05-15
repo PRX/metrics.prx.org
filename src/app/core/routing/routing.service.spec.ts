@@ -5,8 +5,8 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { filter } from 'rxjs/operators';
 import { RoutingService } from './routing.service';
 import { StoreModule, Store } from '@ngrx/store';
-import { reducers } from '../../ngrx/reducers';
-import * as ACTIONS from '../../ngrx/actions';
+import { reducers } from '@app/ngrx/reducers';
+import * as ACTIONS from '@app/ngrx/actions';
 import {
   GroupType,
   GROUPTYPE_GEOCOUNTRY,
@@ -28,10 +28,10 @@ import {
   CHARTTYPE_LINE,
   CHARTTYPE_GEOCHART,
   EPISODE_PAGE_SIZE
-} from '../../ngrx/';
-import * as dateUtil from '../../shared/util/date/date.util';
-import * as localStorageUtil from '../../shared/util/local-storage.util';
-import { userinfo, routerParams, episodes } from '../../../testing/downloads.fixtures';
+} from '@app/ngrx/';
+import * as dateUtil from '@app/shared/util/date/date.util';
+import * as localStorageUtil from '@app/shared/util/local-storage.util';
+import { userinfo, routerParams, episodes } from '@testing/downloads.fixtures';
 
 @Component({
   selector: 'metrics-test-component',

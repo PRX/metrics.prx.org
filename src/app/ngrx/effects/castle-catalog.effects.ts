@@ -6,13 +6,12 @@ import { Action, Store, select } from '@ngrx/store';
 
 import * as ACTIONS from '../actions';
 import { selectRouter } from '../reducers/selectors';
-import { HalDoc } from '../../core';
-import { CastleService } from '../../core';
+import { HalDoc, CastleService } from '@app/core';
 import {
   Episode, RouterParams,
   PODCAST_PAGE_SIZE
 } from '..';
-import * as localStorageUtil from '../../shared/util/local-storage.util';
+import * as localStorageUtil from '@app/shared/util/local-storage.util';
 
 @Injectable()
 export class CastleCatalogEffects {

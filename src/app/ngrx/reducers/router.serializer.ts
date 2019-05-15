@@ -1,11 +1,9 @@
 import { ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 import { RouterStateSerializer } from '@ngrx/router-store';
 
-import { RouterParams, IntervalList,
-  METRICSTYPE_DEMOGRAPHICS, METRICSTYPE_DOWNLOADS, METRICSTYPE_TRAFFICSOURCES, MetricsType } from './models';
+import { RouterParams, IntervalList, MetricsType } from './models';
 
-import { getBeginEndDateFromStandardRange, getStandardRangeForBeginEndDate } from '../../shared/util/date/date.util';
-import { METRICSTYPE_DROPDAY } from './models/metrics.type';
+import { getBeginEndDateFromStandardRange, getStandardRangeForBeginEndDate } from '@app/shared/util/date/date.util';
 
 // serialize the route snapshot to our custom RouterParams
 export class CustomSerializer implements RouterStateSerializer<RouterParams> {

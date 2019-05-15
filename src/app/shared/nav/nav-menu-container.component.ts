@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { select, Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
-import { selectRouter } from '../../ngrx/reducers/selectors';
+import { selectRouter } from '@app/ngrx/reducers/selectors';
 import {GroupType, MetricsType, RouterParams} from '../../ngrx';
-import * as ACTIONS from '../../ngrx/actions';
+import * as ACTIONS from '@app/ngrx/actions';
 
 @Component({
   selector: 'metrics-nav-menu',

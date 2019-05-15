@@ -10,10 +10,10 @@ import { EpisodeSelectListComponent } from './episode-select-list.component';
 import { EpisodeSelectListVisibilityComponent } from './episode-select-list-visibility.component';
 import { FancyFormModule, SpinnerModule } from 'ngx-prx-styleguide';
 
-import { episodes, routerParams } from '../../../../testing/downloads.fixtures';
-import { EPISODE_SELECT_PAGE_SIZE } from '../../../ngrx';
-import * as ACTIONS from '../../../ngrx/actions';
-import { reducers } from '../../../ngrx/reducers';
+import { episodes, routerParams } from '@testing/downloads.fixtures';
+import { EPISODE_SELECT_PAGE_SIZE } from '@app/ngrx';
+import * as ACTIONS from '@app/ngrx/actions';
+import { reducers } from '@app/ngrx/reducers';
 
 describe('EpisodeSelectDropdownContentComponent', () => {
   let comp: EpisodeSelectDropdownContentComponent;

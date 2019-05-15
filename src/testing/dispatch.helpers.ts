@@ -1,8 +1,8 @@
 import { Store } from '@ngrx/store';
 import * as fixtures from './downloads.fixtures';
 import { RouterParams, Podcast, Episode, EPISODE_PAGE_SIZE,
-  GroupType, GROUPTYPE_GEOCOUNTRY, GROUPTYPE_AGENTNAME, IntervalModel } from '../app/ngrx';
-import * as ACTIONS from '../app/ngrx/actions';
+  GroupType, GROUPTYPE_GEOCOUNTRY, GROUPTYPE_AGENTNAME, IntervalModel } from '@app/ngrx';
+import * as ACTIONS from '@app/ngrx/actions';
 
 
 export const dispatchRouterNavigation = (store: Store<any>, routerParams?: RouterParams) => {

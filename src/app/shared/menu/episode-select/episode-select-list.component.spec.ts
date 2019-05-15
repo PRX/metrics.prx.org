@@ -5,7 +5,7 @@ import { By } from '@angular/platform-browser';
 import { EpisodeSelectListComponent } from './episode-select-list.component';
 import { FancyFormModule, SpinnerModule } from 'ngx-prx-styleguide';
 
-import { episodes } from '../../../../testing/downloads.fixtures';
+import { episodes } from '@testing/downloads.fixtures';
 
 describe('EpisodeSelectListComponent', () => {
   let comp: EpisodeSelectListComponent;

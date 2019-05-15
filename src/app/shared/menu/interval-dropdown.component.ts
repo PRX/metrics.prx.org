@@ -4,8 +4,8 @@ import {
   RouterParams, IntervalModel,
   INTERVAL_MONTHLY, INTERVAL_WEEKLY, INTERVAL_DAILY, INTERVAL_HOURLY,
   METRICSTYPE_DOWNLOADS, METRICSTYPE_DROPDAY, METRICSTYPE_DEMOGRAPHICS, METRICSTYPE_TRAFFICSOURCES
-} from '../../ngrx';
-import { RouteIntervalAction } from '../../ngrx/actions';
+} from '@app/ngrx';
+import { RouteIntervalAction } from '@app/ngrx/actions';
 import * as dateUtil from '../util/date';
 
 @Component({

@@ -8,7 +8,7 @@ import { selectSelectedEpisodeGuids } from './episode-select.selectors';
 import { selectRoutedPodcastDownloads } from './podcast-downloads.selectors';
 import { selectRoutedEpisodePageDownloads } from './episode-downloads.selectors';
 import { mapMetricsToTimeseriesData, subtractTimeseriesDatasets, getTotal,
-  neutralColor, standardColor, getColor, uniqueEpisodeLabel } from '../../../shared/util/chart.util';
+  neutralColor, standardColor, getColor, uniqueEpisodeLabel } from '@app/shared/util/chart.util';
 
 export const podcastDownloadMetrics = (podcastDownloads: PodcastDownloads): {label: string, data: any[][]} => {
   if (podcastDownloads && podcastDownloads.downloads) {

@@ -1,7 +1,7 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { Episode, EPISODE_SELECT_PAGE_SIZE, RouterParams, GROUPTYPE_GEOSUBDIV, METRICSTYPE_DROPDAY } from '../../../ngrx';
-import * as ACTIONS from '../../../ngrx/actions';
+import { Episode, EPISODE_SELECT_PAGE_SIZE, RouterParams, GROUPTYPE_GEOSUBDIV, METRICSTYPE_DROPDAY } from '@app/ngrx';
+import * as ACTIONS from '@app/ngrx/actions';
 
 @Component({
   selector: 'metrics-episode-select-dropdown-content',

@@ -2,9 +2,9 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { StoreModule, Store } from '@ngrx/store';
 import { DebugElement } from '@angular/core';
 
-import { reducers } from '../../ngrx/reducers';
-import { RouteIntervalAction } from '../../ngrx/actions';
-import { INTERVAL_DAILY, INTERVAL_WEEKLY, METRICSTYPE_DOWNLOADS } from '../../ngrx';
+import { reducers } from '@app/ngrx/reducers';
+import { RouteIntervalAction } from '@app/ngrx/actions';
+import { INTERVAL_DAILY, INTERVAL_WEEKLY, METRICSTYPE_DOWNLOADS } from '@app/ngrx';
 import * as dateUtil from '../util/date';
 
 import { IntervalDropdownComponent } from './interval-dropdown.component';

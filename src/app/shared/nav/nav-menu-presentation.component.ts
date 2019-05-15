@@ -3,7 +3,7 @@ import {
   RouterParams, GroupType, getGroupName,
   MetricsType, METRICSTYPE_DOWNLOADS, METRICSTYPE_DROPDAY, METRICSTYPE_TRAFFICSOURCES, METRICSTYPE_DEMOGRAPHICS,
   GROUPTYPE_AGENTOS, GROUPTYPE_AGENTTYPE, GROUPTYPE_AGENTNAME, GROUPTYPE_GEOCOUNTRY, GROUPTYPE_GEOMETRO,
-} from '../../ngrx/';
+} from '@app/ngrx/';
 
 @Component({
   selector: 'metrics-nav-menu-presentation',

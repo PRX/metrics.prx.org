@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Store, select } from '@ngrx/store';
 import { Observable } from 'rxjs';
-import { selectEpisodeSelectTotal, selectSelectedEpisodeGuids } from '../../../ngrx/reducers/selectors';
+import { selectEpisodeSelectTotal, selectSelectedEpisodeGuids } from '@app/ngrx/reducers/selectors';
 import { EpisodeSelectDropdownService } from './episode-select-dropdown.service';
 
 @Component({

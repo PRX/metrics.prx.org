@@ -1,5 +1,5 @@
 import { Component, Input, Output, EventEmitter, OnInit, ElementRef, Renderer2 } from '@angular/core';
-import { Episode } from '../../../ngrx';
+import { Episode } from '@app/ngrx';
 
 @Component({
   selector: 'metrics-episode-select-list',

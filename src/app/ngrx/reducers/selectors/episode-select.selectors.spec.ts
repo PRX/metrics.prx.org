@@ -5,7 +5,7 @@ import { selectNumEpisodeSelectPages, selectRoutedPodcastEpisodesSelectList } fr
 import { RootState, reducers } from '../';
 import { EPISODE_SELECT_PAGE_SIZE, Episode } from '../models';
 import * as ACTIONS from '../../actions';
-import { routerParams, episodes } from '../../../../testing/downloads.fixtures';
+import { routerParams, episodes } from '@testing/downloads.fixtures';
 
 describe('Episode Select List Selectors', () => {
   let store: Store<RootState>;

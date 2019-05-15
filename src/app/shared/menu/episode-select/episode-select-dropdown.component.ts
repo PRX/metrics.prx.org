@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { Store, select } from '@ngrx/store';
 import { Observable } from 'rxjs';
-import { Episode, RouterParams } from '../../../ngrx';
+import { Episode, RouterParams } from '@app/ngrx';
 import { selectRoutedPodcastEpisodesSelectList, selectEpisodeSelectLoading,
   selectSelectedEpisodeGuids, selectEpisodeSelectTotal,
   selectLatestEpisodeSelectPage, selectNumEpisodeSelectPages,
-  selectEpisodeSelectSearchTerm, selectEpisodeSelectSearchTotal, selectRouter } from '../../../ngrx/reducers/selectors';
+  selectEpisodeSelectSearchTerm, selectEpisodeSelectSearchTotal, selectRouter } from '@app/ngrx/reducers/selectors';
 import { EpisodeSelectDropdownService } from './episode-select-dropdown.service';
 
 @Component({

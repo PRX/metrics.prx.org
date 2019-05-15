@@ -1,13 +1,13 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { Component, DebugElement } from '@angular/core';
+import { DebugElement } from '@angular/core';
 
 import {
   RouterParams, ChartType, MetricsType, GroupType,
   CHARTTYPE_PODCAST, INTERVAL_DAILY,
   METRICSTYPE_DOWNLOADS, METRICSTYPE_DEMOGRAPHICS, METRICSTYPE_TRAFFICSOURCES,
   GROUPTYPE_AGENTOS, GROUPTYPE_GEOCOUNTRY
-} from '../../ngrx';
+} from '@app/ngrx';
 
 import { NavMenuPresentationComponent } from './nav-menu-presentation.component';
 

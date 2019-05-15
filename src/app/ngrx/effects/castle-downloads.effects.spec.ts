@@ -215,13 +215,14 @@ describe('CastleDownloadsEffects', () => {
   });
 
   it('should load episode dropday', () => {
+    const publishedAt = new Date();
     const action: ACTIONS.CastleEpisodeDropdayLoadAction = {
       type: ACTIONS.ActionTypes.CASTLE_EPISODE_DROPDAY_LOAD,
       payload: {
         podcastId: episodes[0].podcastId,
         guid: episodes[0].guid,
         interval: INTERVAL_DAILY,
-        publishedAt: new Date(),
+        publishedAt,
         days: 28
       }
     };
@@ -229,7 +230,7 @@ describe('CastleDownloadsEffects', () => {
       podcastId: episodes[0].podcastId,
       guid: episodes[0].guid,
       interval: INTERVAL_DAILY,
-      publishedAt: new Date(),
+      publishedAt,
       downloads: ep0Downloads
     });
 

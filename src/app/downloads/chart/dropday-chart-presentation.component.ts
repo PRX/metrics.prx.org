@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { TimeseriesChartModel } from 'ngx-prx-styleguide';
+import { IndexedChartModel, CategoryChartModel } from 'ngx-prx-styleguide';
 import { RouterParams, CHARTTYPE_HORIZBAR, CHARTTYPE_EPISODES,
   INTERVAL_HOURLY, INTERVAL_DAILY, INTERVAL_WEEKLY, INTERVAL_MONTHLY } from '@app/ngrx';
 import * as chartUtil from '@app/shared/util/chart.util';
@@ -18,7 +18,7 @@ import * as chartUtil from '@app/shared/util/chart.util';
 })
 export class DropdayChartPresentationComponent {
   @Input() routerParams: RouterParams;
-  @Input() chartData: TimeseriesChartModel[];
+  @Input() chartData: IndexedChartModel[] | CategoryChartModel[];
 
   formatX(s: string) {
     // TODO: format day0 as "Drop" but chart displays _all_ ticks when formatted ugh

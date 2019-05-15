@@ -11,8 +11,7 @@ import { DownloadsTablePresentationComponent } from './table/downloads-table-pre
 import { DropdayComponent } from './dropday.component';
 import { DropdayChartContainerComponent } from './chart/dropday-chart-container.component';
 import { DropdayChartPresentationComponent } from './chart/dropday-chart-presentation.component';
-import { DropdayTableContainerComponent } from './table/dropday-table-container.component';
-import { DropdayTablePresentationComponent } from './table/dropday-table-presentation.component';
+import { DropdayTableComponent } from './table/dropday-table.component';
 import { ScrollingTableComponent } from './table/scrolling-table.component';
 import { SummaryTableComponent } from './table/summary-table.component';
 
@@ -28,8 +27,7 @@ import { downloadsRouting } from './downloads.routing';
     DropdayComponent,
     DropdayChartContainerComponent,
     DropdayChartPresentationComponent,
-    DropdayTableContainerComponent,
-    DropdayTablePresentationComponent,
+    DropdayTableComponent,
     ScrollingTableComponent,
     SummaryTableComponent
   ],

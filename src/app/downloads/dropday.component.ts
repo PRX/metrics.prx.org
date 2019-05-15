@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Store, select } from '@ngrx/store';
 import { Observable } from 'rxjs';
-import { selectEpisodeDropdayLoading, selectEpisodeDropdayLoaded, select500ErrorReloadActions } from '../ngrx/reducers/selectors';
-import { AllActions } from '../ngrx/actions';
+import { selectEpisodeDropdayLoading, selectEpisodeDropdayLoaded, select500ErrorReloadActions } from '@app/ngrx/reducers/selectors';
+import { AllActions } from '@app/ngrx/actions';
 
 @Component({
   template: `

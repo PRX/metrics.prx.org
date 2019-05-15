@@ -85,6 +85,23 @@ export const dispatchEpisodeAllTimeDownloads = (store: Store<any>, podcastId?: s
   }));
 };
 
+export const dispatchLoadEpisodeDropday = (store: Store<any>, podcastId?: string, interval?: IntervalModel, days?: number) => {
+  store.dispatch(new ACTIONS.CastleEpisodeDropdayLoadAction({
+    podcastId: podcastId || fixtures.episodes[0].podcastId,
+    guid: fixtures.episodes[0].guid,
+    publishedAt: fixtures.episodes[0].publishedAt,
+    interval: interval || fixtures.routerParams.interval,
+    days: days || 28
+  }));
+  store.dispatch(new ACTIONS.CastleEpisodeDropdayLoadAction({
+    podcastId: podcastId || fixtures.episodes[1].podcastId,
+    guid: fixtures.episodes[1].guid,
+    publishedAt: fixtures.episodes[1].publishedAt,
+    interval: interval || fixtures.routerParams.interval,
+    days: days || 28
+  }));
+};
+
 export const dispatchEpisodeDropday = (store: Store<any>, podcastId?: string, interval?: IntervalModel) => {
   store.dispatch(new ACTIONS.CastleEpisodeDropdaySuccessAction({
     podcastId: podcastId || fixtures.episodes[0].podcastId,

@@ -13,7 +13,7 @@ import { selectChartTypeRoute, selectDropdayTableMetrics } from '@app/ngrx/reduc
     </metrics-downloads-summary-table>
   `
 })
-export class DropdayTableContainerComponent implements OnInit {
+export class DropdayTableComponent implements OnInit {
   episodeTableData$: Observable<DownloadsTableModel[]>;
   chartType$: Observable<ChartType>;
 

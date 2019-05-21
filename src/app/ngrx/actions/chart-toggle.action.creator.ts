@@ -3,6 +3,7 @@ import { ActionTypes } from './action.types';
 import { GroupType } from '../reducers/models';
 
 export interface ChartSingleEpisodePayload {
+  podcastId: string;
   guid: string;
 }
 
@@ -13,6 +14,7 @@ export class ChartSingleEpisodeAction implements Action {
 }
 
 export interface ChartToggleEpisodePayload {
+  podcastId: string;
   guid: string;
   charted: boolean;
 }

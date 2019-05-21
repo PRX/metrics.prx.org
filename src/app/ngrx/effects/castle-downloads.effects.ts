@@ -67,7 +67,11 @@ export class CastleDownloadsEffects {
     mergeMap((payload: ACTIONS.CastleEpisodePageSuccessPayload) => {
       const { episodes } = payload;
       return [
-        new ACTIONS.EpisodeSelectEpisodesAction({episodeGuids: episodes.map(e => e.guid)}),
+        new ACTIONS.EpisodeSelectEpisodesAction({
+          podcastId: this.routerParams.podcastId,
+          metricsType: this.routerParams.metricsType,
+          episodeGuids: episodes.map(e => e.guid)
+        }),
         ...episodes.map((episode: Episode) => {
           return new ACTIONS.CastleEpisodeAllTimeDownloadsLoadAction({
             podcastId: episode.podcastId,

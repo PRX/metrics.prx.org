@@ -61,7 +61,7 @@ describe('Export Selectors', () => {
         expect(exportData[0].label).toEqual(fixtures.episodes[0].title);
       });
 
-      dispatchHelper.dispatchEpisodeDownloadsChartToggle(store, fixtures.episodes[0].guid);
+      dispatchHelper.dispatchEpisodeDownloadsChartToggle(store, fixtures.episodes[0].podcastId, fixtures.episodes[0].guid);
       store.pipe(select(fromExport.selectExportDownloads), first()).subscribe(exportData => {
         expect(exportData.length).toEqual(fixtures.episodes.length - 1);
         expect(exportData[0].label).toEqual(fixtures.episodes[1].title);
@@ -69,7 +69,8 @@ describe('Export Selectors', () => {
     });
 
     it('selected episodes should filter episode data from export', () => {
-      dispatchHelper.dispatchSelectEpisodes(store, [fixtures.episodes[1].guid]);
+      dispatchHelper.dispatchSelectEpisodes(store,
+        fixtures.routerParams.podcastId, fixtures.routerParams.metricsType, [fixtures.episodes[1].guid]);
       store.pipe(select(fromExport.selectExportDownloads), first()).subscribe(exportData => {
         expect(exportData.length).toEqual(1);
         expect(exportData[0].label).toEqual(fixtures.episodes[1].title);
@@ -153,7 +154,8 @@ describe('Export Selectors', () => {
 
     describe('Selected Episodes', () => {
       beforeEach(() => {
-        dispatchHelper.dispatchSelectEpisodes(store, [fixtures.episodes[0].guid]);
+        dispatchHelper.dispatchSelectEpisodes(store,
+          fixtures.routerParams.podcastId, fixtures.routerParams.metricsType, [fixtures.episodes[0].guid]);
         dispatchHelper.dispatchEpisodeRanks(store,
           {group: GROUPTYPE_GEOMETRO, interval: INTERVAL_DAILY},
           fixtures.episodes[0].guid, fixtures.ep0GeoMetroRanks, fixtures.ep0GeoMetroDownloads);
@@ -219,7 +221,8 @@ describe('Export Selectors', () => {
 
     describe('Selected Episodes', () => {
       beforeEach(() => {
-        dispatchHelper.dispatchSelectEpisodes(store, [fixtures.episodes[0].guid]);
+        dispatchHelper.dispatchSelectEpisodes(store,
+          fixtures.routerParams.podcastId, fixtures.routerParams.metricsType, [fixtures.episodes[0].guid]);
         dispatchHelper.dispatchEpisodeRanks(store,
           {group: GROUPTYPE_AGENTNAME, interval: INTERVAL_DAILY},
           fixtures.episodes[0].guid, fixtures.ep0AgentNameRanks, fixtures.ep0AgentNameDownloads);
@@ -306,7 +309,8 @@ describe('Export Selectors', () => {
 
       dispatchHelper.dispatchRouterNavigation(store, {...fixtures.routerParams,
         metricsType: METRICSTYPE_DEMOGRAPHICS, group: GROUPTYPE_GEOMETRO, chartType: CHARTTYPE_STACKED});
-      dispatchHelper.dispatchSelectEpisodes(store, [fixtures.episodes[0].guid]);
+      dispatchHelper.dispatchSelectEpisodes(store,
+        fixtures.routerParams.podcastId, fixtures.routerParams.metricsType, [fixtures.episodes[0].guid]);
       store.pipe(select(fromExport.selectExportData)).subscribe(exportData => {
         expect(exportData.length).toEqual(fixtures.ep0GeoMetroRanks.length);
         expect(exportData[0].data.length).toEqual(fixtures.ep0GeoMetroDownloads.length);

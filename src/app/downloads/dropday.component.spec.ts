@@ -60,7 +60,7 @@ describe('DropdayComponent', () => {
   it('should show a downloads table', () => {
     dispatchHelper.dispatchEpisodePage(store);
     dispatchHelper.dispatchEpisodeSelectList(store);
-    dispatchHelper.dispatchSelectEpisodes(store, [episodes[0].guid, episodes[1].guid]);
+    dispatchHelper.dispatchSelectEpisodes(store, routerParams.podcastId, METRICSTYPE_DROPDAY, [episodes[0].guid, episodes[1].guid]);
     dispatchHelper.dispatchEpisodeDropday(store);
     dispatchHelper.dispatchEpisodeAllTimeDownloads(store);
     fix.detectChanges();

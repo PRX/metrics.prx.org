@@ -121,7 +121,11 @@ export class EpisodeSelectDropdownContentComponent {
       }
     }
 
-    this.store.dispatch(new ACTIONS.EpisodeSelectEpisodesAction({episodeGuids: null}));
+    this.store.dispatch(new ACTIONS.EpisodeSelectEpisodesAction({
+      podcastId,
+      metricsType,
+      episodeGuids: null
+    }));
     this.store.dispatch(new ACTIONS.GoogleAnalyticsEventAction({gaAction: 'episode-select-reset'}));
   }
 
@@ -179,7 +183,11 @@ export class EpisodeSelectDropdownContentComponent {
       episodeGuids = this.selectedEpisodes.filter(e => e !== episode.guid);
     }
     if (episodeGuids.length) {
-      this.store.dispatch(new ACTIONS.EpisodeSelectEpisodesAction({episodeGuids}));
+      this.store.dispatch(new ACTIONS.EpisodeSelectEpisodesAction({
+        podcastId,
+        metricsType,
+        episodeGuids
+      }));
       this.store.dispatch(new ACTIONS.GoogleAnalyticsEventAction({gaAction: 'episode-select', value: episodeGuids.length}));
     } else {
       this.resetSelection();

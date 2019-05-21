@@ -1,9 +1,12 @@
 import { EntityState, EntityAdapter, createEntityAdapter } from '@ngrx/entity';
 import { Episode } from './models/episode.model';
 import { ActionTypes, AllActions } from '../actions';
+import { METRICSTYPE_DOWNLOADS, METRICSTYPE_DROPDAY, METRICSTYPE_DEMOGRAPHICS, METRICSTYPE_TRAFFICSOURCES } from './models';
 
 export interface State extends EntityState<Episode> {
-  selected?: string[];
+  downloadsSelected?: { [podcastId: string]: string[] };
+  dropdaySelected?: { [podcastId: string]: string[] };
+  aggregateSelected?: { [podcastId: string]: string[] };
   total: number;
   page: number;
   search?: string;
@@ -17,6 +20,9 @@ export const adapter: EntityAdapter<Episode> = createEntityAdapter<Episode>({
 });
 
 export const initialState: State = adapter.getInitialState({
+  downloadsSelected: {},
+  dropdaySelected: {},
+  aggregateSelected: {},
   total: null,
   page: null,
   loading: false
@@ -70,36 +76,76 @@ export function reducer(
       };
     }
     case ActionTypes.EPISODE_SELECT_EPISODES: {
-      return {
-        ...state,
-        selected: action.payload.episodeGuids && action.payload.episodeGuids.length ? action.payload.episodeGuids : null
-      };
+      const { podcastId, metricsType, episodeGuids } = action.payload;
+      switch (metricsType) {
+        case METRICSTYPE_DOWNLOADS:
+          return {
+            ...state,
+            downloadsSelected: {
+              ...state.downloadsSelected,
+              [podcastId]: episodeGuids && episodeGuids.length ? episodeGuids : null
+            }
+          };
+        case METRICSTYPE_DROPDAY:
+          return {
+            ...state,
+            dropdaySelected: {
+              ...state.dropdaySelected,
+              [podcastId]: episodeGuids && episodeGuids.length ? episodeGuids : null
+            }
+          };
+        case METRICSTYPE_DEMOGRAPHICS:
+        case METRICSTYPE_TRAFFICSOURCES:
+        default:
+          return {
+            ...state,
+            aggregateSelected: {
+              ...state.aggregateSelected,
+              [podcastId]: episodeGuids && episodeGuids.length ? episodeGuids : null
+            }
+          };
+      }
     }
     case ActionTypes.ROUTE_PODCAST: {
+      const { podcastId } = action.payload;
       return {
         ...state,
         total: null,
         page: null,
-        selected: null,
+        downloadsSelected: {
+          ...state.downloadsSelected,
+          [podcastId]: null
+        },
+        dropdaySelected: {
+          ...state.dropdaySelected,
+          [podcastId]: null
+        },
+        aggregateSelected: {
+          ...state.aggregateSelected,
+          [podcastId]: null
+        },
         search: null
       };
     }
     // HONESTLY, these two CHART_ actions here and applying this to paged downloads feels like a bad idea
     // Paged downloads was never meant to be combined with selected episodes
     // Selected episodes were to apply to the drop date chart
-    // So these only affect selected episodes if there are already selected episodes
+    // So these only affect selected episodes if there are already selected episodes for this podcast
     case ActionTypes.CHART_TOGGLE_EPISODE: {
-      if (state.selected) {
-        const { guid, charted } = action.payload;
-        let selected = state.selected;
-        if (charted && state.selected.indexOf(guid) === -1) {
-          selected = [...state.selected, guid];
-        } else if (!charted && state.selected.indexOf(guid) > -1) {
-          selected = state.selected.filter(g => g !== guid);
+      const { podcastId, guid, charted } = action.payload;
+      if (state.downloadsSelected[podcastId]) {
+        let selected = state.downloadsSelected[podcastId];
+        if (charted && state.downloadsSelected[podcastId].indexOf(guid) === -1) {
+          selected = [...state.downloadsSelected[podcastId], guid];
+        } else if (!charted && state.downloadsSelected[podcastId].indexOf(guid) > -1) {
+          selected = state.downloadsSelected[podcastId].filter(g => g !== guid);
         }
         return {
           ...state,
-          selected
+          downloadsSelected: {
+            ...state.downloadsSelected,
+            [podcastId]: selected
+          }
         };
       } else {
         return state;
@@ -107,11 +153,14 @@ export function reducer(
     }
     case ActionTypes.CHART_SINGLE_EPISODE: {
       // only selecting this episode if selected episodes is already set, BUT only selecting SINGLE_EPISODE
-      if (state.selected && state.selected.length) {
-        const { guid } = action.payload;
+      const { podcastId, guid } = action.payload;
+      if (state.downloadsSelected[podcastId] && state.downloadsSelected[podcastId].length) {
         return {
           ...state,
-          selected: [guid]
+          downloadsSelected: {
+            ...state.downloadsSelected,
+            [podcastId]: [guid]
+          }
         };
       } else {
         return state;
@@ -131,7 +180,6 @@ export const {
 
 export const getTotal = (state: State) => state.total;
 export const getPage = (state: State) => state.page;
-export const getSelected = (state: State) => state.selected;
 export const getSearch = (state: State) => state.search;
 export const getSearchTotal = (state: State) => state.searchTotal;
 export const getError = (state: State) => state.error;

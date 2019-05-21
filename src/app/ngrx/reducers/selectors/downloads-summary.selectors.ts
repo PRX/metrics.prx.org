@@ -3,14 +3,14 @@ import { selectMetricsTypeRoute } from './router.selectors';
 import { selectRoutedPodcastDownloadsTotal } from './podcast-downloads.selectors';
 import { selectRoutedPodcastRanksTotalDownloads } from './podcast-ranks.selectors';
 import { MetricsType, METRICSTYPE_DOWNLOADS } from '../models';
-import { selectSelectedEpisodeGuids } from './episode-select.selectors';
+import { selectDownloadsSelectedEpisodeGuids } from './episode-select.selectors';
 import { selectSelectedEpisodesRanksTotalDownloads } from './episode-ranks.selectors';
 
 export const selectDownloadsSummaryTotal = createSelector(
   selectMetricsTypeRoute,
   selectRoutedPodcastDownloadsTotal,
   selectRoutedPodcastRanksTotalDownloads,
-  selectSelectedEpisodeGuids,
+  selectDownloadsSelectedEpisodeGuids,
   selectSelectedEpisodesRanksTotalDownloads,
   (metricsType: MetricsType,
    downloadsTotal: number,

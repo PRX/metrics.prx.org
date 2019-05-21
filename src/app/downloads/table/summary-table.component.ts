@@ -64,7 +64,7 @@ export class SummaryTableComponent {
   @Input() podcastTableData: DownloadsTableModel;
   @Input() episodeTableData: DownloadsTableModel[];
   @Output() toggleChartPodcast = new EventEmitter<{id: string, charted: boolean}>();
-  @Output() toggleChartEpisode = new EventEmitter<{episodeId: string, charted: boolean}>();
+  @Output() toggleChartEpisode = new EventEmitter<{guid: string, charted: boolean}>();
   @Output() chartSingleEpisode = new EventEmitter<string>();
 
   releaseDateFormat(date: Date): string {

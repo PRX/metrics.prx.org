@@ -4,7 +4,7 @@ import { Episode, EpisodeDownloads, RouterParams, PodcastAllTimeDownloads, Episo
   CHARTTYPE_PODCAST, CHARTTYPE_EPISODES } from '../models';
 import { selectRouter } from './router.selectors';
 import { selectRoutedPageEpisodes } from './episode.selectors';
-import { selectSelectedEpisodeGuids } from './episode-select.selectors';
+import { selectDownloadsSelectedEpisodeGuids } from './episode-select.selectors';
 import { PodcastDownloads } from '../models/podcast-downloads.model';
 import { selectRoutedPodcastDownloads } from './podcast-downloads.selectors';
 import { selectRoutedPodcastAllTimeDownloads } from './podcast-alltime-downloads.selectors';
@@ -60,7 +60,7 @@ export const selectDownloadTableEpisodeMetrics = createSelector(
   selectRoutedPageEpisodes,
   selectRoutedEpisodePageDownloads,
   selectRoutedPageEpisodeAllTimeDownloads,
-  selectSelectedEpisodeGuids,
+  selectDownloadsSelectedEpisodeGuids,
   (episodes: Episode[],
    episodeDownloads: EpisodeDownloads[],
    episodeAllTimeDownloads: EpisodeAllTimeDownloads[],
@@ -107,7 +107,6 @@ export const selectDownloadTableEpisodeMetrics = createSelector(
 export const selectDownloadTableEpisodeIntervalData = createSelector(
   selectRoutedPageEpisodes,
   selectRoutedEpisodePageDownloads,
-  selectSelectedEpisodeGuids,
   (episodes: Episode[],
    episodeDownloads: EpisodeDownloads[]): DownloadsTableIntervalModel[] => {
     if (episodes.length && episodeDownloads.length) {

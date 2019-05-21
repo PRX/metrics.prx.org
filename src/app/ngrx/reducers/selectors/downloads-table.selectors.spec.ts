@@ -113,12 +113,20 @@ describe('Downloads Table Selectors', () => {
 
     describe('selected episodes download table metrics', () => {
       it('should not apply selected episodes filtering if none are selected', () => {
-        store.dispatch(new ACTIONS.EpisodeSelectEpisodesAction({episodeGuids: []}));
+        store.dispatch(new ACTIONS.EpisodeSelectEpisodesAction({
+          podcastId: routerParams.podcastId,
+          metricsType: routerParams.metricsType,
+          episodeGuids: []
+        }));
         expect(result.every(r => r.charted)).toBeTruthy();
       });
 
       it('should show selected episodes as charted', () => {
-        store.dispatch(new ACTIONS.EpisodeSelectEpisodesAction({episodeGuids: [episodes[0].guid]}));
+        store.dispatch(new ACTIONS.EpisodeSelectEpisodesAction({
+          podcastId: routerParams.podcastId,
+          metricsType: routerParams.metricsType,
+          episodeGuids: [episodes[0].guid]
+        }));
         expect(result.filter(r => r.charted).length).toEqual(1);
       });
     });

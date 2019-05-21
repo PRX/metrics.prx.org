@@ -1,7 +1,7 @@
 import { Store } from '@ngrx/store';
 import * as fixtures from './downloads.fixtures';
 import { RouterParams, Podcast, Episode, EPISODE_PAGE_SIZE,
-  GroupType, GROUPTYPE_GEOCOUNTRY, GROUPTYPE_AGENTNAME, IntervalModel } from '@app/ngrx';
+  GroupType, GROUPTYPE_GEOCOUNTRY, GROUPTYPE_AGENTNAME, IntervalModel, MetricsType } from '@app/ngrx';
 import * as ACTIONS from '@app/ngrx/actions';
 
 
@@ -44,8 +44,10 @@ export const dispatchEpisodeSelectList = (store: Store<any>, episodes?: Episode[
   }));
 };
 
-export const dispatchSelectEpisodes = (store: Store<any>, episodesGuids?: string[]) => {
+export const dispatchSelectEpisodes = (store: Store<any>, podcastId?: string, metricsType?: MetricsType, episodesGuids?: string[]) => {
   store.dispatch(new ACTIONS.EpisodeSelectEpisodesAction({
+    podcastId: podcastId || fixtures.routerParams.podcastId,
+    metricsType: metricsType || fixtures.routerParams.metricsType,
     episodeGuids: episodesGuids || [fixtures.episodes[0].guid]
   }));
 };
@@ -174,8 +176,9 @@ export const dispatchPodcastDownloadsChartToggle = (store: Store<any>, podcastId
   }));
 };
 
-export const dispatchEpisodeDownloadsChartToggle = (store: Store<any>, guid?: string, charted?: boolean) => {
+export const dispatchEpisodeDownloadsChartToggle = (store: Store<any>, podcastId?: string, guid?: string, charted?: boolean) => {
   store.dispatch(new ACTIONS.ChartToggleEpisodeAction({
+    podcastId: podcastId || fixtures.episodes[0].guid,
     guid: guid || fixtures.episodes[0].guid,
     charted: charted || false
   }));

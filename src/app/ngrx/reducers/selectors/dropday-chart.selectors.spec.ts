@@ -28,7 +28,7 @@ describe('Dropday Chart Selectors', () => {
       dispatchHelper.dispatchRouterNavigation(store, {...routerParams, metricsType: METRICSTYPE_DROPDAY, chartType: CHARTTYPE_HORIZBAR});
       dispatchHelper.dispatchEpisodePage(store);
       dispatchHelper.dispatchEpisodeSelectList(store);
-      dispatchHelper.dispatchSelectEpisodes(store, [episodes[0].guid, episodes[1].guid]);
+      dispatchHelper.dispatchSelectEpisodes(store, routerParams.podcastId, METRICSTYPE_DROPDAY, [episodes[0].guid, episodes[1].guid]);
       dispatchHelper.dispatchEpisodeDropday(store);
 
       store.pipe(select(selectDropdayChartMetrics)).subscribe((data) => {
@@ -47,13 +47,13 @@ describe('Dropday Chart Selectors', () => {
 
     it('should only include selected episodes', () => {
       expect(result.length).toEqual(episodes.length);
-      dispatchHelper.dispatchSelectEpisodes(store, [episodes[0].guid]);
+      dispatchHelper.dispatchSelectEpisodes(store, routerParams.podcastId, METRICSTYPE_DROPDAY, [episodes[0].guid]);
       expect(result.length).toEqual(1);
     });
 
     it('should truncate long episode titles for chart', () => {
       dispatchHelper.dispatchEpisodeSelectList(store, [{...episodes[1], title: 'a pretty long title with a lot of words'}]);
-      dispatchHelper.dispatchSelectEpisodes(store, [episodes[1].guid]);
+      dispatchHelper.dispatchSelectEpisodes(store, routerParams.podcastId, METRICSTYPE_DROPDAY, [episodes[1].guid]);
       expect(result[0].label.length).toBeLessThanOrEqual(32);
     });
   });
@@ -65,7 +65,7 @@ describe('Dropday Chart Selectors', () => {
       dispatchHelper.dispatchRouterNavigation(store, {...routerParams, metricsType: METRICSTYPE_DROPDAY, chartType: CHARTTYPE_EPISODES});
       dispatchHelper.dispatchEpisodePage(store);
       dispatchHelper.dispatchEpisodeSelectList(store);
-      dispatchHelper.dispatchSelectEpisodes(store, [episodes[0].guid, episodes[1].guid]);
+      dispatchHelper.dispatchSelectEpisodes(store, routerParams.podcastId, METRICSTYPE_DROPDAY, [episodes[0].guid, episodes[1].guid]);
       dispatchHelper.dispatchEpisodeDropday(store);
 
       store.pipe(select(selectDropdayChartMetrics)).subscribe((data) => {
@@ -90,13 +90,13 @@ describe('Dropday Chart Selectors', () => {
 
     it('should only include selected episodes', () => {
       expect(result.length).toEqual(episodes.length);
-      dispatchHelper.dispatchSelectEpisodes(store, [episodes[0].guid]);
+      dispatchHelper.dispatchSelectEpisodes(store, routerParams.podcastId, METRICSTYPE_DROPDAY, [episodes[0].guid]);
       expect(result.length).toEqual(1);
     });
 
     it('should number non-unique episode titles', () => {
       dispatchHelper.dispatchEpisodeSelectList(store, [episodes[0], {...episodes[1], title: episodes[0].title}]);
-      dispatchHelper.dispatchSelectEpisodes(store, [episodes[0].guid, episodes[1].guid]);
+      dispatchHelper.dispatchSelectEpisodes(store, routerParams.podcastId, METRICSTYPE_DROPDAY, [episodes[0].guid, episodes[1].guid]);
       expect(result[0].label.indexOf('(1)')).toBeGreaterThan(-1);
     });
   });

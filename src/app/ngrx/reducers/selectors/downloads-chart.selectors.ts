@@ -4,7 +4,7 @@ import { Episode, EpisodeDownloads, PodcastDownloads, RouterParams,
   CHARTTYPE_EPISODES, CHARTTYPE_PODCAST, CHARTTYPE_STACKED } from '../models';
 import { selectRouter } from './router.selectors';
 import { selectRoutedPageEpisodes } from './episode.selectors';
-import { selectSelectedEpisodeGuids } from './episode-select.selectors';
+import { selectDownloadsSelectedEpisodeGuids } from './episode-select.selectors';
 import { selectRoutedPodcastDownloads } from './podcast-downloads.selectors';
 import { selectRoutedEpisodePageDownloads } from './episode-downloads.selectors';
 import { mapMetricsToTimeseriesData, subtractTimeseriesDatasets, getTotal,
@@ -44,7 +44,7 @@ export const selectDownloadChartMetrics = createSelector(
   selectRoutedPageEpisodes,
   selectRoutedPodcastDownloads,
   selectRoutedEpisodePageDownloads,
-  selectSelectedEpisodeGuids,
+  selectDownloadsSelectedEpisodeGuids,
   (routerParams: RouterParams,
    episodes: Episode[],
    podcastDownloads: PodcastDownloads,

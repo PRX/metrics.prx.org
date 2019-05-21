@@ -81,13 +81,13 @@ describe('Downloads Chart Selectors', () => {
 
     it('should only include charted episodes', () => {
       expect(result.length).toEqual(3);
-      dispatchHelper.dispatchEpisodeDownloadsChartToggle(store, episodes[0].guid);
+      dispatchHelper.dispatchEpisodeDownloadsChartToggle(store, episodes[0].podcastId, episodes[0].guid);
       expect(result.length).toEqual(2);
     });
 
     it('should only include selected episodes if set', () => {
       expect(result.length).toEqual(3);
-      dispatchHelper.dispatchSelectEpisodes(store, [episodes[0].guid]);
+      dispatchHelper.dispatchSelectEpisodes(store, routerParams.podcastId, routerParams.metricsType, [episodes[0].guid]);
       expect(result.length).toEqual(2);
     });
 
@@ -168,13 +168,17 @@ describe('Downloads Chart Selectors', () => {
 
     it('should only include charted episodes', () => {
       expect(result.length).toEqual(episodes.length);
-      store.dispatch(new ACTIONS.ChartToggleEpisodeAction({guid: episodes[0].guid, charted: false}));
+      store.dispatch(new ACTIONS.ChartToggleEpisodeAction({podcastId: episodes[0].podcastId, guid: episodes[0].guid, charted: false}));
       expect(result.length).toEqual(episodes.length - 1);
     });
 
     it('should only include selected episodes if set', () => {
       expect(result.length).toEqual(episodes.length);
-      store.dispatch(new ACTIONS.EpisodeSelectEpisodesAction({episodeGuids: [episodes[0].guid]}));
+      store.dispatch(new ACTIONS.EpisodeSelectEpisodesAction({
+        podcastId: routerParams.podcastId,
+        metricsType: routerParams.metricsType,
+        episodeGuids: [episodes[0].guid]
+      }));
       expect(result.length).toEqual(1);
     });
 

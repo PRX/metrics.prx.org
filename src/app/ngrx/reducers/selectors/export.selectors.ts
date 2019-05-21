@@ -12,7 +12,7 @@ import { podcastDownloadMetrics, episodeDownloadMetrics } from './downloads-char
 import { aggregateIntervalsExport, aggregateTotalsExport, isGroupCharted } from '../../../shared/util/chart.util';
 import { getTotal } from '../../../shared/util/metrics.util';
 import * as dateUtil from '../../../shared/util/date';
-import { selectSelectedEpisodeGuids } from './episode-select.selectors';
+import { selectDownloadsSelectedEpisodeGuids, selectAggregateSelectedEpisodeGuids } from './episode-select.selectors';
 import { selectRoutedPodcastRanks, selectNestedPodcastRanks } from './podcast-ranks.selectors';
 import { selectRoutedPodcastTotals, selectNestedPodcastTotals } from './podcast-totals.selectors';
 import { selectSelectedEpisodesRanks, selectNestedEpisodesRanks } from './episode-ranks.selectors';
@@ -25,7 +25,7 @@ export const selectExportDownloads = createSelector(
   selectRoutedPageEpisodes,
   selectRoutedPodcastDownloads,
   selectRoutedEpisodePageDownloads,
-  selectSelectedEpisodeGuids,
+  selectDownloadsSelectedEpisodeGuids,
   (routerParams: RouterParams,
   episodes: Episode[],
   podcastDownloads: PodcastDownloads,
@@ -180,7 +180,7 @@ export const selectExportData = createSelector(
   selectExportDownloads,
   selectRoutedPodcastExportRanks,
   selectNestedPodcastExportRanks,
-  selectSelectedEpisodeGuids,
+  selectAggregateSelectedEpisodeGuids,
   selectSelectedEpisodeExportRanks,
   selectNestedEpisodeExportRanks,
   (routerParams: RouterParams,

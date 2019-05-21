@@ -308,20 +308,15 @@ describe('CastleDownloadsEffects', () => {
         per: EPISODE_PAGE_SIZE,
         total: episodes.length
       });
-      const episodeMetricsActions = episodes.map(e => {
-        return new ACTIONS.CastleEpisodeDropdayLoadAction({
-          podcastId: e.podcastId,
-          guid: e.guid,
-          interval: routerParams.interval,
-          publishedAt: e.publishedAt,
-          days: 28
-        });
-      });
       const completionString = new Array(1 + (episodes.length * 2)).fill('').map((e, i) => `-${i}`).join('');
       const completion = {};
       // create an object with indices (toString) as keys to each action for marble mapping
       [
-        new ACTIONS.EpisodeSelectEpisodesAction({episodeGuids: episodes.map(e => e.guid)}),
+        new ACTIONS.EpisodeSelectEpisodesAction({
+          podcastId: routerParams.podcastId,
+          metricsType: METRICSTYPE_DROPDAY,
+          episodeGuids: episodes.map(e => e.guid)
+        }),
         ...episodes.map(e => {
           return new ACTIONS.CastleEpisodeAllTimeDownloadsLoadAction({
             podcastId: e.podcastId,

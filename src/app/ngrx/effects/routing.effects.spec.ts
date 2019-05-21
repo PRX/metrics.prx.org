@@ -106,7 +106,11 @@ describe('RoutingEffects', () => {
     const expected = cold('-r', { r: result });
     expect(effects.customRouterNavigation$).toBeObservable(expected);
     // selected episodes dispatched to store
-    expect(store.dispatch).toHaveBeenCalledWith(new ACTIONS.EpisodeSelectEpisodesAction({episodeGuids: ['abcdefg', 'hijklmn']}));
+    expect(store.dispatch).toHaveBeenCalledWith(new ACTIONS.EpisodeSelectEpisodesAction({
+      podcastId: routerParams.podcastId,
+      metricsType: routerParams.metricsType,
+      episodeGuids: ['abcdefg', 'hijklmn']
+    }));
   });
 
   it('should route to podcast on episode page 1', () => {

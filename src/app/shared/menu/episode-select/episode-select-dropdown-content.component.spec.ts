@@ -82,7 +82,11 @@ describe('EpisodeSelectDropdownContentComponent', () => {
 
   it('should dispatch selected episodes', () => {
     comp.onToggleSelectEpisode(episodes[0]);
-    expect(store.dispatch).toHaveBeenCalledWith(new ACTIONS.EpisodeSelectEpisodesAction({episodeGuids: [episodes[0].guid]}));
+    expect(store.dispatch).toHaveBeenCalledWith(new ACTIONS.EpisodeSelectEpisodesAction({
+      podcastId: routerParams.podcastId,
+      metricsType: routerParams.metricsType,
+      episodeGuids: [episodes[0].guid]
+    }));
     expect(store.dispatch).toHaveBeenCalledWith(new ACTIONS.GoogleAnalyticsEventAction({gaAction: 'episode-select', value: 1}));
   });
 
@@ -116,7 +120,11 @@ describe('EpisodeSelectDropdownContentComponent', () => {
       beginDate: routerParams.beginDate,
       endDate: routerParams.endDate
     }));
-    expect(store.dispatch).toHaveBeenCalledWith(new ACTIONS.EpisodeSelectEpisodesAction({episodeGuids: null}));
+    expect(store.dispatch).toHaveBeenCalledWith(new ACTIONS.EpisodeSelectEpisodesAction({
+      podcastId: routerParams.podcastId,
+      metricsType: routerParams.metricsType,
+      episodeGuids: null
+    }));
     expect(store.dispatch).toHaveBeenCalledWith(new ACTIONS.GoogleAnalyticsEventAction({gaAction: 'episode-select-reset'}));
   });
 });

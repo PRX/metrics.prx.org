@@ -28,7 +28,11 @@ export class RoutingEffects {
       const { guids, ...routerParams } = payload.routerState;
       // select any episode guids on the route
       if (guids) {
-        this.store.dispatch(new ACTIONS.EpisodeSelectEpisodesAction({episodeGuids: guids}));
+        this.store.dispatch(new ACTIONS.EpisodeSelectEpisodesAction({
+          podcastId: routerParams.podcastId,
+          metricsType: routerParams.metricsType,
+          episodeGuids: guids
+        }));
       }
       // map to an action with our CUSTOM_ROUTER_NAVIGATION type
       return of(new ACTIONS.CustomRouterNavigationAction({routerParams}));

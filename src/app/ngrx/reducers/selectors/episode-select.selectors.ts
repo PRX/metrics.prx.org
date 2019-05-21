@@ -1,7 +1,8 @@
 import { createSelector, createFeatureSelector } from '@ngrx/store';
 import * as fromEpisodeSelect from '../episode-select.reducer';
-import { EPISODE_SELECT_PAGE_SIZE, Episode } from '../models';
-import { selectPodcastRoute } from './router.selectors';
+import { EPISODE_SELECT_PAGE_SIZE, Episode,
+  MetricsType, METRICSTYPE_DOWNLOADS, METRICSTYPE_DROPDAY, METRICSTYPE_DEMOGRAPHICS, METRICSTYPE_TRAFFICSOURCES } from '../models';
+import { selectPodcastRoute, selectMetricsTypeRoute } from './router.selectors';
 
 export const selectEpisodeSelectState = createFeatureSelector<fromEpisodeSelect.State>('episodeSelect');
 
@@ -14,10 +15,35 @@ export const selectLatestEpisodeSelectPage = createSelector(
   fromEpisodeSelect.getPage
 );
 export const selectSelectedEpisodeGuids = createSelector(
-  // Note this is all guids, but the reducer clears the list whenever the podcast changes
-  // Can't be filtered by podcastId because some of the selected guids may not have full episodes on the state if the list has been filtered
   selectEpisodeSelectState,
-  fromEpisodeSelect.getSelected
+  selectPodcastRoute,
+  selectMetricsTypeRoute,
+  (state: fromEpisodeSelect.State, podcastId: string, metricsType: MetricsType) => {
+    switch (metricsType) {
+      case METRICSTYPE_DOWNLOADS:
+        return state.downloadsSelected[podcastId];
+      case METRICSTYPE_DROPDAY:
+        return state.dropdaySelected[podcastId];
+      case METRICSTYPE_DEMOGRAPHICS:
+      case METRICSTYPE_TRAFFICSOURCES:
+        return state.aggregateSelected[podcastId];
+    }
+  }
+);
+export const selectDownloadsSelectedEpisodeGuids = createSelector(
+  selectEpisodeSelectState,
+  selectPodcastRoute,
+  (state: fromEpisodeSelect.State, podcastId: string) => state.downloadsSelected[podcastId]
+);
+export const selectDropdaySelectedEpisodeGuids = createSelector(
+  selectEpisodeSelectState,
+  selectPodcastRoute,
+  (state: fromEpisodeSelect.State, podcastId: string) => state.dropdaySelected[podcastId]
+);
+export const selectAggregateSelectedEpisodeGuids = createSelector(
+  selectEpisodeSelectState,
+  selectPodcastRoute,
+  (state: fromEpisodeSelect.State, podcastId: string) => state.aggregateSelected[podcastId]
 );
 export const selectEpisodeSelectSearchTerm = createSelector(
   selectEpisodeSelectState,

@@ -1,7 +1,10 @@
 import { Action } from '@ngrx/store';
 import { ActionTypes } from './action.types';
+import { MetricsType } from '../reducers/models';
 
 export interface EpisodeSelectEpisodesPayload {
+  podcastId: string;
+  metricsType: MetricsType;
   episodeGuids: string[];
 }
 

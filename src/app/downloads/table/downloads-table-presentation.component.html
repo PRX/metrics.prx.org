@@ -21,8 +21,8 @@
       [podcastTableData]="podcastTableData"
       [episodeTableData]="episodeTableData"
       (toggleChartPodcast)="toggleChartPodcast.emit({id: routerParams?.podcastId, charted: $event})"
-      (toggleChartEpisode)="toggleChartEpisode.emit($event)"
-      (chartSingleEpisode)="chartSingleEpisode.emit($event)">
+      (toggleChartEpisode)="onToggleChartEpisode($event)"
+      (chartSingleEpisode)="onChartSingleEpisode($event)">
     </metrics-downloads-summary-table>
     
     <metrics-downloads-scrolling-table

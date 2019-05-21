@@ -73,19 +73,19 @@ describe('Dropday Chart Selectors', () => {
       });
     });
 
-    it('should get episodes with cumulative data sorted by publish date descending', () => {
+    it('should get episodes with cumulative data sorted by publish date ascending', () => {
       expect(result.length).toEqual(episodes.length);
       expect(episodes[0].publishedAt.valueOf()).toBeGreaterThanOrEqual(episodes[1].publishedAt.valueOf());
-      expect(result[0].label).toEqual(episodes[0].title);
-      expect(result[0].data.length).toEqual(ep0Downloads.length);
-      expect(result[0].data[0]).toEqual(ep0Downloads[0][1]);
-      expect(result[0].data[1]).toEqual(ep0Downloads[0][1] + ep0Downloads[1][1]);
-      expect(result[0].data[2]).toEqual(ep0Downloads[0][1] + ep0Downloads[1][1] + ep0Downloads[2][1]);
-      expect(result[1].label).toEqual(episodes[1].title);
-      expect(result[1].data.length).toEqual(ep1Downloads.length);
-      expect(result[1].data[0]).toEqual(ep1Downloads[0][1]);
-      expect(result[1].data[1]).toEqual(ep1Downloads[0][1] + ep1Downloads[1][1]);
-      expect(result[1].data[2]).toEqual(ep1Downloads[0][1] + ep1Downloads[1][1] + ep1Downloads[2][1]);
+      expect(result[0].label).toEqual(episodes[1].title);
+      expect(result[0].data.length).toEqual(ep1Downloads.length);
+      expect(result[0].data[0]).toEqual(ep1Downloads[0][1]);
+      expect(result[0].data[1]).toEqual(ep1Downloads[0][1] + ep1Downloads[1][1]);
+      expect(result[0].data[2]).toEqual(ep1Downloads[0][1] + ep1Downloads[1][1] + ep1Downloads[2][1]);
+      expect(result[1].label).toEqual(episodes[0].title);
+      expect(result[1].data.length).toEqual(ep0Downloads.length);
+      expect(result[1].data[0]).toEqual(ep0Downloads[0][1]);
+      expect(result[1].data[1]).toEqual(ep0Downloads[0][1] + ep0Downloads[1][1]);
+      expect(result[1].data[2]).toEqual(ep0Downloads[0][1] + ep0Downloads[1][1] + ep0Downloads[2][1]);
     });
 
     it('should only include selected episodes', () => {

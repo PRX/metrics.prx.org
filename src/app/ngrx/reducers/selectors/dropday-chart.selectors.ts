@@ -7,7 +7,7 @@ import { selectChartTypeRoute } from './router.selectors';
 import { selectRoutedPodcastSelectedEpisodes } from './episode-select.selectors';
 import { selectEpisodeDropdayEntities } from './episode-dropday.selectors';
 import { getTotal } from '@app/shared/util/metrics.util';
-import { getColor, uniqueEpisodeLabel } from '@app/shared/util/chart.util';
+import { getShade, uniqueEpisodeLabel } from '@app/shared/util/chart.util';
 
 export const selectDropdayChartMetrics = createSelector(
   selectRoutedPodcastSelectedEpisodes,
@@ -27,7 +27,8 @@ export const selectDropdayChartMetrics = createSelector(
         .sort((a: CategoryChartModel, b: CategoryChartModel) => b.value - a.value);
     } else  if (chartType === CHARTTYPE_EPISODES) {
       return episodes && episodes.filter(e => dropdays[e.guid] && dropdays[e.guid].downloads)
-        .sort((a: Episode, b: Episode) => b.publishedAt.valueOf() - a.publishedAt.valueOf())
+        // chart sort is reversed so newer episodes are stacked on top
+        .sort((a: Episode, b: Episode) => a.publishedAt.valueOf() - b.publishedAt.valueOf())
         .map((episode: Episode, episodeIndex, self) => {
           let cum = 0;
           return {
@@ -37,7 +38,7 @@ export const selectDropdayChartMetrics = createSelector(
                 cum += downloads[1];
                 return cum;
               }),
-            color: getColor(episodeIndex)
+            color: getShade(self.length, self.length - (episodeIndex + 1))
           };
         });
     }

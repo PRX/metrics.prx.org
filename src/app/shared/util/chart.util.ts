@@ -47,7 +47,7 @@ export const getTotal = (data: TimeseriesDatumModel[]): number => {
   }
 };
 
-export const baseColor = 'rgb(32, 80, 96)';
+export const baseColor = 'rgb(0, 82, 113)';
 export const neutralColor = '#a3a3a3';
 export const standardColor = '#0089bd';
 

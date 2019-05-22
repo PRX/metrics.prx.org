@@ -177,6 +177,7 @@ export interface CastleEpisodeDropdayFailurePayload {
   podcastId: string;
   guid: string;
   interval: IntervalModel;
+  publishedAt: Date;
   error: any;
 }
 

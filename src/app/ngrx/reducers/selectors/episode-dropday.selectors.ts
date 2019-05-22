@@ -1,6 +1,7 @@
 import { createSelector, createFeatureSelector } from '@ngrx/store';
 import * as fromEpisodeDropday from '../episode-dropday.reducer';
 import { EpisodeDropday } from '../models';
+import { selectDropdaySelectedEpisodeGuids } from './episode-select.selectors';
 
 export const selectEpisodeDropdayState = createFeatureSelector<fromEpisodeDropday.State>('episodeDropday');
 
@@ -23,6 +24,14 @@ export const selectEpisodeDropdayLoading = createSelector(selectAllEpisodeDropda
 export const selectEpisodeDropdayLoaded = createSelector(selectAllEpisodeDropday, (dropdays: EpisodeDropday[]) => {
   return dropdays.every((d: EpisodeDropday) => d.loaded || d.loaded === undefined);
 });
-export const selectEpisodeDropdayError = createSelector(selectAllEpisodeDropday, (dropdays: EpisodeDropday[]) => {
+export const selectEpisodeDropdayErrors = createSelector(selectAllEpisodeDropday, (dropdays: EpisodeDropday[]) => {
   return dropdays.filter(d => d.error);
 });
+
+export const selectSelectedEpisodeDropdayErrors = createSelector(
+  selectEpisodeDropdayErrors,
+  selectDropdaySelectedEpisodeGuids,
+  (dropdayErrors: EpisodeDropday[], guids: string[]) => {
+    return dropdayErrors.filter(dropday => guids.indexOf(dropday.guid) > -1 );
+  }
+);

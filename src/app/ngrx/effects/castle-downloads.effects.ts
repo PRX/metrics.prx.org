@@ -228,6 +228,7 @@ export class CastleDownloadsEffects {
             podcastId,
             guid,
             interval,
+            publishedAt: from,
             error
           }));
         })

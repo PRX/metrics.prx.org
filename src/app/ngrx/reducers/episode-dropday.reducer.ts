@@ -17,32 +17,32 @@ export const {
 export function reducer(state: State = initialState, action: AllActions) {
   switch (action.type) {
     case ActionTypes.CASTLE_EPISODE_DROPDAY_LOAD: {
-      const { guid, podcastId, interval } = action.payload;
+      const { guid, podcastId, publishedAt, interval } = action.payload;
       return adapter.upsertOne(
         {
           id: guid,
           ...selectEpisodeDropdayEntities(state)[guid],
-          guid, podcastId, interval, error: null, loading: true, loaded: false
+          guid, podcastId, publishedAt, interval, error: null, loading: true, loaded: false
         },
         state);
     }
     case ActionTypes.CASTLE_EPISODE_DROPDAY_SUCCESS: {
-      const { guid, podcastId, interval, downloads } = action.payload;
+      const { guid, podcastId, publishedAt, interval, downloads } = action.payload;
       return adapter.upsertOne(
         {
           id: guid,
           ...selectEpisodeDropdayEntities(state)[guid],
-          guid, podcastId, interval, downloads, loading: false, loaded: true
+          guid, podcastId, publishedAt, interval, downloads, loading: false, loaded: true
         },
         state);
     }
     case ActionTypes.CASTLE_EPISODE_DROPDAY_FAILURE: {
-      const { guid, podcastId, interval, error } = action.payload;
+      const { guid, podcastId, publishedAt, interval, error } = action.payload;
       return adapter.upsertOne(
         {
           id: guid,
           ...selectEpisodeDropdayEntities(state)[guid],
-          guid, podcastId, interval, error, loading: false, loaded: false
+          guid, podcastId, publishedAt, interval, error, loading: false, loaded: false
         },
         state);
     }

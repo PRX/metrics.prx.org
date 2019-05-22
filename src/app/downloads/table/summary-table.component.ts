@@ -10,7 +10,7 @@ import * as dateFormat from '@app/shared/util/date/date.format';
     <div class="header row" *ngIf="podcastTableData || (episodeTableData && episodeTableData.length)">
       <div>Episode</div>
       <div>Release Date</div>
-      <div class="charted">Downloads</div>
+      <div class="charted">{{ downloadsHeading }}</div>
       <div>All-Time</div>
     </div>
 
@@ -49,7 +49,7 @@ import * as dateFormat from '@app/shared/util/date/date.format';
             <span class="label" [title]="episode.title">{{episode.title}}</span>
           </div>
         </ng-container>
-        <!-- responsive table only ever shows title, no prx-checkbox or .btn-link -->
+        <!-- responsive table only ever shows .mobile-label.title, no prx-checkbox or .btn-link or .title:not(.mobile-label) -->
         <span class="mobile-label title">{{episode.title}}</span>
       </div>
       <div><span class="mobile-label">Release date: </span>{{releaseDateFormat(episode.publishedAt)}}</div>
@@ -64,6 +64,7 @@ import * as dateFormat from '@app/shared/util/date/date.format';
 export class SummaryTableComponent {
   @Input() metricsType: MetricsType;
   @Input() chartType: ChartType;
+  @Input() days: number;
   @Input() podcastTableData: DownloadsTableModel;
   @Input() episodeTableData: DownloadsTableModel[];
   @Output() toggleChartPodcast = new EventEmitter<{id: string, charted: boolean}>();
@@ -76,19 +77,23 @@ export class SummaryTableComponent {
     return dateFormat.monthDateYear(date);
   }
 
-  get isDownloads(): boolean {
-    return this.metricsType === METRICSTYPE_DOWNLOADS;
+  get showPodcastToggle(): boolean {
+    return this.metricsType === METRICSTYPE_DOWNLOADS && this.chartType === CHARTTYPE_STACKED;
   }
 
-  get showPodcastToggle(): boolean {
-    return this.isDownloads && this.chartType === CHARTTYPE_STACKED;
+  get downloadsHeading(): string {
+    return this.metricsType === METRICSTYPE_DOWNLOADS ?
+      'Downloads' :
+      this.days + ' Day Downloads';
   }
 
   get episodeTitleType(): string {
-    if (this.isDownloads && this.chartType !== CHARTTYPE_PODCAST) {
-      return this.checkbox;
-    } else if (this.isDownloads && this.chartType === CHARTTYPE_PODCAST) {
-      return this.button;
+    if (this.metricsType === METRICSTYPE_DOWNLOADS) {
+      if (this.chartType !== CHARTTYPE_PODCAST) {
+        return this.checkbox;
+      } else if (this.chartType === CHARTTYPE_PODCAST) {
+        return this.button;
+      }
     } else {
       return '';
     }

@@ -13,3 +13,4 @@ export const selectPageRoute = createSelector(selectRouter, (routerParams: Route
 export const selectStandardRangeRoute = createSelector(selectRouter, (routerParams: RouterParams) => routerParams.standardRange);
 export const selectBeginDateRoute = createSelector(selectRouter, (routerParams: RouterParams) => routerParams.beginDate);
 export const selectEndDateRoute = createSelector(selectRouter, (routerParams: RouterParams) => routerParams.endDate);
+export const selectDaysRoute = createSelector(selectRouter, (routerParams: RouterParams) => routerParams.days);

@@ -34,18 +34,21 @@ import * as dateFormat from '@app/shared/util/date/date.format';
 
     <div class="row" *ngFor="let episode of episodeTableData">
       <div>
-        <prx-checkbox *ngIf="showEpisodeToggles; else episodeTitle"
-          small [checked]="episode.charted" [color]="episode.color"
-                      (change)="toggleChartEpisode.emit({guid: episode.id, charted: $event})">
-          <span [title]="episode.title">{{episode.title}}</span>
-        </prx-checkbox>
-        <ng-template #episodeTitle>
-          <button *ngIf="isDownloads; else plainTitle"
+        <ng-container [ngSwitch]="episodeTitleType">
+          <prx-checkbox *ngSwitchCase="checkbox"
+            small [checked]="episode.charted" [color]="episode.color"
+            (change)="toggleChartEpisode.emit({guid: episode.id, charted: $event})">
+            <span [title]="episode.title">{{episode.title}}</span>
+          </prx-checkbox>
+          <button *ngSwitchCase="button"
             class="btn-link title" (click)="chartSingleEpisode.emit(episode.id)" [title]="episode.title">
             {{episode.title}}
           </button>
-          <ng-template #plainTitle><span class="title" [title]="episode.title">{{episode.title}}</span></ng-template>
-        </ng-template>
+          <div *ngSwitchDefault class="title plain-title">
+            <span class="legend" [style.background-color]="episode.color"></span>
+            <span class="label" [title]="episode.title">{{episode.title}}</span>
+          </div>
+        </ng-container>
         <!-- responsive table only ever shows title, no prx-checkbox or .btn-link -->
         <span class="mobile-label title">{{episode.title}}</span>
       </div>
@@ -66,6 +69,8 @@ export class SummaryTableComponent {
   @Output() toggleChartPodcast = new EventEmitter<{id: string, charted: boolean}>();
   @Output() toggleChartEpisode = new EventEmitter<{guid: string, charted: boolean}>();
   @Output() chartSingleEpisode = new EventEmitter<string>();
+  checkbox = 'checkbox';
+  button = 'button';
 
   releaseDateFormat(date: Date): string {
     return dateFormat.monthDateYear(date);
@@ -79,7 +84,13 @@ export class SummaryTableComponent {
     return this.isDownloads && this.chartType === CHARTTYPE_STACKED;
   }
 
-  get showEpisodeToggles(): boolean {
-    return this.isDownloads && this.chartType !== CHARTTYPE_PODCAST;
+  get episodeTitleType(): string {
+    if (this.isDownloads && this.chartType !== CHARTTYPE_PODCAST) {
+      return this.checkbox;
+    } else if (this.isDownloads && this.chartType === CHARTTYPE_PODCAST) {
+      return this.button;
+    } else {
+      return '';
+    }
   }
 }

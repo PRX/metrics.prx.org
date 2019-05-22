@@ -50,6 +50,21 @@ prx-checkbox {
   background-color: #f0f0f0;
 }
 
+div.plain-title {
+  display: flex;
+  align-items: center;
+}
+div.plain-title > .legend {
+  display: inline-block;
+  min-height: 6px;
+  min-width: 6px;
+  margin-right: 6px;
+}
+div.plain-title > .label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .mobile-label {
   display: none;
 }

@@ -19,8 +19,7 @@ import * as ACTIONS from '@app/ngrx/actions';
       (toggleChartPodcast)="onToggleChartPodcast($event)"
       (toggleChartEpisode)="onToggleChartEpisode($event)"
       (chartSingleEpisode)="onChartSingleEpisode($event)"
-      (pageChange)="onPageChange($event)"
-      (toggleExpandedReport)="toggleExpandedReport($event)">
+      (pageChange)="onPageChange($event)">
     </metrics-downloads-table-presentation>
   `
 })
@@ -57,11 +56,5 @@ export class DownloadsTableContainerComponent implements OnInit {
 
   onPageChange(episodePage: number) {
     this.store.dispatch(new ACTIONS.RouteEpisodePageAction({episodePage}));
-  }
-
-  toggleExpandedReport(expanded) {
-    if (expanded) {
-      this.store.dispatch(new ACTIONS.GoogleAnalyticsEventAction({gaAction: 'table-expand'}));
-    }
   }
 }

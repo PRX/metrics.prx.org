@@ -12,8 +12,8 @@ import { DropdayComponent } from './dropday.component';
 import { DropdayChartContainerComponent } from './chart/dropday-chart-container.component';
 import { DropdayChartPresentationComponent } from './chart/dropday-chart-presentation.component';
 import { DropdayTableComponent } from './table/dropday-table.component';
-import { ScrollingTableComponent } from './table/scrolling-table.component';
 import { SummaryTableComponent } from './table/summary-table.component';
+import { PlaceholderComponent } from './placeholder.component';
 
 import { downloadsRouting } from './downloads.routing';
 
@@ -28,8 +28,8 @@ import { downloadsRouting } from './downloads.routing';
     DropdayChartContainerComponent,
     DropdayChartPresentationComponent,
     DropdayTableComponent,
-    ScrollingTableComponent,
-    SummaryTableComponent
+    SummaryTableComponent,
+    PlaceholderComponent
   ],
   imports: [
     CommonModule,

@@ -7,7 +7,6 @@ import { FancyFormModule } from 'ngx-prx-styleguide';
 import { SharedModule } from '@app/shared';
 import { DownloadsTableContainerComponent } from './downloads-table-container.component';
 import { DownloadsTablePresentationComponent } from './downloads-table-presentation.component';
-import { ScrollingTableComponent } from './scrolling-table.component';
 import { SummaryTableComponent } from './summary-table.component';
 
 import { reducers } from '@app/ngrx/reducers';
@@ -27,7 +26,6 @@ describe('DownloadsTableContainerComponent', () => {
       declarations: [
         DownloadsTableContainerComponent,
         DownloadsTablePresentationComponent,
-        ScrollingTableComponent,
         SummaryTableComponent
       ],
       imports: [

@@ -10,6 +10,7 @@ import { DropdayChartContainerComponent } from './chart/dropday-chart-container.
 import { DropdayChartPresentationComponent } from './chart/dropday-chart-presentation.component';
 import { DropdayTableComponent } from './table/dropday-table.component';
 import { SummaryTableComponent } from './table/summary-table.component';
+import { PlaceholderComponent } from './placeholder.component';
 
 import { RouterParams, CHARTTYPE_EPISODES, METRICSTYPE_DROPDAY } from '@app/ngrx';
 import { reducers } from '@app/ngrx/reducers';
@@ -32,7 +33,8 @@ describe('DropdayComponent', () => {
         DropdayChartContainerComponent,
         DropdayChartPresentationComponent,
         DropdayTableComponent,
-        SummaryTableComponent
+        SummaryTableComponent,
+        PlaceholderComponent
       ],
       imports: [
         SharedModule,

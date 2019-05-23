@@ -1,5 +1,6 @@
 :host {
-  flex-grow: 1;
+  display: block;
+  margin-top: 10px;
 }
 .title {
   max-width: 100%;
@@ -22,7 +23,6 @@ prx-checkbox {
 
 .row {
   display: flex;
-  height: 24px; /* height constrained to match scrolling table, TBD (to be deleted? :) */
   border-top: 1px solid #ddd;
 }
 .row > * {
@@ -38,7 +38,6 @@ prx-checkbox {
 }
 .row.header {
   border-top: none;
-  height: 45px; /* height accounts for 2 line hourly datetime */
   align-items: flex-end;
 }
 .header > div {

@@ -3,7 +3,8 @@ import { Router, RoutesRecognized } from '@angular/router';
 import { filter } from 'rxjs/operators';
 import { Store, select } from '@ngrx/store';
 import { selectRoutedPageEpisodes, selectRouter,
-  selectRoutedPodcastSelectedEpisodes, selectUserAuthorized } from '@app/ngrx/reducers/selectors/';
+  selectAggregateSelectedEpisodeGuids, selectSelectedEpisodeDropdays,
+  selectUserAuthorized } from '@app/ngrx/reducers/selectors/';
 import {
   RouterParams,
   Episode,
@@ -26,7 +27,8 @@ import {
   GROUPTYPE_AGENTTYPE,
   EPISODE_PAGE_SIZE,
   EPISODE_SELECT_PAGE_SIZE,
-  METRICSTYPE_DROPDAY
+  METRICSTYPE_DROPDAY,
+  EpisodeDropday
 } from '@app/ngrx/';
 import * as localStorageUtil from '@app/shared/util/local-storage.util';
 import * as dateUtil from '@app/shared/util/date/';
@@ -36,7 +38,8 @@ import * as ACTIONS from '@app/ngrx/actions/';
 export class RoutingService {
   routerParams: RouterParams;
   episodes: Episode[];
-  selectedEpisodes: Episode[];
+  aggregateSelectedEpisodeGuids: string[];
+  dropdayEpisodes: EpisodeDropday[];
 
   constructor (public store: Store<any>,
                private router: Router) {
@@ -71,8 +74,11 @@ export class RoutingService {
   }
 
   subSelectedEpisodes() {
-    this.store.pipe(select(selectRoutedPodcastSelectedEpisodes)).subscribe((episodes: Episode[]) => {
-      this.selectedEpisodes = episodes;
+    this.store.pipe(select(selectAggregateSelectedEpisodeGuids)).subscribe((guids: string[]) => {
+      this.aggregateSelectedEpisodeGuids = guids;
+    });
+    this.store.pipe(select(selectSelectedEpisodeDropdays)).subscribe((episodes: EpisodeDropday[]) => {
+      this.dropdayEpisodes = episodes;
     });
   }
 
@@ -108,24 +114,24 @@ export class RoutingService {
         break;
       case METRICSTYPE_DROPDAY:
         if (this.isPodcastChanged(newRouterParams) || this.isMetricsTypeChanged(newRouterParams)) {
-          if ((!this.selectedEpisodes || !this.selectedEpisodes.length)) {
+          if ((!this.dropdayEpisodes || !this.dropdayEpisodes.length)) {
             // just landed on dropdays but there no selected episodes
             // want to show the first page of episodes, but we likely don't have that...
             // so load the first page of episodes
             //  + an effect to loadRoutedDropdays when page 1 of episodes loads on dropdays and also select that page of episodes
             this.loadEpisodes({podcastId: newRouterParams.podcastId, episodePage: 1});
           } else {
-            this.loadSelectedEpisodeAllTimeDownloads(newRouterParams);
+            this.loadDropdayEpisodeAllTimeDownloads();
             this.loadSelectedEpisodeDropdays(newRouterParams);
           }
-        } else if (this.selectedEpisodes && this.selectedEpisodes.length &&
+        } else if (this.dropdayEpisodes && this.dropdayEpisodes.length &&
                   (this.isDropdaysChanged(newRouterParams) || this.isIntervalChanged(newRouterParams))) {
             // were already in dropdays w/ selected episodes but days or interval params changed
           this.loadSelectedEpisodeDropdays(newRouterParams);
         }
         break;
       case METRICSTYPE_DEMOGRAPHICS:
-        if (this.selectedEpisodes && this.selectedEpisodes.length > 0) {
+        if (this.aggregateSelectedEpisodeGuids && this.aggregateSelectedEpisodeGuids.length > 0) {
           if (this.isMetricsTypeChanged(newRouterParams) || this.isGroupChanged(newRouterParams) ||
               this.isBeginDateChanged(newRouterParams) || this.isEndDateChanged(newRouterParams)) {
             this.loadEpisodeTotals(newRouterParams);
@@ -172,7 +178,7 @@ export class RoutingService {
         }
         break;
       case METRICSTYPE_TRAFFICSOURCES:
-        if (this.selectedEpisodes && this.selectedEpisodes.length) {
+        if (this.aggregateSelectedEpisodeGuids && this.aggregateSelectedEpisodeGuids.length) {
           if (this.isMetricsTypeChanged(newRouterParams) || this.isGroupChanged(newRouterParams) ||
               this.isBeginDateChanged(newRouterParams) || this.isEndDateChanged(newRouterParams)) {
             this.loadEpisodeTotals(newRouterParams);
@@ -412,20 +418,21 @@ export class RoutingService {
     });
   }
 
-  loadSelectedEpisodeAllTimeDownloads(newRouterParams) {
-    this.selectedEpisodes.forEach((episode: Episode) => {
+  loadDropdayEpisodeAllTimeDownloads() {
+    this.dropdayEpisodes.forEach((episode: EpisodeDropday) => {
       this.store.dispatch(new ACTIONS.CastleEpisodeAllTimeDownloadsLoadAction({
-        podcastId: newRouterParams.podcastId || this.routerParams.podcastId,
+        podcastId: episode.podcastId,
         guid: episode.guid
       }));
     });
   }
 
   loadSelectedEpisodeDropdays(newRouterParams) {
-    this.selectedEpisodes.forEach((episode: Episode) => {
+    this.dropdayEpisodes.forEach((episode: EpisodeDropday) => {
       this.store.dispatch(new ACTIONS.CastleEpisodeDropdayLoadAction({
-        podcastId: newRouterParams.podcastId || this.routerParams.podcastId,
+        podcastId: episode.podcastId,
         guid: episode.guid,
+        title: episode.title,
         interval: newRouterParams.interval,
         publishedAt: episode.publishedAt,
         days: newRouterParams.days
@@ -455,9 +462,9 @@ export class RoutingService {
   }
 
   loadEpisodeTotals(newRouterParams: RouterParams) {
-    this.selectedEpisodes.forEach(episode => {
+    this.aggregateSelectedEpisodeGuids.forEach(guid => {
       this.store.dispatch(new ACTIONS.CastleEpisodeTotalsLoadAction({
-        guid: episode.guid,
+        guid,
         group: newRouterParams.group,
         filter: newRouterParams.filter,
         beginDate: newRouterParams.beginDate,
@@ -467,9 +474,9 @@ export class RoutingService {
   }
 
   loadEpisodeRanks(newRouterParams: RouterParams) {
-    this.selectedEpisodes.forEach(episode => {
+    this.aggregateSelectedEpisodeGuids.forEach(guid => {
       this.store.dispatch(new ACTIONS.CastleEpisodeRanksLoadAction({
-        guid: episode.guid,
+        guid,
         group: newRouterParams.group,
         filter: newRouterParams.filter,
         interval: newRouterParams.interval,

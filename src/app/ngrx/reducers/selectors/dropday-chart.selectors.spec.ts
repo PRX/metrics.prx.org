@@ -2,7 +2,8 @@ import { TestBed } from '@angular/core/testing';
 import { StoreModule, Store, select } from '@ngrx/store';
 
 import { RootState, reducers } from '../';
-import { CHARTTYPE_EPISODES, METRICSTYPE_DROPDAY, CHARTTYPE_HORIZBAR } from '../models';
+import * as ACTIONS from '../../actions';
+import { CHARTTYPE_EPISODES, METRICSTYPE_DROPDAY, CHARTTYPE_HORIZBAR, INTERVAL_DAILY } from '../models';
 import { getTotal } from '@app/shared/util/metrics.util';
 import { CategoryChartModel, IndexedChartModel } from 'ngx-prx-styleguide';
 import * as dispatchHelper from '@testing/dispatch.helpers';
@@ -97,7 +98,24 @@ describe('Dropday Chart Selectors', () => {
     it('should number non-unique episode titles', () => {
       dispatchHelper.dispatchEpisodeSelectList(store, [episodes[0], {...episodes[1], title: episodes[0].title}]);
       dispatchHelper.dispatchSelectEpisodes(store, routerParams.podcastId, METRICSTYPE_DROPDAY, [episodes[0].guid, episodes[1].guid]);
-      expect(result[0].label.indexOf('(1)')).toBeGreaterThan(-1);
+      store.dispatch(new ACTIONS.CastleEpisodeDropdaySuccessAction({
+        podcastId: episodes[0].podcastId,
+        guid: episodes[0].guid, // different guid
+        title: episodes[0].title, // same title
+        publishedAt: episodes[0].publishedAt,
+        interval: INTERVAL_DAILY,
+        downloads: ep0Downloads
+      }));
+      store.dispatch(new ACTIONS.CastleEpisodeDropdaySuccessAction({
+        podcastId: episodes[1].podcastId,
+        guid: episodes[1].guid, // different guid
+        title: episodes[0].title, // same title
+        publishedAt: episodes[1].publishedAt,
+        interval: INTERVAL_DAILY,
+        downloads: ep1Downloads
+      }));
+      // look for numbered title
+      expect(result[0].label.match(/\([0-9]+\)/).length).toBeGreaterThan(0);
     });
   });
 

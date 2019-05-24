@@ -82,6 +82,7 @@ export class CastleDownloadsEffects {
           return new ACTIONS.CastleEpisodeDropdayLoadAction({
             podcastId: episode.podcastId,
             guid: episode.guid,
+            title: episode.title,
             interval: this.routerParams.interval,
             publishedAt: episode.publishedAt,
             days: this.routerParams.days
@@ -205,7 +206,7 @@ export class CastleDownloadsEffects {
     ofType(ACTIONS.ActionTypes.CASTLE_EPISODE_DROPDAY_LOAD),
     map((action: ACTIONS.CastleEpisodeDropdayLoadAction) => action.payload),
     mergeMap((payload: ACTIONS.CastleEpisodeDropdayLoadPayload) => {
-      const { podcastId, guid, interval, publishedAt: from, days } = payload;
+      const { podcastId, guid, title, interval, publishedAt: from, days } = payload;
       const daysPublished = Math.ceil((new Date().valueOf() - from.valueOf()) / (1000 * 60 * 60 * 24));
       const to = dateUtil.addDays(from, Math.min(days, daysPublished) - 1); // day0 + (days - 1) = days
       return this.castle.followList('prx:episode-downloads', {
@@ -218,6 +219,7 @@ export class CastleDownloadsEffects {
           return new ACTIONS.CastleEpisodeDropdaySuccessAction({
             podcastId,
             guid,
+            title,
             interval,
             publishedAt: from,
             downloads: results[0]['downloads']
@@ -227,6 +229,7 @@ export class CastleDownloadsEffects {
           return of(new ACTIONS.CastleEpisodeDropdayFailureAction({
             podcastId,
             guid,
+            title,
             interval,
             publishedAt: from,
             error

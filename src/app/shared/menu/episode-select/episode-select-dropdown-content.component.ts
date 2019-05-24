@@ -131,7 +131,7 @@ export class EpisodeSelectDropdownContentComponent {
 
   onToggleSelectEpisode(episode: Episode) {
     let episodeGuids: string[];
-    const { podcastId, metricsType, group, filter, interval, beginDate, endDate } = this.routerParams;
+    const { podcastId, metricsType, group, filter, interval, beginDate, endDate, days } = this.routerParams;
     if (!this.selectedEpisodes || this.selectedEpisodes.indexOf(episode.guid) === -1) {
       episodeGuids = this.selectedEpisodes ? this.selectedEpisodes.concat([episode.guid]) : [episode.guid];
 
@@ -139,9 +139,10 @@ export class EpisodeSelectDropdownContentComponent {
         this.store.dispatch(new ACTIONS.CastleEpisodeDropdayLoadAction({
           podcastId,
           guid: episode.guid,
+          title: episode.title,
           interval,
           publishedAt: episode.publishedAt,
-          days: this.routerParams.days
+          days
         }));
         this.store.dispatch(new ACTIONS.CastleEpisodeAllTimeDownloadsLoadAction({
           podcastId,

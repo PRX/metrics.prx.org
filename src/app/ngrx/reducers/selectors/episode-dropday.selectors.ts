@@ -35,3 +35,11 @@ export const selectSelectedEpisodeDropdayErrors = createSelector(
     return dropdayErrors.filter(dropday => guids.indexOf(dropday.guid) > -1 );
   }
 );
+
+export const selectSelectedEpisodeDropdays = createSelector(
+  selectEpisodeDropdayEntities,
+  selectDropdaySelectedEpisodeGuids,
+  (dropdays, guids): EpisodeDropday[] => {
+    return guids && guids.filter(guid => dropdays[guid]).map(guid => dropdays[guid]);
+  }
+);

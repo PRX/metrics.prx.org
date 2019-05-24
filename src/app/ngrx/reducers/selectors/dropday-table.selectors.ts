@@ -1,29 +1,26 @@
 import { createSelector } from '@ngrx/store';
 import { Dictionary } from '@ngrx/entity';
-import { DownloadsTableModel, Episode, EpisodeAllTimeDownloads, EpisodeDropday } from '../models';
-import { selectRoutedPodcastSelectedEpisodes } from './episode-select.selectors';
-import { selectEpisodeDropdayEntities } from './episode-dropday.selectors';
+import { DownloadsTableModel, EpisodeAllTimeDownloads, EpisodeDropday } from '../models';
+import { selectSelectedEpisodeDropdays } from './episode-dropday.selectors';
 import { selectEpisodeAllTimeDownloadsEntities } from './episode-alltime-downloads.selectors';
 import { getTotal } from '@app/shared/util/metrics.util';
 import { getShade } from '@app/shared/util/chart.util';
 
 export const selectDropdayTableMetrics = createSelector(
-  selectRoutedPodcastSelectedEpisodes,
-  selectEpisodeDropdayEntities,
+  selectSelectedEpisodeDropdays,
   selectEpisodeAllTimeDownloadsEntities,
-  (episodes: Episode[],
-  dropdays: Dictionary<EpisodeDropday>,
+  (dropdays: EpisodeDropday[],
   allTimeDownloads: Dictionary<EpisodeAllTimeDownloads>): DownloadsTableModel[] => {
-    return episodes && episodes.filter(e => dropdays[e.guid] && dropdays[e.guid].downloads)
-      .sort((a: Episode, b: Episode) => b.publishedAt.valueOf() - a.publishedAt.valueOf())
-      .map((episode: Episode, episodeIndex: number, self) => {
+    return dropdays && dropdays.filter(dropday => dropday.downloads)
+      .sort((a: EpisodeDropday, b: EpisodeDropday) => b.publishedAt.valueOf() - a.publishedAt.valueOf())
+      .map((dropday: EpisodeDropday, episodeIndex: number, self) => {
         return {
-          id: episode.guid,
-          title: episode.title,
-          publishedAt: episode.publishedAt,
+          id: dropday.guid,
+          title: dropday.title,
+          publishedAt: dropday.publishedAt,
           color: getShade(self.length, episodeIndex),
-          totalForPeriod: getTotal(dropdays[episode.guid].downloads),
-          allTimeDownloads: allTimeDownloads[episode.guid] && allTimeDownloads[episode.guid].allTimeDownloads,
+          totalForPeriod: getTotal(dropday.downloads),
+          allTimeDownloads: allTimeDownloads[dropday.guid] && allTimeDownloads[dropday.guid].allTimeDownloads,
           charted: true
         };
       });

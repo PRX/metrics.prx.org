@@ -91,6 +91,7 @@ export const dispatchLoadEpisodeDropday = (store: Store<any>, podcastId?: string
   store.dispatch(new ACTIONS.CastleEpisodeDropdayLoadAction({
     podcastId: podcastId || fixtures.episodes[0].podcastId,
     guid: fixtures.episodes[0].guid,
+    title: fixtures.episodes[0].title,
     publishedAt: fixtures.episodes[0].publishedAt,
     interval: interval || fixtures.routerParams.interval,
     days: days || 28
@@ -98,6 +99,7 @@ export const dispatchLoadEpisodeDropday = (store: Store<any>, podcastId?: string
   store.dispatch(new ACTIONS.CastleEpisodeDropdayLoadAction({
     podcastId: podcastId || fixtures.episodes[1].podcastId,
     guid: fixtures.episodes[1].guid,
+    title: fixtures.episodes[1].title,
     publishedAt: fixtures.episodes[1].publishedAt,
     interval: interval || fixtures.routerParams.interval,
     days: days || 28
@@ -108,6 +110,7 @@ export const dispatchEpisodeDropday = (store: Store<any>, podcastId?: string, in
   store.dispatch(new ACTIONS.CastleEpisodeDropdaySuccessAction({
     podcastId: podcastId || fixtures.episodes[0].podcastId,
     guid: fixtures.episodes[0].guid,
+    title: fixtures.episodes[0].title,
     publishedAt: fixtures.episodes[0].publishedAt,
     interval: interval || fixtures.routerParams.interval,
     downloads: fixtures.ep0Downloads
@@ -115,6 +118,7 @@ export const dispatchEpisodeDropday = (store: Store<any>, podcastId?: string, in
   store.dispatch(new ACTIONS.CastleEpisodeDropdaySuccessAction({
     podcastId: podcastId || fixtures.episodes[1].podcastId,
     guid: fixtures.episodes[1].guid,
+    title: fixtures.episodes[1].title,
     publishedAt: fixtures.episodes[1].publishedAt,
     interval: interval || fixtures.routerParams.interval,
     downloads: fixtures.ep1Downloads

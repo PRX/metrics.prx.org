@@ -221,6 +221,7 @@ describe('CastleDownloadsEffects', () => {
       payload: {
         podcastId: episodes[0].podcastId,
         guid: episodes[0].guid,
+        title: episodes[0].title,
         interval: INTERVAL_DAILY,
         publishedAt,
         days: 28
@@ -229,6 +230,7 @@ describe('CastleDownloadsEffects', () => {
     const success = new ACTIONS.CastleEpisodeDropdaySuccessAction({
       podcastId: episodes[0].podcastId,
       guid: episodes[0].guid,
+      title: episodes[0].title,
       interval: INTERVAL_DAILY,
       publishedAt,
       downloads: ep0Downloads
@@ -327,6 +329,7 @@ describe('CastleDownloadsEffects', () => {
           return new ACTIONS.CastleEpisodeDropdayLoadAction({
             podcastId: e.podcastId,
             guid: e.guid,
+            title: e.title,
             interval: routerParams.interval,
             publishedAt: e.publishedAt,
             days: 28

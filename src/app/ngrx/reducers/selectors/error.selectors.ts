@@ -61,6 +61,7 @@ export const selectDropday500ErrorReloadActions = createSelector(
     return dropdayErrors.filter(d => d.error && d.error.status === 500)
       .map(d => new ACTIONS.CastleEpisodeDropdayLoadAction({
         guid: d.guid,
+        title: d.title,
         publishedAt: d.publishedAt,
         podcastId: routerParams.podcastId,
         interval: routerParams.interval,

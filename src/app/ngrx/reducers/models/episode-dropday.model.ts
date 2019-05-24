@@ -1,6 +1,7 @@
 export interface EpisodeDropday {
   id: string;
   guid: string;
+  title: string;
   podcastId: string;
   publishedAt: Date;
   interval: number;

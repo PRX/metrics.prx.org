@@ -148,6 +148,7 @@ export class CastleEpisodeAllTimeDownloadsFailureAction implements Action {
 export interface CastleEpisodeDropdayLoadPayload {
   podcastId: string;
   guid: string;
+  title: string;
   interval: IntervalModel;
   publishedAt: Date;
   days: number;
@@ -162,6 +163,7 @@ export class CastleEpisodeDropdayLoadAction implements Action {
 export interface CastleEpisodeDropdaySuccessPayload {
   podcastId: string;
   guid: string;
+  title: string;
   interval: IntervalModel;
   publishedAt: Date;
   downloads: any[][];
@@ -176,6 +178,7 @@ export class CastleEpisodeDropdaySuccessAction implements Action {
 export interface CastleEpisodeDropdayFailurePayload {
   podcastId: string;
   guid: string;
+  title: string;
   interval: IntervalModel;
   publishedAt: Date;
   error: any;

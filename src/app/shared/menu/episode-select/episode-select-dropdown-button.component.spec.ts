@@ -1,6 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { DebugElement } from '@angular/core';
 import { By } from '@angular/platform-browser';
+import { METRICSTYPE_DROPDAY } from '@app/ngrx';
 
 import { EpisodeSelectDropdownButtonComponent } from './episode-select-dropdown-button.component';
 
@@ -38,5 +39,9 @@ describe('EpisodeSelectDropdownButtonComponent', () => {
     comp.totalEpisodes = 0;
     fix.detectChanges();
     expect(de.query(By.css('div:first-child')).nativeElement.textContent.trim()).toEqual('No Episodes');
+
+    comp.metricsType = METRICSTYPE_DROPDAY;
+    comp.totalEpisodes = 14;
+    fix.detectChanges();
   });
 });

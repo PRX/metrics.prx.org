@@ -4,12 +4,13 @@ import { first } from 'rxjs/operators';
 
 import * as fromExport from './export.selectors';
 import { RootState, reducers } from '..';
-import { METRICSTYPE_DOWNLOADS, METRICSTYPE_TRAFFICSOURCES, METRICSTYPE_DEMOGRAPHICS,
+import { METRICSTYPE_DOWNLOADS, METRICSTYPE_DROPDAY, METRICSTYPE_TRAFFICSOURCES, METRICSTYPE_DEMOGRAPHICS,
   GROUPTYPE_AGENTNAME, GROUPTYPE_GEOCOUNTRY, GROUPTYPE_GEOSUBDIV, GROUPTYPE_GEOMETRO,
   INTERVAL_DAILY,
   CHARTTYPE_PODCAST, CHARTTYPE_EPISODES, CHARTTYPE_STACKED, CHARTTYPE_GEOCHART, CHARTTYPE_HORIZBAR, CHARTTYPE_LINE } from '../models';
-import * as dispatchHelper from '../../../../testing/dispatch.helpers';
-import * as fixtures from '../../../../testing/downloads.fixtures';
+import { getTotal } from '@app/shared/util/metrics.util';
+import * as dispatchHelper from '@testing/dispatch.helpers';
+import * as fixtures from '@testing/downloads.fixtures';
 
 describe('Export Selectors', () => {
   let store: Store<RootState>;
@@ -80,6 +81,32 @@ describe('Export Selectors', () => {
     it('should have filename', () => {
       store.pipe(select(fromExport.selectExportFilename), first()).subscribe(filename => {
         expect(filename).toContain('downloads');
+      });
+    });
+  });
+
+  describe('Dropday exports', () => {
+    beforeEach(() => {
+      dispatchHelper.dispatchPodcasts(store);
+      dispatchHelper.dispatchEpisodeSelectList(store);
+      dispatchHelper.dispatchSelectEpisodes(store,
+        fixtures.routerParams.podcastId, METRICSTYPE_DROPDAY, fixtures.episodes.map(e => e.guid));
+      dispatchHelper.dispatchEpisodeDropday(store);
+    });
+
+    it('should have dropday exports', () => {
+      dispatchHelper.dispatchRouterNavigation(store, {chartType: CHARTTYPE_HORIZBAR});
+      store.pipe(select(fromExport.selectExportDropday), first()).subscribe(exportData => {
+        expect(exportData.length).toEqual(fixtures.episodes.length);
+        expect(exportData[0].label).toEqual(fixtures.episodes[0].title);
+        expect(exportData[0].total).toEqual(getTotal(fixtures.ep0Downloads));
+      });
+
+      dispatchHelper.dispatchRouterNavigation(store, {chartType: CHARTTYPE_EPISODES});
+      store.pipe(select(fromExport.selectExportDropday), first()).subscribe(exportData => {
+        expect(exportData.length).toEqual(fixtures.episodes.length);
+        expect(exportData[0].label).toEqual(fixtures.episodes[0].title);
+        expect(exportData[0].data[0][1]).toEqual(getTotal(fixtures.ep0Downloads[0][1]));
       });
     });
   });

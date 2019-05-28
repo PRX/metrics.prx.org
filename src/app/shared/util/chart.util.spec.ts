@@ -33,6 +33,11 @@ describe('chart.util', () => {
     expect(subtracted[0].value).toEqual(timeseries[0].value * -1);
   });
 
+  it('should number non-unique episode titles for chart label', () => {
+    expect(chartUtil.uniqueEpisodeLabel(episodes[0], episodes)).toEqual(episodes[0].title);
+    expect(chartUtil.uniqueEpisodeLabel(episodes[0], [...episodes, episodes[0]])).toContain('(1)');
+  });
+
   describe('aggregated data', () => {
     const { filter, interval, beginDate, endDate } = routerParams,
       group = GROUPTYPE_AGENTNAME;

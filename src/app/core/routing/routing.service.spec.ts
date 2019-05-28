@@ -21,6 +21,7 @@ import {
   METRICSTYPE_TRAFFICSOURCES,
   METRICSTYPE_DEMOGRAPHICS,
   METRICSTYPE_DOWNLOADS,
+  METRICSTYPE_DROPDAY,
   CHARTTYPE_STACKED,
   CHARTTYPE_HORIZBAR,
   CHARTTYPE_PODCAST,
@@ -31,7 +32,7 @@ import {
 } from '@app/ngrx/';
 import * as dateUtil from '@app/shared/util/date/date.util';
 import * as localStorageUtil from '@app/shared/util/local-storage.util';
-import { userinfo, routerParams, episodes } from '@testing/downloads.fixtures';
+import { userinfo, routerParams, episodes, ep0Downloads, ep1Downloads } from '@testing/downloads.fixtures';
 
 @Component({
   selector: 'metrics-test-component',
@@ -113,6 +114,81 @@ describe('RoutingService', () => {
     expect(routingService.loadEpisodes).not.toHaveBeenCalled();
     store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerParams: {metricsType: METRICSTYPE_DOWNLOADS}}));
     expect(routingService.loadEpisodes).toHaveBeenCalled();
+  });
+
+  it('should load episodes for dropday if podcast changed', () => {
+    store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerParams:
+      {...routerParams, metricsType: METRICSTYPE_DROPDAY, days: 28}}));
+    jest.spyOn(routingService, 'loadEpisodes');
+    store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerParams: {podcastId: '72'}}));
+    expect(routingService.loadEpisodes).toHaveBeenCalled();
+  });
+
+  it('should load episodes for dropday if there are no episodes selected', () => {
+    jest.spyOn(routingService, 'loadEpisodes');
+    expect(routingService.dropdayEpisodes && routingService.dropdayEpisodes.length).toBeFalsy();
+    store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerParams:
+      {...routerParams, metricsType: METRICSTYPE_DROPDAY, days: 28}}));
+    expect(routingService.loadEpisodes).toHaveBeenCalled();
+  });
+
+  it('should load dropday downloads and all time downloads', () => {
+    jest.spyOn(routingService, 'loadDropdayEpisodeAllTimeDownloads');
+    jest.spyOn(routingService, 'loadSelectedEpisodeDropdays');
+    store.dispatch(new ACTIONS.CastleEpisodeDropdaySuccessAction({
+      podcastId: episodes[0].podcastId,
+      guid: episodes[0].guid,
+      title: episodes[0].title,
+      publishedAt: episodes[0].publishedAt,
+      interval: routerParams.interval,
+      downloads: ep0Downloads
+    }));
+    store.dispatch(new ACTIONS.CastleEpisodeDropdaySuccessAction({
+      podcastId: episodes[1].podcastId,
+      guid: episodes[1].guid,
+      title: episodes[1].title,
+      publishedAt: episodes[1].publishedAt,
+      interval: routerParams.interval,
+      downloads: ep1Downloads
+    }));
+    store.dispatch(new ACTIONS.EpisodeSelectEpisodesAction({
+      metricsType: METRICSTYPE_DROPDAY,
+      podcastId: routerParams.podcastId,
+      episodeGuids: episodes.map(e => e.guid)
+    }));
+    store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerParams:
+      {...routerParams, metricsType: METRICSTYPE_DROPDAY, days: 28}}));
+    expect(routingService.loadDropdayEpisodeAllTimeDownloads).toHaveBeenCalled();
+    expect(routingService.loadSelectedEpisodeDropdays).toHaveBeenCalled();
+  });
+
+  it('should load dropday downloads if days or interval changed', () => {
+    store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerParams:
+      {...routerParams, metricsType: METRICSTYPE_DROPDAY, days: 28}}));
+    store.dispatch(new ACTIONS.CastleEpisodeDropdaySuccessAction({
+      podcastId: episodes[0].podcastId,
+      guid: episodes[0].guid,
+      title: episodes[0].title,
+      publishedAt: episodes[0].publishedAt,
+      interval: routerParams.interval,
+      downloads: ep0Downloads
+    }));
+    store.dispatch(new ACTIONS.CastleEpisodeDropdaySuccessAction({
+      podcastId: episodes[1].podcastId,
+      guid: episodes[1].guid,
+      title: episodes[1].title,
+      publishedAt: episodes[1].publishedAt,
+      interval: routerParams.interval,
+      downloads: ep1Downloads
+    }));
+    store.dispatch(new ACTIONS.EpisodeSelectEpisodesAction({
+      metricsType: METRICSTYPE_DROPDAY,
+      podcastId: routerParams.podcastId,
+      episodeGuids: episodes.map(e => e.guid)
+    }));
+    jest.spyOn(routingService, 'loadSelectedEpisodeDropdays');
+    store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerParams: {interval: INTERVAL_MONTHLY, days: 90}}));
+    expect(routingService.loadSelectedEpisodeDropdays).toHaveBeenCalled();
   });
 
   it('should not reload grouped (geo/agent) podcast totals if interval changes', () => {
@@ -260,6 +336,27 @@ describe('RoutingService', () => {
       metricsType: METRICSTYPE_DOWNLOADS,
       chartType: CHARTTYPE_GEOCHART
     }).chartType).toEqual(CHARTTYPE_PODCAST);
+
+    expect(routingService.checkAndGetDefaults({
+      ...routerParams,
+      metricsType: METRICSTYPE_DROPDAY,
+      chartType: CHARTTYPE_PODCAST
+    }).chartType).toEqual(CHARTTYPE_HORIZBAR);
+    expect(routingService.checkAndGetDefaults({
+      ...routerParams,
+      metricsType: METRICSTYPE_DROPDAY,
+      chartType: CHARTTYPE_GEOCHART
+    }).chartType).toEqual(CHARTTYPE_HORIZBAR);
+    expect(routingService.checkAndGetDefaults({
+      ...routerParams,
+      metricsType: METRICSTYPE_DROPDAY,
+      chartType: CHARTTYPE_LINE
+    }).chartType).toEqual(CHARTTYPE_EPISODES);
+    expect(routingService.checkAndGetDefaults({
+      ...routerParams,
+      metricsType: METRICSTYPE_DROPDAY,
+      chartType: CHARTTYPE_STACKED
+    }).chartType).toEqual(CHARTTYPE_EPISODES);
 
     expect(routingService.checkAndGetDefaults({
       ...routerParams,

@@ -13,14 +13,15 @@ import {
   CHARTTYPE_EPISODES,
   INTERVAL_HOURLY,
   METRICSTYPE_DOWNLOADS,
+  METRICSTYPE_DROPDAY,
   User
 } from '../';
 import { reducers } from '../reducers';
 import * as ACTIONS from '../actions';
 import { RoutingEffects } from './routing.effects';
-import { RoutingService } from '../../core/routing/routing.service';
-import * as dateUtil from '../../shared/util/date';
-import { routerParams, userinfo } from '../../../testing/downloads.fixtures';
+import { RoutingService } from '@app/core/routing/routing.service';
+import * as dateUtil from '@app/shared/util/date';
+import { routerParams, userinfo } from '@testing/downloads.fixtures';
 
 @Component({
   selector: 'metrics-test-component',
@@ -38,6 +39,10 @@ describe('RoutingEffects', () => {
   const routes: Route[] = [
     {
       path: ':podcastId/reach/:chartType/:interval',
+      component: TestComponent
+    },
+    {
+      path: ':podcastId/dropday/:chartType/:interval',
       component: TestComponent
     },
     {
@@ -101,7 +106,11 @@ describe('RoutingEffects', () => {
     const expected = cold('-r', { r: result });
     expect(effects.customRouterNavigation$).toBeObservable(expected);
     // selected episodes dispatched to store
-    expect(store.dispatch).toHaveBeenCalledWith(new ACTIONS.EpisodeSelectEpisodesAction({episodeGuids: ['abcdefg', 'hijklmn']}));
+    expect(store.dispatch).toHaveBeenCalledWith(new ACTIONS.EpisodeSelectEpisodesAction({
+      podcastId: routerParams.podcastId,
+      metricsType: routerParams.metricsType,
+      episodeGuids: ['abcdefg', 'hijklmn']
+    }));
   });
 
   it('should route to podcast on episode page 1', () => {
@@ -183,5 +192,15 @@ describe('RoutingEffects', () => {
     const expected = cold('-r', { r: null });
     expect(effects.routeGroupFilter$).toBeObservable(expected);
     expect(effects.routingService.normalizeAndRoute).toHaveBeenCalledWith({filter: METRICSTYPE_DOWNLOADS});
+  });
+
+  it('should route to days', () => {
+    store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerParams: {...routerParams, metricsType: METRICSTYPE_DROPDAY}}));
+    const action = new ACTIONS.RouteDaysAction({days: 7});
+    store.dispatch(action);
+    actions$.stream = hot('-a', { a: action });
+    const expected = cold('-r', { r: null });
+    expect(effects.routeDays$).toBeObservable(expected);
+    expect(effects.routingService.normalizeAndRoute).toHaveBeenCalledWith({days: 7});
   });
 });

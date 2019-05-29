@@ -1,14 +1,16 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { DownloadsTableModel, ChartType, CHARTTYPE_STACKED, CHARTTYPE_PODCAST } from '@app/ngrx';
+import { DownloadsTableModel,
+  MetricsType, METRICSTYPE_DOWNLOADS,
+  ChartType, CHARTTYPE_STACKED, CHARTTYPE_PODCAST } from '@app/ngrx';
 import * as dateFormat from '@app/shared/util/date/date.format';
 
 @Component({
   selector: 'metrics-downloads-summary-table',
   template: `
-    <div class="header row">
+    <div class="header row" *ngIf="podcastTableData || (episodeTableData && episodeTableData.length)">
       <div>Episode</div>
       <div>Release Date</div>
-      <div class="charted">Downloads</div>
+      <div class="charted">{{ downloadsHeading }}</div>
       <div>All-Time</div>
     </div>
 
@@ -32,15 +34,22 @@ import * as dateFormat from '@app/shared/util/date/date.format';
 
     <div class="row" *ngFor="let episode of episodeTableData">
       <div>
-        <prx-checkbox *ngIf="showEpisodeToggles; else episodeTitle"
-          small [checked]="episode.charted" [color]="episode.color"
-                      (change)="toggleChartEpisode.emit({guid: episode.id, charted: $event})">
-          <span [title]="episode.title">{{episode.title}}</span>
-        </prx-checkbox>
-        <ng-template #episodeTitle>
-          <button class="btn-link title" (click)="chartSingleEpisode.emit(episode.id)" [title]="episode.title">{{episode.title}}</button>
-        </ng-template>
-        <!-- responsive table only ever shows title, no prx-checkbox or .btn-link -->
+        <ng-container [ngSwitch]="episodeTitleType">
+          <prx-checkbox *ngSwitchCase="checkbox"
+            small [checked]="episode.charted" [color]="episode.color"
+            (change)="toggleChartEpisode.emit({guid: episode.id, charted: $event})">
+            <span [title]="episode.title">{{episode.title}}</span>
+          </prx-checkbox>
+          <button *ngSwitchCase="button"
+            class="btn-link title" (click)="chartSingleEpisode.emit(episode.id)" [title]="episode.title">
+            {{episode.title}}
+          </button>
+          <div *ngSwitchDefault class="title plain-title">
+            <span class="legend" [style.background-color]="episode.color"></span>
+            <span class="label" [title]="episode.title">{{episode.title}}</span>
+          </div>
+        </ng-container>
+        <!-- responsive table only ever shows .mobile-label.title, no prx-checkbox or .btn-link or .title:not(.mobile-label) -->
         <span class="mobile-label title">{{episode.title}}</span>
       </div>
       <div><span class="mobile-label">Release date: </span>{{releaseDateFormat(episode.publishedAt)}}</div>
@@ -53,22 +62,40 @@ import * as dateFormat from '@app/shared/util/date/date.format';
   styleUrls: ['summary-table.component.css']
 })
 export class SummaryTableComponent {
+  @Input() metricsType: MetricsType;
   @Input() chartType: ChartType;
+  @Input() days: number;
   @Input() podcastTableData: DownloadsTableModel;
   @Input() episodeTableData: DownloadsTableModel[];
   @Output() toggleChartPodcast = new EventEmitter<{id: string, charted: boolean}>();
-  @Output() toggleChartEpisode = new EventEmitter<{episodeId: string, charted: boolean}>();
+  @Output() toggleChartEpisode = new EventEmitter<{guid: string, charted: boolean}>();
   @Output() chartSingleEpisode = new EventEmitter<string>();
+  checkbox = 'checkbox';
+  button = 'button';
 
   releaseDateFormat(date: Date): string {
     return dateFormat.monthDateYear(date);
   }
 
   get showPodcastToggle(): boolean {
-    return this.chartType === CHARTTYPE_STACKED;
+    return this.metricsType === METRICSTYPE_DOWNLOADS && this.chartType === CHARTTYPE_STACKED;
   }
 
-  get showEpisodeToggles(): boolean {
-    return this.chartType !== CHARTTYPE_PODCAST;
+  get downloadsHeading(): string {
+    return this.metricsType === METRICSTYPE_DOWNLOADS ?
+      'Downloads' :
+      this.days + ' Day Downloads';
+  }
+
+  get episodeTitleType(): string {
+    if (this.metricsType === METRICSTYPE_DOWNLOADS) {
+      if (this.chartType !== CHARTTYPE_PODCAST) {
+        return this.checkbox;
+      } else if (this.chartType === CHARTTYPE_PODCAST) {
+        return this.button;
+      }
+    } else {
+      return '';
+    }
   }
 }

@@ -3,11 +3,11 @@ import { StoreModule, Store, select } from '@ngrx/store';
 
 import { RootState, reducers } from '../';
 import { ChartType, CHARTTYPE_STACKED, CHARTTYPE_PODCAST, CHARTTYPE_EPISODES } from '../models';
-import { getTotal } from '../../../shared/util/chart.util';
+import { getTotal } from '@app/shared/util/chart.util';
 import { TimeseriesChartModel } from 'ngx-prx-styleguide';
-import * as dispatchHelper from '../../../../testing/dispatch.helpers';
+import * as dispatchHelper from '@testing/dispatch.helpers';
 import { routerParams, episodes,
-  podDownloads, ep0Downloads, ep1Downloads } from '../../../../testing/downloads.fixtures';
+  podDownloads, ep0Downloads, ep1Downloads } from '@testing/downloads.fixtures';
 import * as ACTIONS from '../../actions';
 import { episodeDownloadMetrics, selectDownloadChartMetrics } from './downloads-chart.selectors';
 
@@ -81,13 +81,13 @@ describe('Downloads Chart Selectors', () => {
 
     it('should only include charted episodes', () => {
       expect(result.length).toEqual(3);
-      dispatchHelper.dispatchEpisodeDownloadsChartToggle(store, episodes[0].guid);
+      dispatchHelper.dispatchEpisodeDownloadsChartToggle(store, episodes[0].podcastId, episodes[0].guid);
       expect(result.length).toEqual(2);
     });
 
     it('should only include selected episodes if set', () => {
       expect(result.length).toEqual(3);
-      dispatchHelper.dispatchSelectEpisodes(store, [episodes[0].guid]);
+      dispatchHelper.dispatchSelectEpisodes(store, routerParams.podcastId, routerParams.metricsType, [episodes[0].guid]);
       expect(result.length).toEqual(2);
     });
 
@@ -168,24 +168,28 @@ describe('Downloads Chart Selectors', () => {
 
     it('should only include charted episodes', () => {
       expect(result.length).toEqual(episodes.length);
-      store.dispatch(new ACTIONS.ChartToggleEpisodeAction({guid: episodes[0].guid, charted: false}));
+      store.dispatch(new ACTIONS.ChartToggleEpisodeAction({podcastId: episodes[0].podcastId, guid: episodes[0].guid, charted: false}));
       expect(result.length).toEqual(episodes.length - 1);
     });
 
     it('should only include selected episodes if set', () => {
       expect(result.length).toEqual(episodes.length);
-      store.dispatch(new ACTIONS.EpisodeSelectEpisodesAction({episodeGuids: [episodes[0].guid]}));
+      store.dispatch(new ACTIONS.EpisodeSelectEpisodesAction({
+        podcastId: routerParams.podcastId,
+        metricsType: routerParams.metricsType,
+        episodeGuids: [episodes[0].guid]
+      }));
       expect(result.length).toEqual(1);
     });
 
-    it('should add first part of guid string to non unique episode titles', () => {
+    it('should number non unique episode titles', () => {
       dispatchHelper.dispatchEpisodePage(store,
         [
           episodes[0],
           {...episodes[1], title: episodes[0].title}
         ]);
 
-      expect(result[0].label.indexOf(episodes[0].guid.split('-')[0].substr(0, 10))).toBeGreaterThan(-1);
+      expect(result[0].label.indexOf('(1) ')).toBeGreaterThan(-1);
     });
   });
 

@@ -1,7 +1,7 @@
 import { RouterParams, ChartType, MetricsType,
   INTERVAL_HOURLY, INTERVAL_DAILY, CHARTTYPE_PODCAST, CHARTTYPE_STACKED, METRICSTYPE_DOWNLOADS } from '../';
 import { CustomSerializer } from './router.serializer';
-import * as dateUtil from '../../shared/util/date';
+import * as dateUtil from '@app/shared/util/date';
 
 describe('CustomSerializer', () => {
   const serializer = new CustomSerializer();
@@ -19,7 +19,8 @@ describe('CustomSerializer', () => {
             episodePage: '1',
             guids: 'abcdefg',
             beginDate: '2017-11-09T00:00:00.000Z',
-            endDate: '2017-11-09T23:59:59.999Z'
+            endDate: '2017-11-09T23:59:59.999Z',
+            days: '28'
           }
         }
       }
@@ -33,7 +34,8 @@ describe('CustomSerializer', () => {
       guids: ['abcdefg'],
       beginDate: new Date('2017-11-09T00:00:00.000Z'),
       endDate: new Date('2017-11-09T23:59:59.999Z'),
-      standardRange: dateUtil.OTHER
+      standardRange: dateUtil.OTHER,
+      days: 28
     };
 
     const result = serializer.serialize(routerSnapshot);

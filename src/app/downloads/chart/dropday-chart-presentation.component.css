@@ -1,0 +1,41 @@
+:host {
+  display: block;
+  background-color: white;
+}
+
+/* don't display more than two lines of text on category chart labels (episode names) */
+prx-category-chart >>> .tick text tspan:nth-child(n + 3) {
+  display: none;
+}
+
+prx-indexed-chart >>> .c3-chart-line .c3-line {
+  stroke-width: 1.5px;
+}
+
+prx-indexed-chart >>> .c3-chart-line:nth-last-child(1) .c3-line {
+  stroke-width: 8.625px;
+}
+
+prx-indexed-chart >>> .c3-chart-line:nth-last-child(2) .c3-line {
+  stroke-width: 5.75px;
+}
+
+prx-indexed-chart >>> .c3-chart-line:nth-last-child(3) .c3-line {
+  stroke-width: 3.33px;
+}
+
+prx-indexed-chart >>>.c3-chart-line:nth-last-child(4) .c3-line {
+  stroke-width: 2.5px;
+}
+
+prx-indexed-chart >>> .c3-chart-line .c3-circle {
+  display: none;
+}
+
+prx-indexed-chart >>> .c3-chart-line .c3-circle:nth-last-child(1):nth-child(1) {
+  display: block;
+}
+
+p {
+  text-align: right;
+}

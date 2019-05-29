@@ -8,7 +8,7 @@ import {
   selectIntervalRoute,
   selectStandardRangeRoute
 } from '../../ngrx/reducers/selectors';
-import { RouterParams, IntervalModel, MetricsType, ChartType, METRICSTYPE_DOWNLOADS } from '../../ngrx';
+import { RouterParams, IntervalModel, MetricsType, ChartType, METRICSTYPE_DOWNLOADS, METRICSTYPE_DROPDAY } from '../../ngrx';
 
 @Component({
   selector: 'metrics-menu-bar',
@@ -22,16 +22,19 @@ import { RouterParams, IntervalModel, MetricsType, ChartType, METRICSTYPE_DOWNLO
         <div class="separator" *ngIf="(metricsType$ | async) !== downloads"></div>
         <metrics-interval-dropdown [routerParams]="routerParams$ | async"></metrics-interval-dropdown>
         <div class="separator"></div>
-        <metrics-standard-date-range-dropdown [interval]="interval$ | async" [standardRange]="standardRange$ | async">
-        </metrics-standard-date-range-dropdown>
-        <metrics-custom-date-range-dropdown [routerParams]="routerParams$ | async"></metrics-custom-date-range-dropdown>
+        <ng-container *ngIf="(metricsType$ | async) !== dropday; else dropdayMenu">
+          <metrics-standard-date-range-dropdown [interval]="interval$ | async" [standardRange]="standardRange$ | async">
+          </metrics-standard-date-range-dropdown>
+          <metrics-custom-date-range-dropdown [routerParams]="routerParams$ | async"></metrics-custom-date-range-dropdown>
+        </ng-container>
+        <ng-template #dropdayMenu>
+          <metrics-days-dropdown [routerParams]="routerParams$ | async"></metrics-days-dropdown>
+        </ng-template>
       </div>
     </div>
     <div class="summary">
-      <metrics-downloads-summary></metrics-downloads-summary>
-      <div>
-        <metrics-chart-type [selectedChartType]="chartType$ | async" [metricsType]="metricsType$ | async"></metrics-chart-type>
-      </div>
+      <metrics-downloads-summary *ngIf="(metricsType$ | async) !== dropday"></metrics-downloads-summary>
+      <metrics-chart-type [selectedChartType]="chartType$ | async" [metricsType]="metricsType$ | async"></metrics-chart-type>
     </div>
   `,
   styleUrls: ['./menu-bar.component.css']
@@ -43,6 +46,7 @@ export class MenuBarComponent {
   interval$: Observable<IntervalModel>;
   standardRange$: Observable<string>;
   downloads = METRICSTYPE_DOWNLOADS;
+  dropday = METRICSTYPE_DROPDAY;
 
   constructor(private store: Store<any>) {
     this.routerParams$ = this.store.pipe(select(selectRouter));

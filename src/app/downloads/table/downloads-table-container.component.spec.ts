@@ -7,7 +7,6 @@ import { FancyFormModule } from 'ngx-prx-styleguide';
 import { SharedModule } from '@app/shared';
 import { DownloadsTableContainerComponent } from './downloads-table-container.component';
 import { DownloadsTablePresentationComponent } from './downloads-table-presentation.component';
-import { ScrollingTableComponent } from './scrolling-table.component';
 import { SummaryTableComponent } from './summary-table.component';
 
 import { reducers } from '@app/ngrx/reducers';
@@ -27,7 +26,6 @@ describe('DownloadsTableContainerComponent', () => {
       declarations: [
         DownloadsTableContainerComponent,
         DownloadsTablePresentationComponent,
-        ScrollingTableComponent,
         SummaryTableComponent
       ],
       imports: [
@@ -64,19 +62,20 @@ describe('DownloadsTableContainerComponent', () => {
   }));
 
   it('should dispatch action on podcast chart toggle', () => {
-    comp.toggleChartPodcast({id: routerParams.podcastId, charted: false});
+    comp.onToggleChartPodcast({id: routerParams.podcastId, charted: false});
     expect(store.dispatch).toHaveBeenCalledWith(new ACTIONS.ChartTogglePodcastAction({id: routerParams.podcastId, charted: false}));
   });
 
   it('should dispatch action on episode chart toggle', () => {
-    comp.toggleChartEpisode({guid: episodes[0].guid, charted: false});
-    expect(store.dispatch).toHaveBeenCalledWith(new ACTIONS.ChartToggleEpisodeAction({guid: episodes[0].guid, charted: false}));
+    comp.onToggleChartEpisode({podcastId: routerParams.podcastId, guid: episodes[0].guid, charted: false});
+    expect(store.dispatch).toHaveBeenCalledWith(
+      new ACTIONS.ChartToggleEpisodeAction({podcastId: routerParams.podcastId, guid: episodes[0].guid, charted: false}));
   });
 
   it('should dispatch action on chart single episode and route to episode chart', () => {
-    comp.onChartSingleEpisode(episodes[1].guid);
-    expect(store.dispatch).toHaveBeenCalledWith(new ACTIONS.ChartSingleEpisodeAction(
-      {guid: episodes[1].guid}));
+    comp.onChartSingleEpisode({podcastId: routerParams.podcastId, guid: episodes[1].guid});
+    expect(store.dispatch).toHaveBeenCalledWith(
+      new ACTIONS.ChartSingleEpisodeAction({podcastId: routerParams.podcastId, guid: episodes[1].guid}));
     expect(store.dispatch).toHaveBeenCalledWith(new ACTIONS.RouteChartTypeAction({chartType: CHARTTYPE_EPISODES}));
   });
 

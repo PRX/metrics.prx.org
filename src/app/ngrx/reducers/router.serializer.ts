@@ -1,10 +1,9 @@
 import { ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 import { RouterStateSerializer } from '@ngrx/router-store';
 
-import { RouterParams, IntervalList,
-  METRICSTYPE_DEMOGRAPHICS, METRICSTYPE_DOWNLOADS, METRICSTYPE_TRAFFICSOURCES, MetricsType } from './models';
+import { RouterParams, IntervalList, MetricsType } from './models';
 
-import { getBeginEndDateFromStandardRange, getStandardRangeForBeginEndDate } from '../../shared/util/date/date.util';
+import { getBeginEndDateFromStandardRange, getStandardRangeForBeginEndDate } from '@app/shared/util/date/date.util';
 
 // serialize the route snapshot to our custom RouterParams
 export class CustomSerializer implements RouterStateSerializer<RouterParams> {
@@ -26,17 +25,7 @@ export class CustomSerializer implements RouterStateSerializer<RouterParams> {
       const urlParts = url.split('/');
       if (urlParts.length >= 3 && urlParts[2]) {
         const metricsType = urlParts[2].split(';')[0];
-        switch (metricsType) {
-          case METRICSTYPE_DOWNLOADS:
-            routerParams.metricsType = <MetricsType>METRICSTYPE_DOWNLOADS;
-            break;
-          case METRICSTYPE_DEMOGRAPHICS:
-            routerParams.metricsType = <MetricsType>METRICSTYPE_DEMOGRAPHICS;
-            break;
-          case METRICSTYPE_TRAFFICSOURCES:
-            routerParams.metricsType = <MetricsType>METRICSTYPE_TRAFFICSOURCES;
-            break;
-        }
+        routerParams.metricsType = <MetricsType>metricsType;
       }
       if (params['group']) {
         routerParams.group = params['group'];
@@ -89,6 +78,9 @@ export class CustomSerializer implements RouterStateSerializer<RouterParams> {
         const { beginDate, endDate } = getBeginEndDateFromStandardRange(routerParams.standardRange);
         routerParams.beginDate = beginDate;
         routerParams.endDate = endDate;
+      }
+      if (params['days']) {
+        routerParams.days = +params['days'];
       }
     }
     return routerParams;

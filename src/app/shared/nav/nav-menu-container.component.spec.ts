@@ -1,14 +1,13 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { DebugElement } from '@angular/core';
-import { RouterTestingModule } from '@angular/router/testing';
 import { StoreModule, Store } from '@ngrx/store';
 
 import { NavMenuContainerComponent } from './nav-menu-container.component';
 import { NavMenuPresentationComponent } from './nav-menu-presentation.component';
 
-import { reducers } from '../../ngrx/reducers';
-import * as ACTIONS from '../../ngrx/actions';
-import { routerParams } from '../../../testing/downloads.fixtures';
+import { reducers } from '@app/ngrx/reducers';
+import * as ACTIONS from '@app/ngrx/actions';
+import { routerParams } from '@testing/downloads.fixtures';
 
 describe('NavMenuContainerComponent', () => {
   let comp: NavMenuContainerComponent;
@@ -24,7 +23,6 @@ describe('NavMenuContainerComponent', () => {
         NavMenuPresentationComponent
       ],
       imports: [
-        /*RouterTestingModule,*/
         StoreModule.forRoot(reducers)
       ]
     }).compileComponents().then(() => {

@@ -1,3 +1,7 @@
+:host {
+  display: block;
+  margin-top: 10px;
+}
 .title {
   max-width: 100%;
   overflow: hidden;
@@ -19,24 +23,21 @@ prx-checkbox {
 
 .row {
   display: flex;
-  height: 24px; /* height constrained to match scrolling table, TBD (to be deleted? :) */
   border-top: 1px solid #ddd;
 }
 .row > * {
-  flex-basis: 30%;
-  padding: 0 20px;
+  flex-basis: 25%;
+  padding: 0 10px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 .row > div:first-child {
-  flex-basis: 200px;
   padding: 0 0 0 5px;
   font-size: 0.8em;
 }
 .row.header {
   border-top: none;
-  height: 45px; /* height accounts for 2 line hourly datetime */
   align-items: flex-end;
 }
 .header > div {
@@ -46,6 +47,21 @@ prx-checkbox {
 }
 .row > div.charted  {
   background-color: #f0f0f0;
+}
+
+div.plain-title {
+  display: flex;
+  align-items: center;
+}
+div.plain-title > .legend {
+  display: inline-block;
+  min-height: 6px;
+  min-width: 6px;
+  margin-right: 6px;
+}
+div.plain-title > .label {
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .mobile-label {

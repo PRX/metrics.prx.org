@@ -98,3 +98,13 @@ export class RouteGroupFilterAction implements Action {
 
   constructor(public payload: RouteGroupFilterPayload) {}
 }
+
+export interface RouteDaysPayload {
+  days: number;
+}
+
+export class RouteDaysAction implements Action {
+  readonly type = ActionTypes.ROUTE_DAYS;
+
+  constructor(public payload: RouteDaysPayload) {}
+}

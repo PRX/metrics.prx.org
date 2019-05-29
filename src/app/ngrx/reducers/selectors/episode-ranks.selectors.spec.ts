@@ -23,7 +23,11 @@ describe('Episode Ranks Selectors', () => {
     });
     store = TestBed.get(Store);
 
-    store.dispatch(new ACTIONS.EpisodeSelectEpisodesAction({episodeGuids: episodes.map(e => e.guid)}));
+    store.dispatch(new ACTIONS.EpisodeSelectEpisodesAction({
+      podcastId: routerParams.podcastId,
+      metricsType: METRICSTYPE_TRAFFICSOURCES,
+      episodeGuids: episodes.map(e => e.guid)
+    }));
     store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerParams: {...routerParams, metricsType, group, filter}}));
   });
 

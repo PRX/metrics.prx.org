@@ -10,7 +10,6 @@ import { DownloadsChartContainerComponent } from './chart/downloads-chart-contai
 import { DownloadsChartPresentationComponent } from './chart/downloads-chart-presentation.component';
 import { DownloadsTableContainerComponent } from './table/downloads-table-container.component';
 import { DownloadsTablePresentationComponent } from './table/downloads-table-presentation.component';
-import { ScrollingTableComponent } from './table/scrolling-table.component';
 import { SummaryTableComponent } from './table/summary-table.component';
 
 import { EPISODE_PAGE_SIZE } from '@app/ngrx';
@@ -34,7 +33,6 @@ describe('DownloadsComponent', () => {
         DownloadsChartPresentationComponent,
         DownloadsTableContainerComponent,
         DownloadsTablePresentationComponent,
-        ScrollingTableComponent,
         SummaryTableComponent
       ],
       imports: [

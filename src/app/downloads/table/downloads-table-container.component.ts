@@ -16,11 +16,10 @@ import * as ACTIONS from '@app/ngrx/actions';
       [episodeTableData]="episodeTableData$ | async"
       [intervalData]="intervalData$ | async"
       [routerParams]="routerParams$ | async"
-      (toggleChartPodcast)="toggleChartPodcast($event)"
-      (toggleChartEpisode)="toggleChartEpisode($event)"
+      (toggleChartPodcast)="onToggleChartPodcast($event)"
+      (toggleChartEpisode)="onToggleChartEpisode($event)"
       (chartSingleEpisode)="onChartSingleEpisode($event)"
-      (pageChange)="onPageChange($event)"
-      (toggleExpandedReport)="toggleExpandedReport($event)">
+      (pageChange)="onPageChange($event)">
     </metrics-downloads-table-presentation>
   `
 })
@@ -42,26 +41,20 @@ export class DownloadsTableContainerComponent implements OnInit {
     this.routerParams$ = this.store.pipe(select(selectRouter));
   }
 
-  toggleChartPodcast(params: {id: string, charted: boolean}) {
+  onToggleChartPodcast(params: {id: string, charted: boolean}) {
     this.store.dispatch(new ACTIONS.ChartTogglePodcastAction({...params}));
   }
 
-  toggleChartEpisode(params: {guid: string, charted: boolean}) {
-    this.store.dispatch(new ACTIONS.ChartToggleEpisodeAction({...params}));
+  onToggleChartEpisode(params: {podcastId: string, guid: string, charted: boolean}) {
+    this.store.dispatch(new ACTIONS.ChartToggleEpisodeAction(params));
   }
 
-  onChartSingleEpisode(guid: string) {
-    this.store.dispatch(new ACTIONS.ChartSingleEpisodeAction({guid}));
+  onChartSingleEpisode(params: {podcastId: string, guid: string}) {
+    this.store.dispatch(new ACTIONS.ChartSingleEpisodeAction(params));
     this.store.dispatch(new ACTIONS.RouteChartTypeAction({chartType: CHARTTYPE_EPISODES}));
   }
 
   onPageChange(episodePage: number) {
     this.store.dispatch(new ACTIONS.RouteEpisodePageAction({episodePage}));
-  }
-
-  toggleExpandedReport(expanded) {
-    if (expanded) {
-      this.store.dispatch(new ACTIONS.GoogleAnalyticsEventAction({gaAction: 'table-expand'}));
-    }
   }
 }

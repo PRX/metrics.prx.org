@@ -34,6 +34,14 @@ export const ISODate = (date: Date, separator = '-'): string => {
   return moment(date).utc().format(`YYYY${separator}MM${separator}DD`);
 };
 
+export const ISODateBeginHour = (date: Date): string => {
+  return moment(date).utc().format('YYYY-MM-DD HH:00:00');
+};
+
+export const ISODateEndDay = (date: Date): string => {
+  return moment(date).utc().format('YYYY-MM-DD 23:59:59');
+};
+
 export const defaultTZ = (date: Date): string => {
   return moment(date).format();
 };

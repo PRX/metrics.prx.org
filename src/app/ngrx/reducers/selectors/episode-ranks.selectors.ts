@@ -18,8 +18,8 @@ import {
   selectBeginDateRoute,
   selectEndDateRoute } from './router.selectors';
 import { CategoryChartModel, TimeseriesChartModel } from 'ngx-prx-styleguide';
-import { aggregateTotalsBarChart, aggregateIntervals, aggregateTotalDownloads, getTotal } from '../../../shared/util/chart.util';
-import { selectSelectedEpisodeGuids } from './episode-select.selectors';
+import { aggregateTotalsBarChart, aggregateIntervals, aggregateTotalDownloads } from '../../../shared/util/chart.util';
+import { selectAggregateSelectedEpisodeGuids } from './episode-select.selectors';
 import { selectRoutedGroupCharted } from './group-charted.selectors';
 
 export const selectEpisodeRanksState = createFeatureSelector<fromEpisodeRanks.State>('episodeRanks');
@@ -48,7 +48,7 @@ export const selectAllEpisodeRanksErrors = createSelector(selectAllEpisodeRanks,
 });
 
 export const selectSelectedEpisodesRanks = createSelector(
-  selectSelectedEpisodeGuids,
+  selectAggregateSelectedEpisodeGuids,
   selectGroupRoute,
   selectFilterRoute,
   selectIntervalRoute,
@@ -84,7 +84,7 @@ export const selectSelectedEpisodesRanksErrors = createSelector(
 );
 
 export const selectNestedEpisodesRanks = createSelector(
-  selectSelectedEpisodeGuids,
+  selectAggregateSelectedEpisodeGuids,
   selectFilterRoute,
   selectIntervalRoute,
   selectBeginDateRoute,

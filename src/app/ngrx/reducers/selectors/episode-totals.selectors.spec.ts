@@ -9,7 +9,7 @@ import { routerParams, episodes, ep0AgentNameRanks } from '../../../../testing/d
 
 describe('Episode Totals Selectors', () => {
   let store: Store<RootState>;
-  const { interval, beginDate, endDate } = routerParams,
+  const { beginDate, endDate } = routerParams,
     metricsType = METRICSTYPE_TRAFFICSOURCES,
     group = GROUPTYPE_AGENTNAME,
     filter = 'US';
@@ -22,7 +22,11 @@ describe('Episode Totals Selectors', () => {
     });
     store = TestBed.get(Store);
 
-    store.dispatch(new ACTIONS.EpisodeSelectEpisodesAction({episodeGuids: episodes.map(e => e.guid)}));
+    store.dispatch(new ACTIONS.EpisodeSelectEpisodesAction({
+      podcastId: routerParams.podcastId,
+      metricsType: METRICSTYPE_TRAFFICSOURCES,
+      episodeGuids: episodes.map(e => e.guid)
+    }));
     store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerParams: {...routerParams, metricsType, group, filter}}));
   });
 

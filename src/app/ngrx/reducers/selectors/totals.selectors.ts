@@ -3,12 +3,12 @@ import { selectRoutedPodcastTotals, selectNestedPodcastTotals,
   selectRoutedPodcastTotalsTableMetrics, selectNestedPodcastTotalsTableMetrics } from './podcast-totals.selectors';
 import { selectSelectedEpisodesTotals, selectNestedEpisodesTotals,
   selectSelectedEpisodesTotalsTableMetrics, selectNestedEpisodesTotalsTableMetrics } from './episode-totals.selectors';
-import { selectSelectedEpisodeGuids } from './episode-select.selectors';
+import { selectAggregateSelectedEpisodeGuids } from './episode-select.selectors';
 import { TotalsTableRow, EpisodeTotals, PodcastTotals, Rank } from '../models';
 import { aggregateTotalsRanks } from '../../../shared/util/chart.util';
 
 export const selectTotalsRanks =
-  createSelector(selectSelectedEpisodeGuids, selectSelectedEpisodesTotals, selectRoutedPodcastTotals,
+  createSelector(selectAggregateSelectedEpisodeGuids, selectSelectedEpisodesTotals, selectRoutedPodcastTotals,
   (guids: string[], episode: EpisodeTotals[], podcast: PodcastTotals): Rank[] => {
     if (guids && guids.length) {
       return aggregateTotalsRanks(episode);
@@ -18,7 +18,7 @@ export const selectTotalsRanks =
   });
 
 export const selectNestedTotalsRanks =
-createSelector(selectSelectedEpisodeGuids, selectNestedEpisodesTotals, selectNestedPodcastTotals,
+createSelector(selectAggregateSelectedEpisodeGuids, selectNestedEpisodesTotals, selectNestedPodcastTotals,
   (guids: string[], episode: EpisodeTotals[], podcast: PodcastTotals): Rank[] => {
     if (guids && guids.length) {
       return aggregateTotalsRanks(episode);
@@ -28,13 +28,13 @@ createSelector(selectSelectedEpisodeGuids, selectNestedEpisodesTotals, selectNes
   });
 
 export const selectTableMetrics =
-  createSelector(selectSelectedEpisodeGuids, selectSelectedEpisodesTotalsTableMetrics, selectRoutedPodcastTotalsTableMetrics,
+  createSelector(selectAggregateSelectedEpisodeGuids, selectSelectedEpisodesTotalsTableMetrics, selectRoutedPodcastTotalsTableMetrics,
   (guids: string[], episode: TotalsTableRow[], podcast: TotalsTableRow[]) => {
     return guids && guids.length ? episode : podcast;
   });
 
 export const selectNestedTableMetrics =
-  createSelector(selectSelectedEpisodeGuids, selectNestedEpisodesTotalsTableMetrics, selectNestedPodcastTotalsTableMetrics,
+  createSelector(selectAggregateSelectedEpisodeGuids, selectNestedEpisodesTotalsTableMetrics, selectNestedPodcastTotalsTableMetrics,
   (guids: string[], episode: TotalsTableRow[], podcast: TotalsTableRow[]) => {
     return guids && guids.length ? episode : podcast;
   });

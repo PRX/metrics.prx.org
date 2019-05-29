@@ -1,15 +1,13 @@
 import { Injectable } from '@angular/core';
 import { map, switchMap } from 'rxjs/operators';
 import { of, Observable } from 'rxjs';
-import { Action, Store, select } from '@ngrx/store';
+import { Action, Store } from '@ngrx/store';
 import { ROUTER_NAVIGATION, RouterNavigationAction, RouterNavigationPayload } from '@ngrx/router-store';
 import { Actions, Effect, ofType } from '@ngrx/effects';
-import { RouterParams } from '../';
 import { ActionTypes } from '../actions';
 import * as ACTIONS from '../actions';
-import * as dateUtil from '../../shared/util/date';
-import { RoutingService } from '../../core/routing/routing.service';
-import { selectSelectedEpisodeGuids } from '../reducers/selectors';
+import * as dateUtil from '@app/shared/util/date';
+import { RoutingService } from '@app/core/routing/routing.service';
 
 @Injectable()
 export class RoutingEffects {
@@ -30,7 +28,11 @@ export class RoutingEffects {
       const { guids, ...routerParams } = payload.routerState;
       // select any episode guids on the route
       if (guids) {
-        this.store.dispatch(new ACTIONS.EpisodeSelectEpisodesAction({episodeGuids: guids}));
+        this.store.dispatch(new ACTIONS.EpisodeSelectEpisodesAction({
+          podcastId: routerParams.podcastId,
+          metricsType: routerParams.metricsType,
+          episodeGuids: guids
+        }));
       }
       // map to an action with our CUSTOM_ROUTER_NAVIGATION type
       return of(new ACTIONS.CustomRouterNavigationAction({routerParams}));
@@ -122,6 +124,17 @@ export class RoutingEffects {
     switchMap((payload: ACTIONS.RouteGroupFilterPayload) => {
       const { filter } = payload;
       this.routingService.normalizeAndRoute(({filter}));
+      return of(null);
+    })
+  );
+
+  @Effect({dispatch: false})
+  routeDays$: Observable<void> = this.actions$.pipe(
+    ofType(ActionTypes.ROUTE_DAYS),
+    map((action: ACTIONS.RouteDaysAction) => action.payload),
+    switchMap((payload: ACTIONS.RouteDaysPayload) => {
+      const { days } = payload;
+      this.routingService.normalizeAndRoute(({days}));
       return of(null);
     })
   );

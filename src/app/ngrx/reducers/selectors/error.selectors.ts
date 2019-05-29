@@ -6,11 +6,14 @@ import { selectEpisodeDownloadsError } from './episode-downloads.selectors';
 import { selectPodcastDownloadsError } from './podcast-downloads.selectors';
 import { selectRoutedPodcastRanksError, selectNestedPodcastRanksError } from './podcast-ranks.selectors';
 import { selectRoutedPodcastTotalsError, selectNestedPodcastTotalsError } from './podcast-totals.selectors';
-import { selectSelectedEpisodeGuids } from './episode-select.selectors';
+import { selectAggregateSelectedEpisodeGuids } from './episode-select.selectors';
 import { selectSelectedEpisodesRanksErrors, selectNestedEpisodesRanksErrors } from './episode-ranks.selectors';
 import { selectSelectedEpisodesTotalsErrors, selectNestedEpisodesTotalsErrors } from './episode-totals.selectors';
+import { selectSelectedEpisodeDropdayErrors } from './episode-dropday.selectors';
 import * as ACTIONS from '../../actions';
-import { RouterParams, EpisodeDownloads, PodcastDownloads, METRICSTYPE_DOWNLOADS, GROUPTYPE_GEOSUBDIV, EPISODE_PAGE_SIZE } from '../models';
+import { RouterParams, EpisodeDownloads, PodcastDownloads, EpisodeDropday,
+  GROUPTYPE_GEOSUBDIV, EPISODE_PAGE_SIZE,
+  METRICSTYPE_DOWNLOADS, METRICSTYPE_DROPDAY, METRICSTYPE_DEMOGRAPHICS, METRICSTYPE_TRAFFICSOURCES } from '../models';
 
 // this feels like it's starting to cross a boundary of responsibility here, so it seems important to note that
 // these actions are not being dispatched by the reducers/selectors
@@ -51,9 +54,25 @@ export const selectDownload500ErrorReloadActions = createSelector(
     return actions;
   });
 
+export const selectDropday500ErrorReloadActions = createSelector(
+  selectRouter,
+  selectSelectedEpisodeDropdayErrors,
+  (routerParams: RouterParams, dropdayErrors: EpisodeDropday[]) => {
+    return dropdayErrors.filter(d => d.error && d.error.status === 500)
+      .map(d => new ACTIONS.CastleEpisodeDropdayLoadAction({
+        guid: d.guid,
+        title: d.title,
+        publishedAt: d.publishedAt,
+        podcastId: routerParams.podcastId,
+        interval: routerParams.interval,
+        days: routerParams.days
+      }));
+  }
+);
+
 export const selectRankTotal500ErrorReloadActions = createSelector(
   selectRouter,
-  selectSelectedEpisodeGuids,
+  selectAggregateSelectedEpisodeGuids,
   selectRoutedPodcastRanksError,
   selectRoutedPodcastTotalsError,
   selectSelectedEpisodesRanksErrors,
@@ -111,31 +130,37 @@ export const select500ErrorReloadActions =
     selectPodcastError,
     selectEpisodeError,
     selectDownload500ErrorReloadActions,
+    selectDropday500ErrorReloadActions,
     selectRankTotal500ErrorReloadActions,
   (routerParams: RouterParams,
     podcastError: any,
     episodeError: any,
     downloadErrorReloadActions: ACTIONS.AllActions[],
+    dropdayErrorReloadActions: ACTIONS.AllActions[],
     rankTotalErrorReloadActions: ACTIONS.AllActions[]) => {
-    let actions = [];
+    const actions = [];
     if (podcastError && podcastError.status === 500) {
       actions.push(new ACTIONS.CastlePodcastPageLoadAction({page: 1, all: true}));
     }
-    if (routerParams.metricsType === METRICSTYPE_DOWNLOADS) {
-      if (episodeError && episodeError.status === 500) {
-        actions.push(new ACTIONS.CastleEpisodePageLoadAction({
-          podcastId: routerParams.podcastId, page: 1, per: EPISODE_PAGE_SIZE}));
-      }
-      actions = actions.concat(downloadErrorReloadActions);
-    } else {
-      actions = actions.concat(rankTotalErrorReloadActions);
+    if ((routerParams.metricsType === METRICSTYPE_DOWNLOADS || routerParams.metricsType === METRICSTYPE_DROPDAY) &&
+        episodeError && episodeError.status === 500) {
+      actions.push(new ACTIONS.CastleEpisodePageLoadAction({
+        podcastId: routerParams.podcastId, page: 1, per: EPISODE_PAGE_SIZE}));
     }
-    return actions;
+    switch (routerParams.metricsType) {
+    case METRICSTYPE_DOWNLOADS:
+      return actions.concat(downloadErrorReloadActions);
+    case METRICSTYPE_DROPDAY:
+      return actions.concat(dropdayErrorReloadActions);
+    case METRICSTYPE_DEMOGRAPHICS:
+    case METRICSTYPE_TRAFFICSOURCES:
+      return actions.concat(rankTotalErrorReloadActions);
+    }
   });
 
 export const selectNested500ErrorReloadActions = createSelector(
   selectRouter,
-  selectSelectedEpisodeGuids,
+  selectAggregateSelectedEpisodeGuids,
   selectNestedPodcastRanksError,
   selectNestedPodcastTotalsError,
   selectNestedEpisodesRanksErrors,

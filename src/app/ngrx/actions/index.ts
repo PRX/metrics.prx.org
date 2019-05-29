@@ -8,7 +8,9 @@ import {
   CastleEpisodePageFailureAction,
   CastleEpisodeSelectPageLoadAction,
   CastleEpisodeSelectPageSuccessAction,
-  CastleEpisodeSelectPageFailureAction,
+  CastleEpisodeSelectPageFailureAction
+} from './castle-catalog.action.creator';
+import {
   CastlePodcastAllTimeDownloadsLoadAction,
   CastlePodcastAllTimeDownloadsSuccessAction,
   CastlePodcastAllTimeDownloadsFailureAction,
@@ -21,6 +23,11 @@ import {
   CastleEpisodeDownloadsLoadAction,
   CastleEpisodeDownloadsSuccessAction,
   CastleEpisodeDownloadsFailureAction,
+  CastleEpisodeDropdayLoadAction,
+  CastleEpisodeDropdaySuccessAction,
+  CastleEpisodeDropdayFailureAction
+} from './castle-downloads.action.creator';
+import {
   CastlePodcastRanksLoadAction,
   CastlePodcastRanksSuccessAction,
   CastlePodcastRanksFailureAction,
@@ -33,13 +40,13 @@ import {
   CastleEpisodeTotalsLoadAction,
   CastleEpisodeTotalsSuccessAction,
   CastleEpisodeTotalsFailureAction
-} from './castle.action.creator';
+} from './castle-ranks-totals.action.creator';
 import { GoogleAnalyticsEventAction } from './google-analytics.action.creator';
 import { CustomRouterNavigationAction,
   RoutePodcastAction, RouteEpisodePageAction,
   RouteChartTypeAction, RouteIntervalAction,
   RouteStandardRangeAction, RouteAdvancedRangeAction,
-  RouteMetricsGroupTypeAction, RouteGroupFilterAction } from './router.action.creator';
+  RouteMetricsGroupTypeAction, RouteGroupFilterAction, RouteDaysAction } from './router.action.creator';
 import {
   ChartSingleEpisodeAction,
   ChartToggleEpisodeAction,
@@ -71,6 +78,9 @@ export type AllActions
   | CastleEpisodeAllTimeDownloadsLoadAction
   | CastleEpisodeAllTimeDownloadsSuccessAction
   | CastleEpisodeAllTimeDownloadsFailureAction
+  | CastleEpisodeDropdayLoadAction
+  | CastleEpisodeDropdaySuccessAction
+  | CastleEpisodeDropdayFailureAction
   | CastlePodcastRanksLoadAction
   | CastlePodcastRanksSuccessAction
   | CastlePodcastRanksFailureAction
@@ -94,6 +104,7 @@ export type AllActions
   | RouteAdvancedRangeAction
   | RouteMetricsGroupTypeAction
   | RouteGroupFilterAction
+  | RouteDaysAction
   | ChartSingleEpisodeAction
   | ChartToggleEpisodeAction
   | ChartTogglePodcastAction
@@ -109,7 +120,9 @@ export {
   CastlePodcastPageSuccessPayload, CastlePodcastPageSuccessAction, CastlePodcastPageFailureAction,
   CastleEpisodePageLoadPayload, CastleEpisodePageLoadAction,
   CastleEpisodePageSuccessPayload, CastleEpisodePageSuccessAction, CastleEpisodePageFailureAction,
-  CastleEpisodeSelectPageLoadAction, CastleEpisodeSelectPageSuccessAction, CastleEpisodeSelectPageFailureAction,
+  CastleEpisodeSelectPageLoadAction, CastleEpisodeSelectPageSuccessAction, CastleEpisodeSelectPageFailureAction
+} from './castle-catalog.action.creator';
+export {
   CastlePodcastDownloadsLoadPayload, CastlePodcastDownloadsLoadAction,
   CastlePodcastDownloadsSuccessPayload, CastlePodcastDownloadsSuccessAction,
   CastlePodcastDownloadsFailurePayload, CastlePodcastDownloadsFailureAction,
@@ -122,6 +135,11 @@ export {
   CastleEpisodeDownloadsLoadPayload, CastleEpisodeDownloadsLoadAction,
   CastleEpisodeDownloadsSuccessPayload, CastleEpisodeDownloadsSuccessAction,
   CastleEpisodeDownloadsFailurePayload, CastleEpisodeDownloadsFailureAction,
+  CastleEpisodeDropdayLoadPayload, CastleEpisodeDropdayLoadAction,
+  CastleEpisodeDropdaySuccessPayload, CastleEpisodeDropdaySuccessAction,
+  CastleEpisodeDropdayFailurePayload, CastleEpisodeDropdayFailureAction
+} from './castle-downloads.action.creator';
+export {
   CastlePodcastRanksLoadPayload, CastlePodcastRanksLoadAction,
   CastlePodcastRanksSuccessPayload, CastlePodcastRanksSuccessAction,
   CastlePodcastRanksFailurePayload, CastlePodcastRanksFailureAction,
@@ -133,7 +151,8 @@ export {
   CastleEpisodeRanksFailurePayload, CastleEpisodeRanksFailureAction,
   CastleEpisodeTotalsLoadPayload, CastleEpisodeTotalsLoadAction,
   CastleEpisodeTotalsSuccessPayload, CastleEpisodeTotalsSuccessAction,
-  CastleEpisodeTotalsFailurePayload, CastleEpisodeTotalsFailureAction } from './castle.action.creator';
+  CastleEpisodeTotalsFailurePayload, CastleEpisodeTotalsFailureAction
+} from './castle-ranks-totals.action.creator';
 export { GoogleAnalyticsEventPayload, GoogleAnalyticsEventAction } from './google-analytics.action.creator';
 export { CustomRouterNavigationPayload, CustomRouterNavigationAction,
   RoutePodcastPayload, RoutePodcastAction,
@@ -143,7 +162,8 @@ export { CustomRouterNavigationPayload, CustomRouterNavigationAction,
   RouteAdvancedRangePayload, RouteAdvancedRangeAction,
   RouteStandardRangePayload, RouteStandardRangeAction,
   RouteMetricsGroupTypePayload, RouteMetricsGroupTypeAction,
-  RouteGroupFilterPayload, RouteGroupFilterAction } from './router.action.creator';
+  RouteGroupFilterPayload, RouteGroupFilterAction,
+  RouteDaysPayload, RouteDaysAction } from './router.action.creator';
 export { ChartSingleEpisodePayload, ChartSingleEpisodeAction,
   ChartToggleEpisodePayload, ChartToggleEpisodeAction,
   ChartTogglePodcastPayload, ChartTogglePodcastAction,

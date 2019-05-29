@@ -17,7 +17,9 @@ import {
   EpisodeTotals,
   Rank,
   GroupCharted,
-  TotalsTableRow
+  TotalsTableRow,
+  Episode,
+  EpisodeDropday
 } from '../../ngrx';
 import * as dateFormat from './date/date.format';
 import * as metricsUtil from './metrics.util';
@@ -46,7 +48,7 @@ export const getTotal = (data: TimeseriesDatumModel[]): number => {
   }
 };
 
-export const baseColor = 'rgb(32, 80, 96)';
+export const baseColor = 'rgb(0, 82, 113)';
 export const neutralColor = '#a3a3a3';
 export const standardColor = '#0089bd';
 
@@ -347,4 +349,11 @@ export const toGoogleDataTable = (ranks: Rank[], heading: string) => {
   data.addColumn('number', 'Downloads');
   data.addRows(ranks.map(d => [{v: d.code, f: d.label}, d.total]));
   return data;
+};
+
+export const uniqueEpisodeLabel = (episode: Episode | EpisodeDropday, episodes: (Episode | EpisodeDropday)[]): string => {
+  const episodesWithTitle = episodes.filter(e => e.title === episode.title);
+  return episodesWithTitle.length > 1 ?
+    `(${episodesWithTitle.findIndex(e => e.guid === episode.guid) + 1}) ${episode.title}` :
+    episode.title;
 };

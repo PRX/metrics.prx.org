@@ -4,11 +4,11 @@ import { Episode, EpisodeDownloads, PodcastDownloads, RouterParams,
   CHARTTYPE_EPISODES, CHARTTYPE_PODCAST, CHARTTYPE_STACKED } from '../models';
 import { selectRouter } from './router.selectors';
 import { selectRoutedPageEpisodes } from './episode.selectors';
-import { selectSelectedEpisodeGuids } from './episode-select.selectors';
+import { selectDownloadsSelectedEpisodeGuids } from './episode-select.selectors';
 import { selectRoutedPodcastDownloads } from './podcast-downloads.selectors';
 import { selectRoutedEpisodePageDownloads } from './episode-downloads.selectors';
 import { mapMetricsToTimeseriesData, subtractTimeseriesDatasets, getTotal,
-  neutralColor, standardColor, getColor } from '../../../shared/util/chart.util';
+  neutralColor, standardColor, getColor, uniqueEpisodeLabel } from '@app/shared/util/chart.util';
 
 export const podcastDownloadMetrics = (podcastDownloads: PodcastDownloads): {label: string, data: any[][]} => {
   if (podcastDownloads && podcastDownloads.downloads) {
@@ -28,10 +28,10 @@ export const episodeDownloadMetrics =
         const data = episodeDownloads.find(e => e.guid === episode.guid);
         return data && data.downloads && data.downloads.length;
       })
-      .map((episode: Episode) => {
+      .map((episode: Episode, i, self) => {
         return {
           guid: episode.guid,
-          label: episode.title,
+          label: uniqueEpisodeLabel(episode, self),
           publishedAt: episode.publishedAt,
           data: episodeDownloads.find(e => e.guid === episode.guid).downloads
         };
@@ -44,7 +44,7 @@ export const selectDownloadChartMetrics = createSelector(
   selectRoutedPageEpisodes,
   selectRoutedPodcastDownloads,
   selectRoutedEpisodePageDownloads,
-  selectSelectedEpisodeGuids,
+  selectDownloadsSelectedEpisodeGuids,
   (routerParams: RouterParams,
    episodes: Episode[],
    podcastDownloads: PodcastDownloads,
@@ -68,13 +68,11 @@ export const selectDownloadChartMetrics = createSelector(
     if (routerParams.chartType === CHARTTYPE_EPISODES || routerParams.chartType === CHARTTYPE_STACKED) {
       if (episodes.length && episodeDownloads.length) {
         chartedEpisodeDownloads = episodeDownloadMetrics(episodes, episodeDownloads)
-          .map((downloads, idx, self) => {
-            const uniqueLabel = self.filter(e => e.label === downloads.label).length > 1 ?
-              downloads.label + ' ' + downloads.guid.split('-')[0].substr(0, 10) : downloads.label;
+          .map((downloads, idx) => {
             return {
               data: mapMetricsToTimeseriesData(downloads.data),
               guid: downloads.guid,
-              label: uniqueLabel,
+              label: downloads.label,
               color: getColor(idx)
             };
           })

@@ -12,4 +12,5 @@ export interface RouterParams {
   standardRange?: string;
   beginDate?: Date;
   endDate?: Date;
+  days?: number;
 }

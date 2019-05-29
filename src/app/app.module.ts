@@ -7,7 +7,6 @@ import { EffectsModule } from '@ngrx/effects';
 import { AuthModule } from 'ngx-prx-styleguide';
 import { StoreModule, ActionReducerMap } from '@ngrx/store';
 import { Angulartics2Module } from 'angulartics2';
-import { Angulartics2GoogleAnalytics } from 'angulartics2/ga';
 
 import { AppComponent } from './app.component';
 import { routing, routingProviders, routingComponents } from './app.routing';
@@ -17,7 +16,9 @@ import { CoreModule } from './core';
 import { SharedModule } from './shared';
 
 import { reducers, RootState, CustomSerializer } from './ngrx/reducers';
-import { CastleEffects } from './ngrx/effects/castle.effects';
+import { CastleCatalogEffects } from './ngrx/effects/castle-catalog.effects';
+import { CastleDownloadsEffects } from './ngrx/effects/castle-downloads.effects';
+import { CastleRanksTotalsEffects } from './ngrx/effects/castle-ranks-totals.effects';
 import { GoogleAnalyticsEffects } from './ngrx/effects/google-analytics.effects';
 import { IdEffects } from './ngrx/effects/id.effects';
 import { RoutingEffects } from './ngrx/effects/routing.effects';
@@ -54,7 +55,14 @@ export const reducerProvider = { provide: reducerToken, useFactory: getReducers 
     }),
     Angulartics2Module.forRoot(),
     StoreRouterConnectingModule,
-    EffectsModule.forRoot([CastleEffects, IdEffects, RoutingEffects, GoogleAnalyticsEffects]),
+    EffectsModule.forRoot([
+      CastleCatalogEffects,
+      CastleDownloadsEffects,
+      CastleRanksTotalsEffects,
+      GoogleAnalyticsEffects,
+      IdEffects,
+      RoutingEffects
+    ]),
     routing,
     LoginModule,
     DownloadsModule,

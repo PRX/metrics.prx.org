@@ -1,7 +1,7 @@
 import { CustomRouterNavigationAction } from '../actions';
 import { RouterParams, INTERVAL_DAILY, INTERVAL_HOURLY, CHARTTYPE_STACKED, METRICSTYPE_DOWNLOADS, GROUPTYPE_GEOCOUNTRY } from '../';
 import { CustomRouterReducer } from './router.reducer';
-import * as dateUtil from '../../shared/util/date';
+import * as dateUtil from '@app/shared/util/date';
 
 describe('CustomRouterReducer', () => {
   let newState: RouterParams;
@@ -85,6 +85,12 @@ describe('CustomRouterReducer', () => {
     newState = CustomRouterReducer(newState,
       new CustomRouterNavigationAction({routerParams: {beginDate: dateUtil.beginningOfTodayUTC().subtract(18, 'days').toDate()}}));
     expect(newState.standardRange).toBeUndefined();
+  });
+
+  it ('should update with new days', () => {
+    newState = CustomRouterReducer(newState,
+      new CustomRouterNavigationAction({routerParams: {days: 7}}));
+    expect(newState.days).toEqual(7);
   });
 
   it ('should retain other fields when updating', () => {

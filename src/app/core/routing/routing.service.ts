@@ -2,18 +2,20 @@ import { Injectable } from '@angular/core';
 import { Router, RoutesRecognized } from '@angular/router';
 import { filter } from 'rxjs/operators';
 import { Store, select } from '@ngrx/store';
-import { selectRoutedPageEpisodes, selectRouter, selectSelectedEpisodeGuids, selectUserAuthorized } from '../../ngrx/reducers/selectors/';
+import { selectRoutedPageEpisodes, selectRouter,
+  selectAggregateSelectedEpisodeGuids, selectSelectedEpisodeDropdays,
+  selectUserAuthorized } from '@app/ngrx/reducers/selectors/';
 import {
   RouterParams,
   Episode,
-  MetricsType,
-  ChartType,
   CHARTTYPE_PODCAST,
   CHARTTYPE_EPISODES,
   CHARTTYPE_LINE,
   CHARTTYPE_HORIZBAR,
   CHARTTYPE_GEOCHART,
+  CHARTTYPE_STACKED,
   INTERVAL_DAILY,
+  INTERVAL_HOURLY,
   METRICSTYPE_DEMOGRAPHICS,
   METRICSTYPE_DOWNLOADS,
   METRICSTYPE_TRAFFICSOURCES,
@@ -24,17 +26,20 @@ import {
   GROUPTYPE_AGENTNAME,
   GROUPTYPE_AGENTTYPE,
   EPISODE_PAGE_SIZE,
-  EPISODE_SELECT_PAGE_SIZE
-} from '../../ngrx/';
-import * as localStorageUtil from '../../shared/util/local-storage.util';
-import * as dateUtil from '../../shared/util/date/';
-import * as ACTIONS from '../../ngrx/actions/';
+  EPISODE_SELECT_PAGE_SIZE,
+  METRICSTYPE_DROPDAY,
+  EpisodeDropday
+} from '@app/ngrx/';
+import * as localStorageUtil from '@app/shared/util/local-storage.util';
+import * as dateUtil from '@app/shared/util/date/';
+import * as ACTIONS from '@app/ngrx/actions/';
 
 @Injectable()
 export class RoutingService {
   routerParams: RouterParams;
   episodes: Episode[];
-  selectedEpisodes: string[];
+  aggregateSelectedEpisodeGuids: string[];
+  dropdayEpisodes: EpisodeDropday[];
 
   constructor (public store: Store<any>,
                private router: Router) {
@@ -69,8 +74,11 @@ export class RoutingService {
   }
 
   subSelectedEpisodes() {
-    this.store.pipe(select(selectSelectedEpisodeGuids)).subscribe((guids: string[]) => {
-      this.selectedEpisodes = guids;
+    this.store.pipe(select(selectAggregateSelectedEpisodeGuids)).subscribe((guids: string[]) => {
+      this.aggregateSelectedEpisodeGuids = guids;
+    });
+    this.store.pipe(select(selectSelectedEpisodeDropdays)).subscribe((episodes: EpisodeDropday[]) => {
+      this.dropdayEpisodes = episodes;
     });
   }
 
@@ -104,8 +112,26 @@ export class RoutingService {
           this.loadDownloads(newRouterParams);
         }
         break;
+      case METRICSTYPE_DROPDAY:
+        if (this.isPodcastChanged(newRouterParams) || this.isMetricsTypeChanged(newRouterParams)) {
+          if ((!this.dropdayEpisodes || !this.dropdayEpisodes.length)) {
+            // just landed on dropdays but there no selected episodes
+            // want to show the first page of episodes, but we likely don't have that...
+            // so load the first page of episodes
+            //  + an effect to loadRoutedDropdays when page 1 of episodes loads on dropdays and also select that page of episodes
+            this.loadEpisodes({podcastId: newRouterParams.podcastId, episodePage: 1});
+          } else {
+            this.loadDropdayEpisodeAllTimeDownloads();
+            this.loadSelectedEpisodeDropdays(newRouterParams);
+          }
+        } else if (this.dropdayEpisodes && this.dropdayEpisodes.length &&
+                  (this.isDropdaysChanged(newRouterParams) || this.isIntervalChanged(newRouterParams))) {
+            // were already in dropdays w/ selected episodes but days or interval params changed
+          this.loadSelectedEpisodeDropdays(newRouterParams);
+        }
+        break;
       case METRICSTYPE_DEMOGRAPHICS:
-        if (this.selectedEpisodes && this.selectedEpisodes.length > 0) {
+        if (this.aggregateSelectedEpisodeGuids && this.aggregateSelectedEpisodeGuids.length > 0) {
           if (this.isMetricsTypeChanged(newRouterParams) || this.isGroupChanged(newRouterParams) ||
               this.isBeginDateChanged(newRouterParams) || this.isEndDateChanged(newRouterParams)) {
             this.loadEpisodeTotals(newRouterParams);
@@ -152,7 +178,7 @@ export class RoutingService {
         }
         break;
       case METRICSTYPE_TRAFFICSOURCES:
-        if (this.selectedEpisodes && this.selectedEpisodes.length) {
+        if (this.aggregateSelectedEpisodeGuids && this.aggregateSelectedEpisodeGuids.length) {
           if (this.isMetricsTypeChanged(newRouterParams) || this.isGroupChanged(newRouterParams) ||
               this.isBeginDateChanged(newRouterParams) || this.isEndDateChanged(newRouterParams)) {
             this.loadEpisodeTotals(newRouterParams);
@@ -195,6 +221,9 @@ export class RoutingService {
     if (routerParams.endDate) {
       params['endDate'] = routerParams.endDate.toUTCString();
     }
+    if (routerParams.days) {
+      params['days'] = routerParams.days;
+    }
     if (routerParams.metricsType === METRICSTYPE_DEMOGRAPHICS && routerParams.group === GROUPTYPE_GEOCOUNTRY) {
       params['filter'] = routerParams.filter;
     }
@@ -202,6 +231,7 @@ export class RoutingService {
     localStorageUtil.setItem(localStorageUtil.KEY_ROUTER_PARAMS, routerParams);
 
     switch (routerParams.metricsType) {
+      case METRICSTYPE_DROPDAY:
       case METRICSTYPE_DOWNLOADS:
         this.router.navigate([
           routerParams.podcastId,
@@ -228,13 +258,20 @@ export class RoutingService {
 
   checkAndGetDefaults(routerParams: RouterParams) {
     if (!routerParams.metricsType) {
-      routerParams.metricsType = <MetricsType>METRICSTYPE_DOWNLOADS;
+      routerParams.metricsType = METRICSTYPE_DOWNLOADS;
     }
     switch (routerParams.metricsType) {
       case METRICSTYPE_DOWNLOADS:
         if (!routerParams.chartType || routerParams.chartType === CHARTTYPE_HORIZBAR || routerParams.chartType === CHARTTYPE_GEOCHART) {
-          routerParams.chartType = <ChartType>CHARTTYPE_PODCAST;
-        } else if (routerParams.chartType === <ChartType>CHARTTYPE_LINE) {
+          routerParams.chartType = CHARTTYPE_PODCAST;
+        } else if (routerParams.chartType === CHARTTYPE_LINE) {
+          routerParams.chartType = CHARTTYPE_EPISODES;
+        }
+        break;
+      case METRICSTYPE_DROPDAY:
+        if (!routerParams.chartType || routerParams.chartType === CHARTTYPE_PODCAST || routerParams.chartType === CHARTTYPE_GEOCHART) {
+          routerParams.chartType = CHARTTYPE_HORIZBAR;
+        } else if (routerParams.chartType === CHARTTYPE_LINE || routerParams.chartType === CHARTTYPE_STACKED) {
           routerParams.chartType = CHARTTYPE_EPISODES;
         }
         break;
@@ -271,17 +308,27 @@ export class RoutingService {
     if (!routerParams.interval) {
       routerParams.interval = INTERVAL_DAILY;
     }
-    if (!routerParams.episodePage) {
+    if (routerParams.metricsType === METRICSTYPE_DOWNLOADS && !routerParams.episodePage) {
       routerParams.episodePage = 1;
     }
-    if (!routerParams.standardRange) {
-      routerParams.standardRange = dateUtil.LAST_28_DAYS;
-    }
-    if (!routerParams.beginDate) {
-      routerParams.beginDate = dateUtil.beginningOfLast28DaysUTC().toDate();
-    }
-    if (!routerParams.endDate) {
-      routerParams.endDate = dateUtil.endOfTodayUTC().toDate();
+
+    if (routerParams.metricsType === METRICSTYPE_DROPDAY) {
+      if (!routerParams.days) {
+        routerParams.days = 28;
+      }
+      if (routerParams.interval === INTERVAL_HOURLY && routerParams.days > 7) {
+        routerParams.days = 7;
+      }
+    } else {
+      if (!routerParams.standardRange) {
+        routerParams.standardRange = dateUtil.LAST_28_DAYS;
+      }
+      if (!routerParams.beginDate) {
+        routerParams.beginDate = dateUtil.beginningOfLast28DaysUTC().toDate();
+      }
+      if (!routerParams.endDate) {
+        routerParams.endDate = dateUtil.endOfTodayUTC().toDate();
+      }
     }
     return routerParams;
   }
@@ -326,6 +373,11 @@ export class RoutingService {
       (!this.routerParams || !this.routerParams.interval || this.routerParams.interval.value !== newRouterParams.interval.value);
   }
 
+  isDropdaysChanged(newRouterParams: RouterParams): boolean {
+    return newRouterParams && newRouterParams.days &&
+      (!this.routerParams || !this.routerParams.days || this.routerParams.days !== newRouterParams.days);
+  }
+
   loadEpisodes(newRouterParams: RouterParams) {
     this.store.dispatch(new ACTIONS.CastleEpisodePageLoadAction({
       podcastId: newRouterParams.podcastId,
@@ -366,6 +418,28 @@ export class RoutingService {
     });
   }
 
+  loadDropdayEpisodeAllTimeDownloads() {
+    this.dropdayEpisodes.forEach((episode: EpisodeDropday) => {
+      this.store.dispatch(new ACTIONS.CastleEpisodeAllTimeDownloadsLoadAction({
+        podcastId: episode.podcastId,
+        guid: episode.guid
+      }));
+    });
+  }
+
+  loadSelectedEpisodeDropdays(newRouterParams) {
+    this.dropdayEpisodes.forEach((episode: EpisodeDropday) => {
+      this.store.dispatch(new ACTIONS.CastleEpisodeDropdayLoadAction({
+        podcastId: episode.podcastId,
+        guid: episode.guid,
+        title: episode.title,
+        interval: newRouterParams.interval,
+        publishedAt: episode.publishedAt,
+        days: newRouterParams.days
+      }));
+    });
+  }
+
   loadPodcastTotals(newRouterParams: RouterParams) {
     this.store.dispatch(new ACTIONS.CastlePodcastTotalsLoadAction({
       podcastId: newRouterParams.podcastId,
@@ -388,7 +462,7 @@ export class RoutingService {
   }
 
   loadEpisodeTotals(newRouterParams: RouterParams) {
-    this.selectedEpisodes.forEach(guid => {
+    this.aggregateSelectedEpisodeGuids.forEach(guid => {
       this.store.dispatch(new ACTIONS.CastleEpisodeTotalsLoadAction({
         guid,
         group: newRouterParams.group,
@@ -400,7 +474,7 @@ export class RoutingService {
   }
 
   loadEpisodeRanks(newRouterParams: RouterParams) {
-    this.selectedEpisodes.forEach(guid => {
+    this.aggregateSelectedEpisodeGuids.forEach(guid => {
       this.store.dispatch(new ACTIONS.CastleEpisodeRanksLoadAction({
         guid,
         group: newRouterParams.group,

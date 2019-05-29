@@ -4,7 +4,7 @@ import { EpisodeTotals, episodeTotalsId,
   TotalsTableRow, GroupCharted,
   GroupType, GROUPTYPE_GEOSUBDIV } from '../models';
 import { selectGroupRoute, selectFilterRoute, selectBeginDateRoute, selectEndDateRoute } from './router.selectors';
-import { selectSelectedEpisodeGuids } from './episode-select.selectors';
+import { selectAggregateSelectedEpisodeGuids } from './episode-select.selectors';
 import { aggregateTotalsTable, aggregateTotalDownloads } from '../../../shared/util/chart.util';
 import { selectRoutedGroupCharted } from './group-charted.selectors';
 
@@ -37,7 +37,7 @@ export const selectAllEpisodeTotalsLoaded = createSelector(selectAllEpisodeTotal
 });
 
 export const selectSelectedEpisodesTotals = createSelector(
-  selectSelectedEpisodeGuids,
+  selectAggregateSelectedEpisodeGuids,
   selectGroupRoute,
   selectFilterRoute,
   selectBeginDateRoute,
@@ -66,7 +66,7 @@ export const selectSelectedEpisodesTotalsErrors = createSelector(
 );
 
 export const selectNestedEpisodesTotals = createSelector(
-  selectSelectedEpisodeGuids,
+  selectAggregateSelectedEpisodeGuids,
   selectFilterRoute,
   selectBeginDateRoute,
   selectEndDateRoute,

@@ -2,9 +2,10 @@ import { Component, Input, OnChanges, HostListener } from '@angular/core';
 import { Store } from '@ngrx/store';
 import {
   RouterParams, IntervalModel,
-  INTERVAL_MONTHLY, INTERVAL_WEEKLY, INTERVAL_DAILY, INTERVAL_HOURLY, METRICSTYPE_DOWNLOADS
-} from '../../ngrx';
-import { RouteIntervalAction } from '../../ngrx/actions';
+  INTERVAL_MONTHLY, INTERVAL_WEEKLY, INTERVAL_DAILY, INTERVAL_HOURLY,
+  METRICSTYPE_DOWNLOADS, METRICSTYPE_DROPDAY, METRICSTYPE_DEMOGRAPHICS, METRICSTYPE_TRAFFICSOURCES
+} from '@app/ngrx';
+import { RouteIntervalAction } from '@app/ngrx/actions';
 import * as dateUtil from '../util/date';
 
 @Component({
@@ -41,7 +42,7 @@ export class IntervalDropdownComponent implements OnChanges {
   constructor(private store: Store<any>) {}
 
   ngOnChanges() {
-    if (this.routerParams && this.routerParams.interval && this.routerParams.beginDate && this.routerParams.endDate) {
+    if (this.routerParams && this.routerParams.interval) {
       this.selectedInterval = this.routerParams.interval;
       this.intervalOptions = this.getIntervalOptions();
     }
@@ -53,11 +54,19 @@ export class IntervalDropdownComponent implements OnChanges {
      40 days at 1h
      2.7 years at 1d
      */
-    if (this.routerParams.metricsType !== METRICSTYPE_DOWNLOADS ||
-      dateUtil.isMoreThanXDays(40, this.routerParams.beginDate, this.routerParams.endDate)) {
-      return [INTERVAL_DAILY, INTERVAL_WEEKLY, INTERVAL_MONTHLY];
-    } else {
-      return [INTERVAL_HOURLY, INTERVAL_DAILY, INTERVAL_WEEKLY, INTERVAL_MONTHLY];
+    switch (this.routerParams.metricsType) {
+      case METRICSTYPE_DOWNLOADS:
+        return this.routerParams.beginDate && this.routerParams.endDate &&
+          dateUtil.isMoreThanXDays(40, this.routerParams.beginDate, this.routerParams.endDate) ?
+          [INTERVAL_DAILY, INTERVAL_WEEKLY, INTERVAL_MONTHLY] :
+          [INTERVAL_HOURLY, INTERVAL_DAILY, INTERVAL_WEEKLY, INTERVAL_MONTHLY];
+      case METRICSTYPE_DROPDAY:
+        return this.routerParams.days > 40 ?
+          [INTERVAL_DAILY, INTERVAL_WEEKLY, INTERVAL_MONTHLY] :
+          [INTERVAL_HOURLY, INTERVAL_DAILY, INTERVAL_WEEKLY, INTERVAL_MONTHLY];
+      case METRICSTYPE_DEMOGRAPHICS:
+      case METRICSTYPE_TRAFFICSOURCES:
+        return [INTERVAL_DAILY, INTERVAL_WEEKLY, INTERVAL_MONTHLY];
     }
   }
 

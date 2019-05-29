@@ -3,16 +3,18 @@ import { Episode, EpisodeDownloads, Podcast, PodcastDownloads, RouterParams,
   PodcastRanks, EpisodeRanks, PodcastTotals, EpisodeTotals, Rank, ExportData,
   GROUPTYPE_GEOCOUNTRY, GroupCharted,
   CHARTTYPE_EPISODES, CHARTTYPE_PODCAST, CHARTTYPE_STACKED, CHARTTYPE_GEOCHART, CHARTTYPE_HORIZBAR,
-  METRICSTYPE_DOWNLOADS, INTERVAL_HOURLY, IntervalModel } from '../models';
-import { selectRouter, selectIntervalRoute } from './router.selectors';
+  MetricsType, METRICSTYPE_DOWNLOADS, METRICSTYPE_DROPDAY, METRICSTYPE_DEMOGRAPHICS, METRICSTYPE_TRAFFICSOURCES,
+  INTERVAL_HOURLY, IntervalModel, EpisodeDropday } from '../models';
+import { selectRouter, selectIntervalRoute, selectMetricsTypeRoute } from './router.selectors';
 import { selectRoutedPageEpisodes } from './episode.selectors';
 import { selectRoutedPodcastDownloads } from './podcast-downloads.selectors';
 import { selectRoutedEpisodePageDownloads } from './episode-downloads.selectors';
+import { selectSelectedEpisodeDropdays } from './episode-dropday.selectors';
 import { podcastDownloadMetrics, episodeDownloadMetrics } from './downloads-chart.selectors';
-import { aggregateIntervalsExport, aggregateTotalsExport, isGroupCharted } from '../../../shared/util/chart.util';
-import { getTotal } from '../../../shared/util/metrics.util';
-import * as dateUtil from '../../../shared/util/date';
-import { selectSelectedEpisodeGuids } from './episode-select.selectors';
+import { aggregateIntervalsExport, aggregateTotalsExport, isGroupCharted } from '@app/shared/util/chart.util';
+import { getTotal } from '@app/shared/util/metrics.util';
+import * as dateUtil from '@app/shared/util/date';
+import { selectDownloadsSelectedEpisodeGuids, selectAggregateSelectedEpisodeGuids } from './episode-select.selectors';
 import { selectRoutedPodcastRanks, selectNestedPodcastRanks } from './podcast-ranks.selectors';
 import { selectRoutedPodcastTotals, selectNestedPodcastTotals } from './podcast-totals.selectors';
 import { selectSelectedEpisodesRanks, selectNestedEpisodesRanks } from './episode-ranks.selectors';
@@ -25,7 +27,7 @@ export const selectExportDownloads = createSelector(
   selectRoutedPageEpisodes,
   selectRoutedPodcastDownloads,
   selectRoutedEpisodePageDownloads,
-  selectSelectedEpisodeGuids,
+  selectDownloadsSelectedEpisodeGuids,
   (routerParams: RouterParams,
   episodes: Episode[],
   podcastDownloads: PodcastDownloads,
@@ -72,25 +74,51 @@ export const selectExportDownloads = createSelector(
   return exportData;
 });
 
-export const toCsvArray = (downloads: ExportData[], dateFormat: Function): string[][] => {
+export const selectExportDropday = createSelector(
+  selectRouter,
+  selectSelectedEpisodeDropdays,
+  (routerParams, dropdays: EpisodeDropday[]): ExportData[] => {
+    return dropdays && dropdays.filter(dropday => dropday.downloads).map(dropday => {
+      switch (routerParams.chartType) {
+        case CHARTTYPE_HORIZBAR:
+          return {
+            label: dropday.title,
+            guid: dropday.guid,
+            publishedAt: dropday.publishedAt,
+            total: getTotal(dropday.downloads)
+          };
+        case CHARTTYPE_EPISODES:
+          return {
+            label: dropday.title,
+            guid: dropday.guid,
+            publishedAt: dropday.publishedAt,
+            data: dropday.downloads
+          };
+      }
+    });
+  }
+);
+
+export const toCsvArray = (downloads: ExportData[], dateFormat?: Function): string[][] => {
   if (downloads && downloads.length) {
     const hasGuidCol = downloads.length > 1 && downloads[1].guid;
     const hasPubDateCol = downloads.length > 1 && downloads[1].publishedAt;
     const hasTotalCol = downloads.length > 1 && downloads[1].total;
-    const hasDataCols = !!downloads[0].data;
+    const hasDataCols = downloads[0].data && downloads[0].data.length;
     const csvRows = [
       hasGuidCol ? 'Title' : '',
       ...(hasGuidCol ? ['GUID'] : []),
       ...(hasPubDateCol ? ['Release Date'] : []),
       ...(hasTotalCol ? ['Total'] : []),
-      ...(hasDataCols ? downloads[0].data.map(col => dateFormat(new Date(col[0]))) : [])
+      ...(hasDataCols && dateFormat ? downloads[0].data.map(col => dateFormat(new Date(col[0]))) : []),
+      ...(hasDataCols && !dateFormat ? downloads[downloads.length - 1].data.map((col, i) => i && i.toString() || 'Drop') : [])
     ];
     return [csvRows].concat(downloads.map(d => [
       d.label,
       ...(hasGuidCol ? [d.guid] : []),
       ...(hasPubDateCol ? [d.publishedAt && dateUtil.ISODate(d.publishedAt) || ''] : []),
       ...(hasTotalCol ? [d.total.toString()] : []),
-      ...(hasDataCols ? d.data.map(col => col[1].toString()) : [])
+      ...(hasDataCols && d.data ? d.data.map(col => col[1].toString()) : [])
     ]));
   }
 };
@@ -178,43 +206,52 @@ export const selectNestedEpisodeExportRanks = createSelector(
 export const selectExportData = createSelector(
   selectRouter,
   selectExportDownloads,
+  selectExportDropday,
   selectRoutedPodcastExportRanks,
   selectNestedPodcastExportRanks,
-  selectSelectedEpisodeGuids,
+  selectAggregateSelectedEpisodeGuids,
   selectSelectedEpisodeExportRanks,
   selectNestedEpisodeExportRanks,
   (routerParams: RouterParams,
   exportDownloads,
+  exportDropday,
   routedPodcastRanks,
   nestedPodcastRanks,
   guids,
   selectedEpisodeRanks,
   nestedEpisodeRanks): ExportData[] => {
-    if (routerParams.metricsType === METRICSTYPE_DOWNLOADS) {
+    switch (routerParams.metricsType) {
+      case METRICSTYPE_DOWNLOADS:
         return exportDownloads;
-    } else {
-      if (routerParams.group === GROUPTYPE_GEOCOUNTRY && routerParams.filter) {
-        if (guids && guids.length) {
-          return nestedEpisodeRanks;
+      case METRICSTYPE_DROPDAY:
+        return exportDropday;
+      case METRICSTYPE_DEMOGRAPHICS:
+      case METRICSTYPE_TRAFFICSOURCES:
+        if (routerParams.group === GROUPTYPE_GEOCOUNTRY && routerParams.filter) {
+          if (guids && guids.length) {
+            return nestedEpisodeRanks;
+          } else {
+            return nestedPodcastRanks;
+          }
         } else {
-          return nestedPodcastRanks;
+          if (guids && guids.length) {
+            return selectedEpisodeRanks;
+          } else {
+            return routedPodcastRanks;
+          }
         }
-      } else {
-        if (guids && guids.length) {
-          return selectedEpisodeRanks;
-        } else {
-          return routedPodcastRanks;
-        }
-      }
     }
   }
 );
 
 export const selectExportData2DArray = createSelector(
+  selectMetricsTypeRoute,
   selectIntervalRoute,
   selectExportData,
-  (interval: IntervalModel, exportData: ExportData[]): string[][] => {
-    if (interval === INTERVAL_HOURLY) {
+  (metricsType: MetricsType, interval: IntervalModel, exportData: ExportData[]): string[][] => {
+    if (metricsType === METRICSTYPE_DROPDAY) {
+      return toCsvArray(exportData);
+    } else if (interval === INTERVAL_HOURLY) {
       return toCsvArray(exportData, dateUtil.defaultTZ);
     } else {
       return toCsvArray(exportData, dateUtil.ISODate);
@@ -231,7 +268,8 @@ export const selectExportFilename = createSelector(
     const beginDate = dateUtil.ISODate(routerParams.beginDate, '');
     const endDate = dateUtil.ISODate(routerParams.endDate, '');
     let dataDesc: string;
-    if (routerParams.metricsType === METRICSTYPE_DOWNLOADS) {
+    if (routerParams.metricsType === METRICSTYPE_DOWNLOADS ||
+      routerParams.metricsType === METRICSTYPE_DROPDAY) {
       dataDesc = 'downloads';
     } else {
       if (routerParams.group === GROUPTYPE_GEOCOUNTRY) {
@@ -244,6 +282,8 @@ export const selectExportFilename = createSelector(
         dataDesc = routerParams.group;
       }
     }
-    return `${podcastTitle}_${beginDate}-${endDate}_${routerParams.interval.name}_${dataDesc}`;
+    return routerParams.metricsType === METRICSTYPE_DROPDAY ?
+    `${podcastTitle}_${routerParams.days}day-${endDate}_${routerParams.interval.name}_${dataDesc}` :
+    `${podcastTitle}_${beginDate}-${endDate}_${routerParams.interval.name}_${dataDesc}`;
   }
 );

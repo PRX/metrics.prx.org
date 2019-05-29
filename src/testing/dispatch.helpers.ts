@@ -1,7 +1,8 @@
 import { Store } from '@ngrx/store';
 import * as fixtures from './downloads.fixtures';
-import { RouterParams, Podcast, Episode, EPISODE_PAGE_SIZE, GROUPTYPE_GEOCOUNTRY, GroupType, GROUPTYPE_AGENTNAME } from '../app/ngrx';
-import * as ACTIONS from '../app/ngrx/actions';
+import { RouterParams, Podcast, Episode, EPISODE_PAGE_SIZE,
+  GroupType, GROUPTYPE_GEOCOUNTRY, GROUPTYPE_AGENTNAME, IntervalModel, MetricsType } from '@app/ngrx';
+import * as ACTIONS from '@app/ngrx/actions';
 
 
 export const dispatchRouterNavigation = (store: Store<any>, routerParams?: RouterParams) => {
@@ -43,8 +44,10 @@ export const dispatchEpisodeSelectList = (store: Store<any>, episodes?: Episode[
   }));
 };
 
-export const dispatchSelectEpisodes = (store: Store<any>, episodesGuids?: string[]) => {
+export const dispatchSelectEpisodes = (store: Store<any>, podcastId?: string, metricsType?: MetricsType, episodesGuids?: string[]) => {
   store.dispatch(new ACTIONS.EpisodeSelectEpisodesAction({
+    podcastId: podcastId || fixtures.routerParams.podcastId,
+    metricsType: metricsType || fixtures.routerParams.metricsType,
     episodeGuids: episodesGuids || [fixtures.episodes[0].guid]
   }));
 };
@@ -68,6 +71,57 @@ export const dispatchEpisodeDownloads = (store: Store<any>, podcastId?: string, 
     page: page || fixtures.episodes[1].page,
     guid: guid || fixtures.episodes[1].guid,
     downloads: downloads || fixtures.ep1Downloads
+  }));
+};
+
+export const dispatchEpisodeAllTimeDownloads = (store: Store<any>, podcastId?: string) => {
+  store.dispatch(new ACTIONS.CastleEpisodeAllTimeDownloadsSuccessAction({
+    podcastId: podcastId || fixtures.episodes[0].podcastId,
+    guid: fixtures.episodes[0].guid,
+    ...fixtures.ep0AllTimeDownloads
+  }));
+  store.dispatch(new ACTIONS.CastleEpisodeAllTimeDownloadsSuccessAction({
+    podcastId: fixtures.episodes[1].podcastId,
+    guid: fixtures.episodes[1].guid,
+    ...fixtures.ep1AllTimeDownloads
+  }));
+};
+
+export const dispatchLoadEpisodeDropday = (store: Store<any>, podcastId?: string, interval?: IntervalModel, days?: number) => {
+  store.dispatch(new ACTIONS.CastleEpisodeDropdayLoadAction({
+    podcastId: podcastId || fixtures.episodes[0].podcastId,
+    guid: fixtures.episodes[0].guid,
+    title: fixtures.episodes[0].title,
+    publishedAt: fixtures.episodes[0].publishedAt,
+    interval: interval || fixtures.routerParams.interval,
+    days: days || 28
+  }));
+  store.dispatch(new ACTIONS.CastleEpisodeDropdayLoadAction({
+    podcastId: podcastId || fixtures.episodes[1].podcastId,
+    guid: fixtures.episodes[1].guid,
+    title: fixtures.episodes[1].title,
+    publishedAt: fixtures.episodes[1].publishedAt,
+    interval: interval || fixtures.routerParams.interval,
+    days: days || 28
+  }));
+};
+
+export const dispatchEpisodeDropday = (store: Store<any>, podcastId?: string, interval?: IntervalModel) => {
+  store.dispatch(new ACTIONS.CastleEpisodeDropdaySuccessAction({
+    podcastId: podcastId || fixtures.episodes[0].podcastId,
+    guid: fixtures.episodes[0].guid,
+    title: fixtures.episodes[0].title,
+    publishedAt: fixtures.episodes[0].publishedAt,
+    interval: interval || fixtures.routerParams.interval,
+    downloads: fixtures.ep0Downloads
+  }));
+  store.dispatch(new ACTIONS.CastleEpisodeDropdaySuccessAction({
+    podcastId: podcastId || fixtures.episodes[1].podcastId,
+    guid: fixtures.episodes[1].guid,
+    title: fixtures.episodes[1].title,
+    publishedAt: fixtures.episodes[1].publishedAt,
+    interval: interval || fixtures.routerParams.interval,
+    downloads: fixtures.ep1Downloads
   }));
 };
 
@@ -126,8 +180,9 @@ export const dispatchPodcastDownloadsChartToggle = (store: Store<any>, podcastId
   }));
 };
 
-export const dispatchEpisodeDownloadsChartToggle = (store: Store<any>, guid?: string, charted?: boolean) => {
+export const dispatchEpisodeDownloadsChartToggle = (store: Store<any>, podcastId?: string, guid?: string, charted?: boolean) => {
   store.dispatch(new ACTIONS.ChartToggleEpisodeAction({
+    podcastId: podcastId || fixtures.episodes[0].guid,
     guid: guid || fixtures.episodes[0].guid,
     charted: charted || false
   }));

@@ -10,6 +10,7 @@ prx-category-chart >>> .tick text tspan:nth-child(n + 3) {
 
 prx-indexed-chart >>> .c3-chart-line .c3-line {
   stroke-width: 1.5px;
+  stroke-linecap: round;
 }
 
 prx-indexed-chart >>> .c3-chart-line:nth-last-child(1) .c3-line {

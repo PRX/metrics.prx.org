@@ -71,10 +71,11 @@ describe('RoutingService', () => {
     store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerParams}));
     jest.spyOn(routingService, 'normalizeAndRoute');
     router.navigate([]);
-    router.events.pipe(
+    const sub = router.events.pipe(
       filter(event => event instanceof RoutesRecognized)
     ).subscribe((event: RoutesRecognized) => {
       expect(routingService.normalizeAndRoute).toHaveBeenCalledWith(routerParams);
+      sub.unsubscribe();
     });
   });
 

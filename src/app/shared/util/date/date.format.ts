@@ -20,6 +20,14 @@ export const monthDateYear = (date: Date | moment.Moment, separator = true): str
   }
 };
 
+export const monthDateYearLocalTZ = (date: Date | moment.Moment, separator = true): string => {
+  if (separator) {
+    return moment(date).format('MMM D, YYYY');
+  } else {
+    return moment(date).format('MMM D YYYY');
+  }
+};
+
 export const monthYear = (date: Date): string => {
   return moment(date).utc().format('MMM YYYY');
 };

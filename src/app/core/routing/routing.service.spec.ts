@@ -341,12 +341,12 @@ describe('RoutingService', () => {
       ...routerParams,
       metricsType: METRICSTYPE_DROPDAY,
       chartType: CHARTTYPE_PODCAST
-    }).chartType).toEqual(CHARTTYPE_HORIZBAR);
+    }).chartType).toEqual(CHARTTYPE_EPISODES);
     expect(routingService.checkAndGetDefaults({
       ...routerParams,
       metricsType: METRICSTYPE_DROPDAY,
       chartType: CHARTTYPE_GEOCHART
-    }).chartType).toEqual(CHARTTYPE_HORIZBAR);
+    }).chartType).toEqual(CHARTTYPE_EPISODES);
     expect(routingService.checkAndGetDefaults({
       ...routerParams,
       metricsType: METRICSTYPE_DROPDAY,

@@ -46,6 +46,6 @@ export class StandardDateRangeDropdownComponent {
   googleAnalyticsEvent(action: string, standardRange: string) {
     const dateRange = dateUtil.getBeginEndDateFromStandardRange(standardRange);
     const value = dateUtil.getAmountOfIntervals(dateRange.beginDate, dateRange.endDate, this.interval);
-    this.store.dispatch(new GoogleAnalyticsEventAction({gaAction: 'filter-' + action, value}));
+    this.store.dispatch(new GoogleAnalyticsEventAction({gaAction: 'routerParams-' + action, value}));
   }
 }

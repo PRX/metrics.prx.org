@@ -74,7 +74,7 @@ export class SummaryTableComponent {
   button = 'button';
 
   releaseDateFormat(date: Date): string {
-    return dateFormat.monthDateYear(date);
+    return dateFormat.monthDateYearLocalTZ(date);
   }
 
   get showPodcastToggle(): boolean {

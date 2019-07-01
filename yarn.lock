@@ -5535,16 +5535,23 @@ newrelic@^2.4.2:
   optionalDependencies:
     "@newrelic/native-metrics" "^2.1.0"
 
-ngx-prx-styleguide@2.8.0:
-  version "2.8.0"
-  resolved "https://registry.yarnpkg.com/ngx-prx-styleguide/-/ngx-prx-styleguide-2.8.0.tgz#e9f24c573bdaceb9c6b0114ae1f20e561181c2db"
-  integrity sha512-Oj2cjhmoTxsVi2/Le0KaY/rRV0f9UrGQOYorG9bRwOnR9TTwQhTaFlfP8sODFmaoSDwdG1TIe6CabeA7IUvx3A==
+ng-inline-svg@^8.3.0:
+  version "8.5.1"
+  resolved "https://registry.yarnpkg.com/ng-inline-svg/-/ng-inline-svg-8.5.1.tgz#3be9dbbadc1df451b187cc6a6c3b822fb580aeed"
+  integrity sha512-JdwyAfqgNpgtJA3lKRb4K/b8ufpPTof3ZxPeJ0MqJDyvXNlYwCT3wYAOKxqInNqU9ido6iXH27dFZzpmHl2J1w==
+
+ngx-prx-styleguide@2.13.0:
+  version "2.13.0"
+  resolved "https://registry.yarnpkg.com/ngx-prx-styleguide/-/ngx-prx-styleguide-2.13.0.tgz#378239c33b5a31d42f4f8915a9f66e772aa7989a"
+  integrity sha512-Pv4Vs+VMCXAR70gQbKIZ0PzbGU4HzZ5+QSoxPHVA16M/L3akIxn2gaJC3eQ0xbPcPov8O+8qqPBgFtxn4vPIzQ==
   dependencies:
     "@ng-select/ng-select" "^2.15.3"
     c3 "^0.4.11"
     moment-timezone "^0.5.23"
+    ng-inline-svg "^8.3.0"
     ngx-tooltip "0.0.9"
     pikaday "^1.5.1"
+    stickyfilljs "^2.1.0"
     tslib "^1.9.0"
 
 ngx-tooltip@0.0.9:
@@ -7696,6 +7703,11 @@ stealthy-require@^1.1.0:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/stealthy-require/-/stealthy-require-1.1.1.tgz#35b09875b4ff49f26a777e509b3090a3226bf24b"
   integrity sha1-NbCYdbT/SfJqd35QmzCQoyJr8ks=
+
+stickyfilljs@^2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/stickyfilljs/-/stickyfilljs-2.1.0.tgz#46dabb599d8275d185bdb97db597f86a2e3afa7b"
+  integrity sha512-LkG0BXArL5HbW2O09IAXfnBQfpScgGqJuUDUrI3Ire5YKjRz/EhakIZEJogHwgXeQ4qnTicM9sK9uYfWN11qKg==
 
 stream-browserify@^2.0.1:
   version "2.0.2"

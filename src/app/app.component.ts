@@ -27,7 +27,9 @@ export class AppComponent implements OnInit {
   constructor(
     public store: Store<any>,
     private angulartics2GoogleAnalytics: Angulartics2GoogleAnalytics
-  ) {}
+  ) {
+    this.angulartics2GoogleAnalytics.startTracking();
+  }
 
   ngOnInit() {
     this.store.dispatch(new ACTIONS.IdUserinfoLoadAction());

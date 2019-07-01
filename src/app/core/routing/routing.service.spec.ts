@@ -71,10 +71,11 @@ describe('RoutingService', () => {
     store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerParams}));
     jest.spyOn(routingService, 'normalizeAndRoute');
     router.navigate([]);
-    router.events.pipe(
+    const sub = router.events.pipe(
       filter(event => event instanceof RoutesRecognized)
     ).subscribe((event: RoutesRecognized) => {
       expect(routingService.normalizeAndRoute).toHaveBeenCalledWith(routerParams);
+      sub.unsubscribe();
     });
   });
 
@@ -341,12 +342,12 @@ describe('RoutingService', () => {
       ...routerParams,
       metricsType: METRICSTYPE_DROPDAY,
       chartType: CHARTTYPE_PODCAST
-    }).chartType).toEqual(CHARTTYPE_HORIZBAR);
+    }).chartType).toEqual(CHARTTYPE_EPISODES);
     expect(routingService.checkAndGetDefaults({
       ...routerParams,
       metricsType: METRICSTYPE_DROPDAY,
       chartType: CHARTTYPE_GEOCHART
-    }).chartType).toEqual(CHARTTYPE_HORIZBAR);
+    }).chartType).toEqual(CHARTTYPE_EPISODES);
     expect(routingService.checkAndGetDefaults({
       ...routerParams,
       metricsType: METRICSTYPE_DROPDAY,

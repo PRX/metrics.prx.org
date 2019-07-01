@@ -269,11 +269,8 @@ export class RoutingService {
         }
         break;
       case METRICSTYPE_DROPDAY:
-        if (!routerParams.chartType || routerParams.chartType === CHARTTYPE_PODCAST || routerParams.chartType === CHARTTYPE_GEOCHART) {
-          routerParams.chartType = CHARTTYPE_HORIZBAR;
-        } else if (routerParams.chartType === CHARTTYPE_LINE || routerParams.chartType === CHARTTYPE_STACKED) {
-          routerParams.chartType = CHARTTYPE_EPISODES;
-        }
+        // the only type
+        routerParams.chartType = CHARTTYPE_EPISODES;
         break;
       case METRICSTYPE_TRAFFICSOURCES:
         if (!routerParams.chartType || routerParams.chartType === CHARTTYPE_PODCAST || routerParams.chartType === CHARTTYPE_GEOCHART) {

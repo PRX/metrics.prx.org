@@ -54,6 +54,7 @@ describe('AppComponent', () => {
             exceptionTrack: new Subject<any>(),
             setUsername: new Subject<string>(),
             setUserProperties: new Subject<any>(),
+            startTracking: () => {},
             userTimings: new Subject<any>()
           }
         },

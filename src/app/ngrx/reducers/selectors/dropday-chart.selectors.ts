@@ -3,6 +3,19 @@ import { CategoryChartModel, IndexedChartModel } from 'ngx-prx-styleguide';
 import { EpisodeDropday } from '../models';
 import { selectSelectedEpisodeDropdays } from './episode-dropday.selectors';
 import { getShade, uniqueEpisodeLabel } from '@app/shared/util/chart.util';
+import { map } from 'rxjs/operators';
+
+export const cumDownloads = (downloads?: any[][]) => {
+  let cum = 0;
+  return downloads.map((data: any[]) => {
+    cum += data[1];
+    return [data[0], cum];
+  });
+};
+
+export const chartData = (downloads?: any[][]) => {
+  return downloads.map(data => data[1]);
+};
 
 export const selectDropdayChartMetrics = createSelector(
   selectSelectedEpisodeDropdays,
@@ -11,14 +24,9 @@ export const selectDropdayChartMetrics = createSelector(
       // chart sort is reversed so newer episodes are stacked on top
       .sort((a: EpisodeDropday, b: EpisodeDropday) => a.publishedAt.valueOf() - b.publishedAt.valueOf())
       .map((dropday: EpisodeDropday, episodeIndex, self) => {
-        let cum = 0;
         return {
           label: uniqueEpisodeLabel(dropday, self),
-          data: dropday.downloads
-            .map((downloads: any[]) => {
-              cum += downloads[1];
-              return cum;
-            }),
+          data: chartData(cumDownloads(dropday.downloads)),
           color: getShade(self.length, self.length - (episodeIndex + 1))
         };
       });

@@ -10,6 +10,7 @@ import { METRICSTYPE_DOWNLOADS, METRICSTYPE_DROPDAY, METRICSTYPE_TRAFFICSOURCES,
   CHARTTYPE_PODCAST, CHARTTYPE_EPISODES, CHARTTYPE_STACKED, CHARTTYPE_GEOCHART, CHARTTYPE_HORIZBAR, CHARTTYPE_LINE } from '../models';
 import * as dispatchHelper from '@testing/dispatch.helpers';
 import * as fixtures from '@testing/downloads.fixtures';
+import { getTotal } from '@app/shared/util/metrics.util';
 
 describe('Export Selectors', () => {
   let store: Store<RootState>;
@@ -108,12 +109,22 @@ describe('Export Selectors', () => {
       dispatchHelper.dispatchEpisodeDropday(store);
     });
 
-    it('should have dropday exports', done => {
+    it('should have cumulative dropday exports', done => {
       dispatchHelper.dispatchRouterNavigation(store, {chartType: CHARTTYPE_EPISODES});
       store.pipe(select(fromExport.selectExportDropday), first()).subscribe(exportData => {
-        expect(exportData.length).toEqual(2);
+        expect(exportData.length).toEqual(fixtures.episodes.length);
         expect(exportData[0].label).toEqual(fixtures.episodes[0].title);
         expect(exportData[0].data[0][1]).toEqual(fixtures.ep0Downloads[0][1]);
+        expect(exportData[0].data[exportData[0].data.length - 1][1]).toEqual(getTotal(fixtures.ep0Downloads));
+        done();
+      });
+    });
+
+    it('should have filename', done => {
+      dispatchHelper.dispatchRouterNavigation(store,
+        {...fixtures.routerParams, metricsType: METRICSTYPE_DROPDAY, chartType: CHARTTYPE_EPISODES});
+      store.pipe(select(fromExport.selectExportFilename), first()).subscribe(filename => {
+        expect(filename).toContain('downloads');
         done();
       });
     });

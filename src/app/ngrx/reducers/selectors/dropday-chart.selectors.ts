@@ -3,7 +3,6 @@ import { CategoryChartModel, IndexedChartModel } from 'ngx-prx-styleguide';
 import { EpisodeDropday } from '../models';
 import { selectSelectedEpisodeDropdays } from './episode-dropday.selectors';
 import { getShade, uniqueEpisodeLabel } from '@app/shared/util/chart.util';
-import { map } from 'rxjs/operators';
 
 export const cumDownloads = (downloads?: any[][]) => {
   let cum = 0;

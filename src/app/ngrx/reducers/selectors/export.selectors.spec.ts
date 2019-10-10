@@ -8,9 +8,9 @@ import { METRICSTYPE_DOWNLOADS, METRICSTYPE_DROPDAY, METRICSTYPE_TRAFFICSOURCES,
   GROUPTYPE_AGENTNAME, GROUPTYPE_GEOCOUNTRY, GROUPTYPE_GEOSUBDIV, GROUPTYPE_GEOMETRO,
   INTERVAL_DAILY,
   CHARTTYPE_PODCAST, CHARTTYPE_EPISODES, CHARTTYPE_STACKED, CHARTTYPE_GEOCHART, CHARTTYPE_HORIZBAR, CHARTTYPE_LINE } from '../models';
-import { getTotal } from '@app/shared/util/metrics.util';
 import * as dispatchHelper from '@testing/dispatch.helpers';
 import * as fixtures from '@testing/downloads.fixtures';
+import { getTotal } from '@app/shared/util/metrics.util';
 
 describe('Export Selectors', () => {
   let store: Store<RootState>;
@@ -34,53 +34,68 @@ describe('Export Selectors', () => {
       dispatchHelper.dispatchEpisodeDownloads(store);
     });
 
-    it('should have download exports', () => {
+    it('should have podcast download exports', done => {
       dispatchHelper.dispatchRouterNavigation(store, {chartType: CHARTTYPE_PODCAST});
       store.pipe(select(fromExport.selectExportDownloads), first()).subscribe(exportData => {
         expect(exportData.length).toEqual(1);
         expect(exportData[0].label).toEqual('All Episodes');
+        done();
       });
+    });
 
+    it('should have episode download exports', done => {
       dispatchHelper.dispatchRouterNavigation(store, {chartType: CHARTTYPE_EPISODES});
       store.pipe(select(fromExport.selectExportDownloads), first()).subscribe(exportData => {
         expect(exportData.length).toEqual(fixtures.episodes.length);
         expect(exportData[0].label).toEqual(fixtures.episodes[0].title);
+        done();
       });
+    });
 
+    it('should have stacked download exports', done => {
       dispatchHelper.dispatchRouterNavigation(store, {chartType: CHARTTYPE_STACKED});
       store.pipe(select(fromExport.selectExportDownloads), first()).subscribe(exportData => {
         expect(exportData.length).toEqual(fixtures.episodes.length + 1);
         expect(exportData[1].label).toEqual(fixtures.episodes[0].title);
         expect(exportData[0].label).toEqual('All Episodes');
+        done();
       });
     });
 
-    it('chart toggle should filter podcast/episode data from export', () => {
+    it('chart toggle should filter podcast data from export', done => {
       dispatchHelper.dispatchPodcastDownloadsChartToggle(store);
       store.pipe(select(fromExport.selectExportDownloads), first()).subscribe(exportData => {
         expect(exportData.length).toEqual(fixtures.episodes.length);
         expect(exportData[0].label).toEqual(fixtures.episodes[0].title);
+        done();
       });
+    });
 
+    it('chart toggle should filter episode data from export', done => {
+      dispatchHelper.dispatchRouterNavigation(store, {chartType: CHARTTYPE_EPISODES});
       dispatchHelper.dispatchEpisodeDownloadsChartToggle(store, fixtures.episodes[0].podcastId, fixtures.episodes[0].guid);
       store.pipe(select(fromExport.selectExportDownloads), first()).subscribe(exportData => {
         expect(exportData.length).toEqual(fixtures.episodes.length - 1);
         expect(exportData[0].label).toEqual(fixtures.episodes[1].title);
+        done();
       });
     });
 
-    it('selected episodes should filter episode data from export', () => {
+    it('selected episodes should filter episode data from export', done => {
+      dispatchHelper.dispatchRouterNavigation(store, {chartType: CHARTTYPE_EPISODES});
       dispatchHelper.dispatchSelectEpisodes(store,
         fixtures.routerParams.podcastId, fixtures.routerParams.metricsType, [fixtures.episodes[1].guid]);
       store.pipe(select(fromExport.selectExportDownloads), first()).subscribe(exportData => {
         expect(exportData.length).toEqual(1);
         expect(exportData[0].label).toEqual(fixtures.episodes[1].title);
+        done();
       });
     });
 
-    it('should have filename', () => {
+    it('should have filename', done => {
       store.pipe(select(fromExport.selectExportFilename), first()).subscribe(filename => {
         expect(filename).toContain('downloads');
+        done();
       });
     });
   });
@@ -94,19 +109,23 @@ describe('Export Selectors', () => {
       dispatchHelper.dispatchEpisodeDropday(store);
     });
 
-    it('should have dropday exports', () => {
-      dispatchHelper.dispatchRouterNavigation(store, {chartType: CHARTTYPE_HORIZBAR});
-      store.pipe(select(fromExport.selectExportDropday), first()).subscribe(exportData => {
-        expect(exportData.length).toEqual(fixtures.episodes.length);
-        expect(exportData[0].label).toEqual(fixtures.episodes[0].title);
-        expect(exportData[0].total).toEqual(getTotal(fixtures.ep0Downloads));
-      });
-
+    it('should have cumulative dropday exports', done => {
       dispatchHelper.dispatchRouterNavigation(store, {chartType: CHARTTYPE_EPISODES});
       store.pipe(select(fromExport.selectExportDropday), first()).subscribe(exportData => {
         expect(exportData.length).toEqual(fixtures.episodes.length);
         expect(exportData[0].label).toEqual(fixtures.episodes[0].title);
-        expect(exportData[0].data[0][1]).toEqual(getTotal(fixtures.ep0Downloads[0][1]));
+        expect(exportData[0].data[0][1]).toEqual(fixtures.ep0Downloads[0][1]);
+        expect(exportData[0].data[exportData[0].data.length - 1][1]).toEqual(getTotal(fixtures.ep0Downloads));
+        done();
+      });
+    });
+
+    it('should have filename', done => {
+      dispatchHelper.dispatchRouterNavigation(store,
+        {...fixtures.routerParams, metricsType: METRICSTYPE_DROPDAY, chartType: CHARTTYPE_EPISODES});
+      store.pipe(select(fromExport.selectExportFilename), first()).subscribe(filename => {
+        expect(filename).toContain('downloads');
+        done();
       });
     });
   });
@@ -119,29 +138,34 @@ describe('Export Selectors', () => {
       dispatchHelper.dispatchPodcastTotals(store);
     });
 
-    it('should have podcast geo exports totals data', () => {
+    it('should have podcast geo exports totals data', done => {
       dispatchHelper.dispatchRouterNavigation(store,
         {...fixtures.routerParams, metricsType: METRICSTYPE_DEMOGRAPHICS, group: GROUPTYPE_GEOCOUNTRY, chartType: CHARTTYPE_GEOCHART});
 
       store.pipe(select(fromExport.selectRoutedPodcastExportRanks)).subscribe(exportData => {
         expect(exportData.length).toEqual(fixtures.podcastGeoCountryRanks.length);
         expect(exportData[0].total).toBeGreaterThan(0);
+        done();
       });
     });
 
-    it('should have podcast geo exports interval data', () => {
+    it('should have podcast geo exports interval data', done => {
       dispatchHelper.dispatchRouterNavigation(store,
         {...fixtures.routerParams, metricsType: METRICSTYPE_DEMOGRAPHICS, group: GROUPTYPE_GEOCOUNTRY, chartType: CHARTTYPE_STACKED});
 
       store.pipe(select(fromExport.selectRoutedPodcastExportRanks)).subscribe(exportData => {
         expect(exportData.length).toEqual(fixtures.podcastGeoCountryRanks.length);
         expect(exportData[0].data.length).toEqual(fixtures.podcastGeoCountryDownloads.length);
+        done();
       });
     });
 
-    it('should have filename', () => {
+    it('should have filename', done => {
+      dispatchHelper.dispatchRouterNavigation(store,
+        {...fixtures.routerParams, metricsType: METRICSTYPE_DEMOGRAPHICS, group: GROUPTYPE_GEOCOUNTRY, chartType: CHARTTYPE_STACKED});
       store.pipe(select(fromExport.selectExportFilename), first()).subscribe(filename => {
         expect(filename).toContain('world');
+        done();
       });
     });
 
@@ -152,29 +176,34 @@ describe('Export Selectors', () => {
         dispatchHelper.dispatchPodcastTotals(store, {group: GROUPTYPE_GEOSUBDIV, filter: 'US'}, fixtures.podcastGeoSubdivRanks);
       });
 
-      it('should have nested podcast geo exports totals data', () => {
+      it('should have nested podcast geo exports totals data', done => {
         dispatchHelper.dispatchRouterNavigation(store, {...fixtures.routerParams,
           metricsType: METRICSTYPE_DEMOGRAPHICS, group: GROUPTYPE_GEOCOUNTRY, filter: 'US', chartType: CHARTTYPE_GEOCHART});
 
         store.pipe(select(fromExport.selectNestedPodcastExportRanks)).subscribe(exportData => {
           expect(exportData.length).toEqual(fixtures.podcastGeoSubdivRanks.length);
           expect(exportData[0].total).toBeGreaterThan(0);
+          done()
         });
       });
 
-      it('should have nested podcast geo exports interval data', () => {
+      it('should have nested podcast geo exports interval data', done => {
         dispatchHelper.dispatchRouterNavigation(store, {...fixtures.routerParams,
           metricsType: METRICSTYPE_DEMOGRAPHICS, group: GROUPTYPE_GEOCOUNTRY, filter: 'US', chartType: CHARTTYPE_STACKED});
 
         store.pipe(select(fromExport.selectNestedPodcastExportRanks)).subscribe(exportData => {
           expect(exportData.length).toEqual(fixtures.podcastGeoSubdivRanks.length);
           expect(exportData[0].data.length).toEqual(fixtures.podcastGeoSubdivDownloads.length);
+          done();
         });
       });
 
-      it('should have filename', () => {
+      it('should have filename', done => {
+        dispatchHelper.dispatchRouterNavigation(store, {...fixtures.routerParams,
+          metricsType: METRICSTYPE_DEMOGRAPHICS, group: GROUPTYPE_GEOCOUNTRY, filter: 'US', chartType: CHARTTYPE_STACKED});
         store.pipe(select(fromExport.selectExportFilename), first()).subscribe(filename => {
           expect(filename).toContain('US');
+          done();
         });
       });
     });
@@ -182,7 +211,7 @@ describe('Export Selectors', () => {
     describe('Selected Episodes', () => {
       beforeEach(() => {
         dispatchHelper.dispatchSelectEpisodes(store,
-          fixtures.routerParams.podcastId, fixtures.routerParams.metricsType, [fixtures.episodes[0].guid]);
+          fixtures.routerParams.podcastId, METRICSTYPE_DEMOGRAPHICS, [fixtures.episodes[0].guid]);
         dispatchHelper.dispatchEpisodeRanks(store,
           {group: GROUPTYPE_GEOMETRO, interval: INTERVAL_DAILY},
           fixtures.episodes[0].guid, fixtures.ep0GeoMetroRanks, fixtures.ep0GeoMetroDownloads);
@@ -191,23 +220,25 @@ describe('Export Selectors', () => {
           fixtures.episodes[0].guid, fixtures.ep0GeoMetroRanks);
       });
 
-      it('should have episode geo exports totals data', () => {
+      it('should have episode geo exports totals data', done => {
         dispatchHelper.dispatchRouterNavigation(store, {...fixtures.routerParams,
-          metricsType: METRICSTYPE_DEMOGRAPHICS, group: GROUPTYPE_GEOMETRO, interval: INTERVAL_DAILY, chartType: CHARTTYPE_GEOCHART});
+          metricsType: METRICSTYPE_DEMOGRAPHICS, group: GROUPTYPE_GEOMETRO, chartType: CHARTTYPE_GEOCHART});
 
         store.pipe(select(fromExport.selectSelectedEpisodeExportRanks)).subscribe(exportData => {
           expect(exportData.length).toEqual(fixtures.ep0GeoMetroRanks.length);
           expect(exportData[0].total).toBeGreaterThan(0);
+          done();
         });
       });
 
-      it('should have episode geo exports interval data', () => {
+      it('should have episode geo exports interval data', done => {
         dispatchHelper.dispatchRouterNavigation(store, {...fixtures.routerParams,
-          metricsType: METRICSTYPE_DEMOGRAPHICS, group: GROUPTYPE_GEOMETRO, interval: INTERVAL_DAILY, chartType: CHARTTYPE_LINE});
+          metricsType: METRICSTYPE_DEMOGRAPHICS, group: GROUPTYPE_GEOMETRO, chartType: CHARTTYPE_LINE});
 
         store.pipe(select(fromExport.selectSelectedEpisodeExportRanks)).subscribe(exportData => {
           expect(exportData.length).toEqual(fixtures.ep0GeoMetroRanks.length);
           expect(exportData[0].data.length).toEqual(fixtures.ep0GeoMetroDownloads.length);
+          done();
         });
       });
     });
@@ -220,36 +251,42 @@ describe('Export Selectors', () => {
       dispatchHelper.dispatchPodcastTotals(store, {group: GROUPTYPE_AGENTNAME}, fixtures.podcastAgentNameRanks);
     });
 
-    it('should have podcast agent name exports totals data', () => {
+    it('should have podcast agent name exports totals data', done => {
       dispatchHelper.dispatchRouterNavigation(store, {...fixtures.routerParams,
         metricsType: METRICSTYPE_TRAFFICSOURCES, group: GROUPTYPE_AGENTNAME, chartType: CHARTTYPE_HORIZBAR});
 
       store.pipe(select(fromExport.selectRoutedPodcastExportRanks)).subscribe(exportData => {
         expect(exportData.length).toEqual(fixtures.podcastAgentNameRanks.length);
         expect(exportData[0].total).toBeGreaterThan(0);
+        done()
       });
     });
 
-    it('should have podcast agent name exports interval data', () => {
+    it('should have podcast agent name exports interval data', done => {
       dispatchHelper.dispatchRouterNavigation(store, {...fixtures.routerParams,
         metricsType: METRICSTYPE_TRAFFICSOURCES, group: GROUPTYPE_AGENTNAME, chartType: CHARTTYPE_STACKED});
 
       store.pipe(select(fromExport.selectRoutedPodcastExportRanks)).subscribe(exportData => {
         expect(exportData.length).toEqual(fixtures.podcastAgentNameRanks.length);
         expect(exportData[0].data.length).toEqual(fixtures.podcastAgentNameDownloads.length);
+        done();
       });
     });
 
-    it('should have filename', () => {
+    it('should have filename', done => {
+      dispatchHelper.dispatchRouterNavigation(store, {...fixtures.routerParams,
+        metricsType: METRICSTYPE_TRAFFICSOURCES, group: GROUPTYPE_AGENTNAME, chartType: CHARTTYPE_STACKED});
+
       store.pipe(select(fromExport.selectExportFilename), first()).subscribe(filename => {
         expect(filename).toContain(GROUPTYPE_AGENTNAME);
+        done();
       });
     });
 
     describe('Selected Episodes', () => {
       beforeEach(() => {
         dispatchHelper.dispatchSelectEpisodes(store,
-          fixtures.routerParams.podcastId, fixtures.routerParams.metricsType, [fixtures.episodes[0].guid]);
+          fixtures.routerParams.podcastId, METRICSTYPE_TRAFFICSOURCES, [fixtures.episodes[0].guid]);
         dispatchHelper.dispatchEpisodeRanks(store,
           {group: GROUPTYPE_AGENTNAME, interval: INTERVAL_DAILY},
           fixtures.episodes[0].guid, fixtures.ep0AgentNameRanks, fixtures.ep0AgentNameDownloads);
@@ -258,28 +295,30 @@ describe('Export Selectors', () => {
           fixtures.episodes[0].guid, fixtures.ep0AgentNameRanks);
       });
 
-      it('should have episode agent name exports totals data', () => {
+      it('should have episode agent name exports totals data', done => {
         dispatchHelper.dispatchRouterNavigation(store, {...fixtures.routerParams,
           metricsType: METRICSTYPE_TRAFFICSOURCES, group: GROUPTYPE_AGENTNAME, interval: INTERVAL_DAILY, chartType: CHARTTYPE_HORIZBAR});
 
         store.pipe(select(fromExport.selectSelectedEpisodeExportRanks)).subscribe(exportData => {
           expect(exportData.length).toEqual(fixtures.ep0AgentNameRanks.length);
           expect(exportData[0].total).toBeGreaterThan(0);
+          done();
         });
       });
 
-      it('should have episode agent name exports interval data', () => {
+      it('should have episode agent name exports interval data', done => {
         dispatchHelper.dispatchRouterNavigation(store,
           {metricsType: METRICSTYPE_TRAFFICSOURCES, group: GROUPTYPE_AGENTNAME, interval: INTERVAL_DAILY, chartType: CHARTTYPE_LINE});
 
         store.pipe(select(fromExport.selectSelectedEpisodeExportRanks)).subscribe(exportData => {
           expect(exportData.length).toEqual(fixtures.ep0AgentNameRanks.length);
           expect(exportData[0].data.length).toEqual(fixtures.ep0AgentNameDownloads.length);
+          done();
         });
       });
     });
 
-    it('chart toggle should filter data from export', () => {
+    it('chart toggle should filter data from export', done => {
       dispatchHelper.dispatchRouterNavigation(store, {...fixtures.routerParams,
         metricsType: METRICSTYPE_TRAFFICSOURCES, group: GROUPTYPE_AGENTNAME, chartType: CHARTTYPE_STACKED});
       dispatchHelper.dispatchGroupChartToggle(store, GROUPTYPE_AGENTNAME, 'Unknown');
@@ -287,6 +326,7 @@ describe('Export Selectors', () => {
       store.pipe(select(fromExport.selectRoutedPodcastExportRanks)).subscribe(exportData => {
         expect(exportData.length).toEqual(fixtures.podcastAgentNameRanks.length - 1);
         expect(exportData[0].data.length).toEqual(fixtures.podcastAgentNameDownloads.length);
+        done();
       });
     });
   });
@@ -311,36 +351,46 @@ describe('Export Selectors', () => {
         fixtures.episodes[0].guid, fixtures.ep0GeoMetroRanks);
     });
 
-    it('should get export data according to router and selected episode state', () => {
+    it('should get export data for stacked downloads', done => {
       dispatchHelper.dispatchRouterNavigation(store,
         {...fixtures.routerParams, chartType: CHARTTYPE_STACKED, metricsType: METRICSTYPE_DOWNLOADS});
       store.pipe(select(fromExport.selectExportData), first()).subscribe(exportData => {
         expect(exportData.length).toEqual(fixtures.episodes.length + 1);
         expect(exportData[1].label).toEqual(fixtures.episodes[0].title);
         expect(exportData[0].label).toEqual('All Episodes');
+        done();
       });
+    });
 
+    it('should get export data for geocountry map', done => {
       dispatchHelper.dispatchRouterNavigation(store, {...fixtures.routerParams,
         metricsType: METRICSTYPE_DEMOGRAPHICS, group: GROUPTYPE_GEOCOUNTRY, chartType: CHARTTYPE_GEOCHART});
       store.pipe(select(fromExport.selectExportData), first()).subscribe(exportData => {
         expect(exportData.length).toEqual(fixtures.podcastGeoCountryRanks.length);
         expect(exportData[0].total).toBeGreaterThan(0);
+        done();
       });
+    });
 
+    it('should get export data for US map', done => {
       dispatchHelper.dispatchRouterNavigation(store, {...fixtures.routerParams,
         metricsType: METRICSTYPE_DEMOGRAPHICS, group: GROUPTYPE_GEOCOUNTRY, filter: 'US', chartType: CHARTTYPE_GEOCHART});
       store.pipe(select(fromExport.selectExportData), first()).subscribe(exportData => {
         expect(exportData.length).toEqual(fixtures.podcastGeoSubdivRanks.length);
         expect(exportData[0].total).toBeGreaterThan(0);
+        done();
       });
+    });
 
+    it('should get export data for geometro selected episodes', done => {
       dispatchHelper.dispatchRouterNavigation(store, {...fixtures.routerParams,
         metricsType: METRICSTYPE_DEMOGRAPHICS, group: GROUPTYPE_GEOMETRO, chartType: CHARTTYPE_STACKED});
       dispatchHelper.dispatchSelectEpisodes(store,
-        fixtures.routerParams.podcastId, fixtures.routerParams.metricsType, [fixtures.episodes[0].guid]);
+        fixtures.routerParams.podcastId, METRICSTYPE_DEMOGRAPHICS, [fixtures.episodes[0].guid]);
       store.pipe(select(fromExport.selectExportData)).subscribe(exportData => {
         expect(exportData.length).toEqual(fixtures.ep0GeoMetroRanks.length);
         expect(exportData[0].data.length).toEqual(fixtures.ep0GeoMetroDownloads.length);
+        done();
       });
     });
   });

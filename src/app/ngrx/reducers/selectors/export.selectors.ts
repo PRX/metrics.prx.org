@@ -21,6 +21,7 @@ import { selectSelectedEpisodesRanks, selectNestedEpisodesRanks } from './episod
 import { selectRoutedGroupCharted } from './group-charted.selectors';
 import { selectSelectedEpisodesTotals, selectNestedEpisodesTotals } from './episode-totals.selectors';
 import { selectRoutedPodcast } from './podcast.selectors';
+import { cumDownloads } from './dropday-chart.selectors';
 
 export const selectExportDownloads = createSelector(
   selectRouter,
@@ -92,7 +93,7 @@ export const selectExportDropday = createSelector(
             label: dropday.title,
             guid: dropday.guid,
             publishedAt: dropday.publishedAt,
-            data: dropday.downloads
+            data: cumDownloads(dropday.downloads)
           };
       }
     });

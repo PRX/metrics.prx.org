@@ -1,7 +1,8 @@
 import { ActionTypes, CustomRouterNavigationAction } from '../actions';
 import { RouterParams } from './models';
 
-const initialState = {};
+const url: string = null;
+const initialState = {url};
 
 // Reason for having our own Custom Router Reducer in addition to the Custom Router State Serializer:
 // Things that are not in/relevant to the current URL, can still be saved in the application state

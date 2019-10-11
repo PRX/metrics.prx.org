@@ -9,6 +9,7 @@ import * as ACTIONS from '../actions';
 import * as dateUtil from '@app/shared/util/date';
 import { RoutingService } from '@app/core/routing/routing.service';
 
+const url: string = null;
 @Injectable()
 export class RoutingEffects {
 
@@ -45,7 +46,7 @@ export class RoutingEffects {
     map((action: ACTIONS.RoutePodcastAction) => action.payload),
     switchMap((payload: ACTIONS.RoutePodcastPayload) => {
       const { podcastId } = payload;
-      this.routingService.normalizeAndRoute({podcastId, episodePage: 1});
+      this.routingService.normalizeAndRoute({url, podcastId, episodePage: 1});
       return of(null);
     })
   );
@@ -56,7 +57,7 @@ export class RoutingEffects {
     map((action: ACTIONS.RouteEpisodePageAction) => action.payload),
     switchMap((payload: ACTIONS.RouteEpisodePagePayload) => {
       const { episodePage } = payload;
-      this.routingService.normalizeAndRoute({episodePage});
+      this.routingService.normalizeAndRoute({url, episodePage});
       return of(null);
     })
   );
@@ -67,7 +68,7 @@ export class RoutingEffects {
     map((action: ACTIONS.RouteChartTypeAction) => action.payload),
     switchMap((payload: ACTIONS.RouteChartTypePayload) => {
       const { chartType } = payload;
-      this.routingService.normalizeAndRoute({chartType});
+      this.routingService.normalizeAndRoute({url, chartType});
       return of(null);
     })
   );
@@ -78,7 +79,7 @@ export class RoutingEffects {
     map((action: ACTIONS.RouteIntervalAction) => action.payload),
     switchMap((payload: ACTIONS.RouteIntervalPayload) => {
       const { interval } = payload;
-      this.routingService.normalizeAndRoute({interval});
+      this.routingService.normalizeAndRoute({url, interval});
       return of(null);
     })
   );
@@ -90,7 +91,7 @@ export class RoutingEffects {
     switchMap((payload: ACTIONS.RouteStandardRangePayload) => {
       const { standardRange } = payload;
       const range = dateUtil.getBeginEndDateFromStandardRange(standardRange);
-      this.routingService.normalizeAndRoute({standardRange, ...range});
+      this.routingService.normalizeAndRoute({url, standardRange, ...range});
       return of(null);
     })
   );
@@ -101,7 +102,7 @@ export class RoutingEffects {
     map((action: ACTIONS.RouteAdvancedRangeAction) => action.payload),
     switchMap((payload: ACTIONS.RouteAdvancedRangePayload) => {
       const { interval, beginDate, endDate, standardRange } = payload;
-      this.routingService.normalizeAndRoute({beginDate, endDate, interval, standardRange});
+      this.routingService.normalizeAndRoute({url, beginDate, endDate, interval, standardRange});
       return of(null);
     })
   );
@@ -112,7 +113,7 @@ export class RoutingEffects {
    map((action: ACTIONS.RouteMetricsGroupTypeAction) => action.payload),
    switchMap((payload: ACTIONS.RouteMetricsGroupTypePayload) => {
      const { metricsType, group } = payload;
-     this.routingService.normalizeAndRoute(({metricsType, group}));
+     this.routingService.normalizeAndRoute(({url, metricsType, group}));
      return of(null);
    })
  );
@@ -123,7 +124,7 @@ export class RoutingEffects {
     map((action: ACTIONS.RouteGroupFilterAction) => action.payload),
     switchMap((payload: ACTIONS.RouteGroupFilterPayload) => {
       const { filter } = payload;
-      this.routingService.normalizeAndRoute(({filter}));
+      this.routingService.normalizeAndRoute(({url, filter}));
       return of(null);
     })
   );
@@ -134,7 +135,7 @@ export class RoutingEffects {
     map((action: ACTIONS.RouteDaysAction) => action.payload),
     switchMap((payload: ACTIONS.RouteDaysPayload) => {
       const { days } = payload;
-      this.routingService.normalizeAndRoute(({days}));
+      this.routingService.normalizeAndRoute(({url, days}));
       return of(null);
     })
   );

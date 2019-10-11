@@ -35,6 +35,7 @@ describe('MenuBarComponent', () => {
   let store: Store<any>;
 
   const routerParams: RouterParams = {
+    url: null,
     chartType: <ChartType>CHARTTYPE_PODCAST,
     interval: INTERVAL_DAILY,
     standardRange: dateUtil.THIS_WEEK,

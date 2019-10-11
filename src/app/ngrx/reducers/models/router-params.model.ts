@@ -1,6 +1,7 @@
 import { IntervalModel, ChartType, MetricsType, GroupType } from './';
+import { BaseRouterStoreState } from '@ngrx/router-store';
 
-export interface RouterParams {
+export interface RouterParams extends BaseRouterStoreState {
   podcastId?: string;
   metricsType?: MetricsType;
   group?: GroupType;

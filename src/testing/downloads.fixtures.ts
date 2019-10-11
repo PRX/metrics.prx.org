@@ -39,6 +39,7 @@ export const episodes: Episode[] = [
   }
 ];
 export const routerParams: RouterParams = {
+  url: null,
   podcastId: podcast.id,
   episodePage: 1,
   beginDate: dateUtil.beginningOfLast28DaysUTC().toDate(),

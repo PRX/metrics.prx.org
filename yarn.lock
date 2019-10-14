@@ -6595,10 +6595,10 @@ prr@~1.0.1:
   resolved "https://registry.yarnpkg.com/prr/-/prr-1.0.1.tgz#d3fc114ba06995a45ec6893f484ceb1d78f5f476"
   integrity sha1-0/wRS6BplaRexok/SEzrHXj19HY=
 
-prx-ng-serve@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/prx-ng-serve/-/prx-ng-serve-1.0.0.tgz#93459312a4ffbd0e2e9736db8df6c78c168ef545"
-  integrity sha512-3ACWSYH1zCZevXPNzL1i6CSowYrRbwF8o3kglKmPsa08+j4ephrSbqaV3l7p/Nsl7issTU7ZtHwS0jJR8NddoA==
+prx-ng-serve@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/prx-ng-serve/-/prx-ng-serve-1.1.0.tgz#d12eebf8104037a2a6935a19c240d1df76d2463a"
+  integrity sha512-tmzJwrhYHL+LNu7iYh30hFGrHadmgz022B3lPuFGMI9C5aA9SeQ3RzserdbT28/HHgSo5tcHWF2TsKGpqwO6tA==
   dependencies:
     connect-gzip-static "^2.1.1"
     dotenv "^4.0.0"

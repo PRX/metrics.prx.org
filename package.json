@@ -32,7 +32,7 @@
     "core-js": "^2.4.1",
     "moment": "^2.18.1",
     "ngx-prx-styleguide": "2.19.0",
-    "prx-ng-serve": "^1.0.0",
+    "prx-ng-serve": "^1.1.0",
     "rxjs": "~6.5.3",
     "tinycolor2": "^1.4.1",
     "zone.js": "^0.8.29"

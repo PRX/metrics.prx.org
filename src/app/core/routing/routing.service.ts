@@ -375,7 +375,7 @@ export class RoutingService {
       (!this.routerParams || !this.routerParams.days || this.routerParams.days !== newRouterParams.days);
   }
 
-  loadEpisodes(newRouterParams: RouterParams) {
+  loadEpisodes(newRouterParams: PartialRouterParams) {
     this.store.dispatch(new ACTIONS.CastleEpisodePageLoadAction({
       podcastId: newRouterParams.podcastId,
       page: newRouterParams.episodePage || 1,

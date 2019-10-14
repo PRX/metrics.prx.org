@@ -104,7 +104,7 @@ export class RoutingService {
       case METRICSTYPE_DOWNLOADS:
         if (this.isPodcastChanged(newRouterParams) ||
           this.isEpisodePageChanged(newRouterParams) || this.isMetricsTypeChanged(newRouterParams)) {
-          this.loadEpisodes(newRouterParams.podcastId, newRouterParams.episodePage);
+          this.loadEpisodes(newRouterParams);
         } else if (this.isBeginDateChanged(newRouterParams) ||
           this.isEndDateChanged(newRouterParams) || this.isIntervalChanged(newRouterParams)) {
           // if episode page or podcast didn't change, check if other router params changed and load metrics
@@ -119,7 +119,7 @@ export class RoutingService {
             // want to show the first page of episodes, but we likely don't have that...
             // so load the first page of episodes
             //  + an effect to loadRoutedDropdays when page 1 of episodes loads on dropdays and also select that page of episodes
-            this.loadEpisodes(newRouterParams.podcastId, 1);
+            this.loadEpisodes({podcastId: newRouterParams.podcastId, episodePage: 1});
           } else {
             this.loadDropdayEpisodeAllTimeDownloads();
             this.loadSelectedEpisodeDropdays(newRouterParams);
@@ -375,8 +375,12 @@ export class RoutingService {
       (!this.routerParams || !this.routerParams.days || this.routerParams.days !== newRouterParams.days);
   }
 
-  loadEpisodes(podcastId: string, page: number) {
-    this.store.dispatch(new ACTIONS.CastleEpisodePageLoadAction({podcastId, page, per: EPISODE_PAGE_SIZE}));
+  loadEpisodes(newRouterParams: RouterParams) {
+    this.store.dispatch(new ACTIONS.CastleEpisodePageLoadAction({
+      podcastId: newRouterParams.podcastId,
+      page: newRouterParams.episodePage || 1,
+      per: EPISODE_PAGE_SIZE
+    }));
   }
 
   loadSelectEpisodes(newRouterParams: RouterParams) {

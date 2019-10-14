@@ -1,6 +1,7 @@
-import { Injectable } from '@angular/core';
+import { Injectable, OnDestroy } from '@angular/core';
 import { Router, RoutesRecognized } from '@angular/router';
-import { filter } from 'rxjs/operators';
+import { Subject } from 'rxjs';
+import { filter, takeUntil } from 'rxjs/operators';
 import { Store, select } from '@ngrx/store';
 import { selectRoutedPageEpisodes, selectRouter,
   selectAggregateSelectedEpisodeGuids, selectSelectedEpisodeDropdays,
@@ -35,17 +36,21 @@ import * as dateUtil from '@app/shared/util/date/';
 import * as ACTIONS from '@app/ngrx/actions/';
 
 @Injectable()
-export class RoutingService {
+export class RoutingService implements OnDestroy {
   routerParams: RouterParams;
   episodes: Episode[];
   aggregateSelectedEpisodeGuids: string[];
   dropdayEpisodes: EpisodeDropday[];
+  destroyed$: Subject<void> = new Subject();
 
   constructor (public store: Store<any>,
                private router: Router) {
     // don't start watching anything until user is authorized
     let subscribed = false;
-    this.store.pipe(select(selectUserAuthorized)).subscribe(authorized => {
+    this.store.pipe(
+      select(selectUserAuthorized),
+      takeUntil(this.destroyed$)
+    ).subscribe(authorized => {
       if (!subscribed && authorized) {
         this.dontAllowRoot();
         this.subRoutedPageEpisodes();
@@ -56,10 +61,15 @@ export class RoutingService {
     });
   }
 
+  ngOnDestroy() {
+    this.destroyed$.next();
+   }
+
   dontAllowRoot() {
     // for redirecting users routed to '/'
     this.router.events.pipe(
-      filter(event => event instanceof RoutesRecognized)
+      filter(event => event instanceof RoutesRecognized),
+      takeUntil(this.destroyed$)
     ).subscribe((event: RoutesRecognized) => {
       if (event.url === '/' && this.routerParams && this.routerParams.podcastId) {
         this.normalizeAndRoute(this.routerParams);
@@ -68,22 +78,34 @@ export class RoutingService {
   }
 
   subRoutedPageEpisodes() {
-    this.store.pipe(select(selectRoutedPageEpisodes)).subscribe((episodes: Episode[]) => {
+    this.store.pipe(
+      select(selectRoutedPageEpisodes),
+      takeUntil(this.destroyed$)
+    ).subscribe((episodes: Episode[]) => {
       this.episodes = episodes;
     });
   }
 
   subSelectedEpisodes() {
-    this.store.pipe(select(selectAggregateSelectedEpisodeGuids)).subscribe((guids: string[]) => {
+    this.store.pipe(
+      select(selectAggregateSelectedEpisodeGuids),
+      takeUntil(this.destroyed$)
+    ).subscribe((guids: string[]) => {
       this.aggregateSelectedEpisodeGuids = guids;
     });
-    this.store.pipe(select(selectSelectedEpisodeDropdays)).subscribe((episodes: EpisodeDropday[]) => {
+    this.store.pipe(
+      select(selectSelectedEpisodeDropdays),
+      takeUntil(this.destroyed$)
+    ).subscribe((episodes: EpisodeDropday[]) => {
       this.dropdayEpisodes = episodes;
     });
   }
 
   subRouterParams() {
-    this.store.pipe(select(selectRouter)).subscribe(routerParams => {
+    this.store.pipe(
+      select(selectRouter),
+      takeUntil(this.destroyed$)
+    ).subscribe(routerParams => {
       // don't do anything with setting route or loading metrics until podcast is set
       if (routerParams.podcastId) {
         // if this.routerParams has not yet been set, go through routing which checks for and sets defaults

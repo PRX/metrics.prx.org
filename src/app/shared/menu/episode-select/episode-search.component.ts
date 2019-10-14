@@ -1,5 +1,5 @@
-import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
-import { Subject } from 'rxjs';
+import { Component, Input, Output, EventEmitter, OnInit, OnDestroy } from '@angular/core';
+import { Subject, Subscription } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 @Component({
@@ -12,19 +12,26 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
   `,
   styleUrls: ['episode-search.component.css']
 })
-export class EpisodeSearchComponent implements OnInit {
+export class EpisodeSearchComponent implements OnInit, OnDestroy {
   @Input() searchTerm: string;
   @Output() search = new EventEmitter<string>();
 
   searchTextStream = new Subject<string>();
+  searchTextSub: Subscription;
 
   ngOnInit() {
-    this.searchTextStream.pipe(
+    this.searchTextSub = this.searchTextStream.pipe(
       debounceTime(500),
       distinctUntilChanged()
     ).subscribe((text: string) => {
-        this.search.emit(text);
-      });
+      this.search.emit(text);
+    });
+  }
+
+  ngOnDestroy() {
+    if (this.searchTextSub) {
+      this.searchTextSub.unsubscribe();
+    }
   }
 
   onEpisodeSearch(term: string) {

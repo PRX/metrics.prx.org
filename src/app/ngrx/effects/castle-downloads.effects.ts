@@ -1,6 +1,6 @@
-import { Injectable } from '@angular/core';
+import { Injectable, OnDestroy } from '@angular/core';
 import { catchError, filter, map, mergeMap, switchMap } from 'rxjs/operators';
-import { of, Observable } from 'rxjs';
+import { of, Observable, Subscription } from 'rxjs';
 import { Actions, Effect, ofType } from '@ngrx/effects';
 import { Action, Store, select } from '@ngrx/store';
 
@@ -11,8 +11,9 @@ import { Episode, RouterParams, METRICSTYPE_DOWNLOADS, METRICSTYPE_DROPDAY } fro
 import * as dateUtil from '@app/shared/util/date';
 
 @Injectable()
-export class CastleDownloadsEffects {
+export class CastleDownloadsEffects implements OnDestroy {
   routerParams: RouterParams;
+  routerParamsSub: Subscription;
 
   // DOWNLOADS: whenever an episode page is loaded that is the currently routed page,
   // call the load actions for podcast and episode downloads
@@ -242,8 +243,14 @@ export class CastleDownloadsEffects {
   constructor(private actions$: Actions,
               private castle: CastleService,
               private store: Store<any>) {
-    this.store.pipe(select(selectRouter)).subscribe((routerParams: RouterParams) => {
+    this.routerParamsSub = this.store.pipe(select(selectRouter)).subscribe((routerParams: RouterParams) => {
       this.routerParams = routerParams;
     });
+  }
+
+  ngOnDestroy() {
+    if (this.routerParamsSub) {
+      this.routerParamsSub.unsubscribe();
+    }
   }
 }

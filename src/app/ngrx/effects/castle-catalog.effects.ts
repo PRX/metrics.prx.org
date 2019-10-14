@@ -1,6 +1,6 @@
-import { Injectable } from '@angular/core';
+import { Injectable, OnDestroy } from '@angular/core';
 import { catchError, concatMap, filter, map, switchMap } from 'rxjs/operators';
-import { of, Observable } from 'rxjs';
+import { of, Observable, Subscription } from 'rxjs';
 import { Actions, Effect, ofType } from '@ngrx/effects';
 import { Action, Store, select } from '@ngrx/store';
 
@@ -14,8 +14,9 @@ import {
 import * as localStorageUtil from '@app/shared/util/local-storage.util';
 
 @Injectable()
-export class CastleCatalogEffects {
+export class CastleCatalogEffects implements OnDestroy {
   routerParams: RouterParams;
+  routerParamsSub: Subscription;
 
   @Effect()
   loadUserinfoSuccess$: Observable<Action> = this.actions$.pipe(
@@ -131,8 +132,14 @@ export class CastleCatalogEffects {
   constructor(private actions$: Actions,
               private castle: CastleService,
               private store: Store<any>) {
-    this.store.pipe(select(selectRouter)).subscribe((routerParams: RouterParams) => {
+    this.routerParamsSub = this.store.pipe(select(selectRouter)).subscribe((routerParams: RouterParams) => {
       this.routerParams = routerParams;
     });
+  }
+
+  ngOnDestroy() {
+    if (this.routerParamsSub) {
+      this.routerParamsSub.unsubscribe();
+    }
   }
 }

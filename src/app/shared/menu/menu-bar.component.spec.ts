@@ -1,6 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { DebugElement } from '@angular/core';
 import { StoreModule, Store } from '@ngrx/store';
+import { first } from 'rxjs/operators';
 
 import { reducers } from '../../ngrx/reducers';
 
@@ -84,27 +85,31 @@ describe('MenuBarComponent', () => {
     });
   }));
 
-  it('should have routerParams', () => {
-    let result;
-    comp.routerParams$.subscribe(value => result = value);
-    expect(result).toEqual(routerParams);
+  it('should have routerParams', done => {
+    comp.routerParams$.pipe(first()).subscribe(result => {
+      expect(result).toEqual(routerParams);
+      done();
+    });
   });
 
-  it('should have chart type', () => {
-    let result;
-    comp.chartType$.subscribe(value => result = value);
-    expect(result).toEqual(CHARTTYPE_PODCAST);
+  it('should have chart type', done => {
+    comp.chartType$.pipe(first()).subscribe(result => {
+      expect(result).toEqual(CHARTTYPE_PODCAST);
+      done();
+    });
   });
 
-  it('should have interval', () => {
-    let result;
-    comp.interval$.subscribe(value => result = value);
-    expect(result).toEqual(INTERVAL_DAILY);
+  it('should have interval', done => {
+    comp.interval$.pipe(first()).subscribe(result => {
+      expect(result).toEqual(INTERVAL_DAILY);
+      done();
+    });
   });
 
-  it('should have standard range', () => {
-    let result;
-    comp.standardRange$.subscribe(value => result = value);
-    expect(result).toEqual(dateUtil.THIS_WEEK);
+  it('should have standard range', done => {
+    comp.standardRange$.pipe(first()).subscribe(result => {
+      expect(result).toEqual(dateUtil.THIS_WEEK);
+      done();
+    });
   });
 });

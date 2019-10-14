@@ -1,5 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { StoreModule, Store, select } from '@ngrx/store';
+import { Subscription } from 'rxjs';
 
 import { RootState, reducers } from '..';
 import { METRICSTYPE_DROPDAY, CHARTTYPE_HORIZBAR, DownloadsTableModel } from '../models';
@@ -12,6 +13,7 @@ import { selectDropdayTableMetrics } from './dropday-table.selectors';
 describe('Dropday Table Selectors', () => {
   let store: Store<RootState>;
   let result: DownloadsTableModel[];
+  let dataSub: Subscription;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -28,9 +30,13 @@ describe('Dropday Table Selectors', () => {
     dispatchHelper.dispatchEpisodeDropday(store);
     dispatchHelper.dispatchEpisodeAllTimeDownloads(store);
 
-    store.pipe(select(selectDropdayTableMetrics)).subscribe((data) => {
+    dataSub = store.pipe(select(selectDropdayTableMetrics)).subscribe((data) => {
       result = data;
     });
+  });
+
+  afterEach(() => {
+    dataSub.unsubscribe();
   });
 
   it('should get episodes with total and all time downloads sorted by publish date descending', () => {

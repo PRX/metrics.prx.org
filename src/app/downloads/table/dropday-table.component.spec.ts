@@ -1,6 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { DebugElement } from '@angular/core';
 import { StoreModule, Store } from '@ngrx/store';
+import { first } from 'rxjs/operators';
 import { FancyFormModule } from 'ngx-prx-styleguide';
 
 import { reducers } from '@app/ngrx/reducers';
@@ -49,15 +50,17 @@ describe('DropdayTableComponent', () => {
     });
   }));
 
-  it('should have chart type', () => {
-    let result;
-    comp.chartType$.subscribe(value => result = value);
-    expect(result).toEqual(CHARTTYPE_HORIZBAR);
+  it('should have chart type', done => {
+    comp.chartType$.pipe(first()).subscribe(result => {
+      expect(result).toEqual(CHARTTYPE_HORIZBAR);
+      done();
+    });
   });
 
-  it('should have table data', () => {
-    let result;
-    comp.episodeTableData$.subscribe(value => result = value);
-    expect(result.length).toEqual(episodes.length);
+  it('should have table data', done => {
+    comp.episodeTableData$.pipe(first()).subscribe(result => {
+      expect(result.length).toEqual(episodes.length);
+      done();
+    });
   });
 });

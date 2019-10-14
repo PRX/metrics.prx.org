@@ -1,8 +1,9 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { Router } from '@angular/router';
-import { StoreModule, Store } from '@ngrx/store';
-import { RouterStub } from '../../../testing/stub.router';
 import { DebugElement } from '@angular/core';
+import { Router } from '@angular/router';
+import { RouterStub } from '../../../testing/stub.router';
+import { StoreModule, Store } from '@ngrx/store';
+import { first } from 'rxjs/operators';
 
 import { PodcastNavComponent } from './podcast-nav.component';
 import { PodcastNavDropdownComponent } from './podcast-nav-dropdown.component';
@@ -15,7 +16,7 @@ import {
   RoutePodcastAction,
   CastlePodcastPageSuccessAction
 } from '../../ngrx/actions';
-import { Podcast, RouterParams } from '../../ngrx';
+import { Podcast, PartialRouterParams } from '../../ngrx';
 
 describe('PodcastNavComponent', () => {
   let store: Store<RootState>;
@@ -34,7 +35,7 @@ describe('PodcastNavComponent', () => {
       title: 'Totally Not Pet Talks Daily'
     }
   ];
-  const routerParams: RouterParams = {
+  const routerParams: PartialRouterParams = {
     podcastId: podcasts[0].id
   };
 
@@ -65,18 +66,18 @@ describe('PodcastNavComponent', () => {
     });
   }));
 
-  it('should set selected podcast according to routerParams', () => {
-    let result;
-    comp.selectedPodcast$.subscribe(value => result = value);
-    expect(result).toEqual(podcasts[0]);
+  it('should set selected podcast according to routerParams', done => {
+    comp.selectedPodcast$.pipe(first()).subscribe(result => {
+      expect(result).toEqual(podcasts[0]);
+      done();
+    });
   });
 
-  it('should update list of podcasts', () => {
-    let result;
-    comp.podcasts$.subscribe(value => result = value);
-    expect(result).toEqual([podcasts[0]]);
-    store.dispatch(new CastlePodcastPageSuccessAction({page: 1, podcasts, total: podcasts.length}));
-    expect(result).toEqual(podcasts);
+  it('should update list of podcasts', done => {
+    comp.podcasts$.pipe(first()).subscribe(result => {
+      expect(result).toEqual([podcasts[0]]);
+      done();
+    });
   });
 
   it('should dispatch routing action when podcast is changed', () => {

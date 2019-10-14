@@ -1,6 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { DebugElement } from '@angular/core';
 import { StoreModule, Store } from '@ngrx/store';
+import { first } from 'rxjs/operators';
 
 import { NavMenuContainerComponent } from './nav-menu-container.component';
 import { NavMenuPresentationComponent } from './nav-menu-presentation.component';
@@ -39,9 +40,10 @@ describe('NavMenuContainerComponent', () => {
     });
   }));
 
-  it('should have router params', () => {
-    comp.routerParams$.subscribe(params => {
+  it('should have router params', done => {
+    comp.routerParams$.pipe(first()).subscribe(params => {
       expect(params).toEqual(routerParams);
+      done();
     });
   });
 

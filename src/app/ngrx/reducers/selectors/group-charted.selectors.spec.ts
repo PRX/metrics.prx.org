@@ -21,17 +21,21 @@ describe('Group Charted Selectors', () => {
     dispatchHelper.dispatchRouterNavigation(store, {metricsType: METRICSTYPE_TRAFFICSOURCES, group: GROUPTYPE_AGENTNAME});
   });
 
-  it('should have just the toggled groups charted status', () => {
+  it('should toggled groups charted off', done => {
     dispatchHelper.dispatchGroupChartToggle(store, GROUPTYPE_AGENTNAME, 'Unknown');
     store.pipe(select(fromGroupCharted.selectRoutedGroupCharted), first()).subscribe((groups: GroupCharted[]) => {
       expect(groups.length).toEqual(1);
       expect(groups.find(g => g.groupName === 'Unknown').charted).toBeFalsy();
+      done();
     });
+  });
 
+  it('should toggled groups charted on', done => {
     dispatchHelper.dispatchGroupChartToggle(store, GROUPTYPE_AGENTNAME, 'Overcast', true);
     store.pipe(select(fromGroupCharted.selectRoutedGroupCharted), first()).subscribe((groups: GroupCharted[]) => {
-      expect(groups.length).toEqual(2);
+      expect(groups.length).toEqual(1);
       expect(groups.find(g => g.groupName === 'Overcast').charted).toBeTruthy();
+      done();
     });
   });
 

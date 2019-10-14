@@ -1,5 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { StoreModule, Store, select } from '@ngrx/store';
+import { Subscription } from 'rxjs';
 
 import { RootState, reducers } from '../';
 import * as ACTIONS from '../../actions';
@@ -13,6 +14,7 @@ import { selectDropdayChartMetrics, cumDownloads } from './dropday-chart.selecto
 describe('Dropday Chart Selectors', () => {
   let store: Store<RootState>;
   let result: IndexedChartModel[];
+  let dataSub: Subscription;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -28,9 +30,13 @@ describe('Dropday Chart Selectors', () => {
     dispatchHelper.dispatchSelectEpisodes(store, routerParams.podcastId, METRICSTYPE_DROPDAY, [episodes[0].guid, episodes[1].guid]);
     dispatchHelper.dispatchEpisodeDropday(store);
 
-    store.pipe(select(selectDropdayChartMetrics)).subscribe((data) => {
+    dataSub = store.pipe(select(selectDropdayChartMetrics)).subscribe((data) => {
       result = <IndexedChartModel[]>data;
     });
+  });
+
+  afterEach(() => {
+    dataSub.unsubscribe();
   });
 
   it('should get cumulative data', () => {

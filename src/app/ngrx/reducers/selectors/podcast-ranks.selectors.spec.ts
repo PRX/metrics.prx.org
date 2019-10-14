@@ -1,5 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { select, Store, StoreModule } from '@ngrx/store';
+import { Subscription } from 'rxjs';
+import { first } from 'rxjs/operators';
 import { reducers, RootState } from '../';
 import {
   ChartType, CHARTTYPE_STACKED, CHARTTYPE_HORIZBAR,
@@ -104,14 +106,19 @@ describe('Podcast Ranks Selectors', () => {
 
   describe('geo podcast ranks', () => {
     let result: TimeseriesChartModel[];
+    let dataSub: Subscription;
 
     beforeEach(() => {
       dispatchRouteGeoCountry();
       dispatchPodcastGeoCountryRanks();
 
-      store.pipe(select(podcastRanks.selectRoutedPodcastRanksChartMetrics)).subscribe((data) => {
+      dataSub = store.pipe(select(podcastRanks.selectRoutedPodcastRanksChartMetrics)).subscribe((data) => {
         result = <TimeseriesChartModel[]>data;
       });
+    });
+
+    afterEach(() => {
+      dataSub.unsubscribe();
     });
 
     it('should transform podcast ranks to timeseries chart model', () => {
@@ -130,12 +137,17 @@ describe('Podcast Ranks Selectors', () => {
 
   describe('totals (horizontal bar) podcast ranks', () => {
     let result: CategoryChartModel[];
+    let dataSub: Subscription;
     beforeEach(() => {
       dispatchPodcastAgentNameRanks();
       dispatchPodcastAgentTypeRanks();
-      store.pipe(select(podcastRanks.selectRoutedPodcastRanksChartMetrics)).subscribe((data) => {
+      dataSub = store.pipe(select(podcastRanks.selectRoutedPodcastRanksChartMetrics)).subscribe((data) => {
         result = <CategoryChartModel[]>data;
       });
+    });
+
+    afterEach(() => {
+      dataSub.unsubscribe();
     });
 
     it('should transform podcast ranks to category chart model', () => {
@@ -148,76 +160,87 @@ describe('Podcast Ranks Selectors', () => {
       expect(result[1].value).toEqual(podcastAgentNameRanks[1].total);
     });
 
-    it('should not include "Other" data if total value is zero', () => {
+    it('should not include "Other" data if total value is zero', done => {
       dispatchRouteAgentType(CHARTTYPE_HORIZBAR);
 
-      store.pipe(select(podcastRanks.selectRoutedPodcastRanksChartMetrics)).subscribe((data) => {
+      store.pipe(select(podcastRanks.selectRoutedPodcastRanksChartMetrics), first()).subscribe((data) => {
         result = <CategoryChartModel[]>data;
+        expect(result.length).toEqual(podcastAgentTypeRanks.length - 1);
+        expect(result.find(r => r.label === 'Other')).toBeUndefined();
+        done();
       });
 
-      expect(result.length).toEqual(podcastAgentTypeRanks.length - 1);
-      expect(result.find(r => r.label === 'Other')).toBeUndefined();
     });
 
-    it('should filter by groups charted and assume groups are charted implicitly', () => {
+    it('should filter by groups charted and assume groups are charted implicitly', done => {
       dispatchRouteAgentType(CHARTTYPE_HORIZBAR);
+      dispatchPodcastToggleGroupCharted('Unknown');
 
-      store.pipe(select(podcastRanks.selectRoutedPodcastRanksChartMetrics)).subscribe((data) => {
+      store.pipe(select(podcastRanks.selectRoutedPodcastRanksChartMetrics), first()).subscribe((data) => {
         result = <CategoryChartModel[]>data;
+        expect(result.length).toEqual(podcastAgentTypeRanks.length - 2);
+        expect(result.find(r => r.label === 'Unknown')).toBeUndefined();
+        done();
       });
 
-      expect(result.length).toEqual(podcastAgentTypeRanks.length - 1);
-      dispatchPodcastToggleGroupCharted('Unknown');
-      expect(result.length).toEqual(podcastAgentTypeRanks.length - 2);
-      expect(result.find(r => r.label === 'Unknown')).toBeUndefined();
     });
   });
 
   describe('intervals (multiline/stacked) podcast ranks', () => {
     let result: TimeseriesChartModel[];
+    let dataSub: Subscription;
     beforeEach(() => {
       dispatchPodcastAgentTypeRanks();
-      store.pipe(select(podcastRanks.selectRoutedPodcastRanksChartMetrics)).subscribe((data) => {
+      dataSub = store.pipe(select(podcastRanks.selectRoutedPodcastRanksChartMetrics), first()).subscribe((data) => {
         result = <TimeseriesChartModel[]>data;
       });
     });
 
-    it('should not include "Other" data if total value is zero', () => {
+    afterEach(() => {
+      dataSub.unsubscribe();
+    });
+
+    it('should not include "Other" data if total value is zero', done => {
       dispatchRouteAgentType(CHARTTYPE_STACKED);
 
-      store.pipe(select(podcastRanks.selectRoutedPodcastRanksChartMetrics)).subscribe((data) => {
+      store.pipe(select(podcastRanks.selectRoutedPodcastRanksChartMetrics), first()).subscribe((data) => {
         result = <TimeseriesChartModel[]>data;
+        expect(result.length).toEqual(podcastAgentTypeRanks.length - 1);
+        expect(result.find(r => r.label === 'Other')).toBeUndefined();
+        done();
       });
-
-      expect(result.length).toEqual(podcastAgentTypeRanks.length - 1);
-      expect(result.find(r => r.label === 'Other')).toBeUndefined();
     });
 
-    it('should filter by groups charted and assume groups are charted implicitly', () => {
+    it('should filter by groups charted and assume groups are charted implicitly', done => {
       dispatchRouteAgentType(CHARTTYPE_LINE);
+      dispatchPodcastToggleGroupCharted('Unknown');
 
       store.pipe(select(podcastRanks.selectRoutedPodcastRanksChartMetrics)).subscribe((data) => {
         result = <TimeseriesChartModel[]>data;
+        expect(result.length).toEqual(podcastAgentTypeRanks.length - 2);
+        expect(result.find(r => r.label === 'Unknown')).toBeUndefined();
+        done();
       });
 
-      expect(result.length).toEqual(podcastAgentTypeRanks.length - 1);
-      dispatchPodcastToggleGroupCharted('Unknown');
-      expect(result.length).toEqual(podcastAgentTypeRanks.length - 2);
-      expect(result.find(r => r.label === 'Unknown')).toBeUndefined();
     });
   });
 
   describe('nested podcast ranks', () => {
 
     let result: TimeseriesChartModel[];
+    let dataSub: Subscription;
 
     beforeEach(() => {
       dispatchRouteGeoSubdiv();
       dispatchPodcastNestedRanks();
 
-      store.pipe(select(podcastRanks.selectNestedPodcastRanksChartMetrics)).subscribe((data) => {
+      dataSub = store.pipe(select(podcastRanks.selectNestedPodcastRanksChartMetrics)).subscribe((data) => {
         result = data;
       });
+    });
+
+    afterEach(() => {
+      dataSub.unsubscribe();
     });
 
     it('should transform nested podcast ranks to timeseries chart model', () => {

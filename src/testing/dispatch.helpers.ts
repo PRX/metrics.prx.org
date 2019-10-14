@@ -1,11 +1,11 @@
 import { Store } from '@ngrx/store';
 import * as fixtures from './downloads.fixtures';
-import { RouterParams, Podcast, Episode, EPISODE_PAGE_SIZE,
+import { PartialRouterParams, Podcast, Episode, EPISODE_PAGE_SIZE,
   GroupType, GROUPTYPE_GEOCOUNTRY, GROUPTYPE_AGENTNAME, IntervalModel, MetricsType } from '@app/ngrx';
 import * as ACTIONS from '@app/ngrx/actions';
 
 
-export const dispatchRouterNavigation = (store: Store<any>, routerParams?: RouterParams) => {
+export const dispatchRouterNavigation = (store: Store<any>, routerParams?: PartialRouterParams) => {
   store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerParams: {
     ...fixtures.routerParams,
     ...(routerParams && routerParams.podcastId && {podcastId: routerParams.podcastId}),
@@ -125,7 +125,7 @@ export const dispatchEpisodeDropday = (store: Store<any>, podcastId?: string, in
   }));
 };
 
-export const dispatchPodcastRanks = (store: Store<any>, routerParams?: RouterParams, ranks?: any[], downloads?: any[][]) => {
+export const dispatchPodcastRanks = (store: Store<any>, routerParams?: PartialRouterParams, ranks?: any[], downloads?: any[][]) => {
   store.dispatch(new ACTIONS.CastlePodcastRanksSuccessAction({
     podcastId: routerParams && routerParams.podcastId || fixtures.podcast.id,
     group: routerParams && routerParams.group || GROUPTYPE_GEOCOUNTRY,
@@ -138,7 +138,7 @@ export const dispatchPodcastRanks = (store: Store<any>, routerParams?: RouterPar
   }));
 };
 
-export const dispatchPodcastTotals = (store: Store<any>, routerParams?: RouterParams, ranks?: any[]) => {
+export const dispatchPodcastTotals = (store: Store<any>, routerParams?: PartialRouterParams, ranks?: any[]) => {
   store.dispatch(new ACTIONS.CastlePodcastTotalsSuccessAction({
     podcastId: routerParams && routerParams.podcastId || fixtures.podcast.id,
     group: routerParams && routerParams.group || GROUPTYPE_GEOCOUNTRY,
@@ -149,7 +149,8 @@ export const dispatchPodcastTotals = (store: Store<any>, routerParams?: RouterPa
   }));
 };
 
-export const dispatchEpisodeRanks = (store: Store<any>, routerParams?: RouterParams, guid?: string, ranks?: any[], downloads?: any[][]) => {
+export const dispatchEpisodeRanks =
+(store: Store<any>, routerParams?: PartialRouterParams, guid?: string, ranks?: any[], downloads?: any[][]) => {
   store.dispatch(new ACTIONS.CastleEpisodeRanksSuccessAction({
     guid: guid || fixtures.episodes[0].guid,
     group: routerParams && routerParams.group || GROUPTYPE_GEOCOUNTRY,
@@ -162,7 +163,7 @@ export const dispatchEpisodeRanks = (store: Store<any>, routerParams?: RouterPar
   }));
 };
 
-export const dispatchEpisodeTotals = (store: Store<any>, routerParams?: RouterParams, guid?: string, ranks?: any[]) => {
+export const dispatchEpisodeTotals = (store: Store<any>, routerParams?: PartialRouterParams, guid?: string, ranks?: any[]) => {
   store.dispatch(new ACTIONS.CastleEpisodeTotalsSuccessAction({
     guid: guid || fixtures.episodes[0].guid,
     group: routerParams && routerParams.group || GROUPTYPE_GEOCOUNTRY,

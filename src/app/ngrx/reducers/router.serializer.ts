@@ -8,8 +8,8 @@ import { getBeginEndDateFromStandardRange, getStandardRangeForBeginEndDate } fro
 // serialize the route snapshot to our custom RouterParams
 export class CustomSerializer implements RouterStateSerializer<RouterParams> {
   serialize(routerState: RouterStateSnapshot | any): RouterParams {
-    const routerParams: RouterParams = {};
     const { url } = routerState;
+    const routerParams: RouterParams = {url};
 
     let state: ActivatedRouteSnapshot = routerState.root;
     while (state.firstChild) {

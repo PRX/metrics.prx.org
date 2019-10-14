@@ -1,5 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { StoreModule, Store, select } from '@ngrx/store';
+import { first } from 'rxjs/operators';
 
 import { selectNumEpisodeSelectPages, selectRoutedPodcastEpisodesSelectList } from './episode-select.selectors';
 import { RootState, reducers } from '../';
@@ -23,16 +24,18 @@ describe('Episode Select List Selectors', () => {
       new ACTIONS.CastleEpisodeSelectPageSuccessAction({page: 1, per: EPISODE_SELECT_PAGE_SIZE, total: 1001, episodes}));
   });
 
-  it('determines total pages from total and page size', () => {
-    store.pipe(select(selectNumEpisodeSelectPages)).subscribe((numPages: number) => {
+  it('determines total pages from total and page size', done => {
+    store.pipe(select(selectNumEpisodeSelectPages), first()).subscribe((numPages: number) => {
       expect(numPages).toEqual(11);
+      done();
     });
   });
 
-  it('sorts routed podcast episodes by publish date', () => {
-    store.pipe(select(selectRoutedPodcastEpisodesSelectList)).subscribe((eps: Episode[]) => {
+  it('sorts routed podcast episodes by publish date', done => {
+    store.pipe(select(selectRoutedPodcastEpisodesSelectList), first()).subscribe((eps: Episode[]) => {
       expect(eps.length).toEqual(episodes.filter(e => e.podcastId === '70').length);
       expect(eps[0].publishedAt.valueOf()).toBeGreaterThan(eps[1].publishedAt.valueOf());
+      done();
     });
   });
 

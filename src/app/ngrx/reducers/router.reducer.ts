@@ -1,7 +1,7 @@
 import { ActionTypes, CustomRouterNavigationAction } from '../actions';
 import { RouterParams } from './models';
 
-const initialState = {};
+const initialState = {url: null};
 
 // Reason for having our own Custom Router Reducer in addition to the Custom Router State Serializer:
 // Things that are not in/relevant to the current URL, can still be saved in the application state
@@ -11,6 +11,9 @@ export function CustomRouterReducer(state: RouterParams = initialState, action: 
   switch (action.type) {
     case ActionTypes.CUSTOM_ROUTER_NAVIGATION:
       const newState: RouterParams = {...state};
+      if (action.payload.routerParams.url) {
+        newState.url = action.payload.routerParams.url;
+      }
       if (action.payload.routerParams.podcastId) {
         newState.podcastId = action.payload.routerParams.podcastId;
       }

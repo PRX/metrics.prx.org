@@ -1,5 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { StoreModule, Store, select } from '@ngrx/store';
+import { Subscription } from 'rxjs';
 
 import { RootState, reducers } from '../';
 import { DownloadsTableModel, EPISODE_PAGE_SIZE, CHARTTYPE_STACKED, CHARTTYPE_PODCAST, CHARTTYPE_EPISODES } from '../models';
@@ -47,10 +48,16 @@ describe('Downloads Table Selectors', () => {
   });
 
   describe('podcast download table metrics', () => {
+    let dataSub: Subscription;
+
     beforeEach(() => {
-      store.pipe(select(selectDownloadTablePodcastDownloads)).subscribe((tableMetrics: DownloadsTableModel) => {
+      dataSub = store.pipe(select(selectDownloadTablePodcastDownloads)).subscribe((tableMetrics: DownloadsTableModel) => {
         result = tableMetrics;
       });
+    });
+
+    afterEach(() => {
+      dataSub.unsubscribe();
     });
 
     it('should transform data to downloads table model', () => {
@@ -74,10 +81,16 @@ describe('Downloads Table Selectors', () => {
   });
 
   describe('episode download table metrics', () => {
+    let dataSub: Subscription;
+
     beforeEach(() => {
-      store.pipe(select(selectDownloadTableEpisodeMetrics)).subscribe((tableMetrics: DownloadsTableModel[]) => {
+      dataSub = store.pipe(select(selectDownloadTableEpisodeMetrics)).subscribe((tableMetrics: DownloadsTableModel[]) => {
         result = tableMetrics;
       });
+    });
+
+    afterEach(() => {
+      dataSub.unsubscribe();
     });
 
     it('should transform data to downloads table model', () => {
@@ -133,10 +146,16 @@ describe('Downloads Table Selectors', () => {
   });
 
   describe('interval data', () => {
+    let dataSub: Subscription;
+
     beforeEach(() => {
-      store.pipe(select(selectDownloadTableIntervalData)).subscribe((intervalData: any[][]) => {
+      dataSub = store.pipe(select(selectDownloadTableIntervalData)).subscribe((intervalData: any[][]) => {
         result = intervalData;
       });
+    });
+
+    afterEach(() => {
+      dataSub.unsubscribe();
     });
 
     it('should have dates in header row', () => {

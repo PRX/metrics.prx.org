@@ -1,5 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { StoreModule, Store, select } from '@ngrx/store';
+import { Subscription } from 'rxjs';
 
 import { RootState, reducers } from '../';
 import { ChartType, CHARTTYPE_STACKED, CHARTTYPE_PODCAST, CHARTTYPE_EPISODES } from '../models';
@@ -48,6 +49,7 @@ describe('Downloads Chart Selectors', () => {
 
   describe('stacked podcast and episode chart', () => {
     let result: TimeseriesChartModel[];
+    let dataSub: Subscription;
 
     beforeEach(() => {
       dispatchHelper.dispatchRouterNavigation(store, {...routerParams, chartType: <ChartType>CHARTTYPE_STACKED});
@@ -55,9 +57,13 @@ describe('Downloads Chart Selectors', () => {
       dispatchHelper.dispatchEpisodeDownloads(store);
       dispatchHelper.dispatchPodcastDownloads(store);
 
-      store.pipe(select(selectDownloadChartMetrics)).subscribe((data) => {
+      dataSub = store.pipe(select(selectDownloadChartMetrics)).subscribe((data) => {
         result = data;
       });
+    });
+
+    afterEach(() => {
+      dataSub.unsubscribe();
     });
 
     it('should transform podcast and episode data download chart data model', () => {
@@ -110,14 +116,19 @@ describe('Downloads Chart Selectors', () => {
 
   describe('bar podcast chart', () => {
     let result: TimeseriesChartModel[];
+    let dataSub: Subscription;
 
     beforeEach(() => {
       dispatchHelper.dispatchRouterNavigation(store, {...routerParams, chartType: <ChartType>CHARTTYPE_PODCAST});
       dispatchHelper.dispatchPodcastDownloads(store);
 
-      store.pipe(select(selectDownloadChartMetrics)).subscribe((data) => {
+      dataSub = store.pipe(select(selectDownloadChartMetrics)).subscribe((data) => {
         result = data;
       });
+    });
+
+    afterEach(() => {
+      dataSub.unsubscribe();
     });
 
     it('should transform podcast data to chart model', () => {
@@ -144,15 +155,20 @@ describe('Downloads Chart Selectors', () => {
 
   describe('multi-line episode chart', () => {
     let result: TimeseriesChartModel[];
+    let dataSub: Subscription;
 
     beforeEach(() => {
       dispatchHelper.dispatchRouterNavigation(store, {...routerParams, chartType: <ChartType>CHARTTYPE_EPISODES});
       dispatchHelper.dispatchEpisodePage(store);
       dispatchHelper.dispatchEpisodeDownloads(store);
 
-      store.pipe(select(selectDownloadChartMetrics)).subscribe((data) => {
+      dataSub = store.pipe(select(selectDownloadChartMetrics)).subscribe((data) => {
         result = data;
       });
+    });
+
+    afterEach(() => {
+      dataSub.unsubscribe();
     });
 
     it('should transform episode data to chart model', () => {

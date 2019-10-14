@@ -2,7 +2,7 @@ import { async, TestBed } from '@angular/core/testing';
 import { Component } from '@angular/core';
 import { Router, RoutesRecognized } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { filter } from 'rxjs/operators';
+import { filter, first } from 'rxjs/operators';
 import { RoutingService } from './routing.service';
 import { StoreModule, Store } from '@ngrx/store';
 import { reducers } from '@app/ngrx/reducers';
@@ -67,21 +67,22 @@ describe('RoutingService', () => {
     });
   }));
 
-  it('should redirect users away from / and back to existing or default route params', () => {
+  it('should redirect users away from / and back to existing or default route params', done => {
     store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerParams}));
     jest.spyOn(routingService, 'normalizeAndRoute');
     router.navigate([]);
-    const sub = router.events.pipe(
-      filter(event => event instanceof RoutesRecognized)
+    router.events.pipe(
+      filter(event => event instanceof RoutesRecognized),
+      first()
     ).subscribe((event: RoutesRecognized) => {
       expect(routingService.normalizeAndRoute).toHaveBeenCalledWith(routerParams);
-      sub.unsubscribe();
+      done();
     });
   });
 
   it('should load episodes if podcast or episodePage changes', () => {
     jest.spyOn(routingService, 'loadEpisodes');
-    store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerParams: {podcastId: routerParams.podcastId, episodePage: 2}}));
+    store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerParams: {...routerParams, episodePage: 2}}));
     expect(routingService.loadEpisodes).toHaveBeenCalled();
   });
 

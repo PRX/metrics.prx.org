@@ -1,5 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { StoreModule, Store, select } from '@ngrx/store';
+import { combineLatest } from 'rxjs';
+import { first } from 'rxjs/operators';
 
 import * as fromEpisodeTotals from './episode-totals.selectors';
 import { RootState, reducers } from '..';
@@ -47,78 +49,104 @@ describe('Episode Totals Selectors', () => {
       error: 'something went wrong'}));
   }
 
-  it('should have loading status true if some episode ranks are loading', () => {
+  it('should have loading status true if some episode ranks are loading', done => {
     load();
-    store.pipe(select(fromEpisodeTotals.selectAllEpisodeTotalsLoading)).subscribe((loading: boolean) => {
-      expect(loading).toBeTruthy();
-    });
-    store.pipe(select(fromEpisodeTotals.selectSelectedEpisodesTotalsLoading)).subscribe((loading: boolean) => {
-      expect(loading).toBeTruthy();
-    });
-    store.pipe(select(fromEpisodeTotals.selectNestedEpisodesTotalsLoading)).subscribe((loading: boolean) => {
-      expect(loading).toBeTruthy();
+    combineLatest(
+      store.pipe(select(fromEpisodeTotals.selectAllEpisodeTotalsLoading)),
+      store.pipe(select(fromEpisodeTotals.selectSelectedEpisodesTotalsLoading)),
+      store.pipe(select(fromEpisodeTotals.selectNestedEpisodesTotalsLoading))
+    ).subscribe(([allTotalsLoading, selectedTotalsLoading, nestedTotalsLoading]) => {
+      expect(allTotalsLoading).toBeTruthy();
+      expect(selectedTotalsLoading).toBeTruthy();
+      expect(nestedTotalsLoading).toBeTruthy();
+      done();
     });
   });
 
-  it('should have loaded status true if all episode ranks are loaded', () => {
+  it('should have loaded status true if all episode ranks are loaded', done => {
     load();
     success();
-    store.pipe(select(fromEpisodeTotals.selectAllEpisodeTotalsLoaded)).subscribe((loaded: boolean) => {
-      expect(loaded).toBeTruthy();
-    });
-    store.pipe(select(fromEpisodeTotals.selectSelectedEpisodesTotalsLoaded)).subscribe((loaded: boolean) => {
-      expect(loaded).toBeTruthy();
-    });
-    store.pipe(select(fromEpisodeTotals.selectNestedEpisodesTotalsLoaded)).subscribe((loaded: boolean) => {
-      expect(loaded).toBeTruthy();
+    combineLatest(
+      store.pipe(select(fromEpisodeTotals.selectAllEpisodeTotalsLoaded)),
+      store.pipe(select(fromEpisodeTotals.selectSelectedEpisodesTotalsLoaded)),
+      store.pipe(select(fromEpisodeTotals.selectNestedEpisodesTotalsLoaded))
+    ).subscribe(([allTotalsLoaded, selectedTotalsLoaded, nestedTotalsLoaded]) => {
+      expect(allTotalsLoaded).toBeTruthy();
+      expect(selectedTotalsLoaded).toBeTruthy();
+      expect(nestedTotalsLoaded).toBeTruthy();
+      done();
     });
   });
 
-  it('should have error if faulure occurs', () => {
+  it('should have error if faulure occurs', done => {
     load();
     failure();
-    store.pipe(select(fromEpisodeTotals.selectAllEpisodeTotalsErrors)).subscribe((errors: any[]) => {
+    store.pipe(
+      select(fromEpisodeTotals.selectAllEpisodeTotalsErrors),
+      first()
+    ).subscribe((errors: any[]) => {
       expect(errors.length).toBeGreaterThan(0);
+      done();
     });
   });
 
-  it('should have selected episode ranks', () => {
+  it('should have selected episode ranks', done => {
     load();
     success();
-    store.pipe(select(fromEpisodeTotals.selectSelectedEpisodesTotals)).subscribe((totals: EpisodeTotals[]) => {
+    store.pipe(
+      select(fromEpisodeTotals.selectSelectedEpisodesTotals),
+      first()
+    ).subscribe((totals: EpisodeTotals[]) => {
       expect(totals.length).toBeGreaterThan(0);
+      done();
     });
   });
 
-  it('should have nested data selected episode ranks', () => {
+  it('should have nested data selected episode ranks', done => {
     load();
     success();
-    store.pipe(select(fromEpisodeTotals.selectNestedEpisodesTotals)).subscribe((totals: EpisodeTotals[]) => {
+    store.pipe(
+      select(fromEpisodeTotals.selectNestedEpisodesTotals),
+      first()
+    ).subscribe((totals: EpisodeTotals[]) => {
       expect(totals.length).toBeGreaterThan(0);
+      done();
     });
   });
 
-  it('should have selected episode table metrics', () => {
+  it('should have selected episode table metrics', done => {
     load();
     success();
-    store.pipe(select(fromEpisodeTotals.selectSelectedEpisodesTotalsTableMetrics)).subscribe((metrics: TotalsTableRow[]) => {
+    store.pipe(
+      select(fromEpisodeTotals.selectSelectedEpisodesTotalsTableMetrics),
+      first()
+    ).subscribe((metrics: TotalsTableRow[]) => {
       expect(metrics.length).toBeGreaterThan(0);
+      done();
     });
   });
 
-  it('should have nested data selected episode table metrics', () => {
+  it('should have nested data selected episode table metrics', done => {
     load();
     success();
-    store.pipe(select(fromEpisodeTotals.selectNestedEpisodesTotalsTableMetrics)).subscribe((metrics: TotalsTableRow[]) => {
+    store.pipe(
+      select(fromEpisodeTotals.selectNestedEpisodesTotalsTableMetrics),
+      first()
+    ).subscribe((metrics: TotalsTableRow[]) => {
       expect(metrics.length).toBeGreaterThan(0);
+      done();
     });
   });
 
-  it('should have selected episode total downloads', () => {
+  it('should have selected episode total downloads', done => {
     load();
     success();
-    store.pipe(select(fromEpisodeTotals.selectSelectedEpisodesTotalsTotalDownloads)).subscribe((total: number) => {
+    store.pipe(
+      select(fromEpisodeTotals.selectSelectedEpisodesTotalsTotalDownloads),
+      first()
+    ).subscribe((total: number) => {
       expect(total).toBeGreaterThan(0);
+      done();
     });
   });
 

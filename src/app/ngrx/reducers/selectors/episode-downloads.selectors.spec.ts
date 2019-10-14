@@ -1,5 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { StoreModule, Store, select } from '@ngrx/store';
+import { first } from 'rxjs/operators';
 
 import * as fromEpisodeDownloads from './episode-downloads.selectors';
 import { RootState, reducers } from '..';
@@ -23,9 +24,10 @@ describe('Episode Downloads Selectors', () => {
     dispatchHelper.dispatchEpisodeDownloads(store);
   });
 
-  it('should have routed episode downloads', () => {
-    store.pipe(select(fromEpisodeDownloads.selectRoutedEpisodePageDownloads)).subscribe((epDownloads: EpisodeDownloads[]) => {
+  it('should have routed episode downloads', done => {
+    store.pipe(select(fromEpisodeDownloads.selectRoutedEpisodePageDownloads), first()).subscribe((epDownloads: EpisodeDownloads[]) => {
       expect(epDownloads.length).toEqual(fixtures.episodes.length);
+      done();
     });
   });
 

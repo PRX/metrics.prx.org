@@ -26,6 +26,8 @@ describe('CustomSerializer', () => {
       }
     };
     const routerParams: RouterParams = {
+      url: '/70/reach/stacked/hourly;' +
+      'episodePage=1;beginDate=2017-11-09T00:00:00.000Z;endDate=2017-11-09T22:00:00.000Z;',
       podcastId: '70',
       metricsType: <MetricsType>METRICSTYPE_DOWNLOADS,
       chartType: <ChartType>CHARTTYPE_STACKED,
@@ -59,6 +61,8 @@ describe('CustomSerializer', () => {
       }
     };
     const routerParams: RouterParams = {
+      url: '/70/reach/podcast/daily;' +
+      'episodePage=1;standardRange=3%20months;',
       podcastId: '70',
       metricsType: <MetricsType>METRICSTYPE_DOWNLOADS,
       chartType: <ChartType>CHARTTYPE_PODCAST,

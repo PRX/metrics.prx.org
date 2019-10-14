@@ -1,7 +1,7 @@
-import { Component, Input, OnInit, OnChanges, SimpleChanges, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
+import { Component, Input, OnInit, OnDestroy, OnChanges, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 import { Env } from '../core/core.env';
 import { GROUPTYPE_GEOCOUNTRY, GROUPTYPE_GEOMETRO, getGroupName, RouterParams, Rank } from '../ngrx/index';
-import { fromEvent } from 'rxjs';
+import { Subscription, fromEvent } from 'rxjs';
 import { map, distinctUntilChanged } from 'rxjs/operators';
 import { toGoogleDataTable } from '../shared/util/chart.util';
 
@@ -12,12 +12,13 @@ declare const google: any;
   template: `<div #geo></div>`
 })
 
-export class GeochartMapComponent implements OnInit, OnChanges, AfterViewInit {
+export class GeochartMapComponent implements OnInit, OnDestroy, OnChanges, AfterViewInit {
   private static googleLoaded: boolean;
   @ViewChild('geo') el: ElementRef;
   @Input() routerParams: RouterParams;
   @Input() data: Rank[];
   @Input() nestedData: Rank[];
+  windowResizeSub: Subscription;
   windowSize: {width: number, height: number};
   colors = ['#e5f5fb', '#a6cee3', '#01a0dc', '#008fc5', '#0089bd', '#1f78b4'];
 
@@ -32,14 +33,20 @@ export class GeochartMapComponent implements OnInit, OnChanges, AfterViewInit {
     }
   }
 
-  ngOnChanges(changes: SimpleChanges) {
+  ngOnDestroy() {
+    if (this.windowResizeSub) {
+      this.windowResizeSub.unsubscribe();
+    }
+  }
+
+  ngOnChanges() {
     this.drawMap();
   }
 
   ngAfterViewInit() {
     this.windowSize = {width: window.innerWidth, height: window.innerHeight};
     this.drawMap();
-    fromEvent(window, 'resize').pipe(
+    this.windowResizeSub = fromEvent(window, 'resize').pipe(
       map((event: Event) => {
         this.windowSize = {width: event.target['innerWidth'], height: event.target['innerHeight']};
         return this.windowSize;

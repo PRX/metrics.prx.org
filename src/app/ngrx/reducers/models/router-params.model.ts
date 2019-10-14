@@ -2,6 +2,7 @@ import { IntervalModel, ChartType, MetricsType, GroupType } from './';
 import { BaseRouterStoreState } from '@ngrx/router-store';
 
 export interface RouterParams extends BaseRouterStoreState {
+  url: string;
   podcastId?: string;
   metricsType?: MetricsType;
   group?: GroupType;
@@ -14,4 +15,8 @@ export interface RouterParams extends BaseRouterStoreState {
   beginDate?: Date;
   endDate?: Date;
   days?: number;
+}
+
+export interface PartialRouterParams extends Partial<RouterParams> {
+  url?: string;
 }

@@ -35,7 +35,7 @@ describe('MenuBarComponent', () => {
   let store: Store<any>;
 
   const routerParams: RouterParams = {
-    url: null,
+    url: '/70/reach/podcast/daily;episodePage=1;standardRange=This%20Week',
     chartType: <ChartType>CHARTTYPE_PODCAST,
     interval: INTERVAL_DAILY,
     standardRange: dateUtil.THIS_WEEK,

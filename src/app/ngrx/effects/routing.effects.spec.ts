@@ -119,7 +119,7 @@ describe('RoutingEffects', () => {
     actions$.stream = hot('-a', { a: action });
     const expected = cold('-r', { r: null });
     expect(effects.routePodcast$).toBeObservable(expected);
-    expect(effects.routingService.normalizeAndRoute).toHaveBeenCalledWith({url: null, podcastId: '70', episodePage: 1});
+    expect(effects.routingService.normalizeAndRoute).toHaveBeenCalledWith({podcastId: '70', episodePage: 1});
   });
 
   it('should route to episode page', () => {
@@ -128,7 +128,7 @@ describe('RoutingEffects', () => {
     actions$.stream = hot('-a', { a: action });
     const expected = cold('-r', { r: null });
     expect(effects.routeEpisodePage$).toBeObservable(expected);
-    expect(effects.routingService.normalizeAndRoute).toHaveBeenCalledWith({url: null, episodePage: 1});
+    expect(effects.routingService.normalizeAndRoute).toHaveBeenCalledWith({episodePage: 1});
   });
 
   xit('should route to chart type', () => {
@@ -182,7 +182,7 @@ describe('RoutingEffects', () => {
     actions$.stream = hot('-a', { a: action });
     const expected = cold('-r', { r: null });
     expect(effects.routeMetricsGroupType$).toBeObservable(expected);
-    expect(effects.routingService.normalizeAndRoute).toHaveBeenCalledWith({url: null, metricsType: METRICSTYPE_DOWNLOADS, group: undefined});
+    expect(effects.routingService.normalizeAndRoute).toHaveBeenCalledWith({metricsType: METRICSTYPE_DOWNLOADS, group: undefined});
   });
 
   it('should route to filter', () => {
@@ -191,7 +191,7 @@ describe('RoutingEffects', () => {
     actions$.stream = hot('-a', { a: action });
     const expected = cold('-r', { r: null });
     expect(effects.routeGroupFilter$).toBeObservable(expected);
-    expect(effects.routingService.normalizeAndRoute).toHaveBeenCalledWith({url: null, filter: METRICSTYPE_DOWNLOADS});
+    expect(effects.routingService.normalizeAndRoute).toHaveBeenCalledWith({filter: METRICSTYPE_DOWNLOADS});
   });
 
   it('should route to days', () => {
@@ -201,6 +201,6 @@ describe('RoutingEffects', () => {
     actions$.stream = hot('-a', { a: action });
     const expected = cold('-r', { r: null });
     expect(effects.routeDays$).toBeObservable(expected);
-    expect(effects.routingService.normalizeAndRoute).toHaveBeenCalledWith({url: null, days: 7});
+    expect(effects.routingService.normalizeAndRoute).toHaveBeenCalledWith({days: 7});
   });
 });

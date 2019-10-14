@@ -7,13 +7,13 @@ import { selectRoutedPageEpisodes, selectRouter,
   selectUserAuthorized } from '@app/ngrx/reducers/selectors/';
 import {
   RouterParams,
+  PartialRouterParams,
   Episode,
   CHARTTYPE_PODCAST,
   CHARTTYPE_EPISODES,
   CHARTTYPE_LINE,
   CHARTTYPE_HORIZBAR,
   CHARTTYPE_GEOCHART,
-  CHARTTYPE_STACKED,
   INTERVAL_DAILY,
   INTERVAL_HOURLY,
   METRICSTYPE_DEMOGRAPHICS,
@@ -205,7 +205,7 @@ export class RoutingService {
     }
   }
 
-  normalizeAndRoute(newRouterParams: RouterParams): RouterParams {
+  normalizeAndRoute(newRouterParams: PartialRouterParams): RouterParams {
     const routerParams: RouterParams = this.checkAndGetDefaults({ ...this.routerParams, ...newRouterParams });
 
     const params = {};

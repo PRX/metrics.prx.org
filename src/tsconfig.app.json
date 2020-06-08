@@ -6,7 +6,6 @@
     "paths": {
       "@app/*": ["app/*"]
     },
-    "module": "es2015",
     "types": []
   },
   "exclude": [

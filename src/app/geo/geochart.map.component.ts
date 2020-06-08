@@ -14,7 +14,7 @@ declare const google: any;
 
 export class GeochartMapComponent implements OnInit, OnDestroy, OnChanges, AfterViewInit {
   private static googleLoaded: boolean;
-  @ViewChild('geo') el: ElementRef;
+  @ViewChild('geo', { static: true }) el: ElementRef;
   @Input() routerParams: RouterParams;
   @Input() data: Rank[];
   @Input() nestedData: Rank[];

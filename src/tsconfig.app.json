@@ -8,8 +8,5 @@
     },
     "types": []
   },
-  "exclude": [
-    "test.ts",
-    "**/*.spec.ts"
-  ]
+  "exclude": ["**/*.spec.ts"]
 }

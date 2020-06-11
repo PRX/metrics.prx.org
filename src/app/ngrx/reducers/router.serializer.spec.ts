@@ -1,5 +1,13 @@
-import { RouterParams, ChartType, MetricsType,
-  INTERVAL_HOURLY, INTERVAL_DAILY, CHARTTYPE_PODCAST, CHARTTYPE_STACKED, METRICSTYPE_DOWNLOADS } from '../';
+import {
+  RouterParams,
+  ChartType,
+  MetricsType,
+  INTERVAL_HOURLY,
+  INTERVAL_DAILY,
+  CHARTTYPE_PODCAST,
+  CHARTTYPE_STACKED,
+  METRICSTYPE_DOWNLOADS
+} from '../';
 import { CustomSerializer } from './router.serializer';
 import * as dateUtil from '@app/shared/util/date';
 
@@ -8,8 +16,7 @@ describe('CustomSerializer', () => {
 
   it('should transform router snapshot to router state', () => {
     const routerSnapshot = {
-      url: '/70/reach/stacked/hourly;' +
-      'episodePage=1;beginDate=2017-11-09T00:00:00.000Z;endDate=2017-11-09T22:00:00.000Z;',
+      url: '/70/reach/stacked/hourly;episodePage=1;beginDate=2017-11-09T00:00:00.000Z;endDate=2017-11-09T22:00:00.000Z;',
       root: {
         firstChild: {
           params: {
@@ -26,8 +33,6 @@ describe('CustomSerializer', () => {
       }
     };
     const routerParams: RouterParams = {
-      url: '/70/reach/stacked/hourly;' +
-      'episodePage=1;beginDate=2017-11-09T00:00:00.000Z;endDate=2017-11-09T22:00:00.000Z;',
       podcastId: '70',
       metricsType: <MetricsType>METRICSTYPE_DOWNLOADS,
       chartType: <ChartType>CHARTTYPE_STACKED,
@@ -41,13 +46,13 @@ describe('CustomSerializer', () => {
     };
 
     const result = serializer.serialize(routerSnapshot);
-    expect(result).toEqual(routerParams);
+    const url = '/70/reach/stacked/hourly;episodePage=1;beginDate=2017-11-09T00:00:00.000Z;endDate=2017-11-09T22:00:00.000Z;';
+    expect(result).toEqual({ url, routerParams });
   });
 
   it('should provide routerParams for begin and end date corresponding to standard range when dates not present', () => {
     const routerSnapshot = {
-      url: '/70/reach/podcast/daily;' +
-      'episodePage=1;standardRange=3%20months;',
+      url: '/70/reach/podcast/daily;episodePage=1;standardRange=3%20months;',
       root: {
         firstChild: {
           params: {
@@ -61,8 +66,6 @@ describe('CustomSerializer', () => {
       }
     };
     const routerParams: RouterParams = {
-      url: '/70/reach/podcast/daily;' +
-      'episodePage=1;standardRange=3%20months;',
       podcastId: '70',
       metricsType: <MetricsType>METRICSTYPE_DOWNLOADS,
       chartType: <ChartType>CHARTTYPE_PODCAST,
@@ -74,13 +77,13 @@ describe('CustomSerializer', () => {
     };
 
     const result = serializer.serialize(routerSnapshot);
-    expect(result).toEqual(routerParams);
+    const url = '/70/reach/podcast/daily;episodePage=1;standardRange=3%20months;';
+    expect(result).toEqual({ url, routerParams });
   });
 
   it('should transform the string "undefined" for filter to undefined', () => {
     const routerSnapshot = {
-      url: '/70/demographics/geocountry/geo/daily;' +
-        'episodePage=1;standardRange=3%20months;filter=undefined',
+      url: '/70/demographics/geocountry/geo/daily;episodePage=1;standardRange=3%20months;filter=undefined',
       root: {
         firstChild: {
           params: {
@@ -94,6 +97,6 @@ describe('CustomSerializer', () => {
       }
     };
     const result = serializer.serialize(routerSnapshot);
-    expect(result.filter).toBeUndefined();
+    expect(result.routerParams.filter).toBeUndefined();
   });
 });

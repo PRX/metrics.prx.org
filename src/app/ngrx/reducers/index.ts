@@ -15,11 +15,11 @@ import * as fromEpisodeTotals from './episode-totals.reducer';
 import * as fromEpisodeDownloads from './episode-downloads.reducer';
 import * as fromEpisodeDropday from './episode-dropday.reducer';
 import { CustomRouterReducer } from './router.reducer';
-import { RouterParams } from './models';
+import { RouterParamsState } from './models';
 
 export interface RootState {
-  routerSerializer: RouterReducerState<RouterParams>;
-  router: RouterParams;
+  routerSerializer: RouterReducerState<RouterParamsState>;
+  router: RouterParamsState;
   user: fromUser.State;
   podcast: fromPodcast.State;
   episode: fromEpisode.State;

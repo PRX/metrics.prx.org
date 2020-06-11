@@ -11,12 +11,8 @@ import { PodcastNavListComponent } from './podcast-nav-list.component';
 
 import { reducers, RootState } from '../../ngrx/reducers';
 
-import {
-  CustomRouterNavigationAction,
-  RoutePodcastAction,
-  CastlePodcastPageSuccessAction
-} from '../../ngrx/actions';
-import { Podcast, PartialRouterParams } from '../../ngrx';
+import { CustomRouterNavigationAction, RoutePodcastAction, CastlePodcastPageSuccessAction } from '../../ngrx/actions';
+import { Podcast, RouterParams } from '../../ngrx';
 
 describe('PodcastNavComponent', () => {
   let store: Store<RootState>;
@@ -28,53 +24,47 @@ describe('PodcastNavComponent', () => {
   const podcasts: Podcast[] = [
     {
       id: '70',
-      title: 'Pet Talks Daily'
+      title: 'Pet Talks Daily',
     },
     {
       id: '72',
-      title: 'Totally Not Pet Talks Daily'
-    }
+      title: 'Totally Not Pet Talks Daily',
+    },
   ];
-  const routerParams: PartialRouterParams = {
-    podcastId: podcasts[0].id
+  const routerParams: RouterParams = {
+    podcastId: podcasts[0].id,
   };
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [
-        PodcastNavComponent,
-        PodcastNavDropdownComponent,
-        PodcastNavListComponent
-      ],
-      imports: [
-        StoreModule.forRoot(reducers)
-      ],
-      providers: [
-        {provide: Router, useValue: {router: new RouterStub()}}
-      ]
-    }).compileComponents().then(() => {
-      fix = TestBed.createComponent(PodcastNavComponent);
-      comp = fix.componentInstance;
-      fix.detectChanges();
-      de = fix.debugElement;
-      el = de.nativeElement;
+      declarations: [PodcastNavComponent, PodcastNavDropdownComponent, PodcastNavListComponent],
+      imports: [StoreModule.forRoot(reducers)],
+      providers: [{ provide: Router, useValue: { router: new RouterStub() } }],
+    })
+      .compileComponents()
+      .then(() => {
+        fix = TestBed.createComponent(PodcastNavComponent);
+        comp = fix.componentInstance;
+        fix.detectChanges();
+        de = fix.debugElement;
+        el = de.nativeElement;
 
-      store = TestBed.get(Store);
+        store = TestBed.get(Store);
 
-      store.dispatch(new CustomRouterNavigationAction({routerParams}));
-      store.dispatch(new CastlePodcastPageSuccessAction({page: 1, podcasts: podcasts.slice(0, 1), total: 1}));
-    });
+        store.dispatch(new CustomRouterNavigationAction({ routerParams }));
+        store.dispatch(new CastlePodcastPageSuccessAction({ page: 1, podcasts: podcasts.slice(0, 1), total: 1 }));
+      });
   }));
 
-  it('should set selected podcast according to routerParams', done => {
-    comp.selectedPodcast$.pipe(first()).subscribe(result => {
+  it('should set selected podcast according to routerParams', (done) => {
+    comp.selectedPodcast$.pipe(first()).subscribe((result) => {
       expect(result).toEqual(podcasts[0]);
       done();
     });
   });
 
-  it('should update list of podcasts', done => {
-    comp.podcasts$.pipe(first()).subscribe(result => {
+  it('should update list of podcasts', (done) => {
+    comp.podcasts$.pipe(first()).subscribe((result) => {
       expect(result).toEqual([podcasts[0]]);
       done();
     });
@@ -83,7 +73,6 @@ describe('PodcastNavComponent', () => {
   it('should dispatch routing action when podcast is changed', () => {
     jest.spyOn(store, 'dispatch').mockImplementation(() => {});
     comp.onPodcastChange(podcasts[1]);
-    expect(store.dispatch).toHaveBeenCalledWith(
-      new RoutePodcastAction({podcastId: podcasts[1].id}));
+    expect(store.dispatch).toHaveBeenCalledWith(new RoutePodcastAction({ podcastId: podcasts[1].id }));
   });
 });

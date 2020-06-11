@@ -35,13 +35,13 @@ describe('MenuBarComponent', () => {
   let el: HTMLElement;
   let store: Store<any>;
 
+  const url = '/70/reach/podcast/daily;episodePage=1;standardRange=This%20Week';
   const routerParams: RouterParams = {
-    url: '/70/reach/podcast/daily;episodePage=1;standardRange=This%20Week',
     chartType: <ChartType>CHARTTYPE_PODCAST,
     interval: INTERVAL_DAILY,
     standardRange: dateUtil.THIS_WEEK,
     beginDate: dateUtil.beginningOfThisWeekUTC().toDate(),
-    endDate: dateUtil.endOfTodayUTC().toDate()
+    endDate: dateUtil.endOfTodayUTC().toDate(),
   };
 
   beforeEach(async(() => {
@@ -61,53 +61,47 @@ describe('MenuBarComponent', () => {
         LargeNumberPipe,
         MetricsTypeHeadingComponent,
         StandardDateRangeComponent,
-        StandardDateRangeDropdownComponent
+        StandardDateRangeDropdownComponent,
       ],
-      imports: [
-        DatepickerModule,
-        FancyFormModule,
-        SpinnerModule,
-        StoreModule.forRoot(reducers)
-      ],
-      providers: [
-        EpisodeSelectDropdownService,
-        ExportGoogleSheetsService
-      ]
-    }).compileComponents().then(() => {
-      fix = TestBed.createComponent(MenuBarComponent);
-      comp = fix.componentInstance;
-      de = fix.debugElement;
-      el = de.nativeElement;
-      store = TestBed.get(Store);
+      imports: [DatepickerModule, FancyFormModule, SpinnerModule, StoreModule.forRoot(reducers)],
+      providers: [EpisodeSelectDropdownService, ExportGoogleSheetsService],
+    })
+      .compileComponents()
+      .then(() => {
+        fix = TestBed.createComponent(MenuBarComponent);
+        comp = fix.componentInstance;
+        de = fix.debugElement;
+        el = de.nativeElement;
+        store = TestBed.get(Store);
 
-      store.dispatch(new CustomRouterNavigationAction({routerParams}));
-      fix.detectChanges();
-    });
+        store.dispatch(new CustomRouterNavigationAction({ url, routerParams }));
+        fix.detectChanges();
+      });
   }));
 
-  it('should have routerParams', done => {
-    comp.routerParams$.pipe(first()).subscribe(result => {
+  it('should have routerParams', (done) => {
+    comp.routerParams$.pipe(first()).subscribe((result) => {
       expect(result).toEqual(routerParams);
       done();
     });
   });
 
-  it('should have chart type', done => {
-    comp.chartType$.pipe(first()).subscribe(result => {
+  it('should have chart type', (done) => {
+    comp.chartType$.pipe(first()).subscribe((result) => {
       expect(result).toEqual(CHARTTYPE_PODCAST);
       done();
     });
   });
 
-  it('should have interval', done => {
-    comp.interval$.pipe(first()).subscribe(result => {
+  it('should have interval', (done) => {
+    comp.interval$.pipe(first()).subscribe((result) => {
       expect(result).toEqual(INTERVAL_DAILY);
       done();
     });
   });
 
-  it('should have standard range', done => {
-    comp.standardRange$.pipe(first()).subscribe(result => {
+  it('should have standard range', (done) => {
+    comp.standardRange$.pipe(first()).subscribe((result) => {
       expect(result).toEqual(dateUtil.THIS_WEEK);
       done();
     });

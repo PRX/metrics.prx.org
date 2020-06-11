@@ -1,15 +1,15 @@
 import { ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 import { RouterStateSerializer } from '@ngrx/router-store';
 
-import { RouterParams, IntervalList, MetricsType } from './models';
+import { RouterParamsState, RouterParams, IntervalList, MetricsType } from './models';
 
 import { getBeginEndDateFromStandardRange, getStandardRangeForBeginEndDate } from '@app/shared/util/date/date.util';
 
 // serialize the route snapshot to our custom RouterParams
-export class CustomSerializer implements RouterStateSerializer<RouterParams> {
-  serialize(routerState: RouterStateSnapshot | any): RouterParams {
+export class CustomSerializer implements RouterStateSerializer<RouterParamsState> {
+  serialize(routerState: RouterStateSnapshot | any): RouterParamsState {
     const { url } = routerState;
-    const routerParams: RouterParams = {url};
+    const routerParams: RouterParams = {};
 
     let state: ActivatedRouteSnapshot = routerState.root;
     while (state.firstChild) {
@@ -39,7 +39,7 @@ export class CustomSerializer implements RouterStateSerializer<RouterParams> {
         routerParams.chartType = params['chartType'];
       }
       if (params['interval']) {
-        routerParams.interval = IntervalList.find(i => i.key === params['interval']);
+        routerParams.interval = IntervalList.find((i) => i.key === params['interval']);
       }
       if (params['episodePage'] && !isNaN(parseInt(params['episodePage'], 10))) {
         routerParams.episodePage = +params['episodePage'];
@@ -61,8 +61,10 @@ export class CustomSerializer implements RouterStateSerializer<RouterParams> {
       }
       if (routerParams.beginDate && routerParams.endDate && params['standardRange']) {
         const range = getBeginEndDateFromStandardRange(params['standardRange']);
-        if (range && (range.beginDate.valueOf() !== routerParams.beginDate.valueOf() ||
-          range.endDate.valueOf() !== routerParams.endDate.valueOf())) {
+        if (
+          range &&
+          (range.beginDate.valueOf() !== routerParams.beginDate.valueOf() || range.endDate.valueOf() !== routerParams.endDate.valueOf())
+        ) {
           // route has standard range that does not match begin/end dates
           routerParams.standardRange = getStandardRangeForBeginEndDate(routerParams.beginDate, routerParams.endDate);
         } else {
@@ -83,6 +85,6 @@ export class CustomSerializer implements RouterStateSerializer<RouterParams> {
         routerParams.days = +params['days'];
       }
     }
-    return routerParams;
+    return { url, routerParams };
   }
 }

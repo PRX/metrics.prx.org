@@ -14,7 +14,8 @@ import {
 import * as ACTIONS from '@app/ngrx/actions';
 
 export const dispatchRouterNavigation = (store: Store<any>, routerParams?: RouterParams) => {
-  const { podcastId, metricsType, group, filter, chartType, interval, episodePage, standardRange, beginDate, endDate } = routerParams || {};
+  const { podcastId, metricsType, group, filter, chartType, interval, episodePage, standardRange, beginDate, endDate } =
+    routerParams || fixtures.routerParams;
   store.dispatch(
     new ACTIONS.CustomRouterNavigationAction({
       routerParams: {
@@ -162,7 +163,7 @@ export const dispatchEpisodeDropday = (store: Store<any>, podcastId?: string, in
 };
 
 export const dispatchPodcastRanks = (store: Store<any>, routerParams?: RouterParams, ranks?: any[], downloads?: any[][]) => {
-  const { podcastId, group, filter, interval, beginDate, endDate } = routerParams || {};
+  const { podcastId, group, filter, interval, beginDate, endDate } = routerParams || fixtures.routerParams;
   store.dispatch(
     new ACTIONS.CastlePodcastRanksSuccessAction({
       podcastId: podcastId || fixtures.podcast.id,
@@ -178,7 +179,7 @@ export const dispatchPodcastRanks = (store: Store<any>, routerParams?: RouterPar
 };
 
 export const dispatchPodcastTotals = (store: Store<any>, routerParams?: RouterParams, ranks?: any[]) => {
-  const { podcastId, group, filter, beginDate, endDate } = routerParams || {};
+  const { podcastId, group, filter, beginDate, endDate } = routerParams || fixtures.routerParams;
   store.dispatch(
     new ACTIONS.CastlePodcastTotalsSuccessAction({
       podcastId: podcastId || fixtures.podcast.id,
@@ -192,7 +193,7 @@ export const dispatchPodcastTotals = (store: Store<any>, routerParams?: RouterPa
 };
 
 export const dispatchEpisodeRanks = (store: Store<any>, routerParams?: RouterParams, guid?: string, ranks?: any[], downloads?: any[][]) => {
-  const { group, filter, interval, beginDate, endDate } = routerParams || {};
+  const { group, filter, interval, beginDate, endDate } = routerParams || fixtures.routerParams;
   store.dispatch(
     new ACTIONS.CastleEpisodeRanksSuccessAction({
       guid: guid || fixtures.episodes[0].guid,
@@ -208,7 +209,7 @@ export const dispatchEpisodeRanks = (store: Store<any>, routerParams?: RouterPar
 };
 
 export const dispatchEpisodeTotals = (store: Store<any>, routerParams?: RouterParams, guid?: string, ranks?: any[]) => {
-  const { group, filter, beginDate, endDate } = routerParams || {};
+  const { group, filter, beginDate, endDate } = routerParams || fixtures.routerParams;
   store.dispatch(
     new ACTIONS.CastleEpisodeTotalsSuccessAction({
       guid: guid || fixtures.episodes[0].guid,

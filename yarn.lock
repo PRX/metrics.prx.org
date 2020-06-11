@@ -1115,10 +1115,10 @@
   dependencies:
     nan "^2.8.0"
 
-"@ng-select/ng-select@^2.15.3":
-  version "2.20.5"
-  resolved "https://registry.yarnpkg.com/@ng-select/ng-select/-/ng-select-2.20.5.tgz#bbf1b26b34bca576b13241453bdf92aa16de37a5"
-  integrity sha512-S9R3op3kd8XmAI99exPOTXwDcYOsDngIhkdsQuV1jq/rSVKdJZ6gQY1VWS5REjVnqbKbxbWAx4JA38bum/8Z7g==
+"@ng-select/ng-select@^3.7.3":
+  version "3.7.3"
+  resolved "https://registry.yarnpkg.com/@ng-select/ng-select/-/ng-select-3.7.3.tgz#317fbf94211fb2044f6ab233795cf1cbab4b44a3"
+  integrity sha512-Duw5t0b9Jup/tVEoDHLm+UhGv5RnwQ7pQorCAQc4LZR35oOZFjec8FrEGGtgVAGtwaQAYyd7PSMk3nEsWPg6AQ==
   dependencies:
     tslib "^1.9.0"
 
@@ -6185,12 +6185,12 @@ ng2-dragula@^1.3.1:
   dependencies:
     dragula "^3.7.2"
 
-ngx-prx-styleguide@2.19.0:
-  version "2.19.0"
-  resolved "https://registry.yarnpkg.com/ngx-prx-styleguide/-/ngx-prx-styleguide-2.19.0.tgz#f32a5ea18fe88014b5bba2566d8ec266e7293a3c"
-  integrity sha512-0PZPH2GNKENZMnMiPKVKCPheT3dm3aq6Ucbl/8s/KLItVOgS+7YeYXi/mYkUzleof5n9I6F+a/z28F4w6r6WGQ==
+ngx-prx-styleguide@3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/ngx-prx-styleguide/-/ngx-prx-styleguide-3.0.0.tgz#b96264181d016a57c6a2cd9eb2b780a330e54b7a"
+  integrity sha512-lG2rfruowQI5Qznn8D2/HaLa+NvGbJrRSdbzzBaU6QnEwYWw67iymAwNuoUx4GyOKKV1SGO4oAh/4JiCzopMdw==
   dependencies:
-    "@ng-select/ng-select" "^2.15.3"
+    "@ng-select/ng-select" "^3.7.3"
     c3 "^0.4.11"
     evaporate "^2.1.4"
     js-sha256 "^0.9.0"
@@ -6198,7 +6198,7 @@ ngx-prx-styleguide@2.19.0:
     ng-inline-svg "^8.3.0"
     ng2-dragula "^1.3.1"
     ngx-tooltip "0.0.9"
-    pikaday "^1.5.1"
+    pikaday "^1.8.0"
     spark-md5 "^3.0.0"
     stickyfilljs "^2.1.0"
     tslib "^1.9.0"
@@ -6856,7 +6856,7 @@ pify@^4.0.1:
   resolved "https://registry.yarnpkg.com/pify/-/pify-4.0.1.tgz#4b2cd25c50d598735c50292224fd8c6df41e3231"
   integrity sha512-uB80kBFb/tfd68bVleG9T5GGsGPjJrLAUpR5PZIrhBnIaRTQRjqdJSsIKkOP6OAIFbj7GOrcudc5pNjZ+geV2g==
 
-pikaday@^1.5.1:
+pikaday@^1.8.0:
   version "1.8.0"
   resolved "https://registry.yarnpkg.com/pikaday/-/pikaday-1.8.0.tgz#ce930e257042e852e6aadee1115e01554b2d71c5"
   integrity sha512-SgGxMYX0NHj9oQnMaSyAipr2gOrbB4Lfs/TJTb6H6hRHs39/5c5VZi73Q8hr53+vWjdn6HzkWcj8Vtl3c9ziaA==
@@ -7092,10 +7092,10 @@ prr@~1.0.1:
   resolved "https://registry.yarnpkg.com/prr/-/prr-1.0.1.tgz#d3fc114ba06995a45ec6893f484ceb1d78f5f476"
   integrity sha1-0/wRS6BplaRexok/SEzrHXj19HY=
 
-prx-ng-serve@^1.1.0:
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/prx-ng-serve/-/prx-ng-serve-1.1.0.tgz#d12eebf8104037a2a6935a19c240d1df76d2463a"
-  integrity sha512-tmzJwrhYHL+LNu7iYh30hFGrHadmgz022B3lPuFGMI9C5aA9SeQ3RzserdbT28/HHgSo5tcHWF2TsKGpqwO6tA==
+prx-ng-serve@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/prx-ng-serve/-/prx-ng-serve-3.0.0.tgz#96fc3867dd40228a2ee4a6a1f24d5e62d4dddd55"
+  integrity sha512-pnQHLN5JsNRvkLrhjr3ifiC3QGf9D81+fGWMD7QanLbfy3LnQSjyU5MNcpHF6rAdXaop+Vv1gp0lT5+8iGSsVw==
   dependencies:
     connect-gzip-static "^2.1.1"
     dotenv "^4.0.0"

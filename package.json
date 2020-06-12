@@ -31,7 +31,7 @@
     "angulartics2": "^7.4.1",
     "moment": "^2.18.1",
     "ngx-prx-styleguide": "3.0.0",
-    "prx-ng-serve": "^3.0.0",
+    "prx-ng-serve": "^3.0.1",
     "rxjs": "~6.5.5",
     "tinycolor2": "^1.4.1",
     "zone.js": "~0.9.1"

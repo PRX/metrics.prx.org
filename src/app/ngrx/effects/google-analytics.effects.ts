@@ -32,7 +32,7 @@ export class GoogleAnalyticsEffects implements OnDestroy {
         event['label'] = action.payload.label;
       } else {
         if (this.routerParams && this.routerParams.podcastId && this.podcasts) {
-          const podcast = this.podcasts.find((p) => p.id === this.routerParams.podcastId);
+          const podcast = this.podcasts.find(p => p.id === this.routerParams.podcastId);
           if (podcast) {
             event['label'] = podcast.title;
           }
@@ -46,10 +46,10 @@ export class GoogleAnalyticsEffects implements OnDestroy {
   );
 
   constructor(private actions$: Actions, public angulartics2: Angulartics2, public store: Store<any>) {
-    this.store.pipe(select(selectAllPodcasts), takeUntil(this.destroyed$)).subscribe((podcasts) => {
+    this.store.pipe(select(selectAllPodcasts), takeUntil(this.destroyed$)).subscribe(podcasts => {
       this.podcasts = podcasts;
     });
-    this.store.pipe(select(selectRouter), takeUntil(this.destroyed$)).subscribe((routerParams) => {
+    this.store.pipe(select(selectRouter), takeUntil(this.destroyed$)).subscribe(routerParams => {
       this.routerParams = routerParams;
     });
   }

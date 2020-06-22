@@ -6,26 +6,26 @@ import {
   MetricsType,
   CHARTTYPE_STACKED,
   INTERVAL_DAILY,
-  METRICSTYPE_DOWNLOADS,
+  METRICSTYPE_DOWNLOADS
 } from '../app/ngrx';
 import * as dateUtil from '../app/shared/util/date';
 import { Userinfo } from 'ngx-prx-styleguide';
 
 export const userinfo: Userinfo = {
   apps: {
-    ['Fake application']: 'https://notreal.prx.org',
+    ['Fake application']: 'https://notreal.prx.org'
   },
   family_name: 'User',
   given_name: 'Mx.',
   href: 'https://cms.prx.org/api/v1/users/2345678',
   name: 'Mx. User',
   preferred_username: 'mxuser',
-  sub: 2345678,
+  sub: 2345678
 };
 
 export const podcast: Podcast = {
   id: '70',
-  title: 'Pet Talks Daily',
+  title: 'Pet Talks Daily'
 };
 
 const publishedAt0 = new Date('2017-08-27T00:00:00Z');
@@ -36,15 +36,15 @@ export const episodes: Episode[] = [
     guid: 'abcdefg',
     publishedAt: publishedAt0,
     title: 'A Pet Talk Episode',
-    page: 1,
+    page: 1
   },
   {
     podcastId: podcast.id,
     guid: 'gfedcba',
     publishedAt: publishedAt1,
     title: 'Another Pet Talk Episode',
-    page: 1,
-  },
+    page: 1
+  }
 ];
 export const routerParams: RouterParams = {
   podcastId: podcast.id,
@@ -54,7 +54,7 @@ export const routerParams: RouterParams = {
   standardRange: dateUtil.LAST_28_DAYS,
   interval: INTERVAL_DAILY,
   chartType: <ChartType>CHARTTYPE_STACKED,
-  metricsType: <MetricsType>METRICSTYPE_DOWNLOADS,
+  metricsType: <MetricsType>METRICSTYPE_DOWNLOADS
 };
 
 export const podDownloads = [
@@ -69,7 +69,7 @@ export const podDownloads = [
   ['2017-09-04T00:00:00Z', 46858],
   ['2017-09-05T00:00:00Z', 52522],
   ['2017-09-06T00:00:00Z', 162900],
-  ['2017-09-07T00:00:00Z', 46858],
+  ['2017-09-07T00:00:00Z', 46858]
 ];
 export const podHourlyDownloads = [
   ['2017-09-07T00:00:00Z', 52522],
@@ -95,7 +95,7 @@ export const podHourlyDownloads = [
   ['2017-09-07T20:00:00Z', 46858],
   ['2017-09-07T21:00:00Z', 52522],
   ['2017-09-07T22:00:00Z', 162900],
-  ['2017-09-07T23:00:00Z', 46858],
+  ['2017-09-07T23:00:00Z', 46858]
 ];
 export const ep0Downloads: any[][] = [
   ['2017-08-27T00:00:00Z', 22],
@@ -109,7 +109,7 @@ export const ep0Downloads: any[][] = [
   ['2017-09-04T00:00:00Z', 58],
   ['2017-09-05T00:00:00Z', 22],
   ['2017-09-06T00:00:00Z', 90],
-  ['2017-09-07T00:00:00Z', 58],
+  ['2017-09-07T00:00:00Z', 58]
 ];
 export const ep1Downloads: any[][] = [
   ['2017-08-27T00:00:00Z', 522],
@@ -123,7 +123,7 @@ export const ep1Downloads: any[][] = [
   ['2017-09-04T00:00:00Z', 858],
   ['2017-09-05T00:00:00Z', 522],
   ['2017-09-06T00:00:00Z', 900],
-  ['2017-09-07T00:00:00Z', 858],
+  ['2017-09-07T00:00:00Z', 858]
 ];
 export const podAllTimeDownloads = { total: 1049120 };
 export const podAllTimeDownloadsOff = { total: 1049119 };
@@ -143,7 +143,7 @@ export const podcastAgentNameRanks = [
   { total: 143150, label: 'Chrome', code: '29' },
   { total: 99392, label: 'CastBox', code: '8' },
   { total: 38382, label: 'PodcastRepublic', code: '58' },
-  { total: 337650, label: 'Other', code: null },
+  { total: 337650, label: 'Other', code: null }
 ];
 
 export const podcastAgentNameDownloads = [
@@ -174,7 +174,7 @@ export const podcastAgentNameDownloads = [
   ['2018-08-19T00:00:00Z', [57676, 5416, 8904, 3086, 5915, 4136, 3279, 3215, 2418, 487, 6894]],
   ['2018-08-20T00:00:00Z', [63936, 6777, 10882, 4133, 8821, 4734, 4192, 4808, 3342, 883, 7367]],
   ['2018-08-21T00:00:00Z', [70467, 28567, 10505, 8826, 6684, 4300, 4541, 4880, 3335, 780, 10158]],
-  ['2018-08-22T00:00:00Z', [229209, 43188, 37749, 30602, 17483, 22219, 16251, 6255, 8171, 4091, 32346]],
+  ['2018-08-22T00:00:00Z', [229209, 43188, 37749, 30602, 17483, 22219, 16251, 6255, 8171, 4091, 32346]]
 ];
 
 export const podcastAgentTypeRanks = [
@@ -186,7 +186,7 @@ export const podcastAgentTypeRanks = [
   { total: 138051, label: 'Mobile Browser', code: '40' },
   { total: 15888, label: 'Smart Home', code: '37' },
   { total: 3126, label: 'Smart TV', code: '38' },
-  { total: 0, label: 'Other', code: null },
+  { total: 0, label: 'Other', code: null }
 ];
 
 export const podcastAgentTypeDownloads = [
@@ -194,7 +194,7 @@ export const podcastAgentTypeDownloads = [
   ['2018-10-19T00:00:00Z', [148539, 22692, 16419, 1114, 4449, 5078, 480, 96, 0]],
   ['2018-10-20T00:00:00Z', [113545, 20957, 11882, 544, 3147, 4177, 670, 108, 0]],
   ['2018-10-21T00:00:00Z', [114359, 18855, 15933, 640, 3593, 4075, 661, 102, 0]],
-  ['2018-10-22T00:00:00Z', [89763, 15517, 11340, 1454, 2713, 3076, 340, 72, 0]],
+  ['2018-10-22T00:00:00Z', [89763, 15517, 11340, 1454, 2713, 3076, 340, 72, 0]]
 ];
 
 export const podcastGeoCountryRanks = [
@@ -208,7 +208,7 @@ export const podcastGeoCountryRanks = [
   { total: 6153, label: 'Netherlands', code: 'NL' },
   { total: 6099, label: 'Sweden', code: 'SE' },
   { total: 4938, label: 'France', code: 'FR' },
-  { total: 66606, label: 'Other', code: null },
+  { total: 66606, label: 'Other', code: null }
 ];
 
 export const podcastGeoCountryDownloads = [
@@ -232,7 +232,7 @@ export const podcastGeoCountryDownloads = [
   ['2018-08-19T00:00:00Z', [12646, 2174, 1769, 1050, 331, 294, 159, 275, 144, 175, 2071]],
   ['2018-08-20T00:00:00Z', [14393, 1883, 1810, 1051, 274, 349, 313, 221, 134, 158, 2045]],
   ['2018-08-21T00:00:00Z', [14785, 1754, 1456, 1049, 282, 284, 304, 160, 230, 121, 1776]],
-  ['2018-08-22T00:00:00Z', [14420, 2184, 1660, 1030, 202, 286, 158, 128, 178, 85, 1743]],
+  ['2018-08-22T00:00:00Z', [14420, 2184, 1660, 1030, 202, 286, 158, 128, 178, 85, 1743]]
 ];
 
 export const podcastGeoSubdivRanks = [
@@ -246,7 +246,7 @@ export const podcastGeoSubdivRanks = [
   { total: 93554, label: 'Colorado', code: 'US-CO' },
   { total: 89845, label: 'Virginia', code: 'US-VA' },
   { total: 81841, label: 'Oregon', code: 'US-OR' },
-  { total: 1171671, label: 'Other', code: null },
+  { total: 1171671, label: 'Other', code: null }
 ];
 
 export const podcastGeoSubdivDownloads = [
@@ -277,7 +277,7 @@ export const podcastGeoSubdivDownloads = [
   ['2018-09-14T00:00:00Z', [19129, 7559, 4527, 3516, 3848, 3217, 2772, 2336, 3082, 1888, 31890]],
   ['2018-09-15T00:00:00Z', [15421, 5310, 3743, 3529, 2736, 2192, 1977, 2191, 2088, 2035, 25195]],
   ['2018-09-16T00:00:00Z', [12921, 5664, 4061, 3246, 2649, 2948, 2002, 2031, 2618, 2546, 25522]],
-  ['2018-09-17T00:00:00Z', [12683, 5926, 2928, 2352, 2921, 2098, 2223, 1729, 2186, 1252, 23498]],
+  ['2018-09-17T00:00:00Z', [12683, 5926, 2928, 2352, 2921, 2098, 2223, 1729, 2186, 1252, 23498]]
 ];
 
 export const podcastGeoMetroRanks = [
@@ -291,7 +291,7 @@ export const podcastGeoMetroRanks = [
   { total: 85199, label: 'Denver', code: 751 },
   { total: 81980, label: 'Philadelphia', code: 504 },
   { total: 72468, label: 'Portland, OR', code: 820 },
-  { total: 1457319, label: 'Other', code: null },
+  { total: 1457319, label: 'Other', code: null }
 ];
 
 export const podcastGeoMetroDownloads = [
@@ -322,7 +322,7 @@ export const podcastGeoMetroDownloads = [
   ['2018-09-14T00:00:00Z', [10248, 8275, 6064, 3293, 3727, 3563, 2936, 2187, 2459, 1708, 39303]],
   ['2018-09-15T00:00:00Z', [7408, 6029, 4893, 2900, 2989, 2537, 2238, 1839, 1616, 2189, 31779]],
   ['2018-09-16T00:00:00Z', [6764, 5975, 3729, 2940, 3276, 2389, 2914, 1790, 1916, 2018, 32496]],
-  ['2018-09-17T00:00:00Z', [6766, 6349, 3923, 2284, 2492, 2691, 1924, 1574, 1594, 1195, 30445]],
+  ['2018-09-17T00:00:00Z', [6766, 6349, 3923, 2284, 2492, 2691, 1924, 1574, 1594, 1195, 30445]]
 ];
 
 export const ep0AgentNameRanks = [
@@ -336,7 +336,7 @@ export const ep0AgentNameRanks = [
   { total: 25240, label: 'Chrome', code: '29' },
   { total: 24578, label: 'PodcastAddict', code: '18' },
   { total: 20080, label: 'CastBox', code: '8' },
-  { total: 69546, label: 'Other', code: null },
+  { total: 69546, label: 'Other', code: null }
 ];
 
 export const ep0AgentNameDownloads = [
@@ -363,7 +363,7 @@ export const ep0AgentNameDownloads = [
   ['2019-01-21T00:00:00Z', [3123, 439, 569, 110, 185, 349, 557, 278, 169, 182, 488]],
   ['2019-01-22T00:00:00Z', [3147, 422, 475, 111, 190, 334, 558, 292, 196, 166, 527]],
   ['2019-01-23T00:00:00Z', [4031, 225, 419, 123, 170, 300, 558, 286, 178, 178, 414]],
-  ['2019-01-24T00:00:00Z', [2320, 96, 258, 67, 103, 179, 357, 154, 109, 121, 243]],
+  ['2019-01-24T00:00:00Z', [2320, 96, 258, 67, 103, 179, 357, 154, 109, 121, 243]]
 ];
 
 export const ep1AgentNameRanks = [
@@ -377,7 +377,7 @@ export const ep1AgentNameRanks = [
   { total: 6280, label: 'Chrome', code: '29' },
   { total: 15999, label: 'PodcastAddict', code: '18' },
   { total: 9670, label: 'CastBox', code: '8' },
-  { total: 40234, label: 'Other', code: null },
+  { total: 40234, label: 'Other', code: null }
 ];
 
 export const ep1AgentNameDownloads = [
@@ -404,7 +404,7 @@ export const ep1AgentNameDownloads = [
   ['2019-01-21T00:00:00Z', [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]],
   ['2019-01-22T00:00:00Z', [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]],
   ['2019-01-23T00:00:00Z', [188790, 59329, 28392, 31324, 22327, 13098, 9828, 7824, 5235, 5822, 30657]],
-  ['2019-01-24T00:00:00Z', [55564, 4772, 7013, 2919, 7558, 2901, 4089, 1846, 3546, 458, 9577]],
+  ['2019-01-24T00:00:00Z', [55564, 4772, 7013, 2919, 7558, 2901, 4089, 1846, 3546, 458, 9577]]
 ];
 
 export const ep0GeoMetroRanks = [
@@ -418,7 +418,7 @@ export const ep0GeoMetroRanks = [
   { total: 12364, label: 'Denver', code: 751 },
   { total: 11675, label: 'Portland, OR', code: 820 },
   { total: 11595, label: 'Philadelphia', code: 504 },
-  { total: 224876, label: 'Other', code: null },
+  { total: 224876, label: 'Other', code: null }
 ];
 
 export const ep0GeoMetroDownloads = [
@@ -434,5 +434,5 @@ export const ep0GeoMetroDownloads = [
   ['2019-02-10T00:00:00Z', [1747, 1703, 1293, 761, 711, 673, 665, 494, 440, 464, 8970]],
   ['2019-02-11T00:00:00Z', [2005, 1794, 1345, 727, 743, 712, 688, 496, 459, 478, 9551]],
   ['2019-02-12T00:00:00Z', [1560, 1619, 1219, 608, 629, 709, 613, 438, 413, 377, 8226]],
-  ['2019-02-13T00:00:00Z', [890, 886, 690, 387, 365, 328, 298, 220, 228, 209, 4478]],
+  ['2019-02-13T00:00:00Z', [890, 886, 690, 387, 365, 328, 298, 220, 228, 209, 4478]]
 ];

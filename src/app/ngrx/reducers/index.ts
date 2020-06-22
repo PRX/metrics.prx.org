@@ -53,7 +53,7 @@ export const reducers: ActionReducerMap<RootState> = {
   episodeDownloads: fromEpisodeDownloads.reducer,
   episodeRanks: fromEpisodeRanks.reducer,
   episodeTotals: fromEpisodeTotals.reducer,
-  episodeDropday: fromEpisodeDropday.reducer,
+  episodeDropday: fromEpisodeDropday.reducer
 };
 
 export { CustomSerializer } from './router.serializer';

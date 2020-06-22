@@ -69,7 +69,7 @@ export class CustomDateRangeDropdownComponent implements OnChanges {
   constructor(public store: Store<any>) {}
 
   ngOnChanges() {
-    this.intervalList = IntervalList.filter((interval) => {
+    this.intervalList = IntervalList.filter(interval => {
       return this.routerParams.metricsType === METRICSTYPE_DOWNLOADS || interval !== INTERVAL_HOURLY;
     });
   }

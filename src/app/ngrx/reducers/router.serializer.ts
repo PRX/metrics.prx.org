@@ -39,7 +39,7 @@ export class CustomSerializer implements RouterStateSerializer<RouterParamsState
         routerParams.chartType = params['chartType'];
       }
       if (params['interval']) {
-        routerParams.interval = IntervalList.find((i) => i.key === params['interval']);
+        routerParams.interval = IntervalList.find(i => i.key === params['interval']);
       }
       if (params['episodePage'] && !isNaN(parseInt(params['episodePage'], 10))) {
         routerParams.episodePage = +params['episodePage'];

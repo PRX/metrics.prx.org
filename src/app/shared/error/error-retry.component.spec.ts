@@ -20,7 +20,7 @@ describe('ErrorRetryComponent', () => {
     TestBed.configureTestingModule({
       declarations: [ErrorRetryComponent],
       imports: [StoreModule.forRoot(reducers)],
-      providers: [],
+      providers: []
     })
       .compileComponents()
       .then(() => {
@@ -38,8 +38,8 @@ describe('ErrorRetryComponent', () => {
         id: routerParams.podcastId,
         interval: routerParams.interval,
         beginDate: routerParams.beginDate,
-        endDate: routerParams.endDate,
-      }),
+        endDate: routerParams.endDate
+      })
     ];
     fix.detectChanges();
   }

@@ -10,7 +10,7 @@ import { EpisodePageComponent } from './episode-page.component';
     [currentPage]="filter?.page"
     [totalPages]="totalPages"
     (pageChange)="pageChange($event)"
-  ></metrics-episode-page>`,
+  ></metrics-episode-page>`
 })
 class TestComponent {
   @ViewChild('paging', { static: true }) pager: EpisodePageComponent;
@@ -29,7 +29,7 @@ describe('EpisodePageComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [TestComponent, EpisodePageComponent],
+      declarations: [TestComponent, EpisodePageComponent]
     })
       .compileComponents()
       .then(() => {

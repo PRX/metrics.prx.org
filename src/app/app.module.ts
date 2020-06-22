@@ -39,7 +39,7 @@ import { UserAgentsModule } from './user-agents/user-agents.module';
     StoreModule.forRoot(reducers),
     StoreDevtoolsModule.instrument({
       maxAge: 150, // Retains last 150 states
-      logOnly: environment.production, // Restrict extension to log-only mode
+      logOnly: environment.production // Restrict extension to log-only mode
     }),
     StoreRouterConnectingModule.forRoot({ serializer: CustomSerializer }),
     EffectsModule.forRoot([
@@ -48,15 +48,15 @@ import { UserAgentsModule } from './user-agents/user-agents.module';
       CastleRanksTotalsEffects,
       GoogleAnalyticsEffects,
       IdEffects,
-      RoutingEffects,
+      RoutingEffects
     ]),
     routing,
     LoginModule,
     DownloadsModule,
     GeoModule,
-    UserAgentsModule,
+    UserAgentsModule
   ],
   providers: [{ provide: ErrorHandler, useClass: ErrorService }, routingProviders],
-  bootstrap: [AppComponent],
+  bootstrap: [AppComponent]
 })
 export class AppModule {}

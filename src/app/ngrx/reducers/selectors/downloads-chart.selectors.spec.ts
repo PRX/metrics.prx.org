@@ -16,7 +16,7 @@ describe('Downloads Chart Selectors', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [StoreModule.forRoot(reducers)],
+      imports: [StoreModule.forRoot(reducers)]
     });
     store = TestBed.get(Store);
   });
@@ -29,7 +29,7 @@ describe('Downloads Chart Selectors', () => {
         guid: episodes[0].guid,
         page: episodes[0].page,
         downloads: ep0Downloads,
-        charted: true,
+        charted: true
       },
       {
         id: episodes[1].guid,
@@ -37,8 +37,8 @@ describe('Downloads Chart Selectors', () => {
         guid: episodes[1].guid,
         page: episodes[1].page,
         downloads: ep1Downloads,
-        charted: true,
-      },
+        charted: true
+      }
     ]);
     expect(downloadMetrics.length).toEqual(2);
     expect(downloadMetrics[0].publishedAt.valueOf()).toBeGreaterThanOrEqual(downloadMetrics[1].publishedAt.valueOf());
@@ -54,7 +54,7 @@ describe('Downloads Chart Selectors', () => {
       dispatchHelper.dispatchEpisodeDownloads(store);
       dispatchHelper.dispatchPodcastDownloads(store);
 
-      dataSub = store.pipe(select(selectDownloadChartMetrics)).subscribe((data) => {
+      dataSub = store.pipe(select(selectDownloadChartMetrics)).subscribe(data => {
         result = data;
       });
     });
@@ -119,7 +119,7 @@ describe('Downloads Chart Selectors', () => {
       dispatchHelper.dispatchRouterNavigation(store, { ...routerParams, chartType: <ChartType>CHARTTYPE_PODCAST });
       dispatchHelper.dispatchPodcastDownloads(store);
 
-      dataSub = store.pipe(select(selectDownloadChartMetrics)).subscribe((data) => {
+      dataSub = store.pipe(select(selectDownloadChartMetrics)).subscribe(data => {
         result = data;
       });
     });
@@ -159,7 +159,7 @@ describe('Downloads Chart Selectors', () => {
       dispatchHelper.dispatchEpisodePage(store);
       dispatchHelper.dispatchEpisodeDownloads(store);
 
-      dataSub = store.pipe(select(selectDownloadChartMetrics)).subscribe((data) => {
+      dataSub = store.pipe(select(selectDownloadChartMetrics)).subscribe(data => {
         result = data;
       });
     });
@@ -191,7 +191,7 @@ describe('Downloads Chart Selectors', () => {
         new ACTIONS.EpisodeSelectEpisodesAction({
           podcastId: routerParams.podcastId,
           metricsType: routerParams.metricsType,
-          episodeGuids: [episodes[0].guid],
+          episodeGuids: [episodes[0].guid]
         })
       );
       expect(result.length).toEqual(1);

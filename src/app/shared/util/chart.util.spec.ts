@@ -7,7 +7,7 @@ import {
   ep0AgentNameRanks,
   ep1AgentNameRanks,
   ep0AgentNameDownloads,
-  ep1AgentNameDownloads,
+  ep1AgentNameDownloads
 } from '../../../testing/downloads.fixtures';
 
 describe('chart.util', () => {
@@ -23,7 +23,7 @@ describe('chart.util', () => {
     ['2017-09-04T00:00:00Z', 46858],
     ['2017-09-05T00:00:00Z', 52522],
     ['2017-09-06T00:00:00Z', 162900],
-    ['2017-09-07T00:00:00Z', 46858],
+    ['2017-09-07T00:00:00Z', 46858]
   ];
   const timeseries: TimeseriesDatumModel[] = chartUtil.mapMetricsToTimeseriesData(metrics);
 
@@ -58,7 +58,7 @@ describe('chart.util', () => {
         ranks: ep0AgentNameRanks,
         loaded: true,
         loading: false,
-        error: null,
+        error: null
       },
       {
         id: episodeTotalsId(episodes[1].guid, group, filter, beginDate, endDate),
@@ -70,8 +70,8 @@ describe('chart.util', () => {
         ranks: ep1AgentNameRanks,
         loaded: true,
         loading: false,
-        error: null,
-      },
+        error: null
+      }
     ];
     const episodeRanks: EpisodeRanks[] = [
       {
@@ -86,7 +86,7 @@ describe('chart.util', () => {
         downloads: ep0AgentNameDownloads,
         loaded: true,
         loading: false,
-        error: null,
+        error: null
       },
       {
         id: episodeRanksId(episodes[1].guid, group, filter, interval, beginDate, endDate),
@@ -100,8 +100,8 @@ describe('chart.util', () => {
         downloads: ep1AgentNameDownloads,
         loaded: true,
         loading: false,
-        error: null,
-      },
+        error: null
+      }
     ];
 
     it('should aggregate episode total downlaods', () => {
@@ -131,8 +131,8 @@ describe('chart.util', () => {
           id: `${GROUPTYPE_AGENTNAME}-Apple Podcasts`,
           group: GROUPTYPE_AGENTNAME as GroupType,
           groupName: 'Apple Podcasts',
-          charted: false,
-        },
+          charted: false
+        }
       ]);
       expect(results.length).toEqual(ep0AgentNameRanks.length - 1);
     });
@@ -154,7 +154,7 @@ describe('chart.util', () => {
 
     it('should aggregate totals ranks', () => {
       const results = chartUtil.aggregateTotalsRanks(episodeTotals);
-      expect(results.find((r) => r.label === 'Apple Podcasts').total).toEqual(ep0AgentNameRanks[0].total + ep1AgentNameRanks[0].total);
+      expect(results.find(r => r.label === 'Apple Podcasts').total).toEqual(ep0AgentNameRanks[0].total + ep1AgentNameRanks[0].total);
     });
 
     it('should aggregate interval data', () => {

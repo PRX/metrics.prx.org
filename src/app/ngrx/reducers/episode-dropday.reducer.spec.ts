@@ -14,7 +14,7 @@ describe('EpisodeDownloadsReducer', () => {
         guid: episodes[0].guid,
         title: episodes[0].title,
         publishedAt: new Date(),
-        downloads: [],
+        downloads: []
       })
     );
   });
@@ -34,7 +34,7 @@ describe('EpisodeDownloadsReducer', () => {
         guid: episodes[0].guid,
         title: episodes[0].title,
         publishedAt: new Date(),
-        downloads: ep0Downloads,
+        downloads: ep0Downloads
       })
     );
     expect(fromEpisodeDropday.selectAllEpisodeDropday(newState).length).toEqual(1);
@@ -52,9 +52,9 @@ describe('EpisodeDownloadsReducer', () => {
         guid: episodes[1].guid,
         title: episodes[1].title,
         publishedAt: new Date(),
-        downloads: ep1Downloads,
+        downloads: ep1Downloads
       })
     );
-    expect(fromEpisodeDropday.selectAllEpisodeDropday(newState).filter((p) => p.podcastId === '70').length).toEqual(2);
+    expect(fromEpisodeDropday.selectAllEpisodeDropday(newState).filter(p => p.podcastId === '70').length).toEqual(2);
   });
 });

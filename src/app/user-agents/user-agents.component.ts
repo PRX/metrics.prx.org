@@ -8,7 +8,7 @@ import {
   selectRoutedGroupCharted,
   selectGroupedDataLoaded,
   selectGroupedDataLoading,
-  select500ErrorReloadActions,
+  select500ErrorReloadActions
 } from '../ngrx/reducers/selectors';
 import { RouterParams, TotalsTableRow, GroupCharted, GroupType } from '../ngrx';
 import { CategoryChartModel, TimeseriesChartModel } from 'ngx-prx-styleguide';
@@ -35,7 +35,7 @@ import * as ACTIONS from '../ngrx/actions';
       </metrics-totals-table>
     </section>
     <metrics-error-retry [retryActions]="errors$ | async"></metrics-error-retry>
-  `,
+  `
 })
 export class UserAgentsComponent implements OnInit {
   routerParams$: Observable<RouterParams>;

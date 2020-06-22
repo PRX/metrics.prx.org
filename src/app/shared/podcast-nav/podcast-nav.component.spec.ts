@@ -24,22 +24,22 @@ describe('PodcastNavComponent', () => {
   const podcasts: Podcast[] = [
     {
       id: '70',
-      title: 'Pet Talks Daily',
+      title: 'Pet Talks Daily'
     },
     {
       id: '72',
-      title: 'Totally Not Pet Talks Daily',
-    },
+      title: 'Totally Not Pet Talks Daily'
+    }
   ];
   const routerParams: RouterParams = {
-    podcastId: podcasts[0].id,
+    podcastId: podcasts[0].id
   };
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [PodcastNavComponent, PodcastNavDropdownComponent, PodcastNavListComponent],
       imports: [StoreModule.forRoot(reducers)],
-      providers: [{ provide: Router, useValue: { router: new RouterStub() } }],
+      providers: [{ provide: Router, useValue: { router: new RouterStub() } }]
     })
       .compileComponents()
       .then(() => {
@@ -56,15 +56,15 @@ describe('PodcastNavComponent', () => {
       });
   }));
 
-  it('should set selected podcast according to routerParams', (done) => {
-    comp.selectedPodcast$.pipe(first()).subscribe((result) => {
+  it('should set selected podcast according to routerParams', done => {
+    comp.selectedPodcast$.pipe(first()).subscribe(result => {
       expect(result).toEqual(podcasts[0]);
       done();
     });
   });
 
-  it('should update list of podcasts', (done) => {
-    comp.podcasts$.pipe(first()).subscribe((result) => {
+  it('should update list of podcasts', done => {
+    comp.podcasts$.pipe(first()).subscribe(result => {
       expect(result).toEqual([podcasts[0]]);
       done();
     });

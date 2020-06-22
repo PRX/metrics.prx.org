@@ -31,7 +31,7 @@ export class RoutingEffects {
           new ACTIONS.EpisodeSelectEpisodesAction({
             podcastId: routerParams.podcastId,
             metricsType: routerParams.metricsType,
-            episodeGuids: guids,
+            episodeGuids: guids
           })
         );
       }

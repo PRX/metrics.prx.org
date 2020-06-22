@@ -113,9 +113,9 @@ describe('CustomDateRangeDropdownComponent', () => {
     expect(comp.googleAnalyticsEvent).toHaveBeenCalledWith(comp.CUSTOM_DATE, comp.tempRange);
   });
 
-  it('should not close the dropdown on window scroll', (done) => {
+  it('should not close the dropdown on window scroll', done => {
     comp.open = true;
-    window.addEventListener('scroll', (e) => {
+    window.addEventListener('scroll', e => {
       expect(comp.open).toBeTruthy();
       done();
     });

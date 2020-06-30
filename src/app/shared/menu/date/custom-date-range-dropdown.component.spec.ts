@@ -28,31 +28,26 @@ describe('CustomDateRangeDropdownComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [
-        CustomDateRangeDropdownComponent,
-        DateRangeSummaryComponent,
-        StandardDateRangeComponent
-      ],
-      imports: [
-        DatepickerModule,
-        StoreModule.forRoot(reducers)
-      ]
-    }).compileComponents().then(() => {
-      fix = TestBed.createComponent(CustomDateRangeDropdownComponent);
-      comp = fix.componentInstance;
-      de = fix.debugElement;
-      el = de.nativeElement;
-      store = TestBed.get(Store);
+      declarations: [CustomDateRangeDropdownComponent, DateRangeSummaryComponent, StandardDateRangeComponent],
+      imports: [DatepickerModule, StoreModule.forRoot(reducers)]
+    })
+      .compileComponents()
+      .then(() => {
+        fix = TestBed.createComponent(CustomDateRangeDropdownComponent);
+        comp = fix.componentInstance;
+        de = fix.debugElement;
+        el = de.nativeElement;
+        store = TestBed.get(Store);
 
-      comp.tempRange = comp.routerParams = routerParams;
-      fix.detectChanges();
+        comp.tempRange = comp.routerParams = routerParams;
+        fix.detectChanges();
 
-      jest.spyOn(comp, 'googleAnalyticsEvent');
-    });
+        jest.spyOn(comp, 'googleAnalyticsEvent');
+      });
   }));
 
   it('should send google analytics event on apply changes', () => {
-    comp.onCustomRangeChange({from: dateUtil.beginningOfLastWeekUTC().toDate(), to: dateUtil.endOfLastWeekUTC().toDate()});
+    comp.onCustomRangeChange({ from: dateUtil.beginningOfLastWeekUTC().toDate(), to: dateUtil.endOfLastWeekUTC().toDate() });
     expect(comp.googleAnalyticsEvent).not.toHaveBeenCalled();
     comp.onApply();
     expect(comp.googleAnalyticsEvent).toHaveBeenCalled();
@@ -96,7 +91,7 @@ describe('CustomDateRangeDropdownComponent', () => {
   });
 
   it('keeps tempRange standard range in sync with custom range', () => {
-    comp.onCustomRangeChange({from: dateUtil.beginningOfLastWeekUTC().toDate(), to: dateUtil.endOfLastWeekUTC().toDate()});
+    comp.onCustomRangeChange({ from: dateUtil.beginningOfLastWeekUTC().toDate(), to: dateUtil.endOfLastWeekUTC().toDate() });
     expect(comp.tempRange.standardRange).toEqual(dateUtil.LAST_WEEK);
   });
 
@@ -113,14 +108,14 @@ describe('CustomDateRangeDropdownComponent', () => {
     comp.onStandardRangeChange(dateUtil.LAST_WEEK);
     comp.onApply();
     expect(comp.googleAnalyticsEvent).toHaveBeenCalledWith(comp.STANDARD_DATE, comp.tempRange);
-    comp.onCustomRangeChange({from: dateUtil.beginningOfLastMonthUTC().toDate(), to: dateUtil.endOfLastMonthUTC().toDate()});
+    comp.onCustomRangeChange({ from: dateUtil.beginningOfLastMonthUTC().toDate(), to: dateUtil.endOfLastMonthUTC().toDate() });
     comp.onApply();
     expect(comp.googleAnalyticsEvent).toHaveBeenCalledWith(comp.CUSTOM_DATE, comp.tempRange);
   });
 
   it('should not close the dropdown on window scroll', done => {
     comp.open = true;
-    window.addEventListener('scroll', (e) => {
+    window.addEventListener('scroll', e => {
       expect(comp.open).toBeTruthy();
       done();
     });

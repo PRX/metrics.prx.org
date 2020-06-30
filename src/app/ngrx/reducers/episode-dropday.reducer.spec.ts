@@ -6,9 +6,14 @@ import { INTERVAL_DAILY } from './models';
 describe('EpisodeDownloadsReducer', () => {
   let newState: fromEpisodeDropday.State;
   beforeEach(() => {
-    newState = fromEpisodeDropday.reducer(undefined,
+    newState = fromEpisodeDropday.reducer(
+      undefined,
       new ACTIONS.CastleEpisodeDropdaySuccessAction({
-        podcastId: '70', interval: INTERVAL_DAILY, guid: episodes[0].guid, publishedAt: new Date(),
+        podcastId: '70',
+        interval: INTERVAL_DAILY,
+        guid: episodes[0].guid,
+        title: episodes[0].title,
+        publishedAt: new Date(),
         downloads: []
       })
     );
@@ -21,9 +26,14 @@ describe('EpisodeDownloadsReducer', () => {
   });
 
   it('should update existing episode dropday metrics', () => {
-    newState = fromEpisodeDropday.reducer(newState,
+    newState = fromEpisodeDropday.reducer(
+      newState,
       new ACTIONS.CastleEpisodeDropdaySuccessAction({
-        podcastId: '70', interval: INTERVAL_DAILY, guid: episodes[0].guid, publishedAt: new Date(),
+        podcastId: '70',
+        interval: INTERVAL_DAILY,
+        guid: episodes[0].guid,
+        title: episodes[0].title,
+        publishedAt: new Date(),
         downloads: ep0Downloads
       })
     );
@@ -33,10 +43,15 @@ describe('EpisodeDownloadsReducer', () => {
     expect(fromEpisodeDropday.selectAllEpisodeDropday(newState)[0].downloads[0][1]).toEqual(ep0Downloads[0][1]);
   });
 
-  it ('should add new episode dropday metrics', () => {
-    newState = fromEpisodeDropday.reducer(newState,
+  it('should add new episode dropday metrics', () => {
+    newState = fromEpisodeDropday.reducer(
+      newState,
       new ACTIONS.CastleEpisodeDropdaySuccessAction({
-        podcastId: '70', interval: INTERVAL_DAILY, guid: episodes[1].guid, publishedAt: new Date(),
+        podcastId: '70',
+        interval: INTERVAL_DAILY,
+        guid: episodes[1].guid,
+        title: episodes[1].title,
+        publishedAt: new Date(),
         downloads: ep1Downloads
       })
     );

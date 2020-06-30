@@ -1,8 +1,14 @@
 import * as chartUtil from './chart.util';
 import { TimeseriesDatumModel } from 'ngx-prx-styleguide';
 import { EpisodeTotals, episodeTotalsId, EpisodeRanks, episodeRanksId, GroupType, GROUPTYPE_AGENTNAME } from '../../ngrx/reducers/models';
-import { routerParams, episodes,
-  ep0AgentNameRanks, ep1AgentNameRanks, ep0AgentNameDownloads, ep1AgentNameDownloads } from '../../../testing/downloads.fixtures';
+import {
+  routerParams,
+  episodes,
+  ep0AgentNameRanks,
+  ep1AgentNameRanks,
+  ep0AgentNameDownloads,
+  ep1AgentNameDownloads
+} from '../../../testing/downloads.fixtures';
 
 describe('chart.util', () => {
   const metrics = [
@@ -111,9 +117,7 @@ describe('chart.util', () => {
     it('should accumulate total downloads by group', () => {
       const expected = ep0AgentNameRanks.map((row, i) => row.total + ep1AgentNameRanks[i].total);
       const accumulator = chartUtil.aggregateTotalsAccumulator(episodeTotals);
-      expected.forEach((total, i) =>
-        expect(accumulator[ep0AgentNameRanks[i].code].value).toEqual(total)
-      );
+      expected.forEach((total, i) => expect(accumulator[ep0AgentNameRanks[i].code].value).toEqual(total));
     });
 
     it('should sort aggregated total downloads by total values', () => {
@@ -124,8 +128,8 @@ describe('chart.util', () => {
     it('should filter bar chart totals by charted status', () => {
       const results = chartUtil.aggregateTotalsBarChart(episodeRanks, [
         {
-          key: `${GROUPTYPE_AGENTNAME}-Apple Podcasts`,
-          group: GROUPTYPE_AGENTNAME,
+          id: `${GROUPTYPE_AGENTNAME}-Apple Podcasts`,
+          group: GROUPTYPE_AGENTNAME as GroupType,
           groupName: 'Apple Podcasts',
           charted: false
         }
@@ -136,8 +140,12 @@ describe('chart.util', () => {
     it('should assume groups are charted implicity', () => {
       expect(chartUtil.isGroupCharted(undefined, 'Unknown')).toBeTruthy();
       expect(chartUtil.isGroupCharted([], 'Unknown')).toBeTruthy();
-      expect(chartUtil.isGroupCharted([{id: 'agentname-Unknown', group: <GroupType>'agentname', groupName: 'Unknown', charted: false}],
-        'Unknown')).toBeFalsy();
+      expect(
+        chartUtil.isGroupCharted(
+          [{ id: 'agentname-Unknown', group: <GroupType>'agentname', groupName: 'Unknown', charted: false }],
+          'Unknown'
+        )
+      ).toBeFalsy();
       let results = chartUtil.aggregateTotalsBarChart(episodeRanks);
       expect(results.length).toEqual(ep0AgentNameRanks.length);
       results = chartUtil.aggregateTotalsBarChart(episodeRanks, []);
@@ -156,5 +164,4 @@ describe('chart.util', () => {
       expect(results[0].data[0].value).toEqual(ep0Value + ep1Value);
     });
   });
-
 });

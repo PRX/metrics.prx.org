@@ -1,15 +1,25 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="utf-8">
-  <title>metrics.prx.org</title>
-  <base href="/">
-
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="icon" type="image/x-icon" href="favicon.ico">
-</head>
-<body>
-  <!-- e2e tests are using this but otherwise it not used -->
-  <metrics-root></metrics-root>
-</body>
+  <head>
+    <meta charset="utf-8" />
+    <title>PRX Metrics</title>
+    <base href="/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/x-icon" href="/assets/images/favicon.ico" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700" />
+  </head>
+  <body>
+    <metrics-root>
+      <div
+        class="empty"
+        style="position: absolute; top: 0; right: 0; bottom: 0; left: 0; display: flex; align-items: center; justify-content: center;"
+      >
+        <h3 style="font-size: 18px; font-weight: 200; color: #bbb;">Loading...</h3>
+      </div>
+    </metircs-root>
+    <script src="/assets/google-analytics.js"></script>
+    <script src="/assets/zendesk-widget.js"></script>
+    <script src="https://www.gstatic.com/charts/loader.js"></script>
+    <script src="https://apis.google.com/js/api.js"></script>
+  </body>
 </html>

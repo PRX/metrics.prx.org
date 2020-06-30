@@ -14,7 +14,7 @@ export class GoogleAnalyticsEffects implements OnDestroy {
   routerParams: RouterParams;
   destroyed$: Subject<void> = new Subject();
 
-  @Effect({dispatch: false})
+  @Effect({ dispatch: false })
   fromGAEvent$: Observable<void> = this.actions$.pipe(
     ofType(ActionTypes.GOOGLE_ANALYTICS_EVENT),
     map((action: GoogleAnalyticsEventAction) => {
@@ -45,19 +45,11 @@ export class GoogleAnalyticsEffects implements OnDestroy {
     })
   );
 
-  constructor(private actions$: Actions,
-              public angulartics2: Angulartics2,
-              public store: Store<any>) {
-    this.store.pipe(
-      select(selectAllPodcasts),
-      takeUntil(this.destroyed$)
-    ).subscribe(podcasts => {
+  constructor(private actions$: Actions, public angulartics2: Angulartics2, public store: Store<any>) {
+    this.store.pipe(select(selectAllPodcasts), takeUntil(this.destroyed$)).subscribe(podcasts => {
       this.podcasts = podcasts;
     });
-    this.store.pipe(
-      select(selectRouter),
-      takeUntil(this.destroyed$)
-    ).subscribe(routerParams => {
+    this.store.pipe(select(selectRouter), takeUntil(this.destroyed$)).subscribe(routerParams => {
       this.routerParams = routerParams;
     });
   }

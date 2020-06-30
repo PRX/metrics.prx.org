@@ -1,5 +1,13 @@
-import { RouterParams, Episode, Podcast, ChartType, MetricsType,
-  CHARTTYPE_STACKED, INTERVAL_DAILY, METRICSTYPE_DOWNLOADS } from '../app/ngrx';
+import {
+  RouterParams,
+  Episode,
+  Podcast,
+  ChartType,
+  MetricsType,
+  CHARTTYPE_STACKED,
+  INTERVAL_DAILY,
+  METRICSTYPE_DOWNLOADS
+} from '../app/ngrx';
 import * as dateUtil from '../app/shared/util/date';
 import { Userinfo } from 'ngx-prx-styleguide';
 
@@ -39,7 +47,6 @@ export const episodes: Episode[] = [
   }
 ];
 export const routerParams: RouterParams = {
-  url: null,
   podcastId: podcast.id,
   episodePage: 1,
   beginDate: dateUtil.beginningOfLast28DaysUTC().toDate(),
@@ -104,7 +111,7 @@ export const ep0Downloads: any[][] = [
   ['2017-09-06T00:00:00Z', 90],
   ['2017-09-07T00:00:00Z', 58]
 ];
-export const ep1Downloads: any[][]  = [
+export const ep1Downloads: any[][] = [
   ['2017-08-27T00:00:00Z', 522],
   ['2017-08-28T00:00:00Z', 900],
   ['2017-08-29T00:00:00Z', 858],
@@ -118,25 +125,25 @@ export const ep1Downloads: any[][]  = [
   ['2017-09-06T00:00:00Z', 900],
   ['2017-09-07T00:00:00Z', 858]
 ];
-export const podAllTimeDownloads = {total: 1049120};
-export const podAllTimeDownloadsOff = {total: 1049119};
-export const ep0AllTimeDownloads = {total: 680};
-export const ep0AllTimeDownloadsOff = {total: 679};
-export const ep1AllTimeDownloads = {total: 9120};
-export const ep1AllTimeDownloadsOff = {total: 9119};
+export const podAllTimeDownloads = { total: 1049120 };
+export const podAllTimeDownloadsOff = { total: 1049119 };
+export const ep0AllTimeDownloads = { total: 680 };
+export const ep0AllTimeDownloadsOff = { total: 679 };
+export const ep1AllTimeDownloads = { total: 9120 };
+export const ep1AllTimeDownloadsOff = { total: 9119 };
 
 export const podcastAgentNameRanks = [
-  {total: 2616678, label: 'Podcasts', code: '25'},
-  {total: 441618, label: 'Overcast', code: '14'},
-  {total: 420328, label: 'Unknown', code: '0'},
-  {total: 244226, label: 'Pocket Casts', code: '16'},
-  {total: 242802, label: 'iTunes', code: '12'},
-  {total: 226357, label: 'Stitcher', code: '23'},
-  {total: 176300, label: 'PodcastAddict', code: '18'},
-  {total: 143150, label: 'Chrome', code: '29'},
-  {total: 99392, label: 'CastBox', code: '8'},
-  {total: 38382, label: 'PodcastRepublic', code: '58'},
-  {total: 337650, label: 'Other', code: null}
+  { total: 2616678, label: 'Podcasts', code: '25' },
+  { total: 441618, label: 'Overcast', code: '14' },
+  { total: 420328, label: 'Unknown', code: '0' },
+  { total: 244226, label: 'Pocket Casts', code: '16' },
+  { total: 242802, label: 'iTunes', code: '12' },
+  { total: 226357, label: 'Stitcher', code: '23' },
+  { total: 176300, label: 'PodcastAddict', code: '18' },
+  { total: 143150, label: 'Chrome', code: '29' },
+  { total: 99392, label: 'CastBox', code: '8' },
+  { total: 38382, label: 'PodcastRepublic', code: '58' },
+  { total: 337650, label: 'Other', code: null }
 ];
 
 export const podcastAgentNameDownloads = [
@@ -171,15 +178,15 @@ export const podcastAgentNameDownloads = [
 ];
 
 export const podcastAgentTypeRanks = [
-  {total: 6432491, label: 'Mobile App', code: '36'},
-  {total: 882208, label: 'Smart Watch', code: '68'},
-  {total: 498179, label: 'Desktop App', code: '35'},
-  {total: 185507, label: 'Unknown', code: '0'},
-  {total: 144301, label: 'Desktop Browser', code: '39'},
-  {total: 138051, label: 'Mobile Browser', code: '40'},
-  {total: 15888, label: 'Smart Home', code: '37'},
-  {total: 3126, label: 'Smart TV', code: '38'},
-  {total: 0, label: 'Other', code: null}
+  { total: 6432491, label: 'Mobile App', code: '36' },
+  { total: 882208, label: 'Smart Watch', code: '68' },
+  { total: 498179, label: 'Desktop App', code: '35' },
+  { total: 185507, label: 'Unknown', code: '0' },
+  { total: 144301, label: 'Desktop Browser', code: '39' },
+  { total: 138051, label: 'Mobile Browser', code: '40' },
+  { total: 15888, label: 'Smart Home', code: '37' },
+  { total: 3126, label: 'Smart TV', code: '38' },
+  { total: 0, label: 'Other', code: null }
 ];
 
 export const podcastAgentTypeDownloads = [
@@ -191,17 +198,17 @@ export const podcastAgentTypeDownloads = [
 ];
 
 export const podcastGeoCountryRanks = [
-  {total: 549016, label: 'United States', code: 'US'},
-  {total: 71474, label: 'United Kingdom', code: 'GB'},
-  {total: 56746, label: 'Canada', code: 'CA'},
-  {total: 35582, label: 'Australia', code: 'AU'},
-  {total: 11505, label: 'Germany', code: 'DE'},
-  {total: 8335, label: 'Ireland', code: 'IE'},
-  {total: 7271, label: 'New Zealand', code: 'NZ'},
-  {total: 6153, label: 'Netherlands', code: 'NL'},
-  {total: 6099, label: 'Sweden', code: 'SE'},
-  {total: 4938, label: 'France', code: 'FR'},
-  {total: 66606, label: 'Other', code: null}
+  { total: 549016, label: 'United States', code: 'US' },
+  { total: 71474, label: 'United Kingdom', code: 'GB' },
+  { total: 56746, label: 'Canada', code: 'CA' },
+  { total: 35582, label: 'Australia', code: 'AU' },
+  { total: 11505, label: 'Germany', code: 'DE' },
+  { total: 8335, label: 'Ireland', code: 'IE' },
+  { total: 7271, label: 'New Zealand', code: 'NZ' },
+  { total: 6153, label: 'Netherlands', code: 'NL' },
+  { total: 6099, label: 'Sweden', code: 'SE' },
+  { total: 4938, label: 'France', code: 'FR' },
+  { total: 66606, label: 'Other', code: null }
 ];
 
 export const podcastGeoCountryDownloads = [
@@ -229,17 +236,17 @@ export const podcastGeoCountryDownloads = [
 ];
 
 export const podcastGeoSubdivRanks = [
-  {total: 631553, label: 'California', code: 'US-CA'},
-  {total: 287345, label: 'New York', code: 'US-NY'},
-  {total: 167176, label: 'Texas', code: 'US-TX'},
-  {total: 151182, label: 'Washington', code: 'US-WA'},
-  {total: 134807, label: 'Illinois', code: 'US-IL'},
-  {total: 120504, label: 'Massachusetts', code: 'US-MA'},
-  {total: 105462, label: 'Pennsylvania', code: 'US-PA'},
-  {total: 93554, label: 'Colorado', code: 'US-CO'},
-  {total: 89845, label: 'Virginia', code: 'US-VA'},
-  {total: 81841, label: 'Oregon', code: 'US-OR'},
-  {total: 1171671, label: 'Other', code: null}
+  { total: 631553, label: 'California', code: 'US-CA' },
+  { total: 287345, label: 'New York', code: 'US-NY' },
+  { total: 167176, label: 'Texas', code: 'US-TX' },
+  { total: 151182, label: 'Washington', code: 'US-WA' },
+  { total: 134807, label: 'Illinois', code: 'US-IL' },
+  { total: 120504, label: 'Massachusetts', code: 'US-MA' },
+  { total: 105462, label: 'Pennsylvania', code: 'US-PA' },
+  { total: 93554, label: 'Colorado', code: 'US-CO' },
+  { total: 89845, label: 'Virginia', code: 'US-VA' },
+  { total: 81841, label: 'Oregon', code: 'US-OR' },
+  { total: 1171671, label: 'Other', code: null }
 ];
 
 export const podcastGeoSubdivDownloads = [
@@ -274,17 +281,17 @@ export const podcastGeoSubdivDownloads = [
 ];
 
 export const podcastGeoMetroRanks = [
-  {total: 313242, label: 'San Francisco-Oak-San Jose', code: 807},
-  {total: 306161, label: 'New York', code: 501},
-  {total: 209038, label: 'Los Angeles', code: 803},
-  {total: 138346, label: 'Seattle-Tacoma', code: 819},
-  {total: 129980, label: 'Washington, DC (Hagrstwn)', code: 511},
-  {total: 123332, label: 'Chicago', code: 602},
-  {total: 119242, label: 'Boston (Manchester)', code: 506},
-  {total: 85199, label: 'Denver', code: 751},
-  {total: 81980, label: 'Philadelphia', code: 504},
-  {total: 72468, label: 'Portland, OR', code: 820},
-  {total: 1457319, label: 'Other', code: null}
+  { total: 313242, label: 'San Francisco-Oak-San Jose', code: 807 },
+  { total: 306161, label: 'New York', code: 501 },
+  { total: 209038, label: 'Los Angeles', code: 803 },
+  { total: 138346, label: 'Seattle-Tacoma', code: 819 },
+  { total: 129980, label: 'Washington, DC (Hagrstwn)', code: 511 },
+  { total: 123332, label: 'Chicago', code: 602 },
+  { total: 119242, label: 'Boston (Manchester)', code: 506 },
+  { total: 85199, label: 'Denver', code: 751 },
+  { total: 81980, label: 'Philadelphia', code: 504 },
+  { total: 72468, label: 'Portland, OR', code: 820 },
+  { total: 1457319, label: 'Other', code: null }
 ];
 
 export const podcastGeoMetroDownloads = [
@@ -319,17 +326,17 @@ export const podcastGeoMetroDownloads = [
 ];
 
 export const ep0AgentNameRanks = [
-  {total: 385246, label: 'Apple Podcasts', code: '25'},
-  {total: 80744, label: 'Overcast', code: '14'},
-  {total: 58407, label: 'Unknown', code: '0'},
-  {total: 45944, label: 'Stitcher', code: '23'},
-  {total: 45446, label: 'Pocket Casts', code: '16'},
-  {total: 28996, label: 'iTunes', code: '58'},
-  {total: 27612, label: 'Spotify', code: '12'},
-  {total: 25240, label: 'Chrome', code: '29'},
-  {total: 24578, label: 'PodcastAddict', code: '18'},
-  {total: 20080, label: 'CastBox', code: '8'},
-  {total: 69546, label: 'Other', code: null}
+  { total: 385246, label: 'Apple Podcasts', code: '25' },
+  { total: 80744, label: 'Overcast', code: '14' },
+  { total: 58407, label: 'Unknown', code: '0' },
+  { total: 45944, label: 'Stitcher', code: '23' },
+  { total: 45446, label: 'Pocket Casts', code: '16' },
+  { total: 28996, label: 'iTunes', code: '58' },
+  { total: 27612, label: 'Spotify', code: '12' },
+  { total: 25240, label: 'Chrome', code: '29' },
+  { total: 24578, label: 'PodcastAddict', code: '18' },
+  { total: 20080, label: 'CastBox', code: '8' },
+  { total: 69546, label: 'Other', code: null }
 ];
 
 export const ep0AgentNameDownloads = [
@@ -360,17 +367,17 @@ export const ep0AgentNameDownloads = [
 ];
 
 export const ep1AgentNameRanks = [
-  {total: 244354, label: 'Apple Podcasts', code: '25'},
-  {total: 64101, label: 'Overcast', code: '14'},
-  {total: 35405, label: 'Unknown', code: '0'},
-  {total: 29885, label: 'Stitcher', code: '23'},
-  {total: 34243, label: 'Pocket Casts', code: '16'},
-  {total: 13917, label: 'iTunes', code: '58'},
-  {total: 8781, label: 'Spotify', code: '12'},
-  {total: 6280, label: 'Chrome', code: '29'},
-  {total: 15999, label: 'PodcastAddict', code: '18'},
-  {total: 9670, label: 'CastBox', code: '8'},
-  {total: 40234, label: 'Other', code: null}
+  { total: 244354, label: 'Apple Podcasts', code: '25' },
+  { total: 64101, label: 'Overcast', code: '14' },
+  { total: 35405, label: 'Unknown', code: '0' },
+  { total: 29885, label: 'Stitcher', code: '23' },
+  { total: 34243, label: 'Pocket Casts', code: '16' },
+  { total: 13917, label: 'iTunes', code: '58' },
+  { total: 8781, label: 'Spotify', code: '12' },
+  { total: 6280, label: 'Chrome', code: '29' },
+  { total: 15999, label: 'PodcastAddict', code: '18' },
+  { total: 9670, label: 'CastBox', code: '8' },
+  { total: 40234, label: 'Other', code: null }
 ];
 
 export const ep1AgentNameDownloads = [
@@ -401,17 +408,17 @@ export const ep1AgentNameDownloads = [
 ];
 
 export const ep0GeoMetroRanks = [
-  {total: 46554, label: 'New York', code: 501},
-  {total: 45327, label: 'San Francisco-Oak-San Jose', code: 807},
-  {total: 32010, label: 'Los Angeles', code: 803},
-  {total: 20894, label: 'Seattle-Tacoma', code: 819},
-  {total: 19232, label: 'Washington, DC (Hagrstwn)', code: 511},
-  {total: 18257, label: 'Chicago', code: 602},
-  {total: 17516, label: 'Boston (Manchester)', code: 506},
-  {total: 12364, label: 'Denver', code: 751},
-  {total: 11675, label: 'Portland, OR', code: 820},
-  {total: 11595, label: 'Philadelphia', code: 504},
-  {total: 224876, label: 'Other', code: null}
+  { total: 46554, label: 'New York', code: 501 },
+  { total: 45327, label: 'San Francisco-Oak-San Jose', code: 807 },
+  { total: 32010, label: 'Los Angeles', code: 803 },
+  { total: 20894, label: 'Seattle-Tacoma', code: 819 },
+  { total: 19232, label: 'Washington, DC (Hagrstwn)', code: 511 },
+  { total: 18257, label: 'Chicago', code: 602 },
+  { total: 17516, label: 'Boston (Manchester)', code: 506 },
+  { total: 12364, label: 'Denver', code: 751 },
+  { total: 11675, label: 'Portland, OR', code: 820 },
+  { total: 11595, label: 'Philadelphia', code: 504 },
+  { total: 224876, label: 'Other', code: null }
 ];
 
 export const ep0GeoMetroDownloads = [

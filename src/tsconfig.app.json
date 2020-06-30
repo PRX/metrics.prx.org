@@ -6,11 +6,7 @@
     "paths": {
       "@app/*": ["app/*"]
     },
-    "module": "es2015",
     "types": []
   },
-  "exclude": [
-    "test.ts",
-    "**/*.spec.ts"
-  ]
+  "exclude": ["**/*.spec.ts"]
 }

@@ -7,6 +7,7 @@ import { ErrorRetryComponent } from './error-retry.component';
 import * as ACTIONS from '../../ngrx/actions';
 import { reducers } from '../../ngrx/reducers';
 import { routerParams } from '../../../testing/downloads.fixtures';
+import { MetricsType } from '@app/ngrx';
 
 describe('ErrorRetryComponent', () => {
   let comp: ErrorRetryComponent;
@@ -17,27 +18,24 @@ describe('ErrorRetryComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [
-        ErrorRetryComponent
-      ],
-      imports: [
-        StoreModule.forRoot(reducers)
-      ],
+      declarations: [ErrorRetryComponent],
+      imports: [StoreModule.forRoot(reducers)],
       providers: []
-    }).compileComponents().then(() => {
-      fix = TestBed.createComponent(ErrorRetryComponent);
-      comp = fix.componentInstance;
-      de = fix.debugElement;
-      el = de.nativeElement;
-      store = TestBed.get(Store);
-    });
+    })
+      .compileComponents()
+      .then(() => {
+        fix = TestBed.createComponent(ErrorRetryComponent);
+        comp = fix.componentInstance;
+        de = fix.debugElement;
+        el = de.nativeElement;
+        store = TestBed.get(Store);
+      });
   }));
 
   function setRetryActions() {
     comp.retryActions = [
       new ACTIONS.CastlePodcastDownloadsLoadAction({
         id: routerParams.podcastId,
-        metricsType: routerParams.metricsType,
         interval: routerParams.interval,
         beginDate: routerParams.beginDate,
         endDate: routerParams.endDate

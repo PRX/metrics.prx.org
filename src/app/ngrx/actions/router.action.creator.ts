@@ -4,8 +4,9 @@ import { RouterParams, ChartType, IntervalModel, MetricsType, GroupType } from '
 
 // CustomRouterNavigation happens as a result of
 // the StoreRouterConnectingModule and the RouterStateSerializer and the customRouterNavigation$ routing effect
-// It is otherwise not to be used directly by the application
+// It is otherwise not to be dispatched directly by the application
 export interface CustomRouterNavigationPayload {
+  url?: string;
   routerParams: RouterParams;
 }
 

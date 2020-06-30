@@ -1,35 +1,42 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { select, Store } from '@ngrx/store';
-import { selectChartMetrics, selectTableMetrics, selectRouter, selectRoutedGroupCharted,
-  selectGroupedDataLoaded, selectGroupedDataLoading, select500ErrorReloadActions } from '../ngrx/reducers/selectors';
+import {
+  selectChartMetrics,
+  selectTableMetrics,
+  selectRouter,
+  selectRoutedGroupCharted,
+  selectGroupedDataLoaded,
+  selectGroupedDataLoading,
+  select500ErrorReloadActions
+} from '../ngrx/reducers/selectors';
 import { RouterParams, TotalsTableRow, GroupCharted, GroupType } from '../ngrx';
 import { CategoryChartModel, TimeseriesChartModel } from 'ngx-prx-styleguide';
 import * as ACTIONS from '../ngrx/actions';
 
-@Component ({
+@Component({
   template: `
     <metrics-episode-select-dropdown></metrics-episode-select-dropdown>
-    <prx-spinner *ngIf="loading$ | async" overlay="true"
-                 loadingMessage="Please wait..."></prx-spinner>
+    <prx-spinner *ngIf="loading$ | async" overlay="true" loadingMessage="Please wait..."></prx-spinner>
     <section *ngIf="loaded$ | async">
       <metrics-menu-bar></metrics-menu-bar>
       <metrics-user-agents-chart
         [chartData]="chartData$ | async"
         [routerParams]="routerParams$ | async"
-        [groupsCharted]="groupsCharted$ | async">
+        [groupsCharted]="groupsCharted$ | async"
+      >
       </metrics-user-agents-chart>
       <metrics-totals-table
         [chartData]="chartData$ | async"
         [tableData]="tableData$ | async"
         [routerParams]="routerParams$ | async"
-        (toggleEntry)="toggleGroupCharted($event)">
+        (toggleEntry)="toggleGroupCharted($event)"
+      >
       </metrics-totals-table>
     </section>
     <metrics-error-retry [retryActions]="errors$ | async"></metrics-error-retry>
-  `,
+  `
 })
-
 export class UserAgentsComponent implements OnInit {
   routerParams$: Observable<RouterParams>;
   chartData$: Observable<CategoryChartModel[] | TimeseriesChartModel[]>;
@@ -51,7 +58,7 @@ export class UserAgentsComponent implements OnInit {
     this.errors$ = this.store.pipe(select(select500ErrorReloadActions));
   }
 
-  toggleGroupCharted(params: {group: GroupType, groupName: string, charted: boolean}) {
-    this.store.dispatch(new ACTIONS.ChartToggleGroupAction({...params}));
+  toggleGroupCharted(params: { group: GroupType; groupName: string; charted: boolean }) {
+    this.store.dispatch(new ACTIONS.ChartToggleGroupAction({ ...params }));
   }
 }

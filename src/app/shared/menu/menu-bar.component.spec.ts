@@ -35,8 +35,8 @@ describe('MenuBarComponent', () => {
   let el: HTMLElement;
   let store: Store<any>;
 
+  const url = '/70/reach/podcast/daily;episodePage=1;standardRange=This%20Week';
   const routerParams: RouterParams = {
-    url: '/70/reach/podcast/daily;episodePage=1;standardRange=This%20Week',
     chartType: <ChartType>CHARTTYPE_PODCAST,
     interval: INTERVAL_DAILY,
     standardRange: dateUtil.THIS_WEEK,
@@ -63,26 +63,20 @@ describe('MenuBarComponent', () => {
         StandardDateRangeComponent,
         StandardDateRangeDropdownComponent
       ],
-      imports: [
-        DatepickerModule,
-        FancyFormModule,
-        SpinnerModule,
-        StoreModule.forRoot(reducers)
-      ],
-      providers: [
-        EpisodeSelectDropdownService,
-        ExportGoogleSheetsService
-      ]
-    }).compileComponents().then(() => {
-      fix = TestBed.createComponent(MenuBarComponent);
-      comp = fix.componentInstance;
-      de = fix.debugElement;
-      el = de.nativeElement;
-      store = TestBed.get(Store);
+      imports: [DatepickerModule, FancyFormModule, SpinnerModule, StoreModule.forRoot(reducers)],
+      providers: [EpisodeSelectDropdownService, ExportGoogleSheetsService]
+    })
+      .compileComponents()
+      .then(() => {
+        fix = TestBed.createComponent(MenuBarComponent);
+        comp = fix.componentInstance;
+        de = fix.debugElement;
+        el = de.nativeElement;
+        store = TestBed.get(Store);
 
-      store.dispatch(new CustomRouterNavigationAction({routerParams}));
-      fix.detectChanges();
-    });
+        store.dispatch(new CustomRouterNavigationAction({ url, routerParams }));
+        fix.detectChanges();
+      });
   }));
 
   it('should have routerParams', done => {

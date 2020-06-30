@@ -5,14 +5,16 @@ import { EpisodePageComponent } from './episode-page.component';
 
 @Component({
   selector: 'metrics-test-component',
-  template: `<metrics-episode-page #paging
-              [currentPage]="filter?.page"
-              [totalPages]="totalPages"
-              (pageChange)="pageChange($event)"></metrics-episode-page>`
+  template: `<metrics-episode-page
+    #paging
+    [currentPage]="filter?.page"
+    [totalPages]="totalPages"
+    (pageChange)="pageChange($event)"
+  ></metrics-episode-page>`
 })
 class TestComponent {
-  @ViewChild('paging') pager: EpisodePageComponent;
-  filter = {page: 1};
+  @ViewChild('paging', { static: true }) pager: EpisodePageComponent;
+  filter = { page: 1 };
   totalPages = 8;
   pageChange(page: number) {
     this.filter.page = page;
@@ -27,17 +29,16 @@ describe('EpisodePageComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [
-        TestComponent,
-        EpisodePageComponent
-      ]
-    }).compileComponents().then(() => {
-      fix = TestBed.createComponent(TestComponent);
-      comp = fix.componentInstance;
-      fix.detectChanges();
-      de = fix.debugElement;
-      el = de.nativeElement;
-    });
+      declarations: [TestComponent, EpisodePageComponent]
+    })
+      .compileComponents()
+      .then(() => {
+        fix = TestBed.createComponent(TestComponent);
+        comp = fix.componentInstance;
+        fix.detectChanges();
+        de = fix.debugElement;
+        el = de.nativeElement;
+      });
   }));
 
   it('should disable prev button if on page 1', () => {

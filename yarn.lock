@@ -7370,10 +7370,10 @@ prr@~1.0.1:
   resolved "https://registry.yarnpkg.com/prr/-/prr-1.0.1.tgz#d3fc114ba06995a45ec6893f484ceb1d78f5f476"
   integrity sha1-0/wRS6BplaRexok/SEzrHXj19HY=
 
-prx-ng-serve@^3.0.1:
-  version "3.0.1"
-  resolved "https://registry.yarnpkg.com/prx-ng-serve/-/prx-ng-serve-3.0.1.tgz#ad104e2c6e8cc3fdcce28181cc5f1781e0922488"
-  integrity sha512-E86gVtI4Rph467HMKr52sSDGosIuUNyG2A4/Gxt1gwR+21UFyiffv7n7WsQRvQxPzPuRfIJCDwqG+Eyc0hcyIw==
+prx-ng-serve@^3.0.2:
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/prx-ng-serve/-/prx-ng-serve-3.0.2.tgz#d4284e4163a8b297179bba3e5ebd811475d31df7"
+  integrity sha512-QIYQQsvB8kUQdNGn/vMJEQDgKOevmMA+/eZ06MNBRwGNcvPVsZTNzrBeSoX8U/dVS3u6nHUaw1qD+VZbiNMuKw==
   dependencies:
     connect-gzip-static "^2.1.1"
     dotenv "^4.0.0"

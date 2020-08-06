@@ -1,8 +1,19 @@
 import { Component, Input, Output, EventEmitter, OnChanges, HostListener } from '@angular/core';
 import {
-  RouterParams, GroupType, getGroupName,
-  MetricsType, METRICSTYPE_DOWNLOADS, METRICSTYPE_DROPDAY, METRICSTYPE_TRAFFICSOURCES, METRICSTYPE_DEMOGRAPHICS,
-  GROUPTYPE_AGENTOS, GROUPTYPE_AGENTTYPE, GROUPTYPE_AGENTNAME, GROUPTYPE_GEOCOUNTRY, GROUPTYPE_GEOMETRO,
+  RouterParams,
+  GroupType,
+  getGroupName,
+  MetricsType,
+  METRICSTYPE_DOWNLOADS,
+  METRICSTYPE_DROPDAY,
+  METRICSTYPE_LISTENERS,
+  METRICSTYPE_TRAFFICSOURCES,
+  METRICSTYPE_DEMOGRAPHICS,
+  GROUPTYPE_AGENTOS,
+  GROUPTYPE_AGENTTYPE,
+  GROUPTYPE_AGENTNAME,
+  GROUPTYPE_GEOCOUNTRY,
+  GROUPTYPE_GEOMETRO
 } from '@app/ngrx/';
 
 @Component({
@@ -13,10 +24,9 @@ import {
       <div class="dropdown-button">
         <button (click)="toggleOpen()">
           <span class="nav-label">
-            <img class="icon" [src]="getTypeWithIcon(routerParams.metricsType)?.icon" [alt]="routerParams.metricsType">
-            <span
-              [class]="" aria-hidden="true"></span>
-            <span class="text">{{getGroupName(routerParams.metricsType, routerParams.group)}}</span>
+            <img class="icon" [src]="getTypeWithIcon(routerParams.metricsType)?.icon" [alt]="routerParams.metricsType" />
+            <span [class]="" aria-hidden="true"></span>
+            <span class="text">{{ getGroupName(routerParams.metricsType, routerParams.group) }}</span>
           </span>
           <span class="down-arrow"></span>
         </button>
@@ -25,15 +35,18 @@ import {
         <nav>
           <li *ngFor="let t of types">
             <button class="section" (click)="accordionMetricsType(t.type)">
-              <img class="icon" [src]="t.icon" aria-hidden="true">
-              <span class="text">{{t.type}}</span>
+              <img class="icon" [src]="t.icon" aria-hidden="true" />
+              <span class="text">{{ t.type }}</span>
             </button>
             <ul *ngIf="t.expanded">
               <li *ngFor="let g of t.groups">
                 <button
-                  (click)="routeMetricsGroupType(g.type, g.group)" class="nav"
-                  [class.active]="routerParams.metricsType === g.type && (!g.group || routerParams.group === g.group)">
-                  {{getGroupName(g.type, g.group)}}</button>
+                  (click)="routeMetricsGroupType(g.type, g.group)"
+                  class="nav"
+                  [class.active]="routerParams.metricsType === g.type && (!g.group || routerParams.group === g.group)"
+                >
+                  {{ getGroupName(g.type, g.group) }}
+                </button>
               </li>
             </ul>
           </li>
@@ -47,23 +60,29 @@ export class NavMenuPresentationComponent implements OnChanges {
   @Input() routerParams: RouterParams;
   @Output() navigate = new EventEmitter();
   types = [
-    {type: METRICSTYPE_DOWNLOADS, icon: '/assets/images/ic_headphones_grey-darkest.svg', expanded: false,
+    {
+      type: METRICSTYPE_DOWNLOADS,
+      icon: '/assets/images/ic_headphones_grey-darkest.svg',
+      expanded: false,
+      groups: [{ type: METRICSTYPE_DOWNLOADS }, { type: METRICSTYPE_DROPDAY }, { type: METRICSTYPE_LISTENERS }]
+    },
+    {
+      type: METRICSTYPE_DEMOGRAPHICS,
+      icon: '/assets/images/ic_globe_grey-darkest.svg',
+      expanded: false,
       groups: [
-        {type: METRICSTYPE_DOWNLOADS},
-        {type: METRICSTYPE_DROPDAY}
+        { type: METRICSTYPE_DEMOGRAPHICS, group: GROUPTYPE_GEOCOUNTRY },
+        { type: METRICSTYPE_DEMOGRAPHICS, group: GROUPTYPE_GEOMETRO }
       ]
     },
-    {type: METRICSTYPE_DEMOGRAPHICS, icon: '/assets/images/ic_globe_grey-darkest.svg', expanded: false,
+    {
+      type: METRICSTYPE_TRAFFICSOURCES,
+      icon: '/assets/images/ic_smartphone_grey-darkest.svg',
+      expanded: false,
       groups: [
-        {type: METRICSTYPE_DEMOGRAPHICS, group: GROUPTYPE_GEOCOUNTRY},
-        {type: METRICSTYPE_DEMOGRAPHICS, group: GROUPTYPE_GEOMETRO}
-      ]
-    },
-    {type: METRICSTYPE_TRAFFICSOURCES, icon: '/assets/images/ic_smartphone_grey-darkest.svg', expanded: false,
-      groups: [
-        {type: METRICSTYPE_TRAFFICSOURCES, group: GROUPTYPE_AGENTOS},
-        {type: METRICSTYPE_TRAFFICSOURCES, group: GROUPTYPE_AGENTTYPE},
-        {type: METRICSTYPE_TRAFFICSOURCES, group: GROUPTYPE_AGENTNAME}
+        { type: METRICSTYPE_TRAFFICSOURCES, group: GROUPTYPE_AGENTOS },
+        { type: METRICSTYPE_TRAFFICSOURCES, group: GROUPTYPE_AGENTTYPE },
+        { type: METRICSTYPE_TRAFFICSOURCES, group: GROUPTYPE_AGENTNAME }
       ]
     }
   ];
@@ -90,7 +109,7 @@ export class NavMenuPresentationComponent implements OnChanges {
 
   routeMetricsGroupType(metricsType: MetricsType, group: GroupType) {
     this.open = false;
-    this.navigate.emit({metricsType, group});
+    this.navigate.emit({ metricsType, group });
   }
 
   accordionMetricsType(metricsType: MetricsType) {

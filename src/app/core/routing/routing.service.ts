@@ -20,8 +20,11 @@ import {
   CHARTTYPE_GEOCHART,
   INTERVAL_DAILY,
   INTERVAL_HOURLY,
+  INTERVAL_LASTWEEK,
   METRICSTYPE_DEMOGRAPHICS,
   METRICSTYPE_DOWNLOADS,
+  METRICSTYPE_DROPDAY,
+  METRICSTYPE_LISTENERS,
   METRICSTYPE_TRAFFICSOURCES,
   GROUPTYPE_GEOCOUNTRY,
   GROUPTYPE_GEOMETRO,
@@ -31,8 +34,8 @@ import {
   GROUPTYPE_AGENTTYPE,
   EPISODE_PAGE_SIZE,
   EPISODE_SELECT_PAGE_SIZE,
-  METRICSTYPE_DROPDAY,
-  EpisodeDropday
+  EpisodeDropday,
+  INTERVAL_LAST28DAYS
 } from '@app/ngrx/';
 import * as localStorageUtil from '@app/shared/util/local-storage.util';
 import * as dateUtil from '@app/shared/util/date/';
@@ -49,7 +52,7 @@ export class RoutingService implements OnDestroy {
   constructor(public store: Store<any>, private router: Router) {
     // don't start watching anything until user is authorized
     let subscribed = false;
-    this.store.pipe(select(selectUserAuthorized), takeUntil(this.destroyed$)).subscribe((authorized) => {
+    this.store.pipe(select(selectUserAuthorized), takeUntil(this.destroyed$)).subscribe(authorized => {
       if (!subscribed && authorized) {
         this.dontAllowRoot();
         this.subRoutedPageEpisodes();
@@ -68,7 +71,7 @@ export class RoutingService implements OnDestroy {
     // for redirecting users routed to '/'
     this.router.events
       .pipe(
-        filter((event) => event instanceof RoutesRecognized),
+        filter(event => event instanceof RoutesRecognized),
         takeUntil(this.destroyed$)
       )
       .subscribe((event: RoutesRecognized) => {
@@ -94,7 +97,7 @@ export class RoutingService implements OnDestroy {
   }
 
   subRouterParams() {
-    this.store.pipe(select(selectRouter), takeUntil(this.destroyed$)).subscribe((routerParams) => {
+    this.store.pipe(select(selectRouter), takeUntil(this.destroyed$)).subscribe(routerParams => {
       // don't do anything with setting route or loading metrics until podcast is set
       if (routerParams.podcastId) {
         // if this.routerParams has not yet been set, go through routing which checks for and sets defaults
@@ -148,6 +151,17 @@ export class RoutingService implements OnDestroy {
         ) {
           // were already in dropdays w/ selected episodes but days or interval params changed
           this.loadSelectedEpisodeDropdays(newRouterParams);
+        }
+        break;
+      case METRICSTYPE_LISTENERS:
+        if (
+          this.isPodcastChanged(newRouterParams) ||
+          this.isMetricsTypeChanged(newRouterParams) ||
+          this.isBeginDateChanged(newRouterParams) ||
+          this.isEndDateChanged(newRouterParams) ||
+          this.isIntervalChanged(newRouterParams)
+        ) {
+          this.loadListeners(newRouterParams);
         }
         break;
       case METRICSTYPE_DEMOGRAPHICS:
@@ -303,8 +317,9 @@ export class RoutingService implements OnDestroy {
     localStorageUtil.setItem(localStorageUtil.KEY_ROUTER_PARAMS, routerParams);
 
     switch (routerParams.metricsType) {
-      case METRICSTYPE_DROPDAY:
       case METRICSTYPE_DOWNLOADS:
+      case METRICSTYPE_DROPDAY:
+      case METRICSTYPE_LISTENERS:
         this.router.navigate([routerParams.podcastId, routerParams.metricsType, routerParams.chartType, routerParams.interval.key, params]);
         break;
       case METRICSTYPE_DEMOGRAPHICS:
@@ -337,6 +352,10 @@ export class RoutingService implements OnDestroy {
       case METRICSTYPE_DROPDAY:
         // the only type
         routerParams.chartType = CHARTTYPE_EPISODES;
+        break;
+      case METRICSTYPE_LISTENERS:
+        // the only type
+        routerParams.chartType = CHARTTYPE_PODCAST;
         break;
       case METRICSTYPE_TRAFFICSOURCES:
         if (!routerParams.chartType || routerParams.chartType === CHARTTYPE_PODCAST || routerParams.chartType === CHARTTYPE_GEOCHART) {
@@ -372,7 +391,13 @@ export class RoutingService implements OnDestroy {
       routerParams.group = GROUPTYPE_GEOCOUNTRY;
     }
 
-    if (!routerParams.interval) {
+    if (routerParams.metricsType === METRICSTYPE_LISTENERS && (!routerParams.interval || routerParams.interval === INTERVAL_DAILY)) {
+      routerParams.interval = INTERVAL_LASTWEEK;
+    } else if (
+      (routerParams.metricsType !== METRICSTYPE_LISTENERS &&
+        (routerParams.interval === INTERVAL_LAST28DAYS || routerParams.interval === INTERVAL_LASTWEEK)) ||
+      !routerParams.interval
+    ) {
       routerParams.interval = INTERVAL_DAILY;
     }
     if (routerParams.metricsType === METRICSTYPE_DOWNLOADS && !routerParams.episodePage) {
@@ -537,6 +562,18 @@ export class RoutingService implements OnDestroy {
     });
   }
 
+  loadListeners(newRouterParams: RouterParams) {
+    const { podcastId: id, interval, beginDate, endDate } = newRouterParams;
+    this.store.dispatch(
+      new ACTIONS.CastlePodcastListenersLoadAction({
+        id,
+        interval,
+        beginDate,
+        endDate
+      })
+    );
+  }
+
   loadPodcastTotals(newRouterParams: RouterParams) {
     this.store.dispatch(
       new ACTIONS.CastlePodcastTotalsLoadAction({
@@ -563,7 +600,7 @@ export class RoutingService implements OnDestroy {
   }
 
   loadEpisodeTotals(newRouterParams: RouterParams) {
-    this.aggregateSelectedEpisodeGuids.forEach((guid) => {
+    this.aggregateSelectedEpisodeGuids.forEach(guid => {
       this.store.dispatch(
         new ACTIONS.CastleEpisodeTotalsLoadAction({
           guid,
@@ -577,7 +614,7 @@ export class RoutingService implements OnDestroy {
   }
 
   loadEpisodeRanks(newRouterParams: RouterParams) {
-    this.aggregateSelectedEpisodeGuids.forEach((guid) => {
+    this.aggregateSelectedEpisodeGuids.forEach(guid => {
       this.store.dispatch(
         new ACTIONS.CastleEpisodeRanksLoadAction({
           guid,

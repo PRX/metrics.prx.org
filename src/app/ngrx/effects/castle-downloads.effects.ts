@@ -9,6 +9,7 @@ import { selectRouter } from '../reducers/selectors';
 import { CastleService } from '@app/core';
 import { Episode, RouterParams, METRICSTYPE_DOWNLOADS, METRICSTYPE_DROPDAY, INTERVAL_MONTHLY, INTERVAL_WEEKLY } from '../';
 import * as dateUtil from '@app/shared/util/date';
+import { INTERVAL_DAILY } from '../reducers/models';
 
 @Injectable()
 export class CastleDownloadsEffects implements OnDestroy {

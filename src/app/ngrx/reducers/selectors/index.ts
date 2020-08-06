@@ -1,6 +1,7 @@
 export * from './router.selectors';
 export * from './podcast.selectors';
 export * from './podcast-downloads.selectors';
+export * from './podcast-listeners.selectors';
 export * from './podcast-alltime-downloads.selectors';
 export * from './podcast-ranks.selectors';
 export * from './podcast-totals.selectors';

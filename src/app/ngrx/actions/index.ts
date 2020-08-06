@@ -25,7 +25,10 @@ import {
   CastleEpisodeDownloadsFailureAction,
   CastleEpisodeDropdayLoadAction,
   CastleEpisodeDropdaySuccessAction,
-  CastleEpisodeDropdayFailureAction
+  CastleEpisodeDropdayFailureAction,
+  CastlePodcastListenersLoadAction,
+  CastlePodcastListenersFailureAction,
+  CastlePodcastListenersSuccessAction
 } from './castle-downloads.action.creator';
 import {
   CastlePodcastRanksLoadAction,
@@ -42,11 +45,18 @@ import {
   CastleEpisodeTotalsFailureAction
 } from './castle-ranks-totals.action.creator';
 import { GoogleAnalyticsEventAction } from './google-analytics.action.creator';
-import { CustomRouterNavigationAction,
-  RoutePodcastAction, RouteEpisodePageAction,
-  RouteChartTypeAction, RouteIntervalAction,
-  RouteStandardRangeAction, RouteAdvancedRangeAction,
-  RouteMetricsGroupTypeAction, RouteGroupFilterAction, RouteDaysAction } from './router.action.creator';
+import {
+  CustomRouterNavigationAction,
+  RoutePodcastAction,
+  RouteEpisodePageAction,
+  RouteChartTypeAction,
+  RouteIntervalAction,
+  RouteStandardRangeAction,
+  RouteAdvancedRangeAction,
+  RouteMetricsGroupTypeAction,
+  RouteGroupFilterAction,
+  RouteDaysAction
+} from './router.action.creator';
 import {
   ChartSingleEpisodeAction,
   ChartToggleEpisodeAction,
@@ -56,8 +66,8 @@ import {
 import { EpisodeSelectEpisodesAction } from './episode-select.action.creator';
 import { IdUserinfoLoadAction, IdUserinfoSuccessAction, IdUserinfoFailureAction } from './id.action.creator';
 
-export type AllActions
-  = CastlePodcastPageLoadAction
+export type AllActions =
+  | CastlePodcastPageLoadAction
   | CastlePodcastPageSuccessAction
   | CastlePodcastPageFailureAction
   | CastleEpisodePageLoadAction
@@ -81,6 +91,9 @@ export type AllActions
   | CastleEpisodeDropdayLoadAction
   | CastleEpisodeDropdaySuccessAction
   | CastleEpisodeDropdayFailureAction
+  | CastlePodcastListenersLoadAction
+  | CastlePodcastListenersFailureAction
+  | CastlePodcastListenersSuccessAction
   | CastlePodcastRanksLoadAction
   | CastlePodcastRanksSuccessAction
   | CastlePodcastRanksFailureAction
@@ -116,57 +129,116 @@ export type AllActions
 
 export { ActionTypes } from './action.types';
 export {
-  CastlePodcastPageLoadPayload, CastlePodcastPageLoadAction,
-  CastlePodcastPageSuccessPayload, CastlePodcastPageSuccessAction, CastlePodcastPageFailureAction,
-  CastleEpisodePageLoadPayload, CastleEpisodePageLoadAction,
-  CastleEpisodePageSuccessPayload, CastleEpisodePageSuccessAction, CastleEpisodePageFailureAction,
-  CastleEpisodeSelectPageLoadAction, CastleEpisodeSelectPageSuccessAction, CastleEpisodeSelectPageFailureAction
+  CastlePodcastPageLoadPayload,
+  CastlePodcastPageLoadAction,
+  CastlePodcastPageSuccessPayload,
+  CastlePodcastPageSuccessAction,
+  CastlePodcastPageFailureAction,
+  CastleEpisodePageLoadPayload,
+  CastleEpisodePageLoadAction,
+  CastleEpisodePageSuccessPayload,
+  CastleEpisodePageSuccessAction,
+  CastleEpisodePageFailureAction,
+  CastleEpisodeSelectPageLoadAction,
+  CastleEpisodeSelectPageSuccessAction,
+  CastleEpisodeSelectPageFailureAction
 } from './castle-catalog.action.creator';
 export {
-  CastlePodcastDownloadsLoadPayload, CastlePodcastDownloadsLoadAction,
-  CastlePodcastDownloadsSuccessPayload, CastlePodcastDownloadsSuccessAction,
-  CastlePodcastDownloadsFailurePayload, CastlePodcastDownloadsFailureAction,
-  CastlePodcastAllTimeDownloadsLoadPayload, CastlePodcastAllTimeDownloadsLoadAction,
-  CastlePodcastAllTimeDownloadsSuccessPayload, CastlePodcastAllTimeDownloadsSuccessAction,
-  CastlePodcastAllTimeDownloadsFailurePayload, CastlePodcastAllTimeDownloadsFailureAction,
-  CastleEpisodeAllTimeDownloadsLoadPayload, CastleEpisodeAllTimeDownloadsLoadAction,
-  CastleEpisodeAllTimeDownloadsSuccessPayload, CastleEpisodeAllTimeDownloadsSuccessAction,
-  CastleEpisodeAllTimeDownloadsFailurePayload, CastleEpisodeAllTimeDownloadsFailureAction,
-  CastleEpisodeDownloadsLoadPayload, CastleEpisodeDownloadsLoadAction,
-  CastleEpisodeDownloadsSuccessPayload, CastleEpisodeDownloadsSuccessAction,
-  CastleEpisodeDownloadsFailurePayload, CastleEpisodeDownloadsFailureAction,
-  CastleEpisodeDropdayLoadPayload, CastleEpisodeDropdayLoadAction,
-  CastleEpisodeDropdaySuccessPayload, CastleEpisodeDropdaySuccessAction,
-  CastleEpisodeDropdayFailurePayload, CastleEpisodeDropdayFailureAction
+  CastlePodcastDownloadsLoadPayload,
+  CastlePodcastDownloadsLoadAction,
+  CastlePodcastDownloadsSuccessPayload,
+  CastlePodcastDownloadsSuccessAction,
+  CastlePodcastDownloadsFailurePayload,
+  CastlePodcastDownloadsFailureAction,
+  CastlePodcastAllTimeDownloadsLoadPayload,
+  CastlePodcastAllTimeDownloadsLoadAction,
+  CastlePodcastAllTimeDownloadsSuccessPayload,
+  CastlePodcastAllTimeDownloadsSuccessAction,
+  CastlePodcastAllTimeDownloadsFailurePayload,
+  CastlePodcastAllTimeDownloadsFailureAction,
+  CastleEpisodeAllTimeDownloadsLoadPayload,
+  CastleEpisodeAllTimeDownloadsLoadAction,
+  CastleEpisodeAllTimeDownloadsSuccessPayload,
+  CastleEpisodeAllTimeDownloadsSuccessAction,
+  CastleEpisodeAllTimeDownloadsFailurePayload,
+  CastleEpisodeAllTimeDownloadsFailureAction,
+  CastleEpisodeDownloadsLoadPayload,
+  CastleEpisodeDownloadsLoadAction,
+  CastleEpisodeDownloadsSuccessPayload,
+  CastleEpisodeDownloadsSuccessAction,
+  CastleEpisodeDownloadsFailurePayload,
+  CastleEpisodeDownloadsFailureAction,
+  CastleEpisodeDropdayLoadPayload,
+  CastleEpisodeDropdayLoadAction,
+  CastleEpisodeDropdaySuccessPayload,
+  CastleEpisodeDropdaySuccessAction,
+  CastleEpisodeDropdayFailurePayload,
+  CastleEpisodeDropdayFailureAction,
+  CastlePodcastListenersLoadPayload,
+  CastlePodcastListenersLoadAction,
+  CastlePodcastListenersSuccessPayload,
+  CastlePodcastListenersSuccessAction,
+  CastlePodcastListenersFailurePayload,
+  CastlePodcastListenersFailureAction
 } from './castle-downloads.action.creator';
 export {
-  CastlePodcastRanksLoadPayload, CastlePodcastRanksLoadAction,
-  CastlePodcastRanksSuccessPayload, CastlePodcastRanksSuccessAction,
-  CastlePodcastRanksFailurePayload, CastlePodcastRanksFailureAction,
-  CastlePodcastTotalsLoadPayload, CastlePodcastTotalsLoadAction,
-  CastlePodcastTotalsSuccessPayload, CastlePodcastTotalsSuccessAction,
-  CastlePodcastTotalsFailurePayload, CastlePodcastTotalsFailureAction,
-  CastleEpisodeRanksLoadPayload, CastleEpisodeRanksLoadAction,
-  CastleEpisodeRanksSuccessPayload, CastleEpisodeRanksSuccessAction,
-  CastleEpisodeRanksFailurePayload, CastleEpisodeRanksFailureAction,
-  CastleEpisodeTotalsLoadPayload, CastleEpisodeTotalsLoadAction,
-  CastleEpisodeTotalsSuccessPayload, CastleEpisodeTotalsSuccessAction,
-  CastleEpisodeTotalsFailurePayload, CastleEpisodeTotalsFailureAction
+  CastlePodcastRanksLoadPayload,
+  CastlePodcastRanksLoadAction,
+  CastlePodcastRanksSuccessPayload,
+  CastlePodcastRanksSuccessAction,
+  CastlePodcastRanksFailurePayload,
+  CastlePodcastRanksFailureAction,
+  CastlePodcastTotalsLoadPayload,
+  CastlePodcastTotalsLoadAction,
+  CastlePodcastTotalsSuccessPayload,
+  CastlePodcastTotalsSuccessAction,
+  CastlePodcastTotalsFailurePayload,
+  CastlePodcastTotalsFailureAction,
+  CastleEpisodeRanksLoadPayload,
+  CastleEpisodeRanksLoadAction,
+  CastleEpisodeRanksSuccessPayload,
+  CastleEpisodeRanksSuccessAction,
+  CastleEpisodeRanksFailurePayload,
+  CastleEpisodeRanksFailureAction,
+  CastleEpisodeTotalsLoadPayload,
+  CastleEpisodeTotalsLoadAction,
+  CastleEpisodeTotalsSuccessPayload,
+  CastleEpisodeTotalsSuccessAction,
+  CastleEpisodeTotalsFailurePayload,
+  CastleEpisodeTotalsFailureAction
 } from './castle-ranks-totals.action.creator';
 export { GoogleAnalyticsEventPayload, GoogleAnalyticsEventAction } from './google-analytics.action.creator';
-export { CustomRouterNavigationPayload, CustomRouterNavigationAction,
-  RoutePodcastPayload, RoutePodcastAction,
-  RouteEpisodePagePayload, RouteEpisodePageAction,
-  RouteChartTypePayload, RouteChartTypeAction,
-  RouteIntervalPayload, RouteIntervalAction,
-  RouteAdvancedRangePayload, RouteAdvancedRangeAction,
-  RouteStandardRangePayload, RouteStandardRangeAction,
-  RouteMetricsGroupTypePayload, RouteMetricsGroupTypeAction,
-  RouteGroupFilterPayload, RouteGroupFilterAction,
-  RouteDaysPayload, RouteDaysAction } from './router.action.creator';
-export { ChartSingleEpisodePayload, ChartSingleEpisodeAction,
-  ChartToggleEpisodePayload, ChartToggleEpisodeAction,
-  ChartTogglePodcastPayload, ChartTogglePodcastAction,
-  ChartToggleGroupPayload, ChartToggleGroupAction } from './chart-toggle.action.creator';
+export {
+  CustomRouterNavigationPayload,
+  CustomRouterNavigationAction,
+  RoutePodcastPayload,
+  RoutePodcastAction,
+  RouteEpisodePagePayload,
+  RouteEpisodePageAction,
+  RouteChartTypePayload,
+  RouteChartTypeAction,
+  RouteIntervalPayload,
+  RouteIntervalAction,
+  RouteAdvancedRangePayload,
+  RouteAdvancedRangeAction,
+  RouteStandardRangePayload,
+  RouteStandardRangeAction,
+  RouteMetricsGroupTypePayload,
+  RouteMetricsGroupTypeAction,
+  RouteGroupFilterPayload,
+  RouteGroupFilterAction,
+  RouteDaysPayload,
+  RouteDaysAction
+} from './router.action.creator';
+export {
+  ChartSingleEpisodePayload,
+  ChartSingleEpisodeAction,
+  ChartToggleEpisodePayload,
+  ChartToggleEpisodeAction,
+  ChartTogglePodcastPayload,
+  ChartTogglePodcastAction,
+  ChartToggleGroupPayload,
+  ChartToggleGroupAction
+} from './chart-toggle.action.creator';
 export { EpisodeSelectEpisodesPayload, EpisodeSelectEpisodesAction } from './episode-select.action.creator';
 export { IdUserinfoLoadAction, IdUserinfoSuccessPayload, IdUserinfoSuccessAction, IdUserinfoFailureAction } from './id.action.creator';

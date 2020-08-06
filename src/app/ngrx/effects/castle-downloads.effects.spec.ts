@@ -13,13 +13,7 @@ import { reducers } from '../reducers';
 import * as ACTIONS from '../actions';
 import { CastleDownloadsEffects } from './castle-downloads.effects';
 
-import {
-  routerParams,
-  podcast,
-  episodes,
-  podDownloads,
-  ep0Downloads
-} from '../../../testing/downloads.fixtures';
+import { routerParams, podcast, episodes, podDownloads, ep0Downloads } from '../../../testing/downloads.fixtures';
 
 describe('CastleDownloadsEffects', () => {
   let effects: CastleDownloadsEffects;
@@ -38,31 +32,38 @@ describe('CastleDownloadsEffects', () => {
         today: 1,
         yesterday: 1
       }
-    }]);
-    castle.root.mockList('prx:episode', [{
-      guid: episodes[0].guid,
-      downloads: {
-        total: 11,
-        this7days: 5,
-        previous7days: 6,
-        today: 1,
-        yesterday: 1
+    });
+    castle.root.mockList('prx:episode', [
+      {
+        guid: episodes[0].guid,
+        downloads: {
+          total: 11,
+          this7days: 5,
+          previous7days: 6,
+          today: 1,
+          yesterday: 1
+        }
       }
-    }]);
-    castle.root.mockList('prx:podcast-downloads', [{
+    ]);
+    castle.root.mockList('prx:podcast-downloads', [
+      {
+        id: podcast.id,
+        downloads: podDownloads
+      }
+    ]);
+    castle.root.mockList('prx:episode-downloads', [
+      {
+        guid: episodes[0].guid,
+        downloads: ep0Downloads
+      }
+    ]);
+    podcastDoc.mock('prx:listeners', {
       id: podcast.id,
-      downloads: podDownloads
-    }]);
-    castle.root.mockList('prx:episode-downloads', [{
-      guid: episodes[0].guid,
-      downloads: ep0Downloads
-    }]);
+      listeners: podDownloads
+    });
 
     TestBed.configureTestingModule({
-      imports: [
-        StoreModule.forRoot({ ...reducers }),
-        EffectsModule.forRoot([CastleDownloadsEffects])
-      ],
+      imports: [StoreModule.forRoot({ ...reducers }), EffectsModule.forRoot([CastleDownloadsEffects])],
       providers: [
         CastleDownloadsEffects,
         { provide: HalService, useValue: castle },
@@ -135,7 +136,7 @@ describe('CastleDownloadsEffects', () => {
       type: ACTIONS.ActionTypes.CASTLE_EPISODE_ALLTIME_DOWNLOADS_LOAD,
       payload: {
         podcastId: episodes[0].podcastId,
-        guid: episodes[0].guid,
+        guid: episodes[0].guid
       }
     };
     const success = new ACTIONS.CastleEpisodeAllTimeDownloadsSuccessAction({
@@ -156,7 +157,7 @@ describe('CastleDownloadsEffects', () => {
       type: ACTIONS.ActionTypes.CASTLE_EPISODE_ALLTIME_DOWNLOADS_LOAD,
       payload: {
         podcastId: episodes[0].podcastId,
-        guid: episodes[0].guid,
+        guid: episodes[0].guid
       }
     };
     const failure = new ACTIONS.CastleEpisodeAllTimeDownloadsFailureAction({
@@ -241,15 +242,37 @@ describe('CastleDownloadsEffects', () => {
     expect(effects.loadEpisodeDropday$).toBeObservable(expected);
   });
 
+  it('should load podcast listeners', () => {
+    const action: ACTIONS.CastlePodcastListenersLoadAction = {
+      type: ACTIONS.ActionTypes.CASTLE_PODCAST_LISTENERS_LOAD,
+      payload: {
+        id: podcast.id,
+        interval: INTERVAL_DAILY,
+        beginDate: new Date(),
+        endDate: new Date()
+      }
+    };
+    const success = new ACTIONS.CastlePodcastListenersSuccessAction({
+      id: podcast.id,
+      listeners: podDownloads
+    });
+
+    actions$.stream = hot('-a', { a: action });
+    const expected = cold('-r', { r: success });
+    expect(effects.loadPodcastListeners$).toBeObservable(expected);
+  });
+
   describe('load routed metrics', () => {
     beforeEach(() => {
-      castle.root.mock('prx:podcast', { id: podcast.id }).mockItems('prx:episodes',
+      castle.root.mock('prx:podcast', { id: podcast.id }).mockItems(
+        'prx:episodes',
         episodes.map(e => {
           return {
             ...e,
             id: e.guid
           };
-        }));
+        })
+      );
     });
 
     it('should load downloads on episode page success', () => {
@@ -290,7 +313,8 @@ describe('CastleDownloadsEffects', () => {
           interval: routerParams.interval,
           beginDate: routerParams.beginDate,
           endDate: routerParams.endDate
-        }));
+        })
+      );
       expect(store.dispatch).toHaveBeenCalledWith(new ACTIONS.CastlePodcastAllTimeDownloadsLoadAction({ id: episodes[0].podcastId }));
       episodes.forEach(e => {
         expect(store.dispatch).toHaveBeenCalledWith(
@@ -300,9 +324,11 @@ describe('CastleDownloadsEffects', () => {
     });
 
     it('should load dropday downloads on episode page success', () => {
-      store.dispatch(new ACTIONS.CustomRouterNavigationAction({
-        routerParams: {...routerParams, metricsType: METRICSTYPE_DROPDAY, days: 28}
-      }));
+      store.dispatch(
+        new ACTIONS.CustomRouterNavigationAction({
+          routerParams: { ...routerParams, metricsType: METRICSTYPE_DROPDAY, days: 28 }
+        })
+      );
       jest.spyOn(store, 'dispatch');
       const action = new ACTIONS.CastleEpisodePageSuccessAction({
         episodes,
@@ -310,7 +336,10 @@ describe('CastleDownloadsEffects', () => {
         per: EPISODE_PAGE_SIZE,
         total: episodes.length
       });
-      const completionString = new Array(1 + (episodes.length * 2)).fill('').map((e, i) => `-${i}`).join('');
+      const completionString = new Array(1 + episodes.length * 2)
+        .fill('')
+        .map((e, i) => `-${i}`)
+        .join('');
       const completion = {};
       // create an object with indices (toString) as keys to each action for marble mapping
       [
@@ -346,6 +375,5 @@ describe('CastleDownloadsEffects', () => {
       const expected = cold(`-(${completionString})`, completion);
       expect(effects.loadRoutedDropday$).toBeObservable(expected);
     });
-
   });
 });

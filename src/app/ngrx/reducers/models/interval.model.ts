@@ -4,6 +4,8 @@ export interface IntervalModel {
   key: string;
 }
 
+export const LAST_WEEK: IntervalModel = { value: 'LAST_WEEK', name: 'Last Week', key: 'last_week' };
+export const LAST_28_DAYS: IntervalModel = { value: 'LAST_28', name: 'Last 28 Days', key: 'last_28' };
 export const INTERVAL_MONTHLY: IntervalModel = { value: '1M', name: 'Monthly', key: 'monthly' };
 export const INTERVAL_WEEKLY: IntervalModel = { value: '1w', name: 'Weekly', key: 'weekly' };
 export const INTERVAL_DAILY: IntervalModel = { value: '1d', name: 'Daily', key: 'daily' };

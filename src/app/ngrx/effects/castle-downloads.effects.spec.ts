@@ -29,7 +29,7 @@ describe('CastleDownloadsEffects', () => {
 
   beforeEach(async(() => {
     castle = new MockHalService();
-    castle.root.mockList('prx:podcast', [{
+    const podcastDoc = castle.root.mock('prx:podcast', {
       id: podcast.id,
       downloads: {
         total: 10,

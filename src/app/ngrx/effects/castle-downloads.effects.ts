@@ -159,21 +159,21 @@ export class CastleDownloadsEffects implements OnDestroy {
     map((action: ACTIONS.CastlePodcastAllTimeDownloadsLoadAction) => action.payload),
     switchMap((payload: ACTIONS.CastlePodcastAllTimeDownloadsLoadPayload) => {
       const { id } = payload;
-      return this.castle
-        .followList('prx:podcast', {id})
-        .pipe(
-            map(metrics => {
-            const { total } = metrics[0]['downloads'];
-            return new ACTIONS.CastlePodcastAllTimeDownloadsSuccessAction({id, total});
-          }),
-          catchError((error): Observable<Action> => {
+      return this.castle.follow('prx:podcast', { id }).pipe(
+        map(metrics => {
+          const { total } = metrics['downloads'];
+          return new ACTIONS.CastlePodcastAllTimeDownloadsSuccessAction({ id, total });
+        }),
+        catchError(
+          (error): Observable<Action> => {
             if (error.status === 404) {
-              return of(new ACTIONS.CastlePodcastAllTimeDownloadsSuccessAction({id, total: 0}));
+              return of(new ACTIONS.CastlePodcastAllTimeDownloadsSuccessAction({ id, total: 0 }));
             } else {
-              return of(new ACTIONS.CastlePodcastAllTimeDownloadsFailureAction({id, error}));
+              return of(new ACTIONS.CastlePodcastAllTimeDownloadsFailureAction({ id, error }));
             }
-          })
-        );
+          }
+        )
+      );
     })
   );
 

@@ -1,9 +1,19 @@
 import { Component, Input, OnChanges, HostListener } from '@angular/core';
 import { Store } from '@ngrx/store';
 import {
-  RouterParams, IntervalModel,
-  INTERVAL_MONTHLY, INTERVAL_WEEKLY, INTERVAL_DAILY, INTERVAL_HOURLY,
-  METRICSTYPE_DOWNLOADS, METRICSTYPE_DROPDAY, METRICSTYPE_DEMOGRAPHICS, METRICSTYPE_TRAFFICSOURCES
+  RouterParams,
+  IntervalModel,
+  INTERVAL_MONTHLY,
+  INTERVAL_WEEKLY,
+  INTERVAL_DAILY,
+  INTERVAL_HOURLY,
+  INTERVAL_LASTWEEK,
+  INTERVAL_LAST28DAYS,
+  METRICSTYPE_DOWNLOADS,
+  METRICSTYPE_DROPDAY,
+  METRICSTYPE_DEMOGRAPHICS,
+  METRICSTYPE_TRAFFICSOURCES,
+  METRICSTYPE_LISTENERS
 } from '@app/ngrx';
 import { RouteIntervalAction } from '@app/ngrx/actions';
 import * as dateUtil from '../util/date';
@@ -14,7 +24,7 @@ import * as dateUtil from '../util/date';
     <div class="dropdown" [class.open]="open">
       <div class="overlay" (click)="toggleOpen()"></div>
       <div class="dropdown-button">
-        <button (click)="toggleOpen()" >{{ selectedInterval?.name }}<span class="down-arrow"></span></button>
+        <button (click)="toggleOpen()">{{ selectedInterval?.name }}<span class="down-arrow"></span></button>
       </div>
       <div class="dropdown-content rollout left short">
         <ul>
@@ -56,14 +66,17 @@ export class IntervalDropdownComponent implements OnChanges {
      */
     switch (this.routerParams.metricsType) {
       case METRICSTYPE_DOWNLOADS:
-        return this.routerParams.beginDate && this.routerParams.endDate &&
-          dateUtil.isMoreThanXDays(40, this.routerParams.beginDate, this.routerParams.endDate) ?
-          [INTERVAL_DAILY, INTERVAL_WEEKLY, INTERVAL_MONTHLY] :
-          [INTERVAL_HOURLY, INTERVAL_DAILY, INTERVAL_WEEKLY, INTERVAL_MONTHLY];
+        return this.routerParams.beginDate &&
+          this.routerParams.endDate &&
+          dateUtil.isMoreThanXDays(40, this.routerParams.beginDate, this.routerParams.endDate)
+          ? [INTERVAL_DAILY, INTERVAL_WEEKLY, INTERVAL_MONTHLY]
+          : [INTERVAL_HOURLY, INTERVAL_DAILY, INTERVAL_WEEKLY, INTERVAL_MONTHLY];
       case METRICSTYPE_DROPDAY:
-        return this.routerParams.days > 40 ?
-          [INTERVAL_DAILY, INTERVAL_WEEKLY, INTERVAL_MONTHLY] :
-          [INTERVAL_HOURLY, INTERVAL_DAILY, INTERVAL_WEEKLY, INTERVAL_MONTHLY];
+        return this.routerParams.days > 40
+          ? [INTERVAL_DAILY, INTERVAL_WEEKLY, INTERVAL_MONTHLY]
+          : [INTERVAL_HOURLY, INTERVAL_DAILY, INTERVAL_WEEKLY, INTERVAL_MONTHLY];
+      case METRICSTYPE_LISTENERS:
+        return [INTERVAL_LASTWEEK, INTERVAL_LAST28DAYS, INTERVAL_WEEKLY, INTERVAL_MONTHLY];
       case METRICSTYPE_DEMOGRAPHICS:
       case METRICSTYPE_TRAFFICSOURCES:
         return [INTERVAL_DAILY, INTERVAL_WEEKLY, INTERVAL_MONTHLY];
@@ -76,7 +89,7 @@ export class IntervalDropdownComponent implements OnChanges {
 
   onIntervalChange(interval: IntervalModel) {
     if (interval && interval !== this.routerParams.interval) {
-      this.store.dispatch(new RouteIntervalAction({interval}));
+      this.store.dispatch(new RouteIntervalAction({ interval }));
     }
     this.toggleOpen();
   }

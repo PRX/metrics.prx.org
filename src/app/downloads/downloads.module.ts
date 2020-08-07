@@ -13,6 +13,8 @@ import { DropdayChartContainerComponent } from './chart/dropday-chart-container.
 import { DropdayChartPresentationComponent } from './chart/dropday-chart-presentation.component';
 import { DropdayTableComponent } from './table/dropday-table.component';
 import { ListenersComponent } from './listeners.component';
+import { ListenersChartContainerComponent } from './chart/listeners-chart-container.component';
+import { ListenersChartPresentationComponent } from './chart/listeners-chart-presentation.component';
 import { SummaryTableComponent } from './table/summary-table.component';
 import { PlaceholderComponent } from './placeholder.component';
 
@@ -30,6 +32,8 @@ import { downloadsRouting } from './downloads.routing';
     DropdayChartPresentationComponent,
     DropdayTableComponent,
     ListenersComponent,
+    ListenersChartContainerComponent,
+    ListenersChartPresentationComponent,
     SummaryTableComponent,
     PlaceholderComponent
   ],

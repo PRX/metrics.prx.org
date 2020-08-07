@@ -355,7 +355,7 @@ export class RoutingService implements OnDestroy {
         break;
       case METRICSTYPE_LISTENERS:
         // the only type
-        routerParams.chartType = CHARTTYPE_PODCAST;
+        routerParams.chartType = CHARTTYPE_LINE;
         break;
       case METRICSTYPE_TRAFFICSOURCES:
         if (!routerParams.chartType || routerParams.chartType === CHARTTYPE_PODCAST || routerParams.chartType === CHARTTYPE_GEOCHART) {

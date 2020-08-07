@@ -9,6 +9,7 @@ import { AllActions } from '@app/ngrx/actions';
     <prx-spinner *ngIf="loading$ | async" overlay="true" loadingMessage="Please wait..."></prx-spinner>
     <section *ngIf="loaded$ | async">
       <metrics-menu-bar></metrics-menu-bar>
+      <metrics-listeners-chart></metrics-listeners-chart>
     </section>
     <metrics-error-retry [retryActions]="errors$ | async"></metrics-error-retry>
   `

@@ -25,7 +25,9 @@ import {
   METRICSTYPE_TRAFFICSOURCES,
   INTERVAL_HOURLY,
   IntervalModel,
-  EpisodeDropday
+  EpisodeDropday,
+  PodcastListeners,
+  METRICSTYPE_LISTENERS
 } from '../models';
 import { selectRouter, selectIntervalRoute, selectMetricsTypeRoute } from './router.selectors';
 import { selectRoutedPageEpisodes } from './episode.selectors';
@@ -44,6 +46,7 @@ import { selectRoutedGroupCharted } from './group-charted.selectors';
 import { selectSelectedEpisodesTotals, selectNestedEpisodesTotals } from './episode-totals.selectors';
 import { selectRoutedPodcast } from './podcast.selectors';
 import { cumDownloads } from './dropday-chart.selectors';
+import { selectRoutedPodcastListeners } from './podcast-listeners.selectors';
 
 export const selectExportDownloads = createSelector(
   selectRouter,
@@ -134,6 +137,17 @@ export const selectExportDropday = createSelector(
     );
   }
 );
+
+export const selectExportListeners = createSelector(selectRoutedPodcastListeners, (routedPodcastData: PodcastListeners) => {
+  if (routedPodcastData && routedPodcastData.listeners) {
+    return [
+      {
+        label: 'Unique Listeners',
+        data: routedPodcastData.listeners
+      }
+    ];
+  }
+});
 
 export const toCsvArray = (downloads: ExportData[], dateFormat?: Function): (string | number)[][] => {
   if (downloads && downloads.length) {
@@ -289,13 +303,16 @@ export const selectExportData = createSelector(
   selectRouter,
   selectExportDownloads,
   selectExportDropday,
+  selectExportListeners,
   selectExportRanks,
-  (routerParams: RouterParams, exportDownloads, exportDropday, exportRanks): ExportData[] => {
+  (routerParams: RouterParams, exportDownloads, exportDropday, exportListeners, exportRanks): ExportData[] => {
     switch (routerParams.metricsType) {
       case METRICSTYPE_DOWNLOADS:
         return exportDownloads;
       case METRICSTYPE_DROPDAY:
         return exportDropday;
+      case METRICSTYPE_LISTENERS:
+        return exportListeners;
       case METRICSTYPE_DEMOGRAPHICS:
       case METRICSTYPE_TRAFFICSOURCES:
         return exportRanks;
@@ -330,6 +347,8 @@ export const selectExportFilename = createSelector(
     let dataDesc: string;
     if (routerParams.metricsType === METRICSTYPE_DOWNLOADS || routerParams.metricsType === METRICSTYPE_DROPDAY) {
       dataDesc = 'downloads';
+    } else if (routerParams.metricsType === METRICSTYPE_LISTENERS) {
+      dataDesc = 'uniquelisteners';
     } else {
       if (routerParams.group === GROUPTYPE_GEOCOUNTRY) {
         if (routerParams.filter) {

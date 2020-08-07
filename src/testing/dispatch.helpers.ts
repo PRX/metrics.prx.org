@@ -162,6 +162,26 @@ export const dispatchEpisodeDropday = (store: Store<any>, podcastId?: string, in
   );
 };
 
+export const dispatchLoadPodcastListeners = (store: Store<any>) => {
+  store.dispatch(
+    new ACTIONS.CastlePodcastListenersLoadAction({
+      id: fixtures.routerParams.podcastId,
+      interval: fixtures.routerParams.interval,
+      beginDate: fixtures.routerParams.beginDate,
+      endDate: fixtures.routerParams.endDate
+    })
+  );
+};
+
+export const dispatchPodcastListeners = (store: Store<any>, podcastId?: string, listeners?: any[][]) => {
+  store.dispatch(
+    new ACTIONS.CastlePodcastListenersSuccessAction({
+      id: podcastId || fixtures.podcast.id,
+      listeners: listeners || fixtures.podDownloads
+    })
+  );
+};
+
 export const dispatchPodcastRanks = (store: Store<any>, routerParams?: RouterParams, ranks?: any[], downloads?: any[][]) => {
   const { podcastId, group, filter, interval, beginDate, endDate } = routerParams || fixtures.routerParams;
   store.dispatch(

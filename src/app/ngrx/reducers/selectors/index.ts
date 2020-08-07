@@ -18,6 +18,7 @@ export * from './downloads-summary.selectors';
 export * from './dropday-chart.selectors';
 export * from './dropday-table.selectors';
 export * from './export.selectors';
+export * from './listeners-chart.selectors';
 export * from './loading.selectors';
 export * from './loaded.selectors';
 export * from './error.selectors';

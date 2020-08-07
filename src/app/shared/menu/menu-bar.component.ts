@@ -1,58 +1,57 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Store, select } from '@ngrx/store';
 import { Observable } from 'rxjs';
-import {
-  selectRouter,
-  selectMetricsTypeRoute,
-  selectChartTypeRoute,
-  selectIntervalRoute,
-  selectStandardRangeRoute
-} from '../../ngrx/reducers/selectors';
-import { RouterParams, IntervalModel, MetricsType, ChartType, METRICSTYPE_DOWNLOADS, METRICSTYPE_DROPDAY } from '../../ngrx';
+import { map } from 'rxjs/operators';
+import { selectRouter } from '../../ngrx/reducers/selectors';
+import { RouterParams, METRICSTYPE_DOWNLOADS, METRICSTYPE_DROPDAY, METRICSTYPE_LISTENERS } from '../../ngrx';
 
 @Component({
   selector: 'metrics-menu-bar',
   template: `
-    <div class="menu-bar">
-      <metrics-type-heading [routerParams]="routerParams$ | async"></metrics-type-heading>
-      <div class="menu-dropdowns">
-        <metrics-export-dropdown></metrics-export-dropdown>
-        <div class="separator"></div>
-        <metrics-episode-select *ngIf="(metricsType$ | async) !== downloads"></metrics-episode-select>
-        <div class="separator" *ngIf="(metricsType$ | async) !== downloads"></div>
-        <metrics-interval-dropdown [routerParams]="routerParams$ | async"></metrics-interval-dropdown>
-        <div class="separator"></div>
-        <ng-container *ngIf="(metricsType$ | async) !== dropday; else dropdayMenu">
-          <metrics-standard-date-range-dropdown [interval]="interval$ | async" [standardRange]="standardRange$ | async">
-          </metrics-standard-date-range-dropdown>
-          <metrics-custom-date-range-dropdown [routerParams]="routerParams$ | async"></metrics-custom-date-range-dropdown>
-        </ng-container>
-        <ng-template #dropdayMenu>
-          <metrics-days-dropdown [routerParams]="routerParams$ | async"></metrics-days-dropdown>
-        </ng-template>
+    <ng-container *ngIf="routerParams$ | async as routerParams">
+      <div class="menu-bar">
+        <metrics-type-heading [routerParams]="routerParams"></metrics-type-heading>
+        <div class="menu-dropdowns">
+          <metrics-export-dropdown></metrics-export-dropdown>
+          <div class="separator"></div>
+          <metrics-episode-select *ngIf="showEpisodeSelect$ | async"></metrics-episode-select>
+          <div class="separator" *ngIf="showEpisodeSelect$ | async"></div>
+          <metrics-interval-dropdown [routerParams]="routerParams"></metrics-interval-dropdown>
+          <div class="separator"></div>
+          <ng-container *ngIf="showDaterangeDropdown$ | async; else dropdayMenu">
+            <metrics-standard-date-range-dropdown [interval]="routerParams.interval" [standardRange]="routerParams.standardRange">
+            </metrics-standard-date-range-dropdown>
+            <metrics-custom-date-range-dropdown [routerParams]="routerParams"></metrics-custom-date-range-dropdown>
+          </ng-container>
+          <ng-template #dropdayMenu>
+            <metrics-days-dropdown [routerParams]="routerParams"></metrics-days-dropdown>
+          </ng-template>
+        </div>
       </div>
-    </div>
-    <div class="summary">
-      <metrics-downloads-summary *ngIf="(metricsType$ | async) !== dropday"></metrics-downloads-summary>
-      <metrics-chart-type [selectedChartType]="chartType$ | async" [metricsType]="metricsType$ | async"></metrics-chart-type>
-    </div>
+      <div class="summary">
+        <metrics-downloads-summary *ngIf="showDownloadsSummary$ | async"></metrics-downloads-summary>
+        <metrics-chart-type [selectedChartType]="routerParams.chartType" [metricsType]="routerParams.metricsType"></metrics-chart-type>
+      </div>
+    </ng-container>
   `,
   styleUrls: ['./menu-bar.component.css']
 })
-export class MenuBarComponent {
+export class MenuBarComponent implements OnInit {
   routerParams$: Observable<RouterParams>;
-  metricsType$: Observable<MetricsType>;
-  chartType$: Observable<ChartType>;
-  interval$: Observable<IntervalModel>;
-  standardRange$: Observable<string>;
-  downloads = METRICSTYPE_DOWNLOADS;
-  dropday = METRICSTYPE_DROPDAY;
+  showEpisodeSelect$: Observable<boolean>;
+  showDownloadsSummary$: Observable<boolean>;
+  showDaterangeDropdown$: Observable<boolean>;
 
-  constructor(private store: Store<any>) {
+  constructor(private store: Store<any>) {}
+
+  ngOnInit() {
     this.routerParams$ = this.store.pipe(select(selectRouter));
-    this.metricsType$ = this.store.pipe(select(selectMetricsTypeRoute));
-    this.chartType$ = this.store.pipe(select(selectChartTypeRoute));
-    this.interval$ = this.store.pipe(select(selectIntervalRoute));
-    this.standardRange$ = this.store.pipe(select(selectStandardRangeRoute));
+    this.showEpisodeSelect$ = this.routerParams$.pipe(
+      map(({ metricsType }) => metricsType !== METRICSTYPE_DOWNLOADS && metricsType !== METRICSTYPE_LISTENERS)
+    );
+    this.showDownloadsSummary$ = this.routerParams$.pipe(
+      map(({ metricsType }) => metricsType !== METRICSTYPE_DROPDAY && metricsType !== METRICSTYPE_LISTENERS)
+    );
+    this.showDaterangeDropdown$ = this.routerParams$.pipe(map(({ metricsType }) => metricsType !== METRICSTYPE_DROPDAY));
   }
 }

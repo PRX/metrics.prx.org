@@ -1,5 +1,5 @@
 import { CastlePodcastListenersSuccessAction, CastlePodcastListenersFailureAction, CastlePodcastListenersLoadAction } from '../actions';
-import { RouterParams, INTERVAL_DAILY, MetricsType, METRICSTYPE_LISTENERS } from './models';
+import { RouterParams, INTERVAL_LASTWEEK, MetricsType, METRICSTYPE_LISTENERS } from './models';
 import {
   PodcastListenersReducer,
   selectAllPodcastListeners,
@@ -15,7 +15,7 @@ describe('PodcastListenersReducer', () => {
     metricsType: <MetricsType>METRICSTYPE_LISTENERS,
     beginDate: new Date('2017-08-27T00:00:00Z'),
     endDate: new Date('2017-09-07T00:00:00Z'),
-    interval: INTERVAL_DAILY
+    interval: INTERVAL_LASTWEEK
   };
 
   beforeEach(() => {

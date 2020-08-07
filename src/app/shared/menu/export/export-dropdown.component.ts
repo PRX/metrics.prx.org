@@ -23,7 +23,8 @@ import { ExportGoogleSheetsService } from './export-google-sheets.service';
             <metrics-export-google-sheets
               [exportData]="exportData$ | async"
               [exportFilename]="exportFilename$ | async"
-              (export)="onExportGoogleSheet()">
+              (export)="onExportGoogleSheet()"
+            >
             </metrics-export-google-sheets>
           </li>
         </ul>
@@ -33,7 +34,7 @@ import { ExportGoogleSheetsService } from './export-google-sheets.service';
   styleUrls: ['../../dropdown/dropdown.css']
 })
 export class ExportDropdownComponent implements OnInit {
-  exportData$ = new Observable<string[][]>();
+  exportData$ = new Observable<(number | string)[][]>();
   exportDataCsv$ = new Observable<SafeUrl>();
   exportFilename$ = new Observable<string>();
   open = false;
@@ -44,14 +45,11 @@ export class ExportDropdownComponent implements OnInit {
     this.open = false;
   }
 
-  constructor(private store: Store<any>,
-              private sanitizer: DomSanitizer,
-              private googleSheets: ExportGoogleSheetsService) {}
+  constructor(private store: Store<any>, private sanitizer: DomSanitizer, private googleSheets: ExportGoogleSheetsService) {}
 
   ngOnInit() {
     this.exportData$ = this.store.pipe(select(selectExportData2DArray));
-    this.exportDataCsv$ =
-      this.exportData$.pipe(map(data => this.sanitizer.bypassSecurityTrustUrl(joinCsvArray(data))));
+    this.exportDataCsv$ = this.exportData$.pipe(map(data => this.sanitizer.bypassSecurityTrustUrl(joinCsvArray(data))));
     this.exportFilename$ = this.store.pipe(select(selectExportFilename));
     this.googleSheetsBusy$ = this.googleSheets.busy;
   }
@@ -61,13 +59,13 @@ export class ExportDropdownComponent implements OnInit {
   }
 
   onExportCsv() {
-    this.store.dispatch(new GoogleAnalyticsEventAction({gaAction: 'exportCSV'}));
+    this.store.dispatch(new GoogleAnalyticsEventAction({ gaAction: 'exportCSV' }));
 
     this.toggleOpen();
   }
 
   onExportGoogleSheet() {
-    this.store.dispatch(new GoogleAnalyticsEventAction({gaAction: 'exportGoogleSheet'}));
+    this.store.dispatch(new GoogleAnalyticsEventAction({ gaAction: 'exportGoogleSheet' }));
 
     this.toggleOpen();
   }

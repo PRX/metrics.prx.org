@@ -47,7 +47,7 @@ export const downloadsRoutes: Routes = [
   {
     path: ':podcastId/listeners',
     pathMatch: 'full',
-    redirectTo: ':podcastId/listeners/podcast/last_week'
+    redirectTo: ':podcastId/listeners/line/last_week'
   },
   {
     path: ':podcastId/listeners/:chartType',

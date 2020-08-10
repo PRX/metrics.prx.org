@@ -4,6 +4,7 @@ import { AuthGuard, DeactivateGuard } from 'ngx-prx-styleguide';
 
 import { DownloadsComponent } from './downloads.component';
 import { DropdayComponent } from './dropday.component';
+import { ListenersComponent } from './listeners.component';
 
 export const downloadsRoutes: Routes = [
   {
@@ -40,6 +41,22 @@ export const downloadsRoutes: Routes = [
   {
     path: ':podcastId/dropday/:chartType/:interval',
     component: DropdayComponent,
+    canActivate: [AuthGuard],
+    canDeactivate: [DeactivateGuard]
+  },
+  {
+    path: ':podcastId/listeners',
+    pathMatch: 'full',
+    redirectTo: ':podcastId/listeners/line/last_week'
+  },
+  {
+    path: ':podcastId/listeners/:chartType',
+    pathMatch: 'full',
+    redirectTo: ':podcastId/listeners/:chartType/last_week'
+  },
+  {
+    path: ':podcastId/listeners/:chartType/:interval',
+    component: ListenersComponent,
     canActivate: [AuthGuard],
     canDeactivate: [DeactivateGuard]
   }

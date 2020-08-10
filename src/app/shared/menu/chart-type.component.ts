@@ -1,20 +1,35 @@
 import { Component, Input } from '@angular/core';
 import { Store } from '@ngrx/store';
 import {
-  ChartType, CHARTTYPE_PODCAST, CHARTTYPE_EPISODES, CHARTTYPE_STACKED,
-  CHARTTYPE_GEOCHART, CHARTTYPE_HORIZBAR, CHARTTYPE_LINE,
-  MetricsType, METRICSTYPE_DOWNLOADS, METRICSTYPE_DROPDAY, METRICSTYPE_DEMOGRAPHICS, METRICSTYPE_TRAFFICSOURCES
+  ChartType,
+  CHARTTYPE_PODCAST,
+  CHARTTYPE_EPISODES,
+  CHARTTYPE_STACKED,
+  CHARTTYPE_GEOCHART,
+  CHARTTYPE_HORIZBAR,
+  CHARTTYPE_LINE,
+  MetricsType,
+  METRICSTYPE_DOWNLOADS,
+  METRICSTYPE_DROPDAY,
+  METRICSTYPE_DEMOGRAPHICS,
+  METRICSTYPE_TRAFFICSOURCES,
+  METRICSTYPE_LISTENERS
 } from '../../ngrx';
 import { RouteChartTypeAction } from '../../ngrx/actions';
 
 @Component({
   selector: 'metrics-chart-type',
   template: `
-    <button class="btn-link" *ngFor="let chartType of chartTypes"
-            [class.active]="chartType === selectedChartType"
-            [disabled]="chartType === selectedChartType"
-            [title]="getTooltip(chartType)"
-            (click)="onChartType(chartType)"><img [src]="getChartImg(chartType)"></button>
+    <button
+      class="btn-link"
+      *ngFor="let chartType of chartTypes"
+      [class.active]="chartType === selectedChartType"
+      [disabled]="chartType === selectedChartType"
+      [title]="getTooltip(chartType)"
+      (click)="onChartType(chartType)"
+    >
+      <img [src]="getChartImg(chartType)" />
+    </button>
   `,
   styleUrls: ['./chart-type.component.css']
 })
@@ -30,6 +45,8 @@ export class ChartTypeComponent {
         return [CHARTTYPE_PODCAST, CHARTTYPE_EPISODES, CHARTTYPE_STACKED];
       case METRICSTYPE_DROPDAY:
         return [CHARTTYPE_EPISODES];
+      case METRICSTYPE_LISTENERS:
+        return [CHARTTYPE_LINE];
       case METRICSTYPE_DEMOGRAPHICS:
         return [CHARTTYPE_GEOCHART, CHARTTYPE_LINE, CHARTTYPE_STACKED];
       case METRICSTYPE_TRAFFICSOURCES:
@@ -38,7 +55,7 @@ export class ChartTypeComponent {
   }
 
   onChartType(chartType: ChartType) {
-    this.store.dispatch(new RouteChartTypeAction({chartType}));
+    this.store.dispatch(new RouteChartTypeAction({ chartType }));
   }
 
   getChartImg(chartType: ChartType): string {

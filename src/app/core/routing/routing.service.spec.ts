@@ -28,7 +28,11 @@ import {
   CHARTTYPE_EPISODES,
   CHARTTYPE_LINE,
   CHARTTYPE_GEOCHART,
-  EPISODE_PAGE_SIZE
+  EPISODE_PAGE_SIZE,
+  METRICSTYPE_LISTENERS,
+  INTERVAL_LASTWEEK,
+  RouterParams,
+  INTERVAL_LAST28DAYS
 } from '@app/ngrx/';
 import * as dateUtil from '@app/shared/util/date/date.util';
 import * as localStorageUtil from '@app/shared/util/local-storage.util';
@@ -67,13 +71,13 @@ describe('RoutingService', () => {
       });
   }));
 
-  it('should redirect users away from / and back to existing or default route params', (done) => {
+  it('should redirect users away from / and back to existing or default route params', done => {
     store.dispatch(new ACTIONS.CustomRouterNavigationAction({ routerParams }));
     jest.spyOn(routingService, 'normalizeAndRoute');
     router.navigate([]);
     router.events
       .pipe(
-        filter((event) => event instanceof RoutesRecognized),
+        filter(event => event instanceof RoutesRecognized),
         first()
       )
       .subscribe((event: RoutesRecognized) => {
@@ -179,7 +183,7 @@ describe('RoutingService', () => {
       new ACTIONS.EpisodeSelectEpisodesAction({
         metricsType: METRICSTYPE_DROPDAY,
         podcastId: routerParams.podcastId,
-        episodeGuids: episodes.map((e) => e.guid)
+        episodeGuids: episodes.map(e => e.guid)
       })
     );
     store.dispatch(
@@ -217,12 +221,25 @@ describe('RoutingService', () => {
       new ACTIONS.EpisodeSelectEpisodesAction({
         metricsType: METRICSTYPE_DROPDAY,
         podcastId: routerParams.podcastId,
-        episodeGuids: episodes.map((e) => e.guid)
+        episodeGuids: episodes.map(e => e.guid)
       })
     );
     jest.spyOn(routingService, 'loadSelectedEpisodeDropdays');
     store.dispatch(new ACTIONS.CustomRouterNavigationAction({ routerParams: { interval: INTERVAL_MONTHLY, days: 90 } }));
     expect(routingService.loadSelectedEpisodeDropdays).toHaveBeenCalled();
+  });
+
+  it('should reload listeners if router params change', () => {
+    const listenersRouterParams: RouterParams = {
+      ...routerParams,
+      metricsType: METRICSTYPE_LISTENERS,
+      chartType: CHARTTYPE_LINE,
+      interval: INTERVAL_LASTWEEK
+    };
+    store.dispatch(new ACTIONS.CustomRouterNavigationAction({ routerParams: listenersRouterParams }));
+    jest.spyOn(routingService, 'loadListeners');
+    store.dispatch(new ACTIONS.CustomRouterNavigationAction({ routerParams: { ...listenersRouterParams, interval: INTERVAL_LAST28DAYS } }));
+    expect(routingService.loadListeners).toHaveBeenCalled();
   });
 
   it('should not reload grouped (geo/agent) podcast totals if interval changes', () => {
@@ -422,6 +439,13 @@ describe('RoutingService', () => {
         chartType: CHARTTYPE_STACKED
       }).chartType
     ).toEqual(CHARTTYPE_EPISODES);
+
+    expect(
+      routingService.checkAndGetDefaults({
+        ...routerParams,
+        metricsType: METRICSTYPE_LISTENERS
+      }).chartType
+    ).toEqual(CHARTTYPE_LINE);
 
     expect(
       routingService.checkAndGetDefaults({

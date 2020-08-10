@@ -4,6 +4,7 @@ import * as fromUser from './user.reducer';
 import * as fromPodcast from './podcast.reducer';
 import * as fromPodcastAllTimeDownloads from './podcast-alltime-downloads.reducer';
 import { PodcastDownloadsReducer, PodcastDownloadsState } from './podcast-downloads.reducer';
+import { PodcastListenersReducer, PodcastListenersState } from './podcast-listeners.reducer';
 import * as fromPodcastRanks from './podcast-ranks.reducer';
 import * as fromPodcastTotals from './podcast-totals.reducer';
 import * as fromGroupCharted from './group-charted.reducer';
@@ -27,6 +28,7 @@ export interface RootState {
   podcastAllTimeDownloads: fromPodcastAllTimeDownloads.State;
   episodeAllTimeDownloads: fromEpisodeAllTimeDownloads.State;
   PodcastDownloads: PodcastDownloadsState;
+  podcastListeners: PodcastListenersState;
   podcastRanks: fromPodcastRanks.State;
   podcastTotals: fromPodcastTotals.State;
   groupCharted: fromGroupCharted.State;
@@ -47,6 +49,7 @@ export const reducers: ActionReducerMap<RootState> = {
   podcastAllTimeDownloads: fromPodcastAllTimeDownloads.reducer,
   episodeAllTimeDownloads: fromEpisodeAllTimeDownloads.reducer,
   PodcastDownloads: PodcastDownloadsReducer,
+  podcastListeners: PodcastListenersReducer,
   podcastRanks: fromPodcastRanks.reducer,
   podcastTotals: fromPodcastTotals.reducer,
   groupCharted: fromGroupCharted.reducer,

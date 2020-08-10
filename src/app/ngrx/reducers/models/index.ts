@@ -13,6 +13,7 @@ export * from './group.type';
 export * from './interval.model';
 export * from './podcast.model';
 export * from './podcast-downloads.model';
+export * from './podcast-listeners.model';
 export * from './podcast-alltime-downloads.model';
 export * from './podcast-ranks.model';
 export * from './podcast-totals.model';

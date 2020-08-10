@@ -7,8 +7,9 @@ import { Action, Store, select } from '@ngrx/store';
 import * as ACTIONS from '../actions';
 import { selectRouter } from '../reducers/selectors';
 import { CastleService } from '@app/core';
-import { Episode, RouterParams, METRICSTYPE_DOWNLOADS, METRICSTYPE_DROPDAY } from '../';
+import { Episode, RouterParams, METRICSTYPE_DOWNLOADS, METRICSTYPE_DROPDAY, INTERVAL_MONTHLY, INTERVAL_WEEKLY } from '../';
 import * as dateUtil from '@app/shared/util/date';
+import { INTERVAL_DAILY } from '../reducers/models';
 
 @Injectable()
 export class CastleDownloadsEffects implements OnDestroy {
@@ -22,24 +23,33 @@ export class CastleDownloadsEffects implements OnDestroy {
     ofType(ACTIONS.ActionTypes.CASTLE_EPISODE_PAGE_SUCCESS),
     filter((action: ACTIONS.CastleEpisodePageSuccessAction) => {
       const { page, episodes } = action.payload;
-      return this.routerParams.metricsType === METRICSTYPE_DOWNLOADS &&
-        episodes && episodes.length && this.routerParams && this.routerParams.episodePage === page;
+      return (
+        this.routerParams.metricsType === METRICSTYPE_DOWNLOADS &&
+        episodes &&
+        episodes.length &&
+        this.routerParams &&
+        this.routerParams.episodePage === page
+      );
     }),
     map((action: ACTIONS.CastleEpisodePageSuccessAction) => action.payload),
     mergeMap((payload: ACTIONS.CastleEpisodePageSuccessPayload) => {
       const { episodes } = payload;
-      this.store.dispatch(new ACTIONS.CastlePodcastDownloadsLoadAction({
-        id: episodes[0].podcastId,
-        interval: this.routerParams.interval,
-        beginDate: this.routerParams.beginDate,
-        endDate: this.routerParams.endDate
-      }));
-      this.store.dispatch(new ACTIONS.CastlePodcastAllTimeDownloadsLoadAction({id: episodes[0].podcastId}));
+      this.store.dispatch(
+        new ACTIONS.CastlePodcastDownloadsLoadAction({
+          id: episodes[0].podcastId,
+          interval: this.routerParams.interval,
+          beginDate: this.routerParams.beginDate,
+          endDate: this.routerParams.endDate
+        })
+      );
+      this.store.dispatch(new ACTIONS.CastlePodcastAllTimeDownloadsLoadAction({ id: episodes[0].podcastId }));
       return episodes.map((episode: Episode) => {
-        this.store.dispatch(new ACTIONS.CastleEpisodeAllTimeDownloadsLoadAction({
-          podcastId: episode.podcastId,
-          guid: episode.guid
-        }));
+        this.store.dispatch(
+          new ACTIONS.CastleEpisodeAllTimeDownloadsLoadAction({
+            podcastId: episode.podcastId,
+            guid: episode.guid
+          })
+        );
         return new ACTIONS.CastleEpisodeDownloadsLoadAction({
           podcastId: episode.podcastId,
           page: episode.page,
@@ -61,8 +71,7 @@ export class CastleDownloadsEffects implements OnDestroy {
     ofType(ACTIONS.ActionTypes.CASTLE_EPISODE_PAGE_SUCCESS),
     filter((action: ACTIONS.CastleEpisodePageSuccessAction) => {
       const { page, episodes } = action.payload;
-      return this.routerParams.metricsType === METRICSTYPE_DROPDAY &&
-        episodes && episodes.length && page === 1;
+      return this.routerParams.metricsType === METRICSTYPE_DROPDAY && episodes && episodes.length && page === 1;
     }),
     map((action: ACTIONS.CastleEpisodePageSuccessAction) => action.payload),
     mergeMap((payload: ACTIONS.CastleEpisodePageSuccessPayload) => {
@@ -101,21 +110,23 @@ export class CastleDownloadsEffects implements OnDestroy {
     map((action: ACTIONS.CastlePodcastDownloadsLoadAction) => action.payload),
     switchMap((payload: ACTIONS.CastlePodcastDownloadsLoadPayload) => {
       const { id, interval, beginDate, endDate } = payload;
-      return this.castle.followList('prx:podcast-downloads', {
-        id,
-        from: beginDate.toISOString(),
-        to: endDate.toISOString(),
-        interval: interval.value
-      }).pipe(
-        map(results => {
-          this.store.dispatch(new ACTIONS.GoogleAnalyticsEventAction({gaAction: 'load', value: results[0]['downloads'].length}));
-          return new ACTIONS.CastlePodcastDownloadsSuccessAction({
-            id,
-            downloads: results[0]['downloads']
-          });
-        }),
-        catchError(error => of(new ACTIONS.CastlePodcastDownloadsFailureAction({id, error})))
-      );
+      return this.castle
+        .followList('prx:podcast-downloads', {
+          id,
+          from: beginDate.toISOString(),
+          to: endDate.toISOString(),
+          interval: interval.value
+        })
+        .pipe(
+          map(results => {
+            this.store.dispatch(new ACTIONS.GoogleAnalyticsEventAction({ gaAction: 'load', value: results[0]['downloads'].length }));
+            return new ACTIONS.CastlePodcastDownloadsSuccessAction({
+              id,
+              downloads: results[0]['downloads']
+            });
+          }),
+          catchError(error => of(new ACTIONS.CastlePodcastDownloadsFailureAction({ id, error })))
+        );
     })
   );
 
@@ -126,29 +137,33 @@ export class CastleDownloadsEffects implements OnDestroy {
     map((action: ACTIONS.CastleEpisodeDownloadsLoadAction) => action.payload),
     mergeMap((payload: ACTIONS.CastleEpisodeDownloadsLoadPayload) => {
       const { podcastId, page, guid, interval, beginDate, endDate } = payload;
-      return this.castle.followList('prx:episode-downloads', {
-        guid,
-        from: beginDate.toISOString(),
-        to: endDate.toISOString(),
-        interval: interval.value
-      }).pipe(
-        map(results => {
-          return new ACTIONS.CastleEpisodeDownloadsSuccessAction({
-            podcastId,
-            page,
-            guid,
-            downloads: results[0]['downloads']
-          });
-        }),
-        catchError(error => {
-          return of(new ACTIONS.CastleEpisodeDownloadsFailureAction({
-            podcastId,
-            page,
-            guid,
-            error
-          }));
+      return this.castle
+        .followList('prx:episode-downloads', {
+          guid,
+          from: beginDate.toISOString(),
+          to: endDate.toISOString(),
+          interval: interval.value
         })
-      );
+        .pipe(
+          map(results => {
+            return new ACTIONS.CastleEpisodeDownloadsSuccessAction({
+              podcastId,
+              page,
+              guid,
+              downloads: results[0]['downloads']
+            });
+          }),
+          catchError(error => {
+            return of(
+              new ACTIONS.CastleEpisodeDownloadsFailureAction({
+                podcastId,
+                page,
+                guid,
+                error
+              })
+            );
+          })
+        );
     })
   );
 
@@ -159,21 +174,21 @@ export class CastleDownloadsEffects implements OnDestroy {
     map((action: ACTIONS.CastlePodcastAllTimeDownloadsLoadAction) => action.payload),
     switchMap((payload: ACTIONS.CastlePodcastAllTimeDownloadsLoadPayload) => {
       const { id } = payload;
-      return this.castle
-        .followList('prx:podcast', {id})
-        .pipe(
-            map(metrics => {
-            const { total } = metrics[0]['downloads'];
-            return new ACTIONS.CastlePodcastAllTimeDownloadsSuccessAction({id, total});
-          }),
-          catchError((error): Observable<Action> => {
+      return this.castle.follow('prx:podcast', { id }).pipe(
+        map(metrics => {
+          const { total } = metrics['downloads'];
+          return new ACTIONS.CastlePodcastAllTimeDownloadsSuccessAction({ id, total });
+        }),
+        catchError(
+          (error): Observable<Action> => {
             if (error.status === 404) {
-              return of(new ACTIONS.CastlePodcastAllTimeDownloadsSuccessAction({id, total: 0}));
+              return of(new ACTIONS.CastlePodcastAllTimeDownloadsSuccessAction({ id, total: 0 }));
             } else {
-              return of(new ACTIONS.CastlePodcastAllTimeDownloadsFailureAction({id, error}));
+              return of(new ACTIONS.CastlePodcastAllTimeDownloadsFailureAction({ id, error }));
             }
-          })
-        );
+          }
+        )
+      );
     })
   );
 
@@ -184,21 +199,21 @@ export class CastleDownloadsEffects implements OnDestroy {
     map((action: ACTIONS.CastleEpisodeAllTimeDownloadsLoadAction) => action.payload),
     mergeMap((payload: ACTIONS.CastleEpisodeAllTimeDownloadsLoadPayload) => {
       const { podcastId, guid } = payload;
-      return this.castle
-        .followList('prx:episode', {guid})
-        .pipe(
-          map(metrics => {
-            const { total } = metrics[0]['downloads'];
-            return new ACTIONS.CastleEpisodeAllTimeDownloadsSuccessAction({podcastId, guid, total});
-          }),
-          catchError((error): Observable<Action> => {
+      return this.castle.followList('prx:episode', { guid }).pipe(
+        map(metrics => {
+          const { total } = metrics[0]['downloads'];
+          return new ACTIONS.CastleEpisodeAllTimeDownloadsSuccessAction({ podcastId, guid, total });
+        }),
+        catchError(
+          (error): Observable<Action> => {
             if (error.status === 404) {
-              return of(new ACTIONS.CastleEpisodeAllTimeDownloadsSuccessAction({podcastId, guid, total: 0}));
+              return of(new ACTIONS.CastleEpisodeAllTimeDownloadsSuccessAction({ podcastId, guid, total: 0 }));
             } else {
-              return of(new ACTIONS.CastleEpisodeAllTimeDownloadsFailureAction({podcastId, guid, error}));
+              return of(new ACTIONS.CastleEpisodeAllTimeDownloadsFailureAction({ podcastId, guid, error }));
             }
-          })
-        );
+          }
+        )
+      );
     })
   );
 
@@ -210,39 +225,66 @@ export class CastleDownloadsEffects implements OnDestroy {
       const { podcastId, guid, title, interval, publishedAt: from, days } = payload;
       const daysPublished = Math.ceil((new Date().valueOf() - from.valueOf()) / (1000 * 60 * 60 * 24));
       const to = dateUtil.addDays(from, Math.min(days, daysPublished) - 1); // day0 + (days - 1) = days
-      return this.castle.followList('prx:episode-downloads', {
-        guid,
-        from: dateUtil.ISODateBeginHour(from),
-        to: dateUtil.ISODateEndDay(to),
-        interval: interval.value
-      }).pipe(
-        map(results => {
-          return new ACTIONS.CastleEpisodeDropdaySuccessAction({
-            podcastId,
-            guid,
-            title,
-            interval,
-            publishedAt: from,
-            downloads: results[0]['downloads']
-          });
-        }),
-        catchError(error => {
-          return of(new ACTIONS.CastleEpisodeDropdayFailureAction({
-            podcastId,
-            guid,
-            title,
-            interval,
-            publishedAt: from,
-            error
-          }));
+      return this.castle
+        .followList('prx:episode-downloads', {
+          guid,
+          from: dateUtil.ISODateBeginHour(from),
+          to: dateUtil.ISODateEndDay(to),
+          interval: interval.value
         })
+        .pipe(
+          map(results => {
+            return new ACTIONS.CastleEpisodeDropdaySuccessAction({
+              podcastId,
+              guid,
+              title,
+              interval,
+              publishedAt: from,
+              downloads: results[0]['downloads']
+            });
+          }),
+          catchError(error => {
+            return of(
+              new ACTIONS.CastleEpisodeDropdayFailureAction({
+                podcastId,
+                guid,
+                title,
+                interval,
+                publishedAt: from,
+                error
+              })
+            );
+          })
+        );
+    })
+  );
+
+  // basic - load > success/failure podcast listeners
+  @Effect()
+  loadPodcastListeners$: Observable<Action> = this.actions$.pipe(
+    ofType(ACTIONS.ActionTypes.CASTLE_PODCAST_LISTENERS_LOAD),
+    map((action: ACTIONS.CastlePodcastListenersLoadAction) => action.payload),
+    switchMap((payload: ACTIONS.CastlePodcastListenersLoadPayload) => {
+      const { id, interval, beginDate, endDate } = payload;
+      return this.castle.follow('prx:podcast', { id }).pipe(
+        switchMap(podcast =>
+          podcast
+            .follow('prx:listeners', {
+              id,
+              from: beginDate.toISOString(),
+              to: endDate.toISOString(),
+              interval: interval.value
+            })
+            .pipe(
+              map(result => new ACTIONS.CastlePodcastListenersSuccessAction({ id, listeners: result['listeners'] })),
+              catchError(error => of(new ACTIONS.CastlePodcastListenersFailureAction({ id, error })))
+            )
+        )
       );
     })
   );
 
-  constructor(private actions$: Actions,
-              private castle: CastleService,
-              private store: Store<any>) {
+  constructor(private actions$: Actions, private castle: CastleService, private store: Store<any>) {
     this.routerParamsSub = this.store.pipe(select(selectRouter)).subscribe((routerParams: RouterParams) => {
       this.routerParams = routerParams;
     });

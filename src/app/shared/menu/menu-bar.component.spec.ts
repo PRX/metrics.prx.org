@@ -85,25 +85,4 @@ describe('MenuBarComponent', () => {
       done();
     });
   });
-
-  it('should have chart type', done => {
-    comp.chartType$.pipe(first()).subscribe(result => {
-      expect(result).toEqual(CHARTTYPE_PODCAST);
-      done();
-    });
-  });
-
-  it('should have interval', done => {
-    comp.interval$.pipe(first()).subscribe(result => {
-      expect(result).toEqual(INTERVAL_DAILY);
-      done();
-    });
-  });
-
-  it('should have standard range', done => {
-    comp.standardRange$.pipe(first()).subscribe(result => {
-      expect(result).toEqual(dateUtil.THIS_WEEK);
-      done();
-    });
-  });
 });

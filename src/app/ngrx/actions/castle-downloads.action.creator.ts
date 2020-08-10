@@ -110,6 +110,40 @@ export class CastlePodcastAllTimeDownloadsFailureAction implements Action {
   constructor(public payload: CastlePodcastAllTimeDownloadsFailurePayload) {}
 }
 
+export interface CastlePodcastListenersLoadPayload {
+  id: string;
+  interval: IntervalModel;
+  beginDate: Date;
+  endDate: Date;
+}
+
+export class CastlePodcastListenersLoadAction implements Action {
+  readonly type = ActionTypes.CASTLE_PODCAST_LISTENERS_LOAD;
+
+  constructor(public payload: CastlePodcastListenersLoadPayload) {}
+}
+
+export interface CastlePodcastListenersSuccessPayload {
+  id: string;
+  listeners: any[][];
+}
+
+export class CastlePodcastListenersSuccessAction implements Action {
+  readonly type = ActionTypes.CASTLE_PODCAST_LISTENERS_SUCCESS;
+
+  constructor(public payload: CastlePodcastListenersSuccessPayload) {}
+}
+
+export interface CastlePodcastListenersFailurePayload {
+  id: string;
+  error: any;
+}
+
+export class CastlePodcastListenersFailureAction implements Action {
+  readonly type = ActionTypes.CASTLE_PODCAST_LISTENERS_FAILURE;
+
+  constructor(public payload: CastlePodcastListenersFailurePayload) {}
+}
 export interface CastleEpisodeAllTimeDownloadsLoadPayload {
   podcastId: string;
   guid: string;

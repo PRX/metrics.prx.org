@@ -7,10 +7,7 @@ import { selectChartTypeRoute, selectDropdayTableMetrics, selectDaysRoute } from
 @Component({
   selector: 'metrics-dropday-table',
   template: `
-    <metrics-downloads-summary-table
-      [chartType]="chartType$ | async"
-      [days]="days$ | async"
-      [episodeTableData]="episodeTableData$ | async">
+    <metrics-downloads-summary-table [chartType]="chartType$ | async" [days]="days$ | async" [episodeTableData]="episodeTableData$ | async">
     </metrics-downloads-summary-table>
   `
 })

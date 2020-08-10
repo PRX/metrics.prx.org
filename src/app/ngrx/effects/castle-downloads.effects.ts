@@ -265,15 +265,7 @@ export class CastleDownloadsEffects implements OnDestroy {
     ofType(ACTIONS.ActionTypes.CASTLE_PODCAST_LISTENERS_LOAD),
     map((action: ACTIONS.CastlePodcastListenersLoadAction) => action.payload),
     switchMap((payload: ACTIONS.CastlePodcastListenersLoadPayload) => {
-      const { id, interval: intervalType, beginDate, endDate } = payload;
-      let interval = intervalType.value;
-      if (intervalType === INTERVAL_WEEKLY) {
-        // 1w -> WEEK for listeners API
-        interval = 'WEEK';
-      } else if (intervalType === INTERVAL_MONTHLY) {
-        // 1M -> MONTH for listeners API
-        interval = 'MONTH';
-      }
+      const { id, interval, beginDate, endDate } = payload;
       return this.castle.follow('prx:podcast', { id }).pipe(
         switchMap(podcast =>
           podcast
@@ -281,7 +273,7 @@ export class CastleDownloadsEffects implements OnDestroy {
               id,
               from: beginDate.toISOString(),
               to: endDate.toISOString(),
-              interval
+              interval: interval.value
             })
             .pipe(
               map(result => new ACTIONS.CastlePodcastListenersSuccessAction({ id, listeners: result['listeners'] })),

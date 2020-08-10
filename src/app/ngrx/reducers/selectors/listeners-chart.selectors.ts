@@ -12,10 +12,7 @@ export const selectListenersChartMetrics = createSelector(
     if (routedPodcastData && routedPodcastData.listeners) {
       return [
         {
-          label:
-            intervalRoute === INTERVAL_LASTWEEK || intervalRoute === INTERVAL_LAST28DAYS
-              ? intervalRoute.name + ' Unique Listeners'
-              : 'Unique Listeners',
+          label: 'Unique Listeners',
           data: mapMetricsToTimeseriesData(routedPodcastData.listeners),
           color: standardColor
         }

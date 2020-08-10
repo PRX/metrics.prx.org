@@ -18,9 +18,14 @@ import {
   CHARTTYPE_LINE,
   CHARTTYPE_HORIZBAR,
   CHARTTYPE_GEOCHART,
-  INTERVAL_DAILY,
-  INTERVAL_HOURLY,
   INTERVAL_LASTWEEK,
+  INTERVAL_LAST28DAYS,
+  INTERVAL_CALWEEK,
+  INTERVAL_CALMONTH,
+  INTERVAL_HOURLY,
+  INTERVAL_DAILY,
+  INTERVAL_WEEKLY,
+  INTERVAL_MONTHLY,
   METRICSTYPE_DEMOGRAPHICS,
   METRICSTYPE_DOWNLOADS,
   METRICSTYPE_DROPDAY,
@@ -34,8 +39,7 @@ import {
   GROUPTYPE_AGENTTYPE,
   EPISODE_PAGE_SIZE,
   EPISODE_SELECT_PAGE_SIZE,
-  EpisodeDropday,
-  INTERVAL_LAST28DAYS
+  EpisodeDropday
 } from '@app/ngrx/';
 import * as localStorageUtil from '@app/shared/util/local-storage.util';
 import * as dateUtil from '@app/shared/util/date/';
@@ -391,11 +395,21 @@ export class RoutingService implements OnDestroy {
       routerParams.group = GROUPTYPE_GEOCOUNTRY;
     }
 
-    if (routerParams.metricsType === METRICSTYPE_LISTENERS && (!routerParams.interval || routerParams.interval === INTERVAL_DAILY)) {
+    if (
+      routerParams.metricsType === METRICSTYPE_LISTENERS &&
+      (!routerParams.interval ||
+        routerParams.interval === INTERVAL_HOURLY ||
+        routerParams.interval === INTERVAL_DAILY ||
+        routerParams.interval === INTERVAL_WEEKLY ||
+        routerParams.interval === INTERVAL_MONTHLY)
+    ) {
       routerParams.interval = INTERVAL_LASTWEEK;
     } else if (
       (routerParams.metricsType !== METRICSTYPE_LISTENERS &&
-        (routerParams.interval === INTERVAL_LAST28DAYS || routerParams.interval === INTERVAL_LASTWEEK)) ||
+        (routerParams.interval === INTERVAL_CALWEEK ||
+          routerParams.interval === INTERVAL_CALMONTH ||
+          routerParams.interval === INTERVAL_LAST28DAYS ||
+          routerParams.interval === INTERVAL_LASTWEEK)) ||
       !routerParams.interval
     ) {
       routerParams.interval = INTERVAL_DAILY;

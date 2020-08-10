@@ -38,7 +38,7 @@ describe('Listeners Chart Selectors', () => {
   });
 
   it('should select podcast listeners chart data', () => {
-    expect(result[0].label).toEqual(INTERVAL_LASTWEEK.name + ' Unique Listeners');
+    expect(result[0].label).toEqual('Unique Listeners');
     expect(result[0].data.length).toEqual(podDownloads.length);
   });
 });

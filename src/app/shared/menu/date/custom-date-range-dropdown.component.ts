@@ -1,6 +1,19 @@
 import { Component, Input, OnChanges } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { RouterParams, INTERVAL_HOURLY, IntervalModel, IntervalList, METRICSTYPE_DOWNLOADS } from '../../../ngrx';
+import {
+  RouterParams,
+  IntervalModel,
+  INTERVAL_HOURLY,
+  INTERVAL_DAILY,
+  INTERVAL_WEEKLY,
+  INTERVAL_MONTHLY,
+  INTERVAL_LAST28DAYS,
+  INTERVAL_LASTWEEK,
+  INTERVAL_CALMONTH,
+  INTERVAL_CALWEEK,
+  METRICSTYPE_DOWNLOADS,
+  METRICSTYPE_LISTENERS
+} from '../../../ngrx';
 import * as dateUtil from '../../util/date';
 import { GoogleAnalyticsEventAction, RouteAdvancedRangeAction } from '../../../ngrx/actions';
 
@@ -69,9 +82,17 @@ export class CustomDateRangeDropdownComponent implements OnChanges {
   constructor(public store: Store<any>) {}
 
   ngOnChanges() {
-    this.intervalList = IntervalList.filter(interval => {
-      return this.routerParams.metricsType === METRICSTYPE_DOWNLOADS || interval !== INTERVAL_HOURLY;
-    });
+    switch (this.routerParams.metricsType) {
+      case METRICSTYPE_DOWNLOADS:
+        this.intervalList = [INTERVAL_HOURLY, INTERVAL_DAILY, INTERVAL_WEEKLY, INTERVAL_MONTHLY];
+        break;
+      case METRICSTYPE_LISTENERS:
+        this.intervalList = [INTERVAL_LASTWEEK, INTERVAL_LAST28DAYS, INTERVAL_CALWEEK, INTERVAL_CALMONTH];
+        break;
+      default:
+        this.intervalList = [INTERVAL_DAILY, INTERVAL_WEEKLY, INTERVAL_MONTHLY];
+        break;
+    }
   }
 
   onIntervalChange(interval: IntervalModel) {

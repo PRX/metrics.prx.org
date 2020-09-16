@@ -34,34 +34,29 @@ export class StandardDateRangeComponent implements OnChanges {
   }
 
   getRanges() {
-    switch (this.interval) {
-      case INTERVAL_HOURLY:
-        return [
-          dateUtil.THIS_WEEK,
-          dateUtil.LAST_WEEK,
-          dateUtil.LAST_7_DAYS,
-          dateUtil.THIS_MONTH,
-          dateUtil.LAST_MONTH,
-          dateUtil.LAST_28_DAYS,
-          dateUtil.LAST_30_DAYS
-        ];
-      case INTERVAL_LASTWEEK:
-      case INTERVAL_LAST28DAYS:
-      case INTERVAL_DAILY:
-      case INTERVAL_WEEKLY:
-      case INTERVAL_MONTHLY:
-        return [
-          dateUtil.THIS_WEEK,
-          dateUtil.LAST_WEEK,
-          dateUtil.LAST_7_DAYS,
-          dateUtil.THIS_MONTH,
-          dateUtil.LAST_MONTH,
-          dateUtil.LAST_28_DAYS,
-          dateUtil.LAST_30_DAYS,
-          dateUtil.THIS_YEAR,
-          dateUtil.LAST_YEAR,
-          dateUtil.LAST_365_DAYS
-        ];
+    if (this.interval === INTERVAL_HOURLY) {
+      return [
+        dateUtil.THIS_WEEK,
+        dateUtil.LAST_WEEK,
+        dateUtil.LAST_7_DAYS,
+        dateUtil.THIS_MONTH,
+        dateUtil.LAST_MONTH,
+        dateUtil.LAST_28_DAYS,
+        dateUtil.LAST_30_DAYS
+      ];
+    } else {
+      return [
+        dateUtil.THIS_WEEK,
+        dateUtil.LAST_WEEK,
+        dateUtil.LAST_7_DAYS,
+        dateUtil.THIS_MONTH,
+        dateUtil.LAST_MONTH,
+        dateUtil.LAST_28_DAYS,
+        dateUtil.LAST_30_DAYS,
+        dateUtil.THIS_YEAR,
+        dateUtil.LAST_YEAR,
+        dateUtil.LAST_365_DAYS
+      ];
     }
   }
 

@@ -1,10 +1,9 @@
 import { Actions } from '@ngrx/effects';
 import { TestBed, async } from '@angular/core/testing';
 import { cold, hot } from 'jasmine-marbles';
-import { StoreModule, Store } from '@ngrx/store';
+import { StoreModule, Store, Action } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
-import { getActions, TestActions } from './test.actions';
-
+import { provideMockActions } from '@ngrx/effects/testing';
 import { HalService, MockHalService } from 'ngx-prx-styleguide';
 import { CastleService } from '../../core';
 
@@ -15,11 +14,11 @@ import { CastleCatalogEffects } from './castle-catalog.effects';
 import * as localStorageUtil from '@app/shared/util/local-storage.util';
 
 import { userinfo, routerParams, podcast, episodes } from '@testing/downloads.fixtures';
+import { Observable } from 'rxjs';
 
 describe('CastleCatalogEffects', () => {
   let effects: CastleCatalogEffects;
-  // let actions$: TestActions;
-  let actions$: any;
+  let actions$ = new Observable<Action>();
   let castle: MockHalService;
   let store: Store<any>;
 
@@ -57,7 +56,7 @@ describe('CastleCatalogEffects', () => {
         CastleCatalogEffects,
         { provide: HalService, useValue: castle },
         { provide: CastleService, useValue: castle.root },
-        { provide: Actions, useFactory: getActions }
+        provideMockActions(() => actions$)
       ]
     });
     effects = TestBed.inject(CastleCatalogEffects);
@@ -81,7 +80,7 @@ describe('CastleCatalogEffects', () => {
         all: true
       });
 
-      actions$.stream = hot('-a', { a: action });
+      actions$ = hot('-a', { a: action });
       const expected = cold('-r', { r: success });
       expect(effects.loadUserinfoSuccess$).toBeObservable(expected);
     });
@@ -98,7 +97,7 @@ describe('CastleCatalogEffects', () => {
         all: true
       });
 
-      actions$.stream = hot('-a', { a: action });
+      actions$ = hot('-a', { a: action });
       const expected = cold('-r', { r: success });
       expect(effects.loadPodcastPage$).toBeObservable(expected);
     });
@@ -115,7 +114,7 @@ describe('CastleCatalogEffects', () => {
         page: 2,
         all: true
       });
-      actions$.stream = hot('-a', { a: firstPageAction });
+      actions$ = hot('-a', { a: firstPageAction });
       const expected = cold('-r', { r: nextPageLoadAction });
       expect(effects.loadNextPodcastPage$).toBeObservable(expected);
     });
@@ -124,7 +123,7 @@ describe('CastleCatalogEffects', () => {
       castle.root.mockItems('prx:podcasts', []);
       const action = ACTIONS.CastlePodcastPageLoad({ page: 1 });
       const completion = ACTIONS.CastlePodcastPageFailure({ error: `Looks like you don't have any podcasts.` });
-      actions$.stream = hot('-a', { a: action });
+      actions$ = hot('-a', { a: action });
       const expected = cold('-r', { r: completion });
       expect(effects.loadPodcastPage$).toBeObservable(expected);
     });
@@ -134,7 +133,7 @@ describe('CastleCatalogEffects', () => {
       castle.root.mockError('prx:podcasts', error);
       const action = ACTIONS.CastlePodcastPageLoad({ page: 1 });
       const completion = ACTIONS.CastlePodcastPageFailure({ error });
-      actions$.stream = hot('-a', { a: action });
+      actions$ = hot('-a', { a: action });
       const expected = cold('-r', { r: completion });
       expect(effects.loadPodcastPage$).toBeObservable(expected);
     });
@@ -164,7 +163,7 @@ describe('CastleCatalogEffects', () => {
           per: EPISODE_PAGE_SIZE,
           total: episodes.length
         });
-        actions$.stream = hot('-a', { a: action });
+        actions$ = hot('-a', { a: action });
         const expected = cold('-r', { r: success });
         expect(effects.loadEpisodePage$).toBeObservable(expected);
       });
@@ -183,7 +182,7 @@ describe('CastleCatalogEffects', () => {
           total: episodes.length,
           search: 'title'
         });
-        actions$.stream = hot('-a', { a: action });
+        actions$ = hot('-a', { a: action });
         const expected = cold('-r', { r: success });
         expect(effects.loadEpisodePage$).toBeObservable(expected);
       });
@@ -196,14 +195,14 @@ describe('CastleCatalogEffects', () => {
         it('fails to load a page of episodes', () => {
           const action = ACTIONS.CastleEpisodePageLoad({ podcastId: podcast.id, page: 1, per: EPISODE_PAGE_SIZE });
           const completion = ACTIONS.CastleEpisodePageFailure({ error });
-          actions$.stream = hot('-a', { a: action });
+          actions$ = hot('-a', { a: action });
           const expected = cold('-r', { r: completion });
           expect(effects.loadEpisodePage$).toBeObservable(expected);
         });
         it('fails to load a page of episodes for episode selection', () => {
           const action = ACTIONS.CastleEpisodeSelectPageLoad({ podcastId: podcast.id, page: 1, per: EPISODE_SELECT_PAGE_SIZE });
           const completion = ACTIONS.CastleEpisodeSelectPageFailure({ error });
-          actions$.stream = hot('-a', { a: action });
+          actions$ = hot('-a', { a: action });
           const expected = cold('-r', { r: completion });
           expect(effects.loadEpisodePage$).toBeObservable(expected);
         });
@@ -220,7 +219,7 @@ describe('CastleCatalogEffects', () => {
     it('if none in local storage, navigates to the first podcast in the payload on success', () => {
       const action = ACTIONS.CastlePodcastPageSuccess({ podcasts: [podcast], page: 1, total: 1 });
       const completion = ACTIONS.RoutePodcast({ podcastId: podcast.id });
-      actions$.stream = hot('-a', { a: action });
+      actions$ = hot('-a', { a: action });
       const expected = cold('-r', { r: completion });
       expect(effects.loadPodcastsSuccess$).toBeObservable(expected);
     });
@@ -238,7 +237,7 @@ describe('CastleCatalogEffects', () => {
       const completion = ACTIONS.RoutePodcast({
         podcastId: routerParams.podcastId
       });
-      actions$.stream = hot('-a', { a: action });
+      actions$ = hot('-a', { a: action });
       const expected = cold('-r', { r: completion });
       expect(effects.loadPodcastsSuccess$).toBeObservable(expected);
     });
@@ -255,7 +254,7 @@ describe('CastleCatalogEffects', () => {
       const completion = ACTIONS.RoutePodcast({
         podcastId: somePodcasts[0].id
       });
-      actions$.stream = hot('-a', { a: action });
+      actions$ = hot('-a', { a: action });
       const expected = cold('-r', { r: completion });
       expect(effects.loadPodcastsSuccess$).toBeObservable(expected);
     });

@@ -54,8 +54,8 @@ describe('IdEffects', () => {
         provideMockActions(() => actions$)
       ]
     });
-    effects = TestBed.get(IdEffects);
-    store = TestBed.get(Store);
+    effects = TestBed.inject(IdEffects);
+    store = TestBed.inject(Store);
   });
 
   describe('loadUserinfo', () => {

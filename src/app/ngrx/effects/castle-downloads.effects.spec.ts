@@ -1,9 +1,9 @@
-import { Actions } from '@ngrx/effects';
 import { TestBed, async } from '@angular/core/testing';
 import { cold, hot } from 'jasmine-marbles';
-import { StoreModule, Store } from '@ngrx/store';
+import { Observable } from 'rxjs';
+import { StoreModule, Store, Action } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
-import { getActions, TestActions } from './test.actions';
+import { provideMockActions } from '@ngrx/effects/testing';
 
 import { HalService, MockHalService } from 'ngx-prx-styleguide';
 import { CastleService } from '@app/core';
@@ -17,7 +17,7 @@ import { routerParams, podcast, episodes, podDownloads, ep0Downloads } from '../
 
 describe('CastleDownloadsEffects', () => {
   let effects: CastleDownloadsEffects;
-  let actions$: TestActions;
+  let actions$ = new Observable<Action>();
   let castle: MockHalService;
   let store: Store<any>;
 
@@ -68,12 +68,11 @@ describe('CastleDownloadsEffects', () => {
         CastleDownloadsEffects,
         { provide: HalService, useValue: castle },
         { provide: CastleService, useValue: castle.root },
-        { provide: Actions, useFactory: getActions }
+        provideMockActions(() => actions$)
       ]
     });
-    effects = TestBed.get(CastleDownloadsEffects);
-    actions$ = TestBed.get(Actions);
-    store = TestBed.get(Store);
+    effects = TestBed.inject(CastleDownloadsEffects);
+    store = TestBed.inject(Store);
 
     store.dispatch(ACTIONS.CustomRouterNavigation({ routerParams }));
   }));
@@ -87,7 +86,7 @@ describe('CastleDownloadsEffects', () => {
       total: 10
     });
 
-    actions$.stream = hot('-a', { a: action });
+    actions$ = hot('-a', { a: action });
     const expected = cold('-r', { r: success });
     expect(effects.loadPodcastAllTimeDownloads$).toBeObservable(expected);
   });
@@ -103,7 +102,7 @@ describe('CastleDownloadsEffects', () => {
       error
     });
 
-    actions$.stream = hot('-a', { a: action });
+    actions$ = hot('-a', { a: action });
     const expected = cold('-r', { r: failure });
     expect(effects.loadPodcastAllTimeDownloads$).toBeObservable(expected);
   });
@@ -116,7 +115,7 @@ describe('CastleDownloadsEffects', () => {
       total: 11
     });
 
-    actions$.stream = hot('-a', { a: action });
+    actions$ = hot('-a', { a: action });
     const expected = cold('-r', { r: success });
     expect(effects.loadEpisodeAllTimeDownloads$).toBeObservable(expected);
   });
@@ -133,7 +132,7 @@ describe('CastleDownloadsEffects', () => {
       total: 0
     });
 
-    actions$.stream = hot('-a', { a: action });
+    actions$ = hot('-a', { a: action });
     const expected = cold('-r', { r: success });
     expect(effects.loadEpisodeAllTimeDownloads$).toBeObservable(expected);
   });
@@ -151,7 +150,7 @@ describe('CastleDownloadsEffects', () => {
       error
     });
 
-    actions$.stream = hot('-a', { a: action });
+    actions$ = hot('-a', { a: action });
     const expected = cold('-r', { r: failure });
     expect(effects.loadEpisodeAllTimeDownloads$).toBeObservable(expected);
   });
@@ -168,7 +167,7 @@ describe('CastleDownloadsEffects', () => {
       downloads: podDownloads
     });
 
-    actions$.stream = hot('-a', { a: action });
+    actions$ = hot('-a', { a: action });
     const expected = cold('-r', { r: success });
     expect(effects.loadPodcastDownloads$).toBeObservable(expected);
   });
@@ -189,7 +188,7 @@ describe('CastleDownloadsEffects', () => {
       downloads: ep0Downloads
     });
 
-    actions$.stream = hot('-a', { a: action });
+    actions$ = hot('-a', { a: action });
     const expected = cold('-r', { r: success });
     expect(effects.loadEpisodeDownloads$).toBeObservable(expected);
   });
@@ -213,7 +212,7 @@ describe('CastleDownloadsEffects', () => {
       downloads: ep0Downloads
     });
 
-    actions$.stream = hot('-a', { a: action });
+    actions$ = hot('-a', { a: action });
     const expected = cold('-r', { r: success });
     expect(effects.loadEpisodeDropday$).toBeObservable(expected);
   });
@@ -230,7 +229,7 @@ describe('CastleDownloadsEffects', () => {
       listeners: podDownloads
     });
 
-    actions$.stream = hot('-a', { a: action });
+    actions$ = hot('-a', { a: action });
     const expected = cold('-r', { r: success });
     expect(effects.loadPodcastListeners$).toBeObservable(expected);
   });
@@ -273,7 +272,7 @@ describe('CastleDownloadsEffects', () => {
         completion[i.toString()] = a;
       });
 
-      actions$.stream = hot('-a--', { a: action });
+      actions$ = hot('-a--', { a: action });
       // Marble syntax: '()' to sync groupings
       // When multiple events need to be in the same frame synchronously, parentheses are used to group those events.
       // eg '-(-0-1)' events '0' and '1' will both be in frame 10
@@ -339,7 +338,7 @@ describe('CastleDownloadsEffects', () => {
         completion[i.toString()] = a;
       });
 
-      actions$.stream = hot('-a--', { a: action });
+      actions$ = hot('-a--', { a: action });
       // Marble syntax: '()' to sync groupings
       // When multiple events need to be in the same frame synchronously, parentheses are used to group those events.
       // eg '-(-0-1)' events '0' and '1' will both be in frame 10

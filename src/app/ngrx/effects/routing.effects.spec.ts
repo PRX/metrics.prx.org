@@ -4,11 +4,12 @@ import { TestBed, async } from '@angular/core/testing';
 import { Route } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { cold, hot } from 'jasmine-marbles';
-import { StoreModule, Store } from '@ngrx/store';
+import { StoreModule, Store, Action } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
+import { provideMockActions } from '@ngrx/effects/testing';
 import { routerReducer } from '@ngrx/router-store';
 import { ROUTER_NAVIGATION } from '@ngrx/router-store';
-import { getActions, TestActions } from './test.actions';
+import { Observable } from 'rxjs';
 import { CHARTTYPE_EPISODES, INTERVAL_HOURLY, METRICSTYPE_DOWNLOADS, METRICSTYPE_DROPDAY, User } from '../';
 import { reducers } from '../reducers';
 import * as ACTIONS from '../actions';
@@ -25,7 +26,7 @@ class TestComponent {}
 
 describe('RoutingEffects', () => {
   let effects: RoutingEffects;
-  let actions$: TestActions;
+  let actions$ = new Observable<Action>();
   let store: Store<any>;
 
   const user: User = { doc: null, loggedIn: true, authorized: true, userinfo };
@@ -61,11 +62,10 @@ describe('RoutingEffects', () => {
         StoreModule.forRoot({ ...reducers, routerReducer: routerReducer }),
         EffectsModule.forRoot([RoutingEffects])
       ],
-      providers: [RoutingEffects, RoutingService, { provide: Actions, useFactory: getActions }]
+      providers: [RoutingEffects, RoutingService, provideMockActions(() => actions$)]
     });
-    effects = TestBed.get(RoutingEffects);
-    actions$ = TestBed.get(Actions);
-    store = TestBed.get(Store);
+    effects = TestBed.inject(RoutingEffects);
+    store = TestBed.inject(Store);
 
     jest.spyOn(store, 'dispatch');
     store.dispatch(ACTIONS.CustomRouterNavigation({ routerParams }));
@@ -80,7 +80,7 @@ describe('RoutingEffects', () => {
       payload: { routerState: { routerParams } }
     };
     const result = ACTIONS.CustomRouterNavigation({ routerParams });
-    actions$.stream = hot('-a', { a: action });
+    actions$ = hot('-a', { a: action });
     const expected = cold('-r', { r: result });
     expect(effects.customRouterNavigation$).toBeObservable(expected);
   });
@@ -94,7 +94,7 @@ describe('RoutingEffects', () => {
     };
     // result does not have selected episodes
     const result = ACTIONS.CustomRouterNavigation({ routerParams });
-    actions$.stream = hot('-a', { a: action });
+    actions$ = hot('-a', { a: action });
     const expected = cold('-r', { r: result });
     expect(effects.customRouterNavigation$).toBeObservable(expected);
     // selected episodes dispatched to store
@@ -110,7 +110,7 @@ describe('RoutingEffects', () => {
   it('should route to podcast on episode page 1', () => {
     const action = ACTIONS.RoutePodcast({ podcastId: '70' });
     store.dispatch(action);
-    actions$.stream = hot('-a', { a: action });
+    actions$ = hot('-a', { a: action });
     const expected = cold('-r', { r: null });
     expect(effects.routePodcast$).toBeObservable(expected);
     expect(effects.routingService.normalizeAndRoute).toHaveBeenCalledWith({ podcastId: '70', episodePage: 1 });
@@ -119,7 +119,7 @@ describe('RoutingEffects', () => {
   it('should route to episode page', () => {
     const action = ACTIONS.RouteEpisodePage({ episodePage: 1 });
     store.dispatch(action);
-    actions$.stream = hot('-a', { a: action });
+    actions$ = hot('-a', { a: action });
     const expected = cold('-r', { r: null });
     expect(effects.routeEpisodePage$).toBeObservable(expected);
     expect(effects.routingService.normalizeAndRoute).toHaveBeenCalledWith({ episodePage: 1 });
@@ -128,7 +128,7 @@ describe('RoutingEffects', () => {
   xit('should route to chart type', () => {
     const action = ACTIONS.RouteChartType({ chartType: CHARTTYPE_EPISODES });
     store.dispatch(action);
-    actions$.stream = hot('-a', { a: action });
+    actions$ = hot('-a', { a: action });
     const expected = cold('-r', { r: null });
     expect(effects.routeChartType$).toBeObservable(expected);
     expect(effects.routingService.normalizeAndRoute).toHaveBeenCalledWith({ chartType: CHARTTYPE_EPISODES });
@@ -137,7 +137,7 @@ describe('RoutingEffects', () => {
   xit('should route to interval', () => {
     const action = ACTIONS.RouteInterval({ interval: INTERVAL_HOURLY });
     store.dispatch(action);
-    actions$.stream = hot('-a', { a: action });
+    actions$ = hot('-a', { a: action });
     const expected = cold('-r', { r: null });
     expect(effects.routeInterval$).toBeObservable(expected);
     expect(effects.routingService.normalizeAndRoute).toHaveBeenCalledWith({ interval: INTERVAL_HOURLY });
@@ -146,7 +146,7 @@ describe('RoutingEffects', () => {
   xit('should route to standard range and include begin and end dates', () => {
     const action = ACTIONS.RouteStandardRange({ standardRange: dateUtil.LAST_WEEK });
     store.dispatch(action);
-    actions$.stream = hot('-a', { a: action });
+    actions$ = hot('-a', { a: action });
     const expected = cold('-r', { r: null });
     expect(effects.routeStandardRange$).toBeObservable(expected);
     expect(effects.routingService.normalizeAndRoute).toHaveBeenCalledWith({
@@ -164,7 +164,7 @@ describe('RoutingEffects', () => {
       endDate: dateUtil.endOfLastWeekUTC().toDate()
     });
     store.dispatch(action);
-    actions$.stream = hot('-a', { a: action });
+    actions$ = hot('-a', { a: action });
     const expected = cold('-r', { r: null });
     expect(effects.routeAdvancedRange$).toBeObservable(expected);
     expect(effects.routingService.normalizeAndRoute).toHaveBeenCalled();
@@ -173,7 +173,7 @@ describe('RoutingEffects', () => {
   it('should route to metrics and group type', () => {
     const action = ACTIONS.RouteMetricsGroupType({ metricsType: METRICSTYPE_DOWNLOADS });
     store.dispatch(action);
-    actions$.stream = hot('-a', { a: action });
+    actions$ = hot('-a', { a: action });
     const expected = cold('-r', { r: null });
     expect(effects.routeMetricsGroupType$).toBeObservable(expected);
     expect(effects.routingService.normalizeAndRoute).toHaveBeenCalledWith({ metricsType: METRICSTYPE_DOWNLOADS, group: undefined });
@@ -182,7 +182,7 @@ describe('RoutingEffects', () => {
   it('should route to filter', () => {
     const action = ACTIONS.RouteGroupFilter({ filter: METRICSTYPE_DOWNLOADS });
     store.dispatch(action);
-    actions$.stream = hot('-a', { a: action });
+    actions$ = hot('-a', { a: action });
     const expected = cold('-r', { r: null });
     expect(effects.routeGroupFilter$).toBeObservable(expected);
     expect(effects.routingService.normalizeAndRoute).toHaveBeenCalledWith({ filter: METRICSTYPE_DOWNLOADS });
@@ -192,7 +192,7 @@ describe('RoutingEffects', () => {
     store.dispatch(ACTIONS.CustomRouterNavigation({ routerParams: { ...routerParams, metricsType: METRICSTYPE_DROPDAY } }));
     const action = ACTIONS.RouteDays({ days: 7 });
     store.dispatch(action);
-    actions$.stream = hot('-a', { a: action });
+    actions$ = hot('-a', { a: action });
     const expected = cold('-r', { r: null });
     expect(effects.routeDays$).toBeObservable(expected);
     expect(effects.routingService.normalizeAndRoute).toHaveBeenCalledWith({ days: 7 });

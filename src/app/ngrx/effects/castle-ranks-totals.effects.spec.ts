@@ -1,9 +1,9 @@
-import { Actions } from '@ngrx/effects';
 import { TestBed, async } from '@angular/core/testing';
 import { cold, hot } from 'jasmine-marbles';
-import { StoreModule } from '@ngrx/store';
+import { Observable } from 'rxjs';
+import { StoreModule, Action } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
-import { getActions, TestActions } from './test.actions';
+import { provideMockActions } from '@ngrx/effects/testing';
 
 import { HalService, MockHalService } from 'ngx-prx-styleguide';
 import { CastleService } from '@app/core';
@@ -25,7 +25,7 @@ import {
 
 describe('CastleRanksTotalsEffects', () => {
   let effects: CastleRanksTotalsEffects;
-  let actions$: TestActions;
+  let actions$ = new Observable<Action>();
   let castle: MockHalService;
 
   beforeEach(async(() => {
@@ -61,11 +61,10 @@ describe('CastleRanksTotalsEffects', () => {
         CastleRanksTotalsEffects,
         { provide: HalService, useValue: castle },
         { provide: CastleService, useValue: castle.root },
-        { provide: Actions, useFactory: getActions }
+        provideMockActions(() => actions$)
       ]
     });
-    effects = TestBed.get(CastleRanksTotalsEffects);
-    actions$ = TestBed.get(Actions);
+    effects = TestBed.inject(CastleRanksTotalsEffects);
   }));
 
   it('should load more than one grouped podcast ranks at a time', () => {
@@ -87,7 +86,7 @@ describe('CastleRanksTotalsEffects', () => {
       downloads: podcastAgentNameDownloads
     });
 
-    actions$.stream = hot('-ab', { a: action, b: action });
+    actions$ = hot('-ab', { a: action, b: action });
     const expected = cold('-ab', { a: success, b: success });
     expect(effects.loadPodcastRanks$).toBeObservable(expected);
   });
@@ -111,7 +110,7 @@ describe('CastleRanksTotalsEffects', () => {
       })
     });
 
-    actions$.stream = hot('-ab', { a: action, b: action });
+    actions$ = hot('-ab', { a: action, b: action });
     const expected = cold('-ab', { a: success, b: success });
     expect(effects.loadPodcastTotals$).toBeObservable(expected);
   });
@@ -135,7 +134,7 @@ describe('CastleRanksTotalsEffects', () => {
       downloads: ep0AgentNameDownloads
     });
 
-    actions$.stream = hot('-ab', { a: action, b: action });
+    actions$ = hot('-ab', { a: action, b: action });
     const expected = cold('-ab', { a: success, b: success });
     expect(effects.loadEpisodeRanks$).toBeObservable(expected);
   });
@@ -159,7 +158,7 @@ describe('CastleRanksTotalsEffects', () => {
       })
     });
 
-    actions$.stream = hot('-ab', { a: action, b: action });
+    actions$ = hot('-ab', { a: action, b: action });
     const expected = cold('-ab', { a: success, b: success });
     expect(effects.loadEpisodeTotals$).toBeObservable(expected);
   });

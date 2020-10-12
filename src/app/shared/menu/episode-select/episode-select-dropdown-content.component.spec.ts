@@ -31,36 +31,35 @@ describe('EpisodeSelectDropdownContentComponent', () => {
         EpisodeSelectListVisibilityComponent,
         EpisodeSelectListComponent
       ],
-      imports: [
-        FancyFormModule,
-        SpinnerModule,
-        StoreModule.forRoot(reducers)
-      ]
-    }).compileComponents().then(() => {
-      fix = TestBed.createComponent(EpisodeSelectDropdownContentComponent);
-      comp = fix.componentInstance;
-      de = fix.debugElement;
-      el = de.nativeElement;
-      store = TestBed.get(Store);
+      imports: [FancyFormModule, SpinnerModule, StoreModule.forRoot(reducers)]
+    })
+      .compileComponents()
+      .then(() => {
+        fix = TestBed.createComponent(EpisodeSelectDropdownContentComponent);
+        comp = fix.componentInstance;
+        de = fix.debugElement;
+        el = de.nativeElement;
+        store = TestBed.get(Store);
 
-      comp.routerParams = routerParams;
-      comp.episodes = new Array(EPISODE_SELECT_PAGE_SIZE).fill(episodes[0]);
-      comp.totalEpisodes = comp.episodes.length + 10;
-      comp.searchTotal = comp.episodes.length;
-      comp.lastPage = 1;
-      comp.maxPages = 2;
-      fix.detectChanges();
+        comp.routerParams = routerParams;
+        comp.episodes = new Array(EPISODE_SELECT_PAGE_SIZE).fill(episodes[0]);
+        comp.totalEpisodes = comp.episodes.length + 10;
+        comp.searchTotal = comp.episodes.length;
+        comp.lastPage = 1;
+        comp.maxPages = 2;
+        fix.detectChanges();
 
-      jest.spyOn(comp, 'loadEpisodes');
-      jest.spyOn(store, 'dispatch');
-    });
+        jest.spyOn(comp, 'loadEpisodes');
+        jest.spyOn(store, 'dispatch');
+      });
   }));
 
   it('should load episodes on scroll if not reached max pages', () => {
     comp.loadEpisodesOnScroll();
     expect(comp.loadEpisodes).toHaveBeenCalledWith(comp.lastPage + 1, comp.searchTerm);
     expect(store.dispatch).toHaveBeenCalledWith(
-      new ACTIONS.GoogleAnalyticsEventAction({gaAction: 'episode-select-page-load', value: comp.lastPage + 1}));
+      ACTIONS.GoogleAnalyticsEvent({ gaAction: 'episode-select-page-load', value: comp.lastPage + 1 })
+    );
     comp.lastPage = 2;
     comp.maxPages = 2;
     fix.detectChanges();
@@ -70,24 +69,27 @@ describe('EpisodeSelectDropdownContentComponent', () => {
 
   it('should load episodes on search', () => {
     comp.loadEpisodesOnSearch('search term');
-    expect(store.dispatch).toHaveBeenCalledWith(new ACTIONS.CastleEpisodeSelectPageLoadAction({
-      podcastId: routerParams.podcastId,
-      page: 1,
-      per: EPISODE_SELECT_PAGE_SIZE,
-      search: 'search term'
-    }));
     expect(store.dispatch).toHaveBeenCalledWith(
-      new ACTIONS.GoogleAnalyticsEventAction({gaAction: 'episode-select-search'}));
+      ACTIONS.CastleEpisodeSelectPageLoad({
+        podcastId: routerParams.podcastId,
+        page: 1,
+        per: EPISODE_SELECT_PAGE_SIZE,
+        search: 'search term'
+      })
+    );
+    expect(store.dispatch).toHaveBeenCalledWith(ACTIONS.GoogleAnalyticsEvent({ gaAction: 'episode-select-search' }));
   });
 
   it('should dispatch selected episodes', () => {
     comp.onToggleSelectEpisode(episodes[0]);
-    expect(store.dispatch).toHaveBeenCalledWith(new ACTIONS.EpisodeSelectEpisodesAction({
-      podcastId: routerParams.podcastId,
-      metricsType: routerParams.metricsType,
-      episodeGuids: [episodes[0].guid]
-    }));
-    expect(store.dispatch).toHaveBeenCalledWith(new ACTIONS.GoogleAnalyticsEventAction({gaAction: 'episode-select', value: 1}));
+    expect(store.dispatch).toHaveBeenCalledWith(
+      ACTIONS.EpisodeSelectEpisodes({
+        podcastId: routerParams.podcastId,
+        metricsType: routerParams.metricsType,
+        episodeGuids: [episodes[0].guid]
+      })
+    );
+    expect(store.dispatch).toHaveBeenCalledWith(ACTIONS.GoogleAnalyticsEvent({ gaAction: 'episode-select', value: 1 }));
   });
 
   it('should reset selection if all episodes unselected', () => {
@@ -107,24 +109,30 @@ describe('EpisodeSelectDropdownContentComponent', () => {
 
   it('should dispatch to reset selection and load podcast data', () => {
     comp.resetSelection();
-    expect(store.dispatch).toHaveBeenCalledWith(new ACTIONS.CastlePodcastRanksLoadAction({
-      podcastId: routerParams.podcastId,
-      group: routerParams.group,
-      interval: routerParams.interval,
-      beginDate: routerParams.beginDate,
-      endDate: routerParams.endDate
-    }));
-    expect(store.dispatch).toHaveBeenCalledWith(new ACTIONS.CastlePodcastTotalsLoadAction({
-      podcastId: routerParams.podcastId,
-      group: routerParams.group,
-      beginDate: routerParams.beginDate,
-      endDate: routerParams.endDate
-    }));
-    expect(store.dispatch).toHaveBeenCalledWith(new ACTIONS.EpisodeSelectEpisodesAction({
-      podcastId: routerParams.podcastId,
-      metricsType: routerParams.metricsType,
-      episodeGuids: null
-    }));
-    expect(store.dispatch).toHaveBeenCalledWith(new ACTIONS.GoogleAnalyticsEventAction({gaAction: 'episode-select-reset'}));
+    expect(store.dispatch).toHaveBeenCalledWith(
+      ACTIONS.CastlePodcastRanksLoad({
+        podcastId: routerParams.podcastId,
+        group: routerParams.group,
+        interval: routerParams.interval,
+        beginDate: routerParams.beginDate,
+        endDate: routerParams.endDate
+      })
+    );
+    expect(store.dispatch).toHaveBeenCalledWith(
+      ACTIONS.CastlePodcastTotalsLoad({
+        podcastId: routerParams.podcastId,
+        group: routerParams.group,
+        beginDate: routerParams.beginDate,
+        endDate: routerParams.endDate
+      })
+    );
+    expect(store.dispatch).toHaveBeenCalledWith(
+      ACTIONS.EpisodeSelectEpisodes({
+        podcastId: routerParams.podcastId,
+        metricsType: routerParams.metricsType,
+        episodeGuids: null
+      })
+    );
+    expect(store.dispatch).toHaveBeenCalledWith(ACTIONS.GoogleAnalyticsEvent({ gaAction: 'episode-select-reset' }));
   });
 });

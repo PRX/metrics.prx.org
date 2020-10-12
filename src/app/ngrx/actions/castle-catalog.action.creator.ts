@@ -1,87 +1,36 @@
-import { Action } from '@ngrx/store';
+import { createAction, props } from '@ngrx/store';
 import { ActionTypes } from './action.types';
 import { Podcast, Episode } from '..';
 
-export interface CastlePodcastPageLoadPayload {
-  page: number;
-  all?: boolean;
-}
+export const CastlePodcastPageLoad = createAction(ActionTypes.CASTLE_PODCAST_PAGE_LOAD, props<{ page: number; all?: boolean }>());
 
-export class CastlePodcastPageLoadAction implements Action {
-  readonly type = ActionTypes.CASTLE_PODCAST_PAGE_LOAD;
+export const CastlePodcastPageSuccess = createAction(
+  ActionTypes.CASTLE_PODCAST_PAGE_SUCCESS,
+  props<{ podcasts: Podcast[]; page: number; total: number; all?: boolean }>()
+);
 
-  constructor(public payload: CastlePodcastPageLoadPayload) {}
-}
+export const CastlePodcastPageFailure = createAction(ActionTypes.CASTLE_PODCAST_PAGE_FAILURE, props<{ error: any }>());
 
-export interface CastlePodcastPageSuccessPayload {
-  podcasts: Podcast[];
-  page: number;
-  total: number;
-  all?: boolean;
-}
+export const CastleEpisodePageLoad = createAction(
+  ActionTypes.CASTLE_EPISODE_PAGE_LOAD,
+  props<{ podcastId: string; page: number; per: number; search?: string }>()
+);
 
-export class CastlePodcastPageSuccessAction implements Action {
-  readonly type = ActionTypes.CASTLE_PODCAST_PAGE_SUCCESS;
+export const CastleEpisodeSelectPageLoad = createAction(
+  ActionTypes.CASTLE_EPISODE_SELECT_PAGE_LOAD,
+  props<{ podcastId: string; page: number; per: number; search?: string }>()
+);
 
-  constructor(public payload: CastlePodcastPageSuccessPayload) {}
-}
+export const CastleEpisodePageSuccess = createAction(
+  ActionTypes.CASTLE_EPISODE_PAGE_SUCCESS,
+  props<{ page: number; per: number; total: number; search?: string; episodes: Episode[] }>()
+);
 
-export class CastlePodcastPageFailureAction {
-  readonly type = ActionTypes.CASTLE_PODCAST_PAGE_FAILURE;
+export const CastleEpisodeSelectPageSuccess = createAction(
+  ActionTypes.CASTLE_EPISODE_SELECT_PAGE_SUCCESS,
+  props<{ page: number; per: number; total: number; search?: string; episodes: Episode[] }>()
+);
 
-  constructor(public payload: {error: any}) {}
-}
+export const CastleEpisodePageFailure = createAction(ActionTypes.CASTLE_EPISODE_PAGE_FAILURE, props<{ error: any }>());
 
-export interface CastleEpisodePageLoadPayload {
-  podcastId: string;
-  page: number;
-  per: number;
-  search?: string;
-}
-
-export class CastleEpisodePageLoadAction implements Action {
-  readonly type = ActionTypes.CASTLE_EPISODE_PAGE_LOAD;
-
-  constructor(public payload: CastleEpisodePageLoadPayload) {}
-}
-
-export class CastleEpisodeSelectPageLoadAction implements Action {
-  readonly type = ActionTypes.CASTLE_EPISODE_SELECT_PAGE_LOAD;
-
-  constructor(public payload: CastleEpisodePageLoadPayload) {}
-}
-
-export interface CastleEpisodePageSuccessPayload {
-  page: number;
-  per: number;
-  total: number;
-  search?: string;
-  episodes: Episode[];
-}
-
-export class CastleEpisodePageSuccessAction implements Action {
-  readonly type = ActionTypes.CASTLE_EPISODE_PAGE_SUCCESS;
-
-  constructor(public payload: CastleEpisodePageSuccessPayload) {}
-}
-
-export class CastleEpisodeSelectPageSuccessAction implements Action {
-  readonly type = ActionTypes.CASTLE_EPISODE_SELECT_PAGE_SUCCESS;
-
-  constructor(public payload: CastleEpisodePageSuccessPayload) {}
-}
-
-export class CastleEpisodePageFailureAction implements Action {
-  readonly type = ActionTypes.CASTLE_EPISODE_PAGE_FAILURE;
-
-  constructor(public payload: {error: any}) {}
-}
-
-export class CastleEpisodeSelectPageFailureAction implements Action {
-  readonly type = ActionTypes.CASTLE_EPISODE_SELECT_PAGE_FAILURE;
-
-  constructor(public payload: {error: any}) {}
-}
-
-
-
+export const CastleEpisodeSelectPageFailure = createAction(ActionTypes.CASTLE_EPISODE_SELECT_PAGE_FAILURE, props<{ error: any }>());

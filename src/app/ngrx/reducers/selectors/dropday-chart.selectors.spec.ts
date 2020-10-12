@@ -18,19 +18,17 @@ describe('Dropday Chart Selectors', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        StoreModule.forRoot(reducers)
-      ]
+      imports: [StoreModule.forRoot(reducers)]
     });
     store = TestBed.get(Store);
 
-    dispatchHelper.dispatchRouterNavigation(store, {...routerParams, metricsType: METRICSTYPE_DROPDAY, chartType: CHARTTYPE_EPISODES});
+    dispatchHelper.dispatchRouterNavigation(store, { ...routerParams, metricsType: METRICSTYPE_DROPDAY, chartType: CHARTTYPE_EPISODES });
     dispatchHelper.dispatchEpisodePage(store);
     dispatchHelper.dispatchEpisodeSelectList(store);
     dispatchHelper.dispatchSelectEpisodes(store, routerParams.podcastId, METRICSTYPE_DROPDAY, [episodes[0].guid, episodes[1].guid]);
     dispatchHelper.dispatchEpisodeDropday(store);
 
-    dataSub = store.pipe(select(selectDropdayChartMetrics)).subscribe((data) => {
+    dataSub = store.pipe(select(selectDropdayChartMetrics)).subscribe(data => {
       result = <IndexedChartModel[]>data;
     });
   });
@@ -67,26 +65,29 @@ describe('Dropday Chart Selectors', () => {
   });
 
   it('should number non-unique episode titles', () => {
-    dispatchHelper.dispatchEpisodeSelectList(store, [episodes[0], {...episodes[1], title: episodes[0].title}]);
+    dispatchHelper.dispatchEpisodeSelectList(store, [episodes[0], { ...episodes[1], title: episodes[0].title }]);
     dispatchHelper.dispatchSelectEpisodes(store, routerParams.podcastId, METRICSTYPE_DROPDAY, [episodes[0].guid, episodes[1].guid]);
-    store.dispatch(new ACTIONS.CastleEpisodeDropdaySuccessAction({
-      podcastId: episodes[0].podcastId,
-      guid: episodes[0].guid, // different guid
-      title: episodes[0].title, // same title
-      publishedAt: episodes[0].publishedAt,
-      interval: INTERVAL_DAILY,
-      downloads: ep0Downloads
-    }));
-    store.dispatch(new ACTIONS.CastleEpisodeDropdaySuccessAction({
-      podcastId: episodes[1].podcastId,
-      guid: episodes[1].guid, // different guid
-      title: episodes[0].title, // same title
-      publishedAt: episodes[1].publishedAt,
-      interval: INTERVAL_DAILY,
-      downloads: ep1Downloads
-    }));
+    store.dispatch(
+      ACTIONS.CastleEpisodeDropdaySuccess({
+        podcastId: episodes[0].podcastId,
+        guid: episodes[0].guid, // different guid
+        title: episodes[0].title, // same title
+        publishedAt: episodes[0].publishedAt,
+        interval: INTERVAL_DAILY,
+        downloads: ep0Downloads
+      })
+    );
+    store.dispatch(
+      ACTIONS.CastleEpisodeDropdaySuccess({
+        podcastId: episodes[1].podcastId,
+        guid: episodes[1].guid, // different guid
+        title: episodes[0].title, // same title
+        publishedAt: episodes[1].publishedAt,
+        interval: INTERVAL_DAILY,
+        downloads: ep1Downloads
+      })
+    );
     // look for numbered title
     expect(result[0].label.match(/\([0-9]+\)/).length).toBeGreaterThan(0);
   });
-
 });

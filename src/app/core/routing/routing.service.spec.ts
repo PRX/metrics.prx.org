@@ -55,6 +55,7 @@ describe('RoutingService', () => {
         RouterTestingModule.withRoutes([
           { path: ':podcastId/reach/:chartType/:interval', component: TestComponent },
           { path: ':podcastId/dropday/:chartType/:interval', component: TestComponent },
+          { path: ':podcastId/listeners/:chartType/:interval', component: TestComponent },
           { path: ':podcastId/demographics/:group/:chartType/:interval', component: TestComponent }
         ]),
         StoreModule.forRoot(reducers)
@@ -67,12 +68,12 @@ describe('RoutingService', () => {
         store = TestBed.get(Store);
         router = TestBed.get(Router);
 
-        store.dispatch(new ACTIONS.IdUserinfoSuccessAction({ user: { doc: null, loggedIn: true, authorized: true, userinfo } }));
+        store.dispatch(ACTIONS.IdUserinfoSuccess({ user: { doc: null, loggedIn: true, authorized: true, userinfo } }));
       });
   }));
 
   it('should redirect users away from / and back to existing or default route params', done => {
-    store.dispatch(new ACTIONS.CustomRouterNavigationAction({ routerParams }));
+    store.dispatch(ACTIONS.CustomRouterNavigation({ routerParams }));
     jest.spyOn(routingService, 'normalizeAndRoute');
     router.navigate([]);
     router.events
@@ -88,7 +89,7 @@ describe('RoutingService', () => {
 
   it('should load episodes if podcast or episodePage changes', () => {
     jest.spyOn(routingService, 'loadEpisodes');
-    store.dispatch(new ACTIONS.CustomRouterNavigationAction({ routerParams: { ...routerParams, episodePage: 2 } }));
+    store.dispatch(ACTIONS.CustomRouterNavigation({ routerParams: { ...routerParams, episodePage: 2 } }));
     expect(routingService.loadEpisodes).toHaveBeenCalled();
   });
 
@@ -97,7 +98,7 @@ describe('RoutingService', () => {
     jest.spyOn(routingService, 'loadDownloads');
     const beginDate = new Date();
     store.dispatch(
-      new ACTIONS.CastleEpisodePageSuccessAction({
+      ACTIONS.CastleEpisodePageSuccess({
         episodes: [
           {
             guid: episodes[1].guid,
@@ -113,7 +114,7 @@ describe('RoutingService', () => {
       })
     );
     store.dispatch(
-      new ACTIONS.CustomRouterNavigationAction({
+      ACTIONS.CustomRouterNavigation({
         routerParams: {
           ...routerParams,
           podcastId: routerParams.podcastId,
@@ -122,37 +123,33 @@ describe('RoutingService', () => {
       })
     );
     expect(routingService.loadEpisodes).toHaveBeenCalled();
-    store.dispatch(new ACTIONS.CustomRouterNavigationAction({ routerParams: { beginDate } }));
+    store.dispatch(ACTIONS.CustomRouterNavigation({ routerParams: { beginDate } }));
     expect(routingService.loadDownloads).toHaveBeenCalled();
   });
 
   it('should reload episodes if metrics type changes to reach/downloads', () => {
     jest.spyOn(routingService, 'loadEpisodes');
     store.dispatch(
-      new ACTIONS.CustomRouterNavigationAction({
+      ACTIONS.CustomRouterNavigation({
         routerParams: { ...routerParams, metricsType: METRICSTYPE_DEMOGRAPHICS, group: GROUPTYPE_GEOCOUNTRY }
       })
     );
     expect(routingService.loadEpisodes).not.toHaveBeenCalled();
-    store.dispatch(new ACTIONS.CustomRouterNavigationAction({ routerParams: { metricsType: METRICSTYPE_DOWNLOADS } }));
+    store.dispatch(ACTIONS.CustomRouterNavigation({ routerParams: { metricsType: METRICSTYPE_DOWNLOADS } }));
     expect(routingService.loadEpisodes).toHaveBeenCalled();
   });
 
   it('should load episodes for dropday if podcast changed', () => {
-    store.dispatch(
-      new ACTIONS.CustomRouterNavigationAction({ routerParams: { ...routerParams, metricsType: METRICSTYPE_DROPDAY, days: 28 } })
-    );
+    store.dispatch(ACTIONS.CustomRouterNavigation({ routerParams: { ...routerParams, metricsType: METRICSTYPE_DROPDAY, days: 28 } }));
     jest.spyOn(routingService, 'loadEpisodes');
-    store.dispatch(new ACTIONS.CustomRouterNavigationAction({ routerParams: { podcastId: '72' } }));
+    store.dispatch(ACTIONS.CustomRouterNavigation({ routerParams: { podcastId: '72' } }));
     expect(routingService.loadEpisodes).toHaveBeenCalled();
   });
 
   it('should load episodes for dropday if there are no episodes selected', () => {
     jest.spyOn(routingService, 'loadEpisodes');
     expect(routingService.dropdayEpisodes && routingService.dropdayEpisodes.length).toBeFalsy();
-    store.dispatch(
-      new ACTIONS.CustomRouterNavigationAction({ routerParams: { ...routerParams, metricsType: METRICSTYPE_DROPDAY, days: 28 } })
-    );
+    store.dispatch(ACTIONS.CustomRouterNavigation({ routerParams: { ...routerParams, metricsType: METRICSTYPE_DROPDAY, days: 28 } }));
     expect(routingService.loadEpisodes).toHaveBeenCalled();
   });
 
@@ -160,7 +157,7 @@ describe('RoutingService', () => {
     jest.spyOn(routingService, 'loadDropdayEpisodeAllTimeDownloads');
     jest.spyOn(routingService, 'loadSelectedEpisodeDropdays');
     store.dispatch(
-      new ACTIONS.CastleEpisodeDropdaySuccessAction({
+      ACTIONS.CastleEpisodeDropdaySuccess({
         podcastId: episodes[0].podcastId,
         guid: episodes[0].guid,
         title: episodes[0].title,
@@ -170,7 +167,7 @@ describe('RoutingService', () => {
       })
     );
     store.dispatch(
-      new ACTIONS.CastleEpisodeDropdaySuccessAction({
+      ACTIONS.CastleEpisodeDropdaySuccess({
         podcastId: episodes[1].podcastId,
         guid: episodes[1].guid,
         title: episodes[1].title,
@@ -180,25 +177,21 @@ describe('RoutingService', () => {
       })
     );
     store.dispatch(
-      new ACTIONS.EpisodeSelectEpisodesAction({
+      ACTIONS.EpisodeSelectEpisodes({
         metricsType: METRICSTYPE_DROPDAY,
         podcastId: routerParams.podcastId,
         episodeGuids: episodes.map(e => e.guid)
       })
     );
-    store.dispatch(
-      new ACTIONS.CustomRouterNavigationAction({ routerParams: { ...routerParams, metricsType: METRICSTYPE_DROPDAY, days: 28 } })
-    );
+    store.dispatch(ACTIONS.CustomRouterNavigation({ routerParams: { ...routerParams, metricsType: METRICSTYPE_DROPDAY, days: 28 } }));
     expect(routingService.loadDropdayEpisodeAllTimeDownloads).toHaveBeenCalled();
     expect(routingService.loadSelectedEpisodeDropdays).toHaveBeenCalled();
   });
 
   it('should load dropday downloads if days or interval changed', () => {
+    store.dispatch(ACTIONS.CustomRouterNavigation({ routerParams: { ...routerParams, metricsType: METRICSTYPE_DROPDAY, days: 28 } }));
     store.dispatch(
-      new ACTIONS.CustomRouterNavigationAction({ routerParams: { ...routerParams, metricsType: METRICSTYPE_DROPDAY, days: 28 } })
-    );
-    store.dispatch(
-      new ACTIONS.CastleEpisodeDropdaySuccessAction({
+      ACTIONS.CastleEpisodeDropdaySuccess({
         podcastId: episodes[0].podcastId,
         guid: episodes[0].guid,
         title: episodes[0].title,
@@ -208,7 +201,7 @@ describe('RoutingService', () => {
       })
     );
     store.dispatch(
-      new ACTIONS.CastleEpisodeDropdaySuccessAction({
+      ACTIONS.CastleEpisodeDropdaySuccess({
         podcastId: episodes[1].podcastId,
         guid: episodes[1].guid,
         title: episodes[1].title,
@@ -218,14 +211,14 @@ describe('RoutingService', () => {
       })
     );
     store.dispatch(
-      new ACTIONS.EpisodeSelectEpisodesAction({
+      ACTIONS.EpisodeSelectEpisodes({
         metricsType: METRICSTYPE_DROPDAY,
         podcastId: routerParams.podcastId,
         episodeGuids: episodes.map(e => e.guid)
       })
     );
     jest.spyOn(routingService, 'loadSelectedEpisodeDropdays');
-    store.dispatch(new ACTIONS.CustomRouterNavigationAction({ routerParams: { interval: INTERVAL_MONTHLY, days: 90 } }));
+    store.dispatch(ACTIONS.CustomRouterNavigation({ routerParams: { interval: INTERVAL_MONTHLY, days: 90 } }));
     expect(routingService.loadSelectedEpisodeDropdays).toHaveBeenCalled();
   });
 
@@ -236,9 +229,9 @@ describe('RoutingService', () => {
       chartType: CHARTTYPE_LINE,
       interval: INTERVAL_LASTWEEK
     };
-    store.dispatch(new ACTIONS.CustomRouterNavigationAction({ routerParams: listenersRouterParams }));
+    store.dispatch(ACTIONS.CustomRouterNavigation({ routerParams: listenersRouterParams }));
     jest.spyOn(routingService, 'loadListeners');
-    store.dispatch(new ACTIONS.CustomRouterNavigationAction({ routerParams: { ...listenersRouterParams, interval: INTERVAL_LAST28DAYS } }));
+    store.dispatch(ACTIONS.CustomRouterNavigation({ routerParams: { ...listenersRouterParams, interval: INTERVAL_LAST28DAYS } }));
     expect(routingService.loadListeners).toHaveBeenCalled();
   });
 
@@ -249,12 +242,12 @@ describe('RoutingService', () => {
       group: <GroupType>GROUPTYPE_GEOCOUNTRY,
       filter: 'US'
     };
-    store.dispatch(new ACTIONS.CustomRouterNavigationAction({ routerParams: newRouterParams }));
+    store.dispatch(ACTIONS.CustomRouterNavigation({ routerParams: newRouterParams }));
 
     jest.spyOn(routingService, 'loadPodcastTotals');
 
     newRouterParams = { ...newRouterParams, interval: INTERVAL_MONTHLY };
-    store.dispatch(new ACTIONS.CustomRouterNavigationAction({ routerParams: newRouterParams }));
+    store.dispatch(ACTIONS.CustomRouterNavigation({ routerParams: newRouterParams }));
     expect(routingService.loadPodcastTotals).not.toHaveBeenCalled();
   });
 
@@ -263,27 +256,27 @@ describe('RoutingService', () => {
     jest.spyOn(routingService, 'loadPodcastTotals');
     jest.spyOn(routingService, 'loadPodcastRanks');
 
-    store.dispatch(new ACTIONS.CustomRouterNavigationAction({ routerParams: newRouterParams }));
+    store.dispatch(ACTIONS.CustomRouterNavigation({ routerParams: newRouterParams }));
     expect(routingService.loadPodcastTotals).not.toHaveBeenCalledWith(newRouterParams);
     expect(routingService.loadPodcastRanks).not.toHaveBeenCalledWith(newRouterParams);
 
     newRouterParams = { ...newRouterParams, metricsType: METRICSTYPE_DEMOGRAPHICS, group: GROUPTYPE_GEOCOUNTRY };
-    store.dispatch(new ACTIONS.CustomRouterNavigationAction({ routerParams: newRouterParams }));
+    store.dispatch(ACTIONS.CustomRouterNavigation({ routerParams: newRouterParams }));
     expect(routingService.loadPodcastTotals).toHaveBeenCalledWith(newRouterParams);
     expect(routingService.loadPodcastRanks).toHaveBeenCalledWith(newRouterParams);
 
     newRouterParams = { ...newRouterParams, interval: INTERVAL_MONTHLY };
-    store.dispatch(new ACTIONS.CustomRouterNavigationAction({ routerParams: newRouterParams }));
+    store.dispatch(ACTIONS.CustomRouterNavigation({ routerParams: newRouterParams }));
     expect(routingService.loadPodcastRanks).toHaveBeenCalledWith(newRouterParams);
     expect(routingService.loadPodcastTotals).not.toHaveBeenCalledWith(newRouterParams);
 
     newRouterParams = { ...newRouterParams, metricsType: METRICSTYPE_TRAFFICSOURCES, group: GROUPTYPE_AGENTOS };
-    store.dispatch(new ACTIONS.CustomRouterNavigationAction({ routerParams: newRouterParams }));
+    store.dispatch(ACTIONS.CustomRouterNavigation({ routerParams: newRouterParams }));
     expect(routingService.loadPodcastTotals).toHaveBeenCalledWith(newRouterParams);
     expect(routingService.loadPodcastRanks).toHaveBeenCalledWith(newRouterParams);
 
     newRouterParams = { ...newRouterParams, podcastId: '75' };
-    store.dispatch(new ACTIONS.CustomRouterNavigationAction({ routerParams: newRouterParams }));
+    store.dispatch(ACTIONS.CustomRouterNavigation({ routerParams: newRouterParams }));
     expect(routingService.loadPodcastTotals).toHaveBeenCalledWith(newRouterParams);
     expect(routingService.loadPodcastRanks).toHaveBeenCalledWith(newRouterParams);
 
@@ -292,7 +285,7 @@ describe('RoutingService', () => {
       beginDate: dateUtil.beginningOfLastYearUTC().toDate(),
       endDate: dateUtil.endOfLastYearUTC().toDate()
     };
-    store.dispatch(new ACTIONS.CustomRouterNavigationAction({ routerParams: newRouterParams }));
+    store.dispatch(ACTIONS.CustomRouterNavigation({ routerParams: newRouterParams }));
     expect(routingService.loadPodcastTotals).toHaveBeenCalledWith(newRouterParams);
     expect(routingService.loadPodcastRanks).toHaveBeenCalledWith(newRouterParams);
   });
@@ -302,21 +295,21 @@ describe('RoutingService', () => {
     jest.spyOn(routingService, 'loadPodcastRanks');
     jest.spyOn(routingService, 'loadPodcastTotals');
 
-    store.dispatch(new ACTIONS.CustomRouterNavigationAction({ routerParams: newRouterParams }));
+    store.dispatch(ACTIONS.CustomRouterNavigation({ routerParams: newRouterParams }));
     expect(routingService.loadPodcastRanks).not.toHaveBeenCalledWith(newRouterParams);
 
     newRouterParams = { ...newRouterParams, metricsType: METRICSTYPE_DEMOGRAPHICS, group: GROUPTYPE_GEOCOUNTRY, filter: 'US' };
-    store.dispatch(new ACTIONS.CustomRouterNavigationAction({ routerParams: newRouterParams }));
+    store.dispatch(ACTIONS.CustomRouterNavigation({ routerParams: newRouterParams }));
     expect(routingService.loadPodcastRanks).toHaveBeenCalledWith(newRouterParams);
     expect(routingService.loadPodcastTotals).toHaveBeenCalledWith(newRouterParams);
 
     newRouterParams = { ...newRouterParams, podcastId: '85' };
-    store.dispatch(new ACTIONS.CustomRouterNavigationAction({ routerParams: newRouterParams }));
+    store.dispatch(ACTIONS.CustomRouterNavigation({ routerParams: newRouterParams }));
     expect(routingService.loadPodcastRanks).toHaveBeenCalledWith(newRouterParams);
     expect(routingService.loadPodcastTotals).toHaveBeenCalledWith(newRouterParams);
 
     newRouterParams = { ...newRouterParams, interval: INTERVAL_MONTHLY };
-    store.dispatch(new ACTIONS.CustomRouterNavigationAction({ routerParams: newRouterParams }));
+    store.dispatch(ACTIONS.CustomRouterNavigation({ routerParams: newRouterParams }));
     expect(routingService.loadPodcastRanks).toHaveBeenCalledWith(newRouterParams);
     expect(routingService.loadPodcastTotals).not.toHaveBeenCalledWith(newRouterParams);
 
@@ -325,14 +318,14 @@ describe('RoutingService', () => {
       beginDate: dateUtil.beginningOfLastYearUTC().toDate(),
       endDate: dateUtil.endOfLastYearUTC().toDate()
     };
-    store.dispatch(new ACTIONS.CustomRouterNavigationAction({ routerParams: newRouterParams }));
+    store.dispatch(ACTIONS.CustomRouterNavigation({ routerParams: newRouterParams }));
     expect(routingService.loadPodcastRanks).toHaveBeenCalledWith(newRouterParams);
     expect(routingService.loadPodcastTotals).toHaveBeenCalledWith(newRouterParams);
   });
 
   it('should save routerState in localStorage', () => {
     localStorage.clear();
-    store.dispatch(new ACTIONS.CustomRouterNavigationAction({ routerParams }));
+    store.dispatch(ACTIONS.CustomRouterNavigation({ routerParams }));
     routingService.normalizeAndRoute(routerParams);
     expect(localStorageUtil.getItem(localStorageUtil.KEY_ROUTER_PARAMS).podcastId).toEqual(routerParams.podcastId);
   });
@@ -344,7 +337,7 @@ describe('RoutingService', () => {
     // other route params are not yet defined
     expect(routingService.routerParams).toBeUndefined();
     // update router params state via routing action using only the podcastId
-    store.dispatch(new ACTIONS.CustomRouterNavigationAction({ routerParams: newParams }));
+    store.dispatch(ACTIONS.CustomRouterNavigation({ routerParams: newParams }));
     // expect that we've routed to podcastId with other params as defaults
     expect(router.navigate).toHaveBeenCalledWith([
       podcastId,
@@ -364,7 +357,7 @@ describe('RoutingService', () => {
     });
 
     store.dispatch(
-      new ACTIONS.CustomRouterNavigationAction({
+      ACTIONS.CustomRouterNavigation({
         routerParams: { podcastId, metricsType, chartType, group, interval, beginDate, endDate, ...params }
       })
     );

@@ -40,6 +40,10 @@ describe('RoutingEffects', () => {
       component: TestComponent
     },
     {
+      path: ':podcastId/listeners/:chartType/:interval',
+      component: TestComponent
+    },
+    {
       path: ':podcastId/demographics',
       component: TestComponent
     },
@@ -64,18 +68,18 @@ describe('RoutingEffects', () => {
     store = TestBed.get(Store);
 
     jest.spyOn(store, 'dispatch');
-    store.dispatch(new ACTIONS.CustomRouterNavigationAction({ routerParams }));
-    store.dispatch(new ACTIONS.IdUserinfoSuccessAction({ user }));
+    store.dispatch(ACTIONS.CustomRouterNavigation({ routerParams }));
+    store.dispatch(ACTIONS.IdUserinfoSuccess({ user }));
 
     jest.spyOn(effects.routingService, 'normalizeAndRoute');
   }));
 
-  it('should map ROUTER_NAVIGATION to CustomRouterNavigationAction', () => {
+  it('should map ROUTER_NAVIGATION to CustomRouterNavigation', () => {
     const action = {
       type: ROUTER_NAVIGATION,
       payload: { routerState: { routerParams } }
     };
-    const result = new ACTIONS.CustomRouterNavigationAction({ routerParams });
+    const result = ACTIONS.CustomRouterNavigation({ routerParams });
     actions$.stream = hot('-a', { a: action });
     const expected = cold('-r', { r: result });
     expect(effects.customRouterNavigation$).toBeObservable(expected);
@@ -89,13 +93,13 @@ describe('RoutingEffects', () => {
       payload: { routerState }
     };
     // result does not have selected episodes
-    const result = new ACTIONS.CustomRouterNavigationAction({ routerParams });
+    const result = ACTIONS.CustomRouterNavigation({ routerParams });
     actions$.stream = hot('-a', { a: action });
     const expected = cold('-r', { r: result });
     expect(effects.customRouterNavigation$).toBeObservable(expected);
     // selected episodes dispatched to store
     expect(store.dispatch).toHaveBeenCalledWith(
-      new ACTIONS.EpisodeSelectEpisodesAction({
+      ACTIONS.EpisodeSelectEpisodes({
         podcastId: routerParams.podcastId,
         metricsType: routerParams.metricsType,
         episodeGuids: ['abcdefg', 'hijklmn']
@@ -104,7 +108,7 @@ describe('RoutingEffects', () => {
   });
 
   it('should route to podcast on episode page 1', () => {
-    const action = new ACTIONS.RoutePodcastAction({ podcastId: '70' });
+    const action = ACTIONS.RoutePodcast({ podcastId: '70' });
     store.dispatch(action);
     actions$.stream = hot('-a', { a: action });
     const expected = cold('-r', { r: null });
@@ -113,7 +117,7 @@ describe('RoutingEffects', () => {
   });
 
   it('should route to episode page', () => {
-    const action = new ACTIONS.RouteEpisodePageAction({ episodePage: 1 });
+    const action = ACTIONS.RouteEpisodePage({ episodePage: 1 });
     store.dispatch(action);
     actions$.stream = hot('-a', { a: action });
     const expected = cold('-r', { r: null });
@@ -122,7 +126,7 @@ describe('RoutingEffects', () => {
   });
 
   xit('should route to chart type', () => {
-    const action = new ACTIONS.RouteChartTypeAction({ chartType: CHARTTYPE_EPISODES });
+    const action = ACTIONS.RouteChartType({ chartType: CHARTTYPE_EPISODES });
     store.dispatch(action);
     actions$.stream = hot('-a', { a: action });
     const expected = cold('-r', { r: null });
@@ -131,7 +135,7 @@ describe('RoutingEffects', () => {
   });
 
   xit('should route to interval', () => {
-    const action = new ACTIONS.RouteIntervalAction({ interval: INTERVAL_HOURLY });
+    const action = ACTIONS.RouteInterval({ interval: INTERVAL_HOURLY });
     store.dispatch(action);
     actions$.stream = hot('-a', { a: action });
     const expected = cold('-r', { r: null });
@@ -140,7 +144,7 @@ describe('RoutingEffects', () => {
   });
 
   xit('should route to standard range and include begin and end dates', () => {
-    const action = new ACTIONS.RouteStandardRangeAction({ standardRange: dateUtil.LAST_WEEK });
+    const action = ACTIONS.RouteStandardRange({ standardRange: dateUtil.LAST_WEEK });
     store.dispatch(action);
     actions$.stream = hot('-a', { a: action });
     const expected = cold('-r', { r: null });
@@ -153,7 +157,7 @@ describe('RoutingEffects', () => {
   });
 
   xit('should route to advanced range', () => {
-    const action = new ACTIONS.RouteAdvancedRangeAction({
+    const action = ACTIONS.RouteAdvancedRange({
       interval: INTERVAL_HOURLY,
       standardRange: dateUtil.LAST_WEEK,
       beginDate: dateUtil.beginningOfLastWeekUTC().toDate(),
@@ -167,7 +171,7 @@ describe('RoutingEffects', () => {
   });
 
   it('should route to metrics and group type', () => {
-    const action = new ACTIONS.RouteMetricsGroupTypeAction({ metricsType: METRICSTYPE_DOWNLOADS });
+    const action = ACTIONS.RouteMetricsGroupType({ metricsType: METRICSTYPE_DOWNLOADS });
     store.dispatch(action);
     actions$.stream = hot('-a', { a: action });
     const expected = cold('-r', { r: null });
@@ -176,7 +180,7 @@ describe('RoutingEffects', () => {
   });
 
   it('should route to filter', () => {
-    const action = new ACTIONS.RouteGroupFilterAction({ filter: METRICSTYPE_DOWNLOADS });
+    const action = ACTIONS.RouteGroupFilter({ filter: METRICSTYPE_DOWNLOADS });
     store.dispatch(action);
     actions$.stream = hot('-a', { a: action });
     const expected = cold('-r', { r: null });
@@ -185,8 +189,8 @@ describe('RoutingEffects', () => {
   });
 
   it('should route to days', () => {
-    store.dispatch(new ACTIONS.CustomRouterNavigationAction({ routerParams: { ...routerParams, metricsType: METRICSTYPE_DROPDAY } }));
-    const action = new ACTIONS.RouteDaysAction({ days: 7 });
+    store.dispatch(ACTIONS.CustomRouterNavigation({ routerParams: { ...routerParams, metricsType: METRICSTYPE_DROPDAY } }));
+    const action = ACTIONS.RouteDays({ days: 7 });
     store.dispatch(action);
     actions$.stream = hot('-a', { a: action });
     const expected = cold('-r', { r: null });

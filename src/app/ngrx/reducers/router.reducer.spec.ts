@@ -1,6 +1,6 @@
-import { CustomRouterNavigationAction } from '../actions';
+import { CustomRouterNavigation } from '../actions';
 import { RouterParamsState, INTERVAL_DAILY, INTERVAL_HOURLY, CHARTTYPE_STACKED, METRICSTYPE_DOWNLOADS, GROUPTYPE_GEOCOUNTRY } from '../';
-import { CustomRouterReducer } from './router.reducer';
+import { reducer as CustomRouterReducer } from './router.reducer';
 import * as dateUtil from '@app/shared/util/date';
 
 describe('CustomRouterReducer', () => {
@@ -8,7 +8,7 @@ describe('CustomRouterReducer', () => {
   beforeEach(() => {
     newState = CustomRouterReducer(
       undefined,
-      new CustomRouterNavigationAction({
+      CustomRouterNavigation({
         routerParams: {
           podcastId: '70',
           beginDate: new Date(),
@@ -24,38 +24,38 @@ describe('CustomRouterReducer', () => {
   });
 
   it('should update with new metrics type', () => {
-    newState = CustomRouterReducer(newState, new CustomRouterNavigationAction({ routerParams: { metricsType: METRICSTYPE_DOWNLOADS } }));
+    newState = CustomRouterReducer(newState, CustomRouterNavigation({ routerParams: { metricsType: METRICSTYPE_DOWNLOADS } }));
     expect(newState.routerParams.metricsType).toEqual(METRICSTYPE_DOWNLOADS);
   });
 
   it('should update with new group', () => {
-    newState = CustomRouterReducer(newState, new CustomRouterNavigationAction({ routerParams: { group: GROUPTYPE_GEOCOUNTRY } }));
+    newState = CustomRouterReducer(newState, CustomRouterNavigation({ routerParams: { group: GROUPTYPE_GEOCOUNTRY } }));
     expect(newState.routerParams.group).toEqual(GROUPTYPE_GEOCOUNTRY);
   });
 
   it('should allow filter to be explicitly set to null', () => {
-    newState = CustomRouterReducer(newState, new CustomRouterNavigationAction({ routerParams: {} }));
+    newState = CustomRouterReducer(newState, CustomRouterNavigation({ routerParams: {} }));
     expect(newState.hasOwnProperty('filter')).toBeFalsy();
-    newState = CustomRouterReducer(newState, new CustomRouterNavigationAction({ routerParams: { filter: 'US' } }));
+    newState = CustomRouterReducer(newState, CustomRouterNavigation({ routerParams: { filter: 'US' } }));
     expect(newState.routerParams.filter).toEqual('US');
-    newState = CustomRouterReducer(newState, new CustomRouterNavigationAction({ routerParams: { filter: undefined } }));
+    newState = CustomRouterReducer(newState, CustomRouterNavigation({ routerParams: { filter: undefined } }));
     expect(newState.routerParams.filter).toBeUndefined();
   });
 
   it('should update with new chart type', () => {
-    newState = CustomRouterReducer(newState, new CustomRouterNavigationAction({ routerParams: { chartType: CHARTTYPE_STACKED } }));
+    newState = CustomRouterReducer(newState, CustomRouterNavigation({ routerParams: { chartType: CHARTTYPE_STACKED } }));
     expect(newState.routerParams.chartType).toEqual(CHARTTYPE_STACKED);
   });
 
   it('should update with new interval', () => {
-    newState = CustomRouterReducer(newState, new CustomRouterNavigationAction({ routerParams: { interval: INTERVAL_HOURLY } }));
+    newState = CustomRouterReducer(newState, CustomRouterNavigation({ routerParams: { interval: INTERVAL_HOURLY } }));
     expect(newState.routerParams.interval.key).toEqual('hourly');
   });
 
   it('should update with new episode page', () => {
     newState = CustomRouterReducer(
       newState,
-      new CustomRouterNavigationAction({
+      CustomRouterNavigation({
         routerParams: {
           episodePage: 1
         }
@@ -67,7 +67,7 @@ describe('CustomRouterReducer', () => {
   it('should update with new beginDate or endDate', () => {
     newState = CustomRouterReducer(
       newState,
-      new CustomRouterNavigationAction({
+      CustomRouterNavigation({
         routerParams: { beginDate: new Date('2017-08-26T10:00:00Z'), endDate: new Date('2017-09-10T12:00:00Z') }
       })
     );
@@ -77,7 +77,7 @@ describe('CustomRouterReducer', () => {
   it('should update standardRange value if begin or end dates are present', () => {
     newState = CustomRouterReducer(
       newState,
-      new CustomRouterNavigationAction({
+      CustomRouterNavigation({
         routerParams: {
           standardRange: dateUtil.THIS_WEEK,
           beginDate: dateUtil.beginningOfThisWeekUTC().toDate(),
@@ -88,7 +88,7 @@ describe('CustomRouterReducer', () => {
     expect(newState.routerParams.standardRange).toEqual(dateUtil.THIS_WEEK);
     newState = CustomRouterReducer(
       newState,
-      new CustomRouterNavigationAction({
+      CustomRouterNavigation({
         routerParams: { beginDate: dateUtil.beginningOfTodayUTC().subtract(18, 'days').toDate() }
       })
     );
@@ -96,14 +96,14 @@ describe('CustomRouterReducer', () => {
   });
 
   it('should update with new days', () => {
-    newState = CustomRouterReducer(newState, new CustomRouterNavigationAction({ routerParams: { days: 7 } }));
+    newState = CustomRouterReducer(newState, CustomRouterNavigation({ routerParams: { days: 7 } }));
     expect(newState.routerParams.days).toEqual(7);
   });
 
   it('should retain other fields when updating', () => {
     expect(newState.routerParams.interval.key).toEqual('daily');
     expect(newState.routerParams.podcastId).toEqual('70');
-    newState = CustomRouterReducer(newState, new CustomRouterNavigationAction({ routerParams: { interval: INTERVAL_HOURLY } }));
+    newState = CustomRouterReducer(newState, CustomRouterNavigation({ routerParams: { interval: INTERVAL_HOURLY } }));
     expect(newState.routerParams.interval.key).toEqual('hourly');
     expect(newState.routerParams.podcastId).toEqual('70');
   });

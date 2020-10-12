@@ -22,35 +22,45 @@ describe('DownloadsChartContainerComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [
-        DownloadsChartContainerComponent,
-        DownloadsChartPresentationComponent
-      ],
-      imports: [
-        SharedModule,
-        StoreModule.forRoot(reducers)
-      ]
-    }).compileComponents().then(() => {
-      fix = TestBed.createComponent(DownloadsChartContainerComponent);
-      comp = fix.componentInstance;
-      fix.detectChanges();
-      de = fix.debugElement;
-      el = de.nativeElement;
-      store = TestBed.get(Store);
+      declarations: [DownloadsChartContainerComponent, DownloadsChartPresentationComponent],
+      imports: [SharedModule, StoreModule.forRoot(reducers)]
+    })
+      .compileComponents()
+      .then(() => {
+        fix = TestBed.createComponent(DownloadsChartContainerComponent);
+        comp = fix.componentInstance;
+        fix.detectChanges();
+        de = fix.debugElement;
+        el = de.nativeElement;
+        store = TestBed.get(Store);
 
-      store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerParams}));
-      store.dispatch(new ACTIONS.CastleEpisodePageSuccessAction({
-        episodes,
-        page: 1,
-        per: EPISODE_PAGE_SIZE,
-        total: episodes.length
-      }));
-      store.dispatch(new ACTIONS.CastleEpisodeDownloadsSuccessAction({
-        podcastId: episodes[0].podcastId, page: episodes[0].page, guid: episodes[0].guid, downloads: ep0Downloads}));
-      store.dispatch(new ACTIONS.CastleEpisodeDownloadsSuccessAction({
-        podcastId: episodes[1].podcastId, page: episodes[1].page, guid: episodes[1].guid, downloads: ep1Downloads}));
-      store.dispatch(new ACTIONS.CastlePodcastDownloadsSuccessAction({id: podcast.id, downloads: podDownloads}));
-    });
+        store.dispatch(ACTIONS.CustomRouterNavigation({ routerParams }));
+        store.dispatch(
+          ACTIONS.CastleEpisodePageSuccess({
+            episodes,
+            page: 1,
+            per: EPISODE_PAGE_SIZE,
+            total: episodes.length
+          })
+        );
+        store.dispatch(
+          ACTIONS.CastleEpisodeDownloadsSuccess({
+            podcastId: episodes[0].podcastId,
+            page: episodes[0].page,
+            guid: episodes[0].guid,
+            downloads: ep0Downloads
+          })
+        );
+        store.dispatch(
+          ACTIONS.CastleEpisodeDownloadsSuccess({
+            podcastId: episodes[1].podcastId,
+            page: episodes[1].page,
+            guid: episodes[1].guid,
+            downloads: ep1Downloads
+          })
+        );
+        store.dispatch(ACTIONS.CastlePodcastDownloadsSuccess({ id: podcast.id, downloads: podDownloads }));
+      });
   }));
 
   it('should have router params', done => {

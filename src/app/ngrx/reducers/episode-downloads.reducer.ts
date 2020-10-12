@@ -1,5 +1,8 @@
 import { EntityState, EntityAdapter, createEntityAdapter } from '@ngrx/entity';
-import { ActionTypes, AllActions } from '../actions';
+import { createReducer, on } from '@ngrx/store';
+import * as catalogActions from '../actions/castle-catalog.action.creator';
+import * as chartActions from '../actions/chart-toggle.action.creator';
+import * as downloadActions from '../actions/castle-downloads.action.creator';
 import { Episode, EpisodeDownloads } from './models';
 
 export type State = EntityState<EpisodeDownloads>;
@@ -14,71 +17,95 @@ export const {
   selectAll: selectAllEpisodeDownloads
 } = adapter.getSelectors();
 
-export function reducer(state: State = initialState, action: AllActions) {
-  switch (action.type) {
-    case ActionTypes.CASTLE_EPISODE_PAGE_SUCCESS: {
-      // sets loaded to false on entry when episode page is loaded expecting that downloads will also be loaded
-      // (prevents loaded selector from showing prematurely when downloads load call has momentarily not yet been made)
-      const { episodes } = action.payload;
-      return adapter.addMany(episodes.map((episode: Episode) => {
+const _reducer = createReducer(
+  initialState,
+  on(catalogActions.CastleEpisodePageSuccess, (state, action) => {
+    // sets loaded to false on entry when episode page is loaded expecting that downloads will also be loaded
+    // (prevents loaded selector from showing prematurely when downloads load call has momentarily not yet been made)
+    const { episodes } = action;
+    return adapter.addMany(
+      episodes.map((episode: Episode) => {
         const { guid, podcastId, page } = episode;
-        return {id: episode.guid, changes: { guid, podcastId, page, loaded: false}};
-      }), state);
-    }
+        return { id: guid, guid, podcastId, page, loaded: false };
+      }),
+      state
+    );
+  }),
+  on(downloadActions.CastleEpisodeDownloadsLoad, (state, action) => {
+    const { guid, podcastId, page } = action;
+    return adapter.upsertOne(
+      {
+        id: guid,
+        ...selectEpisodeDownloadsEntities(state)[guid],
+        guid,
+        podcastId,
+        page,
+        error: null,
+        loading: true,
+        loaded: false
+      },
+      state
+    );
+  }),
+  on(downloadActions.CastleEpisodeDownloadsSuccess, (state, action) => {
+    const { guid, podcastId, page, downloads } = action;
+    return adapter.upsertOne(
+      {
+        id: guid,
+        ...selectEpisodeDownloadsEntities(state)[guid],
+        guid,
+        podcastId,
+        page,
+        downloads,
+        charted: true,
+        loading: false,
+        loaded: true
+      },
+      state
+    );
+  }),
+  on(downloadActions.CastleEpisodeDownloadsFailure, (state, action) => {
+    const { guid, podcastId, page, error } = action;
+    return adapter.upsertOne(
+      {
+        id: guid,
+        ...selectEpisodeDownloadsEntities(state)[guid],
+        guid,
+        podcastId,
+        page,
+        error,
+        loading: false,
+        loaded: false
+      },
+      state
+    );
+  }),
+  on(chartActions.ChartSingleEpisode, (state, action) => {
+    const allGuids = <string[]>selectEpisodeDownloadsGuids(state);
+    return adapter.upsertMany(
+      allGuids.map(guid => ({
+        id: guid,
+        guid,
+        ...selectEpisodeDownloadsEntities(state)[guid],
+        charted: guid === action.guid
+      })),
+      state
+    );
+  }),
+  on(chartActions.ChartToggleEpisode, (state, action) => {
+    const { guid, charted } = action;
+    return adapter.updateOne(
+      {
+        id: guid,
+        changes: {
+          charted
+        }
+      },
+      state
+    );
+  })
+);
 
-    case ActionTypes.CASTLE_EPISODE_DOWNLOADS_LOAD: {
-      const { guid, podcastId, page } = action.payload;
-      return adapter.upsertOne(
-        {
-          id: guid,
-          ...selectEpisodeDownloadsEntities(state)[guid],
-          guid, podcastId, page, error: null, loading: true, loaded: false
-        },
-        state);
-    }
-    case ActionTypes.CASTLE_EPISODE_DOWNLOADS_SUCCESS: {
-      const { guid, podcastId, page, downloads } = action.payload;
-      return adapter.upsertOne(
-        {
-          id: guid,
-          ...selectEpisodeDownloadsEntities(state)[guid],
-          guid, podcastId, page, downloads, charted: true, loading: false, loaded: true
-        },
-        state);
-    }
-    case ActionTypes.CASTLE_EPISODE_DOWNLOADS_FAILURE: {
-      const { guid, podcastId, page, error } = action.payload;
-      return adapter.upsertOne(
-        {
-          id: guid,
-          ...selectEpisodeDownloadsEntities(state)[guid],
-          guid, podcastId, page, error, loading: false, loaded: false
-        },
-        state);
-    }
-
-    case ActionTypes.CHART_SINGLE_EPISODE: {
-      const allGuids = <string[]>selectEpisodeDownloadsGuids(state);
-      return adapter.upsertMany(allGuids.map(guid =>
-          ({
-            id: guid,
-            guid,
-            ...selectEpisodeDownloadsEntities(state)[guid],
-            charted: guid === action.payload.guid})),
-          state);
-    }
-    case ActionTypes.CHART_TOGGLE_EPISODE: {
-      const { guid, charted } = action.payload;
-      return adapter.updateOne(
-        {
-          id: guid,
-          changes: {
-            charted
-          }
-        },
-        state);
-    }
-    default:
-      return state;
-  }
+export function reducer(state, action) {
+  return _reducer(state, action);
 }

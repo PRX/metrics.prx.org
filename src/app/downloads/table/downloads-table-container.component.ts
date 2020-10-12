@@ -2,9 +2,13 @@ import { Component, OnInit, Input } from '@angular/core';
 import { Store, select } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { DownloadsTableModel, RouterParams, CHARTTYPE_EPISODES } from '@app/ngrx';
-import { selectRouter, selectNumEpisodePages,
-  selectDownloadTablePodcastDownloads, selectDownloadTableEpisodeMetrics,
-  selectDownloadTableIntervalData } from '@app/ngrx/reducers/selectors';
+import {
+  selectRouter,
+  selectNumEpisodePages,
+  selectDownloadTablePodcastDownloads,
+  selectDownloadTableEpisodeMetrics,
+  selectDownloadTableIntervalData
+} from '@app/ngrx/reducers/selectors';
 import * as ACTIONS from '@app/ngrx/actions';
 
 @Component({
@@ -19,7 +23,8 @@ import * as ACTIONS from '@app/ngrx/actions';
       (toggleChartPodcast)="onToggleChartPodcast($event)"
       (toggleChartEpisode)="onToggleChartEpisode($event)"
       (chartSingleEpisode)="onChartSingleEpisode($event)"
-      (pageChange)="onPageChange($event)">
+      (pageChange)="onPageChange($event)"
+    >
     </metrics-downloads-table-presentation>
   `
 })
@@ -41,20 +46,20 @@ export class DownloadsTableContainerComponent implements OnInit {
     this.routerParams$ = this.store.pipe(select(selectRouter));
   }
 
-  onToggleChartPodcast(params: {id: string, charted: boolean}) {
-    this.store.dispatch(new ACTIONS.ChartTogglePodcastAction({...params}));
+  onToggleChartPodcast(params: { id: string; charted: boolean }) {
+    this.store.dispatch(ACTIONS.ChartTogglePodcast({ ...params }));
   }
 
-  onToggleChartEpisode(params: {podcastId: string, guid: string, charted: boolean}) {
-    this.store.dispatch(new ACTIONS.ChartToggleEpisodeAction(params));
+  onToggleChartEpisode(params: { podcastId: string; guid: string; charted: boolean }) {
+    this.store.dispatch(ACTIONS.ChartToggleEpisode(params));
   }
 
-  onChartSingleEpisode(params: {podcastId: string, guid: string}) {
-    this.store.dispatch(new ACTIONS.ChartSingleEpisodeAction(params));
-    this.store.dispatch(new ACTIONS.RouteChartTypeAction({chartType: CHARTTYPE_EPISODES}));
+  onChartSingleEpisode(params: { podcastId: string; guid: string }) {
+    this.store.dispatch(ACTIONS.ChartSingleEpisode(params));
+    this.store.dispatch(ACTIONS.RouteChartType({ chartType: CHARTTYPE_EPISODES }));
   }
 
   onPageChange(episodePage: number) {
-    this.store.dispatch(new ACTIONS.RouteEpisodePageAction({episodePage}));
+    this.store.dispatch(ACTIONS.RouteEpisodePage({ episodePage }));
   }
 }

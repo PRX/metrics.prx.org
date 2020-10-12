@@ -8,7 +8,7 @@ describe('EpisodeDownloadsReducer', () => {
   beforeEach(() => {
     newState = fromEpisodeDropday.reducer(
       undefined,
-      new ACTIONS.CastleEpisodeDropdaySuccessAction({
+      ACTIONS.CastleEpisodeDropdaySuccess({
         podcastId: '70',
         interval: INTERVAL_DAILY,
         guid: episodes[0].guid,
@@ -28,7 +28,7 @@ describe('EpisodeDownloadsReducer', () => {
   it('should update existing episode dropday metrics', () => {
     newState = fromEpisodeDropday.reducer(
       newState,
-      new ACTIONS.CastleEpisodeDropdaySuccessAction({
+      ACTIONS.CastleEpisodeDropdaySuccess({
         podcastId: '70',
         interval: INTERVAL_DAILY,
         guid: episodes[0].guid,
@@ -46,7 +46,7 @@ describe('EpisodeDownloadsReducer', () => {
   it('should add new episode dropday metrics', () => {
     newState = fromEpisodeDropday.reducer(
       newState,
-      new ACTIONS.CastleEpisodeDropdaySuccessAction({
+      ACTIONS.CastleEpisodeDropdaySuccess({
         podcastId: '70',
         interval: INTERVAL_DAILY,
         guid: episodes[1].guid,

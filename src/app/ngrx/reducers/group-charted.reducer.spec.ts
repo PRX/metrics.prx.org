@@ -14,12 +14,14 @@ describe('Group Charted Reducer', () => {
   });
 
   function chartToggleGroup(state: State, charted: boolean) {
-    return reducer(state,
-      new ACTIONS.ChartToggleGroupAction({
+    return reducer(
+      state,
+      ACTIONS.ChartToggleGroup({
         group: GROUPTYPE_AGENTNAME,
         groupName: 'Overcast',
         charted
-      }));
+      })
+    );
   }
 
   it('should toggle chart on and off', () => {

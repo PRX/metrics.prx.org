@@ -40,22 +40,23 @@ describe('CastleRanksTotalsEffects', () => {
         return { count: total, label, code };
       })
     });
-    castle.root.mockList('prx:episode-ranks', [{
-      downloads: ep0AgentNameDownloads,
-      ranks: ep0AgentNameRanks
-    }]);
-    castle.root.mockList('prx:episode-totals', [{
-      ranks: ep0AgentNameRanks.map(rank => {
-        const { total, label, code } = rank;
-        return { count: total, label, code };
-      })
-    }]);
+    castle.root.mockList('prx:episode-ranks', [
+      {
+        downloads: ep0AgentNameDownloads,
+        ranks: ep0AgentNameRanks
+      }
+    ]);
+    castle.root.mockList('prx:episode-totals', [
+      {
+        ranks: ep0AgentNameRanks.map(rank => {
+          const { total, label, code } = rank;
+          return { count: total, label, code };
+        })
+      }
+    ]);
 
     TestBed.configureTestingModule({
-      imports: [
-        StoreModule.forRoot({ ...reducers }),
-        EffectsModule.forRoot([CastleRanksTotalsEffects])
-      ],
+      imports: [StoreModule.forRoot({ ...reducers }), EffectsModule.forRoot([CastleRanksTotalsEffects])],
       providers: [
         CastleRanksTotalsEffects,
         { provide: HalService, useValue: castle },
@@ -68,17 +69,14 @@ describe('CastleRanksTotalsEffects', () => {
   }));
 
   it('should load more than one grouped podcast ranks at a time', () => {
-    const action: ACTIONS.CastlePodcastRanksLoadAction = {
-      type: ACTIONS.ActionTypes.CASTLE_PODCAST_RANKS_LOAD,
-      payload: {
-        podcastId: podcast.id,
-        group: GROUPTYPE_AGENTNAME,
-        interval: INTERVAL_DAILY,
-        beginDate: routerParams.beginDate,
-        endDate: routerParams.endDate,
-      }
-    };
-    const success = new ACTIONS.CastlePodcastRanksSuccessAction({
+    const action = ACTIONS.CastlePodcastRanksLoad({
+      podcastId: podcast.id,
+      group: GROUPTYPE_AGENTNAME,
+      interval: INTERVAL_DAILY,
+      beginDate: routerParams.beginDate,
+      endDate: routerParams.endDate
+    });
+    const success = ACTIONS.CastlePodcastRanksSuccess({
       podcastId: podcast.id,
       group: GROUPTYPE_AGENTNAME,
       filter: undefined,
@@ -95,16 +93,13 @@ describe('CastleRanksTotalsEffects', () => {
   });
 
   it('should load more than one grouped podcast totals at a time', () => {
-    const action: ACTIONS.CastlePodcastTotalsLoadAction = {
-      type: ACTIONS.ActionTypes.CASTLE_PODCAST_TOTALS_LOAD,
-      payload: {
-        podcastId: podcast.id,
-        group: GROUPTYPE_AGENTNAME,
-        beginDate: routerParams.beginDate,
-        endDate: routerParams.endDate
-      }
-    };
-    const success = new ACTIONS.CastlePodcastTotalsSuccessAction({
+    const action = ACTIONS.CastlePodcastTotalsLoad({
+      podcastId: podcast.id,
+      group: GROUPTYPE_AGENTNAME,
+      beginDate: routerParams.beginDate,
+      endDate: routerParams.endDate
+    });
+    const success = ACTIONS.CastlePodcastTotalsSuccess({
       podcastId: podcast.id,
       group: GROUPTYPE_AGENTNAME,
       filter: undefined,
@@ -122,17 +117,14 @@ describe('CastleRanksTotalsEffects', () => {
   });
 
   it('should load more than one grouped episode ranks at a time', () => {
-    const action: ACTIONS.CastleEpisodeRanksLoadAction = {
-      type: ACTIONS.ActionTypes.CASTLE_EPISODE_RANKS_LOAD,
-      payload: {
-        guid: episodes[0].guid,
-        group: GROUPTYPE_AGENTNAME,
-        interval: INTERVAL_DAILY,
-        beginDate: routerParams.beginDate,
-        endDate: routerParams.endDate,
-      }
-    };
-    const success = new ACTIONS.CastleEpisodeRanksSuccessAction({
+    const action = ACTIONS.CastleEpisodeRanksLoad({
+      guid: episodes[0].guid,
+      group: GROUPTYPE_AGENTNAME,
+      interval: INTERVAL_DAILY,
+      beginDate: routerParams.beginDate,
+      endDate: routerParams.endDate
+    });
+    const success = ACTIONS.CastleEpisodeRanksSuccess({
       guid: episodes[0].guid,
       group: GROUPTYPE_AGENTNAME,
       filter: undefined,
@@ -149,16 +141,13 @@ describe('CastleRanksTotalsEffects', () => {
   });
 
   it('should load more than one grouped episode totals at a time', () => {
-    const action: ACTIONS.CastleEpisodeTotalsLoadAction = {
-      type: ACTIONS.ActionTypes.CASTLE_EPISODE_TOTALS_LOAD,
-      payload: {
-        guid: episodes[0].guid,
-        group: GROUPTYPE_AGENTNAME,
-        beginDate: routerParams.beginDate,
-        endDate: routerParams.endDate
-      }
-    };
-    const success = new ACTIONS.CastleEpisodeTotalsSuccessAction({
+    const action = ACTIONS.CastleEpisodeTotalsLoad({
+      guid: episodes[0].guid,
+      group: GROUPTYPE_AGENTNAME,
+      beginDate: routerParams.beginDate,
+      endDate: routerParams.endDate
+    });
+    const success = ACTIONS.CastleEpisodeTotalsSuccess({
       guid: episodes[0].guid,
       group: GROUPTYPE_AGENTNAME,
       filter: undefined,

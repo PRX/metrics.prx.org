@@ -11,7 +11,7 @@ import { PodcastNavListComponent } from './podcast-nav-list.component';
 
 import { reducers, RootState } from '../../ngrx/reducers';
 
-import { CustomRouterNavigationAction, RoutePodcastAction, CastlePodcastPageSuccessAction } from '../../ngrx/actions';
+import { CustomRouterNavigation, RoutePodcast, CastlePodcastPageSuccess } from '../../ngrx/actions';
 import { Podcast, RouterParams } from '../../ngrx';
 
 describe('PodcastNavComponent', () => {
@@ -51,8 +51,8 @@ describe('PodcastNavComponent', () => {
 
         store = TestBed.get(Store);
 
-        store.dispatch(new CustomRouterNavigationAction({ routerParams }));
-        store.dispatch(new CastlePodcastPageSuccessAction({ page: 1, podcasts: podcasts.slice(0, 1), total: 1 }));
+        store.dispatch(CustomRouterNavigation({ routerParams }));
+        store.dispatch(CastlePodcastPageSuccess({ page: 1, podcasts: podcasts.slice(0, 1), total: 1 }));
       });
   }));
 
@@ -73,6 +73,6 @@ describe('PodcastNavComponent', () => {
   it('should dispatch routing action when podcast is changed', () => {
     jest.spyOn(store, 'dispatch').mockImplementation(() => {});
     comp.onPodcastChange(podcasts[1]);
-    expect(store.dispatch).toHaveBeenCalledWith(new RoutePodcastAction({ podcastId: podcasts[1].id }));
+    expect(store.dispatch).toHaveBeenCalledWith(RoutePodcast({ podcastId: podcasts[1].id }));
   });
 });

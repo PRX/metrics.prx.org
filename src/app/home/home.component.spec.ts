@@ -10,7 +10,7 @@ import { SharedModule } from '../shared';
 import { HomeComponent } from './home.component';
 
 import { reducers } from '../ngrx/reducers';
-import { CastlePodcastPageFailureAction } from '../ngrx/actions';
+import { CastlePodcastPageFailure } from '../ngrx/actions';
 
 describe('HomeComponent', () => {
   let comp: HomeComponent;
@@ -21,33 +21,26 @@ describe('HomeComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [
-        RouterTestingModule,
-        SharedModule,
-        StoreModule.forRoot(reducers)
-      ],
-      declarations: [ HomeComponent ],
-      providers : [
-        CastleService,
-        {provide: HalService, useValue: mockHal},
-        {provide: Angulartics2}
-      ]
+      imports: [RouterTestingModule, SharedModule, StoreModule.forRoot(reducers)],
+      declarations: [HomeComponent],
+      providers: [CastleService, { provide: HalService, useValue: mockHal }, { provide: Angulartics2 }]
     })
-    .compileComponents().then(() => {
-      fix = TestBed.createComponent(HomeComponent);
-      comp = fix.componentInstance;
-      fix.detectChanges();
-      de = fix.debugElement;
-      el = de.nativeElement;
-    });
+      .compileComponents()
+      .then(() => {
+        fix = TestBed.createComponent(HomeComponent);
+        comp = fix.componentInstance;
+        fix.detectChanges();
+        de = fix.debugElement;
+        el = de.nativeElement;
+      });
   }));
 
   it('should be created', () => {
     expect(comp).toBeTruthy();
   });
 
-  it('should inform users if they don\'t have any podcasts', () => {
-    comp.store.dispatch(new CastlePodcastPageFailureAction({error: 'error is type any so we can also capture response errors'}));
+  it("should inform users if they don't have any podcasts", () => {
+    comp.store.dispatch(CastlePodcastPageFailure({ error: 'error is type any so we can also capture response errors' }));
     fix.detectChanges();
     expect(de.query(By.css('p.error'))).not.toBeNull();
   });

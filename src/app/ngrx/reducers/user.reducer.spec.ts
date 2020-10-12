@@ -4,18 +4,17 @@ import { userinfo } from '../../../testing/downloads.fixtures';
 import { User } from './models';
 
 describe('User Reducer', () => {
-
-  const user: User = {doc: null, loggedIn: true, authorized: true, userinfo};
+  const user: User = { doc: null, loggedIn: true, authorized: true, userinfo };
 
   it('starts loading a user', () => {
-    const state = fromUser.reducer(fromUser.initialState, new ACTIONS.IdUserinfoLoadAction());
+    const state = fromUser.reducer(fromUser.initialState, ACTIONS.IdUserinfoLoad());
     expect(state.loading).toEqual(true);
     expect(state.loaded).toEqual(false);
     expect(state.user).toEqual(null);
   });
 
   it('successfully loads a user', () => {
-    const state = fromUser.reducer(fromUser.initialState, new ACTIONS.IdUserinfoSuccessAction({user}));
+    const state = fromUser.reducer(fromUser.initialState, ACTIONS.IdUserinfoSuccess({ user }));
     expect(state.loading).toEqual(false);
     expect(state.loaded).toEqual(true);
     expect(state.user.loggedIn).toBeTruthy();
@@ -25,10 +24,9 @@ describe('User Reducer', () => {
 
   it('fails to load a user', () => {
     const error = 'Something something failed to load';
-    const state = fromUser.reducer(fromUser.initialState, new ACTIONS.IdUserinfoFailureAction({error}));
+    const state = fromUser.reducer(fromUser.initialState, ACTIONS.IdUserinfoFailure({ error }));
     expect(state.loading).toEqual(false);
     expect(state.loaded).toEqual(false);
     expect(fromUser.getUserError(state)).toEqual(error);
   });
-
 });

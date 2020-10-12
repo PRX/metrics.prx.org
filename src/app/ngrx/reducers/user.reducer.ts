@@ -1,4 +1,5 @@
-import { ActionTypes, AllActions } from '../actions';
+import { createReducer, on } from '@ngrx/store';
+import * as idActions from '../actions/id.action.creator';
 import { User } from './models/';
 
 export interface State {
@@ -14,38 +15,39 @@ export const initialState = {
   loading: false
 };
 
-export function reducer(state: State = initialState, action: AllActions): State {
-  switch (action.type) {
-    case ActionTypes.ID_USERINFO_LOAD: {
-      return {
-        ...state,
-        user: null,
-        loading: true,
-        loaded: false
-      };
-    }
-    case ActionTypes.ID_USERINFO_SUCCESS: {
-      const { user } = action.payload;
-      return {
-        ...state,
-        user,
-        loading: false,
-        loaded: true
-      };
-    }
-    case ActionTypes.ID_USERINFO_FAILURE: {
-      return {
-        ...state,
-        error: action.payload.error,
-        user: null,
-        loading: false,
-        loaded: false
-      };
-    }
-  }
-  return state;
+const _reducer = createReducer(
+  initialState,
+  on(idActions.IdUserinfoLoad, (state, action) => {
+    return {
+      ...state,
+      user: null,
+      loading: true,
+      loaded: false
+    };
+  }),
+  on(idActions.IdUserinfoSuccess, (state, action) => {
+    const { user } = action;
+    return {
+      ...state,
+      user,
+      loading: false,
+      loaded: true
+    };
+  }),
+  on(idActions.IdUserinfoFailure, (state, action) => {
+    return {
+      ...state,
+      error: action.error,
+      user: null,
+      loading: false,
+      loaded: false
+    };
+  })
+);
+
+export function reducer(state, action) {
+  return _reducer(state, action);
 }
 
-export const getUser = (state: State) =>
-  state.user;
+export const getUser = (state: State) => state.user;
 export const getUserError = (state: State) => state.error;

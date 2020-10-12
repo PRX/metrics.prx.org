@@ -36,7 +36,7 @@ import { UserAgentsModule } from './user-agents/user-agents.module';
     AuthModule,
     SharedModule,
     Angulartics2Module.forRoot(),
-    StoreModule.forRoot(reducers),
+    StoreModule.forRoot(reducers, { runtimeChecks: { strictStateImmutability: false, strictActionImmutability: false } }),
     StoreDevtoolsModule.instrument({
       maxAge: 150, // Retains last 150 states
       logOnly: environment.production // Restrict extension to log-only mode

@@ -7,7 +7,6 @@ import { ErrorRetryComponent } from './error-retry.component';
 import * as ACTIONS from '../../ngrx/actions';
 import { reducers } from '../../ngrx/reducers';
 import { routerParams } from '../../../testing/downloads.fixtures';
-import { MetricsType } from '@app/ngrx';
 
 describe('ErrorRetryComponent', () => {
   let comp: ErrorRetryComponent;
@@ -33,14 +32,14 @@ describe('ErrorRetryComponent', () => {
   }));
 
   function setRetryActions() {
-    comp.retryActions = [
-      new ACTIONS.CastlePodcastDownloadsLoadAction({
+    comp.retryActions = ([
+      ACTIONS.CastlePodcastDownloadsLoad({
         id: routerParams.podcastId,
         interval: routerParams.interval,
         beginDate: routerParams.beginDate,
         endDate: routerParams.endDate
       })
-    ];
+    ] as any[]) as ACTIONS.AllActions[];
     fix.detectChanges();
   }
 

@@ -19,25 +19,22 @@ describe('NavMenuContainerComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [
-        NavMenuContainerComponent,
-        NavMenuPresentationComponent
-      ],
-      imports: [
-        StoreModule.forRoot(reducers)
-      ]
-    }).compileComponents().then(() => {
-      fix = TestBed.createComponent(NavMenuContainerComponent);
-      comp = fix.componentInstance;
-      fix.detectChanges();
-      de = fix.debugElement;
-      el = de.nativeElement;
-      store = TestBed.get(Store);
+      declarations: [NavMenuContainerComponent, NavMenuPresentationComponent],
+      imports: [StoreModule.forRoot(reducers)]
+    })
+      .compileComponents()
+      .then(() => {
+        fix = TestBed.createComponent(NavMenuContainerComponent);
+        comp = fix.componentInstance;
+        fix.detectChanges();
+        de = fix.debugElement;
+        el = de.nativeElement;
+        store = TestBed.get(Store);
 
-      store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerParams}));
+        store.dispatch(ACTIONS.CustomRouterNavigation({ routerParams }));
 
-      jest.spyOn(store, 'dispatch');
-    });
+        jest.spyOn(store, 'dispatch');
+      });
   }));
 
   it('should have router params', done => {
@@ -48,8 +45,9 @@ describe('NavMenuContainerComponent', () => {
   });
 
   it('should dispatch routing action', () => {
-    comp.routeMetricsGroupType({metricsType: routerParams.metricsType, group: routerParams.group});
+    comp.routeMetricsGroupType({ metricsType: routerParams.metricsType, group: routerParams.group });
     expect(store.dispatch).toHaveBeenCalledWith(
-      new ACTIONS.RouteMetricsGroupTypeAction({metricsType: routerParams.metricsType, group: routerParams.group}));
+      ACTIONS.RouteMetricsGroupType({ metricsType: routerParams.metricsType, group: routerParams.group })
+    );
   });
 });

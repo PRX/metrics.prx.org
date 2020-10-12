@@ -1,225 +1,90 @@
-import { Action } from '@ngrx/store';
+import { createAction, props } from '@ngrx/store';
 import { ActionTypes } from './action.types';
 import { IntervalModel } from '../';
 
-export interface CastlePodcastDownloadsLoadPayload {
-  id: string;
-  interval: IntervalModel;
-  beginDate: Date;
-  endDate: Date;
-}
+export const CastlePodcastDownloadsLoad = createAction(
+  ActionTypes.CASTLE_PODCAST_DOWNLOADS_LOAD,
+  props<{ id: string; interval: IntervalModel; beginDate: Date; endDate: Date }>()
+);
 
-export class CastlePodcastDownloadsLoadAction implements Action {
-  readonly type = ActionTypes.CASTLE_PODCAST_DOWNLOADS_LOAD;
+export const CastlePodcastDownloadsSuccess = createAction(
+  ActionTypes.CASTLE_PODCAST_DOWNLOADS_SUCCESS,
+  props<{ id: string; downloads: any[][] }>()
+);
 
-  constructor(public payload: CastlePodcastDownloadsLoadPayload) {}
-}
+export const CastlePodcastDownloadsFailure = createAction(
+  ActionTypes.CASTLE_PODCAST_DOWNLOADS_FAILURE,
+  props<{ id: string; error: any }>()
+);
 
-export interface CastlePodcastDownloadsSuccessPayload {
-  id: string;
-  downloads: any[][];
-}
+export const CastleEpisodeDownloadsLoad = createAction(
+  ActionTypes.CASTLE_EPISODE_DOWNLOADS_LOAD,
+  props<{ podcastId: string; page: number; guid: string; interval: IntervalModel; beginDate: Date; endDate: Date }>()
+);
 
-export class CastlePodcastDownloadsSuccessAction implements Action {
-  readonly type = ActionTypes.CASTLE_PODCAST_DOWNLOADS_SUCCESS;
+export const CastleEpisodeDownloadsSuccess = createAction(
+  ActionTypes.CASTLE_EPISODE_DOWNLOADS_SUCCESS,
+  props<{ podcastId: string; page: number; guid: string; downloads: any[][] }>()
+);
 
-  constructor(public payload: CastlePodcastDownloadsSuccessPayload) {}
-}
+export const CastleEpisodeDownloadsFailure = createAction(
+  ActionTypes.CASTLE_EPISODE_DOWNLOADS_FAILURE,
+  props<{ podcastId: string; page: number; guid: string; error: any }>()
+);
 
-export interface CastlePodcastDownloadsFailurePayload {
-  id: string;
-  error: any;
-}
+export const CastlePodcastAllTimeDownloadsLoad = createAction(ActionTypes.CASTLE_PODCAST_ALLTIME_DOWNLOADS_LOAD, props<{ id: string }>());
 
-export class CastlePodcastDownloadsFailureAction implements Action {
-  readonly type = ActionTypes.CASTLE_PODCAST_DOWNLOADS_FAILURE;
+export const CastlePodcastAllTimeDownloadsSuccess = createAction(
+  ActionTypes.CASTLE_PODCAST_ALLTIME_DOWNLOADS_SUCCESS,
+  props<{ id: string; total: number }>()
+);
 
-  constructor(public payload: CastlePodcastDownloadsFailurePayload) {}
-}
+export const CastlePodcastAllTimeDownloadsFailure = createAction(
+  ActionTypes.CASTLE_PODCAST_ALLTIME_DOWNLOADS_FAILURE,
+  props<{ id: string; error: any }>()
+);
 
-export interface CastleEpisodeDownloadsLoadPayload {
-  podcastId: string;
-  page: number;
-  guid: string;
-  interval: IntervalModel;
-  beginDate: Date;
-  endDate: Date;
-}
+export const CastlePodcastListenersLoad = createAction(
+  ActionTypes.CASTLE_PODCAST_LISTENERS_LOAD,
+  props<{ id: string; interval: IntervalModel; beginDate: Date; endDate: Date }>()
+);
 
-export class CastleEpisodeDownloadsLoadAction implements Action {
-  readonly type = ActionTypes.CASTLE_EPISODE_DOWNLOADS_LOAD;
+export const CastlePodcastListenersSuccess = createAction(
+  ActionTypes.CASTLE_PODCAST_LISTENERS_SUCCESS,
+  props<{ id: string; listeners: any[][] }>()
+);
 
-  constructor(public payload: CastleEpisodeDownloadsLoadPayload) {}
-}
+export const CastlePodcastListenersFailure = createAction(
+  ActionTypes.CASTLE_PODCAST_LISTENERS_FAILURE,
+  props<{ id: string; error: any }>()
+);
 
-export interface CastleEpisodeDownloadsSuccessPayload {
-  podcastId: string;
-  page: number;
-  guid: string;
-  downloads: any[][];
-}
+export const CastleEpisodeAllTimeDownloadsLoad = createAction(
+  ActionTypes.CASTLE_EPISODE_ALLTIME_DOWNLOADS_LOAD,
+  props<{ podcastId: string; guid: string }>()
+);
 
-export class CastleEpisodeDownloadsSuccessAction implements Action {
-  readonly type = ActionTypes.CASTLE_EPISODE_DOWNLOADS_SUCCESS;
+export const CastleEpisodeAllTimeDownloadsSuccess = createAction(
+  ActionTypes.CASTLE_EPISODE_ALLTIME_DOWNLOADS_SUCCESS,
+  props<{ podcastId: string; guid: string; total: number }>()
+);
 
-  constructor(public payload: CastleEpisodeDownloadsSuccessPayload) {}
-}
+export const CastleEpisodeAllTimeDownloadsFailure = createAction(
+  ActionTypes.CASTLE_EPISODE_ALLTIME_DOWNLOADS_FAILURE,
+  props<{ podcastId: string; guid: string; error: any }>()
+);
 
-export interface CastleEpisodeDownloadsFailurePayload {
-  podcastId: string;
-  page: number;
-  guid: string;
-  error: any;
-}
+export const CastleEpisodeDropdayLoad = createAction(
+  ActionTypes.CASTLE_EPISODE_DROPDAY_LOAD,
+  props<{ podcastId: string; guid: string; title: string; interval: IntervalModel; publishedAt: Date; days: number }>()
+);
 
-export class CastleEpisodeDownloadsFailureAction implements Action {
-  readonly type = ActionTypes.CASTLE_EPISODE_DOWNLOADS_FAILURE;
+export const CastleEpisodeDropdaySuccess = createAction(
+  ActionTypes.CASTLE_EPISODE_DROPDAY_SUCCESS,
+  props<{ podcastId: string; guid: string; title: string; interval: IntervalModel; publishedAt: Date; downloads: any[][] }>()
+);
 
-  constructor(public payload: CastleEpisodeDownloadsFailurePayload) {}
-}
-
-export interface CastlePodcastAllTimeDownloadsLoadPayload {
-  id: string;
-}
-
-export class CastlePodcastAllTimeDownloadsLoadAction implements Action {
-  readonly type = ActionTypes.CASTLE_PODCAST_ALLTIME_DOWNLOADS_LOAD;
-
-  constructor(public payload: CastlePodcastAllTimeDownloadsLoadPayload) {}
-}
-
-export interface CastlePodcastAllTimeDownloadsSuccessPayload {
-  id: string;
-  total: number;
-}
-
-export class CastlePodcastAllTimeDownloadsSuccessAction implements Action {
-  readonly type = ActionTypes.CASTLE_PODCAST_ALLTIME_DOWNLOADS_SUCCESS;
-
-  constructor(public payload: CastlePodcastAllTimeDownloadsSuccessPayload) {}
-}
-
-export interface CastlePodcastAllTimeDownloadsFailurePayload {
-  id: string;
-  error: any;
-}
-
-export class CastlePodcastAllTimeDownloadsFailureAction implements Action {
-  readonly type = ActionTypes.CASTLE_PODCAST_ALLTIME_DOWNLOADS_FAILURE;
-
-  constructor(public payload: CastlePodcastAllTimeDownloadsFailurePayload) {}
-}
-
-export interface CastlePodcastListenersLoadPayload {
-  id: string;
-  interval: IntervalModel;
-  beginDate: Date;
-  endDate: Date;
-}
-
-export class CastlePodcastListenersLoadAction implements Action {
-  readonly type = ActionTypes.CASTLE_PODCAST_LISTENERS_LOAD;
-
-  constructor(public payload: CastlePodcastListenersLoadPayload) {}
-}
-
-export interface CastlePodcastListenersSuccessPayload {
-  id: string;
-  listeners: any[][];
-}
-
-export class CastlePodcastListenersSuccessAction implements Action {
-  readonly type = ActionTypes.CASTLE_PODCAST_LISTENERS_SUCCESS;
-
-  constructor(public payload: CastlePodcastListenersSuccessPayload) {}
-}
-
-export interface CastlePodcastListenersFailurePayload {
-  id: string;
-  error: any;
-}
-
-export class CastlePodcastListenersFailureAction implements Action {
-  readonly type = ActionTypes.CASTLE_PODCAST_LISTENERS_FAILURE;
-
-  constructor(public payload: CastlePodcastListenersFailurePayload) {}
-}
-export interface CastleEpisodeAllTimeDownloadsLoadPayload {
-  podcastId: string;
-  guid: string;
-}
-
-export class CastleEpisodeAllTimeDownloadsLoadAction implements Action {
-  readonly type = ActionTypes.CASTLE_EPISODE_ALLTIME_DOWNLOADS_LOAD;
-
-  constructor(public payload: CastleEpisodeAllTimeDownloadsLoadPayload) {}
-}
-
-export interface CastleEpisodeAllTimeDownloadsSuccessPayload {
-  podcastId: string;
-  guid: string;
-  total: number;
-}
-
-export class CastleEpisodeAllTimeDownloadsSuccessAction implements Action {
-  readonly type = <string>ActionTypes.CASTLE_EPISODE_ALLTIME_DOWNLOADS_SUCCESS;
-
-  constructor(public payload: CastleEpisodeAllTimeDownloadsSuccessPayload) {}
-}
-
-export interface CastleEpisodeAllTimeDownloadsFailurePayload {
-  podcastId: string;
-  guid: string;
-  error: any;
-}
-
-export class CastleEpisodeAllTimeDownloadsFailureAction implements Action {
-  readonly type = <string>ActionTypes.CASTLE_EPISODE_ALLTIME_DOWNLOADS_FAILURE;
-
-  constructor(public payload: CastleEpisodeAllTimeDownloadsFailurePayload) {}
-}
-
-export interface CastleEpisodeDropdayLoadPayload {
-  podcastId: string;
-  guid: string;
-  title: string;
-  interval: IntervalModel;
-  publishedAt: Date;
-  days: number;
-}
-
-export class CastleEpisodeDropdayLoadAction implements Action {
-  readonly type = ActionTypes.CASTLE_EPISODE_DROPDAY_LOAD;
-
-  constructor(public payload: CastleEpisodeDropdayLoadPayload) {}
-}
-
-export interface CastleEpisodeDropdaySuccessPayload {
-  podcastId: string;
-  guid: string;
-  title: string;
-  interval: IntervalModel;
-  publishedAt: Date;
-  downloads: any[][];
-}
-
-export class CastleEpisodeDropdaySuccessAction implements Action {
-  readonly type = ActionTypes.CASTLE_EPISODE_DROPDAY_SUCCESS;
-
-  constructor(public payload: CastleEpisodeDropdaySuccessPayload) {}
-}
-
-export interface CastleEpisodeDropdayFailurePayload {
-  podcastId: string;
-  guid: string;
-  title: string;
-  interval: IntervalModel;
-  publishedAt: Date;
-  error: any;
-}
-
-export class CastleEpisodeDropdayFailureAction implements Action {
-  readonly type = ActionTypes.CASTLE_EPISODE_DROPDAY_FAILURE;
-
-  constructor(public payload: CastleEpisodeDropdayFailurePayload) {}
-}
+export const CastleEpisodeDropdayFailure = createAction(
+  ActionTypes.CASTLE_EPISODE_DROPDAY_FAILURE,
+  props<{ podcastId: string; guid: string; title: string; interval: IntervalModel; publishedAt: Date; error: any }>()
+);

@@ -1,18 +1,14 @@
-import {
-  CastlePodcastDownloadsSuccessAction,
-  CastlePodcastDownloadsFailureAction,
-  CastlePodcastDownloadsLoadAction
-} from '../actions';
 import { RouterParams, INTERVAL_DAILY, MetricsType, METRICSTYPE_DOWNLOADS } from './models';
 import {
-  PodcastDownloadsReducer,
+  reducer,
   selectAllPodcastDownloads,
   selectPodcastDownloadsIds,
   initialState as PodcastDownloadsInitialState,
   selectPodcastDownloadsEntities
 } from './podcast-downloads.reducer';
 import { podcast } from '../../../testing/downloads.fixtures';
-import { ChartTogglePodcastAction } from '../actions';
+import { ChartTogglePodcast } from '../actions';
+import * as downloadActions from '../actions/castle-downloads.action.creator';
 
 describe('PodcastDownloadsReducer', () => {
   let initialState;
@@ -24,8 +20,9 @@ describe('PodcastDownloadsReducer', () => {
   };
 
   beforeEach(() => {
-    initialState = PodcastDownloadsReducer(PodcastDownloadsInitialState,
-      new CastlePodcastDownloadsSuccessAction({
+    initialState = reducer(
+      PodcastDownloadsInitialState,
+      downloadActions.CastlePodcastDownloadsSuccess({
         id: podcast.id,
         downloads: []
       })
@@ -40,8 +37,7 @@ describe('PodcastDownloadsReducer', () => {
       beginDate: routerParams.beginDate,
       endDate: routerParams.endDate
     };
-    const newState = PodcastDownloadsReducer(initialState,
-      new CastlePodcastDownloadsLoadAction(loadActionPayload));
+    const newState = reducer(initialState, downloadActions.CastlePodcastDownloadsLoad(loadActionPayload));
 
     const allPodcastDownloads = selectAllPodcastDownloads(newState);
     const loadingEntity = selectPodcastDownloadsEntities(newState)[id];
@@ -61,8 +57,7 @@ describe('PodcastDownloadsReducer', () => {
       beginDate: routerParams.beginDate,
       endDate: routerParams.endDate
     };
-    const newState = PodcastDownloadsReducer(initialState,
-      new CastlePodcastDownloadsLoadAction(loadActionPayload));
+    const newState = reducer(initialState, downloadActions.CastlePodcastDownloadsLoad(loadActionPayload));
 
     const allPodcastDownloads = selectAllPodcastDownloads(newState);
     const loadingEntity = selectPodcastDownloadsEntities(newState)[id];
@@ -76,8 +71,7 @@ describe('PodcastDownloadsReducer', () => {
   it('should appropriately handle failure', () => {
     const id = '404';
     const error = 'There was a problem';
-    const newState = PodcastDownloadsReducer(initialState,
-      new CastlePodcastDownloadsFailureAction({ id, error }));
+    const newState = reducer(initialState, downloadActions.CastlePodcastDownloadsFailure({ id, error }));
 
     const allPodcastDownloads = selectAllPodcastDownloads(newState);
     const failedEntity = selectPodcastDownloadsEntities(newState)[id];
@@ -96,8 +90,9 @@ describe('PodcastDownloadsReducer', () => {
 
   it('should update existing podcast metrics keyed by id', () => {
     const id = <string>selectPodcastDownloadsIds(initialState)[0];
-    const newState = PodcastDownloadsReducer(initialState,
-      new CastlePodcastDownloadsSuccessAction({
+    const newState = reducer(
+      initialState,
+      downloadActions.CastlePodcastDownloadsSuccess({
         id,
         downloads: [
           ['2017-08-27T00:00:00Z', 52522],
@@ -124,9 +119,10 @@ describe('PodcastDownloadsReducer', () => {
     expect(allPodcastDownloads[0].downloads[0][1]).toEqual(52522);
   });
 
-  it ('should add new podcast metrics', () => {
-    const newState = PodcastDownloadsReducer(initialState,
-      new CastlePodcastDownloadsSuccessAction({
+  it('should add new podcast metrics', () => {
+    const newState = reducer(
+      initialState,
+      downloadActions.CastlePodcastDownloadsSuccess({
         id: '71',
         downloads: []
       })
@@ -136,8 +132,9 @@ describe('PodcastDownloadsReducer', () => {
 
   it('should toggle the charted state of a podcast', () => {
     const oldPodcastState = selectAllPodcastDownloads(initialState)[0];
-    const newState = PodcastDownloadsReducer(initialState,
-      new ChartTogglePodcastAction({
+    const newState = reducer(
+      initialState,
+      ChartTogglePodcast({
         id: oldPodcastState.id,
         charted: !oldPodcastState.charted
       })

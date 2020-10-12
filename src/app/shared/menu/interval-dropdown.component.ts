@@ -17,7 +17,7 @@ import {
   METRICSTYPE_TRAFFICSOURCES,
   METRICSTYPE_LISTENERS
 } from '@app/ngrx';
-import { RouteIntervalAction } from '@app/ngrx/actions';
+import { RouteInterval } from '@app/ngrx/actions';
 import * as dateUtil from '../util/date';
 
 @Component({
@@ -91,7 +91,7 @@ export class IntervalDropdownComponent implements OnChanges {
 
   onIntervalChange(interval: IntervalModel) {
     if (interval && interval !== this.routerParams.interval) {
-      this.store.dispatch(new RouteIntervalAction({ interval }));
+      this.store.dispatch(RouteInterval({ interval }));
     }
     this.toggleOpen();
   }

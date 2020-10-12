@@ -59,6 +59,6 @@ export class UserAgentsComponent implements OnInit {
   }
 
   toggleGroupCharted(params: { group: GroupType; groupName: string; charted: boolean }) {
-    this.store.dispatch(new ACTIONS.ChartToggleGroupAction({ ...params }));
+    this.store.dispatch(ACTIONS.ChartToggleGroup({ ...params }));
   }
 }

@@ -1,12 +1,12 @@
-import { CastlePodcastListenersSuccessAction, CastlePodcastListenersFailureAction, CastlePodcastListenersLoadAction } from '../actions';
 import { RouterParams, INTERVAL_LASTWEEK, MetricsType, METRICSTYPE_LISTENERS } from './models';
 import {
-  PodcastListenersReducer,
+  reducer,
   selectAllPodcastListeners,
   selectPodcastListenersIds,
   initialState as PodcastListenersInitialState,
   selectPodcastListenersEntities
 } from './podcast-listeners.reducer';
+import * as downloadActions from '../actions/castle-downloads.action.creator';
 import { podcast } from '../../../testing/downloads.fixtures';
 
 describe('PodcastListenersReducer', () => {
@@ -19,9 +19,9 @@ describe('PodcastListenersReducer', () => {
   };
 
   beforeEach(() => {
-    initialState = PodcastListenersReducer(
+    initialState = reducer(
       PodcastListenersInitialState,
-      new CastlePodcastListenersSuccessAction({
+      downloadActions.CastlePodcastListenersSuccess({
         id: podcast.id,
         listeners: []
       })
@@ -36,7 +36,7 @@ describe('PodcastListenersReducer', () => {
       beginDate: routerParams.beginDate,
       endDate: routerParams.endDate
     };
-    const newState = PodcastListenersReducer(initialState, new CastlePodcastListenersLoadAction(loadActionPayload));
+    const newState = reducer(initialState, downloadActions.CastlePodcastListenersLoad(loadActionPayload));
 
     const allPodcastListeners = selectAllPodcastListeners(newState);
     const loadingEntity = selectPodcastListenersEntities(newState)[id];
@@ -55,7 +55,7 @@ describe('PodcastListenersReducer', () => {
       beginDate: routerParams.beginDate,
       endDate: routerParams.endDate
     };
-    const newState = PodcastListenersReducer(initialState, new CastlePodcastListenersLoadAction(loadActionPayload));
+    const newState = reducer(initialState, downloadActions.CastlePodcastListenersLoad(loadActionPayload));
 
     const allPodcastListeners = selectAllPodcastListeners(newState);
     const loadingEntity = selectPodcastListenersEntities(newState)[id];
@@ -69,7 +69,7 @@ describe('PodcastListenersReducer', () => {
   it('should appropriately handle failure', () => {
     const id = '404';
     const error = 'There was a problem';
-    const newState = PodcastListenersReducer(initialState, new CastlePodcastListenersFailureAction({ id, error }));
+    const newState = reducer(initialState, downloadActions.CastlePodcastListenersFailure({ id, error }));
 
     const allPodcastListeners = selectAllPodcastListeners(newState);
     const failedEntity = selectPodcastListenersEntities(newState)[id];
@@ -88,9 +88,9 @@ describe('PodcastListenersReducer', () => {
 
   it('should update existing podcast listener metrics keyed by id', () => {
     const id = <string>selectPodcastListenersIds(initialState)[0];
-    const newState = PodcastListenersReducer(
+    const newState = reducer(
       initialState,
-      new CastlePodcastListenersSuccessAction({
+      downloadActions.CastlePodcastListenersSuccess({
         id,
         listeners: [
           ['2017-08-27T00:00:00Z', 52522],
@@ -118,9 +118,9 @@ describe('PodcastListenersReducer', () => {
   });
 
   it('should add new podcast listener metrics', () => {
-    const newState = PodcastListenersReducer(
+    const newState = reducer(
       initialState,
-      new CastlePodcastListenersSuccessAction({
+      downloadActions.CastlePodcastListenersSuccess({
         id: '71',
         listeners: []
       })

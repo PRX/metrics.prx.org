@@ -1,15 +1,26 @@
 import { Component, OnInit } from '@angular/core';
 import { select, Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
-import { RouterParams, TotalsTableRow, Rank,
-  GroupType, GROUPTYPE_GEOCOUNTRY, GROUPTYPE_GEOMETRO, ChartType, CHARTTYPE_GEOCHART } from '../ngrx';
+import {
+  RouterParams,
+  TotalsTableRow,
+  Rank,
+  GroupType,
+  GROUPTYPE_GEOCOUNTRY,
+  GROUPTYPE_GEOMETRO,
+  ChartType,
+  CHARTTYPE_GEOCHART
+} from '../ngrx';
 import { CategoryChartModel, TimeseriesChartModel } from 'ngx-prx-styleguide';
 import * as ACTIONS from '../ngrx/actions';
 import {
   select500ErrorReloadActions,
-  selectGroupedDataLoaded, selectGroupedDataLoading,
-  selectNestedTotalsLoaded, selectNestedTotalsLoading,
-  selectNestedRanksLoaded, selectNestedRanksLoading,
+  selectGroupedDataLoaded,
+  selectGroupedDataLoading,
+  selectNestedTotalsLoaded,
+  selectNestedTotalsLoading,
+  selectNestedRanksLoaded,
+  selectNestedRanksLoading,
   selectNested500ErrorReloadActions,
   selectChartMetrics,
   selectNestedChartMetrics,
@@ -23,26 +34,29 @@ import {
   selectChartTypeRoute
 } from '../ngrx/reducers/selectors';
 
-@Component ({
+@Component({
   template: `
     <metrics-episode-select-dropdown></metrics-episode-select-dropdown>
-    <prx-spinner *ngIf="loading$ | async" overlay="true"
-                 loadingMessage="Please wait..."></prx-spinner>
+    <prx-spinner *ngIf="loading$ | async" overlay="true" loadingMessage="Please wait..."></prx-spinner>
     <section *ngIf="loaded$ | async">
       <metrics-menu-bar></metrics-menu-bar>
 
       <div *ngIf="(chartTypeRoute$ | async) === CHARTTYPE_GEOCHART; else charted" class="chart-container">
-        <metrics-geochart-map [data]="geochartData$ | async"
-                              [nestedData]="nestedGeochartData$ | async"
-                              [routerParams]="routerParams$ | async"></metrics-geochart-map>
+        <metrics-geochart-map
+          [data]="geochartData$ | async"
+          [nestedData]="nestedGeochartData$ | async"
+          [routerParams]="routerParams$ | async"
+        ></metrics-geochart-map>
         <prx-spinner overlay="true" *ngIf="(filterRoute$ | async) && (nestedTotalsLoading$ | async)"></prx-spinner>
       </div>
       <ng-template #charted>
         <div class="chart-container">
-          <metrics-geo-chart *ngIf="!(filterRoute$ | async) || (nestedRanksLoaded$ | async)"
-                             [routerParams]="routerParams$ | async"
-                             [chartData]="chartData$ | async"
-                             [nestedData]="nestedChartData$ | async"></metrics-geo-chart>
+          <metrics-geo-chart
+            *ngIf="!(filterRoute$ | async) || (nestedRanksLoaded$ | async)"
+            [routerParams]="routerParams$ | async"
+            [chartData]="chartData$ | async"
+            [nestedData]="nestedChartData$ | async"
+          ></metrics-geo-chart>
           <prx-spinner overlay="true" *ngIf="(filterRoute$ | async) && (nestedRanksLoading$ | async)"></prx-spinner>
         </div>
       </ng-template>
@@ -52,14 +66,16 @@ import {
         </metrics-totals-table>
       </div>
       <ng-template #nested>
-        <metrics-nested-totals-table *ngIf="(routerParams$ | async)?.group === GROUPTYPE_GEOCOUNTRY"
-                                     [routerParams]="routerParams$ | async"
-                                     [tableData]="tableData$ | async"
-                                     [nestedData]="nestedTableData$ | async"
-                                     [nestedDataLoading]="nestedTotalsLoading$ | async"
-                                     [nestedDataLoaded]="nestedTotalsLoaded$ | async"
-                                     [nestedDataErrorActions]="nestedDataErrorActions$ | async"
-                                     (discloseNestedData)="groupFilter($event)">
+        <metrics-nested-totals-table
+          *ngIf="(routerParams$ | async)?.group === GROUPTYPE_GEOCOUNTRY"
+          [routerParams]="routerParams$ | async"
+          [tableData]="tableData$ | async"
+          [nestedData]="nestedTableData$ | async"
+          [nestedDataLoading]="nestedTotalsLoading$ | async"
+          [nestedDataLoaded]="nestedTotalsLoaded$ | async"
+          [nestedDataErrorActions]="nestedDataErrorActions$ | async"
+          (discloseNestedData)="groupFilter($event)"
+        >
         </metrics-nested-totals-table>
       </ng-template>
     </section>
@@ -67,7 +83,6 @@ import {
   `,
   styleUrls: ['./geo.component.css']
 })
-
 export class GeoComponent implements OnInit {
   routerParams$: Observable<RouterParams>;
   groupRoute$: Observable<GroupType>;
@@ -115,6 +130,6 @@ export class GeoComponent implements OnInit {
   }
 
   groupFilter(code: string) {
-    this.store.dispatch(new ACTIONS.RouteGroupFilterAction({filter: code}));
+    this.store.dispatch(ACTIONS.RouteGroupFilter({ filter: code }));
   }
 }

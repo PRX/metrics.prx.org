@@ -1,6 +1,7 @@
 import { EntityState, EntityAdapter, createEntityAdapter } from '@ngrx/entity';
-import { EpisodeRanks, episodeRanksId } from './models';
-import { ActionTypes, AllActions } from '../actions';
+import { createReducer, on } from '@ngrx/store';
+import { EpisodeRanks, episodeRanksId, GroupType } from './models';
+import * as ranksActions from '../actions/castle-ranks-totals.action.creator';
 
 export type State = EntityState<EpisodeRanks>;
 
@@ -11,47 +12,74 @@ export const initialState: State = adapter.getInitialState({});
 export const {
   selectIds: selectEpisodeRanksIds,
   selectEntities: selectEpisodeRanksEntities,
-  selectAll: selectAllEpisodeRanks,
+  selectAll: selectAllEpisodeRanks
 } = adapter.getSelectors();
 
-export function reducer(
-  state = initialState,
-  action: AllActions
-): State {
-  switch (action.type) {
-    case ActionTypes.CASTLE_EPISODE_RANKS_LOAD: {
-      const { guid, group, filter, interval, beginDate, endDate } = action.payload;
-      const id = episodeRanksId(guid, group, filter, interval, beginDate, endDate);
-      return adapter.upsertOne(
-        {
-          id,
-          ...selectEpisodeRanksEntities(state)[id],
-          guid, group, filter, interval, beginDate, endDate, error: null, loading: true, loaded: false
-        }, state);
-    }
-    case ActionTypes.CASTLE_EPISODE_RANKS_SUCCESS: {
-      const { guid, group, filter, interval, beginDate, endDate, downloads, ranks } = action.payload;
-      const id = episodeRanksId(guid, group, filter, interval, beginDate, endDate);
-      return adapter.upsertOne(
-        {
-          id,
-          ...selectEpisodeRanksEntities(state)[id],
-          guid, group, filter, interval, beginDate, endDate, downloads, ranks, loading: false, loaded: true
-        }, state);
-    }
-    case ActionTypes.CASTLE_EPISODE_RANKS_FAILURE: {
-      const { guid, group, filter, interval, beginDate, endDate, error } = action.payload;
-      const id = episodeRanksId(guid, group, filter, interval, beginDate, endDate);
-      return adapter.upsertOne(
-        {
-          id,
-          ...selectEpisodeRanksEntities(state)[id],
-          guid, group, filter, interval, beginDate, endDate, error, loading: false, loaded: false
-        }, state);
-    }
+const _reducer = createReducer(
+  initialState,
+  on(ranksActions.CastleEpisodeRanksLoad, (state, action) => {
+    const { guid, group, filter, interval, beginDate, endDate } = action;
+    const id = episodeRanksId(guid, group as GroupType, filter, interval, beginDate, endDate);
+    return adapter.upsertOne(
+      {
+        id,
+        ...selectEpisodeRanksEntities(state)[id],
+        guid,
+        group: group as GroupType,
+        filter,
+        interval,
+        beginDate,
+        endDate,
+        error: null,
+        loading: true,
+        loaded: false
+      },
+      state
+    );
+  }),
+  on(ranksActions.CastleEpisodeRanksSuccess, (state, action) => {
+    const { guid, group, filter, interval, beginDate, endDate, downloads, ranks } = action;
+    const id = episodeRanksId(guid, group as GroupType, filter, interval, beginDate, endDate);
+    return adapter.upsertOne(
+      {
+        id,
+        ...selectEpisodeRanksEntities(state)[id],
+        guid,
+        group: group as GroupType,
+        filter,
+        interval,
+        beginDate,
+        endDate,
+        downloads,
+        ranks,
+        loading: false,
+        loaded: true
+      },
+      state
+    );
+  }),
+  on(ranksActions.CastleEpisodeRanksFailure, (state, action) => {
+    const { guid, group, filter, interval, beginDate, endDate, error } = action;
+    const id = episodeRanksId(guid, group as GroupType, filter, interval, beginDate, endDate);
+    return adapter.upsertOne(
+      {
+        id,
+        ...selectEpisodeRanksEntities(state)[id],
+        guid,
+        group: group as GroupType,
+        filter,
+        interval,
+        beginDate,
+        endDate,
+        error,
+        loading: false,
+        loaded: false
+      },
+      state
+    );
+  })
+);
 
-    default: {
-      return state;
-    }
-  }
+export function reducer(state, action) {
+  return _reducer(state, action);
 }

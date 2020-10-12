@@ -1,7 +1,7 @@
 import { Component, Input, HostListener } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { IntervalModel } from '../../../ngrx';
-import { GoogleAnalyticsEventAction, RouteStandardRangeAction } from '../../../ngrx/actions';
+import { GoogleAnalyticsEvent, RouteStandardRange } from '../../../ngrx/actions';
 import * as dateUtil from '../../util/date';
 
 @Component({
@@ -10,12 +10,14 @@ import * as dateUtil from '../../util/date';
     <div class="dropdown" [class.open]="open">
       <div class="overlay" (click)="toggleOpen()"></div>
       <div class="dropdown-button">
-        <button (click)="toggleOpen()" >{{ standardRange }}<span class="down-arrow"></span></button>
+        <button (click)="toggleOpen()">{{ standardRange }}<span class="down-arrow"></span></button>
       </div>
       <div class="dropdown-content rollout">
         <metrics-standard-date-range
-          [standardRange]="standardRange" [interval]="interval"
-          (standardRangeChange)="onStandardRangeChange($event)">
+          [standardRange]="standardRange"
+          [interval]="interval"
+          (standardRangeChange)="onStandardRangeChange($event)"
+        >
         </metrics-standard-date-range>
       </div>
     </div>
@@ -39,13 +41,13 @@ export class StandardDateRangeDropdownComponent {
 
   onStandardRangeChange(standardRange: string) {
     this.googleAnalyticsEvent('standard-date', standardRange);
-    this.store.dispatch(new RouteStandardRangeAction({standardRange}));
+    this.store.dispatch(RouteStandardRange({ standardRange }));
     this.toggleOpen();
   }
 
   googleAnalyticsEvent(action: string, standardRange: string) {
     const dateRange = dateUtil.getBeginEndDateFromStandardRange(standardRange);
     const value = dateUtil.getAmountOfIntervals(dateRange.beginDate, dateRange.endDate, this.interval);
-    this.store.dispatch(new GoogleAnalyticsEventAction({gaAction: 'routerParams-' + action, value}));
+    this.store.dispatch(GoogleAnalyticsEvent({ gaAction: 'routerParams-' + action, value }));
   }
 }

@@ -15,7 +15,7 @@ import {
   METRICSTYPE_TRAFFICSOURCES,
   METRICSTYPE_LISTENERS
 } from '../../ngrx';
-import { RouteChartTypeAction } from '../../ngrx/actions';
+import { RouteChartType } from '../../ngrx/actions';
 
 @Component({
   selector: 'metrics-chart-type',
@@ -55,7 +55,7 @@ export class ChartTypeComponent {
   }
 
   onChartType(chartType: ChartType) {
-    this.store.dispatch(new RouteChartTypeAction({ chartType }));
+    this.store.dispatch(RouteChartType({ chartType }));
   }
 
   getChartImg(chartType: ChartType): string {

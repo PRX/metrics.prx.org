@@ -8,7 +8,7 @@ import { Subject } from 'rxjs';
 import { Angulartics2 } from 'angulartics2';
 import { getActions, TestActions } from './test.actions';
 import { reducers } from '../../ngrx/reducers';
-import { GoogleAnalyticsEventAction } from '../actions';
+import { GoogleAnalyticsEvent } from '../actions';
 import { GoogleAnalyticsEffects } from './google-analytics.effects';
 
 describe('GoogleAnalyticsEffects', () => {
@@ -17,15 +17,11 @@ describe('GoogleAnalyticsEffects', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [
-        StoreModule.forRoot(reducers),
-        RouterTestingModule,
-        EffectsModule.forRoot([GoogleAnalyticsEffects])
-      ],
+      imports: [StoreModule.forRoot(reducers), RouterTestingModule, EffectsModule.forRoot([GoogleAnalyticsEffects])],
       providers: [
         GoogleAnalyticsEffects,
         { provide: Actions, useFactory: getActions },
-        { provide: Angulartics2, useValue: {eventTrack: new Subject<any>()} },
+        { provide: Angulartics2, useValue: { eventTrack: new Subject<any>() } }
       ]
     });
 
@@ -35,7 +31,7 @@ describe('GoogleAnalyticsEffects', () => {
 
   it('should create Google Analytics event from action and track through angulartics2', () => {
     jest.spyOn(effects.angulartics2.eventTrack, 'next').mockImplementation(() => {});
-    const action = new GoogleAnalyticsEventAction({gaAction: 'itsafake', value: 42});
+    const action = GoogleAnalyticsEvent({ gaAction: 'itsafake', value: 42 });
     effects.store.dispatch(action);
     actions$.stream = hot('-a', { a: action });
     const expected = cold('-r', { r: undefined });

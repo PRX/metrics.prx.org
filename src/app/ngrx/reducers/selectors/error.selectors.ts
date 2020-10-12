@@ -45,14 +45,13 @@ export const selectDownload500ErrorReloadActions = createSelector(
       actions = actions.concat(
         podcastDownloadsErrors
           .filter(m => m.error && m.error.status === 500)
-          .map(
-            m =>
-              new ACTIONS.CastlePodcastDownloadsLoadAction({
-                id: m.id,
-                interval,
-                beginDate,
-                endDate
-              })
+          .map(m =>
+            ACTIONS.CastlePodcastDownloadsLoad({
+              id: m.id,
+              interval,
+              beginDate,
+              endDate
+            })
           )
       );
     }
@@ -60,16 +59,15 @@ export const selectDownload500ErrorReloadActions = createSelector(
       actions = actions.concat(
         episodeDownloadsErrors
           .filter(m => m.error && m.error.status === 500)
-          .map(
-            m =>
-              new ACTIONS.CastleEpisodeDownloadsLoadAction({
-                podcastId: m.podcastId,
-                guid: m.guid,
-                page: m.page,
-                interval,
-                beginDate,
-                endDate
-              })
+          .map(m =>
+            ACTIONS.CastleEpisodeDownloadsLoad({
+              podcastId: m.podcastId,
+              guid: m.guid,
+              page: m.page,
+              interval,
+              beginDate,
+              endDate
+            })
           )
       );
     }
@@ -83,16 +81,15 @@ export const selectDropday500ErrorReloadActions = createSelector(
   (routerParams: RouterParams, dropdayErrors: EpisodeDropday[]) => {
     return dropdayErrors
       .filter(d => d.error && d.error.status === 500)
-      .map(
-        d =>
-          new ACTIONS.CastleEpisodeDropdayLoadAction({
-            guid: d.guid,
-            title: d.title,
-            publishedAt: d.publishedAt,
-            podcastId: routerParams.podcastId,
-            interval: routerParams.interval,
-            days: routerParams.days
-          })
+      .map(d =>
+        ACTIONS.CastleEpisodeDropdayLoad({
+          guid: d.guid,
+          title: d.title,
+          publishedAt: d.publishedAt,
+          podcastId: routerParams.podcastId,
+          interval: routerParams.interval,
+          days: routerParams.days
+        })
       );
   }
 );
@@ -103,14 +100,13 @@ export const selectListeners500ErrorReloadActions = createSelector(
   (routerParams: RouterParams, listenersErrors: PodcastListeners[]) => {
     return listenersErrors
       .filter(e => e.error && e.error.status === 500)
-      .map(
-        e =>
-          new ACTIONS.CastlePodcastListenersLoadAction({
-            id: routerParams.podcastId,
-            interval: routerParams.interval,
-            beginDate: routerParams.beginDate,
-            endDate: routerParams.endDate
-          })
+      .map(e =>
+        ACTIONS.CastlePodcastListenersLoad({
+          id: routerParams.podcastId,
+          interval: routerParams.interval,
+          beginDate: routerParams.beginDate,
+          endDate: routerParams.endDate
+        })
       );
   }
 );
@@ -135,7 +131,7 @@ export const selectRankTotal500ErrorReloadActions = createSelector(
     if (!selectedGuids || selectedGuids.length === 0) {
       if (podcastRanksError && podcastRanksError.status === 500) {
         actions.push(
-          new ACTIONS.CastlePodcastRanksLoadAction({
+          ACTIONS.CastlePodcastRanksLoad({
             podcastId,
             group,
             interval,
@@ -146,7 +142,7 @@ export const selectRankTotal500ErrorReloadActions = createSelector(
       }
       if (podcastTotalsError && podcastTotalsError.status === 500) {
         actions.push(
-          new ACTIONS.CastlePodcastTotalsLoadAction({
+          ACTIONS.CastlePodcastTotalsLoad({
             podcastId,
             group,
             beginDate,
@@ -158,28 +154,26 @@ export const selectRankTotal500ErrorReloadActions = createSelector(
       actions = actions.concat(
         episodesRanksErrors
           .filter(m => m.error && m.error.status === 500)
-          .map(
-            m =>
-              new ACTIONS.CastleEpisodeRanksLoadAction({
-                guid: m.guid,
-                group,
-                interval,
-                beginDate,
-                endDate
-              })
+          .map(m =>
+            ACTIONS.CastleEpisodeRanksLoad({
+              guid: m.guid,
+              group,
+              interval,
+              beginDate,
+              endDate
+            })
           )
       );
       actions = actions.concat(
         episodesTotalsErrors
           .filter(m => m.error && m.error.status === 500)
-          .map(
-            m =>
-              new ACTIONS.CastleEpisodeTotalsLoadAction({
-                guid: m.guid,
-                group,
-                beginDate,
-                endDate
-              })
+          .map(m =>
+            ACTIONS.CastleEpisodeTotalsLoad({
+              guid: m.guid,
+              group,
+              beginDate,
+              endDate
+            })
           )
       );
     }
@@ -195,18 +189,27 @@ export const select500ErrorReloadActions = createSelector(
   selectDropday500ErrorReloadActions,
   selectListeners500ErrorReloadActions,
   selectRankTotal500ErrorReloadActions,
+  // (
+  //   routerParams: RouterParams,
+  //   podcastError: any,
+  //   episodeError: any,
+  //   downloadErrorReloadActions: ACTIONS.AllActions[],
+  //   dropdayErrorReloadActions: ACTIONS.AllActions[],
+  //   listenersErrorReloadActions: ACTIONS.AllActions[],
+  //   rankTotalErrorReloadActions: ACTIONS.AllActions[]
+  // ) => {
   (
     routerParams: RouterParams,
     podcastError: any,
     episodeError: any,
-    downloadErrorReloadActions: ACTIONS.AllActions[],
-    dropdayErrorReloadActions: ACTIONS.AllActions[],
-    listenersErrorReloadActions: ACTIONS.AllActions[],
-    rankTotalErrorReloadActions: ACTIONS.AllActions[]
+    downloadErrorReloadActions,
+    dropdayErrorReloadActions,
+    listenersErrorReloadActions,
+    rankTotalErrorReloadActions
   ) => {
     const actions = [];
     if (podcastError && podcastError.status === 500) {
-      actions.push(new ACTIONS.CastlePodcastPageLoadAction({ page: 1, all: true }));
+      actions.push(ACTIONS.CastlePodcastPageLoad({ page: 1, all: true }));
     }
     if (
       (routerParams.metricsType === METRICSTYPE_DOWNLOADS || routerParams.metricsType === METRICSTYPE_DROPDAY) &&
@@ -214,7 +217,7 @@ export const select500ErrorReloadActions = createSelector(
       episodeError.status === 500
     ) {
       actions.push(
-        new ACTIONS.CastleEpisodePageLoadAction({
+        ACTIONS.CastleEpisodePageLoad({
           podcastId: routerParams.podcastId,
           page: 1,
           per: EPISODE_PAGE_SIZE
@@ -255,7 +258,7 @@ export const selectNested500ErrorReloadActions = createSelector(
     if (!selectedGuids || selectedGuids.length === 0) {
       if (podcastRanksError && podcastRanksError.status === 500) {
         actions.push(
-          new ACTIONS.CastlePodcastRanksLoadAction({
+          ACTIONS.CastlePodcastRanksLoad({
             podcastId,
             group: GROUPTYPE_GEOSUBDIV,
             filter,
@@ -267,7 +270,7 @@ export const selectNested500ErrorReloadActions = createSelector(
       }
       if (podcastTotalsError && podcastTotalsError.status === 500) {
         actions.push(
-          new ACTIONS.CastlePodcastTotalsLoadAction({
+          ACTIONS.CastlePodcastTotalsLoad({
             podcastId,
             group: GROUPTYPE_GEOSUBDIV,
             filter,
@@ -280,29 +283,27 @@ export const selectNested500ErrorReloadActions = createSelector(
       actions = actions.concat(
         episodesRanksErrors
           .filter(m => m.error && m.error.status === 500)
-          .map(
-            m =>
-              new ACTIONS.CastleEpisodeRanksLoadAction({
-                guid: m.guid,
-                group: GROUPTYPE_GEOSUBDIV,
-                filter,
-                interval,
-                beginDate,
-                endDate
-              })
+          .map(m =>
+            ACTIONS.CastleEpisodeRanksLoad({
+              guid: m.guid,
+              group: GROUPTYPE_GEOSUBDIV,
+              filter,
+              interval,
+              beginDate,
+              endDate
+            })
           )
       );
       actions = actions.concat(
         episodesTotalsErrors
           .filter(m => m.error && m.error.status === 500)
-          .map(
-            m =>
-              new ACTIONS.CastleEpisodeTotalsLoadAction({
-                guid: m.guid,
-                group: GROUPTYPE_GEOSUBDIV,
-                beginDate,
-                endDate
-              })
+          .map(m =>
+            ACTIONS.CastleEpisodeTotalsLoad({
+              guid: m.guid,
+              group: GROUPTYPE_GEOSUBDIV,
+              beginDate,
+              endDate
+            })
           )
       );
     }

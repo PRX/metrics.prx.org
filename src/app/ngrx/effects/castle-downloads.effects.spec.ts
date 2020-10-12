@@ -75,17 +75,14 @@ describe('CastleDownloadsEffects', () => {
     actions$ = TestBed.get(Actions);
     store = TestBed.get(Store);
 
-    store.dispatch(new ACTIONS.CustomRouterNavigationAction({ routerParams }));
+    store.dispatch(ACTIONS.CustomRouterNavigation({ routerParams }));
   }));
 
   it('should request podcast all time downloads from castle', () => {
-    const action: ACTIONS.CastlePodcastAllTimeDownloadsLoadAction = {
-      type: ACTIONS.ActionTypes.CASTLE_PODCAST_ALLTIME_DOWNLOADS_LOAD,
-      payload: {
-        id: podcast.id
-      }
-    };
-    const success = new ACTIONS.CastlePodcastAllTimeDownloadsSuccessAction({
+    const action = ACTIONS.CastlePodcastAllTimeDownloadsLoad({
+      id: podcast.id
+    });
+    const success = ACTIONS.CastlePodcastAllTimeDownloadsSuccess({
       id: podcast.id,
       total: 10
     });
@@ -98,13 +95,10 @@ describe('CastleDownloadsEffects', () => {
   it('should return a failure action on non 404 errors for all time podcast downloads', () => {
     const error: any = { status: 500, message: 'this is an error' };
     castle.root.mockError('prx:podcast', error);
-    const action: ACTIONS.CastlePodcastAllTimeDownloadsLoadAction = {
-      type: ACTIONS.ActionTypes.CASTLE_PODCAST_ALLTIME_DOWNLOADS_LOAD,
-      payload: {
-        id: podcast.id
-      }
-    };
-    const failure = new ACTIONS.CastlePodcastAllTimeDownloadsFailureAction({
+    const action = ACTIONS.CastlePodcastAllTimeDownloadsLoad({
+      id: podcast.id
+    });
+    const failure = ACTIONS.CastlePodcastAllTimeDownloadsFailure({
       id: podcast.id,
       error
     });
@@ -115,11 +109,8 @@ describe('CastleDownloadsEffects', () => {
   });
 
   it('should request episode all time downloads from castle', () => {
-    const action: ACTIONS.CastleEpisodeAllTimeDownloadsLoadAction = {
-      type: ACTIONS.ActionTypes.CASTLE_EPISODE_ALLTIME_DOWNLOADS_LOAD,
-      payload: { podcastId: episodes[0].podcastId, guid: episodes[0].guid }
-    };
-    const success = new ACTIONS.CastleEpisodeAllTimeDownloadsSuccessAction({
+    const action = ACTIONS.CastleEpisodeAllTimeDownloadsLoad({ podcastId: episodes[0].podcastId, guid: episodes[0].guid });
+    const success = ACTIONS.CastleEpisodeAllTimeDownloadsSuccess({
       podcastId: episodes[0].podcastId,
       guid: episodes[0].guid,
       total: 11
@@ -132,14 +123,11 @@ describe('CastleDownloadsEffects', () => {
 
   it('should return 0 downloads on 404s for all time episode downloads', () => {
     castle.root.mockError('prx:episode', <any>{ status: 404, message: 'this is an error' });
-    const action: ACTIONS.CastleEpisodeAllTimeDownloadsLoadAction = {
-      type: ACTIONS.ActionTypes.CASTLE_EPISODE_ALLTIME_DOWNLOADS_LOAD,
-      payload: {
-        podcastId: episodes[0].podcastId,
-        guid: episodes[0].guid
-      }
-    };
-    const success = new ACTIONS.CastleEpisodeAllTimeDownloadsSuccessAction({
+    const action = ACTIONS.CastleEpisodeAllTimeDownloadsLoad({
+      podcastId: episodes[0].podcastId,
+      guid: episodes[0].guid
+    });
+    const success = ACTIONS.CastleEpisodeAllTimeDownloadsSuccess({
       podcastId: episodes[0].podcastId,
       guid: episodes[0].guid,
       total: 0
@@ -153,14 +141,11 @@ describe('CastleDownloadsEffects', () => {
   it('should return a failure action on non 404 errors for all time episode downloads', () => {
     const error: any = { status: 500, message: 'this is an error' };
     castle.root.mockError('prx:episode', error);
-    const action: ACTIONS.CastleEpisodeAllTimeDownloadsLoadAction = {
-      type: ACTIONS.ActionTypes.CASTLE_EPISODE_ALLTIME_DOWNLOADS_LOAD,
-      payload: {
-        podcastId: episodes[0].podcastId,
-        guid: episodes[0].guid
-      }
-    };
-    const failure = new ACTIONS.CastleEpisodeAllTimeDownloadsFailureAction({
+    const action = ACTIONS.CastleEpisodeAllTimeDownloadsLoad({
+      podcastId: episodes[0].podcastId,
+      guid: episodes[0].guid
+    });
+    const failure = ACTIONS.CastleEpisodeAllTimeDownloadsFailure({
       podcastId: episodes[0].podcastId,
       guid: episodes[0].guid,
       error
@@ -172,16 +157,13 @@ describe('CastleDownloadsEffects', () => {
   });
 
   it('should load podcast downloads', () => {
-    const action: ACTIONS.CastlePodcastDownloadsLoadAction = {
-      type: ACTIONS.ActionTypes.CASTLE_PODCAST_DOWNLOADS_LOAD,
-      payload: {
-        id: podcast.id,
-        interval: INTERVAL_DAILY,
-        beginDate: new Date(),
-        endDate: new Date()
-      }
-    };
-    const success = new ACTIONS.CastlePodcastDownloadsSuccessAction({
+    const action = ACTIONS.CastlePodcastDownloadsLoad({
+      id: podcast.id,
+      interval: INTERVAL_DAILY,
+      beginDate: new Date(),
+      endDate: new Date()
+    });
+    const success = ACTIONS.CastlePodcastDownloadsSuccess({
       id: podcast.id,
       downloads: podDownloads
     });
@@ -192,18 +174,15 @@ describe('CastleDownloadsEffects', () => {
   });
 
   it('should load episode downloads', () => {
-    const action: ACTIONS.CastleEpisodeDownloadsLoadAction = {
-      type: ACTIONS.ActionTypes.CASTLE_EPISODE_DOWNLOADS_LOAD,
-      payload: {
-        podcastId: episodes[0].podcastId,
-        page: episodes[0].page,
-        guid: episodes[0].guid,
-        interval: INTERVAL_DAILY,
-        beginDate: new Date(),
-        endDate: new Date()
-      }
-    };
-    const success = new ACTIONS.CastleEpisodeDownloadsSuccessAction({
+    const action = ACTIONS.CastleEpisodeDownloadsLoad({
+      podcastId: episodes[0].podcastId,
+      page: episodes[0].page,
+      guid: episodes[0].guid,
+      interval: INTERVAL_DAILY,
+      beginDate: new Date(),
+      endDate: new Date()
+    });
+    const success = ACTIONS.CastleEpisodeDownloadsSuccess({
       podcastId: episodes[0].podcastId,
       page: episodes[0].page,
       guid: episodes[0].guid,
@@ -217,18 +196,15 @@ describe('CastleDownloadsEffects', () => {
 
   it('should load episode dropday', () => {
     const publishedAt = new Date();
-    const action: ACTIONS.CastleEpisodeDropdayLoadAction = {
-      type: ACTIONS.ActionTypes.CASTLE_EPISODE_DROPDAY_LOAD,
-      payload: {
-        podcastId: episodes[0].podcastId,
-        guid: episodes[0].guid,
-        title: episodes[0].title,
-        interval: INTERVAL_DAILY,
-        publishedAt,
-        days: 28
-      }
-    };
-    const success = new ACTIONS.CastleEpisodeDropdaySuccessAction({
+    const action = ACTIONS.CastleEpisodeDropdayLoad({
+      podcastId: episodes[0].podcastId,
+      guid: episodes[0].guid,
+      title: episodes[0].title,
+      interval: INTERVAL_DAILY,
+      publishedAt,
+      days: 28
+    });
+    const success = ACTIONS.CastleEpisodeDropdaySuccess({
       podcastId: episodes[0].podcastId,
       guid: episodes[0].guid,
       title: episodes[0].title,
@@ -243,16 +219,13 @@ describe('CastleDownloadsEffects', () => {
   });
 
   it('should load podcast listeners', () => {
-    const action: ACTIONS.CastlePodcastListenersLoadAction = {
-      type: ACTIONS.ActionTypes.CASTLE_PODCAST_LISTENERS_LOAD,
-      payload: {
-        id: podcast.id,
-        interval: INTERVAL_DAILY,
-        beginDate: new Date(),
-        endDate: new Date()
-      }
-    };
-    const success = new ACTIONS.CastlePodcastListenersSuccessAction({
+    const action = ACTIONS.CastlePodcastListenersLoad({
+      id: podcast.id,
+      interval: INTERVAL_DAILY,
+      beginDate: new Date(),
+      endDate: new Date()
+    });
+    const success = ACTIONS.CastlePodcastListenersSuccess({
       id: podcast.id,
       listeners: podDownloads
     });
@@ -277,14 +250,14 @@ describe('CastleDownloadsEffects', () => {
 
     it('should load downloads on episode page success', () => {
       jest.spyOn(store, 'dispatch');
-      const action = new ACTIONS.CastleEpisodePageSuccessAction({
+      const action = ACTIONS.CastleEpisodePageSuccess({
         episodes,
         page: routerParams.episodePage,
         per: EPISODE_PAGE_SIZE,
         total: episodes.length
       });
       const episodeMetricsActions = episodes.map(e => {
-        return new ACTIONS.CastleEpisodeDownloadsLoadAction({
+        return ACTIONS.CastleEpisodeDownloadsLoad({
           podcastId: e.podcastId,
           page: e.page,
           guid: e.guid,
@@ -308,29 +281,27 @@ describe('CastleDownloadsEffects', () => {
       expect(effects.loadRoutedDownloads$).toBeObservable(expected);
 
       expect(store.dispatch).toHaveBeenCalledWith(
-        new ACTIONS.CastlePodcastDownloadsLoadAction({
+        ACTIONS.CastlePodcastDownloadsLoad({
           id: episodes[0].podcastId,
           interval: routerParams.interval,
           beginDate: routerParams.beginDate,
           endDate: routerParams.endDate
         })
       );
-      expect(store.dispatch).toHaveBeenCalledWith(new ACTIONS.CastlePodcastAllTimeDownloadsLoadAction({ id: episodes[0].podcastId }));
+      expect(store.dispatch).toHaveBeenCalledWith(ACTIONS.CastlePodcastAllTimeDownloadsLoad({ id: episodes[0].podcastId }));
       episodes.forEach(e => {
-        expect(store.dispatch).toHaveBeenCalledWith(
-          new ACTIONS.CastleEpisodeAllTimeDownloadsLoadAction({ podcastId: e.podcastId, guid: e.guid })
-        );
+        expect(store.dispatch).toHaveBeenCalledWith(ACTIONS.CastleEpisodeAllTimeDownloadsLoad({ podcastId: e.podcastId, guid: e.guid }));
       });
     });
 
     it('should load dropday downloads on episode page success', () => {
       store.dispatch(
-        new ACTIONS.CustomRouterNavigationAction({
+        ACTIONS.CustomRouterNavigation({
           routerParams: { ...routerParams, metricsType: METRICSTYPE_DROPDAY, days: 28 }
         })
       );
       jest.spyOn(store, 'dispatch');
-      const action = new ACTIONS.CastleEpisodePageSuccessAction({
+      const action = ACTIONS.CastleEpisodePageSuccess({
         episodes,
         page: routerParams.episodePage,
         per: EPISODE_PAGE_SIZE,
@@ -343,19 +314,19 @@ describe('CastleDownloadsEffects', () => {
       const completion = {};
       // create an object with indices (toString) as keys to each action for marble mapping
       [
-        new ACTIONS.EpisodeSelectEpisodesAction({
+        ACTIONS.EpisodeSelectEpisodes({
           podcastId: routerParams.podcastId,
           metricsType: METRICSTYPE_DROPDAY,
           episodeGuids: episodes.map(e => e.guid)
         }),
         ...episodes.map(e => {
-          return new ACTIONS.CastleEpisodeAllTimeDownloadsLoadAction({
+          return ACTIONS.CastleEpisodeAllTimeDownloadsLoad({
             podcastId: e.podcastId,
             guid: e.guid
           });
         }),
         ...episodes.map(e => {
-          return new ACTIONS.CastleEpisodeDropdayLoadAction({
+          return ACTIONS.CastleEpisodeDropdayLoad({
             podcastId: e.podcastId,
             guid: e.guid,
             title: e.title,

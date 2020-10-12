@@ -3,8 +3,8 @@ import { RouterReducerState, routerReducer } from '@ngrx/router-store';
 import * as fromUser from './user.reducer';
 import * as fromPodcast from './podcast.reducer';
 import * as fromPodcastAllTimeDownloads from './podcast-alltime-downloads.reducer';
-import { PodcastDownloadsReducer, PodcastDownloadsState } from './podcast-downloads.reducer';
-import { PodcastListenersReducer, PodcastListenersState } from './podcast-listeners.reducer';
+import * as fromPodcastDownloads from './podcast-downloads.reducer';
+import * as fromPodcastListeners from './podcast-listeners.reducer';
 import * as fromPodcastRanks from './podcast-ranks.reducer';
 import * as fromPodcastTotals from './podcast-totals.reducer';
 import * as fromGroupCharted from './group-charted.reducer';
@@ -15,7 +15,7 @@ import * as fromEpisodeRanks from './episode-ranks.reducer';
 import * as fromEpisodeTotals from './episode-totals.reducer';
 import * as fromEpisodeDownloads from './episode-downloads.reducer';
 import * as fromEpisodeDropday from './episode-dropday.reducer';
-import { CustomRouterReducer } from './router.reducer';
+import { reducer as CustomRouterReducer } from './router.reducer';
 import { RouterParamsState } from './models';
 
 export interface RootState {
@@ -27,8 +27,8 @@ export interface RootState {
   episodeSelect: fromEpisodeSelect.State;
   podcastAllTimeDownloads: fromPodcastAllTimeDownloads.State;
   episodeAllTimeDownloads: fromEpisodeAllTimeDownloads.State;
-  PodcastDownloads: PodcastDownloadsState;
-  podcastListeners: PodcastListenersState;
+  PodcastDownloads: fromPodcastDownloads.PodcastDownloadsState;
+  podcastListeners: fromPodcastListeners.PodcastListenersState;
   podcastRanks: fromPodcastRanks.State;
   podcastTotals: fromPodcastTotals.State;
   groupCharted: fromGroupCharted.State;
@@ -48,8 +48,8 @@ export const reducers: ActionReducerMap<RootState> = {
   episodeSelect: fromEpisodeSelect.reducer,
   podcastAllTimeDownloads: fromPodcastAllTimeDownloads.reducer,
   episodeAllTimeDownloads: fromEpisodeAllTimeDownloads.reducer,
-  PodcastDownloads: PodcastDownloadsReducer,
-  podcastListeners: PodcastListenersReducer,
+  PodcastDownloads: fromPodcastDownloads.reducer,
+  podcastListeners: fromPodcastListeners.reducer,
   podcastRanks: fromPodcastRanks.reducer,
   podcastTotals: fromPodcastTotals.reducer,
   groupCharted: fromGroupCharted.reducer,

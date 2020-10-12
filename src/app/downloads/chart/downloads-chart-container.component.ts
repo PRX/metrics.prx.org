@@ -3,7 +3,7 @@ import { Store, select } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { TimeseriesChartModel } from 'ngx-prx-styleguide';
 import { RouterParams, CHARTTYPE_PODCAST } from '@app/ngrx';
-import { RouteChartTypeAction } from '@app/ngrx/actions';
+import { RouteChartType } from '@app/ngrx/actions';
 import { selectRouter, selectDownloadChartMetrics } from '@app/ngrx/reducers/selectors';
 
 @Component({
@@ -12,7 +12,8 @@ import { selectRouter, selectDownloadChartMetrics } from '@app/ngrx/reducers/sel
     <metrics-downloads-chart-presentation
       [chartData]="chartData$ | async"
       [routerParams]="routerParams$ | async"
-      (placeholder)="routeToPodcastChart()">
+      (placeholder)="routeToPodcastChart()"
+    >
     </metrics-downloads-chart-presentation>
   `
 })
@@ -28,6 +29,6 @@ export class DownloadsChartContainerComponent implements OnInit {
   }
 
   routeToPodcastChart(): void {
-    this.store.dispatch(new RouteChartTypeAction({chartType: CHARTTYPE_PODCAST}));
+    this.store.dispatch(RouteChartType({ chartType: CHARTTYPE_PODCAST }));
   }
 }

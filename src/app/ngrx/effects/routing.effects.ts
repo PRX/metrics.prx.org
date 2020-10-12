@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { map, switchMap } from 'rxjs/operators';
 import { of, Observable } from 'rxjs';
-import { Action, Store } from '@ngrx/store';
-import { ROUTER_NAVIGATION, RouterNavigationAction, RouterNavigationPayload } from '@ngrx/router-store';
-import { Actions, Effect, ofType } from '@ngrx/effects';
+import { Store } from '@ngrx/store';
+import { routerNavigationAction } from '@ngrx/router-store';
+import { Actions, Effect, ofType, createEffect } from '@ngrx/effects';
 import { ActionTypes } from '../actions';
 import * as ACTIONS from '../actions';
 import * as dateUtil from '@app/shared/util/date';
@@ -14,130 +14,149 @@ export class RoutingEffects {
   // ROUTER_NAVIGATION/RouterNavigationAction originates from the ngrx StoreRouterConnectingModule.
   // It is serialized from a RouterStateSnapshot by the custom RouterStateSerializer to a custom RouterParams
   // after serialize, a RouterNavigationAction still has router event extras attached
-  // so here in the effect it is mapped to a CustomRouterNavigationAction to strip it down.
-  // The router reducer captures the CustomRouterNavigationAction to save routing state.
-  // The CustomRouterNavigationAction is mocked by tests but is _not_ otherwise ever manually called by the application,
+  // so here in the effect it is mapped to a CustomRouterNavigation to strip it down.
+  // The router reducer captures the CustomRouterNavigation to save routing state.
+  // The CustomRouterNavigation is mocked by tests but is _not_ otherwise ever manually called by the application,
   // only through routing and the router-store connecting module.
+  customRouterNavigation$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(routerNavigationAction),
+      switchMap(action => {
+        // drop guids from router params
+        const { guids, ...routerParams } = action.payload.routerState['routerParams'];
+        // select any episode guids on the route
+        if (guids) {
+          this.store.dispatch(
+            ACTIONS.EpisodeSelectEpisodes({
+              podcastId: routerParams.podcastId,
+              metricsType: routerParams.metricsType,
+              episodeGuids: guids
+            })
+          );
+        }
+        // map to an action with our CUSTOM_ROUTER_NAVIGATION type
+        return of(ACTIONS.CustomRouterNavigation({ url: action.payload.routerState.url, routerParams }));
+      })
+    )
+  );
+
+  routePodcast$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(ACTIONS.RoutePodcast),
+        switchMap(action => {
+          const { podcastId } = action;
+          this.routingService.normalizeAndRoute({ podcastId, episodePage: 1 });
+          return of(null);
+        })
+      ),
+    { dispatch: false }
+  );
+
+  routeEpisodePage$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(ACTIONS.RouteEpisodePage),
+        switchMap(action => {
+          const { episodePage } = action;
+          this.routingService.normalizeAndRoute({ episodePage });
+          return of(null);
+        })
+      ),
+    { dispatch: false }
+  );
+
+  routeChartType$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(ACTIONS.RouteChartType),
+        switchMap(action => {
+          const { chartType } = action;
+          this.routingService.normalizeAndRoute({ chartType });
+          return of(null);
+        })
+      ),
+    { dispatch: false }
+  );
+
+  routeInterval$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(ACTIONS.RouteInterval),
+        switchMap(action => {
+          const { interval } = action;
+          this.routingService.normalizeAndRoute({ interval });
+          return of(null);
+        })
+      ),
+    { dispatch: false }
+  );
+
+  routeStandardRange$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(ACTIONS.RouteStandardRange),
+        switchMap(action => {
+          const { standardRange } = action;
+          const range = dateUtil.getBeginEndDateFromStandardRange(standardRange);
+          this.routingService.normalizeAndRoute({ standardRange, ...range });
+          return of(null);
+        })
+      ),
+    { dispatch: false }
+  );
+
+  routeAdvancedRange$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(ACTIONS.RouteAdvancedRange),
+        switchMap(action => {
+          const { interval, beginDate, endDate, standardRange } = action;
+          this.routingService.normalizeAndRoute({ beginDate, endDate, interval, standardRange });
+          return of(null);
+        })
+      ),
+    { dispatch: false }
+  );
+
+  routeMetricsGroupType$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(ACTIONS.RouteMetricsGroupType),
+        switchMap(action => {
+          const { metricsType, group } = action;
+          this.routingService.normalizeAndRoute({ metricsType, group });
+          return of(null);
+        })
+      ),
+    { dispatch: false }
+  );
+
+  routeGroupFilter$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(ACTIONS.RouteGroupFilter),
+        switchMap(action => {
+          const { filter } = action;
+          this.routingService.normalizeAndRoute({ filter });
+          return of(null);
+        })
+      ),
+    { dispatch: false }
+  );
+
   @Effect()
-  customRouterNavigation$: Observable<Action> = this.actions$.pipe(
-    ofType(ROUTER_NAVIGATION),
-    map((action: RouterNavigationAction) => action.payload),
-    switchMap((payload: RouterNavigationPayload<any>) => {
-      // drop guids from router params
-      const { guids, ...routerParams } = payload.routerState.routerParams;
-      // select any episode guids on the route
-      if (guids) {
-        this.store.dispatch(
-          new ACTIONS.EpisodeSelectEpisodesAction({
-            podcastId: routerParams.podcastId,
-            metricsType: routerParams.metricsType,
-            episodeGuids: guids
-          })
-        );
-      }
-      // map to an action with our CUSTOM_ROUTER_NAVIGATION type
-      return of(new ACTIONS.CustomRouterNavigationAction({ url: payload.routerState.url, routerParams }));
-    })
-  );
-
-  @Effect({ dispatch: false })
-  routePodcast$: Observable<void> = this.actions$.pipe(
-    ofType(ActionTypes.ROUTE_PODCAST),
-    map((action: ACTIONS.RoutePodcastAction) => action.payload),
-    switchMap((payload: ACTIONS.RoutePodcastPayload) => {
-      const { podcastId } = payload;
-      this.routingService.normalizeAndRoute({ podcastId, episodePage: 1 });
-      return of(null);
-    })
-  );
-
-  @Effect({ dispatch: false })
-  routeEpisodePage$: Observable<void> = this.actions$.pipe(
-    ofType(ActionTypes.ROUTE_EPISODE_PAGE),
-    map((action: ACTIONS.RouteEpisodePageAction) => action.payload),
-    switchMap((payload: ACTIONS.RouteEpisodePagePayload) => {
-      const { episodePage } = payload;
-      this.routingService.normalizeAndRoute({ episodePage });
-      return of(null);
-    })
-  );
-
-  @Effect({ dispatch: false })
-  routeChartType$: Observable<void> = this.actions$.pipe(
-    ofType(ActionTypes.ROUTE_CHART_TYPE),
-    map((action: ACTIONS.RouteChartTypeAction) => action.payload),
-    switchMap((payload: ACTIONS.RouteChartTypePayload) => {
-      const { chartType } = payload;
-      this.routingService.normalizeAndRoute({ chartType });
-      return of(null);
-    })
-  );
-
-  @Effect({ dispatch: false })
-  routeInterval$: Observable<void> = this.actions$.pipe(
-    ofType(ActionTypes.ROUTE_INTERVAL),
-    map((action: ACTIONS.RouteIntervalAction) => action.payload),
-    switchMap((payload: ACTIONS.RouteIntervalPayload) => {
-      const { interval } = payload;
-      this.routingService.normalizeAndRoute({ interval });
-      return of(null);
-    })
-  );
-
-  @Effect({ dispatch: false })
-  routeStandardRange$: Observable<void> = this.actions$.pipe(
-    ofType(ActionTypes.ROUTE_STANDARD_RANGE),
-    map((action: ACTIONS.RouteStandardRangeAction) => action.payload),
-    switchMap((payload: ACTIONS.RouteStandardRangePayload) => {
-      const { standardRange } = payload;
-      const range = dateUtil.getBeginEndDateFromStandardRange(standardRange);
-      this.routingService.normalizeAndRoute({ standardRange, ...range });
-      return of(null);
-    })
-  );
-
-  @Effect({ dispatch: false })
-  routeAdvancedRange$: Observable<void> = this.actions$.pipe(
-    ofType(ActionTypes.ROUTE_ADVANCED_RANGE),
-    map((action: ACTIONS.RouteAdvancedRangeAction) => action.payload),
-    switchMap((payload: ACTIONS.RouteAdvancedRangePayload) => {
-      const { interval, beginDate, endDate, standardRange } = payload;
-      this.routingService.normalizeAndRoute({ beginDate, endDate, interval, standardRange });
-      return of(null);
-    })
-  );
-
-  @Effect({ dispatch: false })
-  routeMetricsGroupType$: Observable<void> = this.actions$.pipe(
-    ofType(ActionTypes.ROUTE_METRICS_GROUP_TYPE),
-    map((action: ACTIONS.RouteMetricsGroupTypeAction) => action.payload),
-    switchMap((payload: ACTIONS.RouteMetricsGroupTypePayload) => {
-      const { metricsType, group } = payload;
-      this.routingService.normalizeAndRoute({ metricsType, group });
-      return of(null);
-    })
-  );
-
-  @Effect({ dispatch: false })
-  routeGroupFilter$: Observable<void> = this.actions$.pipe(
-    ofType(ActionTypes.ROUTE_GROUP_FILTER),
-    map((action: ACTIONS.RouteGroupFilterAction) => action.payload),
-    switchMap((payload: ACTIONS.RouteGroupFilterPayload) => {
-      const { filter } = payload;
-      this.routingService.normalizeAndRoute({ filter });
-      return of(null);
-    })
-  );
-
-  @Effect({ dispatch: false })
-  routeDays$: Observable<void> = this.actions$.pipe(
-    ofType(ActionTypes.ROUTE_DAYS),
-    map((action: ACTIONS.RouteDaysAction) => action.payload),
-    switchMap((payload: ACTIONS.RouteDaysPayload) => {
-      const { days } = payload;
-      this.routingService.normalizeAndRoute({ days });
-      return of(null);
-    })
+  routeDays$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(ACTIONS.RouteDays),
+        switchMap(action => {
+          const { days } = action;
+          this.routingService.normalizeAndRoute({ days });
+          return of(null);
+        })
+      ),
+    { dispatch: false }
   );
 
   constructor(private actions$: Actions, public routingService: RoutingService, private store: Store<any>) {}

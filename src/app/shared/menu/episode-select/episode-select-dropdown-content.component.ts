@@ -6,19 +6,17 @@ import * as ACTIONS from '@app/ngrx/actions';
 @Component({
   selector: 'metrics-episode-select-dropdown-content',
   template: `
-  <div class="dropdown" [class.open]="open">
+    <div class="dropdown" [class.open]="open">
       <div class="overlay" (click)="toggleOpen.emit(false)"></div>
       <div class="dropdown-content rollout">
         <div class="header">
-          <img src="/assets/images/ic_search.svg" aria-hidden>
-          <metrics-episode-search
-            [searchTerm]="searchTerm"
-            (search)="loadEpisodesOnSearch($event)">
-          </metrics-episode-search>
+          <img src="/assets/images/ic_search.svg" aria-hidden />
+          <metrics-episode-search [searchTerm]="searchTerm" (search)="loadEpisodesOnSearch($event)"> </metrics-episode-search>
           <metrics-episode-select-list-visibility
             [selectedEpisodes]="selectedEpisodes"
             [showingSelected]="showingSelected"
-            (toggleShowSelected)="toggleShowingSelected.emit($event)">
+            (toggleShowSelected)="toggleShowingSelected.emit($event)"
+          >
           </metrics-episode-select-list-visibility>
         </div>
         <div *ngIf="!episodesLoading && searchTerm && !searchTotal" class="no-results">(no results)</div>
@@ -28,14 +26,16 @@ import * as ACTIONS from '@app/ngrx/actions';
           [selectedEpisodes]="selectedEpisodes"
           [showingSelected]="showingSelected"
           (selectEpisode)="onToggleSelectEpisode($event)"
-          (loadEpisodes)="loadEpisodesOnScroll()">
+          (loadEpisodes)="loadEpisodesOnScroll()"
+        >
         </metrics-episode-select-list>
-        <hr>
+        <hr />
         <div class="footer">
           <metrics-episode-select-accumulator
             [selectedEpisodes]="selectedEpisodes"
             [totalEpisodes]="totalEpisodes"
-            (reset)="resetSelection()">
+            (reset)="resetSelection()"
+          >
           </metrics-episode-select-accumulator>
           <button class="button" (click)="toggleOpen.emit(false)">Done</button>
         </div>
@@ -62,25 +62,26 @@ export class EpisodeSelectDropdownContentComponent {
   constructor(private store: Store<any>) {}
 
   loadEpisodesOnScroll() {
-    if (!this.episodesLoading &&
-        this.lastPage + 1 <= this.maxPages) {
+    if (!this.episodesLoading && this.lastPage + 1 <= this.maxPages) {
       this.loadEpisodes(this.lastPage + 1, this.searchTerm);
-      this.store.dispatch(new ACTIONS.GoogleAnalyticsEventAction({gaAction: 'episode-select-page-load', value: this.lastPage + 1}));
+      this.store.dispatch(ACTIONS.GoogleAnalyticsEvent({ gaAction: 'episode-select-page-load', value: this.lastPage + 1 }));
     }
   }
 
   loadEpisodesOnSearch(searchTerm: string) {
     this.loadEpisodes(1, searchTerm);
-    this.store.dispatch(new ACTIONS.GoogleAnalyticsEventAction({gaAction: 'episode-select-search'}));
+    this.store.dispatch(ACTIONS.GoogleAnalyticsEvent({ gaAction: 'episode-select-search' }));
   }
 
   loadEpisodes(page: number, search: string) {
-    this.store.dispatch(new ACTIONS.CastleEpisodeSelectPageLoadAction({
-      podcastId: this.routerParams.podcastId,
-      page,
-      per: EPISODE_SELECT_PAGE_SIZE,
-      search
-    }));
+    this.store.dispatch(
+      ACTIONS.CastleEpisodeSelectPageLoad({
+        podcastId: this.routerParams.podcastId,
+        page,
+        per: EPISODE_SELECT_PAGE_SIZE,
+        search
+      })
+    );
   }
 
   resetSelection() {
@@ -89,44 +90,54 @@ export class EpisodeSelectDropdownContentComponent {
 
     const { podcastId, metricsType, group, filter, interval, beginDate, endDate } = this.routerParams;
     if (metricsType !== METRICSTYPE_DROPDAY) {
-      this.store.dispatch(new ACTIONS.CastlePodcastRanksLoadAction({
-        podcastId,
-        group,
-        interval,
-        beginDate,
-        endDate
-      }));
-      this.store.dispatch(new ACTIONS.CastlePodcastTotalsLoadAction({
-        podcastId,
-        group,
-        beginDate,
-        endDate
-      }));
-      if (filter) {
-        this.store.dispatch(new ACTIONS.CastlePodcastRanksLoadAction({
+      this.store.dispatch(
+        ACTIONS.CastlePodcastRanksLoad({
           podcastId,
-          group: GROUPTYPE_GEOSUBDIV,
-          filter,
+          group,
           interval,
           beginDate,
           endDate
-        }));
-        this.store.dispatch(new ACTIONS.CastlePodcastTotalsLoadAction({
+        })
+      );
+      this.store.dispatch(
+        ACTIONS.CastlePodcastTotalsLoad({
           podcastId,
-          group: GROUPTYPE_GEOSUBDIV,
-          filter,
+          group,
           beginDate,
           endDate
-        }));
+        })
+      );
+      if (filter) {
+        this.store.dispatch(
+          ACTIONS.CastlePodcastRanksLoad({
+            podcastId,
+            group: GROUPTYPE_GEOSUBDIV,
+            filter,
+            interval,
+            beginDate,
+            endDate
+          })
+        );
+        this.store.dispatch(
+          ACTIONS.CastlePodcastTotalsLoad({
+            podcastId,
+            group: GROUPTYPE_GEOSUBDIV,
+            filter,
+            beginDate,
+            endDate
+          })
+        );
       }
     }
 
-    this.store.dispatch(new ACTIONS.EpisodeSelectEpisodesAction({
-      podcastId,
-      metricsType,
-      episodeGuids: null
-    }));
-    this.store.dispatch(new ACTIONS.GoogleAnalyticsEventAction({gaAction: 'episode-select-reset'}));
+    this.store.dispatch(
+      ACTIONS.EpisodeSelectEpisodes({
+        podcastId,
+        metricsType,
+        episodeGuids: null
+      })
+    );
+    this.store.dispatch(ACTIONS.GoogleAnalyticsEvent({ gaAction: 'episode-select-reset' }));
   }
 
   onToggleSelectEpisode(episode: Episode) {
@@ -136,60 +147,74 @@ export class EpisodeSelectDropdownContentComponent {
       episodeGuids = this.selectedEpisodes ? this.selectedEpisodes.concat([episode.guid]) : [episode.guid];
 
       if (metricsType === METRICSTYPE_DROPDAY) {
-        this.store.dispatch(new ACTIONS.CastleEpisodeDropdayLoadAction({
-          podcastId,
-          guid: episode.guid,
-          title: episode.title,
-          interval,
-          publishedAt: episode.publishedAt,
-          days
-        }));
-        this.store.dispatch(new ACTIONS.CastleEpisodeAllTimeDownloadsLoadAction({
-          podcastId,
-          guid: episode.guid
-        }));
-      } else {
-        this.store.dispatch(new ACTIONS.CastleEpisodeRanksLoadAction({
-          guid: episode.guid,
-          group,
-          interval,
-          beginDate,
-          endDate
-        }));
-        this.store.dispatch(new ACTIONS.CastleEpisodeTotalsLoadAction({
-          guid: episode.guid,
-          group,
-          beginDate,
-          endDate
-        }));
-        if (filter) {
-          this.store.dispatch(new ACTIONS.CastleEpisodeRanksLoadAction({
+        this.store.dispatch(
+          ACTIONS.CastleEpisodeDropdayLoad({
+            podcastId,
             guid: episode.guid,
-            group: GROUPTYPE_GEOSUBDIV,
-            filter,
+            title: episode.title,
+            interval,
+            publishedAt: episode.publishedAt,
+            days
+          })
+        );
+        this.store.dispatch(
+          ACTIONS.CastleEpisodeAllTimeDownloadsLoad({
+            podcastId,
+            guid: episode.guid
+          })
+        );
+      } else {
+        this.store.dispatch(
+          ACTIONS.CastleEpisodeRanksLoad({
+            guid: episode.guid,
+            group,
             interval,
             beginDate,
             endDate
-          }));
-          this.store.dispatch(new ACTIONS.CastleEpisodeTotalsLoadAction({
+          })
+        );
+        this.store.dispatch(
+          ACTIONS.CastleEpisodeTotalsLoad({
             guid: episode.guid,
-            group: GROUPTYPE_GEOSUBDIV,
-            filter,
+            group,
             beginDate,
             endDate
-          }));
+          })
+        );
+        if (filter) {
+          this.store.dispatch(
+            ACTIONS.CastleEpisodeRanksLoad({
+              guid: episode.guid,
+              group: GROUPTYPE_GEOSUBDIV,
+              filter,
+              interval,
+              beginDate,
+              endDate
+            })
+          );
+          this.store.dispatch(
+            ACTIONS.CastleEpisodeTotalsLoad({
+              guid: episode.guid,
+              group: GROUPTYPE_GEOSUBDIV,
+              filter,
+              beginDate,
+              endDate
+            })
+          );
         }
       }
     } else {
       episodeGuids = this.selectedEpisodes.filter(e => e !== episode.guid);
     }
     if (episodeGuids.length) {
-      this.store.dispatch(new ACTIONS.EpisodeSelectEpisodesAction({
-        podcastId,
-        metricsType,
-        episodeGuids
-      }));
-      this.store.dispatch(new ACTIONS.GoogleAnalyticsEventAction({gaAction: 'episode-select', value: episodeGuids.length}));
+      this.store.dispatch(
+        ACTIONS.EpisodeSelectEpisodes({
+          podcastId,
+          metricsType,
+          episodeGuids
+        })
+      );
+      this.store.dispatch(ACTIONS.GoogleAnalyticsEvent({ gaAction: 'episode-select', value: episodeGuids.length }));
     } else {
       this.resetSelection();
     }

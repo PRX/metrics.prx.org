@@ -1,6 +1,7 @@
 import { EntityState, EntityAdapter, createEntityAdapter } from '@ngrx/entity';
+import { createReducer, on } from '@ngrx/store';
 import { PodcastAllTimeDownloads } from './models/';
-import { AllActions, ActionTypes } from '../actions';
+import * as downloadActions from '../actions/castle-downloads.action.creator';
 
 export type State = EntityState<PodcastAllTimeDownloads>;
 
@@ -11,46 +12,52 @@ export const initialState: State = adapter.getInitialState({});
 export const {
   selectIds: selectPodcastAllTimeDownloadsIds,
   selectEntities: selectPodcastAllTimeDownloadsEntities,
-  selectAll: selectAllPodcastAllTimeDownloads,
+  selectAll: selectAllPodcastAllTimeDownloads
 } = adapter.getSelectors();
 
-export function reducer(
-  state = initialState,
-  action: AllActions
-): State {
-  switch (action.type) {
+const _reducer = createReducer(
+  initialState,
+  on(downloadActions.CastlePodcastAllTimeDownloadsLoad, (state, action) => {
+    const { id } = action;
+    return adapter.upsertOne(
+      {
+        id,
+        ...selectPodcastAllTimeDownloadsEntities(state)[id],
+        error: null,
+        loading: true,
+        loaded: false
+      },
+      state
+    );
+  }),
+  on(downloadActions.CastlePodcastAllTimeDownloadsSuccess, (state, action) => {
+    const { id, total } = action;
+    return adapter.upsertOne(
+      {
+        id,
+        ...selectPodcastAllTimeDownloadsEntities(state)[id],
+        allTimeDownloads: total,
+        loading: false,
+        loaded: true
+      },
+      state
+    );
+  }),
+  on(downloadActions.CastlePodcastAllTimeDownloadsFailure, (state, action) => {
+    const { id, error } = action;
+    return adapter.upsertOne(
+      {
+        id,
+        ...selectPodcastAllTimeDownloadsEntities(state)[id],
+        error,
+        loading: false,
+        loaded: false
+      },
+      state
+    );
+  })
+);
 
-    case ActionTypes.CASTLE_PODCAST_ALLTIME_DOWNLOADS_LOAD: {
-      const { id } = action.payload;
-      return adapter.upsertOne(
-        {
-          id,
-          ...selectPodcastAllTimeDownloadsEntities(state)[id],
-          error: null, loading: true, loaded: false
-        }, state);
-    }
-    case ActionTypes.CASTLE_PODCAST_ALLTIME_DOWNLOADS_SUCCESS: {
-      const { id, total } = action.payload;
-      return adapter.upsertOne(
-        {
-          id,
-          ...selectPodcastAllTimeDownloadsEntities(state)[id],
-          allTimeDownloads: total, loading: false, loaded: true
-        }, state);
-    }
-    case ActionTypes.CASTLE_PODCAST_ALLTIME_DOWNLOADS_FAILURE: {
-      const { id, error } = action.payload;
-      return adapter.upsertOne(
-        {
-          id,
-          ...selectPodcastAllTimeDownloadsEntities(state)[id],
-          error, loading: false, loaded: false
-        }, state);
-    }
-
-    default: {
-      return state;
-    }
-  }
+export function reducer(state, action) {
+  return _reducer(state, action);
 }
-

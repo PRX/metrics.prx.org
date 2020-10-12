@@ -1,7 +1,7 @@
 import { Component, Input, OnChanges, HostListener } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { RouterParams, INTERVAL_HOURLY } from '../../ngrx';
-import { RouteDaysAction } from '../../ngrx/actions';
+import { RouteDays } from '../../ngrx/actions';
 
 @Component({
   selector: 'metrics-days-dropdown',
@@ -9,14 +9,12 @@ import { RouteDaysAction } from '../../ngrx/actions';
     <div class="dropdown" [class.open]="open">
       <div class="overlay" (click)="toggleOpen()"></div>
       <div class="dropdown-button">
-        <button (click)="toggleOpen()" >{{ routerParams?.days }} Days<span class="down-arrow"></span></button>
+        <button (click)="toggleOpen()">{{ routerParams?.days }} Days<span class="down-arrow"></span></button>
       </div>
       <div class="dropdown-content rollout short">
         <ul>
           <li *ngFor="let days of daysOptions">
-            <button class="btn-link" [class.active]="days === routerParams?.days" (click)="onDaysChange(days)">
-              {{ days }} Days
-            </button>
+            <button class="btn-link" [class.active]="days === routerParams?.days" (click)="onDaysChange(days)">{{ days }} Days</button>
           </li>
         </ul>
       </div>
@@ -58,7 +56,7 @@ export class DaysDropdownComponent implements OnChanges {
 
   onDaysChange(days: number) {
     if (days && days !== this.routerParams.days) {
-      this.store.dispatch(new RouteDaysAction({days}));
+      this.store.dispatch(RouteDays({ days }));
     }
     this.toggleOpen();
   }

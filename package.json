@@ -28,7 +28,7 @@
     "@ngrx/router-store": "~9.2.0",
     "@ngrx/store": "~9.2.0",
     "@ngrx/store-devtools": "~9.2.0",
-    "angulartics2": "^7.4.1",
+    "angulartics2": "^9.1.0",
     "moment": "^2.18.1",
     "ngx-prx-styleguide": "4.0.0",
     "prx-ng-serve": "^3.0.2",

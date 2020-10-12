@@ -37,7 +37,7 @@ describe('ListenersChartContainerComponent', () => {
         fix.detectChanges();
         de = fix.debugElement;
         el = de.nativeElement;
-        store = TestBed.get(Store);
+        store = TestBed.inject(Store);
 
         dispatchHelper.dispatchRouterNavigation(store, listenersRouterParams);
         dispatchHelper.dispatchPodcastListeners(store);

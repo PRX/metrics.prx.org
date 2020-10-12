@@ -37,7 +37,7 @@ describe('CustomDateRangeDropdownComponent', () => {
         comp = fix.componentInstance;
         de = fix.debugElement;
         el = de.nativeElement;
-        store = TestBed.get(Store);
+        store = TestBed.inject(Store);
 
         comp.tempRange = comp.routerParams = routerParams;
         fix.detectChanges();

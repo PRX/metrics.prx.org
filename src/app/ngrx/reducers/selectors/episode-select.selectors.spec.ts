@@ -15,7 +15,7 @@ describe('Episode Select List Selectors', () => {
     TestBed.configureTestingModule({
       imports: [StoreModule.forRoot(reducers)]
     });
-    store = TestBed.get(Store);
+    store = TestBed.inject(Store);
 
     store.dispatch(ACTIONS.CustomRouterNavigation({ routerParams }));
     store.dispatch(ACTIONS.CastleEpisodeSelectPageSuccess({ page: 1, per: EPISODE_SELECT_PAGE_SIZE, total: 1001, episodes }));

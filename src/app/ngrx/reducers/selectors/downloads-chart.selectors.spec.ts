@@ -18,7 +18,7 @@ describe('Downloads Chart Selectors', () => {
     TestBed.configureTestingModule({
       imports: [StoreModule.forRoot(reducers)]
     });
-    store = TestBed.get(Store);
+    store = TestBed.inject(Store);
   });
 
   it('should combine episodes with downloads and sort by published dates descending', () => {

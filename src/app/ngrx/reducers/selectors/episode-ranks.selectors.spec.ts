@@ -21,7 +21,7 @@ describe('Episode Ranks Selectors', () => {
     TestBed.configureTestingModule({
       imports: [StoreModule.forRoot(reducers)]
     });
-    store = TestBed.get(Store);
+    store = TestBed.inject(Store);
 
     store.dispatch(
       ACTIONS.EpisodeSelectEpisodes({

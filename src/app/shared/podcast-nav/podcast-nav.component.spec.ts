@@ -49,7 +49,7 @@ describe('PodcastNavComponent', () => {
         de = fix.debugElement;
         el = de.nativeElement;
 
-        store = TestBed.get(Store);
+        store = TestBed.inject(Store);
 
         store.dispatch(CustomRouterNavigation({ routerParams }));
         store.dispatch(CastlePodcastPageSuccess({ page: 1, podcasts: podcasts.slice(0, 1), total: 1 }));

@@ -35,7 +35,7 @@ describe('Downloads Table Selectors', () => {
     TestBed.configureTestingModule({
       imports: [StoreModule.forRoot(reducers)]
     });
-    store = TestBed.get(Store);
+    store = TestBed.inject(Store);
 
     jest.spyOn(store, 'dispatch');
 

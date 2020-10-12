@@ -64,9 +64,9 @@ describe('RoutingService', () => {
     })
       .compileComponents()
       .then(() => {
-        routingService = TestBed.get(RoutingService);
-        store = TestBed.get(Store);
-        router = TestBed.get(Router);
+        routingService = TestBed.inject(RoutingService);
+        store = TestBed.inject(Store);
+        router = TestBed.inject(Router);
 
         store.dispatch(ACTIONS.IdUserinfoSuccess({ user: { doc: null, loggedIn: true, authorized: true, userinfo } }));
       });

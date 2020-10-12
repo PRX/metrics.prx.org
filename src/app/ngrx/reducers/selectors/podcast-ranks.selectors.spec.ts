@@ -4,9 +4,17 @@ import { Subscription } from 'rxjs';
 import { first } from 'rxjs/operators';
 import { reducers, RootState } from '../';
 import {
-  ChartType, CHARTTYPE_STACKED, CHARTTYPE_HORIZBAR,
-  GROUPTYPE_GEOCOUNTRY, GROUPTYPE_GEOSUBDIV, GROUPTYPE_AGENTNAME,
-  MetricsType, METRICSTYPE_DEMOGRAPHICS, METRICSTYPE_TRAFFICSOURCES, GROUPTYPE_AGENTTYPE, CHARTTYPE_LINE
+  ChartType,
+  CHARTTYPE_STACKED,
+  CHARTTYPE_HORIZBAR,
+  GROUPTYPE_GEOCOUNTRY,
+  GROUPTYPE_GEOSUBDIV,
+  GROUPTYPE_AGENTNAME,
+  MetricsType,
+  METRICSTYPE_DEMOGRAPHICS,
+  METRICSTYPE_TRAFFICSOURCES,
+  GROUPTYPE_AGENTTYPE,
+  CHARTTYPE_LINE
 } from '../models';
 import {
   podcastGeoCountryDownloads,
@@ -28,11 +36,9 @@ describe('Podcast Ranks Selectors', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        StoreModule.forRoot(reducers)
-      ]
+      imports: [StoreModule.forRoot(reducers)]
     });
-    store = TestBed.get(Store);
+    store = TestBed.inject(Store);
   });
 
   function dispatchRouteGeoCountry() {
@@ -57,47 +63,40 @@ describe('Podcast Ranks Selectors', () => {
   function dispatchRouteAgentName(chartType: ChartType) {
     dispatchHelper.dispatchRouterNavigation(store, {
       ...routerParams,
-        metricsType: METRICSTYPE_TRAFFICSOURCES,
-        group: GROUPTYPE_AGENTNAME,
-        chartType
+      metricsType: METRICSTYPE_TRAFFICSOURCES,
+      group: GROUPTYPE_AGENTNAME,
+      chartType
     });
   }
 
   function dispatchRouteAgentType(chartType: ChartType) {
     dispatchHelper.dispatchRouterNavigation(store, {
       ...routerParams,
-        metricsType: METRICSTYPE_TRAFFICSOURCES,
-        group: GROUPTYPE_AGENTTYPE,
-        chartType
+      metricsType: METRICSTYPE_TRAFFICSOURCES,
+      group: GROUPTYPE_AGENTTYPE,
+      chartType
     });
   }
 
   function dispatchPodcastGeoCountryRanks() {
-    dispatchHelper.dispatchPodcastRanks(store,
-      {group: GROUPTYPE_GEOCOUNTRY},
-      podcastGeoCountryRanks,
-      podcastGeoCountryDownloads);
+    dispatchHelper.dispatchPodcastRanks(store, { group: GROUPTYPE_GEOCOUNTRY }, podcastGeoCountryRanks, podcastGeoCountryDownloads);
   }
 
   function dispatchPodcastNestedRanks() {
-    dispatchHelper.dispatchPodcastRanks(store,
-      {group: GROUPTYPE_GEOSUBDIV, filter: 'US'},
+    dispatchHelper.dispatchPodcastRanks(
+      store,
+      { group: GROUPTYPE_GEOSUBDIV, filter: 'US' },
       podcastGeoSubdivRanks,
-      podcastGeoSubdivDownloads);
+      podcastGeoSubdivDownloads
+    );
   }
 
   function dispatchPodcastAgentNameRanks() {
-    dispatchHelper.dispatchPodcastRanks(store,
-      {group: GROUPTYPE_AGENTNAME},
-      podcastAgentNameRanks,
-      podcastAgentNameDownloads);
+    dispatchHelper.dispatchPodcastRanks(store, { group: GROUPTYPE_AGENTNAME }, podcastAgentNameRanks, podcastAgentNameDownloads);
   }
 
   function dispatchPodcastAgentTypeRanks() {
-    dispatchHelper.dispatchPodcastRanks(store,
-      {group: GROUPTYPE_AGENTTYPE},
-      podcastAgentTypeRanks,
-      podcastAgentTypeDownloads);
+    dispatchHelper.dispatchPodcastRanks(store, { group: GROUPTYPE_AGENTTYPE }, podcastAgentTypeRanks, podcastAgentTypeDownloads);
   }
 
   function dispatchPodcastToggleGroupCharted(groupName: string) {
@@ -112,7 +111,7 @@ describe('Podcast Ranks Selectors', () => {
       dispatchRouteGeoCountry();
       dispatchPodcastGeoCountryRanks();
 
-      dataSub = store.pipe(select(podcastRanks.selectRoutedPodcastRanksChartMetrics)).subscribe((data) => {
+      dataSub = store.pipe(select(podcastRanks.selectRoutedPodcastRanksChartMetrics)).subscribe(data => {
         result = <TimeseriesChartModel[]>data;
       });
     });
@@ -141,7 +140,7 @@ describe('Podcast Ranks Selectors', () => {
     beforeEach(() => {
       dispatchPodcastAgentNameRanks();
       dispatchPodcastAgentTypeRanks();
-      dataSub = store.pipe(select(podcastRanks.selectRoutedPodcastRanksChartMetrics)).subscribe((data) => {
+      dataSub = store.pipe(select(podcastRanks.selectRoutedPodcastRanksChartMetrics)).subscribe(data => {
         result = <CategoryChartModel[]>data;
       });
     });
@@ -163,26 +162,24 @@ describe('Podcast Ranks Selectors', () => {
     it('should not include "Other" data if total value is zero', done => {
       dispatchRouteAgentType(CHARTTYPE_HORIZBAR);
 
-      store.pipe(select(podcastRanks.selectRoutedPodcastRanksChartMetrics), first()).subscribe((data) => {
+      store.pipe(select(podcastRanks.selectRoutedPodcastRanksChartMetrics), first()).subscribe(data => {
         result = <CategoryChartModel[]>data;
         expect(result.length).toEqual(podcastAgentTypeRanks.length - 1);
         expect(result.find(r => r.label === 'Other')).toBeUndefined();
         done();
       });
-
     });
 
     it('should filter by groups charted and assume groups are charted implicitly', done => {
       dispatchRouteAgentType(CHARTTYPE_HORIZBAR);
       dispatchPodcastToggleGroupCharted('Unknown');
 
-      store.pipe(select(podcastRanks.selectRoutedPodcastRanksChartMetrics), first()).subscribe((data) => {
+      store.pipe(select(podcastRanks.selectRoutedPodcastRanksChartMetrics), first()).subscribe(data => {
         result = <CategoryChartModel[]>data;
         expect(result.length).toEqual(podcastAgentTypeRanks.length - 2);
         expect(result.find(r => r.label === 'Unknown')).toBeUndefined();
         done();
       });
-
     });
   });
 
@@ -191,7 +188,7 @@ describe('Podcast Ranks Selectors', () => {
     let dataSub: Subscription;
     beforeEach(() => {
       dispatchPodcastAgentTypeRanks();
-      dataSub = store.pipe(select(podcastRanks.selectRoutedPodcastRanksChartMetrics), first()).subscribe((data) => {
+      dataSub = store.pipe(select(podcastRanks.selectRoutedPodcastRanksChartMetrics), first()).subscribe(data => {
         result = <TimeseriesChartModel[]>data;
       });
     });
@@ -203,7 +200,7 @@ describe('Podcast Ranks Selectors', () => {
     it('should not include "Other" data if total value is zero', done => {
       dispatchRouteAgentType(CHARTTYPE_STACKED);
 
-      store.pipe(select(podcastRanks.selectRoutedPodcastRanksChartMetrics), first()).subscribe((data) => {
+      store.pipe(select(podcastRanks.selectRoutedPodcastRanksChartMetrics), first()).subscribe(data => {
         result = <TimeseriesChartModel[]>data;
         expect(result.length).toEqual(podcastAgentTypeRanks.length - 1);
         expect(result.find(r => r.label === 'Other')).toBeUndefined();
@@ -215,18 +212,16 @@ describe('Podcast Ranks Selectors', () => {
       dispatchRouteAgentType(CHARTTYPE_LINE);
       dispatchPodcastToggleGroupCharted('Unknown');
 
-      store.pipe(select(podcastRanks.selectRoutedPodcastRanksChartMetrics)).subscribe((data) => {
+      store.pipe(select(podcastRanks.selectRoutedPodcastRanksChartMetrics)).subscribe(data => {
         result = <TimeseriesChartModel[]>data;
         expect(result.length).toEqual(podcastAgentTypeRanks.length - 2);
         expect(result.find(r => r.label === 'Unknown')).toBeUndefined();
         done();
       });
-
     });
   });
 
   describe('nested podcast ranks', () => {
-
     let result: TimeseriesChartModel[];
     let dataSub: Subscription;
 
@@ -234,7 +229,7 @@ describe('Podcast Ranks Selectors', () => {
       dispatchRouteGeoSubdiv();
       dispatchPodcastNestedRanks();
 
-      dataSub = store.pipe(select(podcastRanks.selectNestedPodcastRanksChartMetrics)).subscribe((data) => {
+      dataSub = store.pipe(select(podcastRanks.selectNestedPodcastRanksChartMetrics)).subscribe(data => {
         result = data;
       });
     });

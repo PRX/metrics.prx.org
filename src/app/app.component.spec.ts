@@ -63,7 +63,7 @@ describe('AppComponent', () => {
         fix.detectChanges();
         de = fix.debugElement;
         el = de.nativeElement;
-        store = TestBed.get(Store);
+        store = TestBed.inject(Store);
         store.dispatch(ACTIONS.IdUserinfoSuccess({ user }));
         fix.detectChanges();
       });

@@ -7,7 +7,7 @@ import { ModalService } from 'ngx-prx-styleguide';
 import { ExportGoogleSheetsComponent } from './export-google-sheets.component';
 import { ExportGoogleSheetsService, GoogleSheetState } from './export-google-sheets.service';
 
-const exportState = new BehaviorSubject<GoogleSheetState>({signedIn: true, busy: false});
+const exportState = new BehaviorSubject<GoogleSheetState>({ signedIn: true, busy: false });
 
 class MockExportGoogleSheetsService extends ExportGoogleSheetsService {
   public readonly state: Observable<GoogleSheetState> = exportState.asObservable();
@@ -22,21 +22,21 @@ describe('ExportGoogleSheetsComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [
-        ExportGoogleSheetsComponent
-      ],
+      declarations: [ExportGoogleSheetsComponent],
       providers: [
-        {provide: ExportGoogleSheetsService, useClass: MockExportGoogleSheetsService},
-        {provide: ModalService, useValue: {show: () => {}}}
+        { provide: ExportGoogleSheetsService, useClass: MockExportGoogleSheetsService },
+        { provide: ModalService, useValue: { show: () => {} } }
       ]
-    }).compileComponents().then(() => {
-      fix = TestBed.createComponent(ExportGoogleSheetsComponent);
-      comp = fix.componentInstance;
-      fix.detectChanges();
-      de = fix.debugElement;
-      el = de.nativeElement;
-      googleSheets = TestBed.get(ExportGoogleSheetsService);
-    });
+    })
+      .compileComponents()
+      .then(() => {
+        fix = TestBed.createComponent(ExportGoogleSheetsComponent);
+        comp = fix.componentInstance;
+        fix.detectChanges();
+        de = fix.debugElement;
+        el = de.nativeElement;
+        googleSheets = TestBed.inject(ExportGoogleSheetsService);
+      });
   }));
 
   it('should sign in to Google', () => {

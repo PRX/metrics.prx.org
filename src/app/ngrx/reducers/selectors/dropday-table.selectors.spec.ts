@@ -6,8 +6,7 @@ import { RootState, reducers } from '..';
 import { METRICSTYPE_DROPDAY, CHARTTYPE_HORIZBAR, DownloadsTableModel } from '../models';
 import { getTotal } from '@app/shared/util/metrics.util';
 import * as dispatchHelper from '@testing/dispatch.helpers';
-import { routerParams, episodes,
-  ep0Downloads, ep1Downloads, ep0AllTimeDownloads, ep1AllTimeDownloads } from '@testing/downloads.fixtures';
+import { routerParams, episodes, ep0Downloads, ep1Downloads, ep0AllTimeDownloads, ep1AllTimeDownloads } from '@testing/downloads.fixtures';
 import { selectDropdayTableMetrics } from './dropday-table.selectors';
 
 describe('Dropday Table Selectors', () => {
@@ -17,20 +16,18 @@ describe('Dropday Table Selectors', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        StoreModule.forRoot(reducers)
-      ]
+      imports: [StoreModule.forRoot(reducers)]
     });
-    store = TestBed.get(Store);
+    store = TestBed.inject(Store);
 
-    dispatchHelper.dispatchRouterNavigation(store, {...routerParams, metricsType: METRICSTYPE_DROPDAY, chartType: CHARTTYPE_HORIZBAR});
+    dispatchHelper.dispatchRouterNavigation(store, { ...routerParams, metricsType: METRICSTYPE_DROPDAY, chartType: CHARTTYPE_HORIZBAR });
     dispatchHelper.dispatchEpisodePage(store);
     dispatchHelper.dispatchEpisodeSelectList(store);
     dispatchHelper.dispatchSelectEpisodes(store, routerParams.podcastId, METRICSTYPE_DROPDAY, [episodes[0].guid, episodes[1].guid]);
     dispatchHelper.dispatchEpisodeDropday(store);
     dispatchHelper.dispatchEpisodeAllTimeDownloads(store);
 
-    dataSub = store.pipe(select(selectDropdayTableMetrics)).subscribe((data) => {
+    dataSub = store.pipe(select(selectDropdayTableMetrics)).subscribe(data => {
       result = data;
     });
   });
@@ -49,5 +46,4 @@ describe('Dropday Table Selectors', () => {
     expect(result[1].totalForPeriod).toEqual(getTotal(ep1Downloads));
     expect(result[1].allTimeDownloads).toEqual(ep1AllTimeDownloads.total);
   });
-
 });

@@ -39,7 +39,7 @@ describe('EpisodeSelectDropdownContentComponent', () => {
         comp = fix.componentInstance;
         de = fix.debugElement;
         el = de.nativeElement;
-        store = TestBed.get(Store);
+        store = TestBed.inject(Store);
 
         comp.routerParams = routerParams;
         comp.episodes = new Array(EPISODE_SELECT_PAGE_SIZE).fill(episodes[0]);

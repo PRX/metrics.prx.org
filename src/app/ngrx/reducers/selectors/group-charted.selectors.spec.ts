@@ -12,13 +12,11 @@ describe('Group Charted Selectors', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        StoreModule.forRoot(reducers)
-      ]
+      imports: [StoreModule.forRoot(reducers)]
     });
-    store = TestBed.get(Store);
+    store = TestBed.inject(Store);
 
-    dispatchHelper.dispatchRouterNavigation(store, {metricsType: METRICSTYPE_TRAFFICSOURCES, group: GROUPTYPE_AGENTNAME});
+    dispatchHelper.dispatchRouterNavigation(store, { metricsType: METRICSTYPE_TRAFFICSOURCES, group: GROUPTYPE_AGENTNAME });
   });
 
   it('should toggle groups charted off', done => {
@@ -38,5 +36,4 @@ describe('Group Charted Selectors', () => {
       done();
     });
   });
-
 });

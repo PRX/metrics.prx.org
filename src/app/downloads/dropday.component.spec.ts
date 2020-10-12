@@ -24,7 +24,7 @@ describe('DropdayComponent', () => {
   let de: DebugElement;
   let el: HTMLElement;
   let store: Store<any>;
-  const dropdayRouterParams: RouterParams = {...routerParams, metricsType: METRICSTYPE_DROPDAY, chartType: CHARTTYPE_EPISODES};
+  const dropdayRouterParams: RouterParams = { ...routerParams, metricsType: METRICSTYPE_DROPDAY, chartType: CHARTTYPE_EPISODES };
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -36,21 +36,19 @@ describe('DropdayComponent', () => {
         SummaryTableComponent,
         PlaceholderComponent
       ],
-      imports: [
-        SharedModule,
-        FancyFormModule,
-        StoreModule.forRoot(reducers)
-      ],
+      imports: [SharedModule, FancyFormModule, StoreModule.forRoot(reducers)],
       providers: []
-    }).compileComponents().then(() => {
-      fix = TestBed.createComponent(DropdayComponent);
-      comp = fix.componentInstance;
-      de = fix.debugElement;
-      el = de.nativeElement;
-      store = TestBed.get(Store);
+    })
+      .compileComponents()
+      .then(() => {
+        fix = TestBed.createComponent(DropdayComponent);
+        comp = fix.componentInstance;
+        de = fix.debugElement;
+        el = de.nativeElement;
+        store = TestBed.inject(Store);
 
-      dispatchHelper.dispatchRouterNavigation(store, dropdayRouterParams);
-    });
+        dispatchHelper.dispatchRouterNavigation(store, dropdayRouterParams);
+      });
   }));
 
   it('should show loading spinner when loading', () => {
@@ -69,5 +67,4 @@ describe('DropdayComponent', () => {
     expect(de.query(By.css('prx-spinner'))).toBeNull();
     expect(de.query(By.css('metrics-dropday-table'))).not.toBeNull();
   });
-
 });

@@ -27,7 +27,7 @@ describe('ErrorRetryComponent', () => {
         comp = fix.componentInstance;
         de = fix.debugElement;
         el = de.nativeElement;
-        store = TestBed.get(Store);
+        store = TestBed.inject(Store);
       });
   }));
 

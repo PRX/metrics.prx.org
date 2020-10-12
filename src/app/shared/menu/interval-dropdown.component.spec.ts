@@ -28,7 +28,7 @@ describe('IntervalDropdownComponent', () => {
         fix.detectChanges();
         de = fix.debugElement;
         el = de.nativeElement;
-        store = TestBed.get(Store);
+        store = TestBed.inject(Store);
 
         comp.routerParams = {
           metricsType: METRICSTYPE_DOWNLOADS,

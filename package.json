@@ -5,6 +5,7 @@
   "scripts": {
     "start": "prx-ng-serve dev",
     "build": "ng build --prod --aot",
+    "postinstall": "ngcc",
     "test": "jest --watch",
     "test:debug": "node --inspect node_modules/.bin/jest --runInBand",
     "lint": "ng lint --type-check",

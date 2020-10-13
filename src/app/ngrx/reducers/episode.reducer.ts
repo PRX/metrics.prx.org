@@ -58,13 +58,7 @@ const _reducer = createReducer(
   on(catalogActions.CastleEpisodePageSuccess, (state, action) => {
     const { page, total, episodes } = action;
     return {
-      ...adapter.upsertMany(
-        // episodes.map(episode => {
-        //   return { id: episode.guid, ...episode };
-        // }),
-        episodes,
-        state
-      ),
+      ...adapter.upsertMany(episodes, state),
       pagesLoaded: addToArray(state.pagesLoaded, page),
       pagesLoading: removeFromArray(state.pagesLoading, page),
       total: page === 1 || !state.total ? total : state.total

@@ -58,13 +58,7 @@ const _reducer = createReducer(
   on(catalogActions.CastleEpisodeSelectPageSuccess, (state, action) => {
     const { page, total, search, episodes } = action;
     return {
-      ...adapter.upsertMany(
-        // episodes.map(episode => {
-        //   return { id: episode.guid, ...episode };
-        // }),
-        episodes,
-        state
-      ),
+      ...adapter.upsertMany(episodes, state),
       // this here assumes that a CASTLE_EPISODE_SELECT_PAGE_SUCCESS will occur without search on application load
       // so that we can retain the unfiltered total amount of episodes
       ...(!search && { total }), // updates total property if search is not defined

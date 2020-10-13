@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
-import { select, Store } from '@ngrx/store';
+import { select, Store, Action } from '@ngrx/store';
 import {
   selectChartMetrics,
   selectTableMetrics,
@@ -44,7 +44,7 @@ export class UserAgentsComponent implements OnInit {
   groupsCharted$: Observable<GroupCharted[]>;
   loading$: Observable<boolean>;
   loaded$: Observable<boolean>;
-  errors$: Observable<ACTIONS.AllActions[]>;
+  errors$: Observable<Action[]>;
 
   constructor(private store: Store<any>) {}
 

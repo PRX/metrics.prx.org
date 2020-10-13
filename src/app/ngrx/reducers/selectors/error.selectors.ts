@@ -1,4 +1,4 @@
-import { createSelector } from '@ngrx/store';
+import { createSelector, Action } from '@ngrx/store';
 import { selectRouter } from './router.selectors';
 import { selectEpisodeError } from './episode.selectors';
 import { selectPodcastError } from './podcast.selectors';
@@ -189,23 +189,14 @@ export const select500ErrorReloadActions = createSelector(
   selectDropday500ErrorReloadActions,
   selectListeners500ErrorReloadActions,
   selectRankTotal500ErrorReloadActions,
-  // (
-  //   routerParams: RouterParams,
-  //   podcastError: any,
-  //   episodeError: any,
-  //   downloadErrorReloadActions: ACTIONS.AllActions[],
-  //   dropdayErrorReloadActions: ACTIONS.AllActions[],
-  //   listenersErrorReloadActions: ACTIONS.AllActions[],
-  //   rankTotalErrorReloadActions: ACTIONS.AllActions[]
-  // ) => {
   (
     routerParams: RouterParams,
     podcastError: any,
     episodeError: any,
-    downloadErrorReloadActions,
-    dropdayErrorReloadActions,
-    listenersErrorReloadActions,
-    rankTotalErrorReloadActions
+    downloadErrorReloadActions: Action[],
+    dropdayErrorReloadActions: Action[],
+    listenersErrorReloadActions: Action[],
+    rankTotalErrorReloadActions: Action[]
   ) => {
     const actions = [];
     if (podcastError && podcastError.status === 500) {

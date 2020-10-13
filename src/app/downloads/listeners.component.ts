@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { select, Store } from '@ngrx/store';
+import { select, Store, Action } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { selectPodcastListenersLoading, selectPodcastListenersLoaded, select500ErrorReloadActions } from '@app/ngrx/reducers/selectors';
-import { AllActions } from '@app/ngrx/actions';
 
 @Component({
   template: `
@@ -17,7 +16,7 @@ import { AllActions } from '@app/ngrx/actions';
 export class ListenersComponent implements OnInit {
   loading$: Observable<boolean>;
   loaded$: Observable<boolean>;
-  errors$: Observable<AllActions[]>;
+  errors$: Observable<Action[]>;
 
   constructor(public store: Store<any>) {}
 

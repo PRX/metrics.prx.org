@@ -1,7 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { DebugElement } from '@angular/core';
 import { By } from '@angular/platform-browser';
-import { Store, StoreModule } from '@ngrx/store';
+import { Store, StoreModule, Action } from '@ngrx/store';
 
 import { ErrorRetryComponent } from './error-retry.component';
 import * as ACTIONS from '../../ngrx/actions';
@@ -39,7 +39,7 @@ describe('ErrorRetryComponent', () => {
         beginDate: routerParams.beginDate,
         endDate: routerParams.endDate
       })
-    ] as any[]) as ACTIONS.AllActions[];
+    ] as any[]) as Action[];
     fix.detectChanges();
   }
 

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { select, Store } from '@ngrx/store';
+import { select, Store, Action } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import {
   RouterParams,
@@ -100,8 +100,8 @@ export class GeoComponent implements OnInit {
   loaded$: Observable<boolean>;
   nestedTotalsLoading$: Observable<boolean>;
   nestedTotalsLoaded$: Observable<boolean>;
-  nestedDataErrorActions$: Observable<ACTIONS.AllActions[]>;
-  errors$: Observable<ACTIONS.AllActions[]>;
+  nestedDataErrorActions$: Observable<Action[]>;
+  errors$: Observable<Action[]>;
   GROUPTYPE_GEOCOUNTRY = GROUPTYPE_GEOCOUNTRY;
   GROUPTYPE_GEOMETRO = GROUPTYPE_GEOMETRO;
   CHARTTYPE_GEOCHART = CHARTTYPE_GEOCHART;

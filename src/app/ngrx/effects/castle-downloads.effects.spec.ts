@@ -249,48 +249,50 @@ describe('CastleDownloadsEffects', () => {
 
     it('should load downloads on episode page success', () => {
       jest.spyOn(store, 'dispatch');
-      const action = ACTIONS.CastleEpisodePageSuccess({
+      const episodePage = ACTIONS.CastleEpisodePageSuccess({
         episodes,
         page: routerParams.episodePage,
         per: EPISODE_PAGE_SIZE,
         total: episodes.length
       });
-      const episodeMetricsActions = episodes.map(e => {
-        return ACTIONS.CastleEpisodeDownloadsLoad({
-          podcastId: e.podcastId,
-          page: e.page,
-          guid: e.guid,
+      const episodeMetricsActions = [
+        ACTIONS.CastlePodcastDownloadsLoad({
+          id: episodes[0].podcastId,
           interval: routerParams.interval,
           beginDate: routerParams.beginDate,
           endDate: routerParams.endDate
-        });
-      });
-      const completionString = episodes.map((e, i) => `-${i}`);
+        }),
+        ACTIONS.CastlePodcastAllTimeDownloadsLoad({ id: episodes[0].podcastId }),
+        ...episodes.map(e => {
+          return ACTIONS.CastleEpisodeDownloadsLoad({
+            podcastId: e.podcastId,
+            page: e.page,
+            guid: e.guid,
+            interval: routerParams.interval,
+            beginDate: routerParams.beginDate,
+            endDate: routerParams.endDate
+          });
+        }),
+        ...episodes.map(e => {
+          return ACTIONS.CastleEpisodeAllTimeDownloadsLoad({
+            podcastId: e.podcastId,
+            guid: e.guid
+          });
+        })
+      ];
+      const completionString = episodeMetricsActions.map((e, i) => `-${i}`);
       const completion = {};
       // create an object with indices (toString) as keys to each action for marble mapping
       episodeMetricsActions.forEach((a, i) => {
         completion[i.toString()] = a;
       });
 
-      actions$ = hot('-a--', { a: action });
+      actions$ = hot('-a--', { a: episodePage });
       // Marble syntax: '()' to sync groupings
       // When multiple events need to be in the same frame synchronously, parentheses are used to group those events.
       // eg '-(-0-1)' events '0' and '1' will both be in frame 10
       const expected = cold(`-(${completionString.join('')})`, completion);
       expect(effects.loadRoutedDownloads$).toBeObservable(expected);
-
-      expect(store.dispatch).toHaveBeenCalledWith(
-        ACTIONS.CastlePodcastDownloadsLoad({
-          id: episodes[0].podcastId,
-          interval: routerParams.interval,
-          beginDate: routerParams.beginDate,
-          endDate: routerParams.endDate
-        })
-      );
-      expect(store.dispatch).toHaveBeenCalledWith(ACTIONS.CastlePodcastAllTimeDownloadsLoad({ id: episodes[0].podcastId }));
-      episodes.forEach(e => {
-        expect(store.dispatch).toHaveBeenCalledWith(ACTIONS.CastleEpisodeAllTimeDownloadsLoad({ podcastId: e.podcastId, guid: e.guid }));
-      });
     });
 
     it('should load dropday downloads on episode page success', () => {

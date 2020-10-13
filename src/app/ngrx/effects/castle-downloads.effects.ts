@@ -31,31 +31,31 @@ export class CastleDownloadsEffects {
       }),
       mergeMap(([action, routerParams]) => {
         const { episodes } = action;
-        this.store.dispatch(
+        return [
           ACTIONS.CastlePodcastDownloadsLoad({
             id: episodes[0].podcastId,
             interval: routerParams.interval,
             beginDate: routerParams.beginDate,
             endDate: routerParams.endDate
-          })
-        );
-        this.store.dispatch(ACTIONS.CastlePodcastAllTimeDownloadsLoad({ id: episodes[0].podcastId }));
-        return episodes.map((episode: Episode) => {
-          this.store.dispatch(
-            ACTIONS.CastleEpisodeAllTimeDownloadsLoad({
+          }),
+          ACTIONS.CastlePodcastAllTimeDownloadsLoad({ id: episodes[0].podcastId }),
+          ...episodes.map((episode: Episode) => {
+            return ACTIONS.CastleEpisodeDownloadsLoad({
+              podcastId: episode.podcastId,
+              page: episode.page,
+              guid: episode.guid,
+              interval: routerParams.interval,
+              beginDate: routerParams.beginDate,
+              endDate: routerParams.endDate
+            });
+          }),
+          ...episodes.map((episode: Episode) => {
+            return ACTIONS.CastleEpisodeAllTimeDownloadsLoad({
               podcastId: episode.podcastId,
               guid: episode.guid
-            })
-          );
-          return ACTIONS.CastleEpisodeDownloadsLoad({
-            podcastId: episode.podcastId,
-            page: episode.page,
-            guid: episode.guid,
-            interval: routerParams.interval,
-            beginDate: routerParams.beginDate,
-            endDate: routerParams.endDate
-          });
-        });
+            });
+          })
+        ];
       })
     )
   );

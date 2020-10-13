@@ -7403,10 +7403,10 @@ ng2-dragula@^2.1.1:
     "@types/dragula" "^2.1.34"
     dragula "^3.7.2"
 
-ngx-prx-styleguide@4.0.0:
-  version "4.0.0"
-  resolved "https://registry.yarnpkg.com/ngx-prx-styleguide/-/ngx-prx-styleguide-4.0.0.tgz#2021c6e4577722ff0574a8f4bb4eb0901e7bd7a6"
-  integrity sha512-GmXywBB3nJt2I+DBkPkV+JC52F4Ve2Zbu2MyU1YJ525VhwkJRxMnlkIQ0anJ6wVPII/TCa00VUJgBHo+/R7Txg==
+ngx-prx-styleguide@4.0.1:
+  version "4.0.1"
+  resolved "https://registry.yarnpkg.com/ngx-prx-styleguide/-/ngx-prx-styleguide-4.0.1.tgz#9c455e0e2b49eefb2cf0963012a784d4b38972da"
+  integrity sha512-n8RaCOb3jRLHQqbvloKNx4XDZKZw1xIDr2bVVy+Tnq5Ug1As94ghtJcG57WSQ41uACdPophsGbXRNNf9BMPTEg==
   dependencies:
     "@ng-select/ng-select" "^3.7.3"
     c3 "~0.7.1"
@@ -8700,10 +8700,10 @@ prr@~1.0.1:
   resolved "https://registry.yarnpkg.com/prr/-/prr-1.0.1.tgz#d3fc114ba06995a45ec6893f484ceb1d78f5f476"
   integrity sha1-0/wRS6BplaRexok/SEzrHXj19HY=
 
-prx-ng-serve@^3.0.2:
-  version "3.0.2"
-  resolved "https://registry.yarnpkg.com/prx-ng-serve/-/prx-ng-serve-3.0.2.tgz#d4284e4163a8b297179bba3e5ebd811475d31df7"
-  integrity sha512-QIYQQsvB8kUQdNGn/vMJEQDgKOevmMA+/eZ06MNBRwGNcvPVsZTNzrBeSoX8U/dVS3u6nHUaw1qD+VZbiNMuKw==
+prx-ng-serve@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/prx-ng-serve/-/prx-ng-serve-4.0.0.tgz#1def33a28521e078864a8224f0928dfba7aeeb3b"
+  integrity sha512-376GqveP9wTbDb0O0woxbKRC56LcjPtZsqHsBOkz+dI769+Sx9lq/jDTd7AAYakM8U/IUZDB8qBh7r+sBvpX8g==
   dependencies:
     connect-gzip-static "^2.1.1"
     dotenv "^4.0.0"

@@ -17,8 +17,11 @@ import { Subject } from 'rxjs';
 import { userinfo } from '../testing/downloads.fixtures';
 
 /* tslint:disable-next-line:component-selector */
-@Component({selector: 'prx-auth', template: 'mock-prx-auth'})
-class MockAuthComponent { @Input() host: any; @Input() client: any; }
+@Component({ selector: 'prx-auth', template: 'mock-prx-auth' })
+class MockAuthComponent {
+  @Input() host: any;
+  @Input() client: any;
+}
 
 describe('AppComponent', () => {
   let comp: AppComponent;
@@ -28,26 +31,18 @@ describe('AppComponent', () => {
   let store: Store<any>;
   userinfo.name = 'Joey JoJo Jr Shabadoo';
 
-  const user: User = {doc: null, loggedIn: true, authorized: true, userinfo};
+  const user: User = { doc: null, loggedIn: true, authorized: true, userinfo };
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [
-        MockAuthComponent,
-        AppComponent
-      ],
-      imports: [
-        RouterTestingModule,
-        CoreModule,
-        SharedModule,
-        StoreModule.forRoot(reducers)
-      ],
+      declarations: [MockAuthComponent, AppComponent],
+      imports: [RouterTestingModule, CoreModule, SharedModule, StoreModule.forRoot(reducers)],
       providers: [
         {
           provide: Angulartics2GoogleAnalytics,
           useValue: {
             filterDeveloperMode: () => () => new Subject<any>(),
-            settings: {pageTracking: {}},
+            settings: { pageTracking: {} },
             trackLocation: () => {},
             pageTrack: new Subject<any>(),
             eventTrack: new Subject<any>(),
@@ -60,16 +55,18 @@ describe('AppComponent', () => {
         },
         Angulartics2
       ]
-    }).compileComponents().then(() => {
-      fix = TestBed.createComponent(AppComponent);
-      comp = fix.componentInstance;
-      fix.detectChanges();
-      de = fix.debugElement;
-      el = de.nativeElement;
-      store = TestBed.get(Store);
-      store.dispatch(new ACTIONS.IdUserinfoSuccessAction({user}));
-      fix.detectChanges();
-    });
+    })
+      .compileComponents()
+      .then(() => {
+        fix = TestBed.createComponent(AppComponent);
+        comp = fix.componentInstance;
+        fix.detectChanges();
+        de = fix.debugElement;
+        el = de.nativeElement;
+        store = TestBed.inject(Store);
+        store.dispatch(ACTIONS.IdUserinfoSuccess({ user }));
+        fix.detectChanges();
+      });
   }));
 
   it('should create the app', async(() => {
@@ -78,7 +75,7 @@ describe('AppComponent', () => {
 
   it(`should show podcasts when logged in`, async(() => {
     expect(de.query(By.css('metrics-podcast-nav'))).toBeTruthy();
-    store.dispatch(new ACTIONS.IdUserinfoFailureAction({error: 'whatevs'}));
+    store.dispatch(ACTIONS.IdUserinfoFailure({ error: 'whatevs' }));
     fix.detectChanges();
     expect(de.query(By.css('metrics-podcast-nav'))).toBeNull();
   }));
@@ -86,7 +83,7 @@ describe('AppComponent', () => {
   it('should show user info when logged in', async(() => {
     expect(de.query(By.css('prx-navuser'))).toBeTruthy();
     expect(el.textContent).toContain('Joey JoJo Jr Shabadoo');
-    store.dispatch(new ACTIONS.IdUserinfoLoadAction());
+    store.dispatch(ACTIONS.IdUserinfoLoad());
     fix.detectChanges();
     expect(de.query(By.css('prx-navuser'))).toBeNull();
     expect(el.textContent).not.toContain('Joey JoJo Jr Shabadoo');

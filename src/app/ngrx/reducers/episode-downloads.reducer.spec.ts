@@ -1,4 +1,4 @@
-import { CastleEpisodeDownloadsSuccessAction, CastleEpisodePageSuccessAction } from '../actions';
+import * as ACTIONS from '../actions';
 import * as fromEpisodeDownloads from './episode-downloads.reducer';
 import { episodes, ep0Downloads, ep1Downloads } from '../../../testing/downloads.fixtures';
 import { EPISODE_PAGE_SIZE } from './models';
@@ -7,9 +7,12 @@ describe('EpisodeDownloadsReducer', () => {
   let newState: fromEpisodeDownloads.State;
   const episode = episodes[0];
   beforeEach(() => {
-    newState = fromEpisodeDownloads.reducer(undefined,
-      new CastleEpisodeDownloadsSuccessAction({
-        podcastId: episode.podcastId, page: episode.page, guid: episode.guid,
+    newState = fromEpisodeDownloads.reducer(
+      undefined,
+      ACTIONS.CastleEpisodeDownloadsSuccess({
+        podcastId: episode.podcastId,
+        page: episode.page,
+        guid: episode.guid,
         downloads: []
       })
     );
@@ -22,9 +25,11 @@ describe('EpisodeDownloadsReducer', () => {
   });
 
   it('should update existing episode downloads', () => {
-    newState = fromEpisodeDownloads.reducer(newState,
-      new CastleEpisodeDownloadsSuccessAction({
-        podcastId: episode.podcastId, page: episode.page,
+    newState = fromEpisodeDownloads.reducer(
+      newState,
+      ACTIONS.CastleEpisodeDownloadsSuccess({
+        podcastId: episode.podcastId,
+        page: episode.page,
         guid: 'abcdefg',
         downloads: ep0Downloads
       })
@@ -35,9 +40,10 @@ describe('EpisodeDownloadsReducer', () => {
     expect(fromEpisodeDownloads.selectAllEpisodeDownloads(newState)[0].downloads[0][1]).toEqual(ep0Downloads[0][1]);
   });
 
-  it ('should add new episode metrics', () => {
-    newState = fromEpisodeDownloads.reducer(newState,
-      new CastleEpisodeDownloadsSuccessAction({
+  it('should add new episode metrics', () => {
+    newState = fromEpisodeDownloads.reducer(
+      newState,
+      ACTIONS.CastleEpisodeDownloadsSuccess({
         podcastId: episodes[1].podcastId,
         page: 1,
         guid: episodes[1].guid,
@@ -48,15 +54,20 @@ describe('EpisodeDownloadsReducer', () => {
   });
 
   it('should set loaded to false on episode page load if entry not already on state', () => {
-    newState = fromEpisodeDownloads.reducer(newState,
-      new CastleEpisodePageSuccessAction({
+    newState = fromEpisodeDownloads.reducer(
+      newState,
+      ACTIONS.CastleEpisodePageSuccess({
         page: 2,
         per: EPISODE_PAGE_SIZE,
         episodes: episodes,
         total: episodes.length
       })
     );
-    expect(fromEpisodeDownloads.selectAllEpisodeDownloads(newState).filter(episodeDownloads =>
-      episodeDownloads.page === 2).every(entry => !entry.loaded)).toBeTruthy();
+    expect(
+      fromEpisodeDownloads
+        .selectAllEpisodeDownloads(newState)
+        .filter(episodeDownloads => episodeDownloads.page === 2)
+        .every(entry => !entry.loaded)
+    ).toBeTruthy();
   });
 });

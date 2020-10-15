@@ -15,7 +15,7 @@ describe('Podcast Listeners Selectors', () => {
     TestBed.configureTestingModule({
       imports: [StoreModule.forRoot(reducers)]
     });
-    store = TestBed.get(Store);
+    store = TestBed.inject(Store);
 
     dispatchHelper.dispatchRouterNavigation(store, {
       ...routerParams,

@@ -35,59 +35,64 @@ describe('DownloadsComponent', () => {
         DownloadsTablePresentationComponent,
         SummaryTableComponent
       ],
-      imports: [
-        SharedModule,
-        FancyFormModule,
-        StoreModule.forRoot(reducers)
-      ],
+      imports: [SharedModule, FancyFormModule, StoreModule.forRoot(reducers)],
       providers: []
-    }).compileComponents().then(() => {
-      fix = TestBed.createComponent(DownloadsComponent);
-      comp = fix.componentInstance;
-      de = fix.debugElement;
-      el = de.nativeElement;
-      store = TestBed.get(Store);
-    });
+    })
+      .compileComponents()
+      .then(() => {
+        fix = TestBed.createComponent(DownloadsComponent);
+        comp = fix.componentInstance;
+        de = fix.debugElement;
+        el = de.nativeElement;
+        store = TestBed.inject(Store);
+      });
   }));
 
   function dispatchRouterNavigation() {
-    store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerParams}));
+    store.dispatch(ACTIONS.CustomRouterNavigation({ routerParams }));
   }
 
   function dispatchPodcasts() {
-    store.dispatch(new ACTIONS.CastlePodcastPageSuccessAction(
-      {podcasts: [podcast], page: 1, total: 1}));
+    store.dispatch(ACTIONS.CastlePodcastPageSuccess({ podcasts: [podcast], page: 1, total: 1 }));
   }
 
   function dispatchEpisodePage() {
-    store.dispatch(new ACTIONS.CastleEpisodePageSuccessAction({
-      episodes,
-      page: 1,
-      per: EPISODE_PAGE_SIZE,
-      total: episodes.length
-    }));
+    store.dispatch(
+      ACTIONS.CastleEpisodePageSuccess({
+        episodes,
+        page: 1,
+        per: EPISODE_PAGE_SIZE,
+        total: episodes.length
+      })
+    );
   }
 
   function dispatchPodcastDownloads() {
-    store.dispatch(new ACTIONS.CastlePodcastDownloadsSuccessAction({
-      id: podcast.id,
-      downloads: podDownloads
-    }));
+    store.dispatch(
+      ACTIONS.CastlePodcastDownloadsSuccess({
+        id: podcast.id,
+        downloads: podDownloads
+      })
+    );
   }
 
   function dispatchEpisodeMetrics() {
-    store.dispatch(new ACTIONS.CastleEpisodeDownloadsSuccessAction({
-      podcastId: episodes[0].podcastId,
-      page: episodes[0].page,
-      guid: episodes[0].guid,
-      downloads: ep0Downloads
-    }));
-    store.dispatch(new ACTIONS.CastleEpisodeDownloadsSuccessAction({
-      podcastId: episodes[1].podcastId,
-      page: episodes[1].page,
-      guid: episodes[1].guid,
-      downloads: ep1Downloads
-    }));
+    store.dispatch(
+      ACTIONS.CastleEpisodeDownloadsSuccess({
+        podcastId: episodes[0].podcastId,
+        page: episodes[0].page,
+        guid: episodes[0].guid,
+        downloads: ep0Downloads
+      })
+    );
+    store.dispatch(
+      ACTIONS.CastleEpisodeDownloadsSuccess({
+        podcastId: episodes[1].podcastId,
+        page: episodes[1].page,
+        guid: episodes[1].guid,
+        downloads: ep1Downloads
+      })
+    );
   }
 
   it('should show loading spinner when loading', () => {
@@ -105,5 +110,4 @@ describe('DownloadsComponent', () => {
     expect(de.query(By.css('prx-spinner'))).toBeNull();
     expect(de.query(By.css('metrics-downloads-table'))).not.toBeNull();
   });
-
 });

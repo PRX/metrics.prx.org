@@ -5,7 +5,7 @@ import { first } from 'rxjs/operators';
 
 import { reducers } from '../../ngrx/reducers';
 
-import { CustomRouterNavigationAction } from '../../ngrx/actions';
+import { CustomRouterNavigation } from '../../ngrx/actions';
 import { RouterParams, ChartType, CHARTTYPE_PODCAST, INTERVAL_DAILY } from '../../ngrx';
 import * as dateUtil from '../util/date';
 
@@ -72,9 +72,9 @@ describe('MenuBarComponent', () => {
         comp = fix.componentInstance;
         de = fix.debugElement;
         el = de.nativeElement;
-        store = TestBed.get(Store);
+        store = TestBed.inject(Store);
 
-        store.dispatch(new CustomRouterNavigationAction({ url, routerParams }));
+        store.dispatch(CustomRouterNavigation({ url, routerParams }));
         fix.detectChanges();
       });
   }));

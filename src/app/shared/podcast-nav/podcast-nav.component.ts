@@ -3,7 +3,7 @@ import { Store, select } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { Podcast } from '../../ngrx';
 import { selectAllPodcasts, selectRoutedPodcast } from '../../ngrx/reducers/selectors';
-import { RoutePodcastAction } from '../../ngrx/actions';
+import { RoutePodcast } from '../../ngrx/actions';
 
 @Component({
   selector: 'metrics-podcast-nav',
@@ -11,7 +11,8 @@ import { RoutePodcastAction } from '../../ngrx/actions';
     <metrics-podcast-dropdown
       [selectedPodcast]="selectedPodcast$ | async"
       [podcasts]="podcasts$ | async"
-      (podcastChange)="onPodcastChange($event)"></metrics-podcast-dropdown>
+      (podcastChange)="onPodcastChange($event)"
+    ></metrics-podcast-dropdown>
   `
 })
 export class PodcastNavComponent {
@@ -24,8 +25,10 @@ export class PodcastNavComponent {
   }
 
   onPodcastChange(val: Podcast) {
-    this.store.dispatch(new RoutePodcastAction({
-      podcastId: val.id
-    }));
+    this.store.dispatch(
+      RoutePodcast({
+        podcastId: val.id
+      })
+    );
   }
 }

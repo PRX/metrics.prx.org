@@ -1,5 +1,6 @@
 import { EntityState, EntityAdapter, createEntityAdapter } from '@ngrx/entity';
-import { ActionTypes, AllActions } from '../actions';
+import { createReducer, on } from '@ngrx/store';
+import * as downloadActions from '../actions/castle-downloads.action.creator';
 import { EpisodeDropday } from './models';
 
 export type State = EntityState<EpisodeDropday>;
@@ -14,39 +15,64 @@ export const {
   selectAll: selectAllEpisodeDropday
 } = adapter.getSelectors();
 
-export function reducer(state: State = initialState, action: AllActions) {
-  switch (action.type) {
-    case ActionTypes.CASTLE_EPISODE_DROPDAY_LOAD: {
-      const { guid, title, podcastId, publishedAt, interval } = action.payload;
-      return adapter.upsertOne(
-        {
-          id: guid,
-          ...selectEpisodeDropdayEntities(state)[guid],
-          guid, title, podcastId, publishedAt, interval, error: null, loading: true, loaded: false
-        },
-        state);
-    }
-    case ActionTypes.CASTLE_EPISODE_DROPDAY_SUCCESS: {
-      const { guid, title, podcastId, publishedAt, interval, downloads } = action.payload;
-      return adapter.upsertOne(
-        {
-          id: guid,
-          ...selectEpisodeDropdayEntities(state)[guid],
-          guid, title, podcastId, publishedAt, interval, downloads, loading: false, loaded: true
-        },
-        state);
-    }
-    case ActionTypes.CASTLE_EPISODE_DROPDAY_FAILURE: {
-      const { guid, title, podcastId, publishedAt, interval, error } = action.payload;
-      return adapter.upsertOne(
-        {
-          id: guid,
-          ...selectEpisodeDropdayEntities(state)[guid],
-          guid, title, podcastId, publishedAt, interval, error, loading: false, loaded: false
-        },
-        state);
-    }
-    default:
-      return state;
-  }
+const _reducer = createReducer(
+  initialState,
+  on(downloadActions.CastleEpisodeDropdayLoad, (state, action) => {
+    const { guid, title, podcastId, publishedAt, interval } = action;
+    return adapter.upsertOne(
+      {
+        id: guid,
+        ...selectEpisodeDropdayEntities(state)[guid],
+        guid,
+        title,
+        podcastId,
+        publishedAt,
+        interval,
+        error: null,
+        loading: true,
+        loaded: false
+      },
+      state
+    );
+  }),
+  on(downloadActions.CastleEpisodeDropdaySuccess, (state, action) => {
+    const { guid, title, podcastId, publishedAt, interval, downloads } = action;
+    return adapter.upsertOne(
+      {
+        id: guid,
+        ...selectEpisodeDropdayEntities(state)[guid],
+        guid,
+        title,
+        podcastId,
+        publishedAt,
+        interval,
+        downloads,
+        loading: false,
+        loaded: true
+      },
+      state
+    );
+  }),
+  on(downloadActions.CastleEpisodeDropdayFailure, (state, action) => {
+    const { guid, title, podcastId, publishedAt, interval, error } = action;
+    return adapter.upsertOne(
+      {
+        id: guid,
+        ...selectEpisodeDropdayEntities(state)[guid],
+        guid,
+        title,
+        podcastId,
+        publishedAt,
+        interval,
+        error,
+        loading: false,
+        loaded: false
+      },
+      state
+    );
+  })
+);
+
+export function reducer(state, action) {
+  return _reducer(state, action);
 }

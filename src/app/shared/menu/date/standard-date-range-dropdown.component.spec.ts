@@ -4,13 +4,12 @@ import { DebugElement } from '@angular/core';
 import { By } from '@angular/platform-browser';
 
 import { reducers } from '../../../ngrx/reducers';
-import { RouteStandardRangeAction, GoogleAnalyticsEventAction } from '../../../ngrx/actions';
+import { RouteStandardRange, GoogleAnalyticsEvent } from '../../../ngrx/actions';
 import { INTERVAL_DAILY } from '../../../ngrx';
 import { THIS_WEEK, LAST_WEEK } from '../../util/date/date.constants';
-
+import * as dateUtil from '../../util/date';
 import { StandardDateRangeComponent } from './standard-date-range.component';
 import { StandardDateRangeDropdownComponent } from './standard-date-range-dropdown.component';
-
 
 describe('StandardDateRangeDropdownComponent', () => {
   let comp: StandardDateRangeDropdownComponent;
@@ -21,26 +20,23 @@ describe('StandardDateRangeDropdownComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [
-        StandardDateRangeDropdownComponent,
-        StandardDateRangeComponent
-      ],
-      imports: [
-        StoreModule.forRoot(reducers)
-      ]
-    }).compileComponents().then(() => {
-      fix = TestBed.createComponent(StandardDateRangeDropdownComponent);
-      comp = fix.componentInstance;
-      de = fix.debugElement;
-      el = de.nativeElement;
-      store = TestBed.get(Store);
+      declarations: [StandardDateRangeDropdownComponent, StandardDateRangeComponent],
+      imports: [StoreModule.forRoot(reducers)]
+    })
+      .compileComponents()
+      .then(() => {
+        fix = TestBed.createComponent(StandardDateRangeDropdownComponent);
+        comp = fix.componentInstance;
+        de = fix.debugElement;
+        el = de.nativeElement;
+        store = TestBed.inject(Store);
 
-      comp.standardRange = THIS_WEEK;
-      comp.interval = INTERVAL_DAILY;
-      fix.detectChanges();
+        comp.standardRange = THIS_WEEK;
+        comp.interval = INTERVAL_DAILY;
+        fix.detectChanges();
 
-      jest.spyOn(store, 'dispatch').mockImplementation(() => {});
-    });
+        jest.spyOn(store, 'dispatch').mockImplementation(() => {});
+      });
   }));
 
   it('should show dropdown when open', () => {
@@ -52,17 +48,19 @@ describe('StandardDateRangeDropdownComponent', () => {
 
   it('should dispatch routing action when standard range is changed', () => {
     comp.onStandardRangeChange(LAST_WEEK);
-    expect(store.dispatch).toHaveBeenCalledWith(new RouteStandardRangeAction({standardRange: LAST_WEEK}));
+    expect(store.dispatch).toHaveBeenCalledWith(RouteStandardRange({ standardRange: LAST_WEEK }));
   });
 
   it('should send google analytics event when standard range is changed', () => {
     comp.onStandardRangeChange(LAST_WEEK);
-    expect(store.dispatch).toHaveBeenCalledWith(jasmine.any(GoogleAnalyticsEventAction));
+    const dateRange = dateUtil.getBeginEndDateFromStandardRange(LAST_WEEK);
+    const value = dateUtil.getAmountOfIntervals(dateRange.beginDate, dateRange.endDate, INTERVAL_DAILY);
+    expect(store.dispatch).toHaveBeenCalledWith(GoogleAnalyticsEvent({ gaAction: 'routerParams-standard-date', value }));
   });
 
   it('should close the dropdown on window scroll', done => {
     comp.open = true;
-    window.addEventListener('scroll', (e) => {
+    window.addEventListener('scroll', e => {
       expect(comp.open).toBeFalsy();
       done();
     });

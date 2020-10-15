@@ -1,5 +1,6 @@
 import { EntityState, EntityAdapter, createEntityAdapter } from '@ngrx/entity';
-import { ActionTypes, AllActions } from '../actions';
+import { createReducer, on } from '@ngrx/store';
+import * as downloadActions from '../actions/castle-downloads.action.creator';
 import { PodcastListeners } from './models/podcast-listeners.model';
 
 export type PodcastListenersState = EntityState<PodcastListeners>;
@@ -15,48 +16,49 @@ export const {
   selectTotal: selectTotalPodcastListeners
 } = adapter.getSelectors();
 
-export function PodcastListenersReducer(state: PodcastListenersState = initialState, action: AllActions) {
-  switch (action.type) {
-    case ActionTypes.CASTLE_PODCAST_LISTENERS_LOAD: {
-      const { id } = action.payload;
-      return adapter.upsertOne(
-        {
-          id,
-          ...selectPodcastListenersEntities(state)[id],
-          error: null,
-          loading: true,
-          loaded: false
-        },
-        state
-      );
-    }
-    case ActionTypes.CASTLE_PODCAST_LISTENERS_SUCCESS: {
-      const { id, listeners } = action.payload;
-      return adapter.upsertOne(
-        {
-          id,
-          ...selectPodcastListenersEntities(state)[id],
-          listeners,
-          loading: false,
-          loaded: true
-        },
-        state
-      );
-    }
-    case ActionTypes.CASTLE_PODCAST_LISTENERS_FAILURE: {
-      const { id, error } = action.payload;
-      return adapter.upsertOne(
-        {
-          id,
-          ...selectPodcastListenersEntities(state)[id],
-          error,
-          loading: false,
-          loaded: true
-        },
-        state
-      );
-    }
-    default:
-      return state;
-  }
+const _reducer = createReducer(
+  initialState,
+  on(downloadActions.CastlePodcastListenersLoad, (state, action) => {
+    const { id } = action;
+    return adapter.upsertOne(
+      {
+        id,
+        ...selectPodcastListenersEntities(state)[id],
+        error: null,
+        loading: true,
+        loaded: false
+      },
+      state
+    );
+  }),
+  on(downloadActions.CastlePodcastListenersSuccess, (state, action) => {
+    const { id, listeners } = action;
+    return adapter.upsertOne(
+      {
+        id,
+        ...selectPodcastListenersEntities(state)[id],
+        listeners,
+        loading: false,
+        loaded: true
+      },
+      state
+    );
+  }),
+  on(downloadActions.CastlePodcastListenersFailure, (state, action) => {
+    const { id, error } = action;
+    return adapter.upsertOne(
+      {
+        id,
+        ...selectPodcastListenersEntities(state)[id],
+        error,
+        loading: false,
+        loaded: true
+      },
+      state
+    );
+  })
+);
+
+export function reducer(state, action) {
+  return _reducer(state, action);
 }

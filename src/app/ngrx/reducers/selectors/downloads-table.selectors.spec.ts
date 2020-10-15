@@ -4,15 +4,28 @@ import { Subscription } from 'rxjs';
 
 import { RootState, reducers } from '../';
 import { DownloadsTableModel, EPISODE_PAGE_SIZE, CHARTTYPE_STACKED, CHARTTYPE_PODCAST, CHARTTYPE_EPISODES } from '../models';
-import { routerParams,  podcast, episodes,
-  podDownloads, podAllTimeDownloads, podAllTimeDownloadsOff,
-  ep0Downloads, ep1Downloads,
-  ep0AllTimeDownloads, ep0AllTimeDownloadsOff, ep1AllTimeDownloads, ep1AllTimeDownloadsOff } from '@testing/downloads.fixtures';
+import {
+  routerParams,
+  podcast,
+  episodes,
+  podDownloads,
+  podAllTimeDownloads,
+  podAllTimeDownloadsOff,
+  ep0Downloads,
+  ep1Downloads,
+  ep0AllTimeDownloads,
+  ep0AllTimeDownloadsOff,
+  ep1AllTimeDownloads,
+  ep1AllTimeDownloadsOff
+} from '@testing/downloads.fixtures';
 import * as ACTIONS from '../../actions';
 import * as metricsUtil from '@app/shared/util/metrics.util';
 import * as dateUtil from '@app/shared/util/date/date.util';
-import { selectDownloadTablePodcastDownloads, selectDownloadTableEpisodeMetrics,
-  selectDownloadTableIntervalData } from './downloads-table.selectors';
+import {
+  selectDownloadTablePodcastDownloads,
+  selectDownloadTableEpisodeMetrics,
+  selectDownloadTableIntervalData
+} from './downloads-table.selectors';
 
 describe('Downloads Table Selectors', () => {
   let store: Store<RootState>;
@@ -20,31 +33,53 @@ describe('Downloads Table Selectors', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        StoreModule.forRoot(reducers)
-      ]
+      imports: [StoreModule.forRoot(reducers)]
     });
-    store = TestBed.get(Store);
+    store = TestBed.inject(Store);
 
     jest.spyOn(store, 'dispatch');
 
-    store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerParams}));
-    store.dispatch(new ACTIONS.CastleEpisodePageSuccessAction({
-      episodes,
-      page: 1,
-      per: EPISODE_PAGE_SIZE,
-      total: episodes.length
-    }));
-    store.dispatch(new ACTIONS.CastleEpisodeDownloadsSuccessAction({
-      podcastId: episodes[0].podcastId, page: episodes[0].page, guid: episodes[0].guid, downloads: ep0Downloads}));
-    store.dispatch(new ACTIONS.CastleEpisodeDownloadsSuccessAction({
-      podcastId: episodes[1].podcastId, page: episodes[1].page, guid: episodes[1].guid, downloads: ep1Downloads}));
-    store.dispatch(new ACTIONS.CastlePodcastDownloadsSuccessAction({id: podcast.id, downloads: podDownloads}));
-    store.dispatch(new ACTIONS.CastlePodcastAllTimeDownloadsSuccessAction({id: podcast.id, ...podAllTimeDownloads}));
-    store.dispatch(new ACTIONS.CastleEpisodeAllTimeDownloadsSuccessAction({
-      podcastId: episodes[0].podcastId, guid: episodes[0].guid, ...ep0AllTimeDownloads}));
-    store.dispatch(new ACTIONS.CastleEpisodeAllTimeDownloadsSuccessAction({
-      podcastId: episodes[1].podcastId, guid: episodes[1].guid, ...ep1AllTimeDownloads}));
+    store.dispatch(ACTIONS.CustomRouterNavigation({ routerParams }));
+    store.dispatch(
+      ACTIONS.CastleEpisodePageSuccess({
+        episodes,
+        page: 1,
+        per: EPISODE_PAGE_SIZE,
+        total: episodes.length
+      })
+    );
+    store.dispatch(
+      ACTIONS.CastleEpisodeDownloadsSuccess({
+        podcastId: episodes[0].podcastId,
+        page: episodes[0].page,
+        guid: episodes[0].guid,
+        downloads: ep0Downloads
+      })
+    );
+    store.dispatch(
+      ACTIONS.CastleEpisodeDownloadsSuccess({
+        podcastId: episodes[1].podcastId,
+        page: episodes[1].page,
+        guid: episodes[1].guid,
+        downloads: ep1Downloads
+      })
+    );
+    store.dispatch(ACTIONS.CastlePodcastDownloadsSuccess({ id: podcast.id, downloads: podDownloads }));
+    store.dispatch(ACTIONS.CastlePodcastAllTimeDownloadsSuccess({ id: podcast.id, ...podAllTimeDownloads }));
+    store.dispatch(
+      ACTIONS.CastleEpisodeAllTimeDownloadsSuccess({
+        podcastId: episodes[0].podcastId,
+        guid: episodes[0].guid,
+        ...ep0AllTimeDownloads
+      })
+    );
+    store.dispatch(
+      ACTIONS.CastleEpisodeAllTimeDownloadsSuccess({
+        podcastId: episodes[1].podcastId,
+        guid: episodes[1].guid,
+        ...ep1AllTimeDownloads
+      })
+    );
   });
 
   describe('podcast download table metrics', () => {
@@ -69,13 +104,13 @@ describe('Downloads Table Selectors', () => {
     });
 
     it('should use total for range for all time if larger than all time total rollup', () => {
-      store.dispatch(new ACTIONS.CastlePodcastAllTimeDownloadsSuccessAction({id: podcast.id, ...podAllTimeDownloadsOff }));
+      store.dispatch(ACTIONS.CastlePodcastAllTimeDownloadsSuccess({ id: podcast.id, ...podAllTimeDownloadsOff }));
       expect(result.allTimeDownloads).not.toEqual(podAllTimeDownloadsOff.total);
       expect(result.allTimeDownloads).toEqual(metricsUtil.getTotal(podDownloads));
     });
 
     it('should keep podcast in table for stacked chart when unselected for charting', () => {
-      store.dispatch(new ACTIONS.ChartTogglePodcastAction({id: podcast.id, charted: false}));
+      store.dispatch(ACTIONS.ChartTogglePodcast({ id: podcast.id, charted: false }));
       expect(result.allTimeDownloads).toEqual(podAllTimeDownloads.total);
     });
   });
@@ -114,10 +149,20 @@ describe('Downloads Table Selectors', () => {
     });
 
     it('should use total for range for all time if larger than all time total rollup', () => {
-      store.dispatch(new ACTIONS.CastleEpisodeAllTimeDownloadsSuccessAction({
-        podcastId: episodes[0].podcastId, guid: episodes[0].guid, ...ep0AllTimeDownloadsOff}));
-      store.dispatch(new ACTIONS.CastleEpisodeAllTimeDownloadsSuccessAction({
-        podcastId: episodes[1].podcastId, guid: episodes[1].guid, ...ep1AllTimeDownloadsOff}));
+      store.dispatch(
+        ACTIONS.CastleEpisodeAllTimeDownloadsSuccess({
+          podcastId: episodes[0].podcastId,
+          guid: episodes[0].guid,
+          ...ep0AllTimeDownloadsOff
+        })
+      );
+      store.dispatch(
+        ACTIONS.CastleEpisodeAllTimeDownloadsSuccess({
+          podcastId: episodes[1].podcastId,
+          guid: episodes[1].guid,
+          ...ep1AllTimeDownloadsOff
+        })
+      );
       expect(result[0].allTimeDownloads).not.toEqual(ep0AllTimeDownloadsOff.total);
       expect(result[0].allTimeDownloads).toEqual(metricsUtil.getTotal(ep0Downloads));
       expect(result[1].allTimeDownloads).not.toEqual(ep1AllTimeDownloadsOff.total);
@@ -126,20 +171,24 @@ describe('Downloads Table Selectors', () => {
 
     describe('selected episodes download table metrics', () => {
       it('should not apply selected episodes filtering if none are selected', () => {
-        store.dispatch(new ACTIONS.EpisodeSelectEpisodesAction({
-          podcastId: routerParams.podcastId,
-          metricsType: routerParams.metricsType,
-          episodeGuids: []
-        }));
+        store.dispatch(
+          ACTIONS.EpisodeSelectEpisodes({
+            podcastId: routerParams.podcastId,
+            metricsType: routerParams.metricsType,
+            episodeGuids: []
+          })
+        );
         expect(result.every(r => r.charted)).toBeTruthy();
       });
 
       it('should show selected episodes as charted', () => {
-        store.dispatch(new ACTIONS.EpisodeSelectEpisodesAction({
-          podcastId: routerParams.podcastId,
-          metricsType: routerParams.metricsType,
-          episodeGuids: [episodes[0].guid]
-        }));
+        store.dispatch(
+          ACTIONS.EpisodeSelectEpisodes({
+            podcastId: routerParams.podcastId,
+            metricsType: routerParams.metricsType,
+            episodeGuids: [episodes[0].guid]
+          })
+        );
         expect(result.filter(r => r.charted).length).toEqual(1);
       });
     });
@@ -159,19 +208,18 @@ describe('Downloads Table Selectors', () => {
     });
 
     it('should have dates in header row', () => {
-      store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerParams: {...routerParams, chartType: CHARTTYPE_STACKED}}));
+      store.dispatch(ACTIONS.CustomRouterNavigation({ routerParams: { ...routerParams, chartType: CHARTTYPE_STACKED } }));
       expect(result[0][0]).toEqual(dateUtil.formatDateForInterval(new Date(podDownloads[0][0]), routerParams.interval));
     });
 
     it('should have podcast data', () => {
-      store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerParams: {...routerParams, chartType: CHARTTYPE_PODCAST}}));
+      store.dispatch(ACTIONS.CustomRouterNavigation({ routerParams: { ...routerParams, chartType: CHARTTYPE_PODCAST } }));
       expect(result[1][0]).toEqual(podDownloads[0][1]);
     });
 
     it('should have episode data', () => {
-      store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerParams: {...routerParams, chartType: CHARTTYPE_EPISODES}}));
+      store.dispatch(ACTIONS.CustomRouterNavigation({ routerParams: { ...routerParams, chartType: CHARTTYPE_EPISODES } }));
       expect(result[1][0]).toEqual(ep0Downloads[0][1]);
     });
   });
-
 });

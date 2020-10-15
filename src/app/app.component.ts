@@ -14,7 +14,6 @@ import { Userinfo } from 'ngx-prx-styleguide';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit {
-
   authHost = Env.AUTH_HOST;
   authClient = Env.AUTH_CLIENT_ID;
 
@@ -24,15 +23,12 @@ export class AppComponent implements OnInit {
   userDoc$: Observable<HalDoc>;
   userError$: Observable<any>;
 
-  constructor(
-    public store: Store<any>,
-    private angulartics2GoogleAnalytics: Angulartics2GoogleAnalytics
-  ) {
+  constructor(public store: Store<any>, private angulartics2GoogleAnalytics: Angulartics2GoogleAnalytics) {
     this.angulartics2GoogleAnalytics.startTracking();
   }
 
   ngOnInit() {
-    this.store.dispatch(new ACTIONS.IdUserinfoLoadAction());
+    this.store.dispatch(ACTIONS.IdUserinfoLoad());
     this.loggedIn$ = this.store.pipe(select(selectUserLoggedIn));
     this.authorized$ = this.store.pipe(select(selectUserAuthorized));
     this.userinfo$ = this.store.pipe(select(selectUserinfo));

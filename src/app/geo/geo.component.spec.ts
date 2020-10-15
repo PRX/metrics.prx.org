@@ -18,9 +18,14 @@ import {
   routerParams as downloadParams
 } from '../../testing/downloads.fixtures';
 import {
-  ChartType, CHARTTYPE_LINE,
-  GroupType, GROUPTYPE_GEOCOUNTRY, GROUPTYPE_GEOMETRO,
-  MetricsType, METRICSTYPE_DEMOGRAPHICS } from '../ngrx/reducers/models';
+  ChartType,
+  CHARTTYPE_LINE,
+  GroupType,
+  GROUPTYPE_GEOCOUNTRY,
+  GROUPTYPE_GEOMETRO,
+  MetricsType,
+  METRICSTYPE_DEMOGRAPHICS
+} from '../ngrx/reducers/models';
 
 describe('GeoComponent', () => {
   let store: Store<any>;
@@ -31,90 +36,91 @@ describe('GeoComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [
-        GeoComponent,
-        GeoChartComponent,
-        GeochartMapComponent
-      ],
-      imports: [
-        SharedModule,
-        StoreModule.forRoot(reducers),
-        RouterTestingModule
-      ]
-    }).compileComponents().then(() => {
-      fix = TestBed.createComponent(GeoComponent);
-      comp = fix.componentInstance;
-      fix.detectChanges();
-      de = fix.debugElement;
-      el = de.nativeElement;
-      store = TestBed.get(Store);
-    });
+      declarations: [GeoComponent, GeoChartComponent, GeochartMapComponent],
+      imports: [SharedModule, StoreModule.forRoot(reducers), RouterTestingModule]
+    })
+      .compileComponents()
+      .then(() => {
+        fix = TestBed.createComponent(GeoComponent);
+        comp = fix.componentInstance;
+        fix.detectChanges();
+        de = fix.debugElement;
+        el = de.nativeElement;
+        store = TestBed.inject(Store);
+      });
   }));
 
-  const routerParams = {...downloadParams, metricsType: <MetricsType>METRICSTYPE_DEMOGRAPHICS, group: <GroupType>GROUPTYPE_GEOCOUNTRY};
+  const routerParams = { ...downloadParams, metricsType: <MetricsType>METRICSTYPE_DEMOGRAPHICS, group: <GroupType>GROUPTYPE_GEOCOUNTRY };
   function dispatchRouteGeoCountry() {
-    store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerParams}));
+    store.dispatch(ACTIONS.CustomRouterNavigation({ routerParams }));
   }
 
   function dispatchRouteGeoMetro() {
-    store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerParams: {...routerParams, group: <GroupType>GROUPTYPE_GEOMETRO}}));
+    store.dispatch(ACTIONS.CustomRouterNavigation({ routerParams: { ...routerParams, group: <GroupType>GROUPTYPE_GEOMETRO } }));
   }
 
   function dispatchRouteGeoLineChart() {
-    store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerParams: {...routerParams, chartType: <ChartType>CHARTTYPE_LINE}}));
+    store.dispatch(ACTIONS.CustomRouterNavigation({ routerParams: { ...routerParams, chartType: <ChartType>CHARTTYPE_LINE } }));
   }
 
   function dispatchPodcasts() {
-    store.dispatch(new ACTIONS.CastlePodcastPageSuccessAction(
-      {podcasts: [podcast], page: 1, total: 1}));
+    store.dispatch(ACTIONS.CastlePodcastPageSuccess({ podcasts: [podcast], page: 1, total: 1 }));
   }
 
   function dispatchPodcastGeoCountryTotals() {
-    store.dispatch(new ACTIONS.CastlePodcastTotalsSuccessAction({
-      podcastId: routerParams.podcastId,
-      group: GROUPTYPE_GEOCOUNTRY,
-      filter: routerParams.filter,
-      beginDate: routerParams.beginDate,
-      endDate: routerParams.endDate,
-      ranks: podcastGeoCountryRanks
-    }));
+    store.dispatch(
+      ACTIONS.CastlePodcastTotalsSuccess({
+        podcastId: routerParams.podcastId,
+        group: GROUPTYPE_GEOCOUNTRY,
+        filter: routerParams.filter,
+        beginDate: routerParams.beginDate,
+        endDate: routerParams.endDate,
+        ranks: podcastGeoCountryRanks
+      })
+    );
   }
 
   function dispatchPodcastGeoMetroTotals() {
-    store.dispatch(new ACTIONS.CastlePodcastTotalsSuccessAction({
-      podcastId: routerParams.podcastId,
-      group: GROUPTYPE_GEOMETRO,
-      filter: routerParams.filter,
-      beginDate: routerParams.beginDate,
-      endDate: routerParams.endDate,
-      ranks: podcastGeoCountryRanks
-    }));
+    store.dispatch(
+      ACTIONS.CastlePodcastTotalsSuccess({
+        podcastId: routerParams.podcastId,
+        group: GROUPTYPE_GEOMETRO,
+        filter: routerParams.filter,
+        beginDate: routerParams.beginDate,
+        endDate: routerParams.endDate,
+        ranks: podcastGeoCountryRanks
+      })
+    );
   }
 
   function dispatchPodcastGeoCountryRanks() {
-    store.dispatch(new ACTIONS.CastlePodcastRanksSuccessAction({
-      podcastId: routerParams.podcastId,
-      group: GROUPTYPE_GEOCOUNTRY,
-      interval: routerParams.interval,
-      filter: routerParams.filter,
-      beginDate: routerParams.beginDate,
-      endDate: routerParams.endDate,
-      ranks: podcastGeoCountryRanks,
-      downloads: podcastGeoCountryDownloads
-    }));
+    store.dispatch(
+      ACTIONS.CastlePodcastRanksSuccess({
+        podcastId: routerParams.podcastId,
+        group: GROUPTYPE_GEOCOUNTRY,
+        interval: routerParams.interval,
+        filter: routerParams.filter,
+        beginDate: routerParams.beginDate,
+        endDate: routerParams.endDate,
+        ranks: podcastGeoCountryRanks,
+        downloads: podcastGeoCountryDownloads
+      })
+    );
   }
 
   function dispatchPodcastGeoMetroRanks() {
-    store.dispatch(new ACTIONS.CastlePodcastRanksSuccessAction({
-      podcastId: routerParams.podcastId,
-      group: GROUPTYPE_GEOMETRO,
-      interval: routerParams.interval,
-      filter: routerParams.filter,
-      beginDate: routerParams.beginDate,
-      endDate: routerParams.endDate,
-      ranks: podcastGeoCountryRanks,
-      downloads: podcastGeoCountryDownloads
-    }));
+    store.dispatch(
+      ACTIONS.CastlePodcastRanksSuccess({
+        podcastId: routerParams.podcastId,
+        group: GROUPTYPE_GEOMETRO,
+        interval: routerParams.interval,
+        filter: routerParams.filter,
+        beginDate: routerParams.beginDate,
+        endDate: routerParams.endDate,
+        ranks: podcastGeoCountryRanks,
+        downloads: podcastGeoCountryDownloads
+      })
+    );
   }
 
   it('should create the component', async(() => {

@@ -15,7 +15,7 @@ import {
   METRICSTYPE_LISTENERS
 } from '../../../ngrx';
 import * as dateUtil from '../../util/date';
-import { GoogleAnalyticsEventAction, RouteAdvancedRangeAction } from '../../../ngrx/actions';
+import { GoogleAnalyticsEvent, RouteAdvancedRange } from '../../../ngrx/actions';
 
 @Component({
   selector: 'metrics-custom-date-range-dropdown',
@@ -119,7 +119,7 @@ export class CustomDateRangeDropdownComponent implements OnChanges {
 
   googleAnalyticsEvent(action: string, dateRange: RouterParams) {
     const value = dateUtil.getAmountOfIntervals(dateRange.beginDate, dateRange.endDate, dateRange.interval);
-    this.store.dispatch(new GoogleAnalyticsEventAction({ gaAction: 'routerParams-' + action, value }));
+    this.store.dispatch(GoogleAnalyticsEvent({ gaAction: 'routerParams-' + action, value }));
   }
 
   toggleOpen() {
@@ -131,7 +131,7 @@ export class CustomDateRangeDropdownComponent implements OnChanges {
     if (!this.invalid) {
       this.googleAnalyticsEvent(this.userChoseRange || this.CUSTOM_DATE, this.tempRange);
       const { standardRange, interval, beginDate, endDate } = this.tempRange;
-      this.store.dispatch(new RouteAdvancedRangeAction({ standardRange, interval, beginDate, endDate }));
+      this.store.dispatch(RouteAdvancedRange({ standardRange, interval, beginDate, endDate }));
       this.open = false;
     }
   }

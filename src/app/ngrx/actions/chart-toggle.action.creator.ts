@@ -1,49 +1,17 @@
-import { Action } from '@ngrx/store';
+import { createAction, props } from '@ngrx/store';
 import { ActionTypes } from './action.types';
 import { GroupType } from '../reducers/models';
 
-export interface ChartSingleEpisodePayload {
-  podcastId: string;
-  guid: string;
-}
+export const ChartSingleEpisode = createAction(ActionTypes.CHART_SINGLE_EPISODE, props<{ podcastId: string; guid: string }>());
 
-export class ChartSingleEpisodeAction implements Action {
-  readonly type = ActionTypes.CHART_SINGLE_EPISODE;
+export const ChartToggleEpisode = createAction(
+  ActionTypes.CHART_TOGGLE_EPISODE,
+  props<{ podcastId: string; guid: string; charted: boolean }>()
+);
 
-  constructor(public payload: ChartSingleEpisodePayload) {}
-}
+export const ChartTogglePodcast = createAction(ActionTypes.CHART_TOGGLE_PODCAST, props<{ id: string; charted: boolean }>());
 
-export interface ChartToggleEpisodePayload {
-  podcastId: string;
-  guid: string;
-  charted: boolean;
-}
-
-export class ChartToggleEpisodeAction implements Action {
-  readonly type = ActionTypes.CHART_TOGGLE_EPISODE;
-
-  constructor(public payload: ChartToggleEpisodePayload) {}
-}
-
-export interface ChartTogglePodcastPayload {
-  id: string;
-  charted: boolean;
-}
-
-export class ChartTogglePodcastAction implements Action {
-  readonly type = ActionTypes.CHART_TOGGLE_PODCAST;
-
-  constructor(public payload: ChartTogglePodcastPayload) {}
-}
-
-export interface ChartToggleGroupPayload {
-  group: GroupType;
-  groupName: string;
-  charted: boolean;
-}
-
-export class ChartToggleGroupAction implements Action {
-  readonly type = ActionTypes.CHART_TOGGLE_GROUP;
-
-  constructor(public payload: ChartToggleGroupPayload) {}
-}
+export const ChartToggleGroup = createAction(
+  ActionTypes.CHART_TOGGLE_GROUP,
+  props<{ group: GroupType; groupName: string; charted: boolean }>()
+);

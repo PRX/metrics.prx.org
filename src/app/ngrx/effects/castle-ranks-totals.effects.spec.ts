@@ -1,9 +1,9 @@
-import { Actions } from '@ngrx/effects';
 import { TestBed, async } from '@angular/core/testing';
 import { cold, hot } from 'jasmine-marbles';
-import { StoreModule } from '@ngrx/store';
+import { Observable } from 'rxjs';
+import { StoreModule, Action } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
-import { getActions, TestActions } from './test.actions';
+import { provideMockActions } from '@ngrx/effects/testing';
 
 import { HalService, MockHalService } from 'ngx-prx-styleguide';
 import { CastleService } from '@app/core';
@@ -25,7 +25,7 @@ import {
 
 describe('CastleRanksTotalsEffects', () => {
   let effects: CastleRanksTotalsEffects;
-  let actions$: TestActions;
+  let actions$ = new Observable<Action>();
   let castle: MockHalService;
 
   beforeEach(async(() => {
@@ -40,45 +40,42 @@ describe('CastleRanksTotalsEffects', () => {
         return { count: total, label, code };
       })
     });
-    castle.root.mockList('prx:episode-ranks', [{
-      downloads: ep0AgentNameDownloads,
-      ranks: ep0AgentNameRanks
-    }]);
-    castle.root.mockList('prx:episode-totals', [{
-      ranks: ep0AgentNameRanks.map(rank => {
-        const { total, label, code } = rank;
-        return { count: total, label, code };
-      })
-    }]);
+    castle.root.mockList('prx:episode-ranks', [
+      {
+        downloads: ep0AgentNameDownloads,
+        ranks: ep0AgentNameRanks
+      }
+    ]);
+    castle.root.mockList('prx:episode-totals', [
+      {
+        ranks: ep0AgentNameRanks.map(rank => {
+          const { total, label, code } = rank;
+          return { count: total, label, code };
+        })
+      }
+    ]);
 
     TestBed.configureTestingModule({
-      imports: [
-        StoreModule.forRoot({ ...reducers }),
-        EffectsModule.forRoot([CastleRanksTotalsEffects])
-      ],
+      imports: [StoreModule.forRoot({ ...reducers }), EffectsModule.forRoot([CastleRanksTotalsEffects])],
       providers: [
         CastleRanksTotalsEffects,
         { provide: HalService, useValue: castle },
         { provide: CastleService, useValue: castle.root },
-        { provide: Actions, useFactory: getActions }
+        provideMockActions(() => actions$)
       ]
     });
-    effects = TestBed.get(CastleRanksTotalsEffects);
-    actions$ = TestBed.get(Actions);
+    effects = TestBed.inject(CastleRanksTotalsEffects);
   }));
 
   it('should load more than one grouped podcast ranks at a time', () => {
-    const action: ACTIONS.CastlePodcastRanksLoadAction = {
-      type: ACTIONS.ActionTypes.CASTLE_PODCAST_RANKS_LOAD,
-      payload: {
-        podcastId: podcast.id,
-        group: GROUPTYPE_AGENTNAME,
-        interval: INTERVAL_DAILY,
-        beginDate: routerParams.beginDate,
-        endDate: routerParams.endDate,
-      }
-    };
-    const success = new ACTIONS.CastlePodcastRanksSuccessAction({
+    const action = ACTIONS.CastlePodcastRanksLoad({
+      podcastId: podcast.id,
+      group: GROUPTYPE_AGENTNAME,
+      interval: INTERVAL_DAILY,
+      beginDate: routerParams.beginDate,
+      endDate: routerParams.endDate
+    });
+    const success = ACTIONS.CastlePodcastRanksSuccess({
       podcastId: podcast.id,
       group: GROUPTYPE_AGENTNAME,
       filter: undefined,
@@ -89,22 +86,19 @@ describe('CastleRanksTotalsEffects', () => {
       downloads: podcastAgentNameDownloads
     });
 
-    actions$.stream = hot('-ab', { a: action, b: action });
+    actions$ = hot('-ab', { a: action, b: action });
     const expected = cold('-ab', { a: success, b: success });
     expect(effects.loadPodcastRanks$).toBeObservable(expected);
   });
 
   it('should load more than one grouped podcast totals at a time', () => {
-    const action: ACTIONS.CastlePodcastTotalsLoadAction = {
-      type: ACTIONS.ActionTypes.CASTLE_PODCAST_TOTALS_LOAD,
-      payload: {
-        podcastId: podcast.id,
-        group: GROUPTYPE_AGENTNAME,
-        beginDate: routerParams.beginDate,
-        endDate: routerParams.endDate
-      }
-    };
-    const success = new ACTIONS.CastlePodcastTotalsSuccessAction({
+    const action = ACTIONS.CastlePodcastTotalsLoad({
+      podcastId: podcast.id,
+      group: GROUPTYPE_AGENTNAME,
+      beginDate: routerParams.beginDate,
+      endDate: routerParams.endDate
+    });
+    const success = ACTIONS.CastlePodcastTotalsSuccess({
       podcastId: podcast.id,
       group: GROUPTYPE_AGENTNAME,
       filter: undefined,
@@ -116,23 +110,20 @@ describe('CastleRanksTotalsEffects', () => {
       })
     });
 
-    actions$.stream = hot('-ab', { a: action, b: action });
+    actions$ = hot('-ab', { a: action, b: action });
     const expected = cold('-ab', { a: success, b: success });
     expect(effects.loadPodcastTotals$).toBeObservable(expected);
   });
 
   it('should load more than one grouped episode ranks at a time', () => {
-    const action: ACTIONS.CastleEpisodeRanksLoadAction = {
-      type: ACTIONS.ActionTypes.CASTLE_EPISODE_RANKS_LOAD,
-      payload: {
-        guid: episodes[0].guid,
-        group: GROUPTYPE_AGENTNAME,
-        interval: INTERVAL_DAILY,
-        beginDate: routerParams.beginDate,
-        endDate: routerParams.endDate,
-      }
-    };
-    const success = new ACTIONS.CastleEpisodeRanksSuccessAction({
+    const action = ACTIONS.CastleEpisodeRanksLoad({
+      guid: episodes[0].guid,
+      group: GROUPTYPE_AGENTNAME,
+      interval: INTERVAL_DAILY,
+      beginDate: routerParams.beginDate,
+      endDate: routerParams.endDate
+    });
+    const success = ACTIONS.CastleEpisodeRanksSuccess({
       guid: episodes[0].guid,
       group: GROUPTYPE_AGENTNAME,
       filter: undefined,
@@ -143,22 +134,19 @@ describe('CastleRanksTotalsEffects', () => {
       downloads: ep0AgentNameDownloads
     });
 
-    actions$.stream = hot('-ab', { a: action, b: action });
+    actions$ = hot('-ab', { a: action, b: action });
     const expected = cold('-ab', { a: success, b: success });
     expect(effects.loadEpisodeRanks$).toBeObservable(expected);
   });
 
   it('should load more than one grouped episode totals at a time', () => {
-    const action: ACTIONS.CastleEpisodeTotalsLoadAction = {
-      type: ACTIONS.ActionTypes.CASTLE_EPISODE_TOTALS_LOAD,
-      payload: {
-        guid: episodes[0].guid,
-        group: GROUPTYPE_AGENTNAME,
-        beginDate: routerParams.beginDate,
-        endDate: routerParams.endDate
-      }
-    };
-    const success = new ACTIONS.CastleEpisodeTotalsSuccessAction({
+    const action = ACTIONS.CastleEpisodeTotalsLoad({
+      guid: episodes[0].guid,
+      group: GROUPTYPE_AGENTNAME,
+      beginDate: routerParams.beginDate,
+      endDate: routerParams.endDate
+    });
+    const success = ACTIONS.CastleEpisodeTotalsSuccess({
       guid: episodes[0].guid,
       group: GROUPTYPE_AGENTNAME,
       filter: undefined,
@@ -170,7 +158,7 @@ describe('CastleRanksTotalsEffects', () => {
       })
     });
 
-    actions$.stream = hot('-ab', { a: action, b: action });
+    actions$ = hot('-ab', { a: action, b: action });
     const expected = cold('-ab', { a: success, b: success });
     expect(effects.loadEpisodeTotals$).toBeObservable(expected);
   });

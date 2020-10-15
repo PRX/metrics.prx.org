@@ -5,10 +5,15 @@ import { DebugElement } from '@angular/core';
 import { By } from '@angular/platform-browser';
 
 import { reducers } from '../../../ngrx/reducers';
-import { METRICSTYPE_DEMOGRAPHICS,  METRICSTYPE_TRAFFICSOURCES,
-  GROUPTYPE_GEOCOUNTRY, GROUPTYPE_AGENTTYPE,
-  CHARTTYPE_GEOCHART, CHARTTYPE_STACKED } from '../../../ngrx';
-import { GoogleAnalyticsEventAction } from '../../../ngrx/actions';
+import {
+  METRICSTYPE_DEMOGRAPHICS,
+  METRICSTYPE_TRAFFICSOURCES,
+  GROUPTYPE_GEOCOUNTRY,
+  GROUPTYPE_AGENTTYPE,
+  CHARTTYPE_GEOCHART,
+  CHARTTYPE_STACKED
+} from '../../../ngrx';
+import { GoogleAnalyticsEvent } from '../../../ngrx/actions';
 import { ExportDropdownComponent } from './export-dropdown.component';
 import { ExportGoogleSheetsComponent } from './export-google-sheets.component';
 import { ExportGoogleSheetsService } from './export-google-sheets.service';
@@ -27,14 +32,8 @@ describe('ExportDropdownComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [
-        ExportDropdownComponent,
-        ExportGoogleSheetsComponent
-      ],
-      imports: [
-        SpinnerModule,
-        StoreModule.forRoot(reducers)
-      ],
+      declarations: [ExportDropdownComponent, ExportGoogleSheetsComponent],
+      imports: [SpinnerModule, StoreModule.forRoot(reducers)],
       providers: [
         {
           provide: ExportGoogleSheetsService,
@@ -47,14 +46,16 @@ describe('ExportDropdownComponent', () => {
         },
         ModalService
       ]
-    }).compileComponents().then(() => {
-      fix = TestBed.createComponent(ExportDropdownComponent);
-      comp = fix.componentInstance;
-      fix.detectChanges();
-      de = fix.debugElement;
-      el = de.nativeElement;
-      store = TestBed.get(Store);
-    });
+    })
+      .compileComponents()
+      .then(() => {
+        fix = TestBed.createComponent(ExportDropdownComponent);
+        comp = fix.componentInstance;
+        fix.detectChanges();
+        de = fix.debugElement;
+        el = de.nativeElement;
+        store = TestBed.inject(Store);
+      });
   }));
 
   describe('Download exports', () => {
@@ -77,8 +78,11 @@ describe('ExportDropdownComponent', () => {
 
   describe('Demographics exports', () => {
     beforeEach(() => {
-      dispatchHelper.dispatchRouterNavigation(store,
-        {metricsType: METRICSTYPE_DEMOGRAPHICS, group: GROUPTYPE_GEOCOUNTRY, chartType: CHARTTYPE_GEOCHART});
+      dispatchHelper.dispatchRouterNavigation(store, {
+        metricsType: METRICSTYPE_DEMOGRAPHICS,
+        group: GROUPTYPE_GEOCOUNTRY,
+        chartType: CHARTTYPE_GEOCHART
+      });
       dispatchHelper.dispatchPodcastRanks(store);
       dispatchHelper.dispatchPodcastTotals(store);
 
@@ -94,14 +98,13 @@ describe('ExportDropdownComponent', () => {
 
   describe('Devices exports', () => {
     beforeEach(() => {
-      dispatchHelper.dispatchRouterNavigation(store,
-        {metricsType: METRICSTYPE_TRAFFICSOURCES, group: GROUPTYPE_AGENTTYPE, chartType: CHARTTYPE_STACKED});
-      dispatchHelper.dispatchPodcastRanks(store,
-        {group: GROUPTYPE_AGENTTYPE},
-        podcastAgentTypeRanks, podcastAgentTypeDownloads);
-      dispatchHelper.dispatchPodcastTotals(store,
-        {group: GROUPTYPE_AGENTTYPE},
-        podcastAgentTypeRanks);
+      dispatchHelper.dispatchRouterNavigation(store, {
+        metricsType: METRICSTYPE_TRAFFICSOURCES,
+        group: GROUPTYPE_AGENTTYPE,
+        chartType: CHARTTYPE_STACKED
+      });
+      dispatchHelper.dispatchPodcastRanks(store, { group: GROUPTYPE_AGENTTYPE }, podcastAgentTypeRanks, podcastAgentTypeDownloads);
+      dispatchHelper.dispatchPodcastTotals(store, { group: GROUPTYPE_AGENTTYPE }, podcastAgentTypeRanks);
 
       fix.detectChanges();
     });
@@ -115,7 +118,7 @@ describe('ExportDropdownComponent', () => {
 
   it('should close the dropdown on window scroll', done => {
     comp.open = true;
-    window.addEventListener('scroll', (e) => {
+    window.addEventListener('scroll', e => {
       expect(comp.open).toBeFalsy();
       done();
     });
@@ -125,14 +128,14 @@ describe('ExportDropdownComponent', () => {
   it('should dispatch google analytics action onExportCsv', () => {
     jest.spyOn(store, 'dispatch');
     comp.onExportCsv();
-    expect(store.dispatch).toHaveBeenCalledWith(new GoogleAnalyticsEventAction({gaAction: 'exportCSV'}));
+    expect(store.dispatch).toHaveBeenCalledWith(GoogleAnalyticsEvent({ gaAction: 'exportCSV' }));
   });
 
   it('should dispatch google analytics action when finished creating Google Sheet', () => {
     jest.spyOn(store, 'dispatch');
     expect(store.dispatch).not.toHaveBeenCalled();
     comp.onExportGoogleSheet();
-    expect(store.dispatch).toHaveBeenCalledWith(new GoogleAnalyticsEventAction({gaAction: 'exportGoogleSheet'}));
+    expect(store.dispatch).toHaveBeenCalledWith(GoogleAnalyticsEvent({ gaAction: 'exportGoogleSheet' }));
   });
 
   it('should show spinner when GoogleSheets service is busy creating a sheet', () => {

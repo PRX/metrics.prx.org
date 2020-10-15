@@ -19,37 +19,62 @@ describe('Episode Ranks Selectors', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        StoreModule.forRoot(reducers)
-      ]
+      imports: [StoreModule.forRoot(reducers)]
     });
-    store = TestBed.get(Store);
+    store = TestBed.inject(Store);
 
-    store.dispatch(new ACTIONS.EpisodeSelectEpisodesAction({
-      podcastId: routerParams.podcastId,
-      metricsType: METRICSTYPE_TRAFFICSOURCES,
-      episodeGuids: episodes.map(e => e.guid)
-    }));
-    store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerParams: {...routerParams, metricsType, group, filter}}));
+    store.dispatch(
+      ACTIONS.EpisodeSelectEpisodes({
+        podcastId: routerParams.podcastId,
+        metricsType: METRICSTYPE_TRAFFICSOURCES,
+        episodeGuids: episodes.map(e => e.guid)
+      })
+    );
+    store.dispatch(ACTIONS.CustomRouterNavigation({ routerParams: { ...routerParams, metricsType, group, filter } }));
   });
 
   function load() {
-    store.dispatch(new ACTIONS.CastleEpisodeRanksLoadAction({guid: episodes[0].guid, group, interval, beginDate, endDate}));
-    store.dispatch(new ACTIONS.CastleEpisodeRanksLoadAction({guid: episodes[0].guid,
-      group: GROUPTYPE_GEOSUBDIV, filter, interval, beginDate, endDate}));
+    store.dispatch(ACTIONS.CastleEpisodeRanksLoad({ guid: episodes[0].guid, group, interval, beginDate, endDate }));
+    store.dispatch(
+      ACTIONS.CastleEpisodeRanksLoad({ guid: episodes[0].guid, group: GROUPTYPE_GEOSUBDIV, filter, interval, beginDate, endDate })
+    );
   }
   function success() {
-    store.dispatch(new ACTIONS.CastleEpisodeRanksSuccessAction({
-      guid: episodes[0].guid, group, interval, beginDate, endDate,
-      ranks: ep0AgentNameRanks, downloads: ep0AgentNameDownloads}));
-    store.dispatch(new ACTIONS.CastleEpisodeRanksSuccessAction({
-      guid: episodes[0].guid, group: GROUPTYPE_GEOSUBDIV, filter, interval, beginDate, endDate,
-      ranks: ep0AgentNameRanks, downloads: ep0AgentNameDownloads}));
+    store.dispatch(
+      ACTIONS.CastleEpisodeRanksSuccess({
+        guid: episodes[0].guid,
+        group,
+        interval,
+        beginDate,
+        endDate,
+        ranks: ep0AgentNameRanks,
+        downloads: ep0AgentNameDownloads
+      })
+    );
+    store.dispatch(
+      ACTIONS.CastleEpisodeRanksSuccess({
+        guid: episodes[0].guid,
+        group: GROUPTYPE_GEOSUBDIV,
+        filter,
+        interval,
+        beginDate,
+        endDate,
+        ranks: ep0AgentNameRanks,
+        downloads: ep0AgentNameDownloads
+      })
+    );
   }
   function failure() {
-    store.dispatch(new ACTIONS.CastleEpisodeRanksFailureAction({
-      guid: episodes[0].guid, group, interval, beginDate, endDate,
-      error: 'something went wrong'}));
+    store.dispatch(
+      ACTIONS.CastleEpisodeRanksFailure({
+        guid: episodes[0].guid,
+        group,
+        interval,
+        beginDate,
+        endDate,
+        error: 'something went wrong'
+      })
+    );
   }
 
   it('should have loading status true if some episode ranks are loading', done => {
@@ -84,10 +109,7 @@ describe('Episode Ranks Selectors', () => {
   it('should have error if faulure occurs', done => {
     load();
     failure();
-    store.pipe(
-      select(fromEpisodeRanks.selectAllEpisodeRanksErrors),
-      first()
-    ).subscribe((errors: any[]) => {
+    store.pipe(select(fromEpisodeRanks.selectAllEpisodeRanksErrors), first()).subscribe((errors: any[]) => {
       expect(errors.length).toBeGreaterThan(0);
       done();
     });
@@ -96,10 +118,7 @@ describe('Episode Ranks Selectors', () => {
   it('should have selected episode ranks', done => {
     load();
     success();
-    store.pipe(
-      select(fromEpisodeRanks.selectSelectedEpisodesRanks),
-      first()
-    ).subscribe((ranks: EpisodeRanks[]) => {
+    store.pipe(select(fromEpisodeRanks.selectSelectedEpisodesRanks), first()).subscribe((ranks: EpisodeRanks[]) => {
       expect(ranks.length).toBeGreaterThan(0);
       done();
     });
@@ -108,10 +127,7 @@ describe('Episode Ranks Selectors', () => {
   it('should have nested data selected episode ranks', done => {
     load();
     success();
-    store.pipe(
-      select(fromEpisodeRanks.selectNestedEpisodesRanks),
-      first()
-    ).subscribe((ranks: EpisodeRanks[]) => {
+    store.pipe(select(fromEpisodeRanks.selectNestedEpisodesRanks), first()).subscribe((ranks: EpisodeRanks[]) => {
       expect(ranks.length).toBeGreaterThan(0);
       done();
     });
@@ -120,10 +136,7 @@ describe('Episode Ranks Selectors', () => {
   it('should have selected episode chart metrics', done => {
     load();
     success();
-    store.pipe(
-      select(fromEpisodeRanks.selectSelectedEpisodeRanksChartMetrics),
-      first()
-    ).subscribe((metrics: TimeseriesChartModel[]) => {
+    store.pipe(select(fromEpisodeRanks.selectSelectedEpisodeRanksChartMetrics), first()).subscribe((metrics: TimeseriesChartModel[]) => {
       expect(metrics.length).toBeGreaterThan(0);
       done();
     });
@@ -132,10 +145,7 @@ describe('Episode Ranks Selectors', () => {
   it('should have nested data selected episode chart metrics', done => {
     load();
     success();
-    store.pipe(
-      select(fromEpisodeRanks.selectNestedEpisodesRanksChartMetrics),
-      first()
-    ).subscribe((metrics: TimeseriesChartModel[]) => {
+    store.pipe(select(fromEpisodeRanks.selectNestedEpisodesRanksChartMetrics), first()).subscribe((metrics: TimeseriesChartModel[]) => {
       expect(metrics.length).toBeGreaterThan(0);
       done();
     });
@@ -144,13 +154,9 @@ describe('Episode Ranks Selectors', () => {
   it('should have selected episode total downloads', done => {
     load();
     success();
-    store.pipe(
-      select(fromEpisodeRanks.selectSelectedEpisodesRanksTotalDownloads),
-      first()
-    ).subscribe((total: number) => {
+    store.pipe(select(fromEpisodeRanks.selectSelectedEpisodesRanksTotalDownloads), first()).subscribe((total: number) => {
       expect(total).toBeGreaterThan(0);
       done();
     });
   });
-
 });

@@ -18,7 +18,7 @@ describe('Downloads Chart Selectors', () => {
     TestBed.configureTestingModule({
       imports: [StoreModule.forRoot(reducers)]
     });
-    store = TestBed.get(Store);
+    store = TestBed.inject(Store);
   });
 
   it('should combine episodes with downloads and sort by published dates descending', () => {
@@ -175,20 +175,20 @@ describe('Downloads Chart Selectors', () => {
     });
 
     it('should only include episode metrics matching router state', () => {
-      store.dispatch(new ACTIONS.CustomRouterNavigationAction({ routerParams: { episodePage: 2 } }));
+      store.dispatch(ACTIONS.CustomRouterNavigation({ routerParams: { episodePage: 2 } }));
       expect(result).toBeUndefined();
     });
 
     it('should only include charted episodes', () => {
       expect(result.length).toEqual(episodes.length);
-      store.dispatch(new ACTIONS.ChartToggleEpisodeAction({ podcastId: episodes[0].podcastId, guid: episodes[0].guid, charted: false }));
+      store.dispatch(ACTIONS.ChartToggleEpisode({ podcastId: episodes[0].podcastId, guid: episodes[0].guid, charted: false }));
       expect(result.length).toEqual(episodes.length - 1);
     });
 
     it('should only include selected episodes if set', () => {
       expect(result.length).toEqual(episodes.length);
       store.dispatch(
-        new ACTIONS.EpisodeSelectEpisodesAction({
+        ACTIONS.EpisodeSelectEpisodes({
           podcastId: routerParams.podcastId,
           metricsType: routerParams.metricsType,
           episodeGuids: [episodes[0].guid]

@@ -14,22 +14,22 @@ describe('Podcast Reducer', () => {
   });
 
   it('should set podcast entities on podcast page success', () => {
-    const newState = reducer(initialState,
-      new ACTIONS.CastlePodcastPageSuccessAction({page: 1, total: 1, all: true, podcasts: [podcast]}));
+    const newState = reducer(initialState, ACTIONS.CastlePodcastPageSuccess({ page: 1, total: 1, all: true, podcasts: [podcast] }));
     expect(newState.entities[podcast.id]).toEqual(podcast);
   });
 
   it('should update a podcast entity if it was already on the state', () => {
-    let newState = reducer(initialState,
-      new ACTIONS.CastlePodcastPageSuccessAction({page: 1, total: 1, all: true, podcasts: [podcast]}));
+    let newState = reducer(initialState, ACTIONS.CastlePodcastPageSuccess({ page: 1, total: 1, all: true, podcasts: [podcast] }));
     expect(newState.entities[podcast.id]).toEqual(podcast);
-    newState = reducer(initialState,
-      new ACTIONS.CastlePodcastPageSuccessAction({page: 1, total: 1, all: true, podcasts: [{...podcast, title: 'an updated title'}]}));
+    newState = reducer(
+      initialState,
+      ACTIONS.CastlePodcastPageSuccess({ page: 1, total: 1, all: true, podcasts: [{ ...podcast, title: 'an updated title' }] })
+    );
     expect(newState.entities[podcast.id].title).toEqual('an updated title');
   });
 
   it('should set error on failure', () => {
-    const newState = reducer(initialState, new ACTIONS.CastlePodcastPageFailureAction({error: 'something went wrong'}));
+    const newState = reducer(initialState, ACTIONS.CastlePodcastPageFailure({ error: 'something went wrong' }));
     expect(newState.error).not.toBeUndefined();
   });
 });

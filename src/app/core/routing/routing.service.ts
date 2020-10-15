@@ -502,7 +502,7 @@ export class RoutingService implements OnDestroy {
 
   loadEpisodes(newRouterParams: RouterParams) {
     this.store.dispatch(
-      new ACTIONS.CastleEpisodePageLoadAction({
+      ACTIONS.CastleEpisodePageLoad({
         podcastId: newRouterParams.podcastId,
         page: newRouterParams.episodePage || 1,
         per: EPISODE_PAGE_SIZE
@@ -512,7 +512,7 @@ export class RoutingService implements OnDestroy {
 
   loadSelectEpisodes(newRouterParams: RouterParams) {
     this.store.dispatch(
-      new ACTIONS.CastleEpisodeSelectPageLoadAction({
+      ACTIONS.CastleEpisodeSelectPageLoad({
         podcastId: newRouterParams.podcastId,
         page: 1,
         per: EPISODE_SELECT_PAGE_SIZE
@@ -522,23 +522,23 @@ export class RoutingService implements OnDestroy {
 
   loadDownloads(newRouterParams) {
     this.store.dispatch(
-      new ACTIONS.CastlePodcastDownloadsLoadAction({
+      ACTIONS.CastlePodcastDownloadsLoad({
         id: newRouterParams.podcastId,
         interval: newRouterParams.interval,
         beginDate: newRouterParams.beginDate,
         endDate: newRouterParams.endDate
       })
     );
-    this.store.dispatch(new ACTIONS.CastlePodcastAllTimeDownloadsLoadAction({ id: newRouterParams.podcastId }));
+    this.store.dispatch(ACTIONS.CastlePodcastAllTimeDownloadsLoad({ id: newRouterParams.podcastId }));
     this.episodes.forEach((episode: Episode) => {
       this.store.dispatch(
-        new ACTIONS.CastleEpisodeAllTimeDownloadsLoadAction({
+        ACTIONS.CastleEpisodeAllTimeDownloadsLoad({
           podcastId: episode.podcastId,
           guid: episode.guid
         })
       );
       this.store.dispatch(
-        new ACTIONS.CastleEpisodeDownloadsLoadAction({
+        ACTIONS.CastleEpisodeDownloadsLoad({
           podcastId: episode.podcastId,
           page: episode.page,
           guid: episode.guid,
@@ -553,7 +553,7 @@ export class RoutingService implements OnDestroy {
   loadDropdayEpisodeAllTimeDownloads() {
     this.dropdayEpisodes.forEach((episode: EpisodeDropday) => {
       this.store.dispatch(
-        new ACTIONS.CastleEpisodeAllTimeDownloadsLoadAction({
+        ACTIONS.CastleEpisodeAllTimeDownloadsLoad({
           podcastId: episode.podcastId,
           guid: episode.guid
         })
@@ -564,7 +564,7 @@ export class RoutingService implements OnDestroy {
   loadSelectedEpisodeDropdays(newRouterParams) {
     this.dropdayEpisodes.forEach((episode: EpisodeDropday) => {
       this.store.dispatch(
-        new ACTIONS.CastleEpisodeDropdayLoadAction({
+        ACTIONS.CastleEpisodeDropdayLoad({
           podcastId: episode.podcastId,
           guid: episode.guid,
           title: episode.title,
@@ -579,7 +579,7 @@ export class RoutingService implements OnDestroy {
   loadListeners(newRouterParams: RouterParams) {
     const { podcastId: id, interval, beginDate, endDate } = newRouterParams;
     this.store.dispatch(
-      new ACTIONS.CastlePodcastListenersLoadAction({
+      ACTIONS.CastlePodcastListenersLoad({
         id,
         interval,
         beginDate,
@@ -590,7 +590,7 @@ export class RoutingService implements OnDestroy {
 
   loadPodcastTotals(newRouterParams: RouterParams) {
     this.store.dispatch(
-      new ACTIONS.CastlePodcastTotalsLoadAction({
+      ACTIONS.CastlePodcastTotalsLoad({
         podcastId: newRouterParams.podcastId,
         group: newRouterParams.group,
         filter: newRouterParams.filter,
@@ -602,7 +602,7 @@ export class RoutingService implements OnDestroy {
 
   loadPodcastRanks(newRouterParams: RouterParams) {
     this.store.dispatch(
-      new ACTIONS.CastlePodcastRanksLoadAction({
+      ACTIONS.CastlePodcastRanksLoad({
         podcastId: newRouterParams.podcastId,
         group: newRouterParams.group,
         filter: newRouterParams.filter,
@@ -616,7 +616,7 @@ export class RoutingService implements OnDestroy {
   loadEpisodeTotals(newRouterParams: RouterParams) {
     this.aggregateSelectedEpisodeGuids.forEach(guid => {
       this.store.dispatch(
-        new ACTIONS.CastleEpisodeTotalsLoadAction({
+        ACTIONS.CastleEpisodeTotalsLoad({
           guid,
           group: newRouterParams.group,
           filter: newRouterParams.filter,
@@ -630,7 +630,7 @@ export class RoutingService implements OnDestroy {
   loadEpisodeRanks(newRouterParams: RouterParams) {
     this.aggregateSelectedEpisodeGuids.forEach(guid => {
       this.store.dispatch(
-        new ACTIONS.CastleEpisodeRanksLoadAction({
+        ACTIONS.CastleEpisodeRanksLoad({
           guid,
           group: newRouterParams.group,
           filter: newRouterParams.filter,

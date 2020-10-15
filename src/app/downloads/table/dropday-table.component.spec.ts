@@ -20,34 +20,29 @@ describe('DropdayTableComponent', () => {
   let de: DebugElement;
   let el: HTMLElement;
   let store: Store<any>;
-  const dropdayRouterParams: RouterParams = {...routerParams, metricsType: METRICSTYPE_DROPDAY, chartType: CHARTTYPE_HORIZBAR};
+  const dropdayRouterParams: RouterParams = { ...routerParams, metricsType: METRICSTYPE_DROPDAY, chartType: CHARTTYPE_HORIZBAR };
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [
-        DropdayTableComponent,
-        SummaryTableComponent
-      ],
-      imports: [
-        FancyFormModule,
-        SharedModule,
-        StoreModule.forRoot(reducers)
-      ]
-    }).compileComponents().then(() => {
-      fix = TestBed.createComponent(DropdayTableComponent);
-      comp = fix.componentInstance;
-      fix.detectChanges();
-      de = fix.debugElement;
-      el = de.nativeElement;
-      store = TestBed.get(Store);
+      declarations: [DropdayTableComponent, SummaryTableComponent],
+      imports: [FancyFormModule, SharedModule, StoreModule.forRoot(reducers)]
+    })
+      .compileComponents()
+      .then(() => {
+        fix = TestBed.createComponent(DropdayTableComponent);
+        comp = fix.componentInstance;
+        fix.detectChanges();
+        de = fix.debugElement;
+        el = de.nativeElement;
+        store = TestBed.inject(Store);
 
-      dispatchHelper.dispatchRouterNavigation(store, dropdayRouterParams);
-      dispatchHelper.dispatchEpisodePage(store);
-      dispatchHelper.dispatchEpisodeSelectList(store);
-      dispatchHelper.dispatchSelectEpisodes(store, routerParams.podcastId, METRICSTYPE_DROPDAY, [episodes[0].guid, episodes[1].guid]);
-      dispatchHelper.dispatchEpisodeDropday(store);
-      dispatchHelper.dispatchEpisodeAllTimeDownloads(store);
-    });
+        dispatchHelper.dispatchRouterNavigation(store, dropdayRouterParams);
+        dispatchHelper.dispatchEpisodePage(store);
+        dispatchHelper.dispatchEpisodeSelectList(store);
+        dispatchHelper.dispatchSelectEpisodes(store, routerParams.podcastId, METRICSTYPE_DROPDAY, [episodes[0].guid, episodes[1].guid]);
+        dispatchHelper.dispatchEpisodeDropday(store);
+        dispatchHelper.dispatchEpisodeAllTimeDownloads(store);
+      });
   }));
 
   it('should have chart type', done => {

@@ -1,6 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { Store } from '@ngrx/store';
-import { AllActions } from '../../ngrx/actions/';
+import { Store, Action } from '@ngrx/store';
 
 @Component({
   selector: 'metrics-error-retry',
@@ -13,7 +12,7 @@ import { AllActions } from '../../ngrx/actions/';
   styleUrls: ['error-retry.component.css']
 })
 export class ErrorRetryComponent {
-  @Input() retryActions: AllActions[];
+  @Input() retryActions: Action[];
 
   constructor(private store: Store<any>) {}
 

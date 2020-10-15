@@ -1,6 +1,6 @@
 import { reducer, initialState } from './podcast-alltime-downloads.reducer';
 import * as ACTIONS from '../actions';
-import {podcast, podAllTimeDownloadsOff, podAllTimeDownloads} from '../../../testing/downloads.fixtures';
+import { podcast, podAllTimeDownloadsOff, podAllTimeDownloads } from '../../../testing/downloads.fixtures';
 
 describe('PodcastAllTimeDownloads Reducer', () => {
   describe('unknown action', () => {
@@ -11,17 +11,18 @@ describe('PodcastAllTimeDownloads Reducer', () => {
     });
 
     it('should set loading on podcast all time downloads load', () => {
-      const newState = reducer(initialState,
-        new ACTIONS.CastlePodcastAllTimeDownloadsLoadAction({id: podcast.id}));
+      const newState = reducer(initialState, ACTIONS.CastlePodcastAllTimeDownloadsLoad({ id: podcast.id }));
       expect(newState.entities[podcast.id].loading).toBeTruthy();
     });
 
     it('should set podcast downloads entities and loaded on podcast all time downloads success', () => {
-      const newState = reducer(initialState,
-        new ACTIONS.CastlePodcastAllTimeDownloadsSuccessAction({
+      const newState = reducer(
+        initialState,
+        ACTIONS.CastlePodcastAllTimeDownloadsSuccess({
           id: podcast.id,
           total: podAllTimeDownloads.total
-        }));
+        })
+      );
       expect(newState.entities[podcast.id]).toEqual({
         id: podcast.id,
         allTimeDownloads: podAllTimeDownloads.total,
@@ -31,30 +32,37 @@ describe('PodcastAllTimeDownloads Reducer', () => {
     });
 
     it('should update a podcast downloads entity if it was already on the state', () => {
-      let newState = reducer(initialState,
-        new ACTIONS.CastlePodcastAllTimeDownloadsSuccessAction({
+      let newState = reducer(
+        initialState,
+        ACTIONS.CastlePodcastAllTimeDownloadsSuccess({
           id: podcast.id,
           total: podAllTimeDownloads.total
-        }));
+        })
+      );
       expect(newState.entities[podcast.id]).toEqual({
         id: podcast.id,
         allTimeDownloads: podAllTimeDownloads.total,
         loading: false,
         loaded: true
       });
-      newState = reducer(initialState,
-        new ACTIONS.CastlePodcastAllTimeDownloadsSuccessAction({
+      newState = reducer(
+        initialState,
+        ACTIONS.CastlePodcastAllTimeDownloadsSuccess({
           id: podcast.id,
           total: podAllTimeDownloadsOff.total
-        }));
+        })
+      );
       expect(newState.entities[podcast.id].allTimeDownloads).toEqual(podAllTimeDownloadsOff.total);
     });
 
     it('should set error on failure', () => {
-      const newState = reducer(initialState, new ACTIONS.CastlePodcastAllTimeDownloadsFailureAction({
-        id: podcast.id,
-        error: 'something went wrong'
-      }));
+      const newState = reducer(
+        initialState,
+        ACTIONS.CastlePodcastAllTimeDownloadsFailure({
+          id: podcast.id,
+          error: 'something went wrong'
+        })
+      );
       expect(newState.entities[podcast.id].error).not.toBeUndefined();
     });
   });

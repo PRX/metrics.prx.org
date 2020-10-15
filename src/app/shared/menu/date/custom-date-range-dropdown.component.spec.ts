@@ -4,7 +4,7 @@ import { StoreModule, Store } from '@ngrx/store';
 import { By } from '@angular/platform-browser';
 
 import { reducers } from '../../../ngrx/reducers';
-import { RouteAdvancedRangeAction, GoogleAnalyticsEventAction } from '../../../ngrx/actions';
+import { RouteAdvancedRange, GoogleAnalyticsEvent } from '../../../ngrx/actions';
 import { INTERVAL_DAILY, INTERVAL_HOURLY, INTERVAL_MONTHLY } from '../../../ngrx';
 import * as dateUtil from '../../util/date';
 
@@ -37,7 +37,7 @@ describe('CustomDateRangeDropdownComponent', () => {
         comp = fix.componentInstance;
         de = fix.debugElement;
         el = de.nativeElement;
-        store = TestBed.get(Store);
+        store = TestBed.inject(Store);
 
         comp.tempRange = comp.routerParams = routerParams;
         fix.detectChanges();
@@ -100,8 +100,11 @@ describe('CustomDateRangeDropdownComponent', () => {
     comp.onIntervalChange(INTERVAL_MONTHLY);
     comp.onStandardRangeChange(dateUtil.LAST_MONTH);
     comp.onApply();
-    expect(store.dispatch).toHaveBeenCalledWith(jasmine.any(GoogleAnalyticsEventAction));
-    expect(store.dispatch).toHaveBeenCalledWith(jasmine.any(RouteAdvancedRangeAction));
+    const range = dateUtil.getBeginEndDateFromStandardRange(dateUtil.LAST_MONTH);
+    expect(store.dispatch).toHaveBeenCalledWith(GoogleAnalyticsEvent({ gaAction: 'routerParams-standard-date', value: 1 }));
+    expect(store.dispatch).toHaveBeenCalledWith(
+      RouteAdvancedRange({ standardRange: dateUtil.LAST_MONTH, interval: INTERVAL_MONTHLY, ...range })
+    );
   });
 
   it('should send google analytics event or custom or standard range', () => {

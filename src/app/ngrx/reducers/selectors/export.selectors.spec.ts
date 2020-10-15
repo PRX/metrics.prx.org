@@ -34,7 +34,7 @@ describe('Export Selectors', () => {
     TestBed.configureTestingModule({
       imports: [StoreModule.forRoot(reducers)]
     });
-    store = TestBed.get(Store);
+    store = TestBed.inject(Store);
   });
 
   describe('Downloads exports', () => {

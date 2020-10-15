@@ -12,8 +12,12 @@ import { MetricsType, GroupType, GROUPTYPE_AGENTNAME, METRICSTYPE_TRAFFICSOURCES
 
 import { UserAgentsComponent } from './user-agents.component';
 import { UserAgentsChartComponent } from './user-agents-chart.component';
-import { podcast, routerParams as downloadParams,
-  podcastAgentNameRanks, podcastAgentNameDownloads } from '../../testing/downloads.fixtures';
+import {
+  podcast,
+  routerParams as downloadParams,
+  podcastAgentNameRanks,
+  podcastAgentNameDownloads
+} from '../../testing/downloads.fixtures';
 
 describe('UserAgentsComponent', () => {
   let store: Store<any>;
@@ -24,56 +28,53 @@ describe('UserAgentsComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [
-        UserAgentsComponent,
-        UserAgentsChartComponent
-      ],
-      imports: [
-        SharedModule,
-        FancyFormModule,
-        StoreModule.forRoot(reducers),
-        RouterTestingModule
-      ]
-    }).compileComponents().then(() => {
-      fix = TestBed.createComponent(UserAgentsComponent);
-      comp = fix.componentInstance;
-      fix.detectChanges();
-      de = fix.debugElement;
-      el = de.nativeElement;
-      store = TestBed.get(Store);
-    });
+      declarations: [UserAgentsComponent, UserAgentsChartComponent],
+      imports: [SharedModule, FancyFormModule, StoreModule.forRoot(reducers), RouterTestingModule]
+    })
+      .compileComponents()
+      .then(() => {
+        fix = TestBed.createComponent(UserAgentsComponent);
+        comp = fix.componentInstance;
+        fix.detectChanges();
+        de = fix.debugElement;
+        el = de.nativeElement;
+        store = TestBed.inject(Store);
+      });
   }));
 
-  const routerParams = {...downloadParams, metricsType: <MetricsType>METRICSTYPE_TRAFFICSOURCES, group: <GroupType>GROUPTYPE_AGENTNAME};
+  const routerParams = { ...downloadParams, metricsType: <MetricsType>METRICSTYPE_TRAFFICSOURCES, group: <GroupType>GROUPTYPE_AGENTNAME };
   function dispatchRouterNavigation() {
-    store.dispatch(new ACTIONS.CustomRouterNavigationAction({routerParams}));
+    store.dispatch(ACTIONS.CustomRouterNavigation({ routerParams }));
   }
 
   function dispatchPodcasts() {
-    store.dispatch(new ACTIONS.CastlePodcastPageSuccessAction(
-      {podcasts: [podcast], page: 1, total: 1}));
+    store.dispatch(ACTIONS.CastlePodcastPageSuccess({ podcasts: [podcast], page: 1, total: 1 }));
   }
 
   function dispatchPodcastAgentNameTotals() {
-    store.dispatch(new ACTIONS.CastlePodcastTotalsSuccessAction({
-      podcastId: routerParams.podcastId,
-      group: GROUPTYPE_AGENTNAME,
-      beginDate: routerParams.beginDate,
-      endDate: routerParams.endDate,
-      ranks: podcastAgentNameRanks
-    }));
+    store.dispatch(
+      ACTIONS.CastlePodcastTotalsSuccess({
+        podcastId: routerParams.podcastId,
+        group: GROUPTYPE_AGENTNAME,
+        beginDate: routerParams.beginDate,
+        endDate: routerParams.endDate,
+        ranks: podcastAgentNameRanks
+      })
+    );
   }
 
   function dispatchPodcastAgentNameRanks() {
-    store.dispatch(new ACTIONS.CastlePodcastRanksSuccessAction({
-      podcastId: routerParams.podcastId,
-      group: GROUPTYPE_AGENTNAME,
-      interval: routerParams.interval,
-      beginDate: routerParams.beginDate,
-      endDate: routerParams.endDate,
-      ranks: podcastAgentNameRanks,
-      downloads: podcastAgentNameDownloads
-    }));
+    store.dispatch(
+      ACTIONS.CastlePodcastRanksSuccess({
+        podcastId: routerParams.podcastId,
+        group: GROUPTYPE_AGENTNAME,
+        interval: routerParams.interval,
+        beginDate: routerParams.beginDate,
+        endDate: routerParams.endDate,
+        ranks: podcastAgentNameRanks,
+        downloads: podcastAgentNameDownloads
+      })
+    );
   }
 
   it('should create the component', async(() => {

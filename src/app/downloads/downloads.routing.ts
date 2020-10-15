@@ -62,4 +62,4 @@ export const downloadsRoutes: Routes = [
   }
 ];
 
-export const downloadsRouting: ModuleWithProviders = RouterModule.forChild(downloadsRoutes);
+export const downloadsRouting: ModuleWithProviders<RouterModule> = RouterModule.forChild(downloadsRoutes);

@@ -3,7 +3,7 @@ import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { Store, select } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { GoogleAnalyticsEventAction } from '../../../ngrx/actions';
+import { GoogleAnalyticsEvent } from '../../../ngrx/actions';
 import { selectExportData2DArray, joinCsvArray, selectExportFilename } from '../../../ngrx/reducers/selectors';
 import { ExportGoogleSheetsService } from './export-google-sheets.service';
 
@@ -59,13 +59,13 @@ export class ExportDropdownComponent implements OnInit {
   }
 
   onExportCsv() {
-    this.store.dispatch(new GoogleAnalyticsEventAction({ gaAction: 'exportCSV' }));
+    this.store.dispatch(GoogleAnalyticsEvent({ gaAction: 'exportCSV' }));
 
     this.toggleOpen();
   }
 
   onExportGoogleSheet() {
-    this.store.dispatch(new GoogleAnalyticsEventAction({ gaAction: 'exportGoogleSheet' }));
+    this.store.dispatch(GoogleAnalyticsEvent({ gaAction: 'exportGoogleSheet' }));
 
     this.toggleOpen();
   }

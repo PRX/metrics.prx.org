@@ -17,7 +17,7 @@ export const dispatchRouterNavigation = (store: Store<any>, routerParams?: Route
   const { podcastId, metricsType, group, filter, chartType, interval, episodePage, standardRange, beginDate, endDate } =
     routerParams || fixtures.routerParams;
   store.dispatch(
-    new ACTIONS.CustomRouterNavigationAction({
+    ACTIONS.CustomRouterNavigation({
       routerParams: {
         ...fixtures.routerParams,
         ...(podcastId && { podcastId }),
@@ -36,12 +36,12 @@ export const dispatchRouterNavigation = (store: Store<any>, routerParams?: Route
 };
 
 export const dispatchPodcasts = (store: Store<any>, podcast?: Podcast) => {
-  store.dispatch(new ACTIONS.CastlePodcastPageSuccessAction({ podcasts: [podcast || fixtures.podcast], page: 1, total: 1 }));
+  store.dispatch(ACTIONS.CastlePodcastPageSuccess({ podcasts: [podcast || fixtures.podcast], page: 1, total: 1 }));
 };
 
 export const dispatchEpisodePage = (store: Store<any>, episodes?: Episode[], page?: number) => {
   store.dispatch(
-    new ACTIONS.CastleEpisodePageSuccessAction({
+    ACTIONS.CastleEpisodePageSuccess({
       episodes: episodes || fixtures.episodes,
       page: page || 1,
       per: EPISODE_PAGE_SIZE,
@@ -52,7 +52,7 @@ export const dispatchEpisodePage = (store: Store<any>, episodes?: Episode[], pag
 
 export const dispatchEpisodeSelectList = (store: Store<any>, episodes?: Episode[]) => {
   store.dispatch(
-    new ACTIONS.CastleEpisodeSelectPageSuccessAction({
+    ACTIONS.CastleEpisodeSelectPageSuccess({
       episodes: episodes || fixtures.episodes,
       page: 1,
       per: EPISODE_PAGE_SIZE,
@@ -63,7 +63,7 @@ export const dispatchEpisodeSelectList = (store: Store<any>, episodes?: Episode[
 
 export const dispatchSelectEpisodes = (store: Store<any>, podcastId?: string, metricsType?: MetricsType, episodesGuids?: string[]) => {
   store.dispatch(
-    new ACTIONS.EpisodeSelectEpisodesAction({
+    ACTIONS.EpisodeSelectEpisodes({
       podcastId: podcastId || fixtures.routerParams.podcastId,
       metricsType: metricsType || fixtures.routerParams.metricsType,
       episodeGuids: episodesGuids || [fixtures.episodes[0].guid]
@@ -73,7 +73,7 @@ export const dispatchSelectEpisodes = (store: Store<any>, podcastId?: string, me
 
 export const dispatchPodcastDownloads = (store: Store<any>, podcastId?: string, downloads?: any[][]) => {
   store.dispatch(
-    new ACTIONS.CastlePodcastDownloadsSuccessAction({
+    ACTIONS.CastlePodcastDownloadsSuccess({
       id: podcastId || fixtures.podcast.id,
       downloads: downloads || fixtures.podDownloads
     })
@@ -82,7 +82,7 @@ export const dispatchPodcastDownloads = (store: Store<any>, podcastId?: string, 
 
 export const dispatchEpisodeDownloads = (store: Store<any>, podcastId?: string, page?: number, guid?: string, downloads?: any[][]) => {
   store.dispatch(
-    new ACTIONS.CastleEpisodeDownloadsSuccessAction({
+    ACTIONS.CastleEpisodeDownloadsSuccess({
       podcastId: podcastId || fixtures.episodes[0].podcastId,
       page: page || fixtures.episodes[0].page,
       guid: guid || fixtures.episodes[0].guid,
@@ -90,7 +90,7 @@ export const dispatchEpisodeDownloads = (store: Store<any>, podcastId?: string, 
     })
   );
   store.dispatch(
-    new ACTIONS.CastleEpisodeDownloadsSuccessAction({
+    ACTIONS.CastleEpisodeDownloadsSuccess({
       podcastId: podcastId || fixtures.episodes[1].podcastId,
       page: page || fixtures.episodes[1].page,
       guid: guid || fixtures.episodes[1].guid,
@@ -101,14 +101,14 @@ export const dispatchEpisodeDownloads = (store: Store<any>, podcastId?: string, 
 
 export const dispatchEpisodeAllTimeDownloads = (store: Store<any>, podcastId?: string) => {
   store.dispatch(
-    new ACTIONS.CastleEpisodeAllTimeDownloadsSuccessAction({
+    ACTIONS.CastleEpisodeAllTimeDownloadsSuccess({
       podcastId: podcastId || fixtures.episodes[0].podcastId,
       guid: fixtures.episodes[0].guid,
       ...fixtures.ep0AllTimeDownloads
     })
   );
   store.dispatch(
-    new ACTIONS.CastleEpisodeAllTimeDownloadsSuccessAction({
+    ACTIONS.CastleEpisodeAllTimeDownloadsSuccess({
       podcastId: fixtures.episodes[1].podcastId,
       guid: fixtures.episodes[1].guid,
       ...fixtures.ep1AllTimeDownloads
@@ -118,7 +118,7 @@ export const dispatchEpisodeAllTimeDownloads = (store: Store<any>, podcastId?: s
 
 export const dispatchLoadEpisodeDropday = (store: Store<any>, podcastId?: string, interval?: IntervalModel, days?: number) => {
   store.dispatch(
-    new ACTIONS.CastleEpisodeDropdayLoadAction({
+    ACTIONS.CastleEpisodeDropdayLoad({
       podcastId: podcastId || fixtures.episodes[0].podcastId,
       guid: fixtures.episodes[0].guid,
       title: fixtures.episodes[0].title,
@@ -128,7 +128,7 @@ export const dispatchLoadEpisodeDropday = (store: Store<any>, podcastId?: string
     })
   );
   store.dispatch(
-    new ACTIONS.CastleEpisodeDropdayLoadAction({
+    ACTIONS.CastleEpisodeDropdayLoad({
       podcastId: podcastId || fixtures.episodes[1].podcastId,
       guid: fixtures.episodes[1].guid,
       title: fixtures.episodes[1].title,
@@ -141,7 +141,7 @@ export const dispatchLoadEpisodeDropday = (store: Store<any>, podcastId?: string
 
 export const dispatchEpisodeDropday = (store: Store<any>, podcastId?: string, interval?: IntervalModel) => {
   store.dispatch(
-    new ACTIONS.CastleEpisodeDropdaySuccessAction({
+    ACTIONS.CastleEpisodeDropdaySuccess({
       podcastId: podcastId || fixtures.episodes[0].podcastId,
       guid: fixtures.episodes[0].guid,
       title: fixtures.episodes[0].title,
@@ -151,7 +151,7 @@ export const dispatchEpisodeDropday = (store: Store<any>, podcastId?: string, in
     })
   );
   store.dispatch(
-    new ACTIONS.CastleEpisodeDropdaySuccessAction({
+    ACTIONS.CastleEpisodeDropdaySuccess({
       podcastId: podcastId || fixtures.episodes[1].podcastId,
       guid: fixtures.episodes[1].guid,
       title: fixtures.episodes[1].title,
@@ -164,7 +164,7 @@ export const dispatchEpisodeDropday = (store: Store<any>, podcastId?: string, in
 
 export const dispatchLoadPodcastListeners = (store: Store<any>) => {
   store.dispatch(
-    new ACTIONS.CastlePodcastListenersLoadAction({
+    ACTIONS.CastlePodcastListenersLoad({
       id: fixtures.routerParams.podcastId,
       interval: fixtures.routerParams.interval,
       beginDate: fixtures.routerParams.beginDate,
@@ -175,7 +175,7 @@ export const dispatchLoadPodcastListeners = (store: Store<any>) => {
 
 export const dispatchPodcastListeners = (store: Store<any>, podcastId?: string, listeners?: any[][]) => {
   store.dispatch(
-    new ACTIONS.CastlePodcastListenersSuccessAction({
+    ACTIONS.CastlePodcastListenersSuccess({
       id: podcastId || fixtures.podcast.id,
       listeners: listeners || fixtures.podDownloads
     })
@@ -185,7 +185,7 @@ export const dispatchPodcastListeners = (store: Store<any>, podcastId?: string, 
 export const dispatchPodcastRanks = (store: Store<any>, routerParams?: RouterParams, ranks?: any[], downloads?: any[][]) => {
   const { podcastId, group, filter, interval, beginDate, endDate } = routerParams || fixtures.routerParams;
   store.dispatch(
-    new ACTIONS.CastlePodcastRanksSuccessAction({
+    ACTIONS.CastlePodcastRanksSuccess({
       podcastId: podcastId || fixtures.podcast.id,
       group: group || GROUPTYPE_GEOCOUNTRY,
       ...(filter && { filter }),
@@ -201,7 +201,7 @@ export const dispatchPodcastRanks = (store: Store<any>, routerParams?: RouterPar
 export const dispatchPodcastTotals = (store: Store<any>, routerParams?: RouterParams, ranks?: any[]) => {
   const { podcastId, group, filter, beginDate, endDate } = routerParams || fixtures.routerParams;
   store.dispatch(
-    new ACTIONS.CastlePodcastTotalsSuccessAction({
+    ACTIONS.CastlePodcastTotalsSuccess({
       podcastId: podcastId || fixtures.podcast.id,
       group: group || GROUPTYPE_GEOCOUNTRY,
       ...(filter && { filter }),
@@ -215,7 +215,7 @@ export const dispatchPodcastTotals = (store: Store<any>, routerParams?: RouterPa
 export const dispatchEpisodeRanks = (store: Store<any>, routerParams?: RouterParams, guid?: string, ranks?: any[], downloads?: any[][]) => {
   const { group, filter, interval, beginDate, endDate } = routerParams || fixtures.routerParams;
   store.dispatch(
-    new ACTIONS.CastleEpisodeRanksSuccessAction({
+    ACTIONS.CastleEpisodeRanksSuccess({
       guid: guid || fixtures.episodes[0].guid,
       group: group || GROUPTYPE_GEOCOUNTRY,
       ...(filter && { filter }),
@@ -231,7 +231,7 @@ export const dispatchEpisodeRanks = (store: Store<any>, routerParams?: RouterPar
 export const dispatchEpisodeTotals = (store: Store<any>, routerParams?: RouterParams, guid?: string, ranks?: any[]) => {
   const { group, filter, beginDate, endDate } = routerParams || fixtures.routerParams;
   store.dispatch(
-    new ACTIONS.CastleEpisodeTotalsSuccessAction({
+    ACTIONS.CastleEpisodeTotalsSuccess({
       guid: guid || fixtures.episodes[0].guid,
       group: group || GROUPTYPE_GEOCOUNTRY,
       ...(filter && { filter }),
@@ -244,7 +244,7 @@ export const dispatchEpisodeTotals = (store: Store<any>, routerParams?: RouterPa
 
 export const dispatchPodcastDownloadsChartToggle = (store: Store<any>, podcastId?: string, charted?: boolean) => {
   store.dispatch(
-    new ACTIONS.ChartTogglePodcastAction({
+    ACTIONS.ChartTogglePodcast({
       id: podcastId || fixtures.podcast.id,
       charted: charted || false
     })
@@ -253,7 +253,7 @@ export const dispatchPodcastDownloadsChartToggle = (store: Store<any>, podcastId
 
 export const dispatchEpisodeDownloadsChartToggle = (store: Store<any>, podcastId?: string, guid?: string, charted?: boolean) => {
   store.dispatch(
-    new ACTIONS.ChartToggleEpisodeAction({
+    ACTIONS.ChartToggleEpisode({
       podcastId: podcastId || fixtures.episodes[0].guid,
       guid: guid || fixtures.episodes[0].guid,
       charted: charted || false
@@ -263,7 +263,7 @@ export const dispatchEpisodeDownloadsChartToggle = (store: Store<any>, podcastId
 
 export const dispatchGroupChartToggle = (store: Store<any>, group?: GroupType, groupName?: string, charted?: boolean) => {
   store.dispatch(
-    new ACTIONS.ChartToggleGroupAction({
+    ACTIONS.ChartToggleGroup({
       group: group || GROUPTYPE_AGENTNAME,
       groupName: groupName || 'Unknown',
       charted: charted || false

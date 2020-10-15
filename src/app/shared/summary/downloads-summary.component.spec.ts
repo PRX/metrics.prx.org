@@ -4,7 +4,7 @@ import { DebugElement } from '@angular/core';
 import { StoreModule, Store } from '@ngrx/store';
 
 import { reducers, RootState } from '../../ngrx/reducers';
-import { CustomRouterNavigationAction, CastlePodcastDownloadsSuccessAction } from '../../ngrx/actions';
+import { CustomRouterNavigation, CastlePodcastDownloadsSuccess } from '../../ngrx/actions';
 import * as metricsUtil from '../util/metrics.util';
 import { routerParams, podcast, podDownloads } from '../../../testing/downloads.fixtures';
 
@@ -20,24 +20,21 @@ describe('DownloadsSummaryComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [
-        DownloadsSummaryComponent,
-        LargeNumberPipe
-      ],
-      imports: [
-        StoreModule.forRoot(reducers)
-      ]
-    }).compileComponents().then(() => {
-      fix = TestBed.createComponent(DownloadsSummaryComponent);
-      comp = fix.componentInstance;
-      de = fix.debugElement;
-      el = de.nativeElement;
-      store = TestBed.get(Store);
+      declarations: [DownloadsSummaryComponent, LargeNumberPipe],
+      imports: [StoreModule.forRoot(reducers)]
+    })
+      .compileComponents()
+      .then(() => {
+        fix = TestBed.createComponent(DownloadsSummaryComponent);
+        comp = fix.componentInstance;
+        de = fix.debugElement;
+        el = de.nativeElement;
+        store = TestBed.inject(Store);
 
-      store.dispatch(new CustomRouterNavigationAction({routerParams}));
-      store.dispatch(new CastlePodcastDownloadsSuccessAction({id: podcast.id, downloads: podDownloads}));
-      fix.detectChanges();
-    });
+        store.dispatch(CustomRouterNavigation({ routerParams }));
+        store.dispatch(CastlePodcastDownloadsSuccess({ id: podcast.id, downloads: podDownloads }));
+        fix.detectChanges();
+      });
   }));
 
   it('should show total value', () => {

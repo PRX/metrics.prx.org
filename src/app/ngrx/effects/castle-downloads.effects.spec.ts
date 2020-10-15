@@ -1,9 +1,9 @@
-import { Actions } from '@ngrx/effects';
 import { TestBed, async } from '@angular/core/testing';
 import { cold, hot } from 'jasmine-marbles';
-import { StoreModule, Store } from '@ngrx/store';
+import { Observable } from 'rxjs';
+import { StoreModule, Store, Action } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
-import { getActions, TestActions } from './test.actions';
+import { provideMockActions } from '@ngrx/effects/testing';
 
 import { HalService, MockHalService } from 'ngx-prx-styleguide';
 import { CastleService } from '@app/core';
@@ -17,7 +17,7 @@ import { routerParams, podcast, episodes, podDownloads, ep0Downloads } from '../
 
 describe('CastleDownloadsEffects', () => {
   let effects: CastleDownloadsEffects;
-  let actions$: TestActions;
+  let actions$ = new Observable<Action>();
   let castle: MockHalService;
   let store: Store<any>;
 
@@ -68,29 +68,25 @@ describe('CastleDownloadsEffects', () => {
         CastleDownloadsEffects,
         { provide: HalService, useValue: castle },
         { provide: CastleService, useValue: castle.root },
-        { provide: Actions, useFactory: getActions }
+        provideMockActions(() => actions$)
       ]
     });
-    effects = TestBed.get(CastleDownloadsEffects);
-    actions$ = TestBed.get(Actions);
-    store = TestBed.get(Store);
+    effects = TestBed.inject(CastleDownloadsEffects);
+    store = TestBed.inject(Store);
 
-    store.dispatch(new ACTIONS.CustomRouterNavigationAction({ routerParams }));
+    store.dispatch(ACTIONS.CustomRouterNavigation({ routerParams }));
   }));
 
   it('should request podcast all time downloads from castle', () => {
-    const action: ACTIONS.CastlePodcastAllTimeDownloadsLoadAction = {
-      type: ACTIONS.ActionTypes.CASTLE_PODCAST_ALLTIME_DOWNLOADS_LOAD,
-      payload: {
-        id: podcast.id
-      }
-    };
-    const success = new ACTIONS.CastlePodcastAllTimeDownloadsSuccessAction({
+    const action = ACTIONS.CastlePodcastAllTimeDownloadsLoad({
+      id: podcast.id
+    });
+    const success = ACTIONS.CastlePodcastAllTimeDownloadsSuccess({
       id: podcast.id,
       total: 10
     });
 
-    actions$.stream = hot('-a', { a: action });
+    actions$ = hot('-a', { a: action });
     const expected = cold('-r', { r: success });
     expect(effects.loadPodcastAllTimeDownloads$).toBeObservable(expected);
   });
@@ -98,54 +94,45 @@ describe('CastleDownloadsEffects', () => {
   it('should return a failure action on non 404 errors for all time podcast downloads', () => {
     const error: any = { status: 500, message: 'this is an error' };
     castle.root.mockError('prx:podcast', error);
-    const action: ACTIONS.CastlePodcastAllTimeDownloadsLoadAction = {
-      type: ACTIONS.ActionTypes.CASTLE_PODCAST_ALLTIME_DOWNLOADS_LOAD,
-      payload: {
-        id: podcast.id
-      }
-    };
-    const failure = new ACTIONS.CastlePodcastAllTimeDownloadsFailureAction({
+    const action = ACTIONS.CastlePodcastAllTimeDownloadsLoad({
+      id: podcast.id
+    });
+    const failure = ACTIONS.CastlePodcastAllTimeDownloadsFailure({
       id: podcast.id,
       error
     });
 
-    actions$.stream = hot('-a', { a: action });
+    actions$ = hot('-a', { a: action });
     const expected = cold('-r', { r: failure });
     expect(effects.loadPodcastAllTimeDownloads$).toBeObservable(expected);
   });
 
   it('should request episode all time downloads from castle', () => {
-    const action: ACTIONS.CastleEpisodeAllTimeDownloadsLoadAction = {
-      type: ACTIONS.ActionTypes.CASTLE_EPISODE_ALLTIME_DOWNLOADS_LOAD,
-      payload: { podcastId: episodes[0].podcastId, guid: episodes[0].guid }
-    };
-    const success = new ACTIONS.CastleEpisodeAllTimeDownloadsSuccessAction({
+    const action = ACTIONS.CastleEpisodeAllTimeDownloadsLoad({ podcastId: episodes[0].podcastId, guid: episodes[0].guid });
+    const success = ACTIONS.CastleEpisodeAllTimeDownloadsSuccess({
       podcastId: episodes[0].podcastId,
       guid: episodes[0].guid,
       total: 11
     });
 
-    actions$.stream = hot('-a', { a: action });
+    actions$ = hot('-a', { a: action });
     const expected = cold('-r', { r: success });
     expect(effects.loadEpisodeAllTimeDownloads$).toBeObservable(expected);
   });
 
   it('should return 0 downloads on 404s for all time episode downloads', () => {
     castle.root.mockError('prx:episode', <any>{ status: 404, message: 'this is an error' });
-    const action: ACTIONS.CastleEpisodeAllTimeDownloadsLoadAction = {
-      type: ACTIONS.ActionTypes.CASTLE_EPISODE_ALLTIME_DOWNLOADS_LOAD,
-      payload: {
-        podcastId: episodes[0].podcastId,
-        guid: episodes[0].guid
-      }
-    };
-    const success = new ACTIONS.CastleEpisodeAllTimeDownloadsSuccessAction({
+    const action = ACTIONS.CastleEpisodeAllTimeDownloadsLoad({
+      podcastId: episodes[0].podcastId,
+      guid: episodes[0].guid
+    });
+    const success = ACTIONS.CastleEpisodeAllTimeDownloadsSuccess({
       podcastId: episodes[0].podcastId,
       guid: episodes[0].guid,
       total: 0
     });
 
-    actions$.stream = hot('-a', { a: action });
+    actions$ = hot('-a', { a: action });
     const expected = cold('-r', { r: success });
     expect(effects.loadEpisodeAllTimeDownloads$).toBeObservable(expected);
   });
@@ -153,82 +140,70 @@ describe('CastleDownloadsEffects', () => {
   it('should return a failure action on non 404 errors for all time episode downloads', () => {
     const error: any = { status: 500, message: 'this is an error' };
     castle.root.mockError('prx:episode', error);
-    const action: ACTIONS.CastleEpisodeAllTimeDownloadsLoadAction = {
-      type: ACTIONS.ActionTypes.CASTLE_EPISODE_ALLTIME_DOWNLOADS_LOAD,
-      payload: {
-        podcastId: episodes[0].podcastId,
-        guid: episodes[0].guid
-      }
-    };
-    const failure = new ACTIONS.CastleEpisodeAllTimeDownloadsFailureAction({
+    const action = ACTIONS.CastleEpisodeAllTimeDownloadsLoad({
+      podcastId: episodes[0].podcastId,
+      guid: episodes[0].guid
+    });
+    const failure = ACTIONS.CastleEpisodeAllTimeDownloadsFailure({
       podcastId: episodes[0].podcastId,
       guid: episodes[0].guid,
       error
     });
 
-    actions$.stream = hot('-a', { a: action });
+    actions$ = hot('-a', { a: action });
     const expected = cold('-r', { r: failure });
     expect(effects.loadEpisodeAllTimeDownloads$).toBeObservable(expected);
   });
 
   it('should load podcast downloads', () => {
-    const action: ACTIONS.CastlePodcastDownloadsLoadAction = {
-      type: ACTIONS.ActionTypes.CASTLE_PODCAST_DOWNLOADS_LOAD,
-      payload: {
-        id: podcast.id,
-        interval: INTERVAL_DAILY,
-        beginDate: new Date(),
-        endDate: new Date()
-      }
-    };
-    const success = new ACTIONS.CastlePodcastDownloadsSuccessAction({
+    const action = ACTIONS.CastlePodcastDownloadsLoad({
+      id: podcast.id,
+      interval: INTERVAL_DAILY,
+      beginDate: new Date(),
+      endDate: new Date()
+    });
+    const success = ACTIONS.CastlePodcastDownloadsSuccess({
       id: podcast.id,
       downloads: podDownloads
     });
 
-    actions$.stream = hot('-a', { a: action });
+    actions$ = hot('-a', { a: action });
     const expected = cold('-r', { r: success });
     expect(effects.loadPodcastDownloads$).toBeObservable(expected);
   });
 
   it('should load episode downloads', () => {
-    const action: ACTIONS.CastleEpisodeDownloadsLoadAction = {
-      type: ACTIONS.ActionTypes.CASTLE_EPISODE_DOWNLOADS_LOAD,
-      payload: {
-        podcastId: episodes[0].podcastId,
-        page: episodes[0].page,
-        guid: episodes[0].guid,
-        interval: INTERVAL_DAILY,
-        beginDate: new Date(),
-        endDate: new Date()
-      }
-    };
-    const success = new ACTIONS.CastleEpisodeDownloadsSuccessAction({
+    const action = ACTIONS.CastleEpisodeDownloadsLoad({
+      podcastId: episodes[0].podcastId,
+      page: episodes[0].page,
+      guid: episodes[0].guid,
+      interval: INTERVAL_DAILY,
+      beginDate: new Date(),
+      endDate: new Date()
+    });
+    const success = ACTIONS.CastleEpisodeDownloadsSuccess({
       podcastId: episodes[0].podcastId,
       page: episodes[0].page,
       guid: episodes[0].guid,
       downloads: ep0Downloads
     });
 
-    actions$.stream = hot('-a', { a: action });
+    actions$ = hot('-a', { a: action });
     const expected = cold('-r', { r: success });
     expect(effects.loadEpisodeDownloads$).toBeObservable(expected);
   });
 
   it('should load episode dropday', () => {
     const publishedAt = new Date();
-    const action: ACTIONS.CastleEpisodeDropdayLoadAction = {
-      type: ACTIONS.ActionTypes.CASTLE_EPISODE_DROPDAY_LOAD,
-      payload: {
-        podcastId: episodes[0].podcastId,
-        guid: episodes[0].guid,
-        title: episodes[0].title,
-        interval: INTERVAL_DAILY,
-        publishedAt,
-        days: 28
-      }
-    };
-    const success = new ACTIONS.CastleEpisodeDropdaySuccessAction({
+    const action = ACTIONS.CastleEpisodeDropdayLoad({
+      podcastId: episodes[0].podcastId,
+      guid: episodes[0].guid,
+      title: episodes[0].title,
+      interval: INTERVAL_DAILY,
+      publishedAt,
+      days: 28
+    });
+    const success = ACTIONS.CastleEpisodeDropdaySuccess({
       podcastId: episodes[0].podcastId,
       guid: episodes[0].guid,
       title: episodes[0].title,
@@ -237,27 +212,24 @@ describe('CastleDownloadsEffects', () => {
       downloads: ep0Downloads
     });
 
-    actions$.stream = hot('-a', { a: action });
+    actions$ = hot('-a', { a: action });
     const expected = cold('-r', { r: success });
     expect(effects.loadEpisodeDropday$).toBeObservable(expected);
   });
 
   it('should load podcast listeners', () => {
-    const action: ACTIONS.CastlePodcastListenersLoadAction = {
-      type: ACTIONS.ActionTypes.CASTLE_PODCAST_LISTENERS_LOAD,
-      payload: {
-        id: podcast.id,
-        interval: INTERVAL_DAILY,
-        beginDate: new Date(),
-        endDate: new Date()
-      }
-    };
-    const success = new ACTIONS.CastlePodcastListenersSuccessAction({
+    const action = ACTIONS.CastlePodcastListenersLoad({
+      id: podcast.id,
+      interval: INTERVAL_DAILY,
+      beginDate: new Date(),
+      endDate: new Date()
+    });
+    const success = ACTIONS.CastlePodcastListenersSuccess({
       id: podcast.id,
       listeners: podDownloads
     });
 
-    actions$.stream = hot('-a', { a: action });
+    actions$ = hot('-a', { a: action });
     const expected = cold('-r', { r: success });
     expect(effects.loadPodcastListeners$).toBeObservable(expected);
   });
@@ -277,60 +249,60 @@ describe('CastleDownloadsEffects', () => {
 
     it('should load downloads on episode page success', () => {
       jest.spyOn(store, 'dispatch');
-      const action = new ACTIONS.CastleEpisodePageSuccessAction({
+      const episodePage = ACTIONS.CastleEpisodePageSuccess({
         episodes,
         page: routerParams.episodePage,
         per: EPISODE_PAGE_SIZE,
         total: episodes.length
       });
-      const episodeMetricsActions = episodes.map(e => {
-        return new ACTIONS.CastleEpisodeDownloadsLoadAction({
-          podcastId: e.podcastId,
-          page: e.page,
-          guid: e.guid,
+      const episodeMetricsActions = [
+        ACTIONS.CastlePodcastDownloadsLoad({
+          id: episodes[0].podcastId,
           interval: routerParams.interval,
           beginDate: routerParams.beginDate,
           endDate: routerParams.endDate
-        });
-      });
-      const completionString = episodes.map((e, i) => `-${i}`);
+        }),
+        ACTIONS.CastlePodcastAllTimeDownloadsLoad({ id: episodes[0].podcastId }),
+        ...episodes.map(e => {
+          return ACTIONS.CastleEpisodeDownloadsLoad({
+            podcastId: e.podcastId,
+            page: e.page,
+            guid: e.guid,
+            interval: routerParams.interval,
+            beginDate: routerParams.beginDate,
+            endDate: routerParams.endDate
+          });
+        }),
+        ...episodes.map(e => {
+          return ACTIONS.CastleEpisodeAllTimeDownloadsLoad({
+            podcastId: e.podcastId,
+            guid: e.guid
+          });
+        })
+      ];
+      const completionString = episodeMetricsActions.map((e, i) => `-${i}`);
       const completion = {};
       // create an object with indices (toString) as keys to each action for marble mapping
       episodeMetricsActions.forEach((a, i) => {
         completion[i.toString()] = a;
       });
 
-      actions$.stream = hot('-a--', { a: action });
+      actions$ = hot('-a--', { a: episodePage });
       // Marble syntax: '()' to sync groupings
       // When multiple events need to be in the same frame synchronously, parentheses are used to group those events.
       // eg '-(-0-1)' events '0' and '1' will both be in frame 10
       const expected = cold(`-(${completionString.join('')})`, completion);
       expect(effects.loadRoutedDownloads$).toBeObservable(expected);
-
-      expect(store.dispatch).toHaveBeenCalledWith(
-        new ACTIONS.CastlePodcastDownloadsLoadAction({
-          id: episodes[0].podcastId,
-          interval: routerParams.interval,
-          beginDate: routerParams.beginDate,
-          endDate: routerParams.endDate
-        })
-      );
-      expect(store.dispatch).toHaveBeenCalledWith(new ACTIONS.CastlePodcastAllTimeDownloadsLoadAction({ id: episodes[0].podcastId }));
-      episodes.forEach(e => {
-        expect(store.dispatch).toHaveBeenCalledWith(
-          new ACTIONS.CastleEpisodeAllTimeDownloadsLoadAction({ podcastId: e.podcastId, guid: e.guid })
-        );
-      });
     });
 
     it('should load dropday downloads on episode page success', () => {
       store.dispatch(
-        new ACTIONS.CustomRouterNavigationAction({
+        ACTIONS.CustomRouterNavigation({
           routerParams: { ...routerParams, metricsType: METRICSTYPE_DROPDAY, days: 28 }
         })
       );
       jest.spyOn(store, 'dispatch');
-      const action = new ACTIONS.CastleEpisodePageSuccessAction({
+      const action = ACTIONS.CastleEpisodePageSuccess({
         episodes,
         page: routerParams.episodePage,
         per: EPISODE_PAGE_SIZE,
@@ -343,19 +315,19 @@ describe('CastleDownloadsEffects', () => {
       const completion = {};
       // create an object with indices (toString) as keys to each action for marble mapping
       [
-        new ACTIONS.EpisodeSelectEpisodesAction({
+        ACTIONS.EpisodeSelectEpisodes({
           podcastId: routerParams.podcastId,
           metricsType: METRICSTYPE_DROPDAY,
           episodeGuids: episodes.map(e => e.guid)
         }),
         ...episodes.map(e => {
-          return new ACTIONS.CastleEpisodeAllTimeDownloadsLoadAction({
+          return ACTIONS.CastleEpisodeAllTimeDownloadsLoad({
             podcastId: e.podcastId,
             guid: e.guid
           });
         }),
         ...episodes.map(e => {
-          return new ACTIONS.CastleEpisodeDropdayLoadAction({
+          return ACTIONS.CastleEpisodeDropdayLoad({
             podcastId: e.podcastId,
             guid: e.guid,
             title: e.title,
@@ -368,7 +340,7 @@ describe('CastleDownloadsEffects', () => {
         completion[i.toString()] = a;
       });
 
-      actions$.stream = hot('-a--', { a: action });
+      actions$ = hot('-a--', { a: action });
       // Marble syntax: '()' to sync groupings
       // When multiple events need to be in the same frame synchronously, parentheses are used to group those events.
       // eg '-(-0-1)' events '0' and '1' will both be in frame 10

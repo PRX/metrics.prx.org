@@ -1,10 +1,9 @@
 import { Injectable } from '@angular/core';
-import { map, switchMap } from 'rxjs/operators';
-import { of, Observable } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
+import { of } from 'rxjs';
 import { Store } from '@ngrx/store';
 import { routerNavigationAction } from '@ngrx/router-store';
-import { Actions, Effect, ofType, createEffect } from '@ngrx/effects';
-import { ActionTypes } from '../actions';
+import { Actions, ofType, createEffect } from '@ngrx/effects';
 import * as ACTIONS from '../actions';
 import * as dateUtil from '@app/shared/util/date';
 import { RoutingService } from '@app/core/routing/routing.service';
@@ -145,7 +144,6 @@ export class RoutingEffects {
     { dispatch: false }
   );
 
-  @Effect()
   routeDays$ = createEffect(
     () =>
       this.actions$.pipe(

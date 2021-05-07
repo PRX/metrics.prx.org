@@ -3,9 +3,12 @@ env:
   variables:
     PRX_ECR_CONFIG_PARAMETERS: MetricsEcrImageTag
   parameter-store:
-    CODECOV_TOKEN: "/prx/test/metrics.prx.org/CODECOV_TOKEN"
-    DOCKERHUB_USERNAME: '/prx/DOCKERHUB_USERNAME'
-    DOCKERHUB_PASSWORD: '/prx/DOCKERHUB_PASSWORD'
+    CODECOV_TOKEN: /prx/test/metrics.prx.org/CODECOV_TOKEN
+    DOCKERHUB_USERNAME: /prx/DOCKERHUB_USERNAME
+    DOCKERHUB_PASSWORD: /prx/DOCKERHUB_PASSWORD
+  exported-variables:
+    - PRX_ECR_CONFIG_PARAMETERS
+    - PRX_ECR_IMAGE
 phases:
   install:
     runtime-versions:
@@ -16,15 +19,15 @@ phases:
       - echo $DOCKERHUB_PASSWORD | docker login --username $DOCKERHUB_USERNAME --password-stdin
   build:
     commands:
-      - "cd $(ls -d */|head -n 1)"
-      - "echo CODECOV_TOKEN=$CODECOV_TOKEN > .env"
-      - "echo CODEBUILD_BUILD_ID=$CODEBUILD_BUILD_ID >> .env"
-      - "echo PRX_REPO=$PRX_REPO >> .env"
-      - "echo PRX_COMMIT=$PRX_COMMIT >> .env"
-      - "echo PRX_BRANCH=$PRX_BRANCH >> .env"
-      - "echo PRX_GITHUB_PR=$PRX_GITHUB_PR >> .env"
-      - "docker-compose build"
-      - "docker-compose run metrics ci"
+      - cd $(ls -d */|head -n 1)
+      - echo CODECOV_TOKEN=$CODECOV_TOKEN > .env
+      - echo CODEBUILD_BUILD_ID=$CODEBUILD_BUILD_ID >> .env
+      - echo PRX_REPO=$PRX_REPO >> .env
+      - echo PRX_COMMIT=$PRX_COMMIT >> .env
+      - echo PRX_BRANCH=$PRX_BRANCH >> .env
+      - echo PRX_GITHUB_PR=$PRX_GITHUB_PR >> .env
+      - docker-compose build
+      - docker-compose run metrics ci
   post_build:
       commands:
-        - 'curl -sO "https://raw.githubusercontent.com/PRX/Infrastructure/master/ci/utility/post_build.sh" && chmod +x post_build.sh && bash ./post_build.sh'
+        - 'curl -sO "https://raw.githubusercontent.com/PRX/Infrastructure/master/ci/utility/post_build.sh" && chmod +x post_build.sh && . ./post_build.sh'

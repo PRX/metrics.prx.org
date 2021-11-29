@@ -19,7 +19,6 @@ phases:
       - echo $DOCKERHUB_PASSWORD | docker login --username $DOCKERHUB_USERNAME --password-stdin
   build:
     commands:
-      - cd $(ls -d */|head -n 1)
       - echo CODECOV_TOKEN=$CODECOV_TOKEN > .env
       - echo CODEBUILD_BUILD_ID=$CODEBUILD_BUILD_ID >> .env
       - echo PRX_REPO=$PRX_REPO >> .env

@@ -20,4 +20,14 @@ lint:
 
 check: lint test
 
-.PHONY: run build test clean install all check lint
+dev-init:
+	asdf install
+	npm install -g npm@latest
+	npm install -g yarn@latest
+	yarn install
+	echo 4202 > ~/.puma-dev/metrics.prx
+
+dev-start:
+	yarn start
+
+.PHONY: run build test clean install all check lint dev-init dev-start

@@ -8,10 +8,6 @@ RUN apk --no-cache add git ca-certificates \
     python py-pip py-setuptools groff less && \
     pip --no-cache-dir install awscli
 
-# install PRX aws-secrets scripts
-RUN git clone -o github https://github.com/PRX/aws-secrets
-RUN cp ./aws-secrets/bin/* /usr/local/bin
-
 ENV APP_HOME /app
 ENV PORT 4202
 RUN mkdir -p $APP_HOME

@@ -1,15 +1,15 @@
-version: "2"
-metrics:
-  build: .
-  volumes:
-    - ./bin:/app/bin
-    - ./e2e:/app/e2e
-    - ./src:/app/src
-  env_file:
-    - .env
-  ports:
-    - "4202:4202"
-  command: start
-  environment:
-    VIRTUAL_HOST: metrics.prx.docker
-    HOST: http://metrics.prx.docker
+services:
+  metrics:
+    build: .
+    volumes:
+      - ./bin:/app/bin
+      - ./e2e:/app/e2e
+      - ./src:/app/src
+    env_file:
+      - .env
+    ports:
+      - "4202:4202"
+    command: start
+    environment:
+      VIRTUAL_HOST: metrics.prx.docker
+      HOST: http://metrics.prx.docker

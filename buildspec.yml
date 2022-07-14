@@ -2,17 +2,16 @@ version: 0.2
 env:
   variables:
     PRX_ECR_CONFIG_PARAMETERS: MetricsEcrImageTag
+    PRX_SPIRE_SSM_PARAMETERS_ECR_TAG: /prx/stag/Spire/Dovetail-Metrics/ecr-image-tag
   parameter-store:
     CODECOV_TOKEN: /prx/test/metrics.prx.org/CODECOV_TOKEN
     DOCKERHUB_USERNAME: /prx/DOCKERHUB_USERNAME
     DOCKERHUB_PASSWORD: /prx/DOCKERHUB_PASSWORD
   exported-variables:
     - PRX_ECR_CONFIG_PARAMETERS
+    - PRX_SPIRE_SSM_PARAMETERS_ECR_TAG
     - PRX_ECR_IMAGE
 phases:
-  install:
-    runtime-versions:
-      docker: 18
   pre_build:
     commands:
       - echo Logging in to Docker Hub...

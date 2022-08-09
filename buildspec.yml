@@ -2,15 +2,16 @@ version: 0.2
 env:
   variables:
     PRX_ECR_CONFIG_PARAMETERS: MetricsEcrImageTag
-    PRX_SPIRE_SSM_PARAMETERS_ECR_TAG: /prx/stag/Spire/Dovetail-Metrics/ecr-image-tag
+    PRX_SPIRE_ECR_PKG_PARAMETERS: WEB_SERVER=/prx/stag/Spire/Dovetail-Metrics/pkg/docker-image-tag
   parameter-store:
     CODECOV_TOKEN: /prx/test/metrics.prx.org/CODECOV_TOKEN
     DOCKERHUB_USERNAME: /prx/DOCKERHUB_USERNAME
     DOCKERHUB_PASSWORD: /prx/DOCKERHUB_PASSWORD
   exported-variables:
     - PRX_ECR_CONFIG_PARAMETERS
-    - PRX_SPIRE_SSM_PARAMETERS_ECR_TAG
     - PRX_ECR_IMAGE
+    - PRX_SPIRE_ECR_PKG_PARAMETERS
+    - WEB_SERVER
 phases:
   pre_build:
     commands:
@@ -27,5 +28,7 @@ phases:
       - docker-compose build
       - docker-compose run metrics ci
   post_build:
-      commands:
-        - 'curl -sO "https://raw.githubusercontent.com/PRX/Infrastructure/master/ci/utility/post_build.sh" && chmod +x post_build.sh && . ./post_build.sh'
+    commands:
+      - curl -sO "https://raw.githubusercontent.com/PRX/Infrastructure/main/ci/utility/post_build.sh"
+      - chmod +x post_build.sh
+      - . ./post_build.sh

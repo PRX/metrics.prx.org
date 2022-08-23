@@ -95,3 +95,4 @@ The [prxproxy](https://github.com/PRX/internal/tree/master/guides/docker-for-mac
  
  # open up a browser to view
  open http://metrics.prx.docker
+

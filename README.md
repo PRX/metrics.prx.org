@@ -92,7 +92,6 @@ The [prxproxy](https://github.com/PRX/internal/tree/master/guides/docker-for-mac
 
  # run the dev server
  docker-compose up
- 
+
  # open up a browser to view
  open http://metrics.prx.docker
-

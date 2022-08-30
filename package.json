@@ -1,7 +1,7 @@
 {
   "name": "metrics.prx.org",
   "version": "0.0.0",
-  "license": "MIT",
+  "license": "AGPL-3.0",
   "scripts": {
     "start": "prx-ng-serve dev",
     "build": "ng build --prod --aot",

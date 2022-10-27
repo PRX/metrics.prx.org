@@ -31,7 +31,7 @@
     "@ngrx/store-devtools": "~9.2.0",
     "angulartics2": "^9.1.0",
     "moment": "^2.18.1",
-    "ngx-prx-styleguide": "4.0.3",
+    "ngx-prx-styleguide": "4.0.4",
     "prx-ng-serve": "^4.0.0",
     "rxjs": "~6.5.5",
     "tinycolor2": "^1.4.1",

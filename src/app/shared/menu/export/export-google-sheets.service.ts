@@ -142,6 +142,9 @@ export class ExportGoogleSheetsService {
             primaryButton: 'Okay',
             buttonCallback: this.dismissModal.bind(this)
           });
+
+          // attempt to disconnect
+          gapi.auth2.getAuthInstance().disconnect();
         });
     }
   }

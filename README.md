@@ -31,6 +31,7 @@ Next, you will need to create a client application set up, this is easiest to do
 ssh to an instance running ID
 # connect to ID's docker container
 docker exec -it <container_id> /bin/ash
+
 # start a console for ID
 ./bin/application console
 

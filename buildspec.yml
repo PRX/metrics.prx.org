@@ -1,15 +1,13 @@
 version: 0.2
 env:
   variables:
-    PRX_ECR_CONFIG_PARAMETERS: MetricsEcrImageTag
     PRX_SPIRE_ECR_PKG_PARAMETERS: WEB_SERVER=/prx/stag/Spire/Dovetail-Metrics/pkg/docker-image-tag
+    PRX_BUILD_AARCH64: "true"
   parameter-store:
     CODECOV_TOKEN: /prx/test/metrics.prx.org/CODECOV_TOKEN
     DOCKERHUB_USERNAME: /prx/DOCKERHUB_USERNAME
     DOCKERHUB_PASSWORD: /prx/DOCKERHUB_PASSWORD
   exported-variables:
-    - PRX_ECR_CONFIG_PARAMETERS
-    - PRX_ECR_IMAGE
     - PRX_SPIRE_ECR_PKG_PARAMETERS
     - WEB_SERVER
 phases:

@@ -44,7 +44,7 @@ export class AppComponent implements OnInit {
     this.store.pipe(select(selectUserinfo)).subscribe(info => {
       if (info) {
         this.userName = info['name'];
-        this.userImage = info['image_href'];
+        this.userImage = info['image_href'] || '/assets/images/placeholder.svg';
 
         const apps = info.apps || {};
         const urls = Object.keys(apps).map(k => apps[k]);

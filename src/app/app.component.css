@@ -1,3 +1,180 @@
+.visually-hidden {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+.prx-header-bar {
+  background-color: #003A57;
+  color: #fff;
+  display: flex;
+  align-items: stretch;
+  flex-direction: row;
+  padding: 0 1rem;
+  font-size: 1rem;
+  font-family: "Roboto", "Helvetica Neue", sans-serif;
+  height: 54px;
+}
+
+.prx-header-bar-header {
+  display: flex;
+  align-items: center;
+  flex-grow: 1;
+  padding: 0.75rem 0;
+}
+
+.prx-header-bar .navbar-nav {
+  display: grid;
+  align-items: center;
+  z-index: 1020;
+  margin: 0 0 0 1rem;
+}
+
+.prx-header-bar .prx-navbar-apps {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+}
+
+.prx-header-bar .nav-link {
+  display: grid;
+  align-items: center;
+  text-transform: uppercase;
+  color: #fff;
+  font-weight: 700;
+  padding: 0.75rem 1rem;
+  text-decoration: none;
+}
+
+.prx-header-bar .nav-link:hover {
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.prx-header-bar .nav-link:not(.dropdown-toggle) {
+  border-bottom: 3px solid transparent;
+}
+
+.prx-header-bar .nav-link.active:not(.dropdown-toggle) {
+  border-color: #ff9600;
+}
+
+.prx-header-bar .nav-link-icon {
+  font-size: 2rem;
+  padding: 0.75rem;
+  color: #fff;
+  line-height: 0;
+  align-self: stretch;
+}
+
+.prx-header-bar .prx-dropdown {
+  position: relative;
+}
+
+.prx-header-bar .prx-dropdown-toggle {
+  display: block;
+  cursor: pointer;
+}
+
+.prx-header-bar .prx-dropdown-menu {
+  display: none;
+  position: absolute;
+  background-color:#002e46;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+  margin: 0;
+  padding: 0;
+  right: 0;
+  top: 48px;
+}
+
+.prx-header-bar .prx-dropdown:focus-within .prx-dropdown-menu {
+  display: block;
+}
+
+.prx-header-bar .prx-dropdown-item {
+  display: block;
+  padding: 10px 15px;
+  text-decoration: none;
+  color: #fff;
+}
+
+.prx-header-bar .prx-user-menu-item:hover,
+.prx-header-bar .prx-dropdown-item:hover {
+  background-color: #0072a3;
+}
+
+.prx-header-bar .prx-user-menu-toggle {
+  display: block;
+  cursor: pointer;
+  min-width: 46px;
+}
+
+.prx-header-bar .prx-user-menu-avatar:hover {
+  text-decoration: none;
+  color: #fff;
+}
+
+.prx-header-bar .prx-user-menu-avatar {
+  object-fit: cover;
+  border-radius: 50%;
+  height: 31px;
+  width: 31px;
+  padding: 4px;
+}
+
+.prx-header-bar .prx-user-menu-dropdown {
+  min-width: 200px;
+  text-align: center;
+}
+
+.prx-header-bar .prx-user-menu:focus-within .prx-user-menu-dropdown {
+  display: block;
+}
+
+.prx-header-bar .prx-user-menu-header {
+  padding: 1rem 1.5rem;
+  color: #fff;
+  white-space: nowrap;
+  font-size: 1.5rem;
+  margin-bottom: 0;
+}
+
+.prx-header-bar .prx-user-menu-button {
+  display: inline-block;
+  padding: 0.75rem 1rem;
+  margin-bottom: 0.75rem;
+  text-decoration: none;
+  color: #000; /* This color might be specific and not easily abstracted */
+  background-color: #8cd2f4;
+}
+
+.prx-header-bar .prx-user-menu-button:hover {
+  color: #98d7f5;
+}
+
+.prx-header-bar .prx-user-menu-item {
+  display: block;
+  padding: 0.75rem 1.5rem;
+  text-decoration: none;
+  color: #add8e6;
+}
+
+.prx-app-bar {
+  background-color: #fff;
+  border-bottom: 1px solid #ddd;
+  display: flex;
+  justify-content: flex-start;
+  align-items: stretch;
+  color: #003A57;
+}
+
 prx-header {
   max-width: 100%;
 }

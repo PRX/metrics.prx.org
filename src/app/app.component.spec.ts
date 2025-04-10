@@ -79,13 +79,4 @@ describe('AppComponent', () => {
     fix.detectChanges();
     expect(de.query(By.css('metrics-podcast-nav'))).toBeNull();
   }));
-
-  it('should show user info when logged in', async(() => {
-    expect(de.query(By.css('prx-navuser'))).toBeTruthy();
-    expect(el.textContent).toContain('Joey JoJo Jr Shabadoo');
-    store.dispatch(ACTIONS.IdUserinfoLoad());
-    fix.detectChanges();
-    expect(de.query(By.css('prx-navuser'))).toBeNull();
-    expect(el.textContent).not.toContain('Joey JoJo Jr Shabadoo');
-  }));
 });

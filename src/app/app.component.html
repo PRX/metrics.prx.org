@@ -1,11 +1,51 @@
 <prx-auth [host]="authHost" [client]="authClient"></prx-auth>
-<prx-header>
+<div class="prx-header-bar">
+
+<header class="prx-header-bar-header">
+  <a class="navbar-brand d-inline-flex" [routerLink]="['/']"><img width="152" height="30" alt="Dovetail from PRX" src="assets/images/dovetail_logo.svg"></a>
+</header>
+
+<nav class="prx-navbar-apps navbar-nav">
+  <h2 class="visually-hidden">Your Applications</h2>
+
+  <a *ngIf="feederUrl" class="nav-link" href="{{ feederUrl }}">Podcasts</a>
+  <a *ngIf="metricsUrl" class="nav-link active" [routerLink]="['/']">Metrics</a>
+  <a *ngIf="auguryUrl" class="nav-link" href="{{ auguryUrl }}">Inventory</a>
+</nav>
+
+<nav class="prx-dropdown navbar-nav" tabindex="0">
+  <h2 class="visually-hidden">Help Menu</h2>
+  <a class="prx-dropdown-toggle" title="Help">
+    <img alt="Help" src="assets/images/icon-help.svg">
+  </a>
+  <div class="prx-dropdown-menu">
+    <a class="prx-dropdown-item" href="https://help.prx.org">Help Docs</a>
+    <a class="prx-dropdown-item" href="https://status.prx.org">Status</a>
+    <a class="prx-dropdown-item" href="mailto:dovetail-feedback@prx.org">Send Feedback</a>
+    <a class="prx-dropdown-item" href="https://exchange.prx.org/terms-of-use">Terms</a>
+    <a class="prx-dropdown-item" href="https://dovetail.prx.org/attribution">Attribution</a>
+    <a class="prx-dropdown-item" href="https://exchange.prx.org/privacy-policy">Privacy</a>
+    <a class="prx-dropdown-item" href="https://prx.org/">PRX</a>
+  </div>
+</nav>
+
+<nav class="prx-user-menu prx-dropdown navbar-nav" tabindex="0" *ngIf="userName">
+  <h2 class="visually-hidden">User Menu</h2>
+  <a class="prx-user-menu-toggle" title="User Menu">
+    <img width="24" height="24" src="{{ userImage }}" class="prx-user-menu-avatar" alt="{{ userName }}'s avatar">
+  </a>
+  <div class="prx-dropdown-menu prx-user-menu-dropdown">
+    <div class="prx-user-menu-header">{{ userName }}</div>
+    <a class="prx-user-menu-button" href="//id.prx.org/profile">Manage Account</a>
+    <a class="prx-user-menu-item" href="//id.prx.org/session/sign_out">Logout</a>
+  </div>
+</nav>
+</div>
+
+<div class="prx-app-bar">
   <metrics-podcast-nav *ngIf="loggedIn$ | async"></metrics-podcast-nav>
-  <prx-navuser *ngIf="loggedIn$ | async" [userinfo]="userinfo$ | async">
-    <prx-spinner class="user-loading"></prx-spinner>
-    <prx-image *ngIf="userDoc$ | async" class="user-loaded" [imageDoc]="userDoc$ | async"></prx-image>
-  </prx-navuser>
-</prx-header>
+</div>
+
 <main>
   <article>
     <metrics-nav-menu *ngIf="authorized$ | async"></metrics-nav-menu>
@@ -14,5 +54,4 @@
     </div>
   </article>
 </main>
-<prx-footer></prx-footer>
 <prx-modal></prx-modal>

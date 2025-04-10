@@ -2,6 +2,7 @@
 body {
   max-width: 100%;
   color: #1A1A1A;
+  background-color: #F7F9FD;
 }
 
 button {
@@ -11,4 +12,37 @@ button {
 
 button:hover, button:not(.button):focus {
   background-color: transparent;
+}
+
+metrics-podcast-dropdown .dropdown-button {
+ min-width: 350px;
+ color: #666;
+}
+
+metrics-podcast-dropdown .dropdown-menu {
+  min-width: 350px !important;
+}
+
+metrics-podcast-dropdown .button-text {
+  color: #666 !important;
+  font-weight: 500 !important;
+}
+
+metrics-podcast-dropdown .open .dropdown-content {
+  background-color: #fff !important;
+}
+
+metrics-podcast-dropdown li .btn-link {
+  font-weight: bold !important;
+  color: #0072a3 !important;
+  padding: 0.5rem 1rem !important;
+}
+
+metrics-podcast-dropdown li .btn-link.active {
+  color: #666 !important;
+  background-color: #fff !important;
+}
+
+metrics-podcast-dropdown li .btn-link:hover {
+  background-color: #eee !important;
 }

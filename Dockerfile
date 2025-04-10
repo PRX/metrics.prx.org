@@ -1,4 +1,4 @@
-FROM mhart/alpine-node:10.15.3
+FROM node:16.16.0-alpine
 
 MAINTAINER PRX <sysadmin@prx.org>
 LABEL org.prx.app="yes"
@@ -6,8 +6,7 @@ LABEL org.prx.spire.publish.ecr="WEB_SERVER"
 
 # install git, aws-cli
 RUN apk --no-cache add git ca-certificates \
-    python py-pip py-setuptools groff less && \
-    pip --no-cache-dir install awscli
+    groff less aws-cli
 
 ENV APP_HOME /app
 ENV PORT 4202

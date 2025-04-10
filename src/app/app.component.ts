@@ -27,6 +27,7 @@ export class AppComponent implements OnInit {
   feederUrl: string;
   metricsUrl: string;
   userName: string;
+  userImage: string;
 
   constructor(public store: Store<any>, private angulartics2GoogleAnalytics: Angulartics2GoogleAnalytics) {
     this.angulartics2GoogleAnalytics.startTracking();
@@ -42,13 +43,14 @@ export class AppComponent implements OnInit {
 
     this.store.pipe(select(selectUserinfo)).subscribe(info => {
       if (info) {
-        this.userName = info.name;
-        this.userImage = info.image_href;
+        this.userName = info['name'];
+        this.userImage = info['image_href'];
 
-        const apps = Object.values(info.apps || {});
-        this.auguryUrl = apps.find(v => v.match(/inventory\./))
-        this.feederUrl = apps.find(v => v.match(/podcasts\./))
-        this.metricsUrl = apps.find(v => v.match(/metrics\./))
+        const apps = info.apps || {};
+        const urls = Object.keys(apps).map(k => apps[k]);
+        this.auguryUrl = urls.find(v => v.match(/inventory\./))
+        this.feederUrl = urls.find(v => v.match(/podcasts\./))
+        this.metricsUrl = urls.find(v => v.match(/metrics\./))
       }
     })
   }

@@ -113,7 +113,7 @@
 .prx-header-bar .prx-user-menu-toggle {
   display: block;
   cursor: pointer;
-  min-width: 46px;
+  min-width: 31px;
 }
 
 .prx-header-bar .prx-user-menu-avatar:hover {

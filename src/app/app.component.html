@@ -2,20 +2,20 @@
 <div class="prx-header-bar">
 
 <header class="prx-header-bar-header">
-  <a class="navbar-brand d-inline-flex" href="/"><img width="152" height="30" alt="Dovetail from PRX" src="assets/images/dovetail_logo.svg"></a>
+  <a class="navbar-brand d-inline-flex" [routerLink]="['/']"><img width="152" height="30" alt="Dovetail from PRX" src="assets/images/dovetail_logo.svg"></a>
 </header>
 
 <nav class="prx-navbar-apps navbar-nav">
   <h2 class="visually-hidden">Your Applications</h2>
 
-  <a class="nav-link" href="https://podcasts.dovetail.prx.org/">Podcasts</a>
-  <a class="nav-link active" href="/">Metrics</a>
-  <a class="nav-link" href="https://inventory.dovetail.prx.org">Inventory</a>
+  <a *ngIf="feederUrl" class="nav-link" href="{{ feederUrl }}">Podcasts</a>
+  <a *ngIf="metricsUrl" class="nav-link active" [routerLink]="['/']">Metrics</a>
+  <a *ngIf="auguryUrl" class="nav-link" href="{{ auguryUrl }}">Inventory</a>
 </nav>
 
 <nav class="prx-dropdown navbar-nav" tabindex="0">
   <h2 class="visually-hidden">Help Menu</h2>
-  <a class="prx-dropdown-toggle" href="#" title="Help">
+  <a class="prx-dropdown-toggle" title="Help">
     <img alt="Help" src="assets/images/icon-help.svg">
   </a>
   <div class="prx-dropdown-menu">
@@ -29,22 +29,21 @@
   </div>
 </nav>
 
-<nav class="prx-user-menu prx-dropdown navbar-nav" tabindex="0">
+<nav class="prx-user-menu prx-dropdown navbar-nav" tabindex="0" *ngIf="userName">
   <h2 class="visually-hidden">User Menu</h2>
-  <a class="user-menu-toggle" href="#" title="User Menu">
-    <img width="24" height="24" src="https://id.prx.org/pub/ac63a62099cf9b5ac48f69254c3e6bc9/user_images/52969/medium/P8140272_edited%20(1).jpg" class="prx-user-menu-avatar" alt="Brandon Hundt's avatar">
+  <a class="prx-user-menu-toggle" title="User Menu">
+    <img width="24" height="24" src="{{ userImage }}" class="prx-user-menu-avatar" alt="{{ userName }}'s avatar">
   </a>
   <div class="prx-dropdown-menu prx-user-menu-dropdown">
-    <div class="prx-user-menu-header">Brandon Hundt</div>
+    <div class="prx-user-menu-header">{{ userName }}</div>
     <a class="prx-user-menu-button" href="//id.prx.org/profile">Manage Account</a>
-    <a class="prx-user-menu-item" href="/sessions/refresh">Reload</a>
-    <a class="prx-user-menu-item" href="/sessions/logout">Logout</a>
+    <a class="prx-user-menu-item" href="//id.prx.org/session/sign_out">Logout</a>
   </div>
 </nav>
 </div>
 
 <div class="prx-app-bar">
-  <metrics-nav-menu *ngIf="authorized$ | async"></metrics-nav-menu>
+  <metrics-podcast-nav *ngIf="loggedIn$ | async"></metrics-podcast-nav>
 </div>
 
 <main>

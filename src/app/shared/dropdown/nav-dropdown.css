@@ -1,8 +1,8 @@
 .dropdown-button, .open .dropdown-button {
-  height: 73px;
-  max-width: calc(100vw - 180px);
+  padding: 2em 0;
   display: flex;
   align-items: center;
+  border-right: 1px solid #dddde0;
 }
 @media (max-width: 768px) {
   .dropdown-button, .open .dropdown-button {
@@ -17,17 +17,18 @@
   background-color: transparent;
 }
 .button-text {
-  color: #ffffff;
-  font-family: 'Montserrat', sans-serif;
+  color: #1a1a1a;
+  font-family: "Roboto", "Helvetica Neue", sans-serif;
   font-weight: 700;
-  text-transform: uppercase;
-  max-width: calc(100% - 12px);
+  font-size: 16px;
+  font-style: italic;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  padding-right: 10px;
 }
 .down-arrow {
-  border-top-color: #ffffff;
+  border-top-color: #1a1a1a;
 }
 .open .dropdown-content {
   right: auto;

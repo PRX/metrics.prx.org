@@ -23,6 +23,11 @@ export class AppComponent implements OnInit {
   userDoc$: Observable<HalDoc>;
   userError$: Observable<any>;
 
+  auguryUrl: string;
+  feederUrl: string;
+  metricsUrl: string;
+  userName: string;
+
   constructor(public store: Store<any>, private angulartics2GoogleAnalytics: Angulartics2GoogleAnalytics) {
     this.angulartics2GoogleAnalytics.startTracking();
   }
@@ -34,5 +39,17 @@ export class AppComponent implements OnInit {
     this.userinfo$ = this.store.pipe(select(selectUserinfo));
     this.userDoc$ = this.store.pipe(select(selectUserdoc));
     this.userError$ = this.store.pipe(select(selectUserError));
+
+    this.store.pipe(select(selectUserinfo)).subscribe(info => {
+      if (info) {
+        this.userName = info.name;
+        this.userImage = info.image_href;
+
+        const apps = Object.values(info.apps || {});
+        this.auguryUrl = apps.find(v => v.match(/inventory\./))
+        this.feederUrl = apps.find(v => v.match(/podcasts\./))
+        this.metricsUrl = apps.find(v => v.match(/metrics\./))
+      }
+    })
   }
 }

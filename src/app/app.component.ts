@@ -25,7 +25,9 @@ export class AppComponent implements OnInit {
 
   auguryUrl: string;
   feederUrl: string;
+  insightsUrl: string;
   metricsUrl: string;
+  spotsUrl: string;
   userName: string;
   userImage: string;
 
@@ -50,7 +52,9 @@ export class AppComponent implements OnInit {
         const urls = Object.keys(apps).map(k => apps[k]);
         this.auguryUrl = urls.find(v => v.match(/inventory\./))
         this.feederUrl = urls.find(v => v.match(/podcasts\./))
+        this.insightsUrl = urls.find(v => v.match(/insights\./))
         this.metricsUrl = urls.find(v => v.match(/metrics\./))
+        this.spotsUrl = urls.find(v => v.match(/spots\./))
       }
     })
   }

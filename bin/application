@@ -27,11 +27,7 @@ ApplicationRun () {
     CMD="npm run-script $PROCESS"
   fi
 
-  if [ -n "$CMD" ] ; then
-    exec $CMD $CMD_ARGS
-  else
-    $CMD_ARGS
-  fi
+  exec $CMD $CMD_ARGS
 }
 
 ApplicationParseOpts $*

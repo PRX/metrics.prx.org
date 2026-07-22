@@ -22,12 +22,12 @@ ApplicationRun () {
   elif [ "$PROCESS" = "--" ] ; then
     CMD=
   elif [ "$PROCESS" = "serve" ] ; then
-    CMD="npm run-script serve"
+    CMD="node_modules/.bin/prx-ng-serve dist"
   else
     CMD="npm run-script $PROCESS"
   fi
 
-  $CMD $CMD_ARGS
+  exec $CMD $CMD_ARGS
 }
 
 ApplicationParseOpts $*
